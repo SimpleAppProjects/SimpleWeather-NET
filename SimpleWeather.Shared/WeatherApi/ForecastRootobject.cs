@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -171,6 +172,7 @@ namespace SimpleWeather.WeatherApi
         public string areas { get; set; }
         public string category { get; set; }
         public string certainty { get; set; }
+        [DataMember(Name = "event")]
         public string _event { get; set; }
         public string note { get; set; }
         public DateTimeOffset effective { get; set; }

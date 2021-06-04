@@ -43,7 +43,7 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
 
         static GeneratedResolverGetFormatterHelper()
         {
-            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(223)
+            lookup = new global::System.Collections.Generic.Dictionary<Type, int>(236)
             {
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.Forecast>), 0 },
                 {typeof(global::System.Collections.Generic.IList<global::SimpleWeather.WeatherData.HourlyForecast>), 1 },
@@ -81,193 +81,206 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
                 {typeof(global::SimpleWeather.OpenWeather.OneCall.Hourly[]), 33 },
                 {typeof(global::SimpleWeather.OpenWeather.OneCall.Daily[]), 34 },
                 {typeof(global::SimpleWeather.OpenWeather.OneCall.Alert[]), 35 },
-                {typeof(global::SimpleWeather.WeatherApi.LocationItem[]), 36 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.Timeframe[]), 37 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.Day[]), 38 },
-                {typeof(global::SimpleWeather.MeteoFrance.Timelaps_Items[]), 39 },
-                {typeof(global::SimpleWeather.MeteoFrance.Timelap[]), 40 },
-                {typeof(global::SimpleWeather.MeteoFrance.Phenomenons_Items[]), 41 },
-                {typeof(global::SimpleWeather.MeteoFrance.Advice[]), 42 },
-                {typeof(global::SimpleWeather.MeteoFrance.Consequence[]), 43 },
-                {typeof(global::SimpleWeather.MeteoFrance.Text_Bloc_Item[]), 44 },
-                {typeof(global::SimpleWeather.MeteoFrance.Daily_Forecast[]), 45 },
-                {typeof(global::SimpleWeather.MeteoFrance.Forecast[]), 46 },
-                {typeof(global::SimpleWeather.MeteoFrance.Probability_Forecast[]), 47 },
-                {typeof(global::SimpleWeather.Location.LocationData), 48 },
-                {typeof(global::SimpleWeather.Location.Favorites), 49 },
-                {typeof(global::SimpleWeather.WeatherData.Location), 50 },
-                {typeof(global::SimpleWeather.WeatherData.ForecastExtras), 51 },
-                {typeof(global::SimpleWeather.WeatherData.Forecast), 52 },
-                {typeof(global::SimpleWeather.WeatherData.HourlyForecast), 53 },
-                {typeof(global::SimpleWeather.WeatherData.TextForecast), 54 },
-                {typeof(global::SimpleWeather.WeatherData.Beaufort), 55 },
-                {typeof(global::SimpleWeather.WeatherData.UV), 56 },
-                {typeof(global::SimpleWeather.WeatherData.AirQuality), 57 },
-                {typeof(global::SimpleWeather.WeatherData.Condition), 58 },
-                {typeof(global::SimpleWeather.WeatherData.Atmosphere), 59 },
-                {typeof(global::SimpleWeather.WeatherData.MoonPhase), 60 },
-                {typeof(global::SimpleWeather.WeatherData.Astronomy), 61 },
-                {typeof(global::SimpleWeather.WeatherData.Precipitation), 62 },
-                {typeof(global::SimpleWeather.WeatherData.WeatherAlert), 63 },
-                {typeof(global::SimpleWeather.WeatherData.Weather), 64 },
-                {typeof(global::SimpleWeather.WeatherData.BaseForecast), 65 },
-                {typeof(global::SimpleWeather.WeatherData.Forecasts), 66 },
-                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 67 },
-                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 68 },
-                {typeof(global::SimpleWeather.AQICN.Uvi), 69 },
-                {typeof(global::SimpleWeather.AQICN.Daily), 70 },
-                {typeof(global::SimpleWeather.AQICN.Forecast), 71 },
-                {typeof(global::SimpleWeather.AQICN.Data), 72 },
-                {typeof(global::SimpleWeather.AQICN.Rootobject), 73 },
-                {typeof(global::SimpleWeather.Bing.Address), 74 },
-                {typeof(global::SimpleWeather.Bing.Value), 75 },
-                {typeof(global::SimpleWeather.Bing.Resource), 76 },
-                {typeof(global::SimpleWeather.Bing.Resourceset), 77 },
-                {typeof(global::SimpleWeather.Bing.AC_Rootobject), 78 },
-                {typeof(global::SimpleWeather.HERE.Timesegment), 79 },
-                {typeof(global::SimpleWeather.HERE.Alert), 80 },
-                {typeof(global::SimpleWeather.HERE.Alerts), 81 },
-                {typeof(global::SimpleWeather.HERE.Additionaldata), 82 },
-                {typeof(global::SimpleWeather.HERE.Address), 83 },
-                {typeof(global::SimpleWeather.HERE.Suggestion), 84 },
-                {typeof(global::SimpleWeather.HERE.AC_Rootobject), 85 },
-                {typeof(global::SimpleWeather.HERE.Metainfo), 86 },
-                {typeof(global::SimpleWeather.HERE.Matchquality), 87 },
-                {typeof(global::SimpleWeather.HERE.Displayposition), 88 },
-                {typeof(global::SimpleWeather.HERE.Navigationposition), 89 },
-                {typeof(global::SimpleWeather.HERE.Timezone), 90 },
-                {typeof(global::SimpleWeather.HERE.Admininfo), 91 },
-                {typeof(global::SimpleWeather.HERE.GeoLocation), 92 },
-                {typeof(global::SimpleWeather.HERE.Result), 93 },
-                {typeof(global::SimpleWeather.HERE.View), 94 },
-                {typeof(global::SimpleWeather.HERE.Response), 95 },
-                {typeof(global::SimpleWeather.HERE.Geo_Rootobject), 96 },
-                {typeof(global::SimpleWeather.HERE.TokenRootobject), 97 },
-                {typeof(global::SimpleWeather.HERE.Token), 98 },
-                {typeof(global::SimpleWeather.HERE.Warning), 99 },
-                {typeof(global::SimpleWeather.HERE.Watch), 100 },
-                {typeof(global::SimpleWeather.HERE.Nwsalerts), 101 },
-                {typeof(global::SimpleWeather.HERE.Observation), 102 },
-                {typeof(global::SimpleWeather.HERE.Location), 103 },
-                {typeof(global::SimpleWeather.HERE.Observations), 104 },
-                {typeof(global::SimpleWeather.HERE.Forecast), 105 },
-                {typeof(global::SimpleWeather.HERE.Forecastlocation), 106 },
-                {typeof(global::SimpleWeather.HERE.Dailyforecasts), 107 },
-                {typeof(global::SimpleWeather.HERE.Forecast1), 108 },
-                {typeof(global::SimpleWeather.HERE.Forecastlocation1), 109 },
-                {typeof(global::SimpleWeather.HERE.Hourlyforecasts), 110 },
-                {typeof(global::SimpleWeather.HERE.Astronomy1), 111 },
-                {typeof(global::SimpleWeather.HERE.Astronomy), 112 },
-                {typeof(global::SimpleWeather.HERE.Rootobject), 113 },
-                {typeof(global::SimpleWeather.Metno.AstroMeta), 114 },
-                {typeof(global::SimpleWeather.Metno.Low_Moon), 115 },
-                {typeof(global::SimpleWeather.Metno.High_Moon), 116 },
-                {typeof(global::SimpleWeather.Metno.Solarnoon), 117 },
-                {typeof(global::SimpleWeather.Metno.Moonphase), 118 },
-                {typeof(global::SimpleWeather.Metno.Moonposition), 119 },
-                {typeof(global::SimpleWeather.Metno.Sunrise), 120 },
-                {typeof(global::SimpleWeather.Metno.Moonshadow), 121 },
-                {typeof(global::SimpleWeather.Metno.Moonrise), 122 },
-                {typeof(global::SimpleWeather.Metno.Solarmidnight), 123 },
-                {typeof(global::SimpleWeather.Metno.Sunset), 124 },
-                {typeof(global::SimpleWeather.Metno.Moonset), 125 },
-                {typeof(global::SimpleWeather.Metno.Time), 126 },
-                {typeof(global::SimpleWeather.Metno.Location), 127 },
-                {typeof(global::SimpleWeather.Metno.AstroRootobject), 128 },
-                {typeof(global::SimpleWeather.Metno.Geometry), 129 },
-                {typeof(global::SimpleWeather.Metno.Units), 130 },
-                {typeof(global::SimpleWeather.Metno.Meta), 131 },
-                {typeof(global::SimpleWeather.Metno.Details), 132 },
-                {typeof(global::SimpleWeather.Metno.Instant), 133 },
-                {typeof(global::SimpleWeather.Metno.Summary), 134 },
-                {typeof(global::SimpleWeather.Metno.Details1), 135 },
-                {typeof(global::SimpleWeather.Metno.Next_12_Hours), 136 },
-                {typeof(global::SimpleWeather.Metno.Summary1), 137 },
-                {typeof(global::SimpleWeather.Metno.Details2), 138 },
-                {typeof(global::SimpleWeather.Metno.Next_1_Hours), 139 },
-                {typeof(global::SimpleWeather.Metno.Summary2), 140 },
-                {typeof(global::SimpleWeather.Metno.Details3), 141 },
-                {typeof(global::SimpleWeather.Metno.Next_6_Hours), 142 },
-                {typeof(global::SimpleWeather.Metno.Data), 143 },
-                {typeof(global::SimpleWeather.Metno.Timesery), 144 },
-                {typeof(global::SimpleWeather.Metno.Properties), 145 },
-                {typeof(global::SimpleWeather.Metno.Rootobject), 146 },
-                {typeof(global::SimpleWeather.NWS.AlertGraph), 147 },
-                {typeof(global::SimpleWeather.NWS.AlertRootobject), 148 },
-                {typeof(global::SimpleWeather.NWS.Observation.Location), 149 },
-                {typeof(global::SimpleWeather.NWS.Observation.Time), 150 },
-                {typeof(global::SimpleWeather.NWS.Observation.Data), 151 },
-                {typeof(global::SimpleWeather.NWS.Observation.Currentobservation), 152 },
-                {typeof(global::SimpleWeather.NWS.Observation.ForecastRootobject), 153 },
-                {typeof(global::SimpleWeather.NWS.Hourly.Location), 154 },
-                {typeof(global::SimpleWeather.NWS.Hourly.PeriodsItem), 155 },
-                {typeof(global::SimpleWeather.NWS.Hourly.HourlyForecastResponse), 156 },
-                {typeof(global::SimpleWeather.NWS.Hourly.PeriodItem), 157 },
-                {typeof(global::SimpleWeather.NWS.SolCalcAstroProvider.AstroData), 158 },
-                {typeof(global::SimpleWeather.OpenWeather.Coord), 159 },
-                {typeof(global::SimpleWeather.OpenWeather.Weather), 160 },
-                {typeof(global::SimpleWeather.OpenWeather.Main), 161 },
-                {typeof(global::SimpleWeather.OpenWeather.Wind), 162 },
-                {typeof(global::SimpleWeather.OpenWeather.Clouds), 163 },
-                {typeof(global::SimpleWeather.OpenWeather.Rain), 164 },
-                {typeof(global::SimpleWeather.OpenWeather.Snow), 165 },
-                {typeof(global::SimpleWeather.OpenWeather.CurrentSys), 166 },
-                {typeof(global::SimpleWeather.OpenWeather.CurrentRootobject), 167 },
-                {typeof(global::SimpleWeather.OpenWeather.ForecastSys), 168 },
-                {typeof(global::SimpleWeather.OpenWeather.List), 169 },
-                {typeof(global::SimpleWeather.OpenWeather.City), 170 },
-                {typeof(global::SimpleWeather.OpenWeather.ForecastRootobject), 171 },
-                {typeof(global::SimpleWeather.OpenWeather.Rootobject), 172 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Coord), 173 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Main), 174 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Components), 175 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.List), 176 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.AirPollutionRootobject), 177 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Rain), 178 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Snow), 179 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Weather), 180 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Current), 181 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Hourly), 182 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Temp), 183 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Feels_Like), 184 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Daily), 185 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Alert), 186 },
-                {typeof(global::SimpleWeather.OpenWeather.OneCall.Rootobject), 187 },
-                {typeof(global::SimpleWeather.WeatherApi.LocationItem), 188 },
-                {typeof(global::SimpleWeather.WeatherApi.Rootobject), 189 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.CurrentRootobject), 190 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.Timeframe), 191 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.Day), 192 },
-                {typeof(global::SimpleWeather.WeatherUnlocked.ForecastRootobject), 193 },
-                {typeof(global::SimpleWeather.MeteoFrance.Timelaps_Items), 194 },
-                {typeof(global::SimpleWeather.MeteoFrance.Timelap), 195 },
-                {typeof(global::SimpleWeather.MeteoFrance.Phenomenons_Items), 196 },
-                {typeof(global::SimpleWeather.MeteoFrance.Advice), 197 },
-                {typeof(global::SimpleWeather.MeteoFrance.Consequence), 198 },
-                {typeof(global::SimpleWeather.MeteoFrance.Text_Bloc_Item), 199 },
-                {typeof(global::SimpleWeather.MeteoFrance.Comments), 200 },
-                {typeof(global::SimpleWeather.MeteoFrance.AlertsRootobject), 201 },
-                {typeof(global::SimpleWeather.MeteoFrance.CurrentsPosition), 202 },
-                {typeof(global::SimpleWeather.MeteoFrance.Wind), 203 },
-                {typeof(global::SimpleWeather.MeteoFrance.Weather), 204 },
-                {typeof(global::SimpleWeather.MeteoFrance.Observation), 205 },
-                {typeof(global::SimpleWeather.MeteoFrance.CurrentsRootobject), 206 },
-                {typeof(global::SimpleWeather.MeteoFrance.Position), 207 },
-                {typeof(global::SimpleWeather.MeteoFrance.T), 208 },
-                {typeof(global::SimpleWeather.MeteoFrance.Humidity), 209 },
-                {typeof(global::SimpleWeather.MeteoFrance.Precipitation), 210 },
-                {typeof(global::SimpleWeather.MeteoFrance.Weather12h), 211 },
-                {typeof(global::SimpleWeather.MeteoFrance.Sun), 212 },
-                {typeof(global::SimpleWeather.MeteoFrance.Daily_Forecast), 213 },
-                {typeof(global::SimpleWeather.MeteoFrance.T1), 214 },
-                {typeof(global::SimpleWeather.MeteoFrance.Rain), 215 },
-                {typeof(global::SimpleWeather.MeteoFrance.Snow), 216 },
-                {typeof(global::SimpleWeather.MeteoFrance.Forecast), 217 },
-                {typeof(global::SimpleWeather.MeteoFrance.Rain1), 218 },
-                {typeof(global::SimpleWeather.MeteoFrance.Snow1), 219 },
-                {typeof(global::SimpleWeather.MeteoFrance.Probability_Forecast), 220 },
-                {typeof(global::SimpleWeather.MeteoFrance.ForecastRootobject), 221 },
-                {typeof(global::SimpleWeather.WeatherData.Images.Model.ImageData), 222 },
+                {typeof(global::SimpleWeather.WeatherApi.Hour[]), 36 },
+                {typeof(global::SimpleWeather.WeatherApi.Forecastday[]), 37 },
+                {typeof(global::SimpleWeather.WeatherApi.Alert[]), 38 },
+                {typeof(global::SimpleWeather.WeatherApi.LocationItem[]), 39 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.Timeframe[]), 40 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.Day[]), 41 },
+                {typeof(global::SimpleWeather.MeteoFrance.Timelaps_Items[]), 42 },
+                {typeof(global::SimpleWeather.MeteoFrance.Timelap[]), 43 },
+                {typeof(global::SimpleWeather.MeteoFrance.Phenomenons_Items[]), 44 },
+                {typeof(global::SimpleWeather.MeteoFrance.Advice[]), 45 },
+                {typeof(global::SimpleWeather.MeteoFrance.Consequence[]), 46 },
+                {typeof(global::SimpleWeather.MeteoFrance.Text_Bloc_Item[]), 47 },
+                {typeof(global::SimpleWeather.MeteoFrance.Daily_Forecast[]), 48 },
+                {typeof(global::SimpleWeather.MeteoFrance.Forecast[]), 49 },
+                {typeof(global::SimpleWeather.MeteoFrance.Probability_Forecast[]), 50 },
+                {typeof(global::SimpleWeather.Location.LocationData), 51 },
+                {typeof(global::SimpleWeather.Location.Favorites), 52 },
+                {typeof(global::SimpleWeather.WeatherData.Location), 53 },
+                {typeof(global::SimpleWeather.WeatherData.ForecastExtras), 54 },
+                {typeof(global::SimpleWeather.WeatherData.Forecast), 55 },
+                {typeof(global::SimpleWeather.WeatherData.HourlyForecast), 56 },
+                {typeof(global::SimpleWeather.WeatherData.TextForecast), 57 },
+                {typeof(global::SimpleWeather.WeatherData.Beaufort), 58 },
+                {typeof(global::SimpleWeather.WeatherData.UV), 59 },
+                {typeof(global::SimpleWeather.WeatherData.AirQuality), 60 },
+                {typeof(global::SimpleWeather.WeatherData.Condition), 61 },
+                {typeof(global::SimpleWeather.WeatherData.Atmosphere), 62 },
+                {typeof(global::SimpleWeather.WeatherData.MoonPhase), 63 },
+                {typeof(global::SimpleWeather.WeatherData.Astronomy), 64 },
+                {typeof(global::SimpleWeather.WeatherData.Precipitation), 65 },
+                {typeof(global::SimpleWeather.WeatherData.WeatherAlert), 66 },
+                {typeof(global::SimpleWeather.WeatherData.Weather), 67 },
+                {typeof(global::SimpleWeather.WeatherData.BaseForecast), 68 },
+                {typeof(global::SimpleWeather.WeatherData.Forecasts), 69 },
+                {typeof(global::SimpleWeather.WeatherData.HourlyForecasts), 70 },
+                {typeof(global::SimpleWeather.WeatherData.WeatherAlerts), 71 },
+                {typeof(global::SimpleWeather.AQICN.Uvi), 72 },
+                {typeof(global::SimpleWeather.AQICN.Daily), 73 },
+                {typeof(global::SimpleWeather.AQICN.Forecast), 74 },
+                {typeof(global::SimpleWeather.AQICN.Data), 75 },
+                {typeof(global::SimpleWeather.AQICN.Rootobject), 76 },
+                {typeof(global::SimpleWeather.Bing.Address), 77 },
+                {typeof(global::SimpleWeather.Bing.Value), 78 },
+                {typeof(global::SimpleWeather.Bing.Resource), 79 },
+                {typeof(global::SimpleWeather.Bing.Resourceset), 80 },
+                {typeof(global::SimpleWeather.Bing.AC_Rootobject), 81 },
+                {typeof(global::SimpleWeather.HERE.Timesegment), 82 },
+                {typeof(global::SimpleWeather.HERE.Alert), 83 },
+                {typeof(global::SimpleWeather.HERE.Alerts), 84 },
+                {typeof(global::SimpleWeather.HERE.Additionaldata), 85 },
+                {typeof(global::SimpleWeather.HERE.Address), 86 },
+                {typeof(global::SimpleWeather.HERE.Suggestion), 87 },
+                {typeof(global::SimpleWeather.HERE.AC_Rootobject), 88 },
+                {typeof(global::SimpleWeather.HERE.Metainfo), 89 },
+                {typeof(global::SimpleWeather.HERE.Matchquality), 90 },
+                {typeof(global::SimpleWeather.HERE.Displayposition), 91 },
+                {typeof(global::SimpleWeather.HERE.Navigationposition), 92 },
+                {typeof(global::SimpleWeather.HERE.Timezone), 93 },
+                {typeof(global::SimpleWeather.HERE.Admininfo), 94 },
+                {typeof(global::SimpleWeather.HERE.GeoLocation), 95 },
+                {typeof(global::SimpleWeather.HERE.Result), 96 },
+                {typeof(global::SimpleWeather.HERE.View), 97 },
+                {typeof(global::SimpleWeather.HERE.Response), 98 },
+                {typeof(global::SimpleWeather.HERE.Geo_Rootobject), 99 },
+                {typeof(global::SimpleWeather.HERE.TokenRootobject), 100 },
+                {typeof(global::SimpleWeather.HERE.Token), 101 },
+                {typeof(global::SimpleWeather.HERE.Warning), 102 },
+                {typeof(global::SimpleWeather.HERE.Watch), 103 },
+                {typeof(global::SimpleWeather.HERE.Nwsalerts), 104 },
+                {typeof(global::SimpleWeather.HERE.Observation), 105 },
+                {typeof(global::SimpleWeather.HERE.Location), 106 },
+                {typeof(global::SimpleWeather.HERE.Observations), 107 },
+                {typeof(global::SimpleWeather.HERE.Forecast), 108 },
+                {typeof(global::SimpleWeather.HERE.Forecastlocation), 109 },
+                {typeof(global::SimpleWeather.HERE.Dailyforecasts), 110 },
+                {typeof(global::SimpleWeather.HERE.Forecast1), 111 },
+                {typeof(global::SimpleWeather.HERE.Forecastlocation1), 112 },
+                {typeof(global::SimpleWeather.HERE.Hourlyforecasts), 113 },
+                {typeof(global::SimpleWeather.HERE.Astronomy1), 114 },
+                {typeof(global::SimpleWeather.HERE.Astronomy), 115 },
+                {typeof(global::SimpleWeather.HERE.Rootobject), 116 },
+                {typeof(global::SimpleWeather.Metno.AstroMeta), 117 },
+                {typeof(global::SimpleWeather.Metno.Low_Moon), 118 },
+                {typeof(global::SimpleWeather.Metno.High_Moon), 119 },
+                {typeof(global::SimpleWeather.Metno.Solarnoon), 120 },
+                {typeof(global::SimpleWeather.Metno.Moonphase), 121 },
+                {typeof(global::SimpleWeather.Metno.Moonposition), 122 },
+                {typeof(global::SimpleWeather.Metno.Sunrise), 123 },
+                {typeof(global::SimpleWeather.Metno.Moonshadow), 124 },
+                {typeof(global::SimpleWeather.Metno.Moonrise), 125 },
+                {typeof(global::SimpleWeather.Metno.Solarmidnight), 126 },
+                {typeof(global::SimpleWeather.Metno.Sunset), 127 },
+                {typeof(global::SimpleWeather.Metno.Moonset), 128 },
+                {typeof(global::SimpleWeather.Metno.Time), 129 },
+                {typeof(global::SimpleWeather.Metno.Location), 130 },
+                {typeof(global::SimpleWeather.Metno.AstroRootobject), 131 },
+                {typeof(global::SimpleWeather.Metno.Geometry), 132 },
+                {typeof(global::SimpleWeather.Metno.Units), 133 },
+                {typeof(global::SimpleWeather.Metno.Meta), 134 },
+                {typeof(global::SimpleWeather.Metno.Details), 135 },
+                {typeof(global::SimpleWeather.Metno.Instant), 136 },
+                {typeof(global::SimpleWeather.Metno.Summary), 137 },
+                {typeof(global::SimpleWeather.Metno.Details1), 138 },
+                {typeof(global::SimpleWeather.Metno.Next_12_Hours), 139 },
+                {typeof(global::SimpleWeather.Metno.Summary1), 140 },
+                {typeof(global::SimpleWeather.Metno.Details2), 141 },
+                {typeof(global::SimpleWeather.Metno.Next_1_Hours), 142 },
+                {typeof(global::SimpleWeather.Metno.Summary2), 143 },
+                {typeof(global::SimpleWeather.Metno.Details3), 144 },
+                {typeof(global::SimpleWeather.Metno.Next_6_Hours), 145 },
+                {typeof(global::SimpleWeather.Metno.Data), 146 },
+                {typeof(global::SimpleWeather.Metno.Timesery), 147 },
+                {typeof(global::SimpleWeather.Metno.Properties), 148 },
+                {typeof(global::SimpleWeather.Metno.Rootobject), 149 },
+                {typeof(global::SimpleWeather.NWS.AlertGraph), 150 },
+                {typeof(global::SimpleWeather.NWS.AlertRootobject), 151 },
+                {typeof(global::SimpleWeather.NWS.Observation.Location), 152 },
+                {typeof(global::SimpleWeather.NWS.Observation.Time), 153 },
+                {typeof(global::SimpleWeather.NWS.Observation.Data), 154 },
+                {typeof(global::SimpleWeather.NWS.Observation.Currentobservation), 155 },
+                {typeof(global::SimpleWeather.NWS.Observation.ForecastRootobject), 156 },
+                {typeof(global::SimpleWeather.NWS.Hourly.Location), 157 },
+                {typeof(global::SimpleWeather.NWS.Hourly.PeriodsItem), 158 },
+                {typeof(global::SimpleWeather.NWS.Hourly.HourlyForecastResponse), 159 },
+                {typeof(global::SimpleWeather.NWS.Hourly.PeriodItem), 160 },
+                {typeof(global::SimpleWeather.NWS.SolCalcAstroProvider.AstroData), 161 },
+                {typeof(global::SimpleWeather.OpenWeather.Coord), 162 },
+                {typeof(global::SimpleWeather.OpenWeather.Weather), 163 },
+                {typeof(global::SimpleWeather.OpenWeather.Main), 164 },
+                {typeof(global::SimpleWeather.OpenWeather.Wind), 165 },
+                {typeof(global::SimpleWeather.OpenWeather.Clouds), 166 },
+                {typeof(global::SimpleWeather.OpenWeather.Rain), 167 },
+                {typeof(global::SimpleWeather.OpenWeather.Snow), 168 },
+                {typeof(global::SimpleWeather.OpenWeather.CurrentSys), 169 },
+                {typeof(global::SimpleWeather.OpenWeather.CurrentRootobject), 170 },
+                {typeof(global::SimpleWeather.OpenWeather.ForecastSys), 171 },
+                {typeof(global::SimpleWeather.OpenWeather.List), 172 },
+                {typeof(global::SimpleWeather.OpenWeather.City), 173 },
+                {typeof(global::SimpleWeather.OpenWeather.ForecastRootobject), 174 },
+                {typeof(global::SimpleWeather.OpenWeather.Rootobject), 175 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Coord), 176 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Main), 177 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Components), 178 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.List), 179 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.AirPollutionRootobject), 180 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Rain), 181 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Snow), 182 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Weather), 183 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Current), 184 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Hourly), 185 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Temp), 186 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Feels_Like), 187 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Daily), 188 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Alert), 189 },
+                {typeof(global::SimpleWeather.OpenWeather.OneCall.Rootobject), 190 },
+                {typeof(global::SimpleWeather.WeatherApi.Location), 191 },
+                {typeof(global::SimpleWeather.WeatherApi.Condition), 192 },
+                {typeof(global::SimpleWeather.WeatherApi.Air_Quality), 193 },
+                {typeof(global::SimpleWeather.WeatherApi.Current), 194 },
+                {typeof(global::SimpleWeather.WeatherApi.Day), 195 },
+                {typeof(global::SimpleWeather.WeatherApi.Astro), 196 },
+                {typeof(global::SimpleWeather.WeatherApi.Hour), 197 },
+                {typeof(global::SimpleWeather.WeatherApi.Forecastday), 198 },
+                {typeof(global::SimpleWeather.WeatherApi.Forecast), 199 },
+                {typeof(global::SimpleWeather.WeatherApi.Alert), 200 },
+                {typeof(global::SimpleWeather.WeatherApi.Alerts), 201 },
+                {typeof(global::SimpleWeather.WeatherApi.ForecastRootobject), 202 },
+                {typeof(global::SimpleWeather.WeatherApi.LocationItem), 203 },
+                {typeof(global::SimpleWeather.WeatherApi.Rootobject), 204 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.CurrentRootobject), 205 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.Timeframe), 206 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.Day), 207 },
+                {typeof(global::SimpleWeather.WeatherUnlocked.ForecastRootobject), 208 },
+                {typeof(global::SimpleWeather.MeteoFrance.Timelaps_Items), 209 },
+                {typeof(global::SimpleWeather.MeteoFrance.Timelap), 210 },
+                {typeof(global::SimpleWeather.MeteoFrance.Phenomenons_Items), 211 },
+                {typeof(global::SimpleWeather.MeteoFrance.Advice), 212 },
+                {typeof(global::SimpleWeather.MeteoFrance.Consequence), 213 },
+                {typeof(global::SimpleWeather.MeteoFrance.Text_Bloc_Item), 214 },
+                {typeof(global::SimpleWeather.MeteoFrance.Comments), 215 },
+                {typeof(global::SimpleWeather.MeteoFrance.AlertsRootobject), 216 },
+                {typeof(global::SimpleWeather.MeteoFrance.CurrentsPosition), 217 },
+                {typeof(global::SimpleWeather.MeteoFrance.Wind), 218 },
+                {typeof(global::SimpleWeather.MeteoFrance.Weather), 219 },
+                {typeof(global::SimpleWeather.MeteoFrance.Observation), 220 },
+                {typeof(global::SimpleWeather.MeteoFrance.CurrentsRootobject), 221 },
+                {typeof(global::SimpleWeather.MeteoFrance.Position), 222 },
+                {typeof(global::SimpleWeather.MeteoFrance.T), 223 },
+                {typeof(global::SimpleWeather.MeteoFrance.Humidity), 224 },
+                {typeof(global::SimpleWeather.MeteoFrance.Precipitation), 225 },
+                {typeof(global::SimpleWeather.MeteoFrance.Weather12h), 226 },
+                {typeof(global::SimpleWeather.MeteoFrance.Sun), 227 },
+                {typeof(global::SimpleWeather.MeteoFrance.Daily_Forecast), 228 },
+                {typeof(global::SimpleWeather.MeteoFrance.T1), 229 },
+                {typeof(global::SimpleWeather.MeteoFrance.Rain), 230 },
+                {typeof(global::SimpleWeather.MeteoFrance.Snow), 231 },
+                {typeof(global::SimpleWeather.MeteoFrance.Forecast), 232 },
+                {typeof(global::SimpleWeather.MeteoFrance.Probability_Forecast), 233 },
+                {typeof(global::SimpleWeather.MeteoFrance.ForecastRootobject), 234 },
+                {typeof(global::SimpleWeather.WeatherData.Images.Model.ImageData), 235 },
             };
         }
 
@@ -314,193 +327,206 @@ namespace SimpleWeather.Utf8JsonGen.Resolvers
                 case 33: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.OpenWeather.OneCall.Hourly>();
                 case 34: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.OpenWeather.OneCall.Daily>();
                 case 35: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.OpenWeather.OneCall.Alert>();
-                case 36: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherApi.LocationItem>();
-                case 37: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherUnlocked.Timeframe>();
-                case 38: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherUnlocked.Day>();
-                case 39: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Timelaps_Items>();
-                case 40: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Timelap>();
-                case 41: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Phenomenons_Items>();
-                case 42: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Advice>();
-                case 43: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Consequence>();
-                case 44: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Text_Bloc_Item>();
-                case 45: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Daily_Forecast>();
-                case 46: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Forecast>();
-                case 47: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Probability_Forecast>();
-                case 48: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Location.LocationDataFormatter();
-                case 49: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Location.FavoritesFormatter();
-                case 50: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.LocationFormatter();
-                case 51: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastExtrasFormatter();
-                case 52: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastFormatter();
-                case 53: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastFormatter();
-                case 54: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.TextForecastFormatter();
-                case 55: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BeaufortFormatter();
-                case 56: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.UVFormatter();
-                case 57: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AirQualityFormatter();
-                case 58: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ConditionFormatter();
-                case 59: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AtmosphereFormatter();
-                case 60: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.MoonPhaseFormatter();
-                case 61: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AstronomyFormatter();
-                case 62: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.PrecipitationFormatter();
-                case 63: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertFormatter();
-                case 64: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherFormatter();
-                case 65: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BaseForecastFormatter();
-                case 66: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
-                case 67: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
-                case 68: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
-                case 69: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.UviFormatter();
-                case 70: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.DailyFormatter();
-                case 71: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.ForecastFormatter();
-                case 72: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.DataFormatter();
-                case 73: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.RootobjectFormatter();
-                case 74: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.AddressFormatter();
-                case 75: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ValueFormatter();
-                case 76: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ResourceFormatter();
-                case 77: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ResourcesetFormatter();
-                case 78: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.AC_RootobjectFormatter();
-                case 79: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TimesegmentFormatter();
-                case 80: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AlertFormatter();
-                case 81: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AlertsFormatter();
-                case 82: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AdditionaldataFormatter();
-                case 83: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AddressFormatter();
-                case 84: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.SuggestionFormatter();
-                case 85: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AC_RootobjectFormatter();
-                case 86: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.MetainfoFormatter();
-                case 87: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.MatchqualityFormatter();
-                case 88: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.DisplaypositionFormatter();
-                case 89: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.NavigationpositionFormatter();
-                case 90: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TimezoneFormatter();
-                case 91: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AdmininfoFormatter();
-                case 92: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.GeoLocationFormatter();
-                case 93: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ResultFormatter();
-                case 94: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ViewFormatter();
-                case 95: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ResponseFormatter();
-                case 96: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Geo_RootobjectFormatter();
-                case 97: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TokenRootobjectFormatter();
-                case 98: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TokenFormatter();
-                case 99: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.WarningFormatter();
-                case 100: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.WatchFormatter();
-                case 101: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.NwsalertsFormatter();
-                case 102: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ObservationFormatter();
-                case 103: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.LocationFormatter();
-                case 104: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ObservationsFormatter();
-                case 105: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ForecastFormatter();
-                case 106: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ForecastlocationFormatter();
-                case 107: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.DailyforecastsFormatter();
-                case 108: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Forecast1Formatter();
-                case 109: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Forecastlocation1Formatter();
-                case 110: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.HourlyforecastsFormatter();
-                case 111: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Astronomy1Formatter();
-                case 112: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AstronomyFormatter();
-                case 113: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.RootobjectFormatter();
-                case 114: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.AstroMetaFormatter();
-                case 115: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Low_MoonFormatter();
-                case 116: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.High_MoonFormatter();
-                case 117: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SolarnoonFormatter();
-                case 118: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonphaseFormatter();
-                case 119: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonpositionFormatter();
-                case 120: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SunriseFormatter();
-                case 121: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonshadowFormatter();
-                case 122: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonriseFormatter();
-                case 123: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SolarmidnightFormatter();
-                case 124: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SunsetFormatter();
-                case 125: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonsetFormatter();
-                case 126: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.TimeFormatter();
-                case 127: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.LocationFormatter();
-                case 128: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.AstroRootobjectFormatter();
-                case 129: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.GeometryFormatter();
-                case 130: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.UnitsFormatter();
-                case 131: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MetaFormatter();
-                case 132: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.DetailsFormatter();
-                case 133: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.InstantFormatter();
-                case 134: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SummaryFormatter();
-                case 135: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details1Formatter();
-                case 136: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_12_HoursFormatter();
-                case 137: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Summary1Formatter();
-                case 138: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details2Formatter();
-                case 139: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_1_HoursFormatter();
-                case 140: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Summary2Formatter();
-                case 141: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details3Formatter();
-                case 142: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_6_HoursFormatter();
-                case 143: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.DataFormatter();
-                case 144: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.TimeseryFormatter();
-                case 145: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.PropertiesFormatter();
-                case 146: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.RootobjectFormatter();
-                case 147: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.AlertGraphFormatter();
-                case 148: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.AlertRootobjectFormatter();
-                case 149: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.LocationFormatter();
-                case 150: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.TimeFormatter();
-                case 151: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.DataFormatter();
-                case 152: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.CurrentobservationFormatter();
-                case 153: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.ForecastRootobjectFormatter();
-                case 154: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.LocationFormatter();
-                case 155: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.PeriodsItemFormatter();
-                case 156: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.HourlyForecastResponseFormatter();
-                case 157: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.PeriodItemFormatter();
-                case 158: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.SolCalcAstroProvider_AstroDataFormatter();
-                case 159: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CoordFormatter();
-                case 160: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.WeatherFormatter();
-                case 161: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.MainFormatter();
-                case 162: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.WindFormatter();
-                case 163: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CloudsFormatter();
-                case 164: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.RainFormatter();
-                case 165: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.SnowFormatter();
-                case 166: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CurrentSysFormatter();
-                case 167: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CurrentRootobjectFormatter();
-                case 168: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ForecastSysFormatter();
-                case 169: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ListFormatter();
-                case 170: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CityFormatter();
-                case 171: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ForecastRootobjectFormatter();
-                case 172: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.RootobjectFormatter();
-                case 173: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.CoordFormatter();
-                case 174: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.MainFormatter();
-                case 175: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.ComponentsFormatter();
-                case 176: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.ListFormatter();
-                case 177: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.AirPollutionRootobjectFormatter();
-                case 178: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.RainFormatter();
-                case 179: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.SnowFormatter();
-                case 180: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.WeatherFormatter();
-                case 181: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.CurrentFormatter();
-                case 182: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.HourlyFormatter();
-                case 183: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.TempFormatter();
-                case 184: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.Feels_LikeFormatter();
-                case 185: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.DailyFormatter();
-                case 186: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.AlertFormatter();
-                case 187: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.RootobjectFormatter();
-                case 188: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.LocationItemFormatter();
-                case 189: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.RootobjectFormatter();
-                case 190: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.CurrentRootobjectFormatter();
-                case 191: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.TimeframeFormatter();
-                case 192: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.DayFormatter();
-                case 193: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.ForecastRootobjectFormatter();
-                case 194: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Timelaps_ItemsFormatter();
-                case 195: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.TimelapFormatter();
-                case 196: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Phenomenons_ItemsFormatter();
-                case 197: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.AdviceFormatter();
-                case 198: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ConsequenceFormatter();
-                case 199: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Text_Bloc_ItemFormatter();
-                case 200: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CommentsFormatter();
-                case 201: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.AlertsRootobjectFormatter();
-                case 202: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CurrentsPositionFormatter();
-                case 203: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.WindFormatter();
-                case 204: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.WeatherFormatter();
-                case 205: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ObservationFormatter();
-                case 206: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CurrentsRootobjectFormatter();
-                case 207: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.PositionFormatter();
-                case 208: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.TFormatter();
-                case 209: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.HumidityFormatter();
-                case 210: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.PrecipitationFormatter();
-                case 211: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Weather12hFormatter();
-                case 212: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.SunFormatter();
-                case 213: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Daily_ForecastFormatter();
-                case 214: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.T1Formatter();
-                case 215: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.RainFormatter();
-                case 216: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.SnowFormatter();
-                case 217: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ForecastFormatter();
-                case 218: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Rain1Formatter();
-                case 219: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Snow1Formatter();
-                case 220: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Probability_ForecastFormatter();
-                case 221: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ForecastRootobjectFormatter();
-                case 222: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.Images.Model.ImageDataFormatter();
+                case 36: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherApi.Hour>();
+                case 37: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherApi.Forecastday>();
+                case 38: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherApi.Alert>();
+                case 39: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherApi.LocationItem>();
+                case 40: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherUnlocked.Timeframe>();
+                case 41: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.WeatherUnlocked.Day>();
+                case 42: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Timelaps_Items>();
+                case 43: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Timelap>();
+                case 44: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Phenomenons_Items>();
+                case 45: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Advice>();
+                case 46: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Consequence>();
+                case 47: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Text_Bloc_Item>();
+                case 48: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Daily_Forecast>();
+                case 49: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Forecast>();
+                case 50: return new global::Utf8Json.Formatters.ArrayFormatter<global::SimpleWeather.MeteoFrance.Probability_Forecast>();
+                case 51: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Location.LocationDataFormatter();
+                case 52: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Location.FavoritesFormatter();
+                case 53: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.LocationFormatter();
+                case 54: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastExtrasFormatter();
+                case 55: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastFormatter();
+                case 56: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastFormatter();
+                case 57: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.TextForecastFormatter();
+                case 58: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BeaufortFormatter();
+                case 59: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.UVFormatter();
+                case 60: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AirQualityFormatter();
+                case 61: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ConditionFormatter();
+                case 62: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AtmosphereFormatter();
+                case 63: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.MoonPhaseFormatter();
+                case 64: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.AstronomyFormatter();
+                case 65: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.PrecipitationFormatter();
+                case 66: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertFormatter();
+                case 67: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherFormatter();
+                case 68: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.BaseForecastFormatter();
+                case 69: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.ForecastsFormatter();
+                case 70: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.HourlyForecastsFormatter();
+                case 71: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.WeatherAlertsFormatter();
+                case 72: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.UviFormatter();
+                case 73: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.DailyFormatter();
+                case 74: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.ForecastFormatter();
+                case 75: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.DataFormatter();
+                case 76: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.AQICN.RootobjectFormatter();
+                case 77: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.AddressFormatter();
+                case 78: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ValueFormatter();
+                case 79: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ResourceFormatter();
+                case 80: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.ResourcesetFormatter();
+                case 81: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Bing.AC_RootobjectFormatter();
+                case 82: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TimesegmentFormatter();
+                case 83: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AlertFormatter();
+                case 84: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AlertsFormatter();
+                case 85: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AdditionaldataFormatter();
+                case 86: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AddressFormatter();
+                case 87: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.SuggestionFormatter();
+                case 88: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AC_RootobjectFormatter();
+                case 89: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.MetainfoFormatter();
+                case 90: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.MatchqualityFormatter();
+                case 91: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.DisplaypositionFormatter();
+                case 92: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.NavigationpositionFormatter();
+                case 93: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TimezoneFormatter();
+                case 94: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AdmininfoFormatter();
+                case 95: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.GeoLocationFormatter();
+                case 96: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ResultFormatter();
+                case 97: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ViewFormatter();
+                case 98: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ResponseFormatter();
+                case 99: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Geo_RootobjectFormatter();
+                case 100: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TokenRootobjectFormatter();
+                case 101: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.TokenFormatter();
+                case 102: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.WarningFormatter();
+                case 103: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.WatchFormatter();
+                case 104: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.NwsalertsFormatter();
+                case 105: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ObservationFormatter();
+                case 106: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.LocationFormatter();
+                case 107: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ObservationsFormatter();
+                case 108: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ForecastFormatter();
+                case 109: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.ForecastlocationFormatter();
+                case 110: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.DailyforecastsFormatter();
+                case 111: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Forecast1Formatter();
+                case 112: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Forecastlocation1Formatter();
+                case 113: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.HourlyforecastsFormatter();
+                case 114: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.Astronomy1Formatter();
+                case 115: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.AstronomyFormatter();
+                case 116: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.HERE.RootobjectFormatter();
+                case 117: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.AstroMetaFormatter();
+                case 118: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Low_MoonFormatter();
+                case 119: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.High_MoonFormatter();
+                case 120: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SolarnoonFormatter();
+                case 121: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonphaseFormatter();
+                case 122: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonpositionFormatter();
+                case 123: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SunriseFormatter();
+                case 124: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonshadowFormatter();
+                case 125: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonriseFormatter();
+                case 126: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SolarmidnightFormatter();
+                case 127: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SunsetFormatter();
+                case 128: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MoonsetFormatter();
+                case 129: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.TimeFormatter();
+                case 130: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.LocationFormatter();
+                case 131: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.AstroRootobjectFormatter();
+                case 132: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.GeometryFormatter();
+                case 133: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.UnitsFormatter();
+                case 134: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.MetaFormatter();
+                case 135: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.DetailsFormatter();
+                case 136: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.InstantFormatter();
+                case 137: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.SummaryFormatter();
+                case 138: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details1Formatter();
+                case 139: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_12_HoursFormatter();
+                case 140: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Summary1Formatter();
+                case 141: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details2Formatter();
+                case 142: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_1_HoursFormatter();
+                case 143: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Summary2Formatter();
+                case 144: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Details3Formatter();
+                case 145: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.Next_6_HoursFormatter();
+                case 146: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.DataFormatter();
+                case 147: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.TimeseryFormatter();
+                case 148: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.PropertiesFormatter();
+                case 149: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.Metno.RootobjectFormatter();
+                case 150: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.AlertGraphFormatter();
+                case 151: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.AlertRootobjectFormatter();
+                case 152: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.LocationFormatter();
+                case 153: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.TimeFormatter();
+                case 154: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.DataFormatter();
+                case 155: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.CurrentobservationFormatter();
+                case 156: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Observation.ForecastRootobjectFormatter();
+                case 157: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.LocationFormatter();
+                case 158: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.PeriodsItemFormatter();
+                case 159: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.HourlyForecastResponseFormatter();
+                case 160: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.Hourly.PeriodItemFormatter();
+                case 161: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.NWS.SolCalcAstroProvider_AstroDataFormatter();
+                case 162: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CoordFormatter();
+                case 163: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.WeatherFormatter();
+                case 164: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.MainFormatter();
+                case 165: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.WindFormatter();
+                case 166: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CloudsFormatter();
+                case 167: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.RainFormatter();
+                case 168: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.SnowFormatter();
+                case 169: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CurrentSysFormatter();
+                case 170: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CurrentRootobjectFormatter();
+                case 171: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ForecastSysFormatter();
+                case 172: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ListFormatter();
+                case 173: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.CityFormatter();
+                case 174: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.ForecastRootobjectFormatter();
+                case 175: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.RootobjectFormatter();
+                case 176: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.CoordFormatter();
+                case 177: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.MainFormatter();
+                case 178: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.ComponentsFormatter();
+                case 179: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.ListFormatter();
+                case 180: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.AirPollutionRootobjectFormatter();
+                case 181: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.RainFormatter();
+                case 182: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.SnowFormatter();
+                case 183: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.WeatherFormatter();
+                case 184: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.CurrentFormatter();
+                case 185: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.HourlyFormatter();
+                case 186: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.TempFormatter();
+                case 187: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.Feels_LikeFormatter();
+                case 188: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.DailyFormatter();
+                case 189: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.AlertFormatter();
+                case 190: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall.RootobjectFormatter();
+                case 191: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.LocationFormatter();
+                case 192: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.ConditionFormatter();
+                case 193: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.Air_QualityFormatter();
+                case 194: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.CurrentFormatter();
+                case 195: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.DayFormatter();
+                case 196: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.AstroFormatter();
+                case 197: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.HourFormatter();
+                case 198: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.ForecastdayFormatter();
+                case 199: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.ForecastFormatter();
+                case 200: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.AlertFormatter();
+                case 201: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.AlertsFormatter();
+                case 202: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.ForecastRootobjectFormatter();
+                case 203: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.LocationItemFormatter();
+                case 204: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi.RootobjectFormatter();
+                case 205: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.CurrentRootobjectFormatter();
+                case 206: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.TimeframeFormatter();
+                case 207: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.DayFormatter();
+                case 208: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherUnlocked.ForecastRootobjectFormatter();
+                case 209: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Timelaps_ItemsFormatter();
+                case 210: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.TimelapFormatter();
+                case 211: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Phenomenons_ItemsFormatter();
+                case 212: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.AdviceFormatter();
+                case 213: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ConsequenceFormatter();
+                case 214: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Text_Bloc_ItemFormatter();
+                case 215: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CommentsFormatter();
+                case 216: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.AlertsRootobjectFormatter();
+                case 217: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CurrentsPositionFormatter();
+                case 218: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.WindFormatter();
+                case 219: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.WeatherFormatter();
+                case 220: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ObservationFormatter();
+                case 221: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.CurrentsRootobjectFormatter();
+                case 222: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.PositionFormatter();
+                case 223: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.TFormatter();
+                case 224: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.HumidityFormatter();
+                case 225: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.PrecipitationFormatter();
+                case 226: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Weather12hFormatter();
+                case 227: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.SunFormatter();
+                case 228: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Daily_ForecastFormatter();
+                case 229: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.T1Formatter();
+                case 230: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.RainFormatter();
+                case 231: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.SnowFormatter();
+                case 232: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ForecastFormatter();
+                case 233: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.Probability_ForecastFormatter();
+                case 234: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance.ForecastRootobjectFormatter();
+                case 235: return new SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData.Images.Model.ImageDataFormatter();
                 default: return null;
             }
         }
@@ -15953,14 +15979,14 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("3h"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_3h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("3h"),
                 
             };
         }
@@ -16044,14 +16070,14 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("3h"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_3h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("3h"),
                 
             };
         }
@@ -16239,7 +16265,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("coord"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weather"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_base"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("base"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("main"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("visibility"), 4},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind"), 5},
@@ -16257,7 +16283,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("coord"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weather"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_base"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("base"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("main"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("visibility"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind"),
@@ -17270,21 +17296,21 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteDouble(value.co);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.co, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            writer.WriteDouble(value.no);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.no, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            writer.WriteDouble(value.no2);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.no2, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            writer.WriteDouble(value.o3);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.o3, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            writer.WriteDouble(value.so2);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.so2, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteDouble(value.pm2_5);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pm2_5, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            writer.WriteDouble(value.pm10);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pm10, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
-            writer.WriteDouble(value.nh3);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.nh3, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -17297,21 +17323,21 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
             }
             
 
-            var __co__ = default(double);
+            var __co__ = default(double?);
             var __co__b__ = false;
-            var __no__ = default(double);
+            var __no__ = default(double?);
             var __no__b__ = false;
-            var __no2__ = default(double);
+            var __no2__ = default(double?);
             var __no2__b__ = false;
-            var __o3__ = default(double);
+            var __o3__ = default(double?);
             var __o3__b__ = false;
-            var __so2__ = default(double);
+            var __so2__ = default(double?);
             var __so2__b__ = false;
-            var __pm2_5__ = default(double);
+            var __pm2_5__ = default(double?);
             var __pm2_5__b__ = false;
-            var __pm10__ = default(double);
+            var __pm10__ = default(double?);
             var __pm10__b__ = false;
-            var __nh3__ = default(double);
+            var __nh3__ = default(double?);
             var __nh3__b__ = false;
 
             var ____count = 0;
@@ -17329,35 +17355,35 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
                 switch (key)
                 {
                     case 0:
-                        __co__ = reader.ReadDouble();
+                        __co__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __co__b__ = true;
                         break;
                     case 1:
-                        __no__ = reader.ReadDouble();
+                        __no__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __no__b__ = true;
                         break;
                     case 2:
-                        __no2__ = reader.ReadDouble();
+                        __no2__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __no2__b__ = true;
                         break;
                     case 3:
-                        __o3__ = reader.ReadDouble();
+                        __o3__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __o3__b__ = true;
                         break;
                     case 4:
-                        __so2__ = reader.ReadDouble();
+                        __so2__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __so2__b__ = true;
                         break;
                     case 5:
-                        __pm2_5__ = reader.ReadDouble();
+                        __pm2_5__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __pm2_5__b__ = true;
                         break;
                     case 6:
-                        __pm10__ = reader.ReadDouble();
+                        __pm10__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __pm10__b__ = true;
                         break;
                     case 7:
-                        __nh3__ = reader.ReadDouble();
+                        __nh3__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
                         __nh3__b__ = true;
                         break;
                     default:
@@ -17586,12 +17612,12 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
                 
             };
         }
@@ -17666,12 +17692,12 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
                 
             };
         }
@@ -18909,7 +18935,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sender_name"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_event"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("event"), 1},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("start"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("end"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("description"), 4},
@@ -18918,7 +18944,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.OpenWeather.OneCall
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("sender_name"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_event"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("event"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("start"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("end"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("description"),
@@ -19196,6 +19222,2209 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
 {
     using System;
     using Utf8Json;
+
+
+    public sealed class LocationFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Location>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public LocationFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("name"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("region"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("country"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("lat"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("lon"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_id"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("localtime_epoch"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("localtime"), 7},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("name"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("region"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("country"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("lat"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("lon"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tz_id"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("localtime_epoch"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("localtime"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Location value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.name);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.region);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.country);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteSingle(value.lat);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteSingle(value.lon);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.tz_id);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteInt64(value.localtime_epoch);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteString(value.localtime);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Location Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __name__ = default(string);
+            var __name__b__ = false;
+            var __region__ = default(string);
+            var __region__b__ = false;
+            var __country__ = default(string);
+            var __country__b__ = false;
+            var __lat__ = default(float);
+            var __lat__b__ = false;
+            var __lon__ = default(float);
+            var __lon__b__ = false;
+            var __tz_id__ = default(string);
+            var __tz_id__b__ = false;
+            var __localtime_epoch__ = default(long);
+            var __localtime_epoch__b__ = false;
+            var __localtime__ = default(string);
+            var __localtime__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __name__ = reader.ReadString();
+                        __name__b__ = true;
+                        break;
+                    case 1:
+                        __region__ = reader.ReadString();
+                        __region__b__ = true;
+                        break;
+                    case 2:
+                        __country__ = reader.ReadString();
+                        __country__b__ = true;
+                        break;
+                    case 3:
+                        __lat__ = reader.ReadSingle();
+                        __lat__b__ = true;
+                        break;
+                    case 4:
+                        __lon__ = reader.ReadSingle();
+                        __lon__b__ = true;
+                        break;
+                    case 5:
+                        __tz_id__ = reader.ReadString();
+                        __tz_id__b__ = true;
+                        break;
+                    case 6:
+                        __localtime_epoch__ = reader.ReadInt64();
+                        __localtime_epoch__b__ = true;
+                        break;
+                    case 7:
+                        __localtime__ = reader.ReadString();
+                        __localtime__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Location();
+            if(__name__b__) ____result.name = __name__;
+            if(__region__b__) ____result.region = __region__;
+            if(__country__b__) ____result.country = __country__;
+            if(__lat__b__) ____result.lat = __lat__;
+            if(__lon__b__) ____result.lon = __lon__;
+            if(__tz_id__b__) ____result.tz_id = __tz_id__;
+            if(__localtime_epoch__b__) ____result.localtime_epoch = __localtime_epoch__;
+            if(__localtime__b__) ____result.localtime = __localtime__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ConditionFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Condition>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ConditionFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("text"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("icon"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("code"), 2},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("text"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("icon"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("code"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Condition value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.text);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.icon);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.code, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Condition Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __text__ = default(string);
+            var __text__b__ = false;
+            var __icon__ = default(string);
+            var __icon__b__ = false;
+            var __code__ = default(int?);
+            var __code__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __text__ = reader.ReadString();
+                        __text__b__ = true;
+                        break;
+                    case 1:
+                        __icon__ = reader.ReadString();
+                        __icon__b__ = true;
+                        break;
+                    case 2:
+                        __code__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __code__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Condition();
+            if(__text__b__) ____result.text = __text__;
+            if(__icon__b__) ____result.icon = __icon__;
+            if(__code__b__) ____result.code = __code__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class Air_QualityFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Air_Quality>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public Air_QualityFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("co"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("no2"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("o3"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("so2"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pm2_5"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pm10"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("usepaindex"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("gbdefraindex"), 7},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("co"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("no2"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("o3"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("so2"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pm2_5"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pm10"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("usepaindex"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("gbdefraindex"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Air_Quality value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.co, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.no2, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.o3, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.so2, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.pm2_5, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.pm10, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.usepaindex, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.gbdefraindex, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Air_Quality Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __co__ = default(float?);
+            var __co__b__ = false;
+            var __no2__ = default(float?);
+            var __no2__b__ = false;
+            var __o3__ = default(float?);
+            var __o3__b__ = false;
+            var __so2__ = default(float?);
+            var __so2__b__ = false;
+            var __pm2_5__ = default(float?);
+            var __pm2_5__b__ = false;
+            var __pm10__ = default(float?);
+            var __pm10__b__ = false;
+            var __usepaindex__ = default(int?);
+            var __usepaindex__b__ = false;
+            var __gbdefraindex__ = default(int?);
+            var __gbdefraindex__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __co__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __co__b__ = true;
+                        break;
+                    case 1:
+                        __no2__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __no2__b__ = true;
+                        break;
+                    case 2:
+                        __o3__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __o3__b__ = true;
+                        break;
+                    case 3:
+                        __so2__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __so2__b__ = true;
+                        break;
+                    case 4:
+                        __pm2_5__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __pm2_5__b__ = true;
+                        break;
+                    case 5:
+                        __pm10__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
+                        __pm10__b__ = true;
+                        break;
+                    case 6:
+                        __usepaindex__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __usepaindex__b__ = true;
+                        break;
+                    case 7:
+                        __gbdefraindex__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __gbdefraindex__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Air_Quality();
+            if(__co__b__) ____result.co = __co__;
+            if(__no2__b__) ____result.no2 = __no2__;
+            if(__o3__b__) ____result.o3 = __o3__;
+            if(__so2__b__) ____result.so2 = __so2__;
+            if(__pm2_5__b__) ____result.pm2_5 = __pm2_5__;
+            if(__pm10__b__) ____result.pm10 = __pm10__;
+            if(__usepaindex__b__) ____result.usepaindex = __usepaindex__;
+            if(__gbdefraindex__b__) ____result.gbdefraindex = __gbdefraindex__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class CurrentFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Current>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public CurrentFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("last_updated_epoch"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("last_updated"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temp_c"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temp_f"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("is_day"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_mph"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_kph"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_degree"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_dir"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pressure_mb"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pressure_in"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("precip_mm"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("precip_in"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("humidity"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("cloud"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("feelslike_c"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("feelslike_f"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vis_km"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vis_miles"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("uv"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("gust_mph"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("gust_kph"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("air_quality"), 23},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("last_updated_epoch"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("last_updated"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("temp_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("temp_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("is_day"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_kph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_degree"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_dir"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pressure_mb"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pressure_in"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("precip_mm"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("precip_in"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("humidity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("cloud"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("feelslike_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("feelslike_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vis_km"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vis_miles"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("uv"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("gust_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("gust_kph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("air_quality"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Current value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteInt64(value.last_updated_epoch);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.last_updated);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteSingle(value.temp_c);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteSingle(value.temp_f);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteInt32(value.is_day);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Serialize(ref writer, value.condition, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteSingle(value.wind_mph);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteSingle(value.wind_kph);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteInt32(value.wind_degree);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.wind_dir);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            writer.WriteSingle(value.pressure_mb);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteSingle(value.pressure_in);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteSingle(value.precip_mm);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteSingle(value.precip_in);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            writer.WriteInt32(value.humidity);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            writer.WriteInt32(value.cloud);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            writer.WriteSingle(value.feelslike_c);
+            writer.WriteRaw(this.____stringByteKeys[17]);
+            writer.WriteSingle(value.feelslike_f);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteSingle(value.vis_km);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            writer.WriteSingle(value.vis_miles);
+            writer.WriteRaw(this.____stringByteKeys[20]);
+            writer.WriteSingle(value.uv);
+            writer.WriteRaw(this.____stringByteKeys[21]);
+            writer.WriteSingle(value.gust_mph);
+            writer.WriteRaw(this.____stringByteKeys[22]);
+            writer.WriteSingle(value.gust_kph);
+            writer.WriteRaw(this.____stringByteKeys[23]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Air_Quality>().Serialize(ref writer, value.air_quality, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Current Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __last_updated_epoch__ = default(long);
+            var __last_updated_epoch__b__ = false;
+            var __last_updated__ = default(string);
+            var __last_updated__b__ = false;
+            var __temp_c__ = default(float);
+            var __temp_c__b__ = false;
+            var __temp_f__ = default(float);
+            var __temp_f__b__ = false;
+            var __is_day__ = default(int);
+            var __is_day__b__ = false;
+            var __condition__ = default(global::SimpleWeather.WeatherApi.Condition);
+            var __condition__b__ = false;
+            var __wind_mph__ = default(float);
+            var __wind_mph__b__ = false;
+            var __wind_kph__ = default(float);
+            var __wind_kph__b__ = false;
+            var __wind_degree__ = default(int);
+            var __wind_degree__b__ = false;
+            var __wind_dir__ = default(string);
+            var __wind_dir__b__ = false;
+            var __pressure_mb__ = default(float);
+            var __pressure_mb__b__ = false;
+            var __pressure_in__ = default(float);
+            var __pressure_in__b__ = false;
+            var __precip_mm__ = default(float);
+            var __precip_mm__b__ = false;
+            var __precip_in__ = default(float);
+            var __precip_in__b__ = false;
+            var __humidity__ = default(int);
+            var __humidity__b__ = false;
+            var __cloud__ = default(int);
+            var __cloud__b__ = false;
+            var __feelslike_c__ = default(float);
+            var __feelslike_c__b__ = false;
+            var __feelslike_f__ = default(float);
+            var __feelslike_f__b__ = false;
+            var __vis_km__ = default(float);
+            var __vis_km__b__ = false;
+            var __vis_miles__ = default(float);
+            var __vis_miles__b__ = false;
+            var __uv__ = default(float);
+            var __uv__b__ = false;
+            var __gust_mph__ = default(float);
+            var __gust_mph__b__ = false;
+            var __gust_kph__ = default(float);
+            var __gust_kph__b__ = false;
+            var __air_quality__ = default(global::SimpleWeather.WeatherApi.Air_Quality);
+            var __air_quality__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __last_updated_epoch__ = reader.ReadInt64();
+                        __last_updated_epoch__b__ = true;
+                        break;
+                    case 1:
+                        __last_updated__ = reader.ReadString();
+                        __last_updated__b__ = true;
+                        break;
+                    case 2:
+                        __temp_c__ = reader.ReadSingle();
+                        __temp_c__b__ = true;
+                        break;
+                    case 3:
+                        __temp_f__ = reader.ReadSingle();
+                        __temp_f__b__ = true;
+                        break;
+                    case 4:
+                        __is_day__ = reader.ReadInt32();
+                        __is_day__b__ = true;
+                        break;
+                    case 5:
+                        __condition__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Deserialize(ref reader, formatterResolver);
+                        __condition__b__ = true;
+                        break;
+                    case 6:
+                        __wind_mph__ = reader.ReadSingle();
+                        __wind_mph__b__ = true;
+                        break;
+                    case 7:
+                        __wind_kph__ = reader.ReadSingle();
+                        __wind_kph__b__ = true;
+                        break;
+                    case 8:
+                        __wind_degree__ = reader.ReadInt32();
+                        __wind_degree__b__ = true;
+                        break;
+                    case 9:
+                        __wind_dir__ = reader.ReadString();
+                        __wind_dir__b__ = true;
+                        break;
+                    case 10:
+                        __pressure_mb__ = reader.ReadSingle();
+                        __pressure_mb__b__ = true;
+                        break;
+                    case 11:
+                        __pressure_in__ = reader.ReadSingle();
+                        __pressure_in__b__ = true;
+                        break;
+                    case 12:
+                        __precip_mm__ = reader.ReadSingle();
+                        __precip_mm__b__ = true;
+                        break;
+                    case 13:
+                        __precip_in__ = reader.ReadSingle();
+                        __precip_in__b__ = true;
+                        break;
+                    case 14:
+                        __humidity__ = reader.ReadInt32();
+                        __humidity__b__ = true;
+                        break;
+                    case 15:
+                        __cloud__ = reader.ReadInt32();
+                        __cloud__b__ = true;
+                        break;
+                    case 16:
+                        __feelslike_c__ = reader.ReadSingle();
+                        __feelslike_c__b__ = true;
+                        break;
+                    case 17:
+                        __feelslike_f__ = reader.ReadSingle();
+                        __feelslike_f__b__ = true;
+                        break;
+                    case 18:
+                        __vis_km__ = reader.ReadSingle();
+                        __vis_km__b__ = true;
+                        break;
+                    case 19:
+                        __vis_miles__ = reader.ReadSingle();
+                        __vis_miles__b__ = true;
+                        break;
+                    case 20:
+                        __uv__ = reader.ReadSingle();
+                        __uv__b__ = true;
+                        break;
+                    case 21:
+                        __gust_mph__ = reader.ReadSingle();
+                        __gust_mph__b__ = true;
+                        break;
+                    case 22:
+                        __gust_kph__ = reader.ReadSingle();
+                        __gust_kph__b__ = true;
+                        break;
+                    case 23:
+                        __air_quality__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Air_Quality>().Deserialize(ref reader, formatterResolver);
+                        __air_quality__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Current();
+            if(__last_updated_epoch__b__) ____result.last_updated_epoch = __last_updated_epoch__;
+            if(__last_updated__b__) ____result.last_updated = __last_updated__;
+            if(__temp_c__b__) ____result.temp_c = __temp_c__;
+            if(__temp_f__b__) ____result.temp_f = __temp_f__;
+            if(__is_day__b__) ____result.is_day = __is_day__;
+            if(__condition__b__) ____result.condition = __condition__;
+            if(__wind_mph__b__) ____result.wind_mph = __wind_mph__;
+            if(__wind_kph__b__) ____result.wind_kph = __wind_kph__;
+            if(__wind_degree__b__) ____result.wind_degree = __wind_degree__;
+            if(__wind_dir__b__) ____result.wind_dir = __wind_dir__;
+            if(__pressure_mb__b__) ____result.pressure_mb = __pressure_mb__;
+            if(__pressure_in__b__) ____result.pressure_in = __pressure_in__;
+            if(__precip_mm__b__) ____result.precip_mm = __precip_mm__;
+            if(__precip_in__b__) ____result.precip_in = __precip_in__;
+            if(__humidity__b__) ____result.humidity = __humidity__;
+            if(__cloud__b__) ____result.cloud = __cloud__;
+            if(__feelslike_c__b__) ____result.feelslike_c = __feelslike_c__;
+            if(__feelslike_f__b__) ____result.feelslike_f = __feelslike_f__;
+            if(__vis_km__b__) ____result.vis_km = __vis_km__;
+            if(__vis_miles__b__) ____result.vis_miles = __vis_miles__;
+            if(__uv__b__) ____result.uv = __uv__;
+            if(__gust_mph__b__) ____result.gust_mph = __gust_mph__;
+            if(__gust_kph__b__) ____result.gust_kph = __gust_kph__;
+            if(__air_quality__b__) ____result.air_quality = __air_quality__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class DayFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Day>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public DayFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxtemp_c"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxtemp_f"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("mintemp_c"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("mintemp_f"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("avgtemp_c"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("avgtemp_f"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxwind_mph"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("maxwind_kph"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("totalprecip_mm"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("totalprecip_in"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("avgvis_km"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("avgvis_miles"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("avghumidity"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("daily_will_it_rain"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("daily_chance_of_rain"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("daily_will_it_snow"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("daily_chance_of_snow"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("uv"), 18},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("maxtemp_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxtemp_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("mintemp_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("mintemp_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("avgtemp_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("avgtemp_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxwind_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("maxwind_kph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("totalprecip_mm"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("totalprecip_in"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("avgvis_km"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("avgvis_miles"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("avghumidity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("daily_will_it_rain"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("daily_chance_of_rain"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("daily_will_it_snow"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("daily_chance_of_snow"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("uv"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Day value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteSingle(value.maxtemp_c);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteSingle(value.maxtemp_f);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteSingle(value.mintemp_c);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteSingle(value.mintemp_f);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteSingle(value.avgtemp_c);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteSingle(value.avgtemp_f);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteSingle(value.maxwind_mph);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteSingle(value.maxwind_kph);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteSingle(value.totalprecip_mm);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteSingle(value.totalprecip_in);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            writer.WriteSingle(value.avgvis_km);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteSingle(value.avgvis_miles);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteSingle(value.avghumidity);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteInt32(value.daily_will_it_rain);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            writer.WriteString(value.daily_chance_of_rain);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            writer.WriteInt32(value.daily_will_it_snow);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            writer.WriteString(value.daily_chance_of_snow);
+            writer.WriteRaw(this.____stringByteKeys[17]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Serialize(ref writer, value.condition, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteSingle(value.uv);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Day Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __maxtemp_c__ = default(float);
+            var __maxtemp_c__b__ = false;
+            var __maxtemp_f__ = default(float);
+            var __maxtemp_f__b__ = false;
+            var __mintemp_c__ = default(float);
+            var __mintemp_c__b__ = false;
+            var __mintemp_f__ = default(float);
+            var __mintemp_f__b__ = false;
+            var __avgtemp_c__ = default(float);
+            var __avgtemp_c__b__ = false;
+            var __avgtemp_f__ = default(float);
+            var __avgtemp_f__b__ = false;
+            var __maxwind_mph__ = default(float);
+            var __maxwind_mph__b__ = false;
+            var __maxwind_kph__ = default(float);
+            var __maxwind_kph__b__ = false;
+            var __totalprecip_mm__ = default(float);
+            var __totalprecip_mm__b__ = false;
+            var __totalprecip_in__ = default(float);
+            var __totalprecip_in__b__ = false;
+            var __avgvis_km__ = default(float);
+            var __avgvis_km__b__ = false;
+            var __avgvis_miles__ = default(float);
+            var __avgvis_miles__b__ = false;
+            var __avghumidity__ = default(float);
+            var __avghumidity__b__ = false;
+            var __daily_will_it_rain__ = default(int);
+            var __daily_will_it_rain__b__ = false;
+            var __daily_chance_of_rain__ = default(string);
+            var __daily_chance_of_rain__b__ = false;
+            var __daily_will_it_snow__ = default(int);
+            var __daily_will_it_snow__b__ = false;
+            var __daily_chance_of_snow__ = default(string);
+            var __daily_chance_of_snow__b__ = false;
+            var __condition__ = default(global::SimpleWeather.WeatherApi.Condition);
+            var __condition__b__ = false;
+            var __uv__ = default(float);
+            var __uv__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __maxtemp_c__ = reader.ReadSingle();
+                        __maxtemp_c__b__ = true;
+                        break;
+                    case 1:
+                        __maxtemp_f__ = reader.ReadSingle();
+                        __maxtemp_f__b__ = true;
+                        break;
+                    case 2:
+                        __mintemp_c__ = reader.ReadSingle();
+                        __mintemp_c__b__ = true;
+                        break;
+                    case 3:
+                        __mintemp_f__ = reader.ReadSingle();
+                        __mintemp_f__b__ = true;
+                        break;
+                    case 4:
+                        __avgtemp_c__ = reader.ReadSingle();
+                        __avgtemp_c__b__ = true;
+                        break;
+                    case 5:
+                        __avgtemp_f__ = reader.ReadSingle();
+                        __avgtemp_f__b__ = true;
+                        break;
+                    case 6:
+                        __maxwind_mph__ = reader.ReadSingle();
+                        __maxwind_mph__b__ = true;
+                        break;
+                    case 7:
+                        __maxwind_kph__ = reader.ReadSingle();
+                        __maxwind_kph__b__ = true;
+                        break;
+                    case 8:
+                        __totalprecip_mm__ = reader.ReadSingle();
+                        __totalprecip_mm__b__ = true;
+                        break;
+                    case 9:
+                        __totalprecip_in__ = reader.ReadSingle();
+                        __totalprecip_in__b__ = true;
+                        break;
+                    case 10:
+                        __avgvis_km__ = reader.ReadSingle();
+                        __avgvis_km__b__ = true;
+                        break;
+                    case 11:
+                        __avgvis_miles__ = reader.ReadSingle();
+                        __avgvis_miles__b__ = true;
+                        break;
+                    case 12:
+                        __avghumidity__ = reader.ReadSingle();
+                        __avghumidity__b__ = true;
+                        break;
+                    case 13:
+                        __daily_will_it_rain__ = reader.ReadInt32();
+                        __daily_will_it_rain__b__ = true;
+                        break;
+                    case 14:
+                        __daily_chance_of_rain__ = reader.ReadString();
+                        __daily_chance_of_rain__b__ = true;
+                        break;
+                    case 15:
+                        __daily_will_it_snow__ = reader.ReadInt32();
+                        __daily_will_it_snow__b__ = true;
+                        break;
+                    case 16:
+                        __daily_chance_of_snow__ = reader.ReadString();
+                        __daily_chance_of_snow__b__ = true;
+                        break;
+                    case 17:
+                        __condition__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Deserialize(ref reader, formatterResolver);
+                        __condition__b__ = true;
+                        break;
+                    case 18:
+                        __uv__ = reader.ReadSingle();
+                        __uv__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Day();
+            if(__maxtemp_c__b__) ____result.maxtemp_c = __maxtemp_c__;
+            if(__maxtemp_f__b__) ____result.maxtemp_f = __maxtemp_f__;
+            if(__mintemp_c__b__) ____result.mintemp_c = __mintemp_c__;
+            if(__mintemp_f__b__) ____result.mintemp_f = __mintemp_f__;
+            if(__avgtemp_c__b__) ____result.avgtemp_c = __avgtemp_c__;
+            if(__avgtemp_f__b__) ____result.avgtemp_f = __avgtemp_f__;
+            if(__maxwind_mph__b__) ____result.maxwind_mph = __maxwind_mph__;
+            if(__maxwind_kph__b__) ____result.maxwind_kph = __maxwind_kph__;
+            if(__totalprecip_mm__b__) ____result.totalprecip_mm = __totalprecip_mm__;
+            if(__totalprecip_in__b__) ____result.totalprecip_in = __totalprecip_in__;
+            if(__avgvis_km__b__) ____result.avgvis_km = __avgvis_km__;
+            if(__avgvis_miles__b__) ____result.avgvis_miles = __avgvis_miles__;
+            if(__avghumidity__b__) ____result.avghumidity = __avghumidity__;
+            if(__daily_will_it_rain__b__) ____result.daily_will_it_rain = __daily_will_it_rain__;
+            if(__daily_chance_of_rain__b__) ____result.daily_chance_of_rain = __daily_chance_of_rain__;
+            if(__daily_will_it_snow__b__) ____result.daily_will_it_snow = __daily_will_it_snow__;
+            if(__daily_chance_of_snow__b__) ____result.daily_chance_of_snow = __daily_chance_of_snow__;
+            if(__condition__b__) ____result.condition = __condition__;
+            if(__uv__b__) ____result.uv = __uv__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class AstroFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Astro>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public AstroFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sunrise"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("sunset"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moonrise"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moonset"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moon_phase"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moon_illumination"), 5},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("sunrise"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("sunset"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moonrise"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moonset"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moon_phase"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moon_illumination"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Astro value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.sunrise);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.sunset);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.moonrise);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.moonset);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.moon_phase);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.moon_illumination);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Astro Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __sunrise__ = default(string);
+            var __sunrise__b__ = false;
+            var __sunset__ = default(string);
+            var __sunset__b__ = false;
+            var __moonrise__ = default(string);
+            var __moonrise__b__ = false;
+            var __moonset__ = default(string);
+            var __moonset__b__ = false;
+            var __moon_phase__ = default(string);
+            var __moon_phase__b__ = false;
+            var __moon_illumination__ = default(string);
+            var __moon_illumination__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __sunrise__ = reader.ReadString();
+                        __sunrise__b__ = true;
+                        break;
+                    case 1:
+                        __sunset__ = reader.ReadString();
+                        __sunset__b__ = true;
+                        break;
+                    case 2:
+                        __moonrise__ = reader.ReadString();
+                        __moonrise__b__ = true;
+                        break;
+                    case 3:
+                        __moonset__ = reader.ReadString();
+                        __moonset__b__ = true;
+                        break;
+                    case 4:
+                        __moon_phase__ = reader.ReadString();
+                        __moon_phase__b__ = true;
+                        break;
+                    case 5:
+                        __moon_illumination__ = reader.ReadString();
+                        __moon_illumination__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Astro();
+            if(__sunrise__b__) ____result.sunrise = __sunrise__;
+            if(__sunset__b__) ____result.sunset = __sunset__;
+            if(__moonrise__b__) ____result.moonrise = __moonrise__;
+            if(__moonset__b__) ____result.moonset = __moonset__;
+            if(__moon_phase__b__) ____result.moon_phase = __moon_phase__;
+            if(__moon_illumination__b__) ____result.moon_illumination = __moon_illumination__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class HourFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Hour>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public HourFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("time_epoch"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("time"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temp_c"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("temp_f"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("is_day"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("condition"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_mph"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_kph"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_degree"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("wind_dir"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pressure_mb"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pressure_in"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("precip_mm"), 12},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("precip_in"), 13},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("humidity"), 14},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("cloud"), 15},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("feelslike_c"), 16},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("feelslike_f"), 17},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windchill_c"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("windchill_f"), 19},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("heatindex_c"), 20},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("heatindex_f"), 21},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("dewpoint_c"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("dewpoint_f"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("will_it_rain"), 24},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chance_of_rain"), 25},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("will_it_snow"), 26},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("chance_of_snow"), 27},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vis_km"), 28},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("vis_miles"), 29},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("gust_mph"), 30},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("gust_kph"), 31},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("uv"), 32},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("time_epoch"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("time"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("temp_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("temp_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("is_day"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("condition"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_kph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_degree"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("wind_dir"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pressure_mb"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pressure_in"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("precip_mm"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("precip_in"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("humidity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("cloud"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("feelslike_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("feelslike_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("windchill_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("windchill_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("heatindex_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("heatindex_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("dewpoint_c"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("dewpoint_f"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("will_it_rain"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chance_of_rain"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("will_it_snow"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("chance_of_snow"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vis_km"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("vis_miles"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("gust_mph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("gust_kph"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("uv"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Hour value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteInt64(value.time_epoch);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.time);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteSingle(value.temp_c);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteSingle(value.temp_f);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteInt32(value.is_day);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Serialize(ref writer, value.condition, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteSingle(value.wind_mph);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteSingle(value.wind_kph);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteInt32(value.wind_degree);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            writer.WriteString(value.wind_dir);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            writer.WriteSingle(value.pressure_mb);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteSingle(value.pressure_in);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteSingle(value.precip_mm);
+            writer.WriteRaw(this.____stringByteKeys[13]);
+            writer.WriteSingle(value.precip_in);
+            writer.WriteRaw(this.____stringByteKeys[14]);
+            writer.WriteInt32(value.humidity);
+            writer.WriteRaw(this.____stringByteKeys[15]);
+            writer.WriteInt32(value.cloud);
+            writer.WriteRaw(this.____stringByteKeys[16]);
+            writer.WriteSingle(value.feelslike_c);
+            writer.WriteRaw(this.____stringByteKeys[17]);
+            writer.WriteSingle(value.feelslike_f);
+            writer.WriteRaw(this.____stringByteKeys[18]);
+            writer.WriteSingle(value.windchill_c);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            writer.WriteSingle(value.windchill_f);
+            writer.WriteRaw(this.____stringByteKeys[20]);
+            writer.WriteSingle(value.heatindex_c);
+            writer.WriteRaw(this.____stringByteKeys[21]);
+            writer.WriteSingle(value.heatindex_f);
+            writer.WriteRaw(this.____stringByteKeys[22]);
+            writer.WriteSingle(value.dewpoint_c);
+            writer.WriteRaw(this.____stringByteKeys[23]);
+            writer.WriteSingle(value.dewpoint_f);
+            writer.WriteRaw(this.____stringByteKeys[24]);
+            writer.WriteInt32(value.will_it_rain);
+            writer.WriteRaw(this.____stringByteKeys[25]);
+            writer.WriteString(value.chance_of_rain);
+            writer.WriteRaw(this.____stringByteKeys[26]);
+            writer.WriteInt32(value.will_it_snow);
+            writer.WriteRaw(this.____stringByteKeys[27]);
+            writer.WriteString(value.chance_of_snow);
+            writer.WriteRaw(this.____stringByteKeys[28]);
+            writer.WriteSingle(value.vis_km);
+            writer.WriteRaw(this.____stringByteKeys[29]);
+            writer.WriteSingle(value.vis_miles);
+            writer.WriteRaw(this.____stringByteKeys[30]);
+            writer.WriteSingle(value.gust_mph);
+            writer.WriteRaw(this.____stringByteKeys[31]);
+            writer.WriteSingle(value.gust_kph);
+            writer.WriteRaw(this.____stringByteKeys[32]);
+            writer.WriteSingle(value.uv);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Hour Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __time_epoch__ = default(long);
+            var __time_epoch__b__ = false;
+            var __time__ = default(string);
+            var __time__b__ = false;
+            var __temp_c__ = default(float);
+            var __temp_c__b__ = false;
+            var __temp_f__ = default(float);
+            var __temp_f__b__ = false;
+            var __is_day__ = default(int);
+            var __is_day__b__ = false;
+            var __condition__ = default(global::SimpleWeather.WeatherApi.Condition);
+            var __condition__b__ = false;
+            var __wind_mph__ = default(float);
+            var __wind_mph__b__ = false;
+            var __wind_kph__ = default(float);
+            var __wind_kph__b__ = false;
+            var __wind_degree__ = default(int);
+            var __wind_degree__b__ = false;
+            var __wind_dir__ = default(string);
+            var __wind_dir__b__ = false;
+            var __pressure_mb__ = default(float);
+            var __pressure_mb__b__ = false;
+            var __pressure_in__ = default(float);
+            var __pressure_in__b__ = false;
+            var __precip_mm__ = default(float);
+            var __precip_mm__b__ = false;
+            var __precip_in__ = default(float);
+            var __precip_in__b__ = false;
+            var __humidity__ = default(int);
+            var __humidity__b__ = false;
+            var __cloud__ = default(int);
+            var __cloud__b__ = false;
+            var __feelslike_c__ = default(float);
+            var __feelslike_c__b__ = false;
+            var __feelslike_f__ = default(float);
+            var __feelslike_f__b__ = false;
+            var __windchill_c__ = default(float);
+            var __windchill_c__b__ = false;
+            var __windchill_f__ = default(float);
+            var __windchill_f__b__ = false;
+            var __heatindex_c__ = default(float);
+            var __heatindex_c__b__ = false;
+            var __heatindex_f__ = default(float);
+            var __heatindex_f__b__ = false;
+            var __dewpoint_c__ = default(float);
+            var __dewpoint_c__b__ = false;
+            var __dewpoint_f__ = default(float);
+            var __dewpoint_f__b__ = false;
+            var __will_it_rain__ = default(int);
+            var __will_it_rain__b__ = false;
+            var __chance_of_rain__ = default(string);
+            var __chance_of_rain__b__ = false;
+            var __will_it_snow__ = default(int);
+            var __will_it_snow__b__ = false;
+            var __chance_of_snow__ = default(string);
+            var __chance_of_snow__b__ = false;
+            var __vis_km__ = default(float);
+            var __vis_km__b__ = false;
+            var __vis_miles__ = default(float);
+            var __vis_miles__b__ = false;
+            var __gust_mph__ = default(float);
+            var __gust_mph__b__ = false;
+            var __gust_kph__ = default(float);
+            var __gust_kph__b__ = false;
+            var __uv__ = default(float);
+            var __uv__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __time_epoch__ = reader.ReadInt64();
+                        __time_epoch__b__ = true;
+                        break;
+                    case 1:
+                        __time__ = reader.ReadString();
+                        __time__b__ = true;
+                        break;
+                    case 2:
+                        __temp_c__ = reader.ReadSingle();
+                        __temp_c__b__ = true;
+                        break;
+                    case 3:
+                        __temp_f__ = reader.ReadSingle();
+                        __temp_f__b__ = true;
+                        break;
+                    case 4:
+                        __is_day__ = reader.ReadInt32();
+                        __is_day__b__ = true;
+                        break;
+                    case 5:
+                        __condition__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Deserialize(ref reader, formatterResolver);
+                        __condition__b__ = true;
+                        break;
+                    case 6:
+                        __wind_mph__ = reader.ReadSingle();
+                        __wind_mph__b__ = true;
+                        break;
+                    case 7:
+                        __wind_kph__ = reader.ReadSingle();
+                        __wind_kph__b__ = true;
+                        break;
+                    case 8:
+                        __wind_degree__ = reader.ReadInt32();
+                        __wind_degree__b__ = true;
+                        break;
+                    case 9:
+                        __wind_dir__ = reader.ReadString();
+                        __wind_dir__b__ = true;
+                        break;
+                    case 10:
+                        __pressure_mb__ = reader.ReadSingle();
+                        __pressure_mb__b__ = true;
+                        break;
+                    case 11:
+                        __pressure_in__ = reader.ReadSingle();
+                        __pressure_in__b__ = true;
+                        break;
+                    case 12:
+                        __precip_mm__ = reader.ReadSingle();
+                        __precip_mm__b__ = true;
+                        break;
+                    case 13:
+                        __precip_in__ = reader.ReadSingle();
+                        __precip_in__b__ = true;
+                        break;
+                    case 14:
+                        __humidity__ = reader.ReadInt32();
+                        __humidity__b__ = true;
+                        break;
+                    case 15:
+                        __cloud__ = reader.ReadInt32();
+                        __cloud__b__ = true;
+                        break;
+                    case 16:
+                        __feelslike_c__ = reader.ReadSingle();
+                        __feelslike_c__b__ = true;
+                        break;
+                    case 17:
+                        __feelslike_f__ = reader.ReadSingle();
+                        __feelslike_f__b__ = true;
+                        break;
+                    case 18:
+                        __windchill_c__ = reader.ReadSingle();
+                        __windchill_c__b__ = true;
+                        break;
+                    case 19:
+                        __windchill_f__ = reader.ReadSingle();
+                        __windchill_f__b__ = true;
+                        break;
+                    case 20:
+                        __heatindex_c__ = reader.ReadSingle();
+                        __heatindex_c__b__ = true;
+                        break;
+                    case 21:
+                        __heatindex_f__ = reader.ReadSingle();
+                        __heatindex_f__b__ = true;
+                        break;
+                    case 22:
+                        __dewpoint_c__ = reader.ReadSingle();
+                        __dewpoint_c__b__ = true;
+                        break;
+                    case 23:
+                        __dewpoint_f__ = reader.ReadSingle();
+                        __dewpoint_f__b__ = true;
+                        break;
+                    case 24:
+                        __will_it_rain__ = reader.ReadInt32();
+                        __will_it_rain__b__ = true;
+                        break;
+                    case 25:
+                        __chance_of_rain__ = reader.ReadString();
+                        __chance_of_rain__b__ = true;
+                        break;
+                    case 26:
+                        __will_it_snow__ = reader.ReadInt32();
+                        __will_it_snow__b__ = true;
+                        break;
+                    case 27:
+                        __chance_of_snow__ = reader.ReadString();
+                        __chance_of_snow__b__ = true;
+                        break;
+                    case 28:
+                        __vis_km__ = reader.ReadSingle();
+                        __vis_km__b__ = true;
+                        break;
+                    case 29:
+                        __vis_miles__ = reader.ReadSingle();
+                        __vis_miles__b__ = true;
+                        break;
+                    case 30:
+                        __gust_mph__ = reader.ReadSingle();
+                        __gust_mph__b__ = true;
+                        break;
+                    case 31:
+                        __gust_kph__ = reader.ReadSingle();
+                        __gust_kph__b__ = true;
+                        break;
+                    case 32:
+                        __uv__ = reader.ReadSingle();
+                        __uv__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Hour();
+            if(__time_epoch__b__) ____result.time_epoch = __time_epoch__;
+            if(__time__b__) ____result.time = __time__;
+            if(__temp_c__b__) ____result.temp_c = __temp_c__;
+            if(__temp_f__b__) ____result.temp_f = __temp_f__;
+            if(__is_day__b__) ____result.is_day = __is_day__;
+            if(__condition__b__) ____result.condition = __condition__;
+            if(__wind_mph__b__) ____result.wind_mph = __wind_mph__;
+            if(__wind_kph__b__) ____result.wind_kph = __wind_kph__;
+            if(__wind_degree__b__) ____result.wind_degree = __wind_degree__;
+            if(__wind_dir__b__) ____result.wind_dir = __wind_dir__;
+            if(__pressure_mb__b__) ____result.pressure_mb = __pressure_mb__;
+            if(__pressure_in__b__) ____result.pressure_in = __pressure_in__;
+            if(__precip_mm__b__) ____result.precip_mm = __precip_mm__;
+            if(__precip_in__b__) ____result.precip_in = __precip_in__;
+            if(__humidity__b__) ____result.humidity = __humidity__;
+            if(__cloud__b__) ____result.cloud = __cloud__;
+            if(__feelslike_c__b__) ____result.feelslike_c = __feelslike_c__;
+            if(__feelslike_f__b__) ____result.feelslike_f = __feelslike_f__;
+            if(__windchill_c__b__) ____result.windchill_c = __windchill_c__;
+            if(__windchill_f__b__) ____result.windchill_f = __windchill_f__;
+            if(__heatindex_c__b__) ____result.heatindex_c = __heatindex_c__;
+            if(__heatindex_f__b__) ____result.heatindex_f = __heatindex_f__;
+            if(__dewpoint_c__b__) ____result.dewpoint_c = __dewpoint_c__;
+            if(__dewpoint_f__b__) ____result.dewpoint_f = __dewpoint_f__;
+            if(__will_it_rain__b__) ____result.will_it_rain = __will_it_rain__;
+            if(__chance_of_rain__b__) ____result.chance_of_rain = __chance_of_rain__;
+            if(__will_it_snow__b__) ____result.will_it_snow = __will_it_snow__;
+            if(__chance_of_snow__b__) ____result.chance_of_snow = __chance_of_snow__;
+            if(__vis_km__b__) ____result.vis_km = __vis_km__;
+            if(__vis_miles__b__) ____result.vis_miles = __vis_miles__;
+            if(__gust_mph__b__) ____result.gust_mph = __gust_mph__;
+            if(__gust_kph__b__) ____result.gust_kph = __gust_kph__;
+            if(__uv__b__) ____result.uv = __uv__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ForecastdayFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Forecastday>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ForecastdayFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("date"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("date_epoch"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("day"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("astro"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("hour"), 4},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("date"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("date_epoch"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("day"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("astro"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("hour"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Forecastday value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.date);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteInt64(value.date_epoch);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Day>().Serialize(ref writer, value.day, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Astro>().Serialize(ref writer, value.astro, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Hour[]>().Serialize(ref writer, value.hour, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Forecastday Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __date__ = default(string);
+            var __date__b__ = false;
+            var __date_epoch__ = default(long);
+            var __date_epoch__b__ = false;
+            var __day__ = default(global::SimpleWeather.WeatherApi.Day);
+            var __day__b__ = false;
+            var __astro__ = default(global::SimpleWeather.WeatherApi.Astro);
+            var __astro__b__ = false;
+            var __hour__ = default(global::SimpleWeather.WeatherApi.Hour[]);
+            var __hour__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __date__ = reader.ReadString();
+                        __date__b__ = true;
+                        break;
+                    case 1:
+                        __date_epoch__ = reader.ReadInt64();
+                        __date_epoch__b__ = true;
+                        break;
+                    case 2:
+                        __day__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Day>().Deserialize(ref reader, formatterResolver);
+                        __day__b__ = true;
+                        break;
+                    case 3:
+                        __astro__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Astro>().Deserialize(ref reader, formatterResolver);
+                        __astro__b__ = true;
+                        break;
+                    case 4:
+                        __hour__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Hour[]>().Deserialize(ref reader, formatterResolver);
+                        __hour__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Forecastday();
+            if(__date__b__) ____result.date = __date__;
+            if(__date_epoch__b__) ____result.date_epoch = __date_epoch__;
+            if(__day__b__) ____result.day = __day__;
+            if(__astro__b__) ____result.astro = __astro__;
+            if(__hour__b__) ____result.hour = __hour__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ForecastFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Forecast>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ForecastFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("forecastday"), 0},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("forecastday"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Forecast value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Forecastday[]>().Serialize(ref writer, value.forecastday, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Forecast Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __forecastday__ = default(global::SimpleWeather.WeatherApi.Forecastday[]);
+            var __forecastday__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __forecastday__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Forecastday[]>().Deserialize(ref reader, formatterResolver);
+                        __forecastday__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Forecast();
+            if(__forecastday__b__) ____result.forecastday = __forecastday__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class AlertFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Alert>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public AlertFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("headline"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("msgtype"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("severity"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("urgency"), 3},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("areas"), 4},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("category"), 5},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("certainty"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("event"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("note"), 8},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("effective"), 9},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("expires"), 10},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("desc"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("instruction"), 12},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("headline"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("msgtype"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("severity"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("urgency"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("areas"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("category"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("certainty"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("event"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("note"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("effective"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("expires"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("desc"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("instruction"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Alert value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            writer.WriteString(value.headline);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.msgtype);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            writer.WriteString(value.severity);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            writer.WriteString(value.urgency);
+            writer.WriteRaw(this.____stringByteKeys[4]);
+            writer.WriteString(value.areas);
+            writer.WriteRaw(this.____stringByteKeys[5]);
+            writer.WriteString(value.category);
+            writer.WriteRaw(this.____stringByteKeys[6]);
+            writer.WriteString(value.certainty);
+            writer.WriteRaw(this.____stringByteKeys[7]);
+            writer.WriteString(value._event);
+            writer.WriteRaw(this.____stringByteKeys[8]);
+            writer.WriteString(value.note);
+            writer.WriteRaw(this.____stringByteKeys[9]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.effective, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[10]);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.expires, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[11]);
+            writer.WriteString(value.desc);
+            writer.WriteRaw(this.____stringByteKeys[12]);
+            writer.WriteString(value.instruction);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Alert Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __headline__ = default(string);
+            var __headline__b__ = false;
+            var __msgtype__ = default(string);
+            var __msgtype__b__ = false;
+            var __severity__ = default(string);
+            var __severity__b__ = false;
+            var __urgency__ = default(string);
+            var __urgency__b__ = false;
+            var __areas__ = default(string);
+            var __areas__b__ = false;
+            var __category__ = default(string);
+            var __category__b__ = false;
+            var __certainty__ = default(string);
+            var __certainty__b__ = false;
+            var ___event__ = default(string);
+            var ___event__b__ = false;
+            var __note__ = default(string);
+            var __note__b__ = false;
+            var __effective__ = default(global::System.DateTimeOffset);
+            var __effective__b__ = false;
+            var __expires__ = default(global::System.DateTimeOffset);
+            var __expires__b__ = false;
+            var __desc__ = default(string);
+            var __desc__b__ = false;
+            var __instruction__ = default(string);
+            var __instruction__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __headline__ = reader.ReadString();
+                        __headline__b__ = true;
+                        break;
+                    case 1:
+                        __msgtype__ = reader.ReadString();
+                        __msgtype__b__ = true;
+                        break;
+                    case 2:
+                        __severity__ = reader.ReadString();
+                        __severity__b__ = true;
+                        break;
+                    case 3:
+                        __urgency__ = reader.ReadString();
+                        __urgency__b__ = true;
+                        break;
+                    case 4:
+                        __areas__ = reader.ReadString();
+                        __areas__b__ = true;
+                        break;
+                    case 5:
+                        __category__ = reader.ReadString();
+                        __category__b__ = true;
+                        break;
+                    case 6:
+                        __certainty__ = reader.ReadString();
+                        __certainty__b__ = true;
+                        break;
+                    case 7:
+                        ___event__ = reader.ReadString();
+                        ___event__b__ = true;
+                        break;
+                    case 8:
+                        __note__ = reader.ReadString();
+                        __note__b__ = true;
+                        break;
+                    case 9:
+                        __effective__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __effective__b__ = true;
+                        break;
+                    case 10:
+                        __expires__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __expires__b__ = true;
+                        break;
+                    case 11:
+                        __desc__ = reader.ReadString();
+                        __desc__b__ = true;
+                        break;
+                    case 12:
+                        __instruction__ = reader.ReadString();
+                        __instruction__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Alert();
+            if(__headline__b__) ____result.headline = __headline__;
+            if(__msgtype__b__) ____result.msgtype = __msgtype__;
+            if(__severity__b__) ____result.severity = __severity__;
+            if(__urgency__b__) ____result.urgency = __urgency__;
+            if(__areas__b__) ____result.areas = __areas__;
+            if(__category__b__) ____result.category = __category__;
+            if(__certainty__b__) ____result.certainty = __certainty__;
+            if(___event__b__) ____result._event = ___event__;
+            if(__note__b__) ____result.note = __note__;
+            if(__effective__b__) ____result.effective = __effective__;
+            if(__expires__b__) ____result.expires = __expires__;
+            if(__desc__b__) ____result.desc = __desc__;
+            if(__instruction__b__) ____result.instruction = __instruction__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class AlertsFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.Alerts>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public AlertsFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("alert"), 0},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("alert"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.Alerts value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Alert[]>().Serialize(ref writer, value.alert, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.Alerts Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __alert__ = default(global::SimpleWeather.WeatherApi.Alert[]);
+            var __alert__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __alert__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Alert[]>().Deserialize(ref reader, formatterResolver);
+                        __alert__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.Alerts();
+            if(__alert__b__) ____result.alert = __alert__;
+
+            return ____result;
+        }
+    }
+
+
+    public sealed class ForecastRootobjectFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.ForecastRootobject>
+    {
+        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
+        readonly byte[][] ____stringByteKeys;
+
+        public ForecastRootobjectFormatter()
+        {
+            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
+            {
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("location"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("current"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("forecast"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("alerts"), 3},
+            };
+
+            this.____stringByteKeys = new byte[][]
+            {
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("location"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("current"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("forecast"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("alerts"),
+                
+            };
+        }
+
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.WeatherApi.ForecastRootobject value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (value == null)
+            {
+                writer.WriteNull();
+                return;
+            }
+            
+
+            writer.WriteRaw(this.____stringByteKeys[0]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Location>().Serialize(ref writer, value.location, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Current>().Serialize(ref writer, value.current, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[2]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Forecast>().Serialize(ref writer, value.forecast, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[3]);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Alerts>().Serialize(ref writer, value.alerts, formatterResolver);
+            
+            writer.WriteEndObject();
+        }
+
+        public global::SimpleWeather.WeatherApi.ForecastRootobject Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        {
+            if (reader.ReadIsNull())
+            {
+                return null;
+            }
+            
+
+            var __location__ = default(global::SimpleWeather.WeatherApi.Location);
+            var __location__b__ = false;
+            var __current__ = default(global::SimpleWeather.WeatherApi.Current);
+            var __current__b__ = false;
+            var __forecast__ = default(global::SimpleWeather.WeatherApi.Forecast);
+            var __forecast__b__ = false;
+            var __alerts__ = default(global::SimpleWeather.WeatherApi.Alerts);
+            var __alerts__b__ = false;
+
+            var ____count = 0;
+            reader.ReadIsBeginObjectWithVerify();
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
+            {
+                var stringKey = reader.ReadPropertyNameSegmentRaw();
+                int key;
+                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
+                {
+                    reader.ReadNextBlock();
+                    goto NEXT_LOOP;
+                }
+
+                switch (key)
+                {
+                    case 0:
+                        __location__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Location>().Deserialize(ref reader, formatterResolver);
+                        __location__b__ = true;
+                        break;
+                    case 1:
+                        __current__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Current>().Deserialize(ref reader, formatterResolver);
+                        __current__b__ = true;
+                        break;
+                    case 2:
+                        __forecast__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Forecast>().Deserialize(ref reader, formatterResolver);
+                        __forecast__b__ = true;
+                        break;
+                    case 3:
+                        __alerts__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Alerts>().Deserialize(ref reader, formatterResolver);
+                        __alerts__b__ = true;
+                        break;
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            var ____result = new global::SimpleWeather.WeatherApi.ForecastRootobject();
+            if(__location__b__) ____result.location = __location__;
+            if(__current__b__) ____result.current = __current__;
+            if(__forecast__b__) ____result.forecast = __forecast__;
+            if(__alerts__b__) ____result.alerts = __alerts__;
+
+            return ____result;
+        }
+    }
 
 
     public sealed class LocationItemFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.WeatherApi.LocationItem>
@@ -22587,12 +24816,12 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_24h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("24h"), 0},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_24h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("24h"),
                 
             };
         }
@@ -23086,16 +25315,16 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_6h"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("3h"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("6h"), 2},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_3h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_6h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("3h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("6h"),
                 
             };
         }
@@ -23188,16 +25417,16 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
         {
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_1h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_6h"), 2},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("1h"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("3h"), 1},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("6h"), 2},
             };
 
             this.____stringByteKeys = new byte[][]
             {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_1h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_3h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_6h"),
+                JsonWriter.GetEncodedPropertyNameWithBeginObject("1h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("3h"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("6h"),
                 
             };
         }
@@ -23471,188 +25700,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
     }
 
 
-    public sealed class Rain1Formatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.MeteoFrance.Rain1>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public Rain1Formatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_6h"), 1},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_3h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_6h"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.MeteoFrance.Rain1 value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value._3h, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value._6h, formatterResolver);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::SimpleWeather.MeteoFrance.Rain1 Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var ___3h__ = default(int?);
-            var ___3h__b__ = false;
-            var ___6h__ = default(int?);
-            var ___6h__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        ___3h__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        ___3h__b__ = true;
-                        break;
-                    case 1:
-                        ___6h__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        ___6h__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::SimpleWeather.MeteoFrance.Rain1();
-            if(___3h__b__) ____result._3h = ___3h__;
-            if(___6h__b__) ____result._6h = ___6h__;
-
-            return ____result;
-        }
-    }
-
-
-    public sealed class Snow1Formatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.MeteoFrance.Snow1>
-    {
-        readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
-        readonly byte[][] ____stringByteKeys;
-
-        public Snow1Formatter()
-        {
-            this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
-            {
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_3h"), 0},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("_6h"), 1},
-            };
-
-            this.____stringByteKeys = new byte[][]
-            {
-                JsonWriter.GetEncodedPropertyNameWithBeginObject("_3h"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("_6h"),
-                
-            };
-        }
-
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.MeteoFrance.Snow1 value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (value == null)
-            {
-                writer.WriteNull();
-                return;
-            }
-            
-
-            writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value._3h, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value._6h, formatterResolver);
-            
-            writer.WriteEndObject();
-        }
-
-        public global::SimpleWeather.MeteoFrance.Snow1 Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
-        {
-            if (reader.ReadIsNull())
-            {
-                return null;
-            }
-            
-
-            var ___3h__ = default(int?);
-            var ___3h__b__ = false;
-            var ___6h__ = default(int?);
-            var ___6h__b__ = false;
-
-            var ____count = 0;
-            reader.ReadIsBeginObjectWithVerify();
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref ____count))
-            {
-                var stringKey = reader.ReadPropertyNameSegmentRaw();
-                int key;
-                if (!____keyMapping.TryGetValueSafe(stringKey, out key))
-                {
-                    reader.ReadNextBlock();
-                    goto NEXT_LOOP;
-                }
-
-                switch (key)
-                {
-                    case 0:
-                        ___3h__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        ___3h__b__ = true;
-                        break;
-                    case 1:
-                        ___6h__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
-                        ___6h__b__ = true;
-                        break;
-                    default:
-                        reader.ReadNextBlock();
-                        break;
-                }
-
-                NEXT_LOOP:
-                continue;
-            }
-
-            var ____result = new global::SimpleWeather.MeteoFrance.Snow1();
-            if(___3h__b__) ____result._3h = ___3h__;
-            if(___6h__b__) ____result._6h = ___6h__;
-
-            return ____result;
-        }
-    }
-
-
     public sealed class Probability_ForecastFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.MeteoFrance.Probability_Forecast>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
@@ -23690,9 +25737,9 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteInt64(value.dt);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Rain1>().Serialize(ref writer, value.rain, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Rain>().Serialize(ref writer, value.rain, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Snow1>().Serialize(ref writer, value.snow, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Snow>().Serialize(ref writer, value.snow, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[3]);
             formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.freezing, formatterResolver);
             
@@ -23709,9 +25756,9 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
 
             var __dt__ = default(long);
             var __dt__b__ = false;
-            var __rain__ = default(global::SimpleWeather.MeteoFrance.Rain1);
+            var __rain__ = default(global::SimpleWeather.MeteoFrance.Rain);
             var __rain__b__ = false;
-            var __snow__ = default(global::SimpleWeather.MeteoFrance.Snow1);
+            var __snow__ = default(global::SimpleWeather.MeteoFrance.Snow);
             var __snow__b__ = false;
             var __freezing__ = default(int?);
             var __freezing__b__ = false;
@@ -23735,11 +25782,11 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                         __dt__b__ = true;
                         break;
                     case 1:
-                        __rain__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Rain1>().Deserialize(ref reader, formatterResolver);
+                        __rain__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Rain>().Deserialize(ref reader, formatterResolver);
                         __rain__b__ = true;
                         break;
                     case 2:
-                        __snow__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Snow1>().Deserialize(ref reader, formatterResolver);
+                        __snow__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Snow>().Deserialize(ref reader, formatterResolver);
                         __snow__b__ = true;
                         break;
                     case 3:

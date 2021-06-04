@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -55,6 +56,7 @@ namespace SimpleWeather.MeteoFrance
 
     public class Precipitation
     {
+        [DataMember(Name = "24h")]
         public float? _24h { get; set; }
     }
 
@@ -101,15 +103,21 @@ namespace SimpleWeather.MeteoFrance
 
     public class Rain
     {
+        [DataMember(Name = "1h")]
         public float? _1h { get; set; }
+        [DataMember(Name = "3h")]
         public float? _3h { get; set; }
+        [DataMember(Name = "6h")]
         public float? _6h { get; set; }
     }
 
     public class Snow
     {
+        [DataMember(Name = "1h")]
         public float? _1h { get; set; }
+        [DataMember(Name = "3h")]
         public float? _3h { get; set; }
+        [DataMember(Name = "6h")]
         public float? _6h { get; set; }
     }
 
@@ -122,20 +130,8 @@ namespace SimpleWeather.MeteoFrance
     public class Probability_Forecast
     {
         public long dt { get; set; }
-        public Rain1 rain { get; set; }
-        public Snow1 snow { get; set; }
+        public Rain rain { get; set; }
+        public Snow snow { get; set; }
         public int? freezing { get; set; }
-    }
-
-    public class Rain1
-    {
-        public int? _3h { get; set; }
-        public int? _6h { get; set; }
-    }
-
-    public class Snow1
-    {
-        public int? _3h { get; set; }
-        public int? _6h { get; set; }
     }
 }

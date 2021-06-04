@@ -6,6 +6,7 @@ namespace SimpleWeather.OpenWeather
     {
         public Coord coord { get; set; }
         public Weather[] weather { get; set; }
+        [DataMember(Name = "base")]
         public string _base { get; set; }
         public Main main { get; set; }
         public int visibility { get; set; }
@@ -40,13 +41,17 @@ namespace SimpleWeather.OpenWeather
 
     public class Rain
     {
+        [DataMember(Name = "1h")]
         public float? _1h { get; set; }
+        [DataMember(Name = "3h")]
         public float? _3h { get; set; }
     }
 
     public class Snow
     {
+        [DataMember(Name = "1h")]
         public float? _1h { get; set; }
+        [DataMember(Name = "3h")]
         public float? _3h { get; set; }
     }
 

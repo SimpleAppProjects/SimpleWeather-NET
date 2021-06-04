@@ -65,11 +65,13 @@ namespace SimpleWeather.OpenWeather.OneCall
 
     public class Rain
     {
+        [DataMember(Name = "1h")]
         public float _1h { get; set; }
     }
 
     public class Snow
     {
+        [DataMember(Name = "1h")]
         public float _1h { get; set; }
     }
 
@@ -119,6 +121,7 @@ namespace SimpleWeather.OpenWeather.OneCall
     public class Alert
     {
         public string sender_name { get; set; }
+        [DataMember(Name = "event")]
         public string _event { get; set; }
         public long start { get; set; }
         public long end { get; set; }

@@ -274,7 +274,7 @@ namespace SimpleWeather.WeatherData
                     {
                         if (prob.rain._3h.HasValue)
                         {
-                            extras.pop = prob.rain._3h.Value;
+                            extras.pop = (int)prob.rain._3h.Value;
                             found3hrForecast = true;
                             _3hrForecastNA = false;
                         }
@@ -285,7 +285,7 @@ namespace SimpleWeather.WeatherData
                         }
                         if (!extras.pop.HasValue && prob.rain._6h.HasValue)
                         {
-                            extras.pop = prob.rain._6h.Value;
+                            extras.pop = (int)prob.rain._6h.Value;
                             _3hrForecastNA = true;
                             found3hrForecast = false;
                         }
@@ -293,11 +293,11 @@ namespace SimpleWeather.WeatherData
                         {
                             if (prob.snow._3h.HasValue)
                             {
-                                extras.pop = prob.snow._3h.Value;
+                                extras.pop = (int)prob.snow._3h.Value;
                             }
                             if (prob.snow._6h.HasValue)
                             {
-                                extras.pop = prob.snow._6h.Value;
+                                extras.pop = (int)prob.snow._6h.Value;
                             }
                         }
                     }
@@ -308,7 +308,7 @@ namespace SimpleWeather.WeatherData
                     {
                         if (prob.rain._6h.HasValue)
                         {
-                            extras.pop = prob.rain._6h.Value;
+                            extras.pop = (int)prob.rain._6h.Value;
                             _3hrForecastNA = true;
                             found3hrForecast = false;
                         }
@@ -316,7 +316,7 @@ namespace SimpleWeather.WeatherData
                         {
                             if (prob.snow._6h.HasValue)
                             {
-                                extras.pop = prob.snow._6h.Value;
+                                extras.pop = (int)prob.snow._6h.Value;
                             }
                         }
                     }
