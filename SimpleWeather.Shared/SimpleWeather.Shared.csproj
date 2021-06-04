@@ -125,6 +125,7 @@
     <Compile Include="AQICN\Rootobject.cs" />
     <Compile Include="Bing\AutoCompleteQuery.cs" />
     <Compile Include="Bing\BingMapsLocationProvider.cs" />
+    <Compile Include="Bing\LocationData.cs" />
     <Compile Include="CommonActionChangedEventArgs.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Controls\AirQualityViewModel.cs" />
@@ -156,6 +157,7 @@
     <Compile Include="HERE\HERELocationProvider.cs" />
     <Compile Include="HERE\HEREOAuthUtils.cs" />
     <Compile Include="HERE\HEREWeatherProvider.cs" />
+    <Compile Include="HERE\LocationData.cs" />
     <Compile Include="HERE\NWSAlerts.cs" />
     <Compile Include="HERE\Weather.cs" />
     <Compile Include="HERE\WeatherAlerts.cs" />
@@ -274,6 +276,7 @@
     <Compile Include="UWP\WeatherData\Images\ImageDataHelperImpl.cs" />
     <Compile Include="UWP\WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="ComponentModel\IViewModel.cs" />
+    <Compile Include="WeatherApi\LocationData.cs" />
     <Compile Include="WeatherApi\LocationItem.cs" />
     <Compile Include="WeatherApi\WeatherApiLocationProvider.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />
