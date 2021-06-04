@@ -125,8 +125,6 @@ namespace SimpleWeather.UWP.Controls
                 date = string.Empty;
             }
 
-            xData.Add(new XLabelData(date));
-
             switch (graphType)
             {
                 /*
@@ -136,6 +134,7 @@ namespace SimpleWeather.UWP.Controls
                         int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
                         var hiTemp = string.Format(culture, "{0}°", value);
                         yData.Add(new YEntryData(value, hiTemp));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 */
@@ -144,6 +143,7 @@ namespace SimpleWeather.UWP.Controls
                     if (forecast.extras?.pop.HasValue == true && forecast.extras.pop >= 0)
                     {
                         yData.Add(new YEntryData(forecast.extras.pop.Value, forecast.extras.pop.Value + "%"));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 case ForecastGraphType.Wind:
@@ -173,6 +173,7 @@ namespace SimpleWeather.UWP.Controls
                         var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
 
                         yData.Add(new YEntryData(speedVal, windSpeed));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 case ForecastGraphType.Rain:
@@ -196,6 +197,7 @@ namespace SimpleWeather.UWP.Controls
                         }
 
                         yData.Add(new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 case ForecastGraphType.Snow:
@@ -219,18 +221,21 @@ namespace SimpleWeather.UWP.Controls
                         }
 
                         yData.Add(new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 case ForecastGraphType.UVIndex:
                     if (forecast.extras?.uv_index.HasValue == true)
                     {
                         yData.Add(new YEntryData(forecast.extras.uv_index.Value, String.Format(culture, "{0:0.#}", forecast.extras.uv_index.Value)));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
                 case ForecastGraphType.Humidity:
                     if (forecast.extras?.humidity.HasValue == true)
                     {
                         yData.Add(new YEntryData(forecast.extras.humidity.Value, String.Format(culture, "{0}%", forecast.extras.humidity.Value)));
+                        xData.Add(new XLabelData(date));
                     }
                     break;
             }

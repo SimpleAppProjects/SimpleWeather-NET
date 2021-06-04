@@ -135,27 +135,33 @@ namespace SimpleWeather.UWP.Controls
                 {
                     //tempData = new ForecastGraphViewModel();
 
-                    if (hrfcast.extras?.pop.HasValue == true)
+                    if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
                     {
                         popData = new ForecastGraphViewModel();
                     }
-                    if (hrfcast.wind_mph.HasValue && hrfcast.wind_kph.HasValue)
+                    if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
                     {
                         windData = new ForecastGraphViewModel();
                     }
-                    if (hrfcast.extras?.qpf_rain_in.HasValue == true && hrfcast.extras?.qpf_rain_mm.HasValue == true)
+                    if (hrfcasts.FirstOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
                     {
                         rainData = new ForecastGraphViewModel();
                     }
-                    if (hrfcast.extras?.qpf_snow_in.HasValue == true && hrfcast.extras?.qpf_snow_cm.HasValue == true)
+                    if (hrfcasts.FirstOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_snow_cm.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_snow_cm.HasValue == true)
                     {
                         snowData = new ForecastGraphViewModel();
                     }
-                    if (hrfcast.extras?.uv_index.HasValue == true)
+                    if (hrfcasts.FirstOrDefault()?.extras?.uv_index.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.extras?.uv_index.HasValue == true)
                     {
                         uviData = new ForecastGraphViewModel();
                     }
-                    if (hrfcast.extras?.humidity.HasValue == true)
+                    if (hrfcasts.FirstOrDefault()?.extras?.humidity.HasValue == true ||
+                        hrfcasts.LastOrDefault()?.extras?.humidity.HasValue == true)
                     {
                         humidityData = new ForecastGraphViewModel();
                     }
