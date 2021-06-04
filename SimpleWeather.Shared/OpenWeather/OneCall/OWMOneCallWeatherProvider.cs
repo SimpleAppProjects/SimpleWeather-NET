@@ -16,11 +16,12 @@ using Windows.Web.Http;
 
 namespace SimpleWeather.OpenWeather.OneCall
 {
-    public partial class OWMOneCallWeatherProvider : WeatherProviderImpl
+    public partial class OWMOneCallWeatherProvider : WeatherProviderImpl, IAirQualityProvider
     {
         private const String BASE_URL = "https://api.openweathermap.org/data/2.5/";
         private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast?appid={0}";
         private const String WEATHER_QUERY_URL = BASE_URL + "onecall?{0}&exclude=minutely&appid={1}&lang={2}";
+        private const String AQI_QUERY_URL = BASE_URL + "air_pollution?lat={0:0.####}&lon={1:0.####}&appid={2}";
 
         public OWMOneCallWeatherProvider() : base()
         {
@@ -213,6 +214,48 @@ namespace SimpleWeather.OpenWeather.OneCall
                     }
                 }
             }
+        }
+
+        public async Task<AirQuality> GetAirQualityData(LocationData location)
+        {
+            AirQuality aqiData = null;
+
+            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+
+            try
+            {
+                Uri weatherURL = new Uri(string.Format(AQI_QUERY_URL, location.latitude, location.longitude, key));
+
+                using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
+                {
+                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(12);
+
+                    // Get response
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    {
+                        response.EnsureSuccessStatusCode();
+
+                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+
+                        // Load weather
+                        var root = await JSONParser.DeserializerAsync<AirPollutionRootobject>(stream);
+
+                        aqiData = new AirQuality()
+                        {
+                            index = root.list[0].main.aqi
+                        };
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                aqiData = null;
+                Logger.WriteLine(LoggerLevel.Error, ex, "OWMOneCallWeatherProvider: error getting aqi data");
+            }
+
+            return aqiData;
         }
 
         public override string UpdateLocationQuery(WeatherData.Weather weather)

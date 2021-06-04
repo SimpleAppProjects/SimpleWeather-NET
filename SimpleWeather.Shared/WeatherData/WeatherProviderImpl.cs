@@ -84,8 +84,15 @@ namespace SimpleWeather.WeatherData
             // Provider-specific updates/fixes
             await UpdateWeatherData(location, weather);
 
-            // Additional external data
-            await UpdateAQIData(location, weather);
+            if (this is IAirQualityProvider aqiProvider)
+            {
+                weather.condition.airQuality = await aqiProvider.GetAirQualityData(location);
+            }
+            else
+            {
+                // Additional external data
+                await UpdateAQIData(location, weather);
+            }
 
             return weather;
         }
