@@ -84,6 +84,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         public bool DrawIconLabels { get; set; }
         public bool DrawDataLabels { get; set; }
+        public bool CenterGraphView { get; set; }
 
         private const float BottomTextSize = 12;
         private readonly CanvasTextFormat BottomTextFormat;
@@ -258,7 +259,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             // Reset the grid width
             backgroundGridWidth = longestTextWidth;
 
-            if (GetPreferredWidth() < ScrollViewer.Width)
+            if (!CenterGraphView && GetPreferredWidth() < ScrollViewer.Width)
             {
                 float freeSpace = (float)(ScrollViewer.Width - GetPreferredWidth());
                 float additionalSpace = freeSpace / HorizontalGridNum;
@@ -284,10 +285,20 @@ namespace SimpleWeather.UWP.Controls.Graphs
         private void RefreshXCoordinateList()
         {
             xCoordinateList.Clear();
-            xCoordinateList.EnsureCapacity(HorizontalGridNum);
-            for (int i = 0; i < (HorizontalGridNum + 1); i++)
+            xCoordinateList.EnsureCapacity(dataLabels.Count);
+
+            for (int i = 0; i < dataLabels.Count; i++)
             {
-                xCoordinateList.Add(sideLineLength + backgroundGridWidth * i);
+                float x;
+                if (CenterGraphView)
+                {
+                    x = (float)((ScrollViewer.Width / (dataLabels.Count + 1)) * (i + 1));
+                }
+                else
+                {
+                    x = sideLineLength + backgroundGridWidth * i;
+                }
+                xCoordinateList.Add(x);
             }
         }
 
@@ -402,7 +413,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 for (int i = 0; i < dataLabels.Count; i++)
                 {
-                    float x = sideLineLength + backgroundGridWidth * i;
+                    float x = xCoordinateList[i];
                     float y = ViewHeight - bottomTextDescent;
                     XLabelData xData = dataLabels[i];
 

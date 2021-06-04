@@ -140,6 +140,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 BarChartView.DrawDataLabels = true;
                 BarChartView.DrawIconLabels = true;
+                BarChartView.CenterGraphView = true;
 
                 while (BarChartView == null || !BarChartView.ReadyToDraw)
                 {
