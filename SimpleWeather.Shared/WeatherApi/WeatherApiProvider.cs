@@ -283,7 +283,7 @@ namespace SimpleWeather.WeatherApi
         {
             string WeatherIcon = string.Empty;
 
-            if (icon == null || int.TryParse(icon, out int conditionCode))
+            if (icon == null || !int.TryParse(icon, out int conditionCode))
                 return WeatherIcons.NA;
 
             switch (conditionCode)
