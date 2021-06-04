@@ -13,14 +13,14 @@ using Windows.Web.Http.Headers;
 
 namespace SimpleWeather.NWS
 {
-    public class NWSAlertProvider : IWeatherAlertProvider
+    public partial class NWSAlertProvider : IWeatherAlertProvider
     {
         private const String ALERT_QUERY_URL = "https://api.weather.gov/alerts/active?status=actual&message_type=alert&point={0:0.####},{1:0.####}";
         private const int MAX_ATTEMPTS = 2;
 
         public async Task<ICollection<WeatherAlert>> GetAlerts(LocationData location)
         {
-            List<WeatherAlert> alerts = null;
+            ICollection<WeatherAlert> alerts = null;
 
             try
             {
@@ -56,12 +56,7 @@ namespace SimpleWeather.NWS
                                     // Load data
                                     var root = await JSONParser.DeserializerAsync<AlertRootobject>(contentStream);
 
-                                    alerts = new List<WeatherAlert>(root.graph.Length);
-
-                                    foreach (AlertGraph result in root.graph)
-                                    {
-                                        alerts.Add(new WeatherAlert(result));
-                                    }
+                                    alerts = CreateWeatherAlerts(root);
                                 }
                             }
                         }

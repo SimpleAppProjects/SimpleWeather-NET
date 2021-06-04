@@ -1,7 +1,7 @@
 ﻿#if false
 using System.Runtime.Serialization;
 
-namespace SimpleWeather.OpenWeather
+namespace SimpleWeather.OpenWeather.OneCall
 {
     public class Rootobject
     {

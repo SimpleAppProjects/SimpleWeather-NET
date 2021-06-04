@@ -20,8 +20,10 @@ namespace SimpleWeather.HERE
     {
         private const String WEATHER_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
             "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
+
         private const String WEATHER_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&product=forecast_7days_simple" +
             "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
+
         private const String ALERTS_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}&language={1}&metric=false";
         private const String ALERTS_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&{0}&language={1}&metric=false";
 
@@ -117,47 +119,8 @@ namespace SimpleWeather.HERE
                         weather = new Weather(root);
 
                         // Add weather alerts if available
-                        if (root.alerts?.alerts?.Length > 0)
-                        {
-                            weather.weather_alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
-
-                            foreach (Alert result in root.alerts.alerts)
-                            {
-                                weather.weather_alerts.Add(new WeatherAlert(result));
-                            }
-                        }
-                        else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
-                        {
-                            int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
-
-                            weather.weather_alerts = new HashSet<WeatherAlert>(numOfAlerts);
-
-                            float lat = weather.location.latitude.Value;
-                            float lon = weather.location.longitude.Value;
-
-                            if (root.nwsAlerts.watch != null)
-                            {
-                                foreach (var watchItem in root.nwsAlerts.watch)
-                                {
-                                    // Add watch item if location is within 20km of the center of the alert zone
-                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
-                                    {
-                                        weather.weather_alerts.Add(new WeatherAlert(watchItem));
-                                    }
-                                }
-                            }
-                            if (root.nwsAlerts.warning != null)
-                            {
-                                foreach (var warningItem in root.nwsAlerts.warning)
-                                {
-                                    // Add warning item if location is within 25km of the center of the alert zone
-                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
-                                    {
-                                        weather.weather_alerts.Add(new WeatherAlert(warningItem));
-                                    }
-                                }
-                            }
-                        }
+                        weather.weather_alerts = CreateWeatherAlerts(root,
+                            weather.location.latitude.Value, weather.location.longitude.Value);
                     }
                 }
             }
@@ -273,47 +236,7 @@ namespace SimpleWeather.HERE
                         Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
                         // Add weather alerts if available
-                        if (root.alerts?.alerts?.Length > 0)
-                        {
-                            alerts = new List<WeatherAlert>(root.alerts.alerts.Length);
-
-                            foreach (Alert result in root.alerts.alerts)
-                            {
-                                alerts.Add(new WeatherAlert(result));
-                            }
-                        }
-                        else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
-                        {
-                            int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
-
-                            alerts = new HashSet<WeatherAlert>(numOfAlerts);
-
-                            float lat = (float)location.latitude;
-                            float lon = (float)location.longitude;
-
-                            if (root.nwsAlerts.watch != null)
-                            {
-                                foreach (var watchItem in root.nwsAlerts.watch)
-                                {
-                                    // Add watch item if location is within 20km of the center of the alert zone
-                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
-                                    {
-                                        alerts.Add(new WeatherAlert(watchItem));
-                                    }
-                                }
-                            }
-                            if (root.nwsAlerts.warning != null)
-                            {
-                                foreach (var warningItem in root.nwsAlerts.warning)
-                                {
-                                    // Add warning item if location is within 25km of the center of the alert zone
-                                    if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
-                                    {
-                                        alerts.Add(new WeatherAlert(warningItem));
-                                    }
-                                }
-                            }
-                        }
+                        alerts = CreateWeatherAlerts(root, (float)location.latitude, (float)location.longitude);
                     }
                 }
             }

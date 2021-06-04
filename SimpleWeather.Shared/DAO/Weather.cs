@@ -76,16 +76,21 @@ namespace SimpleWeather.WeatherData
 
         [IgnoreDataMember]
         public string locationblob { get; set; }
+
         [Column("update_time")]
         [DataMember(Name = "update_time")]
         // Keep DateTimeOffset column name to get data as string
         public string updatetimeblob { get; set; }
+
         [IgnoreDataMember]
         public string conditionblob { get; set; }
+
         [IgnoreDataMember]
         public string atmosphereblob { get; set; }
+
         [IgnoreDataMember]
         public string astronomyblob { get; set; }
+
         [IgnoreDataMember]
         public string precipitationblob { get; set; }
 
@@ -605,6 +610,7 @@ namespace SimpleWeather.WeatherData
     {
         [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime date { get; set; }
+
         public float? low_f { get; set; }
         public float? low_c { get; set; }
 
@@ -773,6 +779,7 @@ namespace SimpleWeather.WeatherData
         [DataMember(Name = "date")]
         [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset date { get; set; }
+
         public int? wind_degrees { get; set; }
         public float? wind_mph { get; set; }
         public float? wind_kph { get; set; }
@@ -960,6 +967,7 @@ namespace SimpleWeather.WeatherData
     {
         [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset date { get; set; }
+
         public string fcttext { get; set; }
         public string fcttext_metric { get; set; }
 
@@ -1910,12 +1918,16 @@ namespace SimpleWeather.WeatherData
     {
         [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime sunrise { get; set; }
+
         [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime sunset { get; set; }
+
         [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime moonrise { get; set; }
+
         [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
         public DateTime moonset { get; set; }
+
         public MoonPhase moonphase { get; set; }
 
         public Astronomy()
@@ -2208,6 +2220,64 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public Beaufort(int beaufortScale)
+        {
+            switch (beaufortScale)
+            {
+                case 0:
+                    scale = BeaufortScale.B0;
+                    break;
+
+                case 1:
+                    scale = BeaufortScale.B1;
+                    break;
+
+                case 2:
+                    scale = BeaufortScale.B2;
+                    break;
+
+                case 3:
+                    scale = BeaufortScale.B3;
+                    break;
+
+                case 4:
+                    scale = BeaufortScale.B4;
+                    break;
+
+                case 5:
+                    scale = BeaufortScale.B5;
+                    break;
+
+                case 6:
+                    scale = BeaufortScale.B6;
+                    break;
+
+                case 7:
+                    scale = BeaufortScale.B7;
+                    break;
+
+                case 8:
+                    scale = BeaufortScale.B8;
+                    break;
+
+                case 9:
+                    scale = BeaufortScale.B9;
+                    break;
+
+                case 10:
+                    scale = BeaufortScale.B10;
+                    break;
+
+                case 11:
+                    scale = BeaufortScale.B11;
+                    break;
+
+                case 12:
+                    scale = BeaufortScale.B12;
+                    break;
+            }
+        }
+
         public override bool Equals(object obj)
         {
             return obj is Beaufort beaufort &&
@@ -2299,6 +2369,11 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public MoonPhase(MoonPhaseType moonPhaseType)
+        {
+            this.phase = moonPhaseType;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is MoonPhase phase &&
@@ -2376,6 +2451,11 @@ namespace SimpleWeather.WeatherData
         public UV()
         {
             // Needed for deserialization
+        }
+
+        public UV(float index)
+        {
+            this.index = index;
         }
 
         public override bool Equals(object obj)
@@ -2457,6 +2537,11 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
+        public AirQuality(AQICN.Rootobject root)
+        {
+            this.index = root.data.aqi;
+        }
+
         public override bool Equals(object obj)
         {
             return obj is AirQuality aqi &&
@@ -2536,10 +2621,13 @@ namespace SimpleWeather.WeatherData
 
         [TextBlob(nameof(forecastblob))]
         public IList<Forecast> forecast { get; set; }
+
         [TextBlob(nameof(txtforecastblob))]
         public IList<TextForecast> txt_forecast { get; set; }
+
         [IgnoreDataMember]
         public string forecastblob { get; set; }
+
         [IgnoreDataMember]
         public string txtforecastblob { get; set; }
 
@@ -2562,6 +2650,7 @@ namespace SimpleWeather.WeatherData
 
         [PrimaryKey]
         public string id { get; set; }
+
         [Indexed(Name = "queryIdx", Order = 1)]
         public string query { get; set; }
 
@@ -2592,6 +2681,7 @@ namespace SimpleWeather.WeatherData
         [NotNull]
         // Keep DateTimeOffset column name to get data as string
         public string dateblob { get; set; }
+
         [IgnoreDataMember]
         public string hrforecastblob { get; set; }
 

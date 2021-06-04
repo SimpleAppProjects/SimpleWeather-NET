@@ -1,5 +1,4 @@
 ﻿using SimpleWeather.HERE;
-using SimpleWeather.MeteoFrance;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,149 +11,6 @@ namespace SimpleWeather.WeatherData
 {
     public partial class WeatherAlert
     {
-        // NWS Alerts
-        public WeatherAlert(NWS.AlertGraph alert)
-        {
-            // Alert Type
-            switch (alert._event)
-            {
-                case "Hurricane Local Statement":
-                    Type = WeatherAlertType.HurricaneLocalStatement;
-                    break;
-                case "Hurricane Force Wind Watch":
-                case "Hurricane Watch":
-                case "Hurricane Force Wind Warning":
-                case "Hurricane Warning":
-                    Type = WeatherAlertType.HurricaneWindWarning;
-                    break;
-
-                case "Tornado Warning":
-                    Type = WeatherAlertType.TornadoWarning;
-                    break;
-
-                case "Tornado Watch":
-                    Type = WeatherAlertType.TornadoWatch;
-                    break;
-
-                case "Severe Thunderstorm Warning":
-                    Type = WeatherAlertType.SevereThunderstormWarning;
-                    break;
-
-                case "Severe Thunderstorm Watch":
-                    Type = WeatherAlertType.SevereThunderstormWatch;
-                    break;
-
-                case "Excessive Heat Warning":
-                case "Excessive Heat Watch":
-                case "Heat Advisory":
-                    Type = WeatherAlertType.Heat;
-                    break;
-
-                case "Dense Fog Advisory":
-                    Type = WeatherAlertType.DenseFog;
-                    break;
-
-                case "Dense Smoke Advisory":
-                    Type = WeatherAlertType.DenseSmoke;
-                    break;
-
-                case "Extreme Fire Danger":
-                case "Fire Warning":
-                case "Fire Weather Watch":
-                    Type = WeatherAlertType.Fire;
-                    break;
-
-                case "Volcano Warning":
-                    Type = WeatherAlertType.Volcano;
-                    break;
-
-                case "Extreme Wind Warning":
-                case "High Wind Warning":
-                case "High Wind Watch":
-                case "Lake Wind Advisory":
-                case "Wind Advisory":
-                    Type = WeatherAlertType.HighWind;
-                    break;
-
-                case "Lake Effect Snow Advisory":
-                case "Lake Effect Snow Warning":
-                case "Lake Effect Snow Watch":
-                case "Snow Squall Warning":
-                case "Ice Storm Warning":
-                case "Winter Storm Warning":
-                case "Winter Storm Watch":
-                case "Winter Weather Advisory":
-                    Type = WeatherAlertType.WinterWeather;
-                    break;
-
-                case "Earthquake Warning":
-                    Type = WeatherAlertType.EarthquakeWarning;
-                    break;
-
-                case "Gale Warning":
-                case "Gale Watch":
-                    Type = WeatherAlertType.GaleWarning;
-                    break;
-
-                default:
-                    if (alert._event.Contains("Flood Warning"))
-                        Type = WeatherAlertType.FloodWarning;
-                    else if (alert._event.Contains("Flood"))
-                        Type = WeatherAlertType.FloodWatch;
-                    else if (alert._event.Contains("Snow") || alert._event.Contains("Blizzard") ||
-                        alert._event.Contains("Winter") || alert._event.Contains("Ice") ||
-                        alert._event.Contains("Avalanche") || alert._event.Contains("Cold") ||
-                        alert._event.Contains("Freez") || alert._event.Contains("Frost") ||
-                        alert._event.Contains("Chill"))
-                    {
-                        Type = WeatherAlertType.WinterWeather;
-                    }
-                    else if (alert._event.Contains("Dust"))
-                        Type = WeatherAlertType.DustAdvisory;
-                    else if (alert._event.Contains("Small Craft"))
-                        Type = WeatherAlertType.SmallCraft;
-                    else if (alert._event.Contains("Storm"))
-                        Type = WeatherAlertType.StormWarning;
-                    else if (alert._event.Contains("Tsunami"))
-                        Type = WeatherAlertType.TsunamiWarning;
-                    else
-                        Type = WeatherAlertType.SpecialWeatherAlert;
-                    break;
-            }
-
-            switch (alert.severity)
-            {
-                case "Minor":
-                    Severity = WeatherAlertSeverity.Minor;
-                    break;
-
-                case "Moderate":
-                    Severity = WeatherAlertSeverity.Moderate;
-                    break;
-
-                case "Severe":
-                    Severity = WeatherAlertSeverity.Severe;
-                    break;
-
-                case "Extreme":
-                    Severity = WeatherAlertSeverity.Extreme;
-                    break;
-
-                case "Unknown":
-                default:
-                    Severity = WeatherAlertSeverity.Unknown;
-                    break;
-            }
-
-            Title = alert._event;
-            Message = string.Format("{0}\n{1}", alert.description, alert.instruction);
-
-            Date = alert.sent;
-            ExpiresDate = alert.expires;
-
-            Attribution = "U.S. National Weather Service";
-        }
-
         // HERE GlobalAlerts
         public WeatherAlert(HERE.Alert alert)
         {
@@ -326,125 +182,6 @@ namespace SimpleWeather.WeatherData
             Attribution = "HERE Weather";
         }
 
-        public WeatherAlert(Phenomenons_Items phenom)
-        {
-            String title_en, title_fr;
-            String message_en, message_fr;
-
-            /*
-             * phenomenon_max_color_id (Severity)
-             *
-             * 1 - Green
-             * 2 - Yellow
-             * 3 - Orange
-             * 4 - Red
-             */
-            switch (phenom.phenomenon_max_color_id)
-            {
-                case 1:
-                default:
-                    Severity = WeatherAlertSeverity.Minor;
-                    message_fr = "Pas de vigilance particulière";
-                    message_en = "No particular awareness of the weather is required.";
-                    break;
-                case 2:
-                    Severity = WeatherAlertSeverity.Moderate;
-                    message_fr = "Soyez attentif";
-                    message_en = "The weather is potentially dangerous.";
-                    break;
-                case 3:
-                    Severity = WeatherAlertSeverity.Severe;
-                    message_fr = "Soyez très vigilant";
-                    message_en = "The weather is dangerous.";
-                    break;
-                case 4:
-                    Severity = WeatherAlertSeverity.Extreme;
-                    message_fr = "Une vigilance Absolue s'impose";
-                    message_en = "The weather is very dangerous.";
-                    break;
-            }
-
-            /*
-             * phenomenon_id (Alert Type)
-             *
-             * 1 - Wind
-             * 2 - Rain/Flood
-             * 3 - Thunderstorm
-             * 4 - Flood
-             * 5 - Snow/Ice
-             * 6 - Extreme high temp
-             * 7 - Extreme low temp
-             * 8 - Avalanches
-             * 9 - Coastal event
-             */
-            switch (phenom.phenomenon_id)
-            {
-                case 1:
-                    Type = WeatherAlertType.HighWind;
-                    title_fr = "Vent violent";
-                    title_en = "High Winds";
-                    break;
-                case 2:
-                    Type = WeatherAlertType.FloodWatch;
-                    title_fr = "Pluie-inondation";
-                    title_en = "Rain/Flood";
-                    break;
-                case 3:
-                    Type = WeatherAlertType.SevereThunderstormWarning;
-                    title_fr = "Orages";
-                    title_en = "Thunderstorms";
-                    break;
-                case 4:
-                    Type = WeatherAlertType.FloodWarning;
-                    title_fr = "Crues";
-                    title_en = "Floods";
-                    break;
-                case 5:
-                    Type = WeatherAlertType.WinterWeather;
-                    title_fr = "Neige-verglas";
-                    title_en = "Snow/Ice";
-                    break;
-                case 6:
-                    Type = WeatherAlertType.Heat;
-                    title_fr = "Canicule";
-                    title_en = "Extreme high temperatures";
-                    break;
-                case 7:
-                    Type = WeatherAlertType.WinterWeather;
-                    title_fr = "Grand-froid";
-                    title_en = "Extreme low temperatures";
-                    break;
-                case 8:
-                    Type = WeatherAlertType.SpecialWeatherAlert;
-                    title_fr = "Avalanches";
-                    title_en = "Avalanches";
-                    break;
-                case 9:
-                    Type = WeatherAlertType.SpecialWeatherAlert;
-                    title_fr = "Vagues-submersion";
-                    title_en = "Coastal Event";
-                    break;
-                default:
-                    Type = WeatherAlertType.SpecialWeatherAlert;
-                    title_fr = "Alerte météo";
-                    title_en = "Weather Alert";
-                    break;
-            }
-
-            Title = title_fr;
-
-            Message = "français:" +
-                    Environment.NewLine +
-                    title_fr + " - " + message_fr +
-                    Environment.NewLine +
-                    Environment.NewLine +
-                    "english:" +
-                    Environment.NewLine +
-                    title_en + " - " + message_en;
-
-            Attribution = "Meteo France";
-        }
-
         private WeatherAlertType GetAlertType(int type, String alertDescription)
         {
             switch (type)
@@ -536,35 +273,46 @@ namespace SimpleWeather.WeatherData
                 case 7: // Flood Warning
                 case 8: // Urban and Small Stream Flood Advisory
                     return WeatherAlertType.FloodWarning;
+
                 case 3: // Flash Flood Watch
                 case 4: // Flash Flood Statement
                 case 6: // Flood Statement
                     return WeatherAlertType.FloodWatch;
+
                 case 9: // Hurricane Local Statement
                     return WeatherAlertType.HurricaneLocalStatement;
+
                 case 15: // River Ice Statement
                 case 18: // Snow Avalanche Bulletin
                 case 37: // Winter Weather Warning, Watch, or Advisory
                     return WeatherAlertType.WinterWeather;
+
                 case 21: // Severe Local Storm Watch or Watch Cancellation
                 case 23: // Severe Local Storm Watch and Areal Outline
                 case 26: // Storm Strike Probability Bulletin from the TPC
                     return WeatherAlertType.SevereThunderstormWatch;
+
                 case 24: // Marine Subtropical Storm Advisory
                     return WeatherAlertType.StormWarning;
+
                 case 28: // Severe Thunderstorm Warning
                     return WeatherAlertType.SevereThunderstormWarning;
+
                 case 29: // Severe Weather Statement
                     return WeatherAlertType.SevereWeather;
+
                 case 30: // Tropical Cyclone Advisory
                 case 31: // Tropical Cyclone Advisory for Marine and Aviation Interests
                 case 32: // Public Tropical Cyclone Advisory
                 case 33: // Tropical Cyclone Update
                     return WeatherAlertType.HurricaneWindWarning;
+
                 case 34: // Tornado Warning
                     return WeatherAlertType.TornadoWarning;
+
                 case 35: // Tsunami Watch or Warning
                     return WeatherAlertType.TsunamiWarning;
+
                 case 36: // Volcanic Activity Advisory
                     return WeatherAlertType.Volcano;
             }
@@ -657,6 +405,58 @@ namespace SimpleWeather.WeatherData
             }
 
             return span;
+        }
+    }
+}
+
+namespace SimpleWeather.HERE
+{
+    public partial class HEREWeatherProvider
+    {
+        private ICollection<WeatherData.WeatherAlert> CreateWeatherAlerts(Rootobject root, float lat, float lon)
+        {
+            ICollection<WeatherData.WeatherAlert> weatherAlerts = null;
+
+            if (root.alerts?.alerts?.Length > 0)
+            {
+                weatherAlerts = new List<WeatherData.WeatherAlert>(root.alerts.alerts.Length);
+
+                foreach (Alert result in root.alerts.alerts)
+                {
+                    weatherAlerts.Add(new WeatherData.WeatherAlert(result));
+                }
+            }
+            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+            {
+                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
+
+                weatherAlerts = new HashSet<WeatherData.WeatherAlert>(numOfAlerts);
+
+                if (root.nwsAlerts.watch != null)
+                {
+                    foreach (var watchItem in root.nwsAlerts.watch)
+                    {
+                        // Add watch item if location is within 20km of the center of the alert zone
+                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude)) < 20000)
+                        {
+                            weatherAlerts.Add(new WeatherData.WeatherAlert(watchItem));
+                        }
+                    }
+                }
+                if (root.nwsAlerts.warning != null)
+                {
+                    foreach (var warningItem in root.nwsAlerts.warning)
+                    {
+                        // Add warning item if location is within 25km of the center of the alert zone
+                        if (ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude)) < 25000)
+                        {
+                            weatherAlerts.Add(new WeatherData.WeatherAlert(warningItem));
+                        }
+                    }
+                }
+            }
+
+            return weatherAlerts;
         }
     }
 }
