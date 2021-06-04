@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SharedExtras = SimpleWeather.Shared.Extras.Extras;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -85,7 +86,7 @@ namespace SimpleWeather.UWP.Preferences
             {
                 return false;
             }
-            if (!WeatherIconsManager.DefaultIcons.ContainsKey(key) && !Extras.ExtrasLibrary.IsEnabled())
+            if (!SharedExtras.IsIconPackSupported(key))
             {
                 Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 return false;

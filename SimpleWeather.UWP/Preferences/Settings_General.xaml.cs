@@ -18,6 +18,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using SharedExtras = SimpleWeather.Shared.Extras.Extras;
 
 #if !DEBUG
 
@@ -371,7 +372,7 @@ namespace SimpleWeather.UWP.Preferences
             ComboBox box = sender as ComboBox;
             string API = box.SelectedValue.ToString();
 
-            if (API == WeatherAPI.Here && !Extras.ExtrasLibrary.IsEnabled())
+            if (!SharedExtras.IsWeatherAPISupported(API))
             {
                 var prevItem = e.RemovedItems?.FirstOrDefault() as SimpleWeather.Controls.ProviderEntry;
                 // Revert value
