@@ -164,6 +164,11 @@ namespace SimpleWeather.WeatherData
 
         public int HourlyForecastInterval => WeatherProvider.HourlyForecastInterval;
 
+        public bool IsRegionSupported(string countryCode)
+        {
+            return WeatherProvider.IsRegionSupported(countryCode);
+        }
+
         public Task UpdateLocationData(LocationData location)
         {
             return WeatherProvider.UpdateLocationData(location);

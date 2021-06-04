@@ -33,6 +33,8 @@ namespace SimpleWeather.UWP.Main
         public WeatherNowViewModel WeatherView { get; set; }
         public ChartsViewModel ChartsView { get; set; }
 
+        private readonly WeatherManager wm = WeatherManager.GetInstance();
+
         public WeatherChartsPage()
         {
             this.InitializeComponent();
@@ -56,9 +58,13 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (WeatherAPI.NWS.Equals(Settings.API))
+                        if (!wm.IsRegionSupported(location.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherRegionUnsupported"), SnackbarDuration.Long));
+                        }
+                        else
+                        {
+                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
                         }
                         break;
 

@@ -122,13 +122,6 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (!ErrorCounter[(int)wEx.ErrorStatus] && WeatherAPI.NWS.Equals(Settings.API))
-                        {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Short));
-                            ErrorCounter[(int)wEx.ErrorStatus] = true;
-                        }
-                        break;
-
                     default:
                         // Show error message
                         // Only warn once

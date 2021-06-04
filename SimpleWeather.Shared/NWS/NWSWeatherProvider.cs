@@ -39,6 +39,11 @@ namespace SimpleWeather.NWS
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
 
+        public override bool IsRegionSupported(string countryCode)
+        {
+            return LocationUtils.IsUS(countryCode);
+        }
+
         public override Task<bool> IsKeyValid(string key)
         {
             return Task.FromResult(false);
@@ -54,6 +59,12 @@ namespace SimpleWeather.NWS
         {
             Weather weather = null;
             WeatherException wEx = null;
+
+            // NWS only supports locations in U.S.
+            if (!LocationUtils.IsUS(country_code))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+            }
 
             try
             {

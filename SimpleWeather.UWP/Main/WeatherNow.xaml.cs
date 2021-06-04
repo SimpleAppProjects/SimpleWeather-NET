@@ -142,9 +142,13 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (WeatherAPI.NWS.Equals(Settings.API))
+                        if (!wm.IsRegionSupported(locationData.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherRegionUnsupported"), SnackbarDuration.Long));
+                        }
+                        else
+                        {
+                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
                         }
                         break;
 

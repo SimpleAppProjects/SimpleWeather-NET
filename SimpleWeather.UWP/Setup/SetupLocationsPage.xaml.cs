@@ -339,9 +339,9 @@ namespace SimpleWeather.UWP.Setup
                 query_vm.UpdateWeatherSource(provider);
                 wm.UpdateAPI();
 
-                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm.LocationCountry))
+                if (!wm.IsRegionSupported(query_vm.LocationCountry))
                 {
-                    throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
+                    throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
                 }
 
                 ctsToken.ThrowIfCancellationRequested();
@@ -509,9 +509,9 @@ namespace SimpleWeather.UWP.Setup
 
                     ctsToken.ThrowIfCancellationRequested();
 
-                    if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(view.LocationCountry))
+                    if (!wm.IsRegionSupported(view.LocationCountry))
                     {
-                        throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
+                        throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
                     }
 
                     // Weather Data

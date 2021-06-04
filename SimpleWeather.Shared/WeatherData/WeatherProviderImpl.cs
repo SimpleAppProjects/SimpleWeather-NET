@@ -24,6 +24,11 @@ namespace SimpleWeather.WeatherData
 
         public virtual int HourlyForecastInterval => 1;
 
+        public virtual bool IsRegionSupported(string countryCode)
+        {
+            return true;
+        }
+
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

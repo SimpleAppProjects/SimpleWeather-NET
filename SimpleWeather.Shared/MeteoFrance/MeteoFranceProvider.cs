@@ -35,6 +35,11 @@ namespace SimpleWeather.MeteoFrance
         public override bool NeedsExternalAlertData => false;
         public override int HourlyForecastInterval => 1;
 
+        public override bool IsRegionSupported(string countryCode)
+        {
+            return LocationUtils.IsFrance(countryCode);
+        }
+
         public override Task<bool> IsKeyValid(string key)
         {
             return Task.FromResult(false);
@@ -50,6 +55,12 @@ namespace SimpleWeather.MeteoFrance
         {
             WeatherData.Weather weather = null;
             WeatherException wEx = null;
+
+            // MeteoFrance only supports locations in France
+            if (!LocationUtils.IsFrance(country_code))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+            }
 
             var culture = CultureUtils.UserCulture;
 

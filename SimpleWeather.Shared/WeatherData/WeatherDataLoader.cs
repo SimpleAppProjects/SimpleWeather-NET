@@ -136,16 +136,22 @@ namespace SimpleWeather.WeatherData
             try
             {
                 request.ThrowIfCancellationRequested();
+                weather = null;
 
-                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(location.country_code))
+                if (!wm.IsRegionSupported(location.country_code))
                 {
                     // If location data hasn't been updated, try loading weather from the previous provider
-                    if (!String.IsNullOrWhiteSpace(location.weatherSource) &&
-                        !WeatherAPI.NWS.Equals(location.weatherSource))
+                    if (!String.IsNullOrWhiteSpace(location.weatherSource))
                     {
-                        weather = await WeatherManager.GetProvider(location.weatherSource).GetWeather(location).ConfigureAwait(false);
+                        var provider = WeatherManager.GetProvider(location.weatherSource);
+                        if (provider.IsRegionSupported(location.country_code))
+                        {
+                            weather = await provider.GetWeather(location).ConfigureAwait(false);
+                        }
                     }
-                    else
+
+                    // Nothing to fallback on; error out
+                    if (weather == null)
                     {
                         throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
                     }
@@ -274,7 +280,9 @@ namespace SimpleWeather.WeatherData
                     if ((weather != null && weather.source != Settings.API)
                         || (weather == null && location != null && location.weatherSource != Settings.API))
                     {
-                        if (!WeatherAPI.NWS.Equals(Settings.API) || LocationUtils.IsUS(location.country_code))
+                        // Only update location data if location region is supported by new API
+                        // If not don't update so we can use fallback (previously used API)
+                        if (wm.IsRegionSupported(location.country_code))
                         {
                             // Update location query and source for new API
                             string oldKey = location.query;
@@ -481,7 +489,9 @@ namespace SimpleWeather.WeatherData
             bool isInvalid = weather == null || !weather.IsValid();
             if (!isInvalid && !String.Equals(weather.source, API))
             {
-                if (!WeatherAPI.NWS.Equals(API) || LocationUtils.IsUS(location.country_code))
+                // Don't mark data as invalid if region is not supported
+                // This is so we can use the fallback, if location data was not already modified
+                if (wm.IsRegionSupported(location.country_code))
                     isInvalid = true;
             }
 

@@ -413,8 +413,8 @@
   <data name="Message_NeedFavorite" xml:space="preserve">
     <value>Must have at least one favorite location</value>
   </data>
-  <data name="Error_WeatherUSOnly" xml:space="preserve">
-    <value>This weather provider only supports locations in the U.S.</value>
+  <data name="Error_WeatherRegionUnsupported" xml:space="preserve">
+    <value>Country not supported by this weather provider</value>
   </data>
   <data name="Header_FavLocations" xml:space="preserve">
     <value>Favorite Locations</value>

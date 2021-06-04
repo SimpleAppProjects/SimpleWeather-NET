@@ -17,6 +17,8 @@ namespace SimpleWeather.WeatherData
         bool SupportsAlerts { get; }
         bool NeedsExternalAlertData { get; }
 
+        bool IsRegionSupported(string countryCode);
+
         int HourlyForecastInterval { get; }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

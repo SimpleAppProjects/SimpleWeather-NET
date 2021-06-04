@@ -29,6 +29,8 @@ namespace SimpleWeather.UWP.Main
         public ForecastsListViewModel ForecastsView { get; set; }
         public bool IsHourly { get; set; }
 
+        private readonly WeatherManager wm = WeatherManager.GetInstance();
+
         public static readonly DependencyProperty ForecastsProperty =
             DependencyProperty.Register("Forecasts", typeof(object),
             typeof(WeatherDetailsPage), new PropertyMetadata(null));
@@ -65,9 +67,13 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (WeatherAPI.NWS.Equals(Settings.API))
+                        if (!wm.IsRegionSupported(location.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherUSOnly"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherRegionUnsupported"), SnackbarDuration.Long));
+                        }
+                        else
+                        {
+                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
                         }
                         break;
 

@@ -296,9 +296,9 @@ namespace SimpleWeather.UWP.Main
                     wm.UpdateAPI();
                 }
 
-                if (WeatherAPI.NWS.Equals(Settings.API) && !LocationUtils.IsUS(query_vm.LocationCountry))
+                if (!wm.IsRegionSupported(query_vm.LocationCountry))
                 {
-                    throw new CustomException(App.ResLoader.GetString("Error_WeatherUSOnly"));
+                    throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
                 }
 
                 // Check if location already exists
