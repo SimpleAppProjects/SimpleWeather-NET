@@ -222,6 +222,9 @@ namespace SimpleWeather.UWP.Main
             // Add handler for ContentFrame navigation.
             AppFrame.Navigated += On_Navigated;
 
+            // NavView doesn't load any page by default, so load home page.
+            OnNavigated(AppFrame.SourcePageType);
+
             // Add keyboard accelerators for backwards navigation.
             var goBack = new KeyboardAccelerator { Key = Windows.System.VirtualKey.GoBack };
             goBack.Invoked += BackInvoked;
@@ -343,17 +346,22 @@ namespace SimpleWeather.UWP.Main
 
         private void On_Navigated(object sender, NavigationEventArgs e)
         {
+            OnNavigated(e.SourcePageType);
+        }
+
+        private void OnNavigated(Type sourcePageType)
+        {
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                 AppFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
 
-            if (AppFrame.SourcePageType == typeof(SettingsPage))
+            if (sourcePageType == typeof(SettingsPage))
             {
                 // SettingsItem is not part of NavView.MenuItems, and doesn't have a Tag.
                 NavView.SelectedItem = (muxc.NavigationViewItem)NavView.SettingsItem;
             }
-            else if (AppFrame.SourcePageType != null)
+            else if (sourcePageType != null)
             {
-                var item = _pages.FirstOrDefault(p => p.Page == e.SourcePageType);
+                var item = _pages.FirstOrDefault(p => p.Page == sourcePageType);
 
                 NavView.SelectedItem = NavView.MenuItems
                     .OfType<muxc.NavigationViewItem>()
