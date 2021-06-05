@@ -2531,26 +2531,23 @@ namespace SimpleWeather.WeatherData
     public partial class AirQuality : CustomJsonObject
     {
         public int? index { get; set; }
+        public string attribution { get; set; }
 
         public AirQuality()
         {
             // Needed for deserialization
         }
 
-        public AirQuality(AQICN.Rootobject root)
-        {
-            this.index = root.data.aqi;
-        }
-
         public override bool Equals(object obj)
         {
             return obj is AirQuality aqi &&
-                   index == aqi.index;
+                   index == aqi.index &&
+                   attribution == aqi.attribution;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(index);
+            return HashCode.Combine(index, attribution);
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2586,6 +2583,10 @@ namespace SimpleWeather.WeatherData
                         this.index = reader.ReadInt32();
                         break;
 
+                    case nameof(attribution):
+                        this.attribution = reader.ReadString();
+                        break;
+
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2603,6 +2604,12 @@ namespace SimpleWeather.WeatherData
             // "index" : ""
             writer.WritePropertyName(nameof(index));
             writer.WriteSingle(index.GetValueOrDefault(-1));
+
+            writer.WriteValueSeparator();
+
+            // "attribution" : ""
+            writer.WritePropertyName(nameof(attribution));
+            writer.WriteString(attribution);
 
             // }
             writer.WriteEndObject();

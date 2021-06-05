@@ -14,6 +14,7 @@ namespace SimpleWeather.Controls
         public String Description { get; set; }
         public int Progress { get; set; }
         public Color ProgressColor { get; set; }
+        public String Attribution { get; set; }
 
         public AirQualityViewModel(AirQuality aqi)
         {
@@ -57,6 +58,8 @@ namespace SimpleWeather.Controls
                 Level = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_300");
                 Description = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Desc_300");
             }
+
+            Attribution = aqi.attribution;
         }
     }
 }

@@ -1826,11 +1826,13 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             this.____keyMapping = new global::Utf8Json.Internal.AutomataDictionary()
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("index"), 0},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("attribution"), 1},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("index"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("attribution"),
                 
             };
         }
@@ -1846,6 +1848,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             writer.WriteRaw(this.____stringByteKeys[0]);
             formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.index, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[1]);
+            writer.WriteString(value.attribution);
             
             writer.WriteEndObject();
         }
@@ -1860,6 +1864,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var __index__ = default(int?);
             var __index__b__ = false;
+            var __attribution__ = default(string);
+            var __attribution__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -1879,6 +1885,10 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __index__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __index__b__ = true;
                         break;
+                    case 1:
+                        __attribution__ = reader.ReadString();
+                        __attribution__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -1890,6 +1900,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
 
             var ____result = new global::SimpleWeather.WeatherData.AirQuality();
             if(__index__b__) ____result.index = __index__;
+            if(__attribution__b__) ____result.attribution = __attribution__;
 
             return ____result;
         }

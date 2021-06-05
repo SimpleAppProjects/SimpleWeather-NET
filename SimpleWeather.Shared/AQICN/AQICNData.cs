@@ -11,9 +11,11 @@ namespace SimpleWeather.AQICN
     {
         public List<Uvi> uvi_forecast { get; set; }
 
-        public AQICNData(Rootobject root) : base(root)
+        public AQICNData(Rootobject root)
         {
+            index = root?.data?.aqi;
             uvi_forecast = root.data?.forecast?.daily.uvi?.ToList();
+            attribution = "World Air Quality Index Project";
         }
     }
 }

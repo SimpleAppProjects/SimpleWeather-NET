@@ -76,8 +76,9 @@
             x:Name="Attribution"
             Padding="5"
             HorizontalAlignment="Center"
-            FontSize="12">
-            <Span><Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" World Air Quality Index Project" /></Span>
+            FontSize="12"
+            Visibility="{x:Bind ViewModel.Attribution, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+            <Span><Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" " /><Run d:Text="World Air Quality Index Project" Text="{x:Bind ViewModel.Attribution, Mode=OneWay, FallbackValue='World Air Quality Index Project'}" /></Span>
         </TextBlock>
     </StackPanel>
 </UserControl>
