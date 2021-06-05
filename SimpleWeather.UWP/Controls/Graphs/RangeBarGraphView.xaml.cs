@@ -257,7 +257,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         private void RefreshGridWidth()
         {
             // Reset the grid width
-            backgroundGridWidth = longestTextWidth;
+            backgroundGridWidth = longestTextWidth * 1.1f;
 
             if (!CenterGraphView && GetPreferredWidth() < ScrollViewer.Width)
             {
@@ -287,10 +287,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
             xCoordinateList.Clear();
             xCoordinateList.EnsureCapacity(dataLabels.Count);
 
+            var IsWithinViewport = GetPreferredWidth() < ScrollViewer.Width;
+
             for (int i = 0; i < dataLabels.Count; i++)
             {
                 float x;
-                if (CenterGraphView)
+                if (CenterGraphView && IsWithinViewport)
                 {
                     x = (float)((ScrollViewer.Width / (dataLabels.Count + 1)) * (i + 1));
                 }
