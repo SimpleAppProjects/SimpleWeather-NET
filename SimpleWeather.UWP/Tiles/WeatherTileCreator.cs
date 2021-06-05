@@ -83,7 +83,8 @@ namespace SimpleWeather.UWP.Tiles
             {
                 var dateGroup = new AdaptiveGroup();
                 var forecastGroup = new AdaptiveGroup();
-                var tempGroup = new AdaptiveGroup();
+                var tempHiGroup = new AdaptiveGroup();
+                var tempLoGroup = new AdaptiveGroup();
 
                 // 3day forecast
                 for (int i = 0; i < Math.Min((int)forecasts?.Count, MEDIUM_FORECAST_LENGTH); i++)
@@ -114,10 +115,9 @@ namespace SimpleWeather.UWP.Tiles
                             },
                         }
                     };
-                    var tempSubgroup = new AdaptiveSubgroup()
+                    var tempHiSubgroup = new AdaptiveSubgroup()
                     {
                         HintWeight = 1,
-                        HintTextStacking = AdaptiveSubgroupTextStacking.Bottom,
                         Children =
                         {
                             new AdaptiveText()
@@ -128,15 +128,30 @@ namespace SimpleWeather.UWP.Tiles
                             }
                         }
                     };
+                    var tempLoSubgroup = new AdaptiveSubgroup()
+                    {
+                        HintWeight = 1,
+                        Children =
+                        {
+                            new AdaptiveText()
+                            {
+                                Text = forecast.LoTemp,
+                                HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                HintAlign = AdaptiveTextAlign.Center
+                            }
+                        }
+                    };
 
                     dateGroup.Children.Add(dateSubgroup);
                     forecastGroup.Children.Add(iconSubgroup);
-                    tempGroup.Children.Add(tempSubgroup);
+                    tempHiGroup.Children.Add(tempHiSubgroup);
+                    tempLoGroup.Children.Add(tempLoSubgroup);
                 }
 
                 content.Children.Add(dateGroup);
                 content.Children.Add(forecastGroup);
-                content.Children.Add(tempGroup);
+                content.Children.Add(tempHiGroup);
+                content.Children.Add(tempLoGroup);
             }
             else if (forecastTileType == ForecastTileType.Wide)
             {
@@ -208,10 +223,6 @@ namespace SimpleWeather.UWP.Tiles
             else if (forecastTileType == ForecastTileType.Large)
             {
                 // Condition + 5-day forecast
-                var forecastGroup = new AdaptiveGroup();
-
-                int forecastLength = Math.Min((int)forecasts?.Count, LARGE_FORECAST_LENGTH);
-
                 var conditionGroup = new AdaptiveGroup()
                 {
                     Children =
@@ -262,48 +273,121 @@ namespace SimpleWeather.UWP.Tiles
                     Text = ""
                 };
 
-                for (int i = 0; i < forecastLength; i++)
-                {
-                    var forecast = forecasts[i];
-
-                    var subgroup = new AdaptiveSubgroup()
-                    {
-                        HintWeight = 1,
-                        Children =
-                        {
-                            new AdaptiveText()
-                            {
-                                Text = forecast.ShortDate,
-                                HintAlign = AdaptiveTextAlign.Center
-                            },
-                            new AdaptiveImage()
-                            {
-                                HintRemoveMargin = true,
-                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
-                            },
-                            new AdaptiveText()
-                            {
-                                Text = forecast.HiTemp,
-                                HintAlign = AdaptiveTextAlign.Center
-                            },
-                            new AdaptiveText()
-                            {
-                                Text = forecast.LoTemp,
-                                HintStyle = AdaptiveTextStyle.CaptionSubtle,
-                                HintAlign = AdaptiveTextAlign.Center
-                            }
-                        }
-                    };
-
-                    forecastGroup.Children.Add(subgroup);
-                }
+                bool hasForecast = forecasts?.Count > 0;
 
                 content.Children.Add(conditionGroup);
                 content.Children.Add(text);
-                content.Children.Add(forecastGroup);
+                if (hasForecast)
+                    content.Children.Add(GenerateLargeForecastGroup(forecasts));
             }
 
             return content;
+        }
+
+        private static AdaptiveGroup GenerateLargeForecastGroup(List<ForecastItemViewModel> forecasts)
+        {
+            var forecastGroup = new AdaptiveGroup();
+            bool hasForecast = forecasts?.Count > 0;
+
+            if (hasForecast)
+            {
+                int forecastLength = Math.Min((int)forecasts?.Count, LARGE_FORECAST_LENGTH);
+
+                if (forecastLength >= 4)
+                {
+                    for (int i = 0; i < forecastLength; i++)
+                    {
+                        var forecast = forecasts[i];
+
+                        var subgroup = new AdaptiveSubgroup()
+                        {
+                            HintWeight = 1,
+                            Children =
+                            {
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.ShortDate,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                },
+                                new AdaptiveImage()
+                                {
+                                    HintRemoveMargin = true,
+                                    Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.HiTemp,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.LoTemp,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                }
+                            }
+                        };
+
+                        forecastGroup.Children.Add(subgroup);
+                    }
+                }
+                else
+                {
+                    if (forecastLength == 1)
+                    {
+                        forecastGroup.Children.Add(new AdaptiveSubgroup()
+                        {
+                            HintWeight = 2
+                        });
+                    }
+
+                    for (int i = 0; i < forecastLength; i++)
+                    {
+                        var forecast = forecasts[i];
+
+                        var subgroup = new AdaptiveSubgroup()
+                        {
+                            HintWeight = 1,
+                            Children =
+                            {
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.ShortDate,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                },
+                                new AdaptiveImage()
+                                {
+                                    HintRemoveMargin = true,
+                                    Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.HiTemp,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                },
+                                new AdaptiveText()
+                                {
+                                    Text = forecast.LoTemp,
+                                    HintStyle = AdaptiveTextStyle.CaptionSubtle,
+                                    HintAlign = AdaptiveTextAlign.Center
+                                }
+                            }
+                        };
+
+                        forecastGroup.Children.Add(subgroup);
+
+                        if (i < forecastLength - 1 || forecastLength == 1)
+                        {
+                            forecastGroup.Children.Add(new AdaptiveSubgroup()
+                            {
+                                HintWeight = forecastLength >= 3 ? 1 : 2
+                            });
+                        }
+                    }
+                }
+            }
+
+            return forecastGroup;
         }
 
         private static TileBindingContentAdaptive GenerateHrForecast(WeatherNowViewModel weather, List<HourlyForecastItemViewModel> forecasts, ForecastTileType forecastTileType)
@@ -734,54 +818,12 @@ namespace SimpleWeather.UWP.Tiles
                     Text = ""
                 };
 
-                var forecastGroup = new AdaptiveGroup();
                 bool hasForecast = forecasts?.Count > 0;
-
-                if (hasForecast)
-                {
-                    int forecastLength = Math.Min(forecasts.Count, LARGE_FORECAST_LENGTH);
-
-                    for (int i = 0; i < forecastLength; i++)
-                    {
-                        var forecast = forecasts[i];
-
-                        var subgroup = new AdaptiveSubgroup()
-                        {
-                            HintWeight = 1,
-                            Children =
-                        {
-                            new AdaptiveText()
-                            {
-                                Text = forecast.ShortDate,
-                                HintAlign = AdaptiveTextAlign.Center
-                            },
-                            new AdaptiveImage()
-                            {
-                                HintRemoveMargin = true,
-                                Source = wim.GetWeatherIconURI(forecast.WeatherIcon, false)
-                            },
-                            new AdaptiveText()
-                            {
-                                Text = forecast.HiTemp,
-                                HintAlign = AdaptiveTextAlign.Center
-                            },
-                            new AdaptiveText()
-                            {
-                                Text = forecast.LoTemp,
-                                HintStyle = AdaptiveTextStyle.CaptionSubtle,
-                                HintAlign = AdaptiveTextAlign.Center
-                            }
-                        }
-                        };
-
-                        forecastGroup.Children.Add(subgroup);
-                    }
-                }
 
                 content.Children.Add(conditionGroup);
                 content.Children.Add(text);
                 if (hasForecast)
-                    content.Children.Add(forecastGroup);
+                    content.Children.Add(GenerateLargeForecastGroup(forecasts));
             }
 
             return content;
