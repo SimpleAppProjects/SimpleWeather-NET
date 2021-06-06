@@ -287,7 +287,7 @@ namespace SimpleWeather.WeatherData
             icon = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap)
                    .GetWeatherIcon(current.weather[0].id.ToInvariantString() + dn);
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(current.wind.speed));
+            beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(current.wind.speed));
 
             observation_time = DateTimeOffset.FromUnixTimeSeconds(current.dt);
         }

@@ -387,7 +387,7 @@ namespace SimpleWeather.WeatherData
 
             if (wind_mph.HasValue)
             {
-                beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph.Value)));
+                beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(wind_mph.Value)));
             }
 
             observation_time = forecastResponse.creationDate;

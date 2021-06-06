@@ -188,7 +188,7 @@ namespace SimpleWeather.WeatherData
             icon = WeatherManager.GetProvider(WeatherAPI.WeatherApi)
                 .GetWeatherIcon(current.is_day == 0, current.condition.code?.ToInvariantString());
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)wind_mph));
+            beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)wind_mph));
             uv = new UV(current.uv);
 
             if (current.air_quality != null)

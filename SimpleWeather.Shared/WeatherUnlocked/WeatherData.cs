@@ -197,7 +197,7 @@ namespace SimpleWeather.WeatherData
             feelslike_f = currRoot.feelslike_f;
             feelslike_c = currRoot.feelslike_c;
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(currRoot.windspd_ms));
+            beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(currRoot.windspd_ms));
         }
     }
 

@@ -2359,62 +2359,9 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
-        public Beaufort(int beaufortScale)
+        public Beaufort(BeaufortScale scale)
         {
-            switch (beaufortScale)
-            {
-                case 0:
-                    scale = BeaufortScale.B0;
-                    break;
-
-                case 1:
-                    scale = BeaufortScale.B1;
-                    break;
-
-                case 2:
-                    scale = BeaufortScale.B2;
-                    break;
-
-                case 3:
-                    scale = BeaufortScale.B3;
-                    break;
-
-                case 4:
-                    scale = BeaufortScale.B4;
-                    break;
-
-                case 5:
-                    scale = BeaufortScale.B5;
-                    break;
-
-                case 6:
-                    scale = BeaufortScale.B6;
-                    break;
-
-                case 7:
-                    scale = BeaufortScale.B7;
-                    break;
-
-                case 8:
-                    scale = BeaufortScale.B8;
-                    break;
-
-                case 9:
-                    scale = BeaufortScale.B9;
-                    break;
-
-                case 10:
-                    scale = BeaufortScale.B10;
-                    break;
-
-                case 11:
-                    scale = BeaufortScale.B11;
-                    break;
-
-                case 12:
-                    scale = BeaufortScale.B12;
-                    break;
-            }
+            this.scale = scale;
         }
 
         public override bool Equals(object obj)

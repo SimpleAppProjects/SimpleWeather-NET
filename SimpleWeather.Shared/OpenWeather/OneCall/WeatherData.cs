@@ -326,7 +326,7 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(current.weather[0].id.ToInvariantString() + dn);
 
             uv = new UV(current.uvi);
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(current.wind_speed));
+            beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(current.wind_speed));
 
             observation_time = DateTimeOffset.FromUnixTimeSeconds(current.dt);
         }

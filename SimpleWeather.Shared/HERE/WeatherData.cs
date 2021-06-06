@@ -258,7 +258,7 @@ namespace SimpleWeather.WeatherData
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
 
             if (int.TryParse(forecastItem.beaufortScale, NumberStyles.Integer, CultureInfo.InvariantCulture, out int scale))
-                beaufort = new Beaufort(scale);
+                beaufort = new Beaufort((Beaufort.BeaufortScale)scale);
 
             if (float.TryParse(forecastItem.uvIndex, NumberStyles.Float, CultureInfo.InvariantCulture, out float index))
                 uv = new UV(index);

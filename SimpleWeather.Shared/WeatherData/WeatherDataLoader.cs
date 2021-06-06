@@ -418,7 +418,7 @@ namespace SimpleWeather.WeatherData
 
                         if (hrf.wind_mph.HasValue)
                         {
-                            weather.condition.beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
+                            weather.condition.beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
                         }
                         weather.condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                         weather.condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;

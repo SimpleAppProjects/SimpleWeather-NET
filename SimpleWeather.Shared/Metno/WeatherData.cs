@@ -263,7 +263,7 @@ namespace SimpleWeather.WeatherData
                 icon = time.data.next_1_hours.summary.symbol_code;
             }
 
-            beaufort = new Beaufort((int)WeatherUtils.GetBeaufortScale(time.data.instant.details.wind_speed.Value));
+            beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(time.data.instant.details.wind_speed.Value));
             if (time.data.instant.details.ultraviolet_index_clear_sky.HasValue)
             {
                 uv = new UV(time.data.instant.details.ultraviolet_index_clear_sky.Value);
