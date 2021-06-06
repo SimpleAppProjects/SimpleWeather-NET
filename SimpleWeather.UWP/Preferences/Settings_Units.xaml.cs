@@ -27,7 +27,7 @@ namespace SimpleWeather.UWP.Preferences
     /// </summary>
     public sealed partial class Settings_Units : Page, IFrameContentPage
     {
-        private bool RequestAppTrigger = false;
+        private bool UnitsChanged = false;
 
         public Settings_Units()
         {
@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("Settings_Units: OnNavigatedToPage");
-            RequestAppTrigger = false;
+            UnitsChanged = false;
             RestoreSettings();
         }
 
@@ -52,10 +52,10 @@ namespace SimpleWeather.UWP.Preferences
         public void OnNavigatingFromPage(NavigatingCancelEventArgs e)
         {
             // Trigger background task if necessary
-            if (RequestAppTrigger)
+            if (UnitsChanged)
             {
-                Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
-                RequestAppTrigger = false;
+                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEUNIT);
+                UnitsChanged = false;
             }
         }
 
@@ -92,7 +92,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
                 {
                     Settings.TemperatureUnit = ((Units.TemperatureUnits)item.CommandParameter).GetStringValue();
-                    RequestAppTrigger = true;
+                    UnitsChanged = true;
                 }
             };
 
@@ -135,7 +135,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
                 {
                     Settings.SpeedUnit = ((Units.SpeedUnits)item.CommandParameter).GetStringValue();
-                    RequestAppTrigger = true;
+                    UnitsChanged = true;
                 }
             };
 
@@ -170,7 +170,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
                 {
                     Settings.DistanceUnit = ((Units.DistanceUnits)item.CommandParameter).GetStringValue();
-                    RequestAppTrigger = true;
+                    UnitsChanged = true;
                 }
             };
 
@@ -205,7 +205,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
                 {
                     Settings.PrecipitationUnit = ((Units.PrecipitationUnits)item.CommandParameter).GetStringValue();
-                    RequestAppTrigger = true;
+                    UnitsChanged = true;
                 }
             };
 
@@ -240,7 +240,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
                 {
                     Settings.PressureUnit = ((Units.PressureUnits)item.CommandParameter).GetStringValue();
-                    RequestAppTrigger = true;
+                    UnitsChanged = true;
                 }
             };
 

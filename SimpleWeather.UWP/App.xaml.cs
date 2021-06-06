@@ -14,6 +14,7 @@ using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.Utils;
 using SimpleWeather.UWP.WNS;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -140,6 +141,8 @@ namespace SimpleWeather.UWP
                     RequestedTheme = ApplicationTheme.Dark;
                     break;
             }
+
+            RegisterSettingsListener();
         }
 
         /// <summary>
@@ -755,6 +758,48 @@ namespace SimpleWeather.UWP
                     }
                 }
             }
+        }
+
+        private static void App_OnSettingsChanged(SettingsChangedEventArgs e)
+        {
+            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var isWeatherLoaded = localSettings.Values[Settings.KEY_WEATHERLOADED] as bool? ?? false;
+
+            switch (e.Key)
+            {
+                case Settings.KEY_API:
+                    WeatherManager.GetInstance().UpdateAPI();
+                    if (isWeatherLoaded)
+                    {
+                        SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
+                    }
+                    break;
+                case Settings.KEY_USEPERSONALKEY:
+                    WeatherManager.GetInstance().UpdateAPI();
+                    break;
+                case Settings.KEY_FOLLOWGPS:
+                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+                    break;
+                case Settings.KEY_REFRESHINTERVAL:
+                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
+                    break;
+                case Settings.KEY_ICONSSOURCE:
+                    Icons.WeatherIconsManager.GetInstance().UpdateIconProvider();
+                    break;
+                case Settings.KEY_DAILYNOTIFICATION:
+                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION);
+                    break;
+            }
+        }
+
+        public static void RegisterSettingsListener()
+        {
+            Settings.OnSettingsChanged += App_OnSettingsChanged;
+        }
+
+        public static void UnregisterSettingsListener()
+        {
+            Settings.OnSettingsChanged -= App_OnSettingsChanged;
         }
     }
 }

@@ -57,7 +57,7 @@ namespace SimpleWeather
             }
         }
 
-        public void RequestAction(string Action, IDictionary<String, String> Bundle = null)
+        public void RequestAction(string Action, IDictionary<string, object> Bundle = null)
         {
             OnCommonActionChanged?.Invoke(null, 
                 new CommonActionChangedEventArgs(Action, Bundle));

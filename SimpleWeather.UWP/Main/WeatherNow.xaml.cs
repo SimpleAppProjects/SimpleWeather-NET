@@ -622,6 +622,8 @@ namespace SimpleWeather.UWP.Main
                     lastGPSLocData = new LocationData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
 
+                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+
                     locationData = lastGPSLocData;
                     geoPos = newGeoPos;
                     locationChanged = true;

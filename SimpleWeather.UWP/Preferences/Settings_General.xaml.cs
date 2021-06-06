@@ -38,10 +38,9 @@ namespace SimpleWeather.UWP.Preferences
     public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager, IFrameContentPage
     {
         private readonly WeatherManager wm;
-
-        private bool RequestAppTrigger = false;
-
         private SnackbarManager SnackMgr;
+
+        private readonly HashSet<String> ActionQueue;
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
@@ -67,6 +66,8 @@ namespace SimpleWeather.UWP.Preferences
             this.InitializeComponent();
 
             wm = WeatherManager.GetInstance();
+            ActionQueue = new HashSet<string>();
+
             RestoreSettings();
 
             // Event Listeners
@@ -254,8 +255,9 @@ namespace SimpleWeather.UWP.Preferences
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("Settings_General: OnNavigatedToPage");
             InitSnackManager();
-            RequestAppTrigger = false;
             Application.Current.Suspending += OnSuspending;
+            App.UnregisterSettingsListener();
+            Settings.OnSettingsChanged += Settings_OnSettingsChanged;
             RestoreSettings();
         }
 
@@ -275,13 +277,10 @@ namespace SimpleWeather.UWP.Preferences
             {
                 // Unsubscribe from event
                 Application.Current.Suspending -= OnSuspending;
+                App.RegisterSettingsListener();
+                Settings.OnSettingsChanged -= Settings_OnSettingsChanged;
 
-                // Trigger background task if necessary
-                if (RequestAppTrigger)
-                {
-                    Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
-                    RequestAppTrigger = false;
-                }
+                ProcessQueue();
             }
         }
 
@@ -299,6 +298,69 @@ namespace SimpleWeather.UWP.Preferences
                 Settings.UsePersonalKey = false;
                 Settings.KeyVerified = true;
             }
+
+            App.UnregisterSettingsListener();
+            App.RegisterSettingsListener();
+
+            ProcessQueue();
+        }
+
+        private bool EnqueueAction(string action)
+        {
+            if (!string.IsNullOrEmpty(action))
+            {
+                return false;
+            }
+            else
+            {
+                return ActionQueue.Add(action);
+            }
+        }
+
+        private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(e.Key)) return;
+
+            switch (e.Key)
+            {
+                case Settings.KEY_API:
+                    EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
+                    break;
+                case Settings.KEY_FOLLOWGPS:
+                    EnqueueAction(CommonActions.ACTION_WEATHER_UPDATE);
+                    break;
+                case Settings.KEY_REFRESHINTERVAL:
+                    EnqueueAction(CommonActions.ACTION_WEATHER_REREGISTERTASK);
+                    break;
+            }
+        }
+
+        private void ProcessQueue()
+        {
+            foreach (var action in ActionQueue)
+            {
+                switch (action)
+                {
+                    case CommonActions.ACTION_SETTINGS_UPDATEAPI:
+                        wm.UpdateAPI();
+                        // Log event
+                        AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
+                        {
+                            { "API", Settings.API },
+                            { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                        });
+                        Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                        break;
+                    case CommonActions.ACTION_WEATHER_REREGISTERTASK:
+                        Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
+                        break;
+                    case CommonActions.ACTION_WEATHER_UPDATE:
+                        Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                        break;
+                }
+            }
+
+            ActionQueue.Clear();
         }
 
         private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
@@ -331,9 +393,6 @@ namespace SimpleWeather.UWP.Preferences
                         {
                             KeyEntry.Text = Settings.API_KEY = key;
                             Settings.API = API;
-                            wm.UpdateAPI();
-
-                            RequestAppTrigger = true;
 
                             Settings.KeyVerified = true;
                             UpdateKeyBorder();
@@ -427,12 +486,6 @@ namespace SimpleWeather.UWP.Preferences
                 if (Settings.KeyVerified)
                 {
                     Settings.API = API;
-                    RequestAppTrigger = true;
-                    AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
-                    {
-                        { "API", Settings.API },
-                        { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
-                    });
                 }
             }
             else
@@ -605,7 +658,6 @@ namespace SimpleWeather.UWP.Preferences
             {
                 Settings.FollowGPS = sw.IsOn;
             });
-            RequestAppTrigger = true;
         }
 
         private void SystemMode_Checked(object sender, RoutedEventArgs e)

@@ -136,7 +136,7 @@ namespace SimpleWeather.Utils
                         // Update tile id for location
                         SimpleLibrary.GetInstance().RequestAction(
                             CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
-                            new Dictionary<string, string>
+                            new Dictionary<string, object>
                             {
                                         { Constants.TILEKEY_OLDKEY, oldKey },
                                         { Constants.TILEKEY_LOCATION, Constants.KEY_GPS },

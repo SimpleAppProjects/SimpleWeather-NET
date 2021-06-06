@@ -386,6 +386,7 @@ namespace SimpleWeather.UWP.Main
                     if (locData?.query == null)
                     {
                         locData = await UpdateLocation();
+                        SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
                     }
 
                     if (cts?.IsCancellationRequested == true)
@@ -675,7 +676,11 @@ namespace SimpleWeather.UWP.Main
 
             if (!EditMode && HomeChanged)
             {
-                Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
+                    new Dictionary<string, object>
+                    {
+                        { CommonActions.EXTRA_FORCEUPDATE, false }
+                    });
             }
 
             DataChanged = false;

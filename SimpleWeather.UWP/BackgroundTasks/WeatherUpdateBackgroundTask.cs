@@ -5,6 +5,7 @@ using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -44,13 +45,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     if (Settings.WeatherLoaded)
                     {
+                        var locationChanged = false;
+
                         if (Settings.FollowGPS)
                         {
                             Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating location...");
 
                             try
                             {
-                                await UpdateLocation();
+                                locationChanged = await UpdateLocation();
                             }
                             catch (Exception e)
                             {
@@ -88,6 +91,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                             // Set update time
                             Settings.UpdateTime = DateTime.Now;
+
+                            if (locationChanged)
+                            {
+                                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
+                                    new Dictionary<string, object> 
+                                    {
+                                        { CommonActions.EXTRA_FORCEUPDATE, false }
+                                    });
+                            }
                         }
                     }
 

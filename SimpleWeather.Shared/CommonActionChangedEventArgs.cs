@@ -10,9 +10,9 @@ namespace SimpleWeather
     {
         public String Action { get; private set; }
 
-        public IDictionary<String, String> Extras { get; private set; }
+        public IDictionary<String, object> Extras { get; private set; }
 
-        public CommonActionChangedEventArgs(string action, IDictionary<string, string> extrasMap = null)
+        public CommonActionChangedEventArgs(string action, IDictionary<string, object> extrasMap = null)
         {
             this.Action = action;
             this.Extras = extrasMap;

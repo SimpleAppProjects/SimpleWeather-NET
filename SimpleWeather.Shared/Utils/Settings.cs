@@ -68,19 +68,19 @@ namespace SimpleWeather.Utils
         public const int READ_TIMEOUT = 10000; // 10s
 
         // Settings Keys
-        private const string KEY_API = "API";
-        private const string KEY_APIKEY = "API_KEY";
-        private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
+        public const string KEY_API = "API";
+        public const string KEY_APIKEY = "API_KEY";
+        public const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
         private const string KEY_USECELSIUS = "key_usecelsius";
         private const string KEY_UNITS = "Units";
-        private const string KEY_WEATHERLOADED = "weatherLoaded";
-        private const string KEY_FOLLOWGPS = "key_followgps";
+        public const string KEY_WEATHERLOADED = "weatherLoaded";
+        public const string KEY_FOLLOWGPS = "key_followgps";
         private const string KEY_LASTGPSLOCATION = "key_lastgpslocation";
         public const string KEY_REFRESHINTERVAL = "key_refreshinterval";
         private const string KEY_UPDATETIME = "key_updatetime";
         private const string KEY_DBVERSION = "key_dbversion";
         public const string KEY_USEALERTS = "key_usealerts";
-        private const string KEY_USEPERSONALKEY = "key_usepersonalkey";
+        public const string KEY_USEPERSONALKEY = "key_usepersonalkey";
         private const string KEY_CURRENTVERSION = "key_currentversion";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
         public const string KEY_USERTHEME = "key_usertheme";
