@@ -20,10 +20,28 @@ namespace UnitTestProject
     [TestClass]
     public class UnitTests
     {
+        private bool WasUsingPersonalKey = false;
+
         [TestInitialize]
         public void Initialize()
         {
             Settings.LoadIfNeeded();
+
+            if (Settings.UsePersonalKey)
+            {
+                Settings.UsePersonalKey = false;
+                WasUsingPersonalKey = true;
+            }
+        }
+
+        [TestCleanup]
+        public void Destroy()
+        {
+            if (WasUsingPersonalKey)
+            {
+                Settings.UsePersonalKey = true;
+                WasUsingPersonalKey = false;
+            }
         }
 
         private Task<Weather> GetWeather(WeatherProviderImpl providerImpl)
@@ -41,6 +59,12 @@ namespace UnitTestProject
         private async Task<Weather> GetWeather(WeatherProviderImpl providerImpl, WeatherUtils.Coordinate coordinate)
         {
             var location = await providerImpl.GetLocation(coordinate);
+            if (string.IsNullOrWhiteSpace(location?.LocationTZLong) && location.LocationLat != 0 && location.LocationLong != 0)
+            {
+                string tzId = await TZDBCache.GetTimeZone(location.LocationLat, location.LocationLong);
+                if (!string.IsNullOrWhiteSpace(tzId))
+                    location.LocationTZLong = tzId;
+            }
             var locData = new LocationData(location);
             return await providerImpl.GetWeather(locData);
         }
