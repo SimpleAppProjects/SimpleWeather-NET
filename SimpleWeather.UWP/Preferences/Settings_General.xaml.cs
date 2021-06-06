@@ -8,6 +8,7 @@ using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
@@ -78,6 +79,8 @@ namespace SimpleWeather.UWP.Preferences
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
             SystemMode.Checked += SystemMode_Checked;
+            DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
+            DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
 
             AnalyticsLogger.LogEvent("Settings_General");
         }
@@ -215,6 +218,10 @@ namespace SimpleWeather.UWP.Preferences
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
             AlertSwitch.IsOn = Settings.ShowAlerts;
+
+            // Daily Notification
+            DailyNotifSwitch.IsOn = Settings.DailyNotificationEnabled;
+            DailyNotifTimePicker.SelectedTime = Settings.DailyNotificationTime;
 
             // Radar
             RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders();
@@ -622,6 +629,38 @@ namespace SimpleWeather.UWP.Preferences
 
             Settings.UserTheme = UserThemeMode.Light;
             Shell.Instance.UpdateAppTheme();
+        }
+
+        private void DailyNotifSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sw = sender as ToggleSwitch;
+
+            if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
+            {
+                Settings.DailyNotificationEnabled = true;
+                // Register task
+                Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
+            }
+            else
+            {
+                if (sw.IsOn && !Extras.ExtrasLibrary.IsEnabled())
+                {
+                    // show premium popup
+                    Frame.Navigate(typeof(Extras.Store.PremiumPage));
+                }
+                Settings.DailyNotificationEnabled = sw.IsOn = false;
+                // Unregister task
+                Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
+            }
+        }
+
+        private void DailyNotifTimePicker_SelectedTimeChanged(TimePicker sender, TimePickerSelectedValueChangedEventArgs args)
+        {
+            Settings.DailyNotificationTime = args.NewTime ?? Settings.DEFAULT_DAILYNOTIFICATION_TIME;
+            if (Settings.DailyNotificationEnabled)
+            {
+                Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
+            }
         }
     }
 }

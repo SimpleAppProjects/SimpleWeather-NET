@@ -30,6 +30,8 @@ namespace SimpleWeather.Utils
         public static bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_USEPERSONALKEY, NewValue = value }); } }
         public static int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
         public static string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ICONSSOURCE, NewValue = value }); } }
+        public static bool DailyNotificationEnabled { get { return IsDailyNotificationEnabled(); } set { SetDailyNotificationEnabled(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DAILYNOTIFICATION, NewValue = value }); } }
+        public static TimeSpan DailyNotificationTime { get { return GetDailyNotificationTime(); } set { SetDailyNotificationTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DAILYNOTIFICATIONTIME, NewValue = value }); } }
 
         // Units
         public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_TEMPUNIT, NewValue = value }); } }
@@ -87,6 +89,11 @@ namespace SimpleWeather.Utils
         public const string KEY_PRECIPITATIONUNIT = "key_precipitationunit";
         public const string KEY_PRESSUREUNIT = "key_pressureunit";
         public const string KEY_ICONSSOURCE = "key_iconssource";
+        public const string KEY_DAILYNOTIFICATION = "key_dailynotification";
+        public const string KEY_DAILYNOTIFICATIONTIME = "key_dailynotificationtime";
+
+        // 8am
+        public static readonly TimeSpan DEFAULT_DAILYNOTIFICATION_TIME = new TimeSpan(8, 0, 0);
 
         public static event SettingsChangedEventHandler OnSettingsChanged;
 

@@ -165,6 +165,7 @@
     <Compile Include="BackgroundTasks\AppUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\RemoteConfigUpdateTask.cs" />
     <Compile Include="BackgroundTasks\ImageDatabaseTask.cs" />
+    <Compile Include="BackgroundTasks\DailyNotificationTask.cs" />
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WeatherTileUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Notifications\DailyNotificationCreator.cs" />
     <Compile Include="Preferences\IconRadioPreference.xaml.cs">
       <DependentUpon>IconRadioPreference.xaml</DependentUpon>
     </Compile>

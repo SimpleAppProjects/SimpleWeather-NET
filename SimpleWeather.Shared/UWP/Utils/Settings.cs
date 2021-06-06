@@ -387,6 +387,36 @@ namespace SimpleWeather.Utils
         {
             localSettings.Values[KEY_ICONSSOURCE] = value;
         }
+
+        private static bool IsDailyNotificationEnabled()
+        {
+            if (localSettings.Values.TryGetValue(KEY_DAILYNOTIFICATION, out object value))
+            {
+                return (bool)value;
+            }
+
+            return false;
+        }
+
+        private static void SetDailyNotificationEnabled(bool value)
+        {
+            localSettings.Values[KEY_DAILYNOTIFICATION] = value;
+        }
+
+        private static TimeSpan GetDailyNotificationTime()
+        {
+            if (localSettings.Values.TryGetValue(KEY_DAILYNOTIFICATIONTIME, out object value))
+            {
+                return TimeSpan.ParseExact(value.ToString(), "hh\\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None);
+            }
+
+            return DEFAULT_DAILYNOTIFICATION_TIME;
+        }
+
+        private static void SetDailyNotificationTime(TimeSpan value)
+        {
+            localSettings.Values[KEY_DAILYNOTIFICATIONTIME] = value.ToString("hh\\:mm");
+        }
     }
 }
 #endif

@@ -34,7 +34,7 @@ namespace SimpleWeather.UWP.Main
     public sealed partial class Shell : Page
     {
         public Frame AppFrame { get { return FrameContent; } }
-        public static Shell Instance { get; set; }
+        public static Shell Instance { get; private set; }
 
         private UISettings UISettings;
 

@@ -81,6 +81,33 @@
                     Height="1"
                     Margin="0,7.5"
                     Fill="LightGray" />
+                <TextBlock
+                    x:Uid="Pref_Title_DailyNotification"
+                    Style="{StaticResource PrefTitleStyle}"
+                    Text="Daily Notification:" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <ToggleSwitch x:Name="DailyNotifSwitch" />
+                </StackPanel>
+                <Rectangle
+                    Height="1"
+                    Margin="0,7.5"
+                    Fill="Transparent" />
+                <TimePicker
+                    x:Name="DailyNotifTimePicker"
+                    x:Uid="Pref_Title_Time"
+                    Padding="0,5"
+                    Header="Time:"
+                    IsEnabled="{x:Bind DailyNotifSwitch.IsOn, Mode=OneWay}">
+                    <TimePicker.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{StaticResource PrefTitleStyle}" Text="{Binding}" />
+                        </DataTemplate>
+                    </TimePicker.HeaderTemplate>
+                </TimePicker>
+                <Rectangle
+                    Height="1"
+                    Margin="0,7.5"
+                    Fill="LightGray" />
                 <ComboBox
                     x:Name="APIComboBox"
                     x:Uid="API_Box"

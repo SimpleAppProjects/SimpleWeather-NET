@@ -347,6 +347,44 @@ namespace SimpleWeather.UWP
                         }
                         break;
 
+                    case "view-weather":
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                        {
+                            string data = null;
+
+                            if (args.Contains("data"))
+                            {
+                                data = args["data"];
+                            }
+
+                            LocationData locData = null;
+                            if (!string.IsNullOrWhiteSpace(data))
+                            {
+                                locData = await JSONParser.DeserializerAsync<LocationData>(data);
+                            }
+
+                            // App loaded for first time
+                            if (RootFrame.Content == null)
+                            {
+                                RootFrame.Navigate(typeof(Shell), new WeatherNowArgs() 
+                                {
+                                    Location = locData
+                                });
+                            }
+                            else if (Shell.Instance != null)
+                            {
+                                // If we're not on WeatherNow, navigate
+                                if (Shell.Instance.AppFrame.Content != null && !Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                {
+                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                                    {
+                                        Location = locData
+                                    });
+                                }
+                            }
+                        }
+                        break;
+
                     default:
                         break;
                 }
@@ -415,6 +453,11 @@ namespace SimpleWeather.UWP
                 case nameof(WeatherTileUpdaterTask):
                     Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherTileUpdaterTask");
                     new WeatherTileUpdaterTask().Run(args.TaskInstance);
+                    break;
+
+                case nameof(DailyNotificationTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting DailyNotificationTask");
+                    new DailyNotificationTask().Run(args.TaskInstance);
                     break;
 
                 default:

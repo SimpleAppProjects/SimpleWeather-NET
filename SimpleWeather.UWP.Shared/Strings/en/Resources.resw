@@ -575,4 +575,10 @@
   <data name="Pref_Refresh30Min.Text" xml:space="preserve">
     <value>30 minutes</value>
   </data>
+  <data name="Pref_Title_DailyNotification.Text" xml:space="preserve">
+    <value>Daily Notification:</value>
+  </data>
+  <data name="Pref_Title_Time.Header" xml:space="preserve">
+    <value>Time:</value>
+  </data>
 </root>
