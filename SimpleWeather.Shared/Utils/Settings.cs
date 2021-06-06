@@ -64,8 +64,7 @@ namespace SimpleWeather.Utils
         public const int MAX_LOCATIONS = 16;
 
         // Units
-        private const string DEFAULT_UPDATE_INTERVAL = "60"; // 60 minutes (1hr)
-        public const int DefaultInterval = 120;
+        public const int DefaultInterval = 180; // 3 hrs
         public const int READ_TIMEOUT = 10000; // 10s
 
         // Settings Keys

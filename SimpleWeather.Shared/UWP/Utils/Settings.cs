@@ -232,9 +232,8 @@ namespace SimpleWeather.Utils
                 return (int)value;
             }
 
-            var interval = int.Parse(DEFAULT_UPDATE_INTERVAL, CultureInfo.InvariantCulture);
-            SetRefreshInterval(interval);
-            return interval;
+            SetRefreshInterval(DefaultInterval);
+            return DefaultInterval;
         }
 
         private static void SetRefreshInterval(int value)
