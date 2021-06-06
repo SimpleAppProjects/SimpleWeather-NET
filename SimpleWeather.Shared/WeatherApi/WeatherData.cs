@@ -27,9 +27,14 @@ namespace SimpleWeather.WeatherData
 
                 foreach (var hour in day.hour)
                 {
-                    var hrfcast = new HourlyForecast(hour, offset);
+                    var date = DateTimeOffset.FromUnixTimeSeconds(hour.time_epoch);
 
-                    hr_forecast.Add(hrfcast);
+                    if (date.UtcDateTime < update_time.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                    {
+                        continue;
+                    }
+
+                    hr_forecast.Add(new HourlyForecast(hour, offset));
                 }
 
                 forecast.Add(fcast);
