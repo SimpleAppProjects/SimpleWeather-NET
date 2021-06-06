@@ -377,6 +377,8 @@
     <Content Include="Assets\Providers\nws.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
     <Content Include="Assets\Providers\waqi.png" />
+    <Content Include="Assets\Providers\weatherapi_logo.png" />
+    <Content Include="Assets\Providers\weatherapi_logo_dark.png" />
     <Content Include="Assets\Providers\wunlocked.png" />
     <Content Include="Assets\Providers\yahoo.png" />
     <Content Include="Assets\Providers\yahoo_dark.png" />
