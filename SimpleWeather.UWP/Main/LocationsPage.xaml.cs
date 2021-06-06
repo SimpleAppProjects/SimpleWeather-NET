@@ -449,14 +449,10 @@ namespace SimpleWeather.UWP.Main
 
                 if (reload)
                 {
-                    Dispatcher.LaunchOnUIThread(() =>
+                    await Dispatcher.RunOnUIThread(() =>
                     {
                         PanelAdapter.RemoveAll();
                         LoadLocations();
-
-                        // Enable EditMode button
-                        EditButton.IsEnabled = true;
-                        AddLocationsButton.IsEnabled = true;
                     });
                 }
                 else
@@ -478,6 +474,13 @@ namespace SimpleWeather.UWP.Main
                                         }
                                     }));
                     }
+
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        // Enable EditMode button
+                        EditButton.IsEnabled = true;
+                        AddLocationsButton.IsEnabled = true;
+                    });
                 }
             });
         }
