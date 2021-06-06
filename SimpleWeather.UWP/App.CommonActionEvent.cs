@@ -69,6 +69,9 @@ namespace SimpleWeather.UWP
                             SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
                     }
                 }
+
+                // Reset notification time for new location
+                Settings.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE)
             {
@@ -77,6 +80,9 @@ namespace SimpleWeather.UWP
                 {
                     await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                 }
+
+                // Reset notification time for new location
+                Settings.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION)
             {
