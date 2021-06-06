@@ -50,6 +50,9 @@ namespace SimpleWeather.WeatherData
         [Ignore]
         public IList<TextForecast> txt_forecast { get; set; }
 
+        [Ignore]
+        public IList<MinutelyForecast> min_forecast { get; set; }
+
         [TextBlob(nameof(conditionblob))]
         public Condition condition { get; set; }
 
@@ -188,6 +191,25 @@ namespace SimpleWeather.WeatherData
                         this.txt_forecast = txt_forecasts;
                         break;
 
+                    case nameof(min_forecast):
+                        // Set initial cap to 60
+                        // Minutely forecasts are usually only for an hour
+                        var min_forecasts = new List<MinutelyForecast>(60);
+                        count = 0;
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        {
+                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            {
+                                var minF = new MinutelyForecast();
+                                minF.FromJson(ref reader);
+                                min_forecasts.Add(minF);
+                            }
+                        }
+                        if (count == 0) reader.ReadIsValueSeparator();
+                        this.min_forecast = min_forecasts;
+                        break;
+
                     case nameof(condition):
                         this.condition = new Condition();
                         this.condition.FromJson(ref reader);
@@ -322,6 +344,24 @@ namespace SimpleWeather.WeatherData
                 writer.WriteValueSeparator();
             }
 
+            // "min_forecast" : ""
+            if (min_forecast != null)
+            {
+                writer.WritePropertyName(nameof(min_forecast));
+                writer.WriteBeginArray();
+                var itemCount = 0;
+                foreach (MinutelyForecast min_cast in min_forecast)
+                {
+                    if (itemCount > 0)
+                        writer.WriteValueSeparator();
+                    writer.WriteString(min_cast?.ToJson());
+                    itemCount++;
+                }
+                writer.WriteEndArray();
+
+                writer.WriteValueSeparator();
+            }
+
             // "condition" : ""
             writer.WritePropertyName(nameof(condition));
             writer.WriteString(condition?.ToJson());
@@ -411,6 +451,7 @@ namespace SimpleWeather.WeatherData
                    ((forecast == null && weather.forecast == null) || weather.forecast != null && forecast?.SequenceEqual(weather.forecast) == true) &&
                    ((hr_forecast == null && weather.hr_forecast == null) || weather.hr_forecast != null && hr_forecast?.SequenceEqual(weather.hr_forecast) == true) &&
                    ((txt_forecast == null && weather.txt_forecast == null) || weather.txt_forecast != null && txt_forecast?.SequenceEqual(weather.txt_forecast) == true) &&
+                   ((min_forecast == null && weather.min_forecast == null) || weather.min_forecast != null && min_forecast?.SequenceEqual(weather.min_forecast) == true) &&
                    Object.Equals(condition, weather.condition) &&
                    Object.Equals(atmosphere, weather.atmosphere) &&
                    Object.Equals(astronomy, weather.astronomy) &&
@@ -431,6 +472,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(forecast);
             hash.Add(hr_forecast);
             hash.Add(txt_forecast);
+            hash.Add(min_forecast);
             hash.Add(condition);
             hash.Add(atmosphere);
             hash.Add(astronomy);
@@ -954,6 +996,103 @@ namespace SimpleWeather.WeatherData
                 writer.WritePropertyName(nameof(extras));
                 writer.WriteString(extras?.ToJson());
             }
+
+            // }
+            writer.WriteEndObject();
+
+            return writer.ToString();
+        }
+    }
+
+    [JsonFormatter(typeof(CustomJsonConverter<MinutelyForecast>))]
+    public partial class MinutelyForecast : CustomJsonObject
+    {
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
+        public DateTimeOffset date { get; set; }
+
+        public float? rain_mm { get; set; }
+
+        public MinutelyForecast()
+        {
+            // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MinutelyForecast forecast &&
+                   date == forecast.date &&
+                   rain_mm == forecast.rain_mm;
+        }
+
+        public override int GetHashCode()
+        {
+            var hash = new HashCode();
+            hash.Add(date);
+            hash.Add(rain_mm);
+            return hash.ToHashCode();
+        }
+
+        public override void FromJson(ref JsonReader extReader)
+        {
+            JsonReader reader;
+            string jsonValue;
+
+            if (extReader.GetCurrentJsonToken() == JsonToken.String)
+                jsonValue = extReader.ReadString();
+            else
+                jsonValue = null;
+
+            if (jsonValue == null)
+                reader = extReader;
+            else
+            {
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            }
+
+            var count = 0;
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            {
+                reader.ReadIsBeginObject(); // StartObject
+
+                string property = reader.ReadPropertyName();
+                //reader.ReadNext(); // prop value
+
+                switch (property)
+                {
+                    case nameof(date):
+                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        break;
+
+                    case nameof(rain_mm):
+                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float rainMm))
+                            this.rain_mm = rainMm;
+                        break;
+
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+            }
+        }
+
+        public override string ToJson()
+        {
+            var writer = new JsonWriter();
+
+            // {
+            writer.WriteBeginObject();
+
+            // "date" : ""
+            writer.WritePropertyName(nameof(date));
+            writer.WriteString(date.ToISO8601Format());
+
+            writer.WriteValueSeparator();
+
+            // "rain_mm" : ""
+            writer.WritePropertyName(nameof(rain_mm));
+            writer.WriteString(rain_mm?.ToInvariantString());
 
             // }
             writer.WriteEndObject();
@@ -2632,21 +2771,28 @@ namespace SimpleWeather.WeatherData
         [TextBlob(nameof(txtforecastblob))]
         public IList<TextForecast> txt_forecast { get; set; }
 
+        [TextBlob(nameof(minforecastblob))]
+        public IList<MinutelyForecast> min_forecast { get; set; }
+
         [IgnoreDataMember]
         public string forecastblob { get; set; }
 
         [IgnoreDataMember]
         public string txtforecastblob { get; set; }
 
+        [IgnoreDataMember]
+        public string minforecastblob { get; set; }
+
         public Forecasts()
         {
         }
 
-        public Forecasts(string query, IList<Forecast> forecast, IList<TextForecast> txt_forecast)
+        public Forecasts(Weather weatherData)
         {
-            this.query = query;
-            this.forecast = forecast;
-            this.txt_forecast = txt_forecast;
+            this.query = weatherData?.query;
+            this.forecast = weatherData?.forecast;
+            this.txt_forecast = weatherData?.txt_forecast;
+            this.min_forecast = weatherData?.min_forecast;
         }
     }
 

@@ -29,6 +29,14 @@ namespace SimpleWeather.WeatherData
             {
                 hr_forecast.Add(new HourlyForecast(hourly));
             }
+            if (root.minutely?.Any() == true)
+            {
+                min_forecast = new List<MinutelyForecast>(root.minutely.Length);
+                foreach (var min in root.minutely)
+                {
+                    min_forecast.Add(new MinutelyForecast(min));
+                }
+            }
 
             condition = new Condition(root.current);
             atmosphere = new Atmosphere(root.current);
@@ -278,6 +286,15 @@ namespace SimpleWeather.WeatherData
                 Math.Round(ConversionMethods.KtoC(forecast.feels_like.night)));
 
             fcttext_metric = sb_metric.ToString();
+        }
+    }
+
+    public partial class MinutelyForecast
+    {
+        public MinutelyForecast(OpenWeather.OneCall.Minutely minute)
+        {
+            date = DateTimeOffset.FromUnixTimeSeconds(minute.dt);
+            rain_mm = minute.precipitation;
         }
     }
 

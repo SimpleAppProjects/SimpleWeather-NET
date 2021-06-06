@@ -27,6 +27,7 @@ namespace SimpleWeather.UWP.Controls
         private string unitCode;
         private string iconProvider;
 
+        private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         public ICollection<ForecastGraphViewModel> GraphModels
@@ -43,6 +44,8 @@ namespace SimpleWeather.UWP.Controls
         {
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
+            currentForecastsData = new ObservableItem<Forecasts>();
+            currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -72,6 +75,8 @@ namespace SimpleWeather.UWP.Controls
                     var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
                     currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
 
+                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+
                     Settings.RegisterWeatherDBChangedEvent(ChartsViewModel_TableChanged);
                 });
             }
@@ -80,7 +85,7 @@ namespace SimpleWeather.UWP.Controls
                 this.unitCode = Settings.UnitString;
                 this.iconProvider = Settings.IconProvider;
 
-                RefreshHourlyForecasts(currentHrForecastsData.GetValue());
+                RefreshGraphModelData(currentForecastsData?.GetValue(), currentHrForecastsData?.GetValue());
             }
         }
 
@@ -94,6 +99,10 @@ namespace SimpleWeather.UWP.Controls
                 {
                     currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
                 }
+                else if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
+                {
+                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
+                }
             });
         }
 
@@ -101,151 +110,170 @@ namespace SimpleWeather.UWP.Controls
         {
             if (e.NewValue is IList<HourlyForecast> hrfcasts)
             {
-                RefreshHourlyForecasts(hrfcasts);
+                RefreshGraphModelData(currentForecastsData?.GetValue(), hrfcasts);
             }
         }
 
-        private void RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
+        private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
+        {
+            if (e.NewValue is Forecasts fcasts)
+            {
+                RefreshGraphModelData(fcasts, currentHrForecastsData?.GetValue());
+            }
+        }
+
+        private void RefreshGraphModelData(Forecasts forecasts, IList<HourlyForecast> hrfcasts)
         {
             Dispatcher.LaunchOnUIThread(() =>
             {
                 GraphModels = null;
 
-                if (hrfcasts?.Count > 0)
+                if (forecasts?.min_forecast?.Count > 0 || hrfcasts?.Count > 0)
                 {
-                    GraphModels = CreateGraphModelData(hrfcasts);
+                    var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero);
+                    GraphModels = CreateGraphModelData(forecasts?.min_forecast?.Where(m => m.date >= now)?.Take(60), hrfcasts);
                 }
             });
         }
 
-        private ICollection<ForecastGraphViewModel> CreateGraphModelData(IList<HourlyForecast> hrfcasts)
+        private ICollection<ForecastGraphViewModel> CreateGraphModelData(IEnumerable<MinutelyForecast> minfcasts, IList<HourlyForecast> hrfcasts)
         {
             IReadOnlyList<ForecastGraphType> graphTypes = 
                 Enum.GetValues(typeof(ForecastGraphType)).Cast<ForecastGraphType>().ToList();
-            var data = new List<ForecastGraphViewModel>(graphTypes.Count);
+            var data = new List<ForecastGraphViewModel>(graphTypes.Count + (minfcasts?.Any() == true ? 1 : 0));
 
-            // TODO: replace with [Sorted||Ordered]Dictionary
-            ForecastGraphViewModel /*tempData = null, */popData = null, windData = null, rainData = null, snowData = null, uviData = null, humidityData = null;
-
-            for (int i = 0; i < hrfcasts.Count; i++)
+            if (minfcasts?.Any() == true)
             {
-                var hrfcast = hrfcasts[i];
+                var model = new ForecastGraphViewModel();
+                model.SetMinutelyForecastData(minfcasts);
+                data.Add(model);
+            }
 
-                if (i == 0)
+            if (hrfcasts?.Any() == true)
+            {
+                // TODO: replace with [Sorted||Ordered]Dictionary
+                ForecastGraphViewModel /*tempData = null, */popData = null, windData = null, rainData = null, snowData = null, uviData = null, humidityData = null;
+
+                for (int i = 0; i < hrfcasts.Count; i++)
                 {
-                    //tempData = new ForecastGraphViewModel();
+                    var hrfcast = hrfcasts[i];
 
-                    if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
+                    if (i == 0)
                     {
-                        popData = new ForecastGraphViewModel();
+                        //tempData = new ForecastGraphViewModel();
+
+                        if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
+                        {
+                            popData = new ForecastGraphViewModel();
+                        }
+                        if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
+                        {
+                            windData = new ForecastGraphViewModel();
+                        }
+                        if (hrfcasts.FirstOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
+                        {
+                            rainData = new ForecastGraphViewModel();
+                        }
+                        if (hrfcasts.FirstOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_snow_cm.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_snow_cm.HasValue == true)
+                        {
+                            snowData = new ForecastGraphViewModel();
+                        }
+                        if (hrfcasts.FirstOrDefault()?.extras?.uv_index.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.uv_index.HasValue == true)
+                        {
+                            uviData = new ForecastGraphViewModel();
+                        }
+                        if (hrfcasts.FirstOrDefault()?.extras?.humidity.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.humidity.HasValue == true)
+                        {
+                            humidityData = new ForecastGraphViewModel();
+                        }
                     }
-                    if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
+
+                    /*
+                    if (tempData != null)
                     {
-                        windData = new ForecastGraphViewModel();
+                        tempData.AddForecastData(hrfcast, ForecastGraphType.Temperature);
                     }
-                    if (hrfcasts.FirstOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
+                    */
+                    if (popData != null)
                     {
-                        rainData = new ForecastGraphViewModel();
+                        if (hrfcast.extras?.pop.HasValue == true && hrfcast.extras.pop >= 0)
+                        {
+                            popData.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
+                        }
                     }
-                    if (hrfcasts.FirstOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_snow_cm.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_snow_cm.HasValue == true)
+                    if (windData != null)
                     {
-                        snowData = new ForecastGraphViewModel();
+                        if (hrfcast.wind_mph.HasValue && hrfcast.wind_mph >= 0)
+                        {
+                            windData.AddForecastData(hrfcast, ForecastGraphType.Wind);
+                        }
                     }
-                    if (hrfcasts.FirstOrDefault()?.extras?.uv_index.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.extras?.uv_index.HasValue == true)
+                    if (rainData != null)
                     {
-                        uviData = new ForecastGraphViewModel();
+                        if (hrfcast.extras?.qpf_rain_in.HasValue == true && hrfcast.extras?.qpf_rain_mm.HasValue == true)
+                        {
+                            rainData.AddForecastData(hrfcast, ForecastGraphType.Rain);
+                        }
                     }
-                    if (hrfcasts.FirstOrDefault()?.extras?.humidity.HasValue == true ||
-                        hrfcasts.LastOrDefault()?.extras?.humidity.HasValue == true)
+                    if (snowData != null)
                     {
-                        humidityData = new ForecastGraphViewModel();
+                        if (hrfcast.extras?.qpf_snow_in.HasValue == true && hrfcast.extras?.qpf_snow_cm.HasValue == true)
+                        {
+                            snowData.AddForecastData(hrfcast, ForecastGraphType.Snow);
+                        }
+                    }
+                    if (uviData != null)
+                    {
+                        if (hrfcast.extras?.uv_index.HasValue == true)
+                        {
+                            uviData.AddForecastData(hrfcast, ForecastGraphType.UVIndex);
+                        }
+                    }
+                    if (humidityData != null)
+                    {
+                        if (hrfcast.extras?.humidity.HasValue == true)
+                        {
+                            humidityData.AddForecastData(hrfcast, ForecastGraphType.Humidity);
+                        }
                     }
                 }
 
                 /*
-                if (tempData != null)
+                if (tempData?.SeriesData?.Count > 0)
                 {
-                    tempData.AddForecastData(hrfcast, ForecastGraphType.Temperature);
+                    data.Add(tempData);
                 }
                 */
-                if (popData != null)
+                if (popData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.extras?.pop.HasValue == true && hrfcast.extras.pop >= 0)
-                    {
-                        popData.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
-                    }
+                    data.Add(popData);
                 }
-                if (windData != null)
+                if (windData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.wind_mph.HasValue && hrfcast.wind_mph >= 0)
-                    {
-                        windData.AddForecastData(hrfcast, ForecastGraphType.Wind);
-                    }
+                    data.Add(windData);
                 }
-                if (rainData != null)
+                if (humidityData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.extras?.qpf_rain_in.HasValue == true && hrfcast.extras?.qpf_rain_mm.HasValue == true)
-                    {
-                        rainData.AddForecastData(hrfcast, ForecastGraphType.Rain);
-                    }
+                    data.Add(humidityData);
                 }
-                if (snowData != null)
+                if (uviData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.extras?.qpf_snow_in.HasValue == true && hrfcast.extras?.qpf_snow_cm.HasValue == true)
-                    {
-                        snowData.AddForecastData(hrfcast, ForecastGraphType.Snow);
-                    }
+                    data.Add(uviData);
                 }
-                if (uviData != null)
+                if (rainData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.extras?.uv_index.HasValue == true)
-                    {
-                        uviData.AddForecastData(hrfcast, ForecastGraphType.UVIndex);
-                    }
+                    data.Add(rainData);
                 }
-                if (humidityData != null)
+                if (snowData?.SeriesData?.Count > 0)
                 {
-                    if (hrfcast.extras?.humidity.HasValue == true)
-                    {
-                        humidityData.AddForecastData(hrfcast, ForecastGraphType.Humidity);
-                    }
+                    data.Add(snowData);
                 }
-            }
-
-            /*
-            if (tempData?.SeriesData?.Count > 0)
-            {
-                data.Add(tempData);
-            }
-            */
-            if (popData?.SeriesData?.Count > 0)
-            {
-                data.Add(popData);
-            }
-            if (windData?.SeriesData?.Count > 0)
-            {
-                data.Add(windData);
-            }
-            if (humidityData?.SeriesData?.Count > 0)
-            {
-                data.Add(humidityData);
-            }
-            if (uviData?.SeriesData?.Count > 0)
-            {
-                data.Add(uviData);
-            }
-            if (rainData?.SeriesData?.Count > 0)
-            {
-                data.Add(rainData);
-            }
-            if (snowData?.SeriesData?.Count > 0)
-            {
-                data.Add(snowData);
             }
 
             return data;

@@ -49,15 +49,35 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty HourlyForecastDataProperty =
             DependencyProperty.Register("HourlyForecastData", typeof(List<HourlyForecastNowViewModel>), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
 
-        public ForecastGraphViewModel PrecipitationGraphData
+        public ForecastGraphViewModel HourlyPrecipitationGraphData
         {
-            get { return (ForecastGraphViewModel)GetValue(PrecipitationGraphDataProperty); }
-            set { SetValue(PrecipitationGraphDataProperty, value); }
+            get { return (ForecastGraphViewModel)GetValue(HourlyPrecipitationGraphDataProperty); }
+            set { SetValue(HourlyPrecipitationGraphDataProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for PrecipitationGraphData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty PrecipitationGraphDataProperty =
-            DependencyProperty.Register("PrecipitationGraphData", typeof(ForecastGraphViewModel), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+        public static readonly DependencyProperty HourlyPrecipitationGraphDataProperty =
+            DependencyProperty.Register("HourlyPrecipitationGraphData", typeof(ForecastGraphViewModel), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+
+        public ForecastGraphViewModel MinutelyPrecipitationGraphData
+        {
+            get { return (ForecastGraphViewModel)GetValue(MinutelyPrecipitationGraphDataProperty); }
+            set { SetValue(MinutelyPrecipitationGraphDataProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for MinutelyPrecipitationGraphData.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty MinutelyPrecipitationGraphDataProperty =
+            DependencyProperty.Register("MinutelyPrecipitationGraphData", typeof(ForecastGraphViewModel), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+
+        public bool IsPrecipitationDataPresent
+        {
+            get { return (bool)GetValue(IsPrecipitationDataPresentProperty); }
+            private set { SetValue(IsPrecipitationDataPresentProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsPrecipitationDataPresent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsPrecipitationDataPresentProperty =
+            DependencyProperty.Register("IsPrecipitationDataPresent", typeof(bool), typeof(ForecastsNowViewModel), new PropertyMetadata(false));
 
         public ForecastsNowViewModel()
         {
@@ -65,6 +85,17 @@ namespace SimpleWeather.UWP.Controls
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
+
+            RegisterPropertyChangedCallback(HourlyPrecipitationGraphDataProperty, ForecastsNowViewModel_OnDependencyPropertyChanged);
+            RegisterPropertyChangedCallback(MinutelyPrecipitationGraphDataProperty, ForecastsNowViewModel_OnDependencyPropertyChanged);
+        }
+
+        private void ForecastsNowViewModel_OnDependencyPropertyChanged(DependencyObject sender, DependencyProperty dp)
+        {
+            if (dp == HourlyPrecipitationGraphDataProperty || dp == MinutelyPrecipitationGraphDataProperty)
+            {
+                IsPrecipitationDataPresent = HourlyPrecipitationGraphData != null || MinutelyPrecipitationGraphData != null;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -140,6 +171,7 @@ namespace SimpleWeather.UWP.Controls
             Dispatcher.LaunchOnUIThread(() =>
             {
                 ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast) : null;
+                RefreshMinutelyForecasts(fcasts?.min_forecast);
             });
         }
 
@@ -161,11 +193,33 @@ namespace SimpleWeather.UWP.Controls
                 {
                     var model = new ForecastGraphViewModel();
                     model.SetForecastData(hrfcasts, ForecastGraphType.Precipitation);
-                    PrecipitationGraphData = model;
+                    HourlyPrecipitationGraphData = model;
                 }
                 else
                 {
-                    PrecipitationGraphData = null;
+                    HourlyPrecipitationGraphData = null;
+                }
+            });
+        }
+
+        private void RefreshMinutelyForecasts(IList<MinutelyForecast> minfcasts)
+        {
+            Dispatcher.LaunchOnUIThread(() =>
+            {
+                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+                var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).AddHours(-(hrInterval * 0.5)).Trim(TimeSpan.TicksPerHour);
+
+                var minfcastsFiltered = minfcasts?.Where(m => m.date >= now)?.Take(60);
+
+                if (minfcastsFiltered?.Any() == true)
+                {
+                    var model = new ForecastGraphViewModel();
+                    model.SetMinutelyForecastData(minfcastsFiltered);
+                    MinutelyPrecipitationGraphData = model;
+                }
+                else
+                {
+                    MinutelyPrecipitationGraphData = null;
                 }
             });
         }

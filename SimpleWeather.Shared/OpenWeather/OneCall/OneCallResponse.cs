@@ -12,6 +12,7 @@ namespace SimpleWeather.OpenWeather.OneCall
         public Hourly[] hourly { get; set; }
         public Daily[] daily { get; set; }
         public Alert[] alerts { get; set; }
+        public Minutely[] minutely { get; set; }
     }
 
     public class Current
@@ -126,5 +127,11 @@ namespace SimpleWeather.OpenWeather.OneCall
         public long start { get; set; }
         public long end { get; set; }
         public string description { get; set; }
+    }
+
+    public class Minutely
+    {
+        public long dt { get; set; }
+        public float precipitation { get; set; }
     }
 }

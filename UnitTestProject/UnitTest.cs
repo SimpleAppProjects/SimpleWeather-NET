@@ -49,7 +49,7 @@ namespace UnitTestProject
         {
             var serialStr = await JSONParser.SerializerAsync(weather);
             var deserialWeather = await JSONParser.DeserializerAsync<Weather>(serialStr);
-            var fcast = new Forecasts(weather.query, weather.forecast, weather.txt_forecast);
+            var fcast = new Forecasts(weather);
             var serialFcast = await JSONParser.SerializerAsync(fcast);
             var deserialfcast = await JSONParser.DeserializerAsync<Forecasts>(serialFcast);
             bool testSuccess = Object.Equals(weather, deserialWeather) && string.Equals(fcast?.query, deserialfcast?.query) &&

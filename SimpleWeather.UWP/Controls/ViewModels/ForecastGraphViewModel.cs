@@ -99,6 +99,19 @@ namespace SimpleWeather.UWP.Controls
             SeriesData = CreateSeriesData(yData, graphType);
         }
 
+        public void SetMinutelyForecastData(IEnumerable<MinutelyForecast> forecasts)
+        {
+            var xData = new List<XLabelData>(forecasts.Count());
+            var yData = new List<YEntryData>(forecasts.Count());
+
+            foreach (var forecast in forecasts)
+            {
+                AddMinutelyEntryData(forecast, xData, yData);
+            }
+            LabelData = xData;
+            SeriesData = CreateSeriesData(yData, ForecastGraphType.Precipitation);
+        }
+
         private void AddEntryData<T>(T forecast, IList<XLabelData> xData, IList<YEntryData> yData, ForecastGraphType graphType) where T : BaseForecast
         {
             var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
@@ -238,6 +251,44 @@ namespace SimpleWeather.UWP.Controls
                         xData.Add(new XLabelData(date));
                     }
                     break;
+            }
+        }
+
+        private void AddMinutelyEntryData(MinutelyForecast forecast, IList<XLabelData> xData, IList<YEntryData> yData)
+        {
+            var culture = CultureUtils.UserCulture;
+
+            string date;
+            if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
+            {
+                date = forecast.date.ToString("HH:mm", culture);
+            }
+            else
+            {
+                date = forecast.date.ToString("h:mm tt", culture);
+            }
+
+            if (forecast.rain_mm.HasValue && forecast.rain_mm >= 0)
+            {
+                string unit = Settings.PrecipitationUnit;
+                float precipValue;
+                string precipUnit;
+
+                switch (unit)
+                {
+                    case Units.INCHES:
+                    default:
+                        precipValue = ConversionMethods.MMToIn(forecast.rain_mm.Value);
+                        precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_in");
+                        break;
+                    case Units.MILLIMETERS:
+                        precipValue = forecast.rain_mm.Value;
+                        precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mm");
+                        break;
+                }
+
+                yData.Add(new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
+                xData.Add(new XLabelData(date));
             }
         }
 

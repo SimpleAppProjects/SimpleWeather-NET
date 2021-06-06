@@ -486,7 +486,7 @@
                         x:Name="PrecipitationPanel"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
-                        Visibility="{x:Bind ForecastView.PrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                        Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl Header="Placeholder" Style="{ThemeResource NavigatableSectionStyle}">
                             <toolkitControls:HeaderedContentControl.HeaderTemplate>
@@ -512,7 +512,18 @@
 
                                 </DataTemplate>
                             </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                            <graphs:ForecastGraphPanel GraphData="{x:Bind ForecastView.PrecipitationGraphData, Mode=OneWay}" GraphViewTapped="ForecastGraphPanel_GraphViewTapped" />
+                            <StackPanel>
+                                <graphs:ForecastGraphPanel
+                                    Margin="0,5"
+                                    GraphData="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay}"
+                                    GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
+                                    Visibility="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                <graphs:ForecastGraphPanel
+                                    Margin="0,5"
+                                    GraphData="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay}"
+                                    GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
+                                    Visibility="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                            </StackPanel>
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
                     <StackPanel

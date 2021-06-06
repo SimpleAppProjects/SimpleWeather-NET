@@ -20,7 +20,7 @@ namespace SimpleWeather.OpenWeather.OneCall
     {
         private const String BASE_URL = "https://api.openweathermap.org/data/2.5/";
         private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast?appid={0}";
-        private const String WEATHER_QUERY_URL = BASE_URL + "onecall?{0}&exclude=minutely&appid={1}&lang={2}";
+        private const String WEATHER_QUERY_URL = BASE_URL + "onecall?{0}&appid={1}&lang={2}";
         private const String AQI_QUERY_URL = BASE_URL + "air_pollution?lat={0:0.####}&lon={1:0.####}&appid={2}";
 
         public OWMOneCallWeatherProvider() : base()
@@ -180,6 +180,13 @@ namespace SimpleWeather.OpenWeather.OneCall
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
+            }
+            if (weather.min_forecast?.Any() == true)
+            {
+                foreach (MinutelyForecast min_forecast in weather.min_forecast)
+                {
+                    min_forecast.date = min_forecast.date.ToOffset(offset);
+                }
             }
 
             weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);

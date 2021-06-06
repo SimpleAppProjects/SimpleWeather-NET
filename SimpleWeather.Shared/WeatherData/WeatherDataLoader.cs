@@ -555,12 +555,7 @@ namespace SimpleWeather.WeatherData
 
         private async Task SaveWeatherForecasts()
         {
-            await Settings.SaveWeatherForecasts(new Forecasts()
-            {
-                query = weather.query,
-                forecast = weather.forecast,
-                txt_forecast = weather.txt_forecast
-            }).ConfigureAwait(false);
+            await Settings.SaveWeatherForecasts(new Forecasts(weather)).ConfigureAwait(false);
             await Settings.SaveWeatherForecasts(location, weather?.hr_forecast?.Select(f => new HourlyForecasts(weather?.query, f))).ConfigureAwait(false);
         }
     }
