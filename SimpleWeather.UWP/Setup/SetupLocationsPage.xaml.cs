@@ -277,18 +277,18 @@ namespace SimpleWeather.UWP.Setup
                 else if (String.IsNullOrWhiteSpace(queryText))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                 }
 
                 if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                 }
 
                 if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
-                    throw new CustomException(App.ResLoader.GetString("WError_InvalidKey"));
+                    throw new CustomException(App.ResLoader.GetString("werror_invalidkey"));
                 }
 
                 ctsToken.ThrowIfCancellationRequested();
@@ -341,7 +341,7 @@ namespace SimpleWeather.UWP.Setup
 
                 if (!wm.IsRegionSupported(query_vm.LocationCountry))
                 {
-                    throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
+                    throw new CustomException(App.ResLoader.GetString("error_message_weather_region_unsupported"));
                 }
 
                 ctsToken.ThrowIfCancellationRequested();
@@ -350,7 +350,7 @@ namespace SimpleWeather.UWP.Setup
                 var location = new LocationData(query_vm);
                 if (!location.IsValid())
                 {
-                    throw new CustomException(App.ResLoader.GetString("WError_NoWeather"));
+                    throw new CustomException(App.ResLoader.GetString("werror_noweather"));
                 }
 
                 Weather weather = await Settings.GetWeatherData(location.query);
@@ -401,7 +401,7 @@ namespace SimpleWeather.UWP.Setup
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                         }
 
                         // Restore controls
@@ -484,7 +484,7 @@ namespace SimpleWeather.UWP.Setup
                     if (String.IsNullOrWhiteSpace(view.LocationQuery))
                     {
                         // Stop since there is no valid query
-                        throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                        throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                     }
                     else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                     {
@@ -504,14 +504,14 @@ namespace SimpleWeather.UWP.Setup
 
                     if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                     {
-                        throw new CustomException(App.ResLoader.GetString("WError_InvalidKey"));
+                        throw new CustomException(App.ResLoader.GetString("werror_invalidkey"));
                     }
 
                     ctsToken.ThrowIfCancellationRequested();
 
                     if (!wm.IsRegionSupported(view.LocationCountry))
                     {
-                        throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
+                        throw new CustomException(App.ResLoader.GetString("error_message_weather_region_unsupported"));
                     }
 
                     // Weather Data
@@ -572,7 +572,7 @@ namespace SimpleWeather.UWP.Setup
                             }
                             else
                             {
-                                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             }
 
                             // Restore controls
@@ -627,16 +627,16 @@ namespace SimpleWeather.UWP.Setup
                         var ex = t.Exception?.GetBaseException();
 
                         if (ex != null && Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("WError_NetworkError"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("werror_networkerror"), SnackbarDuration.Short));
                         else
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                     }
 
                     if (t.Result == GeolocationAccessStatus.Denied)
                     {
                         Settings.FollowGPS = false;
                         var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
-                        snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
+                        snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                         });

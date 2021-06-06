@@ -231,18 +231,18 @@ namespace SimpleWeather.UWP.Main
                 else if (String.IsNullOrWhiteSpace(queryText))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                 }
 
                 if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("Error_Location"));
+                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                 }
 
                 if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
                 {
-                    throw new CustomException(App.ResLoader.GetString("WError_InvalidKey"));
+                    throw new CustomException(App.ResLoader.GetString("werror_invalidkey"));
                 }
 
                 ctsToken.ThrowIfCancellationRequested();
@@ -298,7 +298,7 @@ namespace SimpleWeather.UWP.Main
 
                 if (!wm.IsRegionSupported(query_vm.LocationCountry))
                 {
-                    throw new CustomException(App.ResLoader.GetString("Error_WeatherRegionUnsupported"));
+                    throw new CustomException(App.ResLoader.GetString("error_message_weather_region_unsupported"));
                 }
 
                 // Check if location already exists
@@ -313,7 +313,7 @@ namespace SimpleWeather.UWP.Main
                 var location = new LocationData(query_vm);
                 if (!location.IsValid())
                 {
-                    throw new CustomException(App.ResLoader.GetString("WError_NoWeather"));
+                    throw new CustomException(App.ResLoader.GetString("werror_noweather"));
                 }
 
                 var weather = await Settings.GetWeatherData(location.query);
@@ -355,7 +355,7 @@ namespace SimpleWeather.UWP.Main
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                         }
 
                         // Restore controls

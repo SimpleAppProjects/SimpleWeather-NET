@@ -19,7 +19,7 @@ namespace SimpleWeather.Controls
 
         public UVIndexViewModel(UV uvIdx)
         {
-            Title = SimpleLibrary.GetInstance().ResLoader.GetString("UV_Label");
+            Title = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
             Icon = WeatherIcons.DAY_SUNNY;
             Index = (int)uvIdx.index;
             Progress = uvIdx.index >= 11 ? 100 : (int)((uvIdx.index / 11) * 100);

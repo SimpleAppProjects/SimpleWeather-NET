@@ -69,7 +69,7 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (!wm.IsRegionSupported(location.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherRegionUnsupported"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
                         {

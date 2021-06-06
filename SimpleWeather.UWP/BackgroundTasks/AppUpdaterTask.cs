@@ -178,7 +178,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             new AdaptiveText()
                             {
-                                Text = App.ResLoader.GetString("UpdateAvailablePrompt")
+                                Text = App.ResLoader.GetString("prompt_update_available")
                             }
                         }
                     }

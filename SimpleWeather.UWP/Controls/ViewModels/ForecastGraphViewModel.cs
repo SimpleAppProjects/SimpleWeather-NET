@@ -277,7 +277,7 @@ namespace SimpleWeather.UWP.Controls
                     series.SetSeriesColors(Colors.SkyBlue);
                     break;
                 case ForecastGraphType.UVIndex:
-                    GraphLabel = App.ResLoader.GetString("UV_Label");
+                    GraphLabel = App.ResLoader.GetString("label_uv");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.Orange);
                     series.SetSeriesMinMax(0f, 12f);

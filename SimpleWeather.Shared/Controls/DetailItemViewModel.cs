@@ -67,7 +67,7 @@ namespace SimpleWeather.Controls
                     break;
 
                 case WeatherDetailsType.WindGust:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("WindGust_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_windgust");
                     this.Icon = WeatherIcons.CLOUDY_GUSTS;
                     break;
 
@@ -107,32 +107,32 @@ namespace SimpleWeather.Controls
                     break;
 
                 case WeatherDetailsType.Dewpoint:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Dewpoint_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_dewpoint");
                     this.Icon = WeatherIcons.THERMOMETER;
                     break;
 
                 case WeatherDetailsType.Moonrise:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Moonrise_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonrise");
                     this.Icon = WeatherIcons.MOONRISE;
                     break;
 
                 case WeatherDetailsType.Moonset:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Moonset_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonset");
                     this.Icon = WeatherIcons.MOONSET;
                     break;
 
                 case WeatherDetailsType.MoonPhase:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("MoonPhase_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonphase");
                     this.Icon = WeatherIcons.MOON_ALT_NEW;
                     break;
 
                 case WeatherDetailsType.Beaufort:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Beaufort_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_beaufort");
                     this.Icon = WeatherIcons.WIND_BEAUFORT_0;
                     break;
 
                 case WeatherDetailsType.UV:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("UV_Label");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
                     this.Icon = WeatherIcons.DAY_SUNNY;
                     break;
             }
@@ -143,7 +143,7 @@ namespace SimpleWeather.Controls
 
         public DetailItemViewModel(MoonPhase.MoonPhaseType moonPhaseType)
         {
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("MoonPhase_Label");
+            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonphase");
             this.IconRotation = 0;
 
             switch (moonPhaseType)
@@ -192,7 +192,7 @@ namespace SimpleWeather.Controls
 
         public DetailItemViewModel(Beaufort.BeaufortScale beaufortScale)
         {
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Beaufort_Label");
+            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_beaufort");
             this.IconRotation = 0;
 
             switch (beaufortScale)
@@ -267,7 +267,7 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(UV uv)
         {
             this.DetailsType = WeatherDetailsType.UV;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("UV_Label");
+            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
             this.Icon = WeatherIcons.DAY_SUNNY;
             this.IconRotation = 0;
 
@@ -296,7 +296,7 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(AirQuality aqi)
         {
             this.DetailsType = WeatherDetailsType.AirQuality;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("AQI_Label");
+            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_airquality");
             this.Icon = WeatherIcons.CLOUDY_GUSTS;
             this.IconRotation = 0;
 

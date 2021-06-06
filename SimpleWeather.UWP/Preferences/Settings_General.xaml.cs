@@ -241,7 +241,7 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Msg_EnterAPIKey"), SnackbarDuration.Long));
+                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
                 return Task.FromResult(true);
             }
 
@@ -555,7 +555,7 @@ namespace SimpleWeather.UWP.Preferences
                         await Dispatcher.RunOnUIThread(() =>
                         {
                             var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
-                            snackbar.SetAction(App.ResLoader.GetString("Label_Settings"), async () =>
+                            snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
                             {
                                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                             });
@@ -567,7 +567,7 @@ namespace SimpleWeather.UWP.Preferences
                     case GeolocationAccessStatus.Unspecified:
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_Location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             sw.IsOn = false;
                         });
                         break;

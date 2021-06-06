@@ -14,9 +14,9 @@ namespace SimpleWeather.UWP.Helpers
             switch (type)
             {
                 case LocationType.GPS:
-                    return App.ResLoader.GetString("Header_GPSLocation");
+                    return App.ResLoader.GetString("label_currentlocation");
                 case LocationType.Search:
-                    return App.ResLoader.GetString("Header_FavLocations");
+                    return App.ResLoader.GetString("label_favoritelocations");
             }
 
             return null;

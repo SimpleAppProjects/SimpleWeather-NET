@@ -240,13 +240,13 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr.Show(Snackbar.Make(App.ResLoader.GetString("Message_NeedFavorite"), SnackbarDuration.Short));
+                    SnackMgr.Show(Snackbar.Make(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("Message_LocationRemoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () =>
+                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.ResLoader.GetString("undo"), () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();
@@ -302,13 +302,13 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr?.Show(Snackbar.Make(App.ResLoader.GetString("Message_NeedFavorite"), SnackbarDuration.Short));
+                    SnackMgr?.Show(Snackbar.Make(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("Message_LocationRemoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.ResLoader.GetString("Action_Undo"), () =>
+                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.ResLoader.GetString("undo"), () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();

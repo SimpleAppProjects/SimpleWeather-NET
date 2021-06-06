@@ -134,7 +134,7 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.NoWeather:
                         // Show error message and prompt to refresh
                         Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Long);
-                        snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                        snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
                         {
                             RefreshWeather(false);
                         });
@@ -144,7 +144,7 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (!wm.IsRegionSupported(locationData.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("Error_WeatherRegionUnsupported"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
                         {

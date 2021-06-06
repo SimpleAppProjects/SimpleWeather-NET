@@ -921,7 +921,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     String title = dataLists[i].SeriesLabel;
                     if (String.IsNullOrWhiteSpace(title))
                     {
-                        title = String.Format(CultureInfo.CurrentCulture, "{0} {1}", App.ResLoader.GetString("Label_Series"), i);
+                        title = String.Format(CultureInfo.CurrentCulture, "{0} {1}", App.ResLoader.GetString("label_series"), i);
                     }
 
                     using (var txtLayout = new CanvasTextLayout(Canvas, title, BottomTextFormat, 0, 0))
@@ -965,7 +965,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     var title = series.SeriesLabel;
                     if (String.IsNullOrWhiteSpace(title))
                     {
-                        title = String.Format("{0} {1}", App.ResLoader.GetString("Label_Series"), i);
+                        title = String.Format("{0} {1}", App.ResLoader.GetString("label_series"), i);
                     }
 
                     using (var txtLayout = new CanvasTextLayout(drawingSession, title, BottomTextFormat, 0, 0))

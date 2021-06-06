@@ -110,7 +110,7 @@ namespace SimpleWeather.UWP.Main
                         if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
                             Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
-                            snackbar.SetAction(App.ResLoader.GetString("Action_Retry"), () =>
+                            snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
                             {
                                 // Reset counter to allow retry
                                 ErrorCounter[(int)wEx.ErrorStatus] = false;
@@ -169,7 +169,7 @@ namespace SimpleWeather.UWP.Main
                 new muxc.NavigationViewItem()
                 {
                     Icon = new SymbolIcon(Symbol.Edit),
-                    Content = App.ResLoader.GetString("Label_Edit"),
+                    Content = App.ResLoader.GetString("action_editmode"),
                 }
             };
             EditButton = PrimaryCommands[0] as muxc.NavigationViewItem;
@@ -619,7 +619,7 @@ namespace SimpleWeather.UWP.Main
             EditMode = !EditMode;
 
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
-            EditButton.Content = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("Label_Edit");
+            EditButton.Content = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("action_editmode");
             LocationsPanel.IsItemClickEnabled = !EditMode;
             // Enable selection mode for non-Mobile (non-Touch devices)
             if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -632,7 +632,7 @@ namespace SimpleWeather.UWP.Main
                         new muxc.NavigationViewItem()
                         {
                             Icon = new SymbolIcon(Symbol.Delete),
-                            Content = App.ResLoader.GetString("Label_Delete"),
+                            Content = App.ResLoader.GetString("delete"),
                         }
                     );
                     var deleteBtn = PrimaryCommands[0] as muxc.NavigationViewItem;

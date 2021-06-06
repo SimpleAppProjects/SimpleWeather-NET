@@ -81,7 +81,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (updates?.Count > 0)
                 {
                     // Updates are available
-                    InstallButton.Content = App.ResLoader.GetString("UpdateAvailablePrompt");
+                    InstallButton.Content = App.ResLoader.GetString("prompt_update_available");
                     InstallButton.IsHitTestVisible = true;
                     InstallButton.Click += InstallButton_Click;
                 }

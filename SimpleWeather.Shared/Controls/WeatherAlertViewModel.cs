@@ -42,7 +42,7 @@ namespace SimpleWeather.Controls
 
             // Format: Monday, June 15, 2009 1:45 PM
             ExpireDate = string.Format("{0} {1} {2:zzz}",
-                SimpleLibrary.GetInstance().ResLoader.GetString("DateTime_ValidUntil"),
+                SimpleLibrary.GetInstance().ResLoader.GetString("datetime_validuntil"),
                 WeatherAlert.ExpiresDate.ToString("f", culture),
                 WeatherAlert.ExpiresDate);
 
