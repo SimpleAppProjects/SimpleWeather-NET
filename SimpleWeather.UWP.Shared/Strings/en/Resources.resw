@@ -572,4 +572,13 @@
   <data name="label_day" xml:space="preserve">
     <value>Day</value>
   </data>
+  <data name="Pref_Title_PrecipNotification.Text" xml:space="preserve">
+    <value>Precipitation Notification:</value>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% chance of rain in the next hour</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% chance of rain in {1}</value>
+  </data>
 </root>

@@ -40,6 +40,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (Settings.WeatherLoaded)
                     {
                         await UpdateTiles();
+
+                        if (Settings.PoPChanceNotificationEnabled)
+                        {
+                            await Notifications.PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
+                        }
                     }
 
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: End of run...", taskName);

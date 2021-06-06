@@ -417,6 +417,36 @@ namespace SimpleWeather.Utils
         {
             localSettings.Values[KEY_DAILYNOTIFICATIONTIME] = value.ToString("hh\\:mm");
         }
+
+        private static bool IsPoPChanceNotificationEnabled()
+        {
+            if (localSettings.Values.TryGetValue(KEY_POPCHANCENOTIFICATION, out object value))
+            {
+                return (bool)value;
+            }
+
+            return false;
+        }
+
+        private static void SetPoPChanceNotificationEnabled(bool value)
+        {
+            localSettings.Values[KEY_POPCHANCENOTIFICATION] = value;
+        }
+
+        private static DateTimeOffset GetLastPoPChanceNotificationTime()
+        {
+            if (localSettings.Values.TryGetValue(KEY_LASTCHANCENOTIFICATIONTIME, out object value))
+            {
+                return DateTimeOffset.ParseExact(value.ToString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+            }
+
+            return DateTimeOffset.MinValue;
+        }
+
+        private static void SetLastPoPChanceNotificationTime(DateTimeOffset value)
+        {
+            localSettings.Values[KEY_LASTCHANCENOTIFICATIONTIME] = value.ToISO8601Format();
+        }
     }
 }
 #endif

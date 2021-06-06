@@ -81,6 +81,7 @@ namespace SimpleWeather.UWP.Preferences
             SystemMode.Checked += SystemMode_Checked;
             DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
             DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
+            PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
 
             AnalyticsLogger.LogEvent("Settings_General");
         }
@@ -660,6 +661,28 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.DailyNotificationEnabled)
             {
                 Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
+            }
+        }
+
+        private void PoPChanceNotifSwitch_Toggled(object sender, RoutedEventArgs e)
+        {
+            ToggleSwitch sw = sender as ToggleSwitch;
+
+            if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
+            {
+                Settings.PoPChanceNotificationEnabled = true;
+                // Re-register background task if needed
+                Task.Run(async () => await WeatherTileUpdaterTask.RegisterBackgroundTask(false));
+                Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false));
+            }
+            else
+            {
+                if (sw.IsOn && !Extras.ExtrasLibrary.IsEnabled())
+                {
+                    // show premium popup
+                    Frame.Navigate(typeof(Extras.Store.PremiumPage));
+                }
+                Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
             }
         }
     }

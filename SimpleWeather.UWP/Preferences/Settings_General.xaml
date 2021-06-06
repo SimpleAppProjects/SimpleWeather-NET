@@ -108,6 +108,17 @@
                     Height="1"
                     Margin="0,7.5"
                     Fill="LightGray" />
+                <TextBlock
+                    x:Uid="Pref_Title_PrecipNotification"
+                    Style="{StaticResource PrefTitleStyle}"
+                    Text="Precipitation Notification:" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <ToggleSwitch x:Name="PoPChanceNotifSwitch" />
+                </StackPanel>
+                <Rectangle
+                    Height="1"
+                    Margin="0,7.5"
+                    Fill="LightGray" />
                 <ComboBox
                     x:Name="APIComboBox"
                     x:Uid="API_Box"

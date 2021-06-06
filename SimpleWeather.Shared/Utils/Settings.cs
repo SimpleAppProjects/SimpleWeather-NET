@@ -32,6 +32,8 @@ namespace SimpleWeather.Utils
         public static string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ICONSSOURCE, NewValue = value }); } }
         public static bool DailyNotificationEnabled { get { return IsDailyNotificationEnabled(); } set { SetDailyNotificationEnabled(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DAILYNOTIFICATION, NewValue = value }); } }
         public static TimeSpan DailyNotificationTime { get { return GetDailyNotificationTime(); } set { SetDailyNotificationTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DAILYNOTIFICATIONTIME, NewValue = value }); } }
+        public static bool PoPChanceNotificationEnabled { get { return IsPoPChanceNotificationEnabled(); } set { SetPoPChanceNotificationEnabled(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_POPCHANCENOTIFICATION, NewValue = value }); } }
+        public static DateTimeOffset LastPoPChanceNotificationTime { get { return GetLastPoPChanceNotificationTime(); } set { SetLastPoPChanceNotificationTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_LASTCHANCENOTIFICATIONTIME, NewValue = value }); } }
 
         // Units
         public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_TEMPUNIT, NewValue = value }); } }
@@ -91,6 +93,8 @@ namespace SimpleWeather.Utils
         public const string KEY_ICONSSOURCE = "key_iconssource";
         public const string KEY_DAILYNOTIFICATION = "key_dailynotification";
         public const string KEY_DAILYNOTIFICATIONTIME = "key_dailynotificationtime";
+        public const string KEY_POPCHANCENOTIFICATION = "key_popchancenotification";
+        public const string KEY_LASTCHANCENOTIFICATIONTIME = "key_lastchancenotificationtime";
 
         // 8am
         public static readonly TimeSpan DEFAULT_DAILYNOTIFICATION_TIME = new TimeSpan(8, 0, 0);

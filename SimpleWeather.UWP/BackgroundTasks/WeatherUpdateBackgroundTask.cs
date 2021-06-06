@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Utils;
+using SimpleWeather.UWP.Notifications;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
@@ -78,6 +79,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
                             if (Settings.ShowAlerts && wm.SupportsAlerts)
                             {
                                 await WeatherAlertHandler.PostAlerts(await Settings.GetHomeData(), weather.weather_alerts);
+                            }
+
+                            if (Settings.PoPChanceNotificationEnabled)
+                            {
+                                await PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
                             }
 
                             // Set update time

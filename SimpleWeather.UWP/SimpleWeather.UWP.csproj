@@ -257,6 +257,7 @@
     <Compile Include="Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Notifications\PoPNotificationCreator.cs" />
     <Compile Include="Notifications\DailyNotificationCreator.cs" />
     <Compile Include="Preferences\IconRadioPreference.xaml.cs">
       <DependentUpon>IconRadioPreference.xaml</DependentUpon>
