@@ -117,6 +117,116 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="action_settings" xml:space="preserve">
+    <value>Nastavenia</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Opakovať</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Najvyššia</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Najnižšia</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Rosný bod</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Mesiac vychádza</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Mesiac zapadá</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Fáza mesiaca</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>UV index</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Index kvality ovzdušia</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>Popoludní</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Večer</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Ráno</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Noc</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Teplota</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Vložte prosím kľúč poskytovateľa</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Táto krajina nie je podporovaná týmto poskytovateľom počasia</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Upraviť</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Súčasná poloha</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Obľúbené lokality</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Prístup k polohe zamietnutý</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Nie je možné získať polohu</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Žiadne výsledky k dispozícii </value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Lokalita vymazaná</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Je potrebná minimálne jedna obľúbená lokalita</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Vrátiť</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Vymazať</value>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Načítanie údajov o počasí nie je možné</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Chyba pripojenia siete</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Neplatný kľúč poskytovateľa</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Vami hľadané mesto nenájdené</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>Vyskytla sa neznáma chyba</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Aktualizované</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Aktualizované</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Platné do:</value>
+  </data>
   <data name="About.Content" xml:space="preserve">
     <value>Obsah</value>
   </data>
@@ -131,9 +241,6 @@
   </data>
   <data name="Credits.Content" xml:space="preserve">
     <value>S podporou</value>
-  </data>
-  <data name="Error_Location" xml:space="preserve">
-    <value>Nie je možné získať polohu</value>
   </data>
   <data name="General.Content" xml:space="preserve">
     <value>Všeobecné</value>
@@ -160,12 +267,6 @@
   <data name="Label_Done" xml:space="preserve">
     <value>Hotovo</value>
   </data>
-  <data name="Label_Edit" xml:space="preserve">
-    <value>Upraviť</value>
-  </data>
-  <data name="Label_ErrLocationDenied" xml:space="preserve">
-    <value>Prístup k polohe zamietnutý</value>
-  </data>
   <data name="Label_FeelsLike.Text" xml:space="preserve">
     <value>Pocitovo</value>
   </data>
@@ -190,9 +291,6 @@
   <data name="Label_Rain.Text" xml:space="preserve">
     <value>Dážď</value>
   </data>
-  <data name="Label_Settings" xml:space="preserve">
-    <value>Nastavenia</value>
-  </data>
   <data name="Label_Snow.Text" xml:space="preserve">
     <value>Sneh</value>
   </data>
@@ -216,6 +314,7 @@
   </data>
   <data name="Message_EnterAPIKey.Text" xml:space="preserve">
     <value>Vložte prosím kľúč poskytovateľa</value>
+    <comment>message_enter_apikey</comment>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
     <value>Prístup k polohe bol zamietnutý. Povoľte ho prosím v nastaveniach.</value>
@@ -241,29 +340,8 @@
   <data name="Pref_TitleProviders.Text" xml:space="preserve">
     <value>Poskytovateľ počasia</value>
   </data>
-  <data name="WError_InvalidKey" xml:space="preserve">
-    <value>Neplatný kľúč poskytovateľa</value>
-  </data>
-  <data name="WError_NetworkError" xml:space="preserve">
-    <value>Chyba pripojenia siete</value>
-  </data>
-  <data name="WError_NoWeather" xml:space="preserve">
-    <value>Nie je možné nahrať údaje o počasí</value>
-  </data>
-  <data name="WError_QueryNotFound" xml:space="preserve">
-    <value>Vami hľadané mesto nenájdené</value>
-  </data>
-  <data name="Error_NoResults" xml:space="preserve">
-    <value>Neboli nájdené žiadne výsledky</value>
-  </data>
   <data name="KeyEntry.Text" xml:space="preserve">
     <value>Kľúč poskytovateľa</value>
-  </data>
-  <data name="Msg_EnterAPIKey" xml:space="preserve">
-    <value>Vložte prosím kľúč poskytovateľa</value>
-  </data>
-  <data name="Action_Retry" xml:space="preserve">
-    <value>Zopakovať</value>
   </data>
   <data name="Pref_GeneralHeader.Text" xml:space="preserve">
     <value>Všeobecné nastavenia</value>
@@ -289,12 +367,6 @@
   <data name="Pref_Refresh6Hrs.Text" xml:space="preserve">
     <value>6 hodín</value>
   </data>
-  <data name="Update_Prefix" xml:space="preserve">
-    <value>Aktualizované</value>
-  </data>
-  <data name="Update_PrefixDay" xml:space="preserve">
-    <value>Aktualizované</value>
-  </data>
   <data name="Credit_Prefix.Text" xml:space="preserve">
     <value>Údaje z</value>
   </data>
@@ -319,9 +391,6 @@
   <data name="DateTime_SecAgo" xml:space="preserve">
     <value>{0}s dozadu</value>
   </data>
-  <data name="DateTime_ValidUntil" xml:space="preserve">
-    <value>Platné do:</value>
-  </data>
   <data name="Button_Refresh.Label" xml:space="preserve">
     <value>Obnoviť</value>
   </data>
@@ -333,9 +402,6 @@
   </data>
   <data name="Precipitation_Label" xml:space="preserve">
     <value>Zrážky</value>
-  </data>
-  <data name="Temp_Label" xml:space="preserve">
-    <value>Teplota</value>
   </data>
   <data name="Wind_Label" xml:space="preserve">
     <value>Vietor</value>
@@ -349,41 +415,14 @@
   <data name="RegisterKeyBox.Content" xml:space="preserve">
     <value>Vytvoriť registráciu pre poskytovateľa kľúča</value>
   </data>
-  <data name="WError_Unknown" xml:space="preserve">
-    <value>Nastala neznáma chyba</value>
-  </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ConfirmDialog.SecondaryButtonText" xml:space="preserve">
     <value>Zrušiť</value>
   </data>
-  <data name="Label_High" xml:space="preserve">
-    <value>Najvyššie</value>
-  </data>
-  <data name="Label_Low" xml:space="preserve">
-    <value>Najnižšie</value>
-  </data>
   <data name="Pref_PersonalKey.Text" xml:space="preserve">
     <value>Použiť osobný kľúč poskytovateľa</value>
-  </data>
-  <data name="Beaufort_Label" xml:space="preserve">
-    <value>Beaufort</value>
-  </data>
-  <data name="Dewpoint_Label" xml:space="preserve">
-    <value>Rosný bod</value>
-  </data>
-  <data name="Moonrise_Label" xml:space="preserve">
-    <value>Východ mesiaca</value>
-  </data>
-  <data name="Moonset_Label" xml:space="preserve">
-    <value>Západ mesiaca</value>
-  </data>
-  <data name="UV_Label" xml:space="preserve">
-    <value>UV index</value>
-  </data>
-  <data name="Label_Delete" xml:space="preserve">
-    <value>Vymazať</value>
   </data>
   <data name="Label_Temperature.Text" xml:space="preserve">
     <value>Teplota</value>
@@ -403,41 +442,11 @@
   <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
     <value>Upravte Vaše nastavenia nižšie:</value>
   </data>
-  <data name="Action_Undo" xml:space="preserve">
-    <value>Odvolať</value>
-  </data>
-  <data name="Message_LocationRemoved" xml:space="preserve">
-    <value>Lokalita vymazaná</value>
-  </data>
-  <data name="Message_NeedFavorite" xml:space="preserve">
-    <value>Musíte mať minimálne jednu obľúbenú lokalitu</value>
-  </data>
-  <data name="Error_WeatherUSOnly" xml:space="preserve">
-    <value>Tento poskytovateľ počasia podporuje iba lokality v USA</value>
-  </data>
-  <data name="Header_FavLocations" xml:space="preserve">
-    <value>Obľúbené lokality</value>
-  </data>
-  <data name="Header_GPSLocation" xml:space="preserve">
-    <value>Súčasná poloha</value>
-  </data>
   <data name="AQI_Label" xml:space="preserve">
     <value>Index kvality ovzdušia</value>
   </data>
   <data name="Label_Radar.Header" xml:space="preserve">
     <value>Radar</value>
-  </data>
-  <data name="Label_Day" xml:space="preserve">
-    <value>Popoludní</value>
-  </data>
-  <data name="Label_Eve" xml:space="preserve">
-    <value>Večer</value>
-  </data>
-  <data name="Label_Morning" xml:space="preserve">
-    <value>Ráno</value>
-  </data>
-  <data name="Label_Night" xml:space="preserve">
-    <value>Noc</value>
   </data>
   <data name="Nav_WeatherAlerts.Content" xml:space="preserve">
     <value>Meteovýstrahy</value>
@@ -496,14 +505,15 @@
   <data name="Pref_Features_Title.Text" xml:space="preserve">
     <value>Vlastnosti</value>
   </data>
-  <data name="MoonPhase_Label" xml:space="preserve">
-    <value>Fáza mesiaca</value>
+  <data name="label_series" xml:space="preserve">
+    <value>Rad</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Nárazy vetra</value>
   </data>
   <data name="WindGust_Label" xml:space="preserve">
     <value>Nárazy vetra</value>
-  </data>
-  <data name="Label_Series" xml:space="preserve">
-    <value>Rad</value>
   </data>
   <data name="Attrib_Prefix.Text" xml:space="preserve">
     <value>Fotka od</value>
@@ -529,9 +539,6 @@
   <data name="NoUpdateAvailablePrompt" xml:space="preserve">
     <value>Žiadne aktualizácie k dispozícii</value>
   </data>
-  <data name="UpdateAvailablePrompt" xml:space="preserve">
-    <value>Je dostupná aktualizácia. Ťuknutím inštalujte</value>
-  </data>
   <data name="DownloadingPrompt" xml:space="preserve">
     <value>Sťahujem...</value>
   </data>
@@ -546,6 +553,9 @@
   </data>
   <data name="TranslateButton.Content" xml:space="preserve">
     <value>Pomôcť s prekladom aplikácie</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Je dostupná aktualizácia. Ťuknutím inštalujte</value>
   </data>
   <data name="pref_title_resetunits" xml:space="preserve">
     <value>Obnovte pôvodné hodnoty jednotiek</value>
@@ -575,5 +585,26 @@
   </data>
   <data name="Pref_Refresh30Min.Text" xml:space="preserve">
     <value>30 minút</value>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>Deň</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="Pref_Title_DailyNotification.Text" xml:space="preserve">
+    <value>Denné upozornenie:</value>
+  </data>
+  <data name="Pref_Title_Time.Header" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="Pref_Title_PrecipNotification.Text" xml:space="preserve">
+    <value>Oznámenie o zrážkach:</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% pravdepodobnosť dažďa do {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% pravdepodobnosť dažďa v nasledujúcej hodine</value>
+    <comment>{0} = Percentage</comment>
   </data>
 </root>

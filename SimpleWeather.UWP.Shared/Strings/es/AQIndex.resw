@@ -117,138 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="weather_tornado" xml:space="preserve">
-    <value>Tornado</value>
-    <comment>Conditions</comment>
+  <data name="aqi_level_0_50" xml:space="preserve">
+    <value>Buena</value>
+    <comment>https://aqicn.org/scale</comment>
   </data>
-  <data name="weather_tropicalstorm" xml:space="preserve">
-    <value>Burza tropikalna</value>
+  <data name="aqi_level_51_100" xml:space="preserve">
+    <value>Moderada</value>
   </data>
-  <data name="weather_hurricane" xml:space="preserve">
-    <value>Huragan</value>
+  <data name="aqi_level_101_150" xml:space="preserve">
+    <value>Dañina a la Salud de los Grupos Sensitivos</value>
   </data>
-  <data name="weather_severetstorms" xml:space="preserve">
-    <value>Silne burze</value>
+  <data name="aqi_level_151_200" xml:space="preserve">
+    <value>Dañina a la Salud</value>
   </data>
-  <data name="weather_tstorms" xml:space="preserve">
-    <value>Burze</value>
+  <data name="aqi_level_201_300" xml:space="preserve">
+    <value>Muy Dañina a la Salud</value>
   </data>
-  <data name="weather_rainandsnow" xml:space="preserve">
-    <value>Deszcz ze śniegiem</value>
+  <data name="aqi_level_300" xml:space="preserve">
+    <value>Arriesgado</value>
   </data>
-  <data name="weather_rainandsleet" xml:space="preserve">
-    <value>Deszcz oraz deszcz ze śniegiem</value>
+  <data name="aqi_desc_0_50" xml:space="preserve">
+    <value>No se anticipan impactos a la salud cuando la calidad del aire se encuentra en este intervalo.</value>
   </data>
-  <data name="weather_snowandsleet" xml:space="preserve">
-    <value>Śnieg oraz deszcz ze śniegiem</value>
+  <data name="aqi_desc_51_100" xml:space="preserve">
+    <value>La calidad del aire es aceptable</value>
+    <comment>Fuzzy</comment>
   </data>
-  <data name="weather_freezingrain" xml:space="preserve">
-    <value>Marznący deszcz</value>
+  <data name="aqi_desc_101_150" xml:space="preserve">
+    <value>Los miembros de grupos sensibles pueden experimentar efectos sobre la salud. No es probable que el público en general se vea afectado.</value>
+    <comment>Fuzzy</comment>
   </data>
-  <data name="weather_snowflurries" xml:space="preserve">
-    <value>Przelotne opady śniegu</value>
+  <data name="aqi_desc_151_200" xml:space="preserve">
+    <value>Todo el mundo puede empezar a experimentar efectos sobre la salud; los miembros de grupos sensibles pueden experimentar efectos más graves sobre la salud</value>
+    <comment>Fuzzy</comment>
   </data>
-  <data name="weather_lightsnowshowers" xml:space="preserve">
-    <value>Lekkie opady śniegu</value>
+  <data name="aqi_desc_201_300" xml:space="preserve">
+    <value>Alertas sanitarias de condiciones de emergencia. Es más probable que toda la población se vea afectada.</value>
+    <comment>Fuzzy</comment>
   </data>
-  <data name="weather_blowingsnow" xml:space="preserve">
-    <value>Zawieja</value>
-  </data>
-  <data name="weather_snow" xml:space="preserve">
-    <value>Śnieg</value>
-  </data>
-  <data name="weather_hail" xml:space="preserve">
-    <value>Grad</value>
-  </data>
-  <data name="weather_sleet" xml:space="preserve">
-    <value>Gołoledź</value>
-  </data>
-  <data name="weather_dust" xml:space="preserve">
-    <value>Pył</value>
-  </data>
-  <data name="weather_foggy" xml:space="preserve">
-    <value>Mgła</value>
-  </data>
-  <data name="weather_haze" xml:space="preserve">
-    <value>Zmętnienie</value>
-  </data>
-  <data name="weather_smoky" xml:space="preserve">
-    <value>Dym</value>
-  </data>
-  <data name="weather_windy" xml:space="preserve">
-    <value>Wietrznie</value>
-  </data>
-  <data name="weather_cold" xml:space="preserve">
-    <value>Zimno</value>
-  </data>
-  <data name="weather_cloudy" xml:space="preserve">
-    <value>Pochmurno</value>
-  </data>
-  <data name="weather_mostlycloudy" xml:space="preserve">
-    <value>Przeważnie pochmurno</value>
-  </data>
-  <data name="weather_partlycloudy" xml:space="preserve">
-    <value>Częściowe zachmurzenie</value>
-  </data>
-  <data name="weather_clear" xml:space="preserve">
-    <value>Bezchmurnie</value>
-  </data>
-  <data name="weather_sunny" xml:space="preserve">
-    <value>Słonecznie</value>
-  </data>
-  <data name="weather_fair" xml:space="preserve">
-    <value>Ładnie</value>
-  </data>
-  <data name="weather_rainandhail" xml:space="preserve">
-    <value>Deszcz z gradem</value>
-  </data>
-  <data name="weather_hot" xml:space="preserve">
-    <value>Gorąco</value>
-  </data>
-  <data name="weather_isotstorms" xml:space="preserve">
-    <value>Lokalne burze</value>
-  </data>
-  <data name="weather_scatteredtstorms" xml:space="preserve">
-    <value>Rozproszone burze</value>
-  </data>
-  <data name="weather_scatteredshowers" xml:space="preserve">
-    <value>Rozproszone przelotne opady</value>
-  </data>
-  <data name="weather_heavysnow" xml:space="preserve">
-    <value>Silne opady śniegu</value>
-  </data>
-  <data name="weather_notavailable" xml:space="preserve">
-    <value>N/A</value>
-    <comment>Not Available</comment>
-  </data>
-  <data name="weather_fog" xml:space="preserve">
-    <value>Mgła</value>
-  </data>
-  <data name="weather_lightrain" xml:space="preserve">
-    <value>Lekki deszcz</value>
-  </data>
-  <data name="weather_rain" xml:space="preserve">
-    <value>Deszcz</value>
-  </data>
-  <data name="weather_rainshowers" xml:space="preserve">
-    <value>Przelotne deszcze</value>
-  </data>
-  <data name="weather_blizzard" xml:space="preserve">
-    <value>Śnieżyca</value>
-  </data>
-  <data name="weather_overcast" xml:space="preserve">
-    <value>Zachmurzenie całkowite</value>
-  </data>
-  <data name="weather_sleet_tstorms" xml:space="preserve">
-    <value>Burza i gołoledź</value>
-  </data>
-  <data name="weather_snow_tstorms" xml:space="preserve">
-    <value>Śnieg i burza</value>
-  </data>
-  <data name="weather_clearsky" xml:space="preserve">
-    <value>Czyste niebo</value>
-  </data>
-  <data name="weather_heavyrain" xml:space="preserve">
-    <value>Silny deszcz</value>
+  <data name="aqi_desc_300" xml:space="preserve">
+    <value>Alerta sanitaria: todo el mundo puede experimentar efectos de salud más graves</value>
+    <comment>Fuzzy</comment>
   </data>
 </root>
