@@ -256,12 +256,12 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -571,12 +571,12 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
@@ -750,12 +750,12 @@ namespace SimpleWeather.UWP.Tiles
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value ?? WeatherIcons.EM_DASH),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
+                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value ?? WeatherIcons.EM_DASH),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         }
                     }
@@ -801,12 +801,12 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_FeelsLike/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.FeelsLike)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value),
+                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("Label_Wind/Text"), weather.WeatherDetails.FirstOrDefault(detail => detail.DetailsType == WeatherDetailsType.WindSpeed)?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
