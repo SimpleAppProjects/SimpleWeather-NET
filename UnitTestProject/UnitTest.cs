@@ -59,6 +59,7 @@ namespace UnitTestProject
         private async Task<Weather> GetWeather(WeatherProviderImpl providerImpl, WeatherUtils.Coordinate coordinate)
         {
             var location = await providerImpl.GetLocation(coordinate);
+            Assert.IsNotNull(location);
             if (string.IsNullOrWhiteSpace(location?.LocationTZLong) && location.LocationLat != 0 && location.LocationLong != 0)
             {
                 string tzId = await TZDBCache.GetTimeZone(location.LocationLat, location.LocationLong);

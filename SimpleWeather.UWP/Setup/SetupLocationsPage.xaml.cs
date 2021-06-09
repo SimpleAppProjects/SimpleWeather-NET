@@ -319,11 +319,12 @@ namespace SimpleWeather.UWP.Setup
                     }, ctsToken).ConfigureAwait(false);
                 }
 
-                if (query_vm == null)
+                if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
                 {
-                    throw new OperationCanceledException();
+                    // Stop since there is no valid query
+                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                 }
-                else if (String.IsNullOrEmpty(query_vm.LocationTZLong) && query_vm.LocationLat != 0 && query_vm.LocationLong != 0)
+                else if (String.IsNullOrWhiteSpace(query_vm.LocationTZLong) && query_vm.LocationLat != 0 && query_vm.LocationLong != 0)
                 {
                     String tzId = await Task.Run(async () => 
                     {

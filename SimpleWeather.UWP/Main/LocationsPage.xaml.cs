@@ -386,7 +386,11 @@ namespace SimpleWeather.UWP.Main
                     if (locData?.query == null)
                     {
                         locData = await UpdateLocation();
-                        SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                        if (locData != null)
+                        {
+                            Settings.SaveLastGPSLocData(locData);
+                            SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                        }
                     }
 
                     if (cts?.IsCancellationRequested == true)
@@ -533,7 +537,7 @@ namespace SimpleWeather.UWP.Main
                 // Access to location granted
                 if (newGeoPos != null)
                 {
-                    LocationQueryViewModel view = await Task.Run(async () =>
+                    var view = await Task.Run(async () =>
                     {
                         LocationQueryViewModel locView = null;
 
@@ -547,11 +551,10 @@ namespace SimpleWeather.UWP.Main
                             if (cts?.IsCancellationRequested == true)
                                 return null;
 
-                            if (String.IsNullOrEmpty(locView.LocationQuery))
-                            {
-                                locView = new LocationQueryViewModel();
-                            }
-                            else if (String.IsNullOrEmpty(locView.LocationTZLong) && locView.LocationLat != 0 && locView.LocationLong != 0)
+                            if (String.IsNullOrWhiteSpace(locView?.LocationQuery))
+                                return null;
+
+                            if (String.IsNullOrWhiteSpace(locView.LocationTZLong) && locView.LocationLat != 0 && locView.LocationLong != 0)
                             {
                                 String tzId = await TZDB.TZDBCache.GetTimeZone(locView.LocationLat, locView.LocationLong);
                                 if (!String.IsNullOrWhiteSpace(tzId))
@@ -560,7 +563,7 @@ namespace SimpleWeather.UWP.Main
                         }
                         catch (WeatherException)
                         {
-                            locView = new LocationQueryViewModel();
+                            locView = null;
                         }
 
                         return locView;
@@ -573,6 +576,7 @@ namespace SimpleWeather.UWP.Main
                         {
                             RemoveGPSPanel();
                         });
+                        return null;
                     }
 
                     // Save location as last known
