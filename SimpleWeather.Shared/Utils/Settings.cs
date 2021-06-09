@@ -186,6 +186,7 @@ namespace SimpleWeather.Utils
             }).Wait();
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal static void CreateDatabase()
         {
             var locDBConn = locationDB.GetConnection();
@@ -203,6 +204,7 @@ namespace SimpleWeather.Utils
             }
         }
 
+        [MethodImpl(MethodImplOptions.Synchronized)]
         internal static void DestroyDatabase()
         {
             var locDBConn = locationDB.GetConnection();
