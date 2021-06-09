@@ -288,9 +288,23 @@ namespace SimpleWeather.WeatherData
                             string oldKey = location.query;
 
                             if (weather != null)
+                            {
+                                if (weather.location?.latitude == null || weather.location?.longitude == null)
+                                {
+                                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                }
+
                                 location.query = wm.UpdateLocationQuery(weather);
+                            }
                             else
+                            {
+                                if (location.latitude == 0.0 || location.longitude == 0.0)
+                                {
+                                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                }
+
                                 location.query = wm.UpdateLocationQuery(location);
+                            }
 
                             location.weatherSource = Settings.API;
 
