@@ -112,10 +112,18 @@ namespace SimpleWeather.WeatherData
             var culture = CultureUtils.UserCulture;
 
             date = DateTimeOffset.FromUnixTimeSeconds(day.dt).UtcDateTime;
-            high_c = day.T.max;
-            high_f = ConversionMethods.CtoF(high_c.Value);
-            low_c = day.T.min;
-            low_f = ConversionMethods.CtoF(low_c.Value);
+
+            if (day.T?.max.HasValue == true)
+            {
+                high_c = day.T.max;
+                high_f = ConversionMethods.CtoF(high_c.Value);
+            }
+
+            if (day.T?.min.HasValue == true)
+            {
+                low_c = day.T.min;
+                low_f = ConversionMethods.CtoF(low_c.Value);
+            }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
@@ -144,10 +152,7 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_rain_mm = day.precipitation._24h;
                 extras.qpf_rain_in = ConversionMethods.MMToIn(day.precipitation._24h.Value);
             }
-            if (day.uv.HasValue)
-            {
-                extras.uv_index = day.uv;
-            }
+            extras.uv_index = day.uv;
         }
     }
 
@@ -160,8 +165,11 @@ namespace SimpleWeather.WeatherData
 
             date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt);
 
-            high_c = forecast.T.value;
-            high_f = ConversionMethods.CtoF(forecast.T.value.Value);
+            if (forecast.T?.value.HasValue == true)
+            {
+                high_c = forecast.T.value;
+                high_f = ConversionMethods.CtoF(forecast.T.value.Value);
+            }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
@@ -184,10 +192,7 @@ namespace SimpleWeather.WeatherData
                 extras.feelslike_f = ConversionMethods.CtoF(forecast.T.windchill.Value);
             }
 
-            if (forecast.humidity.HasValue)
-            {
-                extras.humidity = forecast.humidity;
-            }
+            extras.humidity = forecast.humidity;
 
             if (forecast.sea_level.HasValue)
             {
@@ -253,10 +258,7 @@ namespace SimpleWeather.WeatherData
                 }
             }
 
-            if (forecast.clouds.HasValue)
-            {
-                extras.cloudiness = forecast.clouds;
-            }
+            extras.cloudiness = forecast.clouds;
 
             if (probabilityForecasts?.Any() == true)
             {
@@ -334,8 +336,11 @@ namespace SimpleWeather.WeatherData
             var provider = WeatherManager.GetProvider(WeatherAPI.MeteoFrance);
             var culture = CultureUtils.UserCulture;
 
-            temp_c = currRoot.observation.T;
-            temp_f = ConversionMethods.CtoF(temp_c.Value);
+            if (currRoot?.observation?.T.HasValue == true)
+            {
+                temp_c = currRoot.observation.T;
+                temp_f = ConversionMethods.CtoF(temp_c.Value);
+            }
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
@@ -352,8 +357,11 @@ namespace SimpleWeather.WeatherData
             if (currRoot.observation.wind != null)
             {
                 wind_degrees = currRoot.observation.wind.direction;
-                wind_kph = ConversionMethods.MSecToKph(currRoot.observation.wind.speed.Value);
-                wind_mph = ConversionMethods.MSecToMph(currRoot.observation.wind.speed.Value);
+                if (currRoot.observation.wind.speed.HasValue)
+                {
+                    wind_kph = ConversionMethods.MSecToKph(currRoot.observation.wind.speed.Value);
+                    wind_mph = ConversionMethods.MSecToMph(currRoot.observation.wind.speed.Value);
+                }
             }
 
             observation_time = DateTimeOffset.FromUnixTimeSeconds(currRoot.updated_on);

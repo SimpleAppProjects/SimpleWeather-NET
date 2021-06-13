@@ -22,7 +22,7 @@ namespace SimpleWeather.MeteoFrance
 
     public class Observation
     {
-        public float T { get; set; }
+        public float? T { get; set; }
         public Wind wind { get; set; }
         public Weather weather { get; set; }
     }

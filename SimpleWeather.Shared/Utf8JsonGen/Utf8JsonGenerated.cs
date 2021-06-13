@@ -24509,7 +24509,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            writer.WriteSingle(value.T);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.T, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Wind>().Serialize(ref writer, value.wind, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -24526,7 +24526,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             }
             
 
-            var __T__ = default(float);
+            var __T__ = default(float?);
             var __T__b__ = false;
             var __wind__ = default(global::SimpleWeather.MeteoFrance.Wind);
             var __wind__b__ = false;
@@ -24548,7 +24548,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                 switch (key)
                 {
                     case 0:
-                        __T__ = reader.ReadSingle();
+                        __T__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __T__b__ = true;
                         break;
                     case 1:
