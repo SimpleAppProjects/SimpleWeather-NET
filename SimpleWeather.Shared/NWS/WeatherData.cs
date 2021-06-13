@@ -46,7 +46,7 @@ namespace SimpleWeather.WeatherData
                         forecast.Add(fcast);
                         txt_forecast.Add(txtfcast);
 
-                        if (condition.summary == null && condition.observation_time >= txtfcast.date)
+                        if (condition.summary == null && condition.observation_time.UtcDateTime.Date >= txtfcast.date.UtcDateTime.Date)
                         {
                             condition.summary = String.Format(CultureInfo.InvariantCulture,
                                 "{0} - {1}", forecastItem.name, forecastItem.detailedForecast);
@@ -71,7 +71,7 @@ namespace SimpleWeather.WeatherData
                         forecast.Add(fcast);
                         txt_forecast.Add(txtfcast);
 
-                        if (condition.summary == null && condition.observation_time >= txtfcast.date)
+                        if (condition.summary == null && condition.observation_time.UtcDateTime.Date >= txtfcast.date.UtcDateTime.Date)
                         {
                             condition.summary = String.Format(CultureInfo.InvariantCulture,
                                 "{0} - {1}\n{2} - {3}", 
