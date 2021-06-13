@@ -14,6 +14,8 @@ namespace SimpleWeather.WeatherData
         public Weather(HERE.Rootobject root)
         {
             var now = root.feedCreation;
+            Forecast todaysForecast = null;
+            TextForecast todaysTxtForecast = null;
 
             location = new Location(root.observations.location[0]);
             update_time = now;
@@ -21,8 +23,17 @@ namespace SimpleWeather.WeatherData
             txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
             foreach (HERE.Forecast fcast in root.dailyForecasts.forecastLocation.forecast)
             {
-                forecast.Add(new Forecast(fcast));
-                txt_forecast.Add(new TextForecast(fcast));
+                var dailyFcast = new Forecast(fcast);
+                var txtFcast = new TextForecast(fcast);
+
+                forecast.Add(dailyFcast);
+                txt_forecast.Add(txtFcast);
+
+                if (todaysForecast == null && dailyFcast.date.Date == now.UtcDateTime.Date)
+                {
+                    todaysForecast = dailyFcast;
+                    todaysTxtForecast = txtFcast;
+                }
             }
             hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
             foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
@@ -34,12 +45,11 @@ namespace SimpleWeather.WeatherData
             }
 
             var observation = root.observations.location[0].observation[0];
-            var todaysForecast = root.dailyForecasts.forecastLocation.forecast[0];
 
-            condition = new Condition(observation, todaysForecast);
+            condition = new Condition(observation, todaysForecast, todaysTxtForecast);
             atmosphere = new Atmosphere(observation);
             astronomy = new Astronomy(root.astronomy.astronomy);
-            precipitation = new Precipitation(todaysForecast);
+            precipitation = new Precipitation(observation, todaysForecast);
             ttl = 180;
 
             source = WeatherAPI.Here;
@@ -211,7 +221,7 @@ namespace SimpleWeather.WeatherData
 
     public partial class Condition
     {
-        public Condition(HERE.Observation observation, HERE.Forecast forecastItem)
+        public Condition(HERE.Observation observation, Forecast todaysForecast, TextForecast todaysTxtForecast)
         {
             weather = observation.description.ToPascalCase();
             if (float.TryParse(observation.temperature, NumberStyles.Float, CultureInfo.InvariantCulture, out float tempF))
@@ -228,13 +238,12 @@ namespace SimpleWeather.WeatherData
                 low_f = loTempF;
                 low_c = ConversionMethods.FtoC(loTempF);
             }
-            else if (float.TryParse(forecastItem.highTemperature, NumberStyles.Float, CultureInfo.InvariantCulture, out hiTempF) &&
-                float.TryParse(forecastItem.lowTemperature, NumberStyles.Float, CultureInfo.InvariantCulture, out loTempF))
+            else
             {
-                high_f = hiTempF;
-                high_c = ConversionMethods.FtoC(hiTempF);
-                low_f = loTempF;
-                low_c = ConversionMethods.FtoC(loTempF);
+                high_f = todaysForecast?.high_f;
+                high_c = todaysForecast?.high_c;
+                low_f = todaysForecast?.low_f;
+                low_c = todaysForecast?.low_c;
             }
 
             if (int.TryParse(observation.windDirection, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windDegrees))
@@ -246,6 +255,7 @@ namespace SimpleWeather.WeatherData
             {
                 wind_mph = wind_Speed;
                 wind_kph = ConversionMethods.MphToKph(wind_Speed);
+                beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(wind_Speed)));
             }
 
             if (float.TryParse(observation.comfort, NumberStyles.Float, CultureInfo.InvariantCulture, out float comfortTempF))
@@ -257,13 +267,28 @@ namespace SimpleWeather.WeatherData
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
 
-            if (int.TryParse(forecastItem.beaufortScale, NumberStyles.Integer, CultureInfo.InvariantCulture, out int scale))
-                beaufort = new Beaufort((Beaufort.BeaufortScale)scale);
-
-            if (float.TryParse(forecastItem.uvIndex, NumberStyles.Float, CultureInfo.InvariantCulture, out float index))
-                uv = new UV(index);
+            if (todaysForecast?.extras?.uv_index.HasValue == true)
+                uv = new UV(todaysForecast.extras.uv_index.Value);
 
             observation_time = observation.utcTime;
+
+            if (todaysForecast != null && todaysTxtForecast != null)
+            {
+                var culture = CultureUtils.UserCulture;
+                var resLoader = SimpleLibrary.GetInstance().ResLoader;
+
+                var summaryStr = new StringBuilder();
+                summaryStr.Append(todaysTxtForecast.fcttext); // fcttext & fcttextMetric are the same
+
+                if (todaysForecast?.extras?.pop.HasValue == true)
+                {
+                    summaryStr.AppendFormat(" {0}: {1}%",
+                        resLoader.GetString("Label_Chance/Text"),
+                        todaysForecast.extras.pop.Value);
+                }
+
+                summary = summaryStr.ToString();
+            }
         }
     }
 
@@ -370,21 +395,50 @@ namespace SimpleWeather.WeatherData
 
     public partial class Precipitation
     {
-        public Precipitation(HERE.Forecast forecast)
+        public Precipitation(HERE.Observation observation, Forecast todaysForecast)
         {
-            if (int.TryParse(forecast.precipitationProbability, NumberStyles.Integer, CultureInfo.InvariantCulture, out int PoP))
-                pop = PoP;
+            pop = todaysForecast?.extras?.pop;
 
-            if (float.TryParse(forecast.rainFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float rain_in))
+            if (float.TryParse(observation.precipitation1H, NumberStyles.Float, CultureInfo.InvariantCulture, out float precipitation1H))
             {
-                qpf_rain_in = rain_in;
-                qpf_rain_mm = ConversionMethods.InToMM(qpf_rain_in.Value);
+                qpf_rain_in = precipitation1H;
+                qpf_rain_mm = ConversionMethods.InToMM(precipitation1H);
+            }
+            else if (float.TryParse(observation.precipitation3H, NumberStyles.Float, CultureInfo.InvariantCulture, out float precipitation3H))
+            {
+                qpf_rain_in = precipitation3H;
+                qpf_rain_mm = ConversionMethods.InToMM(precipitation3H);
+            }
+            else if (float.TryParse(observation.precipitation6H, NumberStyles.Float, CultureInfo.InvariantCulture, out float precipitation6H))
+            {
+                qpf_rain_in = precipitation6H;
+                qpf_rain_mm = ConversionMethods.InToMM(precipitation6H);
+            }
+            else if (float.TryParse(observation.precipitation12H, NumberStyles.Float, CultureInfo.InvariantCulture, out float precipitation12H))
+            {
+                qpf_rain_in = precipitation12H;
+                qpf_rain_mm = ConversionMethods.InToMM(precipitation12H);
+            }
+            else if (float.TryParse(observation.precipitation24H, NumberStyles.Float, CultureInfo.InvariantCulture, out float precipitation24H))
+            {
+                qpf_rain_in = precipitation24H;
+                qpf_rain_mm = ConversionMethods.InToMM(precipitation24H);
+            }
+            else if (todaysForecast?.extras != null)
+            {
+                qpf_rain_in = todaysForecast?.extras?.qpf_rain_in;
+                qpf_rain_mm = todaysForecast?.extras?.qpf_rain_mm;
             }
 
-            if (float.TryParse(forecast.snowFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float snow_in))
+            if (float.TryParse(observation.snowCover, NumberStyles.Float, CultureInfo.InvariantCulture, out float snowCover))
             {
-                qpf_snow_in = snow_in;
-                qpf_snow_cm = ConversionMethods.InToMM(qpf_snow_in.Value) / 10;
+                qpf_snow_in = snowCover;
+                qpf_snow_cm = ConversionMethods.InToMM(snowCover) / 10;
+            }
+            else if (todaysForecast?.extras != null)
+            {
+                qpf_snow_in = todaysForecast?.extras?.qpf_snow_in;
+                qpf_snow_cm = todaysForecast?.extras?.qpf_snow_cm;
             }
         }
     }
