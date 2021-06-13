@@ -319,7 +319,7 @@
       <Version>1.0.3</Version>
     </PackageReference>
     <PackageReference Include="Google.Apis.Firestore.v1">
-      <Version>1.51.0.2276</Version>
+      <Version>1.51.0.2307</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>4.2.0</Version>
@@ -334,7 +334,7 @@
       <Version>6.2.12</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp">
-      <Version>7.0.1</Version>
+      <Version>7.0.2</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.1</Version>
