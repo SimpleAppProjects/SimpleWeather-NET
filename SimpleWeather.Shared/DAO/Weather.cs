@@ -1581,6 +1581,7 @@ namespace SimpleWeather.WeatherData
         public float? low_c { get; set; }
         public AirQuality airQuality { get; set; }
         public DateTimeOffset observation_time { get; set; }
+        public string summary { get; set; }
 
         public Condition()
         {
@@ -1606,7 +1607,8 @@ namespace SimpleWeather.WeatherData
                    low_f == condition.low_f &&
                    low_c == condition.low_c &&
                    Object.Equals(airQuality, condition.airQuality) &&
-                   observation_time == condition.observation_time;
+                   observation_time == condition.observation_time &&
+                   summary == condition.summary;
         }
 
         public override int GetHashCode()
@@ -1629,6 +1631,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(low_c);
             hash.Add(airQuality);
             hash.Add(observation_time);
+            hash.Add(summary);
             return hash.ToHashCode();
         }
 
@@ -1738,6 +1741,10 @@ namespace SimpleWeather.WeatherData
 
                     case nameof(observation_time):
                         this.observation_time = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        break;
+
+                    case nameof(summary):
+                        this.summary = reader.ReadString();
                         break;
 
                     default:
@@ -1874,6 +1881,12 @@ namespace SimpleWeather.WeatherData
             // "observation_time" : ""
             writer.WritePropertyName(nameof(observation_time));
             writer.WriteString(observation_time.ToISO8601Format());
+
+            writer.WriteValueSeparator();
+
+            // "summary" : ""
+            writer.WritePropertyName(nameof(summary));
+            writer.WriteString(summary);
 
             // }
             writer.WriteEndObject();

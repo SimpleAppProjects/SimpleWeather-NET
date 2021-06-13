@@ -2034,6 +2034,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("low_c"), 16},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("airQuality"), 17},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("observation_time"), 18},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("summary"), 19},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -2057,6 +2058,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("low_c"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("airQuality"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("observation_time"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("summary"),
                 
             };
         }
@@ -2108,6 +2110,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherData.AirQuality>().Serialize(ref writer, value.airQuality, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[18]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.observation_time, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[19]);
+            writer.WriteString(value.summary);
             
             writer.WriteEndObject();
         }
@@ -2158,6 +2162,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             var __airQuality__b__ = false;
             var __observation_time__ = default(global::System.DateTimeOffset);
             var __observation_time__b__ = false;
+            var __summary__ = default(string);
+            var __summary__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -2249,6 +2255,10 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
                         __observation_time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __observation_time__b__ = true;
                         break;
+                    case 19:
+                        __summary__ = reader.ReadString();
+                        __summary__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2278,6 +2288,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherData
             if(__low_c__b__) ____result.low_c = __low_c__;
             if(__airQuality__b__) ____result.airQuality = __airQuality__;
             if(__observation_time__b__) ____result.observation_time = __observation_time__;
+            if(__summary__b__) ____result.summary = __summary__;
 
             return ____result;
         }

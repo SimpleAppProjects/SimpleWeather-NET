@@ -17,6 +17,8 @@ namespace SimpleWeather.WeatherData
             var now = DateTimeOffset.UtcNow;
             update_time = now;
 
+            condition = new Condition(forecastResponse);
+
             // ~8-day forecast
             forecast = new List<Forecast>(8);
             txt_forecast = new List<TextForecast>(16);
@@ -38,8 +40,17 @@ namespace SimpleWeather.WeatherData
 
                     if ((!forecast.Any() && !forecastItem.IsDaytime) || (forecast.Count == periodsSize - 1 && forecastItem.IsDaytime))
                     {
-                        forecast.Add(new Forecast(forecastItem));
-                        txt_forecast.Add(new TextForecast(forecastItem));
+                        var fcast = new Forecast(forecastItem);
+                        var txtfcast = new TextForecast(forecastItem);
+
+                        forecast.Add(fcast);
+                        txt_forecast.Add(txtfcast);
+
+                        if (condition.summary == null && condition.observation_time >= txtfcast.date)
+                        {
+                            condition.summary = String.Format(CultureInfo.InvariantCulture,
+                                "{0} - {1}", forecastItem.name, forecastItem.detailedForecast);
+                        }
                     }
                     else if (forecastItem.IsDaytime && (i + 1) < periodsSize)
                     {
@@ -54,8 +65,19 @@ namespace SimpleWeather.WeatherData
                             forecastResponse.data.text[i + 1]
                         );
 
-                        forecast.Add(new Forecast(forecastItem, nightForecastItem));
-                        txt_forecast.Add(new TextForecast(forecastItem, nightForecastItem));
+                        var fcast = new Forecast(forecastItem, nightForecastItem);
+                        var txtfcast = new TextForecast(forecastItem, nightForecastItem);
+
+                        forecast.Add(fcast);
+                        txt_forecast.Add(txtfcast);
+
+                        if (condition.summary == null && condition.observation_time >= txtfcast.date)
+                        {
+                            condition.summary = String.Format(CultureInfo.InvariantCulture,
+                                "{0} - {1}\n{2} - {3}", 
+                                forecastItem.name, forecastItem.detailedForecast,
+                                nightForecastItem.name, nightForecastItem.detailedForecast);
+                        }
 
                         i++;
                     }
@@ -113,7 +135,6 @@ namespace SimpleWeather.WeatherData
                 }
             }
 
-            condition = new Condition(forecastResponse);
             atmosphere = new Atmosphere(forecastResponse);
             //astronomy = new Astronomy(obsCurrentRootObject);
             precipitation = new Precipitation(forecastResponse);

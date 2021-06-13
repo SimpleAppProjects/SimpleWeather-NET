@@ -394,7 +394,7 @@
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Foreground="{Binding ElementName=WeatherBox, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
-                        RelativePanel.Above="Attribution"
+                        RelativePanel.Above="SummaryPanel"
                         RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWithPanel="True"
                         ShowAsMonochrome="False"
@@ -404,7 +404,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         BlurRadius="15.0"
-                        RelativePanel.Above="Attribution"
+                        RelativePanel.Above="SummaryPanel"
                         RelativePanel.AlignLeftWithPanel="True"
                         ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
                         <TextBlock
@@ -413,6 +413,23 @@
                             d:Text="Sunny"
                             FontSize="24"
                             Text="{x:Bind WeatherView.CurCondition, Mode=OneWay}" />
+                    </toolkitControls:DropShadowPanel>
+                    <toolkitControls:DropShadowPanel
+                        x:Name="SummaryPanel"
+                        Margin="0,10"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BlurRadius="15.0"
+                        RelativePanel.Above="Attribution"
+                        RelativePanel.AlignLeftWithPanel="True"
+                        ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
+                        Visibility="{x:Bind WeatherView.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                        <TextBlock
+                            Padding="5"
+                            d:Text="Rain, some heavy, to affect the area tonight"
+                            FontWeight="SemiLight"
+                            Text="{x:Bind WeatherView.WeatherSummary, Mode=OneWay}"
+                            TextWrapping="Wrap" />
                     </toolkitControls:DropShadowPanel>
                     <HyperlinkButton
                         x:Name="Attribution"

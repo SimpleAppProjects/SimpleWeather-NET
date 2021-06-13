@@ -248,6 +248,10 @@ namespace SimpleWeather.UWP.Main
                 case "LocationCoord":
                     radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
                     break;
+
+                case "WeatherSummary":
+                    AdjustViewLayout();
+                    break;
             }
         }
 

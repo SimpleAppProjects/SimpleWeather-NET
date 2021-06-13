@@ -32,6 +32,7 @@ namespace SimpleWeather.Controls
         private string weatherIcon;
         private string hiTemp;
         private string loTemp;
+        private string weatherSummary;
 
         // Weather Details
         private string sunrise;
@@ -80,6 +81,7 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get => weatherIcon; private set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
         public string HiTemp { get => hiTemp; private set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
         public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
+        public string WeatherSummary { get => weatherSummary; private set { if (!Equals(weatherSummary, value)) { weatherSummary = value; OnPropertyChanged(nameof(WeatherSummary)); } } }
         public string Sunrise { get => sunrise; private set { if (!Equals(sunrise, value)) { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } } }
         public string Sunset { get => sunset; private set { if (!Equals(sunset, value)) { sunset = value; OnPropertyChanged(nameof(Sunset)); } } }
         public SimpleObservableList<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
@@ -154,6 +156,9 @@ namespace SimpleWeather.Controls
 
                     // Location
                     Location = weather?.location?.name;
+
+                    // Summary
+                    WeatherSummary = weather?.condition?.summary;
 
                     // Additional Details
                     if (weather?.location?.latitude.HasValue == true && weather?.location?.longitude.HasValue == true)
