@@ -1,12 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.AQICN;
 using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
-using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.NWS;
 using SimpleWeather.SMC;
@@ -14,6 +9,12 @@ using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherApi;
 using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Images;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace UnitTestProject
 {
@@ -23,9 +24,9 @@ namespace UnitTestProject
         private bool WasUsingPersonalKey = false;
 
         [TestInitialize]
-        public void Initialize()
+        public async Task Initialize()
         {
-            Settings.LoadIfNeeded();
+            await Settings.LoadIfNeededAsync();
 
             if (Settings.UsePersonalKey)
             {
@@ -77,7 +78,7 @@ namespace UnitTestProject
             var fcast = new Forecasts(weather);
             var serialFcast = await JSONParser.SerializerAsync(fcast);
             var deserialfcast = await JSONParser.DeserializerAsync<Forecasts>(serialFcast);
-            bool testSuccess = Object.Equals(weather, deserialWeather) && string.Equals(fcast?.query, deserialfcast?.query) &&
+            bool testSuccess = Equals(weather, deserialWeather) && string.Equals(fcast?.query, deserialfcast?.query) &&
                 fcast?.forecast?.Count == deserialfcast?.forecast?.Count && fcast?.txt_forecast?.Count == deserialfcast?.txt_forecast?.Count;
             if (weather.hr_forecast?.Count > 0)
             {
@@ -85,7 +86,7 @@ namespace UnitTestProject
                 var serialHr = await JSONParser.SerializerAsync(hfcast);
                 var deserialHr = await JSONParser.DeserializerAsync<HourlyForecasts>(serialHr);
                 testSuccess = testSuccess && string.Equals(fcast?.query, deserialfcast?.query) &&
-                    Object.Equals(hfcast?.hr_forecast, deserialHr?.hr_forecast) && hfcast?.date == deserialHr?.date;
+                    Equals(hfcast?.hr_forecast, deserialHr?.hr_forecast) && hfcast?.date == deserialHr?.date;
             }
             return testSuccess;
         }
@@ -96,89 +97,85 @@ namespace UnitTestProject
         {
             for (int i = 0; i < SERIALIZER_RUNS; i++)
             {
-                var watch1 = System.Diagnostics.Stopwatch.StartNew();
+                var watch1 = Stopwatch.StartNew();
                 string customJson = weather.ToJson();
                 watch1.Stop();
-                System.Diagnostics.Debug.WriteLine("Serialize #{2}: Weather - {0} (Custom): {1}", weather.source, watch1.Elapsed, i + 1);
+                Debug.WriteLine("Serialize #{2}: Weather - {0} (Custom): {1}", weather.source, watch1.Elapsed, i + 1);
 
-                watch1 = System.Diagnostics.Stopwatch.StartNew();
+                watch1 = Stopwatch.StartNew();
                 var customWeather = new Weather();
-                var customReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(customJson));
+                var customReader = new Utf8Json.JsonReader(Encoding.UTF8.GetBytes(customJson));
                 customWeather.FromJson(ref customReader);
                 watch1.Stop();
-                System.Diagnostics.Debug.WriteLine("Deserialize #{2}: Weather - {0} (Custom): {1}", customWeather.source, watch1.Elapsed, i + 1);
+                Debug.WriteLine("Deserialize #{2}: Weather - {0} (Custom): {1}", customWeather.source, watch1.Elapsed, i + 1);
             }
 
-            System.GC.Collect();
+            GC.Collect();
             Task.Delay(5000);
 
             for (int i = 0; i < SERIALIZER_RUNS; i++)
             {
-                var watch2 = System.Diagnostics.Stopwatch.StartNew();
+                var watch2 = Stopwatch.StartNew();
                 string utf8Json = JSONParser.Serializer(weather);
                 watch2.Stop();
-                System.Diagnostics.Debug.WriteLine("Serialize #{2}: Weather - {0} (UTF8JsonGen): {1}", weather.source, watch2.Elapsed, i + 1);
+                Debug.WriteLine("Serialize #{2}: Weather - {0} (UTF8JsonGen): {1}", weather.source, watch2.Elapsed, i + 1);
 
-                watch2 = System.Diagnostics.Stopwatch.StartNew();
+                watch2 = Stopwatch.StartNew();
                 var utf8Weather = JSONParser.Deserializer<Weather>(utf8Json);
                 watch2.Stop();
-                System.Diagnostics.Debug.WriteLine("Deserialize #{2}: Weather - {0} (UTF8JsonGen): {1}", utf8Weather.source, watch2.Elapsed, i + 1);
+                Debug.WriteLine("Deserialize #{2}: Weather - {0} (UTF8JsonGen): {1}", utf8Weather.source, watch2.Elapsed, i + 1);
             }
         }
 
         [TestMethod]
-        public void GetHereWeather()
+        public async Task GetHereWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.Here);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetMetNoWeather()
+        public async Task GetMetNoWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MetNo);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetNWSAlerts()
+        public async Task GetNWSAlerts()
         {
-            var location = WeatherManager.GetProvider(WeatherAPI.NWS)
-                .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614)).ConfigureAwait(false).GetAwaiter().GetResult();
+            var location = await WeatherManager.GetProvider(WeatherAPI.NWS)
+                .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614)).ConfigureAwait(false);
             var locData = new LocationData(location);
-            var alerts = new NWSAlertProvider().GetAlerts(locData).ConfigureAwait(false).GetAwaiter().GetResult();
+            var alerts = await new NWSAlertProvider().GetAlerts(locData).ConfigureAwait(false);
             Assert.IsNotNull(alerts);
         }
 
         [TestMethod]
-        public void GetNWSWeather()
+        public async Task GetNWSWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.forecast?.Count > 0 && weather?.hr_forecast?.Count > 0);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetOWMWeather()
+        public async Task GetOWMWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetOWMOneCallWeather()
+        public async Task GetOWMOneCallWeather()
         {
             Settings.UsePersonalKey = true;
 
@@ -186,81 +183,79 @@ namespace UnitTestProject
 
             Settings.API_KEY = provider.GetAPIKey();
 
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
 
             Settings.API_KEY = null;
             Settings.UsePersonalKey = false;
         }
 
         [TestMethod]
-        public void GetWUnlockedWeather()
+        public async Task GetWUnlockedWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherUnlocked);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
-            //SerializerSpeedTest(weather);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetHEREOAuthToken()
+        public async Task GetHEREOAuthToken()
         {
-            var token = HEREOAuthUtils.GetBearerToken(true).ConfigureAwait(false).GetAwaiter().GetResult();
+            var token = await HEREOAuthUtils.GetBearerToken(true).ConfigureAwait(false);
             Assert.IsTrue(!String.IsNullOrWhiteSpace(token));
         }
 
         [TestMethod]
-        public void GetTimeZone()
+        public async Task GetTimeZone()
         {
-            var tz = new TimeZoneProvider().GetTimeZone(0, 0).ConfigureAwait(false).GetAwaiter().GetResult();
+            var tz = await new TimeZoneProvider().GetTimeZone(0, 0).ConfigureAwait(false);
             Debug.WriteLine("TZTest: tz = " + tz);
             Assert.IsTrue(!String.IsNullOrWhiteSpace(tz));
         }
 
         [TestMethod]
-        public void GetAQIData()
+        public async Task GetAQIData()
         {
             var tz_long = "America/Los_Angeles";
-            var aqi = new AQICNProvider().GetAirQualityData(
+            var aqi = await new AQICNProvider().GetAirQualityData(
                 new LocationData()
                 {
                     latitude = 47.6721646,
                     longitude = -122.1706614,
                     tz_long = tz_long
-                }).ConfigureAwait(false).GetAwaiter().GetResult();
+                }).ConfigureAwait(false);
             Assert.IsNotNull(aqi);
         }
 
         [TestMethod]
-        public void GetSunriseSetTime()
+        public async Task GetSunriseSetTime()
         {
             var date = DateTimeOffset.UtcNow;
             var tz_long = "America/Los_Angeles";
-            var astro = new SolCalcAstroProvider().GetAstronomyData(
+            var astro = await new SolCalcAstroProvider().GetAstronomyData(
                 new LocationData()
                 {
                     latitude = 47.6721646,
                     longitude = -122.1706614,
                     tz_long = tz_long
-                }, date).ConfigureAwait(false).GetAwaiter().GetResult();
+                }, date).ConfigureAwait(false);
             Debug.WriteLine("SolCalc - Sunrise: {0}; Sunset: {1}", astro.sunrise, astro.sunset);
             Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue);
         }
 
         [TestMethod]
-        public void RealtimeDBTest()
+        public async Task RealtimeDBTest()
         {
-            var updateTime = SimpleWeather.WeatherData.Images.ImageDatabase.GetLastUpdateTime().ConfigureAwait(false).GetAwaiter().GetResult();
+            var updateTime = await ImageDatabase.GetLastUpdateTime().ConfigureAwait(false);
             Assert.IsTrue(updateTime > 0);
         }
 
         [TestMethod]
-        public void FirestoreAPITest()
+        public async Task FirestoreAPITest()
         {
-            var storage = SimpleWeather.Firebase.FirebaseStorageHelper.GetFirebaseStorage().ConfigureAwait(false).GetAwaiter().GetResult();
+            var storage = await FirebaseStorageHelper.GetFirebaseStorage().ConfigureAwait(false);
             var storageRef = storage.GetReferenceFromUrl(new Uri(""));
         }
 
@@ -273,7 +268,7 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void SimpleAstroTest()
+        public async Task SimpleAstroTest()
         {
             var date = DateTimeOffset.Now;
             var tz_long = "America/Los_Angeles";
@@ -283,7 +278,7 @@ namespace UnitTestProject
                 longitude = -122.1706614,
                 tz_long = tz_long
             };
-            SimpleWeather.WeatherData.Astronomy astro = new SunMoonCalcProvider().GetAstronomyData(locationData, date).ConfigureAwait(false).GetAwaiter().GetResult();
+            var astro = await new SunMoonCalcProvider().GetAstronomyData(locationData, date).ConfigureAwait(false);
 
             Console.WriteLine("SMC");
             Console.WriteLine(String.Format(
@@ -298,35 +293,43 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public void WeatherAPILocationTest()
+        public async Task WeatherAPILocationTest()
         {
             var locationProvider = new WeatherApiLocationProvider();
-            var locations = locationProvider.GetLocations("Redmond, WA", null).ConfigureAwait(false).GetAwaiter().GetResult();
+            var locations = await locationProvider.GetLocations("Redmond, WA", null).ConfigureAwait(false);
             Assert.IsTrue(locations?.Count > 0);
 
             var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond, "));
             Assert.IsNotNull(queryVM);
 
-            var nameModel = locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false).GetAwaiter().GetResult();
+            var nameModel = await locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false);
             Assert.IsNotNull(nameModel);
         }
 
         [TestMethod]
-        public void GetMeteoFranceWeather()
+        public async Task GetMeteoFranceWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MeteoFrance);
-            var weather = GetWeather(provider, new WeatherUtils.Coordinate(48.85, 2.34)).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.85, 2.34)).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
         [TestMethod]
-        public void GetWeatherApiWeather()
+        public async Task GetWeatherApiWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherApi);
-            var weather = GetWeather(provider).ConfigureAwait(false).GetAwaiter().GetResult();
+            var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
-            Assert.IsTrue(SerializerTest(weather).ConfigureAwait(false).GetAwaiter().GetResult());
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [TestMethod]
+        public async Task FirestoreImageDBTest()
+        {
+            var imageData = await ImageDatabase.GetRandomImageForCondition(WeatherBackground.DAY).ConfigureAwait(false);
+            Assert.IsNotNull(imageData);
+            Assert.IsTrue(imageData.IsValid());
         }
     }
 }
