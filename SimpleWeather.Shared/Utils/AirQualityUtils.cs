@@ -86,7 +86,7 @@ namespace SimpleWeather.Utils
             }
             else if (conc >= 0.201D && conc < 0.605D)
             {
-                throw new ArgumentException("8-hour ozone values do not define higher AQI values (>=301); calculate using 1-hour O3 conc");
+                throw new ArgumentOutOfRangeException(nameof(conc), "8-hour ozone values do not define higher AQI values (>=301); calculate using 1-hour O3 conc");
             }
             else
             {
@@ -100,7 +100,7 @@ namespace SimpleWeather.Utils
 
             if (conc >= 0.0D && conc <= 124.0D)
             {
-                throw new ArgumentException("1-hour ozone values do not define lower AQI values (<= 100); AQI values of 100 or lower are calculated with 8-hour ozone concentrations.");
+                throw new ArgumentOutOfRangeException(nameof(conc), "1-hour ozone values do not define lower AQI values (<= 100); AQI values of 100 or lower are calculated with 8-hour ozone concentrations.");
             }
             else if (conc >= 0.125D && conc < 0.165D)
             {
@@ -276,7 +276,7 @@ namespace SimpleWeather.Utils
             }
             else if (conc >= 305.0D && conc <= 604.0D)
             {
-                throw new ArgumentException(nameof(conc), "AQI values of 201 or greater are calculated with 24-hour SO2 concentrations");
+                throw new ArgumentOutOfRangeException(nameof(conc), "AQI values of 201 or greater are calculated with 24-hour SO2 concentrations");
             }
             else
             {
@@ -290,7 +290,7 @@ namespace SimpleWeather.Utils
 
             if (conc >= 0 && conc <= 304)
             {
-                throw new ArgumentException(nameof(conc), "AQI values less than 201 are calculated with 1-hour SO2 concentrations");
+                throw new ArgumentOutOfRangeException(nameof(conc), "AQI values less than 201 are calculated with 1-hour SO2 concentrations");
             }
             else if (conc >= 305 && conc < 605)
             {
