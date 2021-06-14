@@ -82,12 +82,8 @@ namespace SimpleWeather.WeatherData.Images
                 {
                     var dbSnapshot = await GetSnapshot();
 
-                    var rand = new Random();
-
                     imageData = dbSnapshot.Where(img => img.Condition == backgroundCode)
-                                          .OrderBy(img => rand.Next())
-                                          .Take(1)
-                                          .FirstOrDefault();
+                                          .RandomOrDefault();
 
                     return imageData;
                 }

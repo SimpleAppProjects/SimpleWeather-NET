@@ -229,6 +229,7 @@
     <Compile Include="Utils\AnalyticsLogger.cs" />
     <Compile Include="Utils\AppCenterLoggingTree.cs" />
     <Compile Include="Utils\AsyncTask.cs" />
+    <Compile Include="Utils\CollectionUtils.cs" />
     <Compile Include="Utils\ColorUtils.cs" />
     <Compile Include="Utils\CommonActions.cs" />
     <Compile Include="Utils\ConversionMethods.cs" />
