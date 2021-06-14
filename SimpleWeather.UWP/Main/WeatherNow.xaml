@@ -427,7 +427,7 @@
                         <TextBlock
                             Padding="5"
                             d:Text="Rain, some heavy, to affect the area tonight"
-                            FontWeight="SemiLight"
+                            FontWeight="Normal"
                             Text="{x:Bind WeatherView.WeatherSummary, Mode=OneWay}"
                             TextWrapping="Wrap" />
                     </toolkitControls:DropShadowPanel>
