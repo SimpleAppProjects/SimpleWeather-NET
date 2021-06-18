@@ -1029,7 +1029,7 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        public static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
+        private static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported())

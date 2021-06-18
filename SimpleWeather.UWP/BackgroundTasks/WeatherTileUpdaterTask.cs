@@ -181,12 +181,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
                 var tb3 = new BackgroundTaskBuilder() { Name = taskName };
                 tb3.SetTrigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
+                var tb4 = new BackgroundTaskBuilder() { Name = taskName };
+                tb4.SetTrigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
 
                 try
                 {
                     tb1.Register();
                     tb2.Register();
                     tb3.Register();
+                    tb4.Register();
                 }
                 catch (Exception ex)
                 {
