@@ -35,6 +35,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                             RemoteConfig.RemoteConfig.SetConfigString(prop.Key, prop.Object.ToString());
                         }
                     }
+
+                    RemoteConfig.RemoteConfig.UpdateWeatherProvider();
                 }
                 catch (Exception ex)
                 {

@@ -604,6 +604,8 @@ namespace SimpleWeather.UWP
             // Load data if needed
             _ = Task.Run(Settings.LoadIfNeededAsync);
 
+            RemoteConfig.RemoteConfig.UpdateWeatherProvider();
+
             await InitializeExtras();
 
             Initialized = true;
@@ -618,6 +620,8 @@ namespace SimpleWeather.UWP
 
             // Load data if needed
             _ = Task.Run(Settings.LoadIfNeededAsync);
+
+            RemoteConfig.RemoteConfig.UpdateWeatherProvider();
 
             await InitializeExtras();
 
