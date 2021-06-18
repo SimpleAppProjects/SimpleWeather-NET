@@ -12,7 +12,7 @@ using Windows.UI;
 
 namespace SimpleWeather.WeatherData
 {
-    public abstract partial class WeatherProviderImpl : IWeatherProviderImpl
+    public abstract partial class WeatherProviderImpl : IWeatherProviderImpl, IRateLimitedRequest
     {
         // Variables
         public LocationProviderImpl LocationProvider { get; protected set; }
@@ -23,6 +23,8 @@ namespace SimpleWeather.WeatherData
         public virtual bool NeedsExternalAlertData => true;
 
         public virtual int HourlyForecastInterval => 1;
+
+        public virtual long GetRetryTime() => 5000;
 
         public virtual bool IsRegionSupported(string countryCode)
         {
@@ -107,7 +109,7 @@ namespace SimpleWeather.WeatherData
 
         private async Task UpdateAQIData(LocationData location, Weather weather)
         {
-            var aqicnData = await new AQICN.AQICNProvider().GetAirQualityData(location);
+            var aqicnData = (await new AQICN.AQICNProvider().GetAirQualityData(location)) as AQICN.AQICNData;
             weather.condition.airQuality = aqicnData;
 
             try

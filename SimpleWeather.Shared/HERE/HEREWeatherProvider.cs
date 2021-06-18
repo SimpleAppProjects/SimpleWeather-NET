@@ -74,6 +74,8 @@ namespace SimpleWeather.HERE
 
             try
             {
+                this.CheckRateLimit();
+
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
                     // Add headers to request
@@ -90,10 +92,10 @@ namespace SimpleWeather.HERE
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-                        // Reset exception
-                        wEx = null;
 
                         // Load weather
                         Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
@@ -130,6 +132,10 @@ namespace SimpleWeather.HERE
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather data");
@@ -202,6 +208,8 @@ namespace SimpleWeather.HERE
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL;
                 if (LocationUtils.IsUSorCanada(location.country_code))
                 {
@@ -229,7 +237,9 @@ namespace SimpleWeather.HERE
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data

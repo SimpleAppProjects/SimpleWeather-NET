@@ -40,6 +40,8 @@ namespace SimpleWeather.OpenWeather.OneCall
 
         public override int HourlyForecastInterval => 1;
 
+        public override long GetRetryTime() => 43200000L; // 12 hrs
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
@@ -48,6 +50,8 @@ namespace SimpleWeather.OpenWeather.OneCall
 
             try
             {
+                this.CheckRateLimit();
+
                 if (String.IsNullOrWhiteSpace(key))
                     throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
@@ -59,6 +63,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                 using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
                 {
                     // Check for errors
+                    this.ThrowIfRateLimited(response.StatusCode);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -73,9 +78,13 @@ namespace SimpleWeather.OpenWeather.OneCall
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 isValid = false;
+                if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
+                }
             }
 
             if (wEx != null)
@@ -115,6 +124,8 @@ namespace SimpleWeather.OpenWeather.OneCall
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri weatherURL = new Uri(string.Format(WEATHER_QUERY_URL, query, key, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
@@ -126,6 +137,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
 
                         Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
@@ -144,6 +156,10 @@ namespace SimpleWeather.OpenWeather.OneCall
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "OWMOneCallWeatherProvider: error getting weather data");
@@ -231,6 +247,8 @@ namespace SimpleWeather.OpenWeather.OneCall
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri weatherURL = new Uri(string.Format(AQI_QUERY_URL, location.latitude, location.longitude, key));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
@@ -242,6 +260,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
 
                         Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

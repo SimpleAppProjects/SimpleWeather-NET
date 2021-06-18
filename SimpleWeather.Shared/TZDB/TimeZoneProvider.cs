@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.TZDB
 {
@@ -20,8 +21,12 @@ namespace SimpleWeather.TZDB
         public String TZLong { get; set; }
     }
 
-    public class TimeZoneProvider : ITimeZoneProvider
+    public class TimeZoneProvider : ITimeZoneProvider, IRateLimitedRequest
     {
+        private const string API_ID = "tzdb";
+
+        public long GetRetryTime() => 60000;
+
         public async Task<string> GetTimeZone(double latitude, double longitude)
         {
             String tzLong = null;
@@ -35,7 +40,9 @@ namespace SimpleWeather.TZDB
                 if (String.IsNullOrWhiteSpace(tzAPI) || String.IsNullOrWhiteSpace(userToken))
                     return null;
 
-                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1}&lon={2}", tzAPI, latitude, longitude));
+                CheckRateLimit(API_ID);
+
+                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, "{0}?lat={1:0.####}&lon={2:0.####}", tzAPI, latitude, longitude));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
@@ -48,7 +55,9 @@ namespace SimpleWeather.TZDB
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        CheckForErrors(API_ID, response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load weather

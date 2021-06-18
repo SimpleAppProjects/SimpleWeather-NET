@@ -45,6 +45,8 @@ namespace SimpleWeather.WeatherApi
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(QUERY_URL, key, location_query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -56,7 +58,9 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -87,6 +91,11 @@ namespace SimpleWeather.WeatherApi
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
+                }
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiLocationProvider: error getting locations");
             }
 
@@ -128,6 +137,8 @@ namespace SimpleWeather.WeatherApi
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(QUERY_URL, key, location_query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -139,7 +150,9 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -168,6 +181,10 @@ namespace SimpleWeather.WeatherApi
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiLocationProvider: error getting location");

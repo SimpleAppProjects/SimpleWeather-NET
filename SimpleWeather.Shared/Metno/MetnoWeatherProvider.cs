@@ -53,6 +53,8 @@ namespace SimpleWeather.Metno
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
                 Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, location_query, date));
@@ -77,10 +79,13 @@ namespace SimpleWeather.Metno
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
+                        this.CheckForErrors(forecastResponse.StatusCode);
                         forecastResponse.EnsureSuccessStatusCode();
+
                         using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
                         {
+                            this.CheckForErrors(sunrisesetResponse.StatusCode);
                             sunrisesetResponse.EnsureSuccessStatusCode();
 
                             Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
@@ -105,6 +110,10 @@ namespace SimpleWeather.Metno
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");

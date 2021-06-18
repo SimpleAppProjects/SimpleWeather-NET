@@ -31,6 +31,8 @@ namespace SimpleWeather.Bing
 
         public override bool NeedsLocationFromName => true;
 
+        public override long GetRetryTime() => 5000;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
         {
@@ -46,6 +48,8 @@ namespace SimpleWeather.Bing
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, key, culture.Name));
 
                 // Connect to webstream
@@ -57,7 +61,9 @@ namespace SimpleWeather.Bing
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -91,6 +97,10 @@ namespace SimpleWeather.Bing
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
             }

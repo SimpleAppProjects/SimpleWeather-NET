@@ -54,6 +54,8 @@ namespace SimpleWeather.NWS
             return null;
         }
 
+        public override long GetRetryTime() => 30000;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<Weather> GetWeather(string location_query, string country_code)
         {
@@ -68,6 +70,8 @@ namespace SimpleWeather.NWS
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
                 Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, location_query));
 
@@ -91,7 +95,7 @@ namespace SimpleWeather.NWS
                     using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
                     {
                         // Check for errors
-                        CheckForErrors(observationResponse.StatusCode);
+                        this.CheckForErrors(observationResponse.StatusCode);
 
                         Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
 
@@ -102,7 +106,7 @@ namespace SimpleWeather.NWS
                         using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
                         {
                             // Check for errors
-                            CheckForErrors(forecastResponse.StatusCode);
+                            this.CheckForErrors(forecastResponse.StatusCode);
 
                             Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 
@@ -121,6 +125,10 @@ namespace SimpleWeather.NWS
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "NWSWeatherProvider: error getting weather data");
@@ -360,26 +368,6 @@ namespace SimpleWeather.NWS
                 {
                     return StringComparer.OrdinalIgnoreCase.Compare(x, y);
                 }
-            }
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        private void CheckForErrors(HttpStatusCode responseCode)
-        {
-            switch (responseCode)
-            {
-                case HttpStatusCode.Ok:
-                    break;
-                // 400 (OK since this isn't a valid request)
-                case HttpStatusCode.BadRequest:
-                default:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                // 404 (Not found - Invalid query)
-                case HttpStatusCode.NotFound:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                // 500 (Internal Error)
-                case HttpStatusCode.InternalServerError:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
             }
         }
 

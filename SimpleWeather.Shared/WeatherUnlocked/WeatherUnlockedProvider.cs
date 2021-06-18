@@ -32,6 +32,8 @@ namespace SimpleWeather.WeatherUnlocked
 
         public override int HourlyForecastInterval => 3;
 
+        public override long GetRetryTime() => 60000;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<bool> IsKeyValid(string key)
         {
@@ -54,9 +56,9 @@ namespace SimpleWeather.WeatherUnlocked
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<WeatherData.Weather> GetWeather(string location_query, string country_code)
+        public override async Task<Weather> GetWeather(string location_query, string country_code)
         {
-            WeatherData.Weather weather = null;
+            Weather weather = null;
             WeatherException wEx = null;
 
             var culture = CultureUtils.UserCulture;
@@ -64,6 +66,8 @@ namespace SimpleWeather.WeatherUnlocked
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, location_query, GetAppID(), GetAppKey(), locale));
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query, GetAppID(), GetAppKey(), locale));
 
@@ -83,7 +87,10 @@ namespace SimpleWeather.WeatherUnlocked
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
+                        this.CheckForErrors(currentResponse.StatusCode);
                         currentResponse.EnsureSuccessStatusCode();
+
+                        this.CheckForErrors(forecastResponse.StatusCode);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
@@ -93,7 +100,7 @@ namespace SimpleWeather.WeatherUnlocked
                         CurrentRootobject currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream);
                         ForecastRootobject foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
 
-                        weather = new WeatherData.Weather(currRoot, foreRoot);
+                        weather = new Weather(currRoot, foreRoot);
                     }
                 }
             }
@@ -104,6 +111,10 @@ namespace SimpleWeather.WeatherUnlocked
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherUnlockedProvider: error getting weather data");
@@ -153,7 +164,7 @@ namespace SimpleWeather.WeatherUnlocked
             }
         }
 
-        public override string UpdateLocationQuery(WeatherData.Weather weather)
+        public override string UpdateLocationQuery(Weather weather)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}", weather.location.latitude, weather.location.longitude);
         }
@@ -368,7 +379,7 @@ namespace SimpleWeather.WeatherUnlocked
 
         // Some conditions can be for any time of day
         // So use sunrise/set data as fallback
-        public override bool IsNight(WeatherData.Weather weather)
+        public override bool IsNight(Weather weather)
         {
             bool isNight = base.IsNight(weather);
 

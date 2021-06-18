@@ -37,6 +37,8 @@ namespace SimpleWeather.OpenWeather
 
         public override int HourlyForecastInterval => 3;
 
+        public override long GetRetryTime() => 60000;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
@@ -45,6 +47,8 @@ namespace SimpleWeather.OpenWeather
 
             try
             {
+                this.CheckRateLimit();
+
                 if (String.IsNullOrWhiteSpace(key))
                     throw (wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey));
 
@@ -56,6 +60,7 @@ namespace SimpleWeather.OpenWeather
                 using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
                 {
                     // Check for errors
+                    this.ThrowIfRateLimited(response.StatusCode);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -70,9 +75,13 @@ namespace SimpleWeather.OpenWeather
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 isValid = false;
+                if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
+                }
             }
 
             if (wEx != null)
@@ -112,6 +121,8 @@ namespace SimpleWeather.OpenWeather
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, key, locale));
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, key, locale));
 
@@ -128,7 +139,10 @@ namespace SimpleWeather.OpenWeather
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
+                        this.CheckForErrors(currentResponse.StatusCode);
                         currentResponse.EnsureSuccessStatusCode();
+
+                        this.CheckForErrors(forecastResponse.StatusCode);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
@@ -149,6 +163,10 @@ namespace SimpleWeather.OpenWeather
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "OpenWeatherMapProvider: error getting weather data");

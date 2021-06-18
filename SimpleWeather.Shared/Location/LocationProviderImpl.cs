@@ -21,6 +21,8 @@ namespace SimpleWeather.Location
         public virtual bool NeedsLocationFromName => false;
         public virtual bool NeedsLocationFromGeocoder => false;
 
+        public virtual long GetRetryTime() => 5000;
+
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

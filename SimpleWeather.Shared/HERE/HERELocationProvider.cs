@@ -15,6 +15,7 @@ using Windows.System.UserProfile;
 using Windows.Web;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.HERE
 {
@@ -51,6 +52,8 @@ namespace SimpleWeather.HERE
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(AUTOCOMPLETE_QUERY_URL, location_query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -69,7 +72,9 @@ namespace SimpleWeather.HERE
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -106,6 +111,10 @@ namespace SimpleWeather.HERE
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
                 }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
+                }
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting locations");
             }
 
@@ -134,6 +143,8 @@ namespace SimpleWeather.HERE
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(GEOLOCATION_QUERY_URL, location_query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -152,7 +163,9 @@ namespace SimpleWeather.HERE
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -170,6 +183,10 @@ namespace SimpleWeather.HERE
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
@@ -200,6 +217,8 @@ namespace SimpleWeather.HERE
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(GEOCODER_QUERY_API, model.LocationQuery, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -218,7 +237,9 @@ namespace SimpleWeather.HERE
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
+
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
                         // Load data
@@ -236,6 +257,10 @@ namespace SimpleWeather.HERE
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");

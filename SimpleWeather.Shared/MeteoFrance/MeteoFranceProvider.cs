@@ -50,6 +50,8 @@ namespace SimpleWeather.MeteoFrance
             return APIKeys.GetMeteoFranceKey();
         }
 
+        public override long GetRetryTime() => 60000;
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<WeatherData.Weather> GetWeather(string location_query, string country_code)
         {
@@ -70,6 +72,8 @@ namespace SimpleWeather.MeteoFrance
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, location_query, locale, key));
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query, locale, key));
 
@@ -86,7 +90,10 @@ namespace SimpleWeather.MeteoFrance
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
+                        this.CheckForErrors(currentResponse.StatusCode);
                         currentResponse.EnsureSuccessStatusCode();
+
+                        this.CheckForErrors(forecastResponse.StatusCode);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
@@ -108,8 +115,6 @@ namespace SimpleWeather.MeteoFrance
                                 using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
                                 using (var alertsResponse = await webClient.SendRequestAsync(alertsRequest).AsTask(ctsA.Token))
                                 {
-                                    alertsResponse.EnsureSuccessStatusCode();
-
                                     var alertsStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await alertsResponse.Content.ReadAsInputStreamAsync());
                                     alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertsStream);
                                 }
@@ -127,6 +132,10 @@ namespace SimpleWeather.MeteoFrance
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "MeteoFranceProvider: error getting weather data");

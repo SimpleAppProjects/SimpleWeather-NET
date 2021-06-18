@@ -50,6 +50,8 @@ namespace SimpleWeather.WeatherApi
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri queryURL = new Uri(String.Format(KEYCHECK_QUERY_URL, key));
 
                 // Connect to webstream
@@ -58,6 +60,7 @@ namespace SimpleWeather.WeatherApi
                 using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
                 {
                     // Check for errors
+                    this.ThrowIfRateLimited(response.StatusCode);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -72,9 +75,13 @@ namespace SimpleWeather.WeatherApi
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 isValid = false;
+                if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
+                }
             }
 
             if (wEx != null && wEx.ErrorStatus != WeatherUtils.ErrorStatus.InvalidAPIKey)
@@ -104,6 +111,8 @@ namespace SimpleWeather.WeatherApi
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri weatherURL = new Uri(string.Format(WEATHER_QUERY_URL, location_query, locale, key));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
@@ -115,6 +124,7 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
 
                         Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
@@ -133,6 +143,10 @@ namespace SimpleWeather.WeatherApi
                 if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                }
+                else if (ex is WeatherException)
+                {
+                    wEx = ex as WeatherException;
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiProvider: error getting weather data");
@@ -168,6 +182,8 @@ namespace SimpleWeather.WeatherApi
 
             try
             {
+                this.CheckRateLimit();
+
                 Uri alertsURL = new Uri(string.Format(ALERTS_QUERY_URL, UpdateLocationQuery(location), locale, key));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, alertsURL))
@@ -179,6 +195,7 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
+                        this.CheckForErrors(response.StatusCode);
                         response.EnsureSuccessStatusCode();
 
                         Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

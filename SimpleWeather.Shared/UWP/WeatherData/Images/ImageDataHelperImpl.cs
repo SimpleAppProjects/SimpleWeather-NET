@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
 using Windows.Web.Http;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.UWP.Shared.WeatherData.Images
 {

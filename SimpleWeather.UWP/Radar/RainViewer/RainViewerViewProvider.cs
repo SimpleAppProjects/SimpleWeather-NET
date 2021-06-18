@@ -12,6 +12,7 @@ using Windows.Devices.Geolocation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.UWP.Radar.RainViewer
 {
@@ -28,10 +29,14 @@ namespace SimpleWeather.UWP.Radar.RainViewer
         private CancellationTokenSource cts;
         private bool disposedValue;
 
+        private readonly string API_ID;
+
         public RainViewerViewProvider(Border container) : base(container)
         {
             AvailableRadarFrames = new List<RadarFrame>();
             cts = new CancellationTokenSource();
+
+            API_ID = RadarProvider.RadarProviders.RainViewer.GetStringValue();
         }
 
         public override async void UpdateMap(MapControl mapControl)
@@ -165,6 +170,9 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                 RefreshToken();
                 using (var response = await HttpClient.GetAsync(new Uri(MapsURL)).AsTask(cts.Token))
                 {
+                    CheckForErrors(API_ID, response.StatusCode);
+                    response.EnsureSuccessStatusCode();
+
                     var stream = await response.Content.ReadAsInputStreamAsync();
                     var root = await JSONParser.DeserializerAsync<Rootobject>(stream.AsStreamForRead());
 

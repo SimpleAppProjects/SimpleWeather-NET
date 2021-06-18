@@ -13,15 +13,19 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.AQICN
 {
-    public sealed class AQICNProvider
+    public sealed class AQICNProvider : IAirQualityProvider, IRateLimitedRequest
     {
         private const String QUERY_URL = "https://api.waqi.info/feed/geo:{0:0.####};{1:0.####}/?token={2}";
-        private const int MAX_ATTEMPTS = 2;
 
-        public async Task<AQICNData> GetAirQualityData(LocationData location)
+        private const string API_ID = "waqi";
+
+        public long GetRetryTime() => 1000;
+
+        public async Task<AirQuality> GetAirQualityData(LocationData location)
         {
             AQICNData aqiData = null;
 
@@ -31,44 +35,33 @@ namespace SimpleWeather.AQICN
 
             try
             {
+                CheckRateLimit(API_ID);
+
                 Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
 
-                for (int i = 0; i < MAX_ATTEMPTS; i++)
+                // Connect to webstream
+                HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
+                var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
+
+                var version = string.Format("v{0}.{1}.{2}",
+                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+                request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+
+                using (request)
+                using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                 {
-                    // Connect to webstream
-                    HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
-                    var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
+                    this.CheckForErrors(API_ID, response.StatusCode);
+                    response.EnsureSuccessStatusCode();
 
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
 
-                    request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    // Load data
+                    var root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
-                    using (request)
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
-                    {
-                        if (response.StatusCode == HttpStatusCode.BadRequest)
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            response.EnsureSuccessStatusCode();
-                            Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
-
-                            // Load data
-                            var root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
-
-                            aqiData = new AQICNData(root);
-                        }
-                    }
-
-                    if (i < MAX_ATTEMPTS - 1 && aqiData == null)
-                    {
-                        await Task.Delay(1000);
-                    }
+                    aqiData = new AQICNData(root);
                 }
             }
             catch (Exception ex)

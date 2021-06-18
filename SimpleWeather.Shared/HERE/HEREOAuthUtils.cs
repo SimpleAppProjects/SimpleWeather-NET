@@ -11,6 +11,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
+using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.HERE
 {
@@ -34,6 +35,8 @@ namespace SimpleWeather.HERE
             {
                 try
                 {
+                    CheckRateLimit(WeatherAPI.Here);
+
                     var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
 
                     using (HttpClient webClient = new HttpClient())
@@ -57,7 +60,9 @@ namespace SimpleWeather.HERE
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendAsync(request, cts.Token))
                         {
+                            CheckForErrors(WeatherAPI.Here, response.StatusCode, 10000);
                             response.EnsureSuccessStatusCode();
+
                             Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                             var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
