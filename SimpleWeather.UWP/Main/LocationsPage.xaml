@@ -53,7 +53,7 @@
         </Style>
     </helpers:CustomPage.Resources>
 
-    <Grid Background="{ThemeResource RegionBrush}">
+    <Grid>
         <GridView
             x:Name="LocationsPanel"
             HorizontalAlignment="Stretch"
@@ -102,19 +102,13 @@
                         Orientation="Horizontal" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemContainerStyle>
-                <Style BasedOn="{StaticResource GridViewItemRevealStyle}" TargetType="GridViewItem">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ItemsControl.ItemContainerStyle>
             <GridView.Footer>
                 <Button
                     x:Name="AddLocationsButton"
                     Margin="16,0,20,0"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
-                    Click="AddLocationsButton_Click"
-                    Style="{ThemeResource AccentButtonRevealStyle}">
+                    Click="AddLocationsButton_Click">
                     <Grid Width="Auto" HorizontalAlignment="Center">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />

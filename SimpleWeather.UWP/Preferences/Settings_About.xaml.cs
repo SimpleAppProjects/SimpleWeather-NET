@@ -29,8 +29,8 @@ namespace SimpleWeather.UWP.Preferences
         {
             this.InitializeComponent();
 
-            Version.Text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}",
-                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+            Version.Text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}.{3}",
+                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build, Package.Current.Id.Version.Revision);
 
 
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))

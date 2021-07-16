@@ -37,38 +37,31 @@ namespace SimpleWeather.UWP.Helpers
         {
             var wim = WeatherIconsManager.GetInstance();
 
-            if (value != null)
-            {
-                var icon = value.ToString();
+            var icon = value?.ToString() ?? string.Empty;
 
-                if (ForceDarkTheme)
-                {
-                    return wim.GetWeatherIconURI(icon);
-                }
-                else if (ConverterParameter is ObjectContainer paramObj && paramObj.Value is bool)
-                {
-                    return new Uri(wim.GetWeatherIconURI(icon, true, (bool)paramObj.Value));
-                }
-                else if (ConverterParameter is bool isLight)
-                {
-                    return new Uri(wim.GetWeatherIconURI(icon, true, isLight));
-                }
-                else if (ConverterParameter is SolidColorBrush paramColorBrush)
-                {
-                    return new Uri(wim.GetWeatherIconURI(icon, true, paramColorBrush.Color == Colors.Black));
-                }
-                else if (ConverterParameter is Color paramColor)
-                {
-                    return new Uri(wim.GetWeatherIconURI(icon, true, paramColor == Colors.Black));
-                }
-                else
-                {
-                    return new Uri(wim.GetWeatherIconURI(icon, true, false));
-                }
+            if (ForceDarkTheme)
+            {
+                return wim.GetWeatherIconURI(icon);
+            }
+            else if (ConverterParameter is ObjectContainer paramObj && paramObj.Value is bool)
+            {
+                return new Uri(wim.GetWeatherIconURI(icon, true, (bool)paramObj.Value));
+            }
+            else if (ConverterParameter is bool isLight)
+            {
+                return new Uri(wim.GetWeatherIconURI(icon, true, isLight));
+            }
+            else if (ConverterParameter is SolidColorBrush paramColorBrush)
+            {
+                return new Uri(wim.GetWeatherIconURI(icon, true, paramColorBrush.Color == Colors.Black));
+            }
+            else if (ConverterParameter is Color paramColor)
+            {
+                return new Uri(wim.GetWeatherIconURI(icon, true, paramColor == Colors.Black));
             }
             else
             {
-                return null;
+                return new Uri(wim.GetWeatherIconURI(icon, true, false));
             }
         }
 

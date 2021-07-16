@@ -9,9 +9,10 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource RegionBrush}">
+    <Grid>
         <Border x:Name="RadarWebViewContainer" Loaded="RadarWebViewContainer_Loaded" />
     </Grid>
 </helpers:CustomPage>

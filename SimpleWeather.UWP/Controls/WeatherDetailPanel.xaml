@@ -7,7 +7,9 @@
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     mc:Ignorable="d">
 
@@ -26,399 +28,173 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
+            <helpers:ObjectContainer x:Key="Foreground" Value="{ThemeResource ForegroundColor}" />
+            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource Foreground}" />
             <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
-            <!--  Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton  -->
-            <Style x:Key="DetailPanelToggleButtonStyle" TargetType="ToggleButton">
-                <Setter Property="Background" Value="White" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundTransparentBrush}" />
-                <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonBorderThemeThickness}" />
-                <Setter Property="Padding" Value="0" />
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-                <Setter Property="UseSystemFocusVisuals" Value="True" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="ToggleButton">
-                            <Grid
-                                x:Name="RootGrid"
-                                HorizontalAlignment="Stretch"
-                                Background="{TemplateBinding Background}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Slider
-                                    x:Name="ArrowRotation"
-                                    Maximum="180"
-                                    Minimum="-180"
-                                    Visibility="Collapsed"
-                                    Value="180" />
-
-                                <ContentPresenter
-                                    x:Name="ContentPresenter"
-                                    Grid.Column="0"
-                                    HorizontalAlignment="Stretch"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    AutomationProperties.AccessibilityView="Raw"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
-                                <FontIcon
-                                    x:Name="Arrow"
-                                    Grid.Column="1"
-                                    Width="40"
-                                    FontSize="12"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Glyph="&#xE70D;"
-                                    RenderTransformOrigin="0.5,0.5">
-                                    <FontIcon.RenderTransform>
-                                        <RotateTransform />
-                                    </FontIcon.RenderTransform>
-                                </FontIcon>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="0.0"
-                                                    Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="PointerOver">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="0.0"
-                                                    Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Pressed">
-                                            <Storyboard>
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="0.0"
-                                                    Duration="0:0:0.1" />
-                                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Disabled">
-                                            <Storyboard>
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="0.0"
-                                                    Duration="0:0:0.1" />
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Visibility">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Checked">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                    Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="CheckedPointerOver">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                    Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="CheckedPressed">
-                                            <Storyboard>
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                    Duration="0:0:0.1" />
-                                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="CheckedDisabled">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-
-                                                <DoubleAnimation
-                                                    BeginTime="0:0:0"
-                                                    Storyboard.TargetName="Arrow"
-                                                    Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                    To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                    Duration="0:0:0.1" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="Indeterminate">
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="IndeterminatePointerOver">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="IndeterminatePressed">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-
-                                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState x:Name="IndeterminateDisabled">
-                                            <Storyboard>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                                <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
-                                                    <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                                </ObjectAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <ToggleButton
-            x:Name="DetailHeader"
-            Grid.Row="0"
-            Background="{ThemeResource RegionBrush}"
-            IsChecked="False"
+        <muxc:Expander
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            d:IsEnabled="False"
+            ExpandDirection="Down"
             IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}"
-            Style="{StaticResource DetailPanelToggleButtonStyle}">
-            <Grid MinHeight="60">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <Viewbox
-                    Name="IconBox"
-                    Grid.Column="0"
-                    Width="50"
-                    Height="50"
-                    Margin="8,0"
-                    VerticalAlignment="Center">
-                    <BitmapIcon
-                        x:Name="WeatherIcon"
-                        Foreground="{Binding ElementName=WeatherIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
-                        ShowAsMonochrome="False"
-                        UriSource="{x:Bind ViewModel.Icon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
-                </Viewbox>
-                <StackPanel
-                    Grid.Column="1"
-                    VerticalAlignment="Center"
-                    Orientation="Vertical">
-                    <TextBlock
-                        x:Name="Date"
-                        Padding="2"
-                        FontWeight="Bold"
-                        MaxLines="1"
-                        Text="{x:Bind ViewModel.Date, FallbackValue='Someday XX', Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis" />
-                    <TextBlock
-                        x:Name="Condition"
-                        Padding="2"
-                        VerticalAlignment="Center"
-                        FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                        MaxLines="1"
-                        Text="{x:Bind ViewModel.Condition, FallbackValue='50° / 44° - Sprinkles early. Mostly cloudy. Mild', Mode=OneWay}"
-                        TextTrimming="CharacterEllipsis" />
+            IsExpanded="False">
+            <muxc:Expander.Resources>
+                <Thickness x:Key="ExpanderHeaderPadding">16,8,0,8</Thickness>
+                <SolidColorBrush x:Key="ExpanderHeaderDisabledForeground" Color="{ThemeResource ControlFillColorTransparent}" />
+            </muxc:Expander.Resources>
+            <muxc:Expander.Header>
+                <Grid MinHeight="60" Padding="0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Viewbox
+                        Name="IconBox"
+                        Grid.Column="0"
+                        Width="50"
+                        Height="50"
+                        Margin="8,0"
+                        VerticalAlignment="Center">
+                        <BitmapIcon
+                            x:Name="WeatherIcon"
+                            d:Foreground="White"
+                            d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png"
+                            Foreground="{Binding ElementName=WeatherIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
+                            ShowAsMonochrome="False"
+                            UriSource="{x:Bind ViewModel.Icon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
+                    </Viewbox>
                     <StackPanel
-                        x:Name="Extras"
+                        Grid.Column="1"
                         VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <StackPanel
-                            Padding="5,0"
+                        Orientation="Vertical">
+                        <TextBlock
+                            x:Name="Date"
+                            Padding="2"
+                            d:Text="Someday XX"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="{ThemeResource ExpanderHeaderForeground}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.Date, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="Condition"
+                            Padding="2"
                             VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <BitmapIcon
-                                Width="20"
-                                Height="20"
-                                Margin="0,0,2.5,0"
-                                VerticalAlignment="Center"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                ShowAsMonochrome="True"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
-                            <TextBlock
-                                Padding="2"
-                                VerticalAlignment="Center"
-                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                MaxLines="1"
-                                Text="{x:Bind ViewModel.PoPChance, FallbackValue='100%', Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+                            d:Text="50° | 44° - Sprinkles early. Mostly cloudy. Mild"
+                            Foreground="{ThemeResource ExpanderHeaderForeground}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.Condition, Mode=OneWay}"
+                            TextTrimming="CharacterEllipsis" />
                         <StackPanel
-                            Padding="5,0"
+                            x:Name="Extras"
                             VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <BitmapIcon
-                                Width="20"
-                                Height="20"
-                                Margin="0,0,2.5,0"
+                            Orientation="Horizontal">
+                            <StackPanel
+                                Padding="0,0"
                                 VerticalAlignment="Center"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                ShowAsMonochrome="True"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
-                            <TextBlock
-                                Padding="2"
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                                <BitmapIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,2.5,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    ShowAsMonochrome="True"
+                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
+                                <TextBlock
+                                    Padding="2"
+                                    VerticalAlignment="Center"
+                                    d:Text="100%"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    MaxLines="1"
+                                    Text="{x:Bind ViewModel.PoPChance, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <StackPanel
+                                Padding="5,0"
                                 VerticalAlignment="Center"
-                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                MaxLines="1"
-                                Text="{x:Bind ViewModel.Cloudiness, FallbackValue='80%', Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
-                        <StackPanel
-                            Padding="5,0"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal"
-                            Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <BitmapIcon
-                                Width="20"
-                                Height="20"
-                                Margin="0,0,2.5,0"
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                                <BitmapIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,2.5,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    ShowAsMonochrome="True"
+                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
+                                <TextBlock
+                                    Padding="2"
+                                    VerticalAlignment="Center"
+                                    d:Text="80%"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    MaxLines="1"
+                                    Text="{x:Bind ViewModel.Cloudiness, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <StackPanel
+                                Padding="5,0"
                                 VerticalAlignment="Center"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                ShowAsMonochrome="True"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
-                            <TextBlock
-                                Padding="2"
-                                VerticalAlignment="Center"
-                                FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                                Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                MaxLines="1"
-                                Text="{x:Bind ViewModel.WindSpeed, FallbackValue='7 mph, SSE', Mode=OneWay}"
-                                TextTrimming="CharacterEllipsis" />
+                                Orientation="Horizontal"
+                                Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                                <BitmapIcon
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,0,2.5,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    ShowAsMonochrome="True"
+                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
+                                <TextBlock
+                                    Padding="2"
+                                    VerticalAlignment="Center"
+                                    d:Text="7 mph, SSE"
+                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
+                                    MaxLines="1"
+                                    Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
                         </StackPanel>
                     </StackPanel>
+                </Grid>
+            </muxc:Expander.Header>
+            <muxc:Expander.Content>
+                <StackPanel Padding="10">
+                    <TextBlock
+                        x:Name="ConditionDescription"
+                        HorizontalAlignment="Stretch"
+                        FontSize="14"
+                        TextWrapping="WrapWholeWords">
+                        <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak />
+                    </TextBlock>
+                    <ItemsControl ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="controls:DetailItemViewModel">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="150" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Foreground="{ThemeResource SystemBaseMediumHighColor}"
+                                        Text="{x:Bind Label}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Foreground="{ThemeResource SystemBaseHighColor}"
+                                        Text="{x:Bind Value}" />
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
-            </Grid>
-        </ToggleButton>
-        <StackPanel
-            Grid.Row="1"
-            Padding="5"
-            Visibility="{x:Bind DetailHeader.IsChecked, Mode=OneWay}">
-            <StackPanel Padding="10">
-                <TextBlock
-                    x:Name="ConditionDescription"
-                    HorizontalAlignment="Stretch"
-                    FontSize="{x:Bind Date.FontSize, Mode=OneWay}"
-                    TextWrapping="WrapWholeWords">
-                    <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, TargetNullValue={Binding ViewModel.Condition, Mode=OneWay}, Mode=OneWay}" /><LineBreak />
-                </TextBlock>
-                <ItemsControl ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="controls:DetailItemViewModel">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    FontSize="{Binding ElementName=Date, Path=FontSize}"
-                                    Foreground="{ThemeResource SystemBaseMediumHighColor}"
-                                    Text="{x:Bind Label}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    FontSize="{Binding ElementName=Date, Path=FontSize}"
-                                    Foreground="{ThemeResource SystemBaseHighColor}"
-                                    Text="{x:Bind Value}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
-        </StackPanel>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WidthStates">
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="12" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Medium">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="14" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Large">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1007" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="15" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+            </muxc:Expander.Content>
+        </muxc:Expander>
     </Grid>
 </UserControl>

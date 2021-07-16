@@ -9,109 +9,98 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Shared.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <AcrylicBrush
-            x:Key="NavigationViewDefaultPaneBackground"
-            BackgroundSource="Backdrop"
-            FallbackColor="{ThemeResource SystemChromeMediumColor}"
-            TintColor="{ThemeResource SystemChromeAltHighColor}"
-            TintOpacity="0.8"
-            TintTransitionDuration="0" />
-        <AcrylicBrush
-            x:Key="NavigationViewTopPaneBackground"
-            BackgroundSource="Backdrop"
-            FallbackColor="{ThemeResource SystemChromeMediumColor}"
-            TintColor="{ThemeResource SystemChromeAltHighColor}"
-            TintOpacity="0.8"
-            TintTransitionDuration="0" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <ResourceDictionary.ThemeDictionaries>
+                        <ResourceDictionary x:Key="Light">
+                            <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#00F3F3F3" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="Dark">
+                            <StaticResource x:Key="NavigationViewContentBackground" ResourceKey="LayerFillColorDefaultBrush" />
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="#00202020" />
+                        </ResourceDictionary>
+                        <ResourceDictionary x:Key="HighContrast">
+                            <SolidColorBrush x:Key="NavigationViewContentBackground" Color="{ThemeResource SystemColorWindowColor}" />
+                            <SolidColorBrush x:Key="NavigationViewExpandedPaneBackground" Color="{ThemeResource SystemColorWindowColor}" />
+                        </ResourceDictionary>
+                    </ResourceDictionary.ThemeDictionaries>
+                </ResourceDictionary>
+                <ResourceDictionary>
+                    <DataTemplate x:Key="NavigationViewHeaderTemplate">
+                        <localControls:PageHeader Title="{Binding}" />
+                    </DataTemplate>
 
-        <x:Double x:Key="NavigationViewCompactPaneLength">48</x:Double>
-        <x:Double x:Key="NavigationViewItemOnLeftMinHeight">48</x:Double>
-        <x:Double x:Key="PaneToggleButtonHeight">48</x:Double>
-        <x:Double x:Key="PaneToggleButtonWidth">48</x:Double>
-        <Thickness x:Key="NavigationViewItemOnLeftIconBoxMargin">12,0,12,0</Thickness>
-        <Thickness x:Key="NavigationViewItemContentPresenterMargin">16,0,16,0</Thickness>
-        <Thickness x:Key="NavigationViewHeaderMargin">16,0</Thickness>
-        <Thickness x:Key="NavigationViewMinimalHeaderMargin">0</Thickness>
-        <Style
-            x:Key="CommandBarLabel"
-            BasedOn="{StaticResource BaseTextBlockStyle}"
-            TargetType="TextBlock">
-            <Setter Property="FontSize" Value="16" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
-            <Setter Property="TextWrapping" Value="NoWrap" />
-        </Style>
-        <x:Double x:Key="NavigationViewPaneHeaderRowMinHeight">0</x:Double>
-        <Style
-            x:Key="NavigationViewItemHeaderTextStyle"
-            BasedOn="{StaticResource BaseTextBlockStyle}"
-            TargetType="TextBlock">
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="OpticalMarginAlignment" Value="TrimSideBearings" />
-            <Setter Property="TextWrapping" Value="NoWrap" />
-        </Style>
+                    <Thickness x:Key="NavigationViewContentMargin">0,48,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewContentGridBorderThickness">1,1,0,0</Thickness>
+                    <CornerRadius x:Key="NavigationViewContentGridCornerRadius">8,0,0,0</CornerRadius>
+                    <Thickness x:Key="NavigationViewHeaderMargin">56,0,0,0</Thickness>
+                    <Thickness x:Key="NavigationViewMinimalHeaderMargin">-24,0,0,0</Thickness>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource RegionBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid MinHeight="{StaticResource PaneToggleButtonHeight}" Background="{ThemeResource NavigationViewDefaultPaneBackground}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Button
-                x:Name="TogglePaneButton"
-                Grid.Column="0"
-                MinWidth="{ThemeResource PaneToggleButtonWidth}"
-                MinHeight="{ThemeResource PaneToggleButtonHeight}"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                AutomationProperties.LandmarkType="Navigation"
-                Click="TogglePaneButton_Click"
-                Style="{ThemeResource PaneToggleButtonStyle}" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Rectangle
+            x:Name="XboxContentSafeRect"
+            Width="48"
+            Canvas.ZIndex="0"
+            Fill="{ThemeResource NavigationViewDefaultPaneBackground}"
+            Visibility="Collapsed" />
+
+        <Border
+            x:Name="AppTitleBar"
+            Grid.Column="1"
+            Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Canvas.ZIndex="1"
+            IsHitTestVisible="True">
             <TextBlock
-                x:Name="CommandBarTitle"
-                Grid.Column="1"
-                Margin="16,0"
-                HorizontalAlignment="Left"
+                x:Name="AppTitle"
                 VerticalAlignment="Center"
-                Style="{StaticResource CommandBarLabel}" />
-            <StackPanel
-                x:Name="CommandBar"
-                Grid.Column="2"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <StackPanel.Resources>
-                    <Thickness x:Key="NavigationViewItemContentPresenterMargin">0,0,16,0</Thickness>
-                </StackPanel.Resources>
-            </StackPanel>
-        </Grid>
+                Style="{StaticResource CaptionTextBlockStyle}"
+                Text="{x:Bind GetAppTitleFromSystem()}" />
+        </Border>
+
         <muxc:NavigationView
             x:Name="NavView"
-            Grid.Row="1"
+            Grid.Column="1"
             AlwaysShowHeader="True"
             BackRequested="NavView_BackRequested"
-            ExpandedModeThresholdWidth="2560"
-            IsBackButtonVisible="Collapsed"
-            IsBackEnabled="False"
-            IsPaneToggleButtonVisible="False"
+            Canvas.ZIndex="0"
+            DisplayModeChanged="NavView_DisplayModeChanged"
+            Header=" "
+            HeaderTemplate="{StaticResource NavigationViewHeaderTemplate}"
+            IsBackButtonVisible="Auto"
+            IsBackEnabled="True"
+            IsPaneOpen="False"
+            IsPaneToggleButtonVisible="True"
             IsSettingsVisible="True"
+            IsTabStop="False"
+            IsTitleBarAutoPaddingEnabled="False"
             ItemInvoked="NavView_ItemInvoked"
             Loaded="NavView_Loaded"
-            PaneDisplayMode="Auto">
+            PaneClosing="NavView_PaneClosing"
+            PaneOpening="NavView_PaneOpening">
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem
                     x:Uid="Nav_WeatherNow"
@@ -153,5 +142,19 @@
 
             <Frame x:Name="FrameContent" NavigationFailed="FrameContent_NavigationFailed" />
         </muxc:NavigationView>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <helpers:DeviceFamilyTrigger DeviceFamily="Xbox" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="XboxContentSafeRect.Visibility" Value="Visible" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

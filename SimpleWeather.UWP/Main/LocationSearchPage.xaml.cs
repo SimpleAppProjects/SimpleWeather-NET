@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -25,7 +26,7 @@ namespace SimpleWeather.UWP.Main
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; private set; }
-        private ProgressRing LoadingRing { get { return Location?.ProgressRing; } }
+        private muxc.ProgressRing LoadingRing { get { return Location?.ProgressRing; } }
 
         public LocationSearchPage()
         {

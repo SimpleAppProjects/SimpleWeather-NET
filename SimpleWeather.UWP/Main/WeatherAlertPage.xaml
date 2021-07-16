@@ -9,28 +9,27 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource RegionBrush}">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border
-            Grid.Row="0"
-            BorderBrush="{ThemeResource TextBoxDisabledBorderThemeBrush}"
-            BorderThickness="0,0,0,0.5">
+        <StackPanel Grid.Row="0">
             <Viewbox Height="48" HorizontalAlignment="Left">
                 <TextBlock
                     Padding="16"
                     FontSize="16"
                     Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </Viewbox>
-        </Border>
+            <Rectangle Height="1" Fill="{ThemeResource NavigationViewContentGridBorderBrush}" />
+        </StackPanel>
 
         <ScrollViewer
             Grid.Row="1"
-            Margin="10"
+            Padding="8"
             HorizontalScrollBarVisibility="Disabled"
             HorizontalScrollMode="Disabled"
             VerticalScrollBarVisibility="Auto"

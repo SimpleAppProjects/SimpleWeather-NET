@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -23,9 +24,9 @@ namespace SimpleWeather.UWP.Controls
             DefaultStyleKey = typeof(ProgressAutoSuggestBox);
         }
 
-        public ProgressRing ProgressRing
+        public muxc.ProgressRing ProgressRing
         {
-            get { return SuggestBox?.Tag as ProgressRing; }
+            get { return SuggestBox?.Tag as muxc.ProgressRing; }
         }
 
         //

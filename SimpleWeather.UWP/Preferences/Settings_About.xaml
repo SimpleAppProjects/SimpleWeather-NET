@@ -6,7 +6,6 @@
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Required"
     mc:Ignorable="d">
 
@@ -15,9 +14,11 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <StaticResource x:Key="ProgressPaintColor" ResourceKey="SimpleBlueLight" />
+                    <StaticResource x:Key="HyperlinkColor" ResourceKey="SimpleBlueLight" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <StaticResource x:Key="ProgressPaintColor" ResourceKey="SimpleBlueDark" />
+                    <StaticResource x:Key="HyperlinkColor" ResourceKey="HyperlinkButtonForeground" />
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <SolidColorBrush x:Name="ProgressPaintColorBrush" Color="{ThemeResource ProgressPaintColor}" />
@@ -25,19 +26,19 @@
                 x:Key="FeedbackHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <FontIcon
-                                    Margin="5,0"
+                                    Margin="8,0"
                                     FontFamily="Segoe MDL2 Assets"
                                     Glyph="&#xE939;" />
                                 <TextBlock
+                                    Padding="0,0,8,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding}"
-                                    TextDecorations="Underline" />
+                                    Text="{Binding}" />
                             </StackPanel>
                         </DataTemplate>
                     </Setter.Value>
@@ -47,16 +48,16 @@
                 x:Key="RateHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <SymbolIcon Margin="5,0" Symbol="SolidStar" />
+                                <SymbolIcon Margin="8,0" Symbol="SolidStar" />
                                 <TextBlock
+                                    Padding="0,0,8,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding}"
-                                    TextDecorations="Underline" />
+                                    Text="{Binding}" />
                             </StackPanel>
                         </DataTemplate>
                     </Setter.Value>
@@ -66,19 +67,19 @@
                 x:Key="TranslateHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <FontIcon
-                                    Margin="5,0"
+                                    Margin="8,0"
                                     FontFamily="Segoe MDL2 Assets"
                                     Glyph="&#xF2B7;" />
                                 <TextBlock
+                                    Padding="0,0,8,0"
                                     VerticalAlignment="Center"
-                                    Text="{Binding}"
-                                    TextDecorations="Underline" />
+                                    Text="{Binding}" />
                             </StackPanel>
                         </DataTemplate>
                     </Setter.Value>
@@ -91,13 +92,12 @@
         <TextBlock
             Name="AppName"
             x:Uid="AppName"
-            Foreground="{ThemeResource SystemBaseHighColor}"
             Style="{StaticResource TitleTextBlockStyle}"
             Text="SimpleWeather" />
         <TextBlock
             Name="Version"
             Foreground="{ThemeResource SystemBaseMediumHighColor}"
-            Style="{StaticResource BodyTextBlockStyle}"
+            Style="{StaticResource CaptionTextBlockStyle}"
             Text="v0.00" />
         <StackPanel
             x:Name="UpdateProgressPanel"
@@ -108,18 +108,20 @@
             <Button
                 x:Name="CheckUpdateButton"
                 MinWidth="250"
-                IsHitTestVisible="False"
-                Style="{ThemeResource ButtonRevealStyle}">
+                IsHitTestVisible="False">
                 <Button.Content>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ProgressRing
+                        <muxc:ProgressRing
                             Grid.Column="0"
+                            Width="20"
+                            Height="20"
                             Margin="8,0"
-                            IsActive="True" />
+                            IsActive="True"
+                            IsIndeterminate="True" />
                         <TextBlock
                             x:Uid="CheckUpdatePrompt"
                             Grid.Column="1"
@@ -130,12 +132,13 @@
             <Button
                 x:Name="InstallButton"
                 MinWidth="250"
+                d:Visibility="Visible"
                 Content="Downloading..."
-                Style="{ThemeResource ButtonRevealStyle}"
                 Visibility="Collapsed" />
-            <ProgressBar
+            <muxc:ProgressBar
                 x:Name="UpdateProgressBar"
                 Margin="0,0,0,0"
+                d:Visibility="Visible"
                 Foreground="{ThemeResource ProgressPaintColorBrush}"
                 IsIndeterminate="True"
                 Maximum="1"

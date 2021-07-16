@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP.Helpers
             }
             else
             {
-                return null;
+                return new SolidColorBrush(Colors.Transparent);
             }
         }
 

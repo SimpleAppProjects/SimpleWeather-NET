@@ -16,6 +16,11 @@ namespace SimpleWeather.Controls
         public string ExpireDate { get; set; }
         public string Attribution { get; set; }
 
+        public WeatherAlertViewModel()
+        {
+
+        }
+
         public WeatherAlertViewModel(WeatherAlert WeatherAlert)
         {
             AlertType = WeatherAlert.Type;

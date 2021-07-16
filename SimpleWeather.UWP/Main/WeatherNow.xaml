@@ -9,152 +9,18 @@
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    d:Background="{ThemeResource RegionBrush}"
     DataContext="{x:Bind WeatherView, Mode=OneWay}"
     mc:Ignorable="d">
 
     <Page.Resources>
         <ResourceDictionary>
-            <Style
-                x:Key="AlertButtonRevealStyle"
-                BasedOn="{StaticResource AccentButtonRevealStyle}"
-                TargetType="Button">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <RevealBackgroundBrush
-                            FallbackColor="OrangeRed"
-                            TargetTheme="Dark"
-                            Color="OrangeRed" />
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Foreground" Value="White" />
-                <Setter Property="BorderBrush" Value="{ThemeResource ButtonRevealBorderBrush}" />
-                <Setter Property="BorderThickness" Value="{ThemeResource ButtonRevealBorderThemeThickness}" />
-                <Setter Property="Padding" Value="{ThemeResource ButtonPadding}" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Margin" Value="0,5,0,5" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-                <Setter Property="FontWeight" Value="Normal" />
-                <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-                <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-                <Setter Property="FocusVisualMargin" Value="-3" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid
-                                x:Name="RootGrid"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="{TemplateBinding CornerRadius}">
-                                <ContentControl
-                                    x:Name="ContentPresenter"
-                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTransitions="{TemplateBinding ContentTransitions}">
-                                    <Grid
-                                        Padding="{TemplateBinding Padding}"
-                                        AutomationProperties.AccessibilityView="Raw"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="{TemplateBinding CornerRadius}">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="50" />
-                                        </Grid.ColumnDefinitions>
-                                        <FontIcon
-                                            Grid.Column="0"
-                                            Margin="5,2,5,0"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            Glyph="&#xE783;" />
-                                        <TextBlock
-                                            x:Uid="Label_WeatherAlerts"
-                                            Grid.Column="1"
-                                            Padding="5,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="12"
-                                            Text="Severe Weather Alerts" />
-                                        <FontIcon
-                                            Grid.Column="2"
-                                            Margin="5,0"
-                                            HorizontalAlignment="Right"
-                                            VerticalAlignment="Center"
-                                            FontFamily="Segoe MDL2 Assets"
-                                            FontSize="12"
-                                            Glyph="&#xE76C;" />
-                                    </Grid>
-                                </ContentControl>
-
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup x:Name="CommonStates">
-                                        <VisualState x:Name="Normal">
-
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-
-                                        <VisualState x:Name="PointerOver">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                                <Setter Target="RootGrid.Background">
-                                                    <Setter.Value>
-                                                        <RevealBackgroundBrush
-                                                            FallbackColor="#FFFF5A00"
-                                                            TargetTheme="Dark"
-                                                            Color="#FFFF5A00" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-                                            </VisualState.Setters>
-
-                                            <Storyboard>
-                                                <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-
-                                        <VisualState x:Name="Pressed">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                                <Setter Target="RootGrid.Background">
-                                                    <Setter.Value>
-                                                        <RevealBackgroundBrush
-                                                            FallbackColor="#FFFF5A00"
-                                                            TargetTheme="Dark"
-                                                            Color="#FFFF5A00" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlBackgroundChromeWhiteBrush}" />
-                                            </VisualState.Setters>
-
-                                            <Storyboard>
-                                                <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            </Storyboard>
-                                        </VisualState>
-
-                                        <VisualState x:Name="Disabled">
-                                            <VisualState.Setters>
-                                                <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundDisabled}" />
-                                                <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushDisabled}" />
-                                                <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource SystemControlDisabledBaseMediumLowBrush}" />
-                                            </VisualState.Setters>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
             <Style
                 x:Key="NavigatableSectionStyle"
                 BasedOn="{StaticResource SectionLabelStyle}"
@@ -227,7 +93,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="MainGrid" Background="{ThemeResource RegionBrush}">
+    <Grid x:Name="MainGrid">
         <ScrollViewer
             x:Name="MainViewer"
             x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
@@ -288,6 +154,7 @@
                         FontSize="28"
                         FontWeight="Medium"
                         MaxLines="2"
+                        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         Text="{x:Bind WeatherView.Location, Mode=OneWay}"
                         TextAlignment="Center"
                         TextTrimming="CharacterEllipsis"
@@ -304,22 +171,67 @@
                         d:Text="Updated on 11:12 PM"
                         FontSize="12"
                         FontWeight="Medium"
+                        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         Text="{x:Bind WeatherView.UpdateDate, Mode=OneWay}" />
                 </toolkitControls:DropShadowPanel>
                 <Button
                     x:Name="AlertButton"
                     Grid.Row="2"
                     MaxWidth="1280"
+                    Margin="0,5,0,5"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
                     x:Load="{x:Bind AlertsView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
+                    Background="OrangeRed"
                     Click="AlertButton_Click"
-                    Loaded="DeferedControl_Loaded"
-                    Style="{ThemeResource AlertButtonRevealStyle}" />
+                    Loaded="DeferedControl_Loaded">
+                    <Button.Resources>
+                        <SolidColorBrush x:Key="ButtonBackground" Color="OrangeRed" />
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FFFF5A00" />
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#FFFF8A00" />
+                        <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ButtonDisabledBackgroundThemeBrush" />
+                        <SolidColorBrush x:Key="ButtonForeground" Color="White" />
+                        <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="SystemControlBackgroundChromeWhiteBrush" />
+                        <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="SystemControlBackgroundChromeWhiteBrush" />
+                        <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+                    </Button.Resources>
+                    <Button.Content>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="50" />
+                            </Grid.ColumnDefinitions>
+                            <FontIcon
+                                Grid.Column="0"
+                                Margin="5,2,5,0"
+                                FontFamily="Segoe MDL2 Assets"
+                                Glyph="&#xE783;" />
+                            <TextBlock
+                                x:Uid="Label_WeatherAlerts"
+                                Grid.Column="1"
+                                Padding="5,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Text="Severe Weather Alerts" />
+                            <FontIcon
+                                Grid.Column="2"
+                                Margin="5,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="12"
+                                Glyph="&#xE76C;" />
+                        </Grid>
+                    </Button.Content>
+                </Button>
                 <RelativePanel
                     x:Name="ConditionPanel"
                     Grid.Row="4"
                     MinHeight="108"
                     MaxWidth="1280"
-                    Padding="16,0">
+                    Padding="16,0"
+                    RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}">
                     <toolkitControls:DropShadowPanel
                         x:Name="CurTempPanel"
                         Margin="0,15"
@@ -659,14 +571,14 @@
                 </StackPanel>
             </Grid>
         </ScrollViewer>
-        <ProgressRing
+        <muxc:ProgressRing
             x:Name="LoadingRing"
             Grid.RowSpan="2"
             Width="36"
             Height="36"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            Foreground="{ThemeResource ProgressBarBrush}"
-            IsActive="True" />
+            IsActive="True"
+            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
     </Grid>
 </helpers:CustomPage>

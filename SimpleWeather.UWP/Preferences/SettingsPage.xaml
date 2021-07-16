@@ -7,27 +7,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:DesignHeight="1300"
+    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <AcrylicBrush
-            x:Key="NavigationViewDefaultPaneBackground"
-            BackgroundSource="Backdrop"
-            FallbackColor="{ThemeResource SystemChromeMediumColor}"
-            TintColor="{ThemeResource SystemChromeAltHighColor}"
-            TintOpacity="0.8"
-            TintTransitionDuration="0" />
-        <AcrylicBrush
-            x:Key="NavigationViewTopPaneBackground"
-            BackgroundSource="Backdrop"
-            FallbackColor="{ThemeResource SystemChromeMediumColor}"
-            TintColor="{ThemeResource SystemChromeAltHighColor}"
-            TintOpacity="0.8"
-            TintTransitionDuration="0" />
+        <SolidColorBrush x:Key="NavigationViewDefaultPaneBackground" Color="Transparent" />
+        <SolidColorBrush x:Key="NavigationViewTopPaneBackground" Color="Transparent" />
+        <SolidColorBrush x:Key="NavigationViewContentBackground" Color="Transparent" />
     </Page.Resources>
 
-    <Grid Background="{ThemeResource RegionBrush}">
+    <Grid>
         <muxc:NavigationView
             x:Name="SettingsNavView"
             IsBackButtonVisible="Collapsed"

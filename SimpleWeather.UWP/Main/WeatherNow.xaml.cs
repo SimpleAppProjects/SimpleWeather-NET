@@ -72,6 +72,16 @@ namespace SimpleWeather.UWP.Main
         public static readonly DependencyProperty ControlShadowOpacityProperty =
             DependencyProperty.Register("ControlShadowOpacity", typeof(double), typeof(WeatherNow), new PropertyMetadata(0d));
 
+        public ElementTheme ControlTheme
+        {
+            get { return (ElementTheme)GetValue(ControlThemeProperty); }
+            set { SetValue(ControlThemeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ControlTheme.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ControlThemeProperty =
+            DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(WeatherNow), new PropertyMetadata(ElementTheme.Default));
+
         private bool UpdateBindings = false;
         private bool ClearGraphIconCache = false;
 
@@ -176,19 +186,19 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Content");
-            PrimaryCommands = new List<muxc.NavigationViewItemBase>()
+            PrimaryCommands = new List<ICommandBarElement>()
             {
-                new muxc.NavigationViewItem()
+                new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Pin),
-                    Content = App.ResLoader.GetString("Label_Pin/Text"),
+                    Label = App.ResLoader.GetString("Label_Pin/Text"),
                     Tag = "pin",
                     Visibility = Visibility.Collapsed
                 },
-                new muxc.NavigationViewItem()
+                new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Refresh),
-                    Content = App.ResLoader.GetString("Button_Refresh/Label"),
+                    Label = App.ResLoader.GetString("Button_Refresh/Label"),
                     Tag = "refresh"
                 }
             };
@@ -255,14 +265,14 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private muxc.NavigationViewItem GetRefreshBtn()
+        private AppBarButton GetRefreshBtn()
         {
-            return PrimaryCommands.LastOrDefault() as muxc.NavigationViewItem;
+            return PrimaryCommands.LastOrDefault() as AppBarButton;
         }
 
-        private muxc.NavigationViewItem GetPinBtn()
+        private AppBarButton GetPinBtn()
         {
-            return PrimaryCommands.FirstOrDefault() as muxc.NavigationViewItem;
+            return PrimaryCommands.FirstOrDefault() as AppBarButton;
         }
 
         private void WeatherNow_Resuming(object sender, object e)
@@ -354,6 +364,7 @@ namespace SimpleWeather.UWP.Main
 
             if (UpdateBindings)
             {
+                UpdateControlTheme();
                 this.Bindings.Update();
                 UpdateBindings = false;
             }
@@ -778,12 +789,12 @@ namespace SimpleWeather.UWP.Main
                 if (isPinned)
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
-                    pinBtn.Content = App.ResLoader.GetString("Label_Unpin/Text");
+                    pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
                 }
                 else
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.Pin);
-                    pinBtn.Content = App.ResLoader.GetString("Label_Pin/Text");
+                    pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
                 }
             }
         }
@@ -795,7 +806,7 @@ namespace SimpleWeather.UWP.Main
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported() || locationData?.IsValid() == false) return;
 
-            if (!(sender is muxc.NavigationViewItem pinBtn)) return;
+            if (!(sender is AppBarButton pinBtn)) return;
 
             pinBtn.IsEnabled = false;
 
@@ -905,16 +916,33 @@ namespace SimpleWeather.UWP.Main
 
         private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
         {
-            GradientOverlay.Visibility = Visibility.Visible;
-            Location.RequestedTheme = UpdateDate.RequestedTheme = ConditionPanel.RequestedTheme = ElementTheme.Dark;
-            ControlShadowOpacity = 1;
+            UpdateControlTheme(true);
         }
 
         private void BackgroundOverlay_ImageExFailed(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExFailedEventArgs e)
         {
-            GradientOverlay.Visibility = Visibility.Collapsed;
-            Location.RequestedTheme = UpdateDate.RequestedTheme = ConditionPanel.RequestedTheme = ElementTheme.Default;
-            ControlShadowOpacity = 0;
+            UpdateControlTheme(false);
+        }
+
+        private void UpdateControlTheme()
+        {
+            UpdateControlTheme(Utils.FeatureSettings.BackgroundImage);
+        }
+
+        private void UpdateControlTheme(bool backgroundEnabled)
+        {
+            if (backgroundEnabled)
+            {
+                GradientOverlay.Visibility = Visibility.Visible;
+                ControlTheme = ElementTheme.Dark;
+                ControlShadowOpacity = 1;
+            }
+            else
+            {
+                GradientOverlay.Visibility = Visibility.Collapsed;
+                ControlTheme = ElementTheme.Default;
+                ControlShadowOpacity = 0;
+            }
         }
 
         private void ForecastGraphPanel_GraphViewTapped(object sender, TappedRoutedEventArgs e)

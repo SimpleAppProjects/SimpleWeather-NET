@@ -6,7 +6,7 @@
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    Background="{ThemeResource RegionBrush}"
+    d:Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 

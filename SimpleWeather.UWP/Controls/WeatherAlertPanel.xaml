@@ -7,364 +7,87 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    d:DataContext="{d:DesignInstance Type=controls:WeatherAlertViewModel}"
     mc:Ignorable="d">
+
     <UserControl.Resources>
-        <Style
-            x:Key="AlertPanelToggleButtonStyle"
-            BasedOn="{StaticResource ToggleButtonRevealStyle}"
-            TargetType="ToggleButton">
-            <Setter Property="Background" Value="{ThemeResource ToggleButtonRevealBackground}" />
-            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundChromeWhiteBrush}" />
-            <Setter Property="BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrush}" />
-            <Setter Property="BorderThickness" Value="{ThemeResource ToggleButtonRevealBorderThemeThickness}" />
-            <Setter Property="Height" Value="40" />
-            <Setter Property="Padding" Value="{ThemeResource ButtonPadding}" />
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
-            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-            <Setter Property="FocusVisualMargin" Value="-3" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ToggleButton">
-                        <Grid
-                            x:Name="RootGrid"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                            <Grid
-                                x:Name="ContentGrid"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="{TemplateBinding CornerRadius}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <Slider
-                                    x:Name="ArrowRotation"
-                                    Maximum="180"
-                                    Minimum="-180"
-                                    Visibility="Collapsed"
-                                    Value="180" />
-
-                                <ContentPresenter
-                                    x:Name="ContentPresenter"
-                                    Grid.Column="0"
-                                    Padding="{TemplateBinding Padding}"
-                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    AutomationProperties.AccessibilityView="Raw"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTransitions="{TemplateBinding ContentTransitions}" />
-                                <FontIcon
-                                    x:Name="Arrow"
-                                    Grid.Column="1"
-                                    Width="40"
-                                    FontSize="12"
-                                    Foreground="{TemplateBinding Foreground}"
-                                    Glyph="&#xE70D;"
-                                    RenderTransformOrigin="0.5,0.5">
-                                    <FontIcon.RenderTransform>
-                                        <RotateTransform />
-                                    </FontIcon.RenderTransform>
-                                </FontIcon>
-                            </Grid>
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal">
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="0.0"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="PointerOver">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPointerOver}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="0.0"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Pressed">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlHighlightAccentRevealBackgroundBrush}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushPressed}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="0.0"
-                                                Duration="0:0:0.1" />
-                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Disabled">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundDisabled}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushDisabled}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="0.0"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Checked">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundChecked}" />
-                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushChecked}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="CheckedPointerOver">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPointerOver}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPointerOver}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="CheckedPressed">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedPressed}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedPressed}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                Duration="0:0:0.1" />
-                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="CheckedDisabled">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundCheckedDisabled}" />
-                                            <Setter Target="RootGrid.CornerRadius" Value="2,2,0,0" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushCheckedDisabled}" />
-                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                BeginTime="0:0:0"
-                                                Storyboard.TargetName="Arrow"
-                                                Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                                                To="{Binding ElementName=ArrowRotation, Path=Value}"
-                                                Duration="0:0:0.1" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="Indeterminate">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminate}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminate}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="IndeterminatePointerOver">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="PointerOver" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePointerOver}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePointerOver}" />
-                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="IndeterminatePressed">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.(RevealBrush.State)" Value="Pressed" />
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminatePressed}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminatePressed}" />
-                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
-                                        </VisualState.Setters>
-
-                                        <Storyboard>
-                                            <PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
-                                        </Storyboard>
-                                    </VisualState>
-                                    <VisualState x:Name="IndeterminateDisabled">
-                                        <VisualState.Setters>
-                                            <Setter Target="RootGrid.Background" Value="{ThemeResource ToggleButtonRevealBackgroundIndeterminateDisabled}" />
-                                            <Setter Target="ContentGrid.BorderBrush" Value="{ThemeResource ToggleButtonRevealBorderBrushIndeterminateDisabled}" />
-                                            <Setter Target="Arrow.Foreground" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
-                                        </VisualState.Setters>
-                                    </VisualState>
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <local:AlertSeverityColorConverter x:Key="alertSeverityColorConv" />
+        <local:AlertTypeIconConverter x:Key="alertTypeIconConv" />
     </UserControl.Resources>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <ToggleButton
-            x:Name="AlertHeader"
-            Grid.Row="0"
-            IsChecked="False"
-            Style="{StaticResource AlertPanelToggleButtonStyle}">
-            <ToggleButton.Background>
-                <RevealBackgroundBrush
-                    FallbackColor="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Color}"
-                    TargetTheme="Dark"
-                    Color="{x:Bind AlertHeaderColor, FallbackValue='#FF006FBF', Mode=OneWay}" />
-            </ToggleButton.Background>
-            <Grid Padding="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <BitmapIcon
-                    x:Name="AlertIcon"
-                    Grid.Column="0"
-                    Width="25"
-                    Margin="2,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Foreground="White"
-                    UriSource="{x:Bind AlertIconSrc, TargetNullValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png', Mode=OneWay}" />
-                <TextBlock
-                    x:Name="Title"
-                    Grid.Column="1"
-                    Padding="5"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Center"
-                    Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
-                <TextBlock
-                    x:Name="Date"
-                    Grid.Column="2"
-                    Padding="5"
-                    VerticalAlignment="Center"
-                    FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
-                    Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
-            </Grid>
-        </ToggleButton>
-        <StackPanel
-            Grid.Row="1"
-            Padding="5"
-            Win1809Present:CornerRadius="0,0,2,2"
-            Background="LightGray"
-            BorderBrush="Transparent"
-            BorderThickness="0.5,0"
-            Visibility="{x:Bind AlertHeader.IsChecked, Mode=OneWay}">
-            <StackPanel Padding="10">
-                <RichTextBlock
-                    FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
-                    IsTextSelectionEnabled="False"
-                    TextWrapping="WrapWholeWords">
-                    <Paragraph>
-                        <Span>
-                            <Run Text="{Binding ExpireDate, Mode=OneWay}" />
-                            <LineBreak />
-                        </Span>
-                    </Paragraph>
-                    <Paragraph>
-                        <Span>
-                            <Run Text="{Binding Message, Mode=OneWay}" />
-                            <LineBreak />
-                        </Span>
-                    </Paragraph>
-                    <Paragraph>
-                        <Span>
-                            <Run Text="{Binding Attribution, Mode=OneWay}" />
-                        </Span>
-                    </Paragraph>
-                </RichTextBlock>
-            </StackPanel>
-        </StackPanel>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WidthStates">
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="12" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Medium">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="12" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Large">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="1007" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Title.FontSize" Value="14" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+        <muxc:Expander
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            ExpandDirection="Down"
+            IsExpanded="False">
+            <muxc:Expander.Resources>
+                <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}, Mode=OneWay}" />
+                <SolidColorBrush x:Key="ExpanderHeaderForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderForegroundPointerOver" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderForegroundPressed" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderDisabledForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPointerOverForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPressedForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPointerOverBackground" Color="#0F000000" />
+                <SolidColorBrush x:Key="ExpanderChevronPressedBackground" Color="#0A000000" />
+            </muxc:Expander.Resources>
+            <muxc:Expander.Header>
+                <Grid Padding="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <BitmapIcon
+                        x:Name="AlertIcon"
+                        Grid.Column="0"
+                        Width="25"
+                        Margin="2,0,0,0"
+                        UriSource="{Binding AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
+                    <TextBlock
+                        x:Name="Title"
+                        Grid.Column="1"
+                        Padding="5"
+                        FontWeight="SemiBold"
+                        Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
+                    <TextBlock
+                        x:Name="Date"
+                        Grid.Column="2"
+                        Padding="5"
+                        FontWeight="SemiBold"
+                        Text="{Binding PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
+                </Grid>
+            </muxc:Expander.Header>
+            <muxc:Expander.Content>
+                <StackPanel>
+                    <RichTextBlock
+                        FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
+                        Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                        IsTextSelectionEnabled="False"
+                        TextWrapping="WrapWholeWords">
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding ExpireDate, Mode=OneWay}" />
+                                <LineBreak />
+                            </Span>
+                        </Paragraph>
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding Message, Mode=OneWay}" />
+                                <LineBreak />
+                            </Span>
+                        </Paragraph>
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding Attribution, Mode=OneWay}" />
+                            </Span>
+                        </Paragraph>
+                    </RichTextBlock>
+                </StackPanel>
+            </muxc:Expander.Content>
+        </muxc:Expander>
     </Grid>
 </UserControl>

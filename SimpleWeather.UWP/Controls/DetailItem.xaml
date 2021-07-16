@@ -37,7 +37,7 @@
         Background="#B3FFFFFF"
         BorderBrush="#40D3D3D3"
         BorderThickness="1"
-        CornerRadius="2">
+        CornerRadius="{ThemeResource ControlCornerRadius}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />

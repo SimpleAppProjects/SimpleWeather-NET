@@ -42,7 +42,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.NewMoon:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_NEW)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_NEW))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -51,7 +51,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.WaxingCrescent:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_WAXING_CRESCENT_3)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_WAXING_CRESCENT_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -60,7 +60,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.FirstQtr:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_FIRST_QUARTER)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_FIRST_QUARTER))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -69,7 +69,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.WaxingGibbous:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_WAXING_GIBBOUS_3)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_WAXING_GIBBOUS_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -78,7 +78,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.FullMoon:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_FULL)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_FULL))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -87,7 +87,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.WaningGibbous:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_WANING_GIBBOUS_3)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_WANING_GIBBOUS_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -96,7 +96,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.LastQtr:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_THIRD_QUARTER)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_THIRD_QUARTER))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
@@ -105,7 +105,7 @@ namespace SimpleWeather.UWP.Controls
                         case MoonPhase.MoonPhaseType.WaningCrescent:
                             foreach (BitmapIcon icon in MoonStack.Children)
                             {
-                                if (icon.Tag == WeatherIcons.MOON_WANING_CRESCENT_3)
+                                if (Equals(icon.Tag, WeatherIcons.MOON_WANING_CRESCENT_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];

@@ -5,10 +5,31 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="{ThemeResource RegionBrush}"
     d:DesignHeight="1366"
-    Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <StaticResource x:Key="HyperlinkColor" ResourceKey="SimpleBlueLight" />
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <StaticResource x:Key="HyperlinkColor" ResourceKey="HyperlinkButtonForeground" />
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <Style
+                x:Key="CreditHyperlinkButtonStyle"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton">
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
+                <Setter Property="Padding" Value="0,8" />
+                <Setter Property="Margin" Value="-1" />
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Orientation="Vertical">
@@ -16,7 +37,7 @@
                 <Paragraph>
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/UWPCommunityToolkit" Style="{ThemeResource HyperlinkButtonStyle}">Microsoft UWP Community Toolkit</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/UWPCommunityToolkit" Style="{ThemeResource CreditHyperlinkButtonStyle}">Microsoft UWP Community Toolkit</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -46,7 +67,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="http://www.newtonsoft.com/json" Style="{ThemeResource HyperlinkButtonStyle}">Newtonsoft.Json</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="http://www.newtonsoft.com/json" Style="{ThemeResource CreditHyperlinkButtonStyle}">Newtonsoft.Json</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -76,7 +97,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/nodatime/nodatime" Style="{ThemeResource HyperlinkButtonStyle}">NodaTime</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/nodatime/nodatime" Style="{ThemeResource CreditHyperlinkButtonStyle}">NodaTime</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -98,7 +119,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/praeclarum/sqlite-net" Style="{ThemeResource HyperlinkButtonStyle}">SQLite-net</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/praeclarum/sqlite-net" Style="{ThemeResource CreditHyperlinkButtonStyle}">SQLite-net</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -128,7 +149,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://bitbucket.org/twincoders/sqlite-net-extensions" Style="{ThemeResource HyperlinkButtonStyle}">SQLite-net Extensions</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://bitbucket.org/twincoders/sqlite-net-extensions" Style="{ThemeResource CreditHyperlinkButtonStyle}">SQLite-net Extensions</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -158,7 +179,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/neuecc/Utf8Json" Style="{ThemeResource HyperlinkButtonStyle}">Utf8Json</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/neuecc/Utf8Json" Style="{ThemeResource CreditHyperlinkButtonStyle}">Utf8Json</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -188,7 +209,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="http://weathericons.io/" Style="{ThemeResource HyperlinkButtonStyle}">WeatherIcons</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="http://weathericons.io/" Style="{ThemeResource CreditHyperlinkButtonStyle}">WeatherIcons</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -207,7 +228,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/Win2D" Style="{ThemeResource HyperlinkButtonStyle}">Win2D UWP</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/Win2D" Style="{ThemeResource CreditHyperlinkButtonStyle}">Win2D UWP</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -239,7 +260,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/microsoft-ui-xaml" Style="{ThemeResource HyperlinkButtonStyle}">Windows UI Library</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/microsoft-ui-xaml" Style="{ThemeResource CreditHyperlinkButtonStyle}">Windows UI Library</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>

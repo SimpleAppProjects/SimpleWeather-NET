@@ -37,7 +37,6 @@
     <Grid
         x:Name="MainGrid"
         Background="{ThemeResource SystemAccentColorLight2}"
-        CornerRadius="2"
         RequestedTheme="Dark">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -76,9 +75,11 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-        <ProgressRing
+        <muxc:ProgressRing
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
+            Width="36"
+            Height="36"
             Foreground="White"
             IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
         <toolkitControls:DropShadowPanel
@@ -158,6 +159,7 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
+                    Foreground="White"
                     ShowAsMonochrome="True"
                     UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png" />
             </Grid>
@@ -182,6 +184,7 @@
                 <BitmapIcon
                     Grid.Column="1"
                     Width="20"
+                    Foreground="White"
                     ShowAsMonochrome="True"
                     UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-down.png" />
             </Grid>

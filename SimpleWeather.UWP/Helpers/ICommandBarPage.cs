@@ -8,6 +8,6 @@ namespace SimpleWeather.UWP.Helpers
     public interface ICommandBarPage
     {
         String CommandBarLabel { get; set; }
-        List<muxc.NavigationViewItemBase> PrimaryCommands { get; set; }
+        List<ICommandBarElement> PrimaryCommands { get; set; }
     }
 }

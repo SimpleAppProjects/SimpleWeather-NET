@@ -46,10 +46,17 @@ namespace SimpleWeather.UWP
         public static ResourceLoader ResLoader { get; private set; }
         private UISettings UISettings;
 
-        public static bool IsSystemDarkTheme { get; private set; }
         public static bool IsInBackground { get; private set; } = true;
         public static Frame RootFrame { get; set; }
         private static bool Initialized { get; set; } = false;
+
+        public static bool IsSystemDarkTheme
+        {
+            get
+            {
+                return Current.RequestedTheme == ApplicationTheme.Dark;
+            }
+        }
 
         public static Color AppColor
         {
@@ -85,7 +92,7 @@ namespace SimpleWeather.UWP
                 }
                 else
                 {
-                    return ElementTheme.Default;
+                    return IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
                 }
             }
         }
@@ -126,21 +133,6 @@ namespace SimpleWeather.UWP
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
 
             UISettings = new UISettings();
-            IsSystemDarkTheme = UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
-            switch (Settings.UserTheme)
-            {
-                case UserThemeMode.System:
-                    RequestedTheme = IsSystemDarkTheme ? ApplicationTheme.Dark : ApplicationTheme.Light;
-                    break;
-
-                case UserThemeMode.Light:
-                    RequestedTheme = ApplicationTheme.Light;
-                    break;
-
-                case UserThemeMode.Dark:
-                    RequestedTheme = ApplicationTheme.Dark;
-                    break;
-            }
 
             RegisterSettingsListener();
         }
@@ -586,6 +578,24 @@ namespace SimpleWeather.UWP
                 Window.Current.Content = RootFrame;
             }
 
+            if (Window.Current.Content is FrameworkElement rootElement)
+            {
+                switch (Settings.UserTheme)
+                {
+                    case UserThemeMode.System:
+                        rootElement.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                        break;
+
+                    case UserThemeMode.Light:
+                        rootElement.RequestedTheme = ElementTheme.Light;
+                        break;
+
+                    case UserThemeMode.Dark:
+                        rootElement.RequestedTheme = ElementTheme.Dark;
+                        break;
+                }
+            }
+
             if (ResLoader == null)
                 ResLoader = ResourceLoader.GetForCurrentView();
 
@@ -711,13 +721,9 @@ namespace SimpleWeather.UWP
                 // NOTE: Run on UI Thread since this may be called off the main thread
                 await DispatcherExtensions.TryRunOnUIThread(() =>
                 {
-                    var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
-                    IsSystemDarkTheme = uiTheme == "#FF000000";
-
                     AnalyticsLogger.LogEvent("App: UpdateColorValues",
                         new Dictionary<string, string>()
                         {
-                            { "UITheme", uiTheme },
                             { "IsSystemDarkTheme", IsSystemDarkTheme.ToString() }
                         });
 
@@ -740,26 +746,15 @@ namespace SimpleWeather.UWP
             if (Window.Current?.Content is FrameworkElement window)
             {
                 window.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-                if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+                if (IsSystemDarkTheme)
                 {
-                    // Mobile
-                    var statusBar = StatusBar.GetForCurrentView();
-                    if (statusBar != null)
-                    {
-                        statusBar.BackgroundColor = App.AppColor;
-                        statusBar.ForegroundColor = Colors.White;
-                    }
+                    titleBar.ButtonForegroundColor = Colors.White;
                 }
                 else
                 {
-                    // Desktop
-                    var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
-                    if (titlebar != null)
-                    {
-                        titlebar.BackgroundColor = App.AppColor;
-                        titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                        titlebar.ForegroundColor = Colors.White;
-                    }
+                    titleBar.ButtonForegroundColor = Colors.Black;
                 }
             }
         }

@@ -22,7 +22,8 @@
                     <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLightValue}" />
+            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
+            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 

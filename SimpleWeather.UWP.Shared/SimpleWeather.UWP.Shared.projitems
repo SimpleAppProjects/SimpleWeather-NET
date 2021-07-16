@@ -61,4 +61,8 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WeatherConditions.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WindDirection.resw" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceFamilyTrigger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceTypeHelper.cs" />
+  </ItemGroup>
 </Project>

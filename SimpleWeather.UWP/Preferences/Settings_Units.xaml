@@ -9,7 +9,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
-    Background="{ThemeResource RegionBrush}"
+    d:Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 

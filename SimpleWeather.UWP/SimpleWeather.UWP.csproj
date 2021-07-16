@@ -191,6 +191,9 @@
     <Compile Include="Controls\HourlyForecastItemPanel.xaml.cs">
       <DependentUpon>HourlyForecastItemPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PageHeader.xaml.cs">
+      <DependentUpon>PageHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ViewModels\HourlyForecastNowViewModel.cs" />
     <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
@@ -240,7 +243,6 @@
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
-    <Compile Include="Helpers\DeviceTypeHelper.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
     <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
@@ -424,6 +426,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\MoonPhaseControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PageHeader.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

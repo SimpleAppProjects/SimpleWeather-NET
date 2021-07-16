@@ -19,7 +19,7 @@ namespace SimpleWeather.UWP.Preferences
     public sealed partial class SettingsPage : Page, ICommandBarPage, IBackRequestedPage
     {
         public string CommandBarLabel { get; set; }
-        public List<muxc.NavigationViewItemBase> PrimaryCommands { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>

@@ -3,6 +3,7 @@ using SimpleWeather.Utils;
 using System;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -15,22 +16,49 @@ namespace SimpleWeather.UWP.Controls
             get { return (this.DataContext as WeatherAlertViewModel); }
         }
 
-        public Color AlertHeaderColor { get; set; }
-        public Uri AlertIconSrc { get; set; }
-
         public WeatherAlertPanel()
         {
             this.InitializeComponent();
-            this.DataContextChanged += (sender, args) =>
-            {
-                if (WeatherAlert != null)
-                {
-                    AlertHeaderColor = WeatherUtils.GetColorFromAlertSeverity(WeatherAlert.AlertSeverity);
-                    AlertIconSrc = new Uri(WeatherUtils.GetAssetFromAlertType(WeatherAlert.AlertType));
-                }
+        }
+    }
 
-                this.Bindings.Update();
-            };
+    internal class AlertSeverityColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is WeatherData.WeatherAlertSeverity severity)
+            {
+                return WeatherUtils.GetColorFromAlertSeverity(severity);
+            }
+            else
+            {
+                return WeatherUtils.GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity.Minor);
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    internal class AlertTypeIconConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value is WeatherData.WeatherAlertType type)
+            {
+                return new Uri(WeatherUtils.GetAssetFromAlertType(type));
+            }
+            else
+            {
+                return new Uri(WeatherUtils.GetAssetFromAlertType(WeatherData.WeatherAlertType.SpecialWeatherAlert));
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

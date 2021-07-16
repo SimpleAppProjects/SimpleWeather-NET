@@ -8,6 +8,7 @@
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
     <Page.Transitions>
@@ -16,7 +17,7 @@
         </TransitionCollection>
     </Page.Transitions>
 
-    <Grid Background="{ThemeResource RegionBrush}">
+    <Grid>
         <localControls:ProgressAutoSuggestBox
             x:Name="Location"
             x:Uid="LocationSearchHint"

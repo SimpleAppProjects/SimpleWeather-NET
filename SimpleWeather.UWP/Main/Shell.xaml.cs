@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
@@ -91,6 +92,14 @@ namespace SimpleWeather.UWP.Main
             return (T)viewModel;
         }
 
+        public PageHeader PageHeader
+        {
+            get
+            {
+                return VisualTreeHelperExtensions.FindChild<PageHeader>(NavView);
+            }
+        }
+
         public Shell()
         {
             Instance = this;
@@ -99,6 +108,8 @@ namespace SimpleWeather.UWP.Main
 
             AnalyticsLogger.LogEvent("Shell");
 
+            NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
+            NavView.IsPaneOpen = false;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
             AppFrame.CacheSize = 1;
@@ -106,6 +117,22 @@ namespace SimpleWeather.UWP.Main
             UISettings = new UISettings();
             UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
             UpdateAppTheme();
+
+            Window.Current.SetTitleBar(AppTitleBar);
+            CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += (s, e) => UpdateAppTitle(s);
+
+            // remove the solid-colored backgrounds behind the caption controls and system back button if we are in left mode
+            // This is done when the app is loaded since before that the actual theme that is used is not "determined" yet
+            Loaded += delegate (object sender, RoutedEventArgs e)
+            {
+                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
+
+                titleBar.ButtonBackgroundColor = Colors.Transparent;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+            };
+
+            NavView.RegisterPropertyChangedCallback(muxc.NavigationView.PaneDisplayModeProperty, new DependencyPropertyChangedCallback(OnPaneDisplayModeChanged));
         }
 
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
@@ -118,17 +145,16 @@ namespace SimpleWeather.UWP.Main
 
                 if (Settings.UserTheme == UserThemeMode.System)
                 {
-                    var uiTheme = sender.GetColorValue(UIColorType.Background).ToString();
-                    bool isDarkTheme = uiTheme == "#FF000000";
+                    var isDarkTheme = App.IsSystemDarkTheme;
 
                     AnalyticsLogger.LogEvent("Shell: UISettings_ColorValuesChanged",
                         new Dictionary<string, string>()
                         {
-                            { "UITheme", uiTheme },
                             { "IsSystemDarkTheme", isDarkTheme.ToString() }
                         });
 
                     AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                    UpdateTitleBarButtonColors(isDarkTheme);
                 }
             });
         }
@@ -143,8 +169,7 @@ namespace SimpleWeather.UWP.Main
             switch (Settings.UserTheme)
             {
                 case UserThemeMode.System:
-                    var uiTheme = UISettings.GetColorValue(UIColorType.Background).ToString();
-                    isDarkTheme = uiTheme == "#FF000000";
+                    isDarkTheme = App.IsSystemDarkTheme;
                     break;
 
                 case UserThemeMode.Light:
@@ -158,28 +183,7 @@ namespace SimpleWeather.UWP.Main
 
             FrameworkElement window = Window.Current.Content as FrameworkElement;
             AppFrame.RequestedTheme = window.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                // Mobile
-                var statusBar = StatusBar.GetForCurrentView();
-                if (statusBar != null)
-                {
-                    statusBar.BackgroundColor = App.AppColor;
-                    statusBar.ForegroundColor = Colors.White;
-                }
-            }
-            else
-            {
-                // Desktop
-                var titlebar = ApplicationView.GetForCurrentView()?.TitleBar;
-                if (titlebar != null)
-                {
-                    titlebar.BackgroundColor = App.AppColor;
-                    titlebar.ButtonBackgroundColor = titlebar.BackgroundColor;
-                    titlebar.ForegroundColor = Colors.White;
-                }
-            }
+            UpdateTitleBarButtonColors(isDarkTheme);
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -244,6 +248,9 @@ namespace SimpleWeather.UWP.Main
             this.KeyboardAccelerators.Add(altLeft);
 
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
+
+            NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
+            NavView.IsPaneOpen = false;
         }
 
         private void NavView_ItemInvoked(muxc.NavigationView sender, muxc.NavigationViewItemInvokedEventArgs args)
@@ -351,8 +358,7 @@ namespace SimpleWeather.UWP.Main
 
         private void OnNavigated(Type sourcePageType)
         {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                AppFrame.CanGoBack ? AppViewBackButtonVisibility.Visible : AppViewBackButtonVisibility.Collapsed;
+            NavView.IsBackEnabled = AppFrame.CanGoBack ? true : false;
 
             if (sourcePageType == typeof(SettingsPage))
             {
@@ -378,23 +384,111 @@ namespace SimpleWeather.UWP.Main
 
         private void UpdateCommandBar()
         {
-            if (AppFrame.Content is ICommandBarPage cmdBarPage)
+            if (PageHeader is PageHeader header)
             {
-                CommandBarTitle.Text = cmdBarPage.CommandBarLabel;
-                CommandBar.Children.Clear();
-                if (cmdBarPage.PrimaryCommands != null)
-                    cmdBarPage.PrimaryCommands.ForEach(cmd => CommandBar.Children.Add(cmd));
-            }
-            else
-            {
-                CommandBarTitle.Text = App.ResLoader.GetString("AppName/Text");
-                CommandBar.Children.Clear();
+                if (AppFrame.Content is ICommandBarPage cmdBarPage)
+                {
+                    header.Title = cmdBarPage.CommandBarLabel;
+                    header.Commands = cmdBarPage.PrimaryCommands;
+                }
+                else
+                {
+                    header.Title = App.ResLoader.GetString("AppName/Text");
+                    header.Commands = null;
+                }
             }
         }
 
-        private void TogglePaneButton_Click(object sender, RoutedEventArgs e)
+        private void OnPaneDisplayModeChanged(DependencyObject sender, DependencyProperty dp)
         {
-            NavView.IsPaneOpen = !NavView.IsPaneOpen;
+            var navigationView = sender as muxc.NavigationView;
+            AppTitleBar.Visibility = navigationView.PaneDisplayMode == muxc.NavigationViewPaneDisplayMode.Top ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        void UpdateAppTitle(CoreApplicationViewTitleBar coreTitleBar)
+        {
+            //ensure the custom title bar does not overlap window caption controls
+            Thickness currMargin = AppTitleBar.Margin;
+            AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
+        }
+
+        public string GetAppTitleFromSystem()
+        {
+            return App.ResLoader.GetString("AppName/Text");
+        }
+
+        private void NavView_PaneOpening(muxc.NavigationView sender, object args)
+        {
+            UpdateAppTitleMargin(sender);
+        }
+
+        private void NavView_PaneClosing(muxc.NavigationView sender, muxc.NavigationViewPaneClosingEventArgs args)
+        {
+            UpdateAppTitleMargin(sender);
+        }
+
+        private void NavView_DisplayModeChanged(muxc.NavigationView sender, muxc.NavigationViewDisplayModeChangedEventArgs args)
+        {
+            Thickness currMargin = AppTitleBar.Margin;
+            if (sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
+            {
+                AppTitleBar.Margin = new Thickness(sender.CompactPaneLength * 2, currMargin.Top, currMargin.Right, currMargin.Bottom);
+
+            }
+            else
+            {
+                AppTitleBar.Margin = new Thickness(sender.CompactPaneLength, currMargin.Top, currMargin.Right, currMargin.Bottom);
+            }
+
+            UpdateAppTitleMargin(sender);
+        }
+
+        private void UpdateAppTitleMargin(muxc.NavigationView sender)
+        {
+            const int smallLeftIndent = 4, largeLeftIndent = 24;
+
+            if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))
+            {
+                AppTitle.TranslationTransition = new Vector3Transition();
+
+                if ((sender.DisplayMode == muxc.NavigationViewDisplayMode.Expanded && sender.IsPaneOpen) ||
+                         sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
+                {
+                    AppTitle.Translation = new System.Numerics.Vector3(smallLeftIndent, 0, 0);
+                }
+                else
+                {
+                    AppTitle.Translation = new System.Numerics.Vector3(largeLeftIndent, 0, 0);
+                }
+            }
+            else
+            {
+                Thickness currMargin = AppTitle.Margin;
+
+                if ((sender.DisplayMode == muxc.NavigationViewDisplayMode.Expanded && sender.IsPaneOpen) ||
+                         sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
+                {
+                    AppTitle.Margin = new Thickness(smallLeftIndent, currMargin.Top, currMargin.Right, currMargin.Bottom);
+                }
+                else
+                {
+                    AppTitle.Margin = new Thickness(largeLeftIndent, currMargin.Top, currMargin.Right, currMargin.Bottom);
+                }
+            }
+        }
+
+        private void UpdateTitleBarButtonColors(bool isDarkTheme)
+        {
+            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
+
+            if (isDarkTheme)
+            {
+                titleBar.ButtonForegroundColor = Colors.White;
+            }
+            else
+            {
+                titleBar.ButtonForegroundColor = Colors.Black;
+            }
         }
     }
 }

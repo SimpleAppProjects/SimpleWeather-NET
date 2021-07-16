@@ -46,7 +46,7 @@ namespace SimpleWeather.UWP.Main
         private bool[] ErrorCounter;
         private CancellationTokenSource cts;
 
-        private muxc.NavigationViewItem EditButton;
+        private AppBarButton EditButton;
 
         public void Dispose()
         {
@@ -164,15 +164,15 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
-            PrimaryCommands = new List<muxc.NavigationViewItemBase>()
+            PrimaryCommands = new List<ICommandBarElement>()
             {
-                new muxc.NavigationViewItem()
+                new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Edit),
-                    Content = App.ResLoader.GetString("action_editmode"),
+                    Label = App.ResLoader.GetString("action_editmode"),
                 }
             };
-            EditButton = PrimaryCommands[0] as muxc.NavigationViewItem;
+            EditButton = PrimaryCommands[0] as AppBarButton;
             EditButton.Tapped += AppBarButton_Click;
             cts = new CancellationTokenSource();
 
@@ -637,13 +637,13 @@ namespace SimpleWeather.UWP.Main
                 if (EditMode && PrimaryCommands.Count == 1)
                 {
                     PrimaryCommands.Insert(0,
-                        new muxc.NavigationViewItem()
+                        new AppBarButton()
                         {
                             Icon = new SymbolIcon(Symbol.Delete),
-                            Content = App.ResLoader.GetString("delete"),
+                            Label = App.ResLoader.GetString("delete"),
                         }
                     );
-                    var deleteBtn = PrimaryCommands[0] as muxc.NavigationViewItem;
+                    var deleteBtn = PrimaryCommands[0] as AppBarButton;
                     deleteBtn.Tapped += DeleteBtn_Click;
                 }
                 else if (PrimaryCommands.Count > 1)

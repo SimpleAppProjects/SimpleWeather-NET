@@ -10,7 +10,7 @@ namespace SimpleWeather.UWP.Helpers
     public abstract class CustomPage : Page, ICommandBarPage, ISnackbarManager
     {
         public string CommandBarLabel { get; set; }
-        public List<muxc.NavigationViewItemBase> PrimaryCommands { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         protected SnackbarManager SnackMgr { get; private set; }
 
