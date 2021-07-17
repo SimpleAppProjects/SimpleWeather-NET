@@ -27,8 +27,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherChartsPage : CustomPage, IBackRequestedPage, IWeatherErrorListener
+    public sealed partial class WeatherChartsPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage, IWeatherErrorListener
     {
+        public String CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
         private LocationData location { get; set; }
         public WeatherNowViewModel WeatherView { get; set; }
         public ChartsViewModel ChartsView { get; set; }
@@ -54,23 +57,23 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.NetworkError:
                     case WeatherUtils.ErrorStatus.NoWeather:
                         // Show error message and prompt to refresh
-                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (!wm.IsRegionSupported(location.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         }
                         break;
 
                     default:
                         // Show error message
-                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         break;
                 }
             });
@@ -85,6 +88,11 @@ namespace SimpleWeather.UWP.Main
             }
 
             return Task.FromResult(false);
+        }
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            Shell.Instance?.ShowSnackbar(snackbar);
         }
 
         /// <summary>

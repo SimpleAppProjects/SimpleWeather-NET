@@ -33,8 +33,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : CustomPage, IDisposable, IWeatherErrorListener
+    public sealed partial class LocationsPage : Page, ICommandBarPage, ISnackbarPage, IDisposable, IWeatherErrorListener
     {
+        public String CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
         private WeatherManager wm;
 
         private Geolocator geolocal;
@@ -47,6 +50,11 @@ namespace SimpleWeather.UWP.Main
         private CancellationTokenSource cts;
 
         private AppBarButton EditButton;
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            Shell.Instance?.ShowSnackbar(snackbar);
+        }
 
         public void Dispose()
         {
@@ -109,7 +117,7 @@ namespace SimpleWeather.UWP.Main
                         // Only warn once
                         if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
-                            Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Short);
+                            Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Short);
                             snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
                             {
                                 // Reset counter to allow retry
@@ -127,7 +135,7 @@ namespace SimpleWeather.UWP.Main
                         // Only warn once
                         if (!ErrorCounter[(int)wEx.ErrorStatus])
                         {
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Short));
                             ErrorCounter[(int)wEx.ErrorStatus] = true;
                         }
                         break;

@@ -12,8 +12,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <muxc:XamlControlsResources ControlsResourcesVersion="Version2" />
-                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls.Core/InAppNotification/Styles/MSEdgeNotificationStyle.xaml" />
-                <ResourceDictionary Source="ms-appx:///Microsoft.Toolkit.Uwp.UI.Controls.Core/InAppNotification/Styles/VSCodeNotificationStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Default">
@@ -469,110 +467,6 @@
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-            </Style>
-            <ControlTemplate x:Key="SnackbarTemplate" TargetType="toolkitControls:InAppNotification">
-                <Grid>
-                    <Grid
-                        x:Name="RootGrid"
-                        MaxWidth="{TemplateBinding MaxWidth}"
-                        Margin="{TemplateBinding Margin}"
-                        Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        RenderTransformOrigin="{TemplateBinding RenderTransformOrigin}"
-                        Visibility="{TemplateBinding Visibility}">
-                        <Grid.RenderTransform>
-                            <CompositeTransform />
-                        </Grid.RenderTransform>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ContentPresenter
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Center"
-                            TextWrapping="WrapWholeWords" />
-                        <Button
-                            x:Name="PART_DismissButton"
-                            Grid.Column="1"
-                            Margin="0,0,0,0"
-                            AutomationProperties.Name="Dismiss"
-                            Content="&#xE894;"
-                            FontFamily="Segoe MDL2 Assets"
-                            FontSize="16"
-                            Style="{StaticResource DismissTextBlockButtonStyle}">
-                            <Button.RenderTransform>
-                                <TranslateTransform x:Name="DismissButtonTransform" X="18" />
-                            </Button.RenderTransform>
-                        </Button>
-                    </Grid>
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup x:Name="State">
-                            <VisualState x:Name="Collapsed">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="0" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.Visibility)">
-                                        <DiscreteObjectKeyFrame KeyTime="0">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Visible</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                        <DiscreteObjectKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}">
-                                            <DiscreteObjectKeyFrame.Value>
-                                                <Visibility>Collapsed</Visibility>
-                                            </DiscreteObjectKeyFrame.Value>
-                                        </DiscreteObjectKeyFrame>
-                                    </ObjectAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-                            <VisualState x:Name="Visible">
-                                <Storyboard>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="{Binding HorizontalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                    <DoubleAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateY)">
-                                        <EasingDoubleKeyFrame KeyTime="0" Value="{Binding VerticalOffset, RelativeSource={RelativeSource TemplatedParent}}" />
-                                        <EasingDoubleKeyFrame toolkitControls:InAppNotification.KeyFrameDuration="{Binding AnimationDuration, RelativeSource={RelativeSource TemplatedParent}}" Value="0" />
-                                    </DoubleAnimationUsingKeyFrames>
-                                </Storyboard>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
-                </Grid>
-            </ControlTemplate>
-            <Style
-                x:Key="SnackbarStyle"
-                BasedOn="{StaticResource MSEdgeNotificationStyle}"
-                TargetType="toolkitControls:InAppNotification">
-                <Setter Property="Background" Value="{ThemeResource SystemControlBackgroundChromeMediumBrush}" />
-                <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
-                <Setter Property="BorderBrush" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
-                <Setter Property="Visibility" Value="Collapsed" />
-                <Setter Property="BorderThickness" Value="2" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                <Setter Property="VerticalAlignment" Value="Bottom" />
-                <Setter Property="MinHeight" Value="55" />
-                <Setter Property="FontSize" Value="16" />
-                <Setter Property="RenderTransformOrigin" Value="0.5,1" />
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="Padding" Value="24,0" />
-                <Setter Property="MaxWidth" Value="960" />
-                <Setter Property="MinWidth" Value="132" />
-                <Setter Property="AnimationDuration" Value="0:0:0.100" />
-                <Setter Property="VerticalOffset" Value="0" />
-                <Setter Property="HorizontalOffset" Value="0" />
-                <Setter Property="Template" Value="{StaticResource SnackbarTemplate}" />
             </Style>
             <Style x:Key="ImageExProgressStyle" TargetType="toolkitControls:ImageEx">
                 <Setter Property="Background" Value="Transparent" />

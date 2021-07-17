@@ -1,4 +1,4 @@
-﻿<helpers:CustomPage
+﻿<Page
     x:Class="SimpleWeather.UWP.Main.WeatherDetailsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -132,4 +132,4 @@
             IsIndeterminate="True"
             Visibility="{Binding IsLoading, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, FallbackValue='Collapsed'}" />
     </Grid>
-</helpers:CustomPage>
+</Page>

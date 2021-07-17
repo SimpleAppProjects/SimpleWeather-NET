@@ -42,8 +42,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : CustomPage, IDisposable, IWeatherErrorListener
+    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IDisposable, IWeatherErrorListener
     {
+        public String CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
         private readonly WeatherManager wm = WeatherManager.GetInstance();
         private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
@@ -143,7 +146,7 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.NetworkError:
                     case WeatherUtils.ErrorStatus.NoWeather:
                         // Show error message and prompt to refresh
-                        Snackbar snackbar = Snackbar.Make(wEx.Message, SnackbarDuration.Long);
+                        Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
                         snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
                         {
                             RefreshWeather(false);
@@ -154,17 +157,17 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (!wm.IsRegionSupported(locationData.country_code))
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         }
                         break;
 
                     default:
                         // Show error message
-                        ShowSnackbar(Snackbar.Make(wEx.Message, SnackbarDuration.Long));
+                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         break;
                 }
             });
@@ -209,6 +212,11 @@ namespace SimpleWeather.UWP.Main
 
             Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
             Settings.OnSettingsChanged += Settings_OnSettingsChanged;
+        }
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            Shell.Instance?.ShowSnackbar(snackbar);
         }
 
         private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
@@ -619,7 +627,7 @@ namespace SimpleWeather.UWP.Main
 
                             await Dispatcher.RunOnUIThread(() =>
                             {
-                                ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                                ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                             }).ConfigureAwait(false);
                         }
                     }).ConfigureAwait(false);

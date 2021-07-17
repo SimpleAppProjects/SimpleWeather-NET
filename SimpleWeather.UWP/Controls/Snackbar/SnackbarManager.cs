@@ -10,7 +10,7 @@ namespace SimpleWeather.UWP.Controls
     {
         private Stack<Snackbar> Snacks;
         private Panel ParentView;
-        private InAppNotification InAppNotificationView;
+        private SnackbarContent SnackbarView;
         private DispatcherTimer timer;
 
         public SnackbarManager(Panel Parent)
@@ -87,53 +87,42 @@ namespace SimpleWeather.UWP.Controls
                 // Remove callbacks
                 timer.Stop();
                 // Dismiss view if there are no omore snackbars
-                if (InAppNotificationView != null)
+                if (SnackbarView != null)
                 {
-                    InAppNotificationView.Dismiss();
-                    InAppNotificationView = null;
+                    SnackbarView.Dismiss();
+                    ParentView?.Children.Remove(SnackbarView);
+                    SnackbarView = null;
                 }
             }
             else
             {
                 // Check if InAppNotification view exists
-                if (InAppNotificationView == null)
+                if (SnackbarView == null)
                 {
-                    var inAppNotif = new InAppNotification()
-                    {
-                        Style = Application.Current.Resources["SnackbarStyle"] as Style,
-                        StackMode = StackMode.Replace,
-                        AnimationDuration = TimeSpan.Zero
-                    };
-                    inAppNotif.Opened += InAppNotif_Opened;
-                    inAppNotif.Closed += InAppNotif_Closed;
-                    ParentView?.Children.Add(inAppNotif);
-                    Grid.SetRow(inAppNotif, 1);
-                    InAppNotificationView = inAppNotif;
+                    var snackbarView = new SnackbarContent();
+                    snackbarView.Shown += Snackbar_Shown;
+                    snackbarView.Dismissed += Snackbar_Dismissed;
+                    ParentView?.Children.Add(snackbarView);
+                    SnackbarView = snackbarView;
                 }
 
-                // Update view
-                if (InAppNotificationView.Content == null)
-                    InAppNotificationView.Content = new SnackbarContent();
                 // Update button command
-                if (InAppNotificationView.Content is SnackbarContent snackbarContent)
-                {
-                    snackbarContent.DataContext = snackbar;
+                SnackbarView.DataContext = snackbar;
 
-                    if (snackbarContent.FindName("ActionButton") is Button button)
-                    {
-                        button.Command = new RelayCommand(() =>
-                        {
-                            snackbar?.ButtonAction?.Invoke();
-                            // Now dismiss the Snackbar
-                            snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.Action);
-                            if (Snacks.Count > 0) Snacks.Pop();
-                            UpdateView();
-                        });
-                    }
-                }
-                if (InAppNotificationView.Visibility != Visibility.Visible)
+                if (SnackbarView.FindName("ActionButton") is Button button)
                 {
-                    InAppNotificationView.Show(InAppNotificationView.Content as SnackbarContent, 0);
+                    button.Command = new RelayCommand(() =>
+                    {
+                        snackbar?.ButtonAction?.Invoke();
+                        // Now dismiss the Snackbar
+                        snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.Action);
+                        if (Snacks.Count > 0) Snacks.Pop();
+                        UpdateView();
+                    });
+                }
+                if (!SnackbarView.IsShowing)
+                {
+                    SnackbarView.Show(SnackbarDuration.Forever);
                 }
 
                 timer.Stop();
@@ -143,17 +132,17 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private void InAppNotif_Opened(object sender, EventArgs e)
+        private void Snackbar_Shown(object sender, EventArgs e)
         {
             var snackbar = GetCurrentSnackbar();
             snackbar?.Shown?.Invoke(snackbar);
         }
 
-        private void InAppNotif_Closed(object sender, InAppNotificationClosedEventArgs e)
+        private void Snackbar_Dismissed(object sender, SnackbarDismissedEventArgs e)
         {
-            if (e.DismissKind != InAppNotificationDismissKind.Timeout)
+            if (e.DismissKind != SnackbarDismissEvent.Timeout)
             {
-                RemoveSnack((SnackbarDismissEvent)e.DismissKind);
+                RemoveSnack(e.DismissKind);
             }
         }
 

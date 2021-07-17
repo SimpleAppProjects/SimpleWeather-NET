@@ -47,7 +47,7 @@ namespace SimpleWeather.UWP.Preferences
                 SettingsNavView.MenuItems.Insert(SettingsNavView.MenuItems.Count - 1, new muxc.NavigationViewItem()
                 {
                     Icon = new SymbolIcon(Symbol.SolidStar),
-                    Content = "Premium",
+                    Content = "Premium", // TODO: Add to resources
                     Tag = "Premium"
                 });
             }

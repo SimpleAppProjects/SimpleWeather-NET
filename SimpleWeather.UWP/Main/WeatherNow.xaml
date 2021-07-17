@@ -1,4 +1,4 @@
-﻿<helpers:CustomPage
+﻿<Page
     x:Class="SimpleWeather.UWP.Main.WeatherNow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -581,4 +581,4 @@
             IsActive="True"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
     </Grid>
-</helpers:CustomPage>
+</Page>

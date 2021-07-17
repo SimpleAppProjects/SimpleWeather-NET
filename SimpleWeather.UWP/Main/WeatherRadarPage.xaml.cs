@@ -19,8 +19,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherRadarPage : CustomPage
+    public sealed partial class WeatherRadarPage : Page, ICommandBarPage
     {
+        public String CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
         private RadarViewProvider radarViewProvider;
         private WeatherNowViewModel WeatherView;
 

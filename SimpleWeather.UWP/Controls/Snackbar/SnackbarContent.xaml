@@ -5,38 +5,43 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:DesignWidth="400"
     mc:Ignorable="d">
 
-    <!--  PART_DismissButton in the InAppNotification has a horizontal offset of 18  -->
-    <!--  Offset content to half of that to reduce blank space but keep some padding  -->
-    <Grid x:Name="ContentRoot" Margin="0,0,-9,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-
-        <TextBlock
-            Grid.Column="0"
-            VerticalAlignment="Center"
-            FontSize="14"
-            Style="{ThemeResource CaptionTextBlockStyle}"
-            Text="{x:Bind SnackbarModel.Message, Mode=OneWay}"
-            TextWrapping="WrapWholeWords" />
-        <StackPanel
-            Grid.Column="1"
-            Padding="4,0"
-            VerticalAlignment="Center"
-            Orientation="Horizontal">
-            <Button
-                x:Name="ActionButton"
-                Background="Transparent"
-                Content="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay}"
-                FontWeight="SemiBold"
-                Foreground="{ThemeResource SnackbarForegroundBrush}"
-                Style="{ThemeResource TextBlockButtonStyle}"
-                Visibility="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-        </StackPanel>
+    <Grid
+        x:Name="ContentRoot"
+        MaxWidth="1280"
+        VerticalAlignment="Bottom"
+        Background="{ThemeResource SystemControlAcrylicElementBrush}"
+        BorderBrush="{ThemeResource ToolTipBorderThemeBrush}"
+        BorderThickness="1"
+        CornerRadius="{ThemeResource ControlCornerRadius}">
+        <muxc:InfoBar
+            x:Name="Infobar"
+            Title="{x:Bind SnackbarModel.Title, Mode=OneWay}"
+            d:IsOpen="True"
+            d:Message="This is a snackbar test message for the snackbar"
+            d:Title="SnackTitle"
+            CloseButtonClick="Infobar_CloseButtonClick"
+            IconSource="{x:Bind SnackbarModel.Icon, Mode=OneWay}"
+            IsClosable="True"
+            IsIconVisible="{x:Bind SnackbarModel.Icon, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+            IsOpen="False"
+            Message="{x:Bind SnackbarModel.Message, Mode=OneWay}"
+            Severity="{x:Bind local:SnackbarContent.ToSeverity(SnackbarModel.InfoType), Mode=OneWay}">
+            <muxc:InfoBar.ActionButton>
+                <Button
+                    x:Name="ActionButton"
+                    HorizontalAlignment="Right"
+                    d:Content="Action Button"
+                    d:Visibility="Visible"
+                    BorderBrush="{ThemeResource ButtonBorderThemeBrush}"
+                    BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
+                    Content="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay}"
+                    Visibility="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+            </muxc:InfoBar.ActionButton>
+        </muxc:InfoBar>
     </Grid>
 
 </UserControl>

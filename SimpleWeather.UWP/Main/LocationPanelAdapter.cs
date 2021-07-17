@@ -240,7 +240,7 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr.Show(Snackbar.Make(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr.Show(Snackbar.MakeWarning(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 
@@ -302,7 +302,7 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr?.Show(Snackbar.Make(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr?.Show(Snackbar.MakeWarning(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 

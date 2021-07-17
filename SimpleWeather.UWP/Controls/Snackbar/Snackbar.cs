@@ -1,9 +1,9 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Controls;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using System;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -11,6 +11,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public enum SnackbarDuration
     {
+        Forever = 0,
         VeryShort = 2000,
         Short = 3500,
         Long = 5000
@@ -24,17 +25,17 @@ namespace SimpleWeather.UWP.Controls
         //
         // Summary:
         //     When the system dismissed the notification.
-        Programmatic = InAppNotificationDismissKind.Programmatic,
+        Programmatic = 0,
 
         //
         // Summary:
         //     When user explicitly dismissed the notification.
-        User = InAppNotificationDismissKind.User,
+        User = 1,
 
         //
         // Summary:
         //     When the system dismissed the notification after timeout.
-        Timeout = InAppNotificationDismissKind.Timeout,
+        Timeout = 2,
 
         //
         // Summary:
@@ -42,8 +43,16 @@ namespace SimpleWeather.UWP.Controls
         Action = 3
     }
 
+    public enum SnackbarInfoType
+    {
+        Informational = muxc.InfoBarSeverity.Informational,
+        Success = muxc.InfoBarSeverity.Success,
+        Warning = muxc.InfoBarSeverity.Warning,
+        Error = muxc.InfoBarSeverity.Error
+    }
+
     /**
-     * Wrapper for the Snackbar/InAppNotification
+     * Wrapper for the Snackbar/InAppNotification/Infobar
      * Snackbar is managed by SnackbarManager
      */
 
@@ -60,34 +69,48 @@ namespace SimpleWeather.UWP.Controls
         public Action<Snackbar> Shown { get; set; }
         public Action<Snackbar, SnackbarDismissEvent> Dismissed { get; set; }
 
-        public static Snackbar Make(String message, SnackbarDuration duration)
+        public string Title { get; set; }
+        public muxc.IconSource Icon { get; set; }
+        public SnackbarInfoType InfoType { get; set; } = SnackbarInfoType.Informational;
+
+        public static Snackbar Make(String message, SnackbarDuration duration, SnackbarInfoType infoType = SnackbarInfoType.Informational)
         {
             Snackbar snackbar = new Snackbar()
             {
                 Message = message,
-                Duration = duration
+                Duration = duration,
+                InfoType = infoType
             };
 
             return snackbar;
         }
 
-        public static Task<Snackbar> MakeAsync(CoreDispatcher dispatcher, String message, SnackbarDuration duration)
+        public static Snackbar MakeSuccess(String message, SnackbarDuration duration)
+        {
+            return Snackbar.Make(message, duration, SnackbarInfoType.Success);
+        }
+
+        public static Snackbar MakeWarning(String message, SnackbarDuration duration)
+        {
+            return Snackbar.Make(message, duration, SnackbarInfoType.Warning);
+        }
+
+        public static Snackbar MakeError(String message, SnackbarDuration duration)
+        {
+            return Snackbar.Make(message, duration, SnackbarInfoType.Error);
+        }
+
+        public static Task<Snackbar> MakeAsync(CoreDispatcher dispatcher, String message, SnackbarDuration duration, SnackbarInfoType infoType = SnackbarInfoType.Informational)
         {
             return DispatcherExtensions.RunOnUIThread(dispatcher, () =>
             {
-                Snackbar snackbar = new Snackbar()
-                {
-                    Message = message,
-                    Duration = duration
-                };
-
-                return snackbar;
+                return Snackbar.Make(message, duration, infoType);
             });
         }
 
         public void SetAction(String buttonTxt, Action action)
         {
-            ButtonLabel = buttonTxt?.ToUpper();
+            ButtonLabel = buttonTxt;
             ButtonAction = action;
         }
     }

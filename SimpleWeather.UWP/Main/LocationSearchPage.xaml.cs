@@ -21,8 +21,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationSearchPage : CustomPage, IBackRequestedPage, IDisposable
+    public sealed partial class LocationSearchPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage, IDisposable
     {
+        public String CommandBarLabel { get; set; }
+        public List<ICommandBarElement> PrimaryCommands { get; set; }
+
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; private set; }
@@ -39,6 +42,11 @@ namespace SimpleWeather.UWP.Main
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
             AnalyticsLogger.LogEvent("LocationSearchPage");
+        }
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            Shell.Instance?.ShowSnackbar(snackbar);
         }
 
         public Task<bool> OnBackRequested()
@@ -134,7 +142,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         if (ex is WeatherException)
                         {
-                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                         }
 
                         await Dispatcher.RunOnUIThread(() =>
@@ -353,11 +361,11 @@ namespace SimpleWeather.UWP.Main
                     {
                         if (ex is WeatherException || ex is CustomException)
                         {
-                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                         }
 
                         // Restore controls

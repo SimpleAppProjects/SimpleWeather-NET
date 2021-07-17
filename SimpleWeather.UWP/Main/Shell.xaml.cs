@@ -32,10 +32,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Shell : Page
+    public sealed partial class Shell : Page, ISnackbarManager
     {
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; private set; }
+        private SnackbarManager SnackMgr { get; set; }
 
         private UISettings UISettings;
 
@@ -105,8 +106,9 @@ namespace SimpleWeather.UWP.Main
             Instance = this;
             this.InitializeComponent();
             Services = ConfigureServices();
-
             AnalyticsLogger.LogEvent("Shell");
+
+            InitSnackManager();
 
             NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
             NavView.IsPaneOpen = false;
@@ -133,6 +135,36 @@ namespace SimpleWeather.UWP.Main
             };
 
             NavView.RegisterPropertyChangedCallback(muxc.NavigationView.PaneDisplayModeProperty, new DependencyPropertyChangedCallback(OnPaneDisplayModeChanged));
+        }
+
+        public void InitSnackManager()
+        {
+            if (SnackMgr == null)
+            {
+                SnackMgr = new SnackbarManager(SnackbarContainer);
+            }
+        }
+
+        public void ShowSnackbar(Snackbar snackbar)
+        {
+            Dispatcher.RunOnUIThread(() =>
+            {
+                SnackMgr?.Show(snackbar);
+            });
+        }
+
+        public void DismissAllSnackbars()
+        {
+            Dispatcher.RunOnUIThread(() =>
+            {
+                SnackMgr?.DismissAll();
+            });
+        }
+
+        public void UnloadSnackManager()
+        {
+            DismissAllSnackbars();
+            SnackMgr = null;
         }
 
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
@@ -188,6 +220,8 @@ namespace SimpleWeather.UWP.Main
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            InitSnackManager();
+
             bool suppressNavigate = false;
 
             if ("suppressNavigate".Equals(e?.Parameter?.ToString()))
@@ -211,6 +245,12 @@ namespace SimpleWeather.UWP.Main
                 await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
                 await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
             });
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            UnloadSnackManager();
         }
 
         private void FrameContent_NavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -354,6 +394,7 @@ namespace SimpleWeather.UWP.Main
         private void On_Navigated(object sender, NavigationEventArgs e)
         {
             OnNavigated(e.SourcePageType);
+            DismissAllSnackbars();
         }
 
         private void OnNavigated(Type sourcePageType)

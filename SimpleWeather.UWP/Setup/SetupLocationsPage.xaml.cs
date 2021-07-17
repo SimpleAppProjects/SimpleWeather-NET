@@ -174,7 +174,7 @@ namespace SimpleWeather.UWP.Setup
                     {
                         if (ex is WeatherException)
                         {
-                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                         }
 
                         await Dispatcher.RunOnUIThread(() =>
@@ -398,11 +398,11 @@ namespace SimpleWeather.UWP.Setup
                     {
                         if (ex is WeatherException || ex is CustomException)
                         {
-                            ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                         }
                         else
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                         }
 
                         // Restore controls
@@ -569,11 +569,11 @@ namespace SimpleWeather.UWP.Setup
                         {
                             if (ex is WeatherException || ex is CustomException)
                             {
-                                ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                                ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                             }
                             else
                             {
-                                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                                ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             }
 
                             // Restore controls
@@ -628,15 +628,15 @@ namespace SimpleWeather.UWP.Setup
                         var ex = t.Exception?.GetBaseException();
 
                         if (ex != null && Windows.Web.WebError.GetStatus(ex.HResult) > Windows.Web.WebErrorStatus.Unknown)
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("werror_networkerror"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("werror_networkerror"), SnackbarDuration.Short));
                         else
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                     }
 
                     if (t.Result == GeolocationAccessStatus.Denied)
                     {
                         Settings.FollowGPS = false;
-                        var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
+                        var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
                         snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));

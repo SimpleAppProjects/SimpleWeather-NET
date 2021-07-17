@@ -243,7 +243,7 @@ namespace SimpleWeather.UWP.Preferences
             if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-                ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
+                ShowSnackbar(Snackbar.MakeWarning(App.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
                 return Task.FromResult(true);
             }
 
@@ -416,7 +416,7 @@ namespace SimpleWeather.UWP.Preferences
                     Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
                     await Dispatcher.RunOnUIThread(() =>
                     {
-                        ShowSnackbar(Snackbar.Make(ex.Message, SnackbarDuration.Short));
+                        ShowSnackbar(Snackbar.MakeWarning(ex.Message, SnackbarDuration.Short));
                     });
                 }
             };
@@ -608,7 +608,7 @@ namespace SimpleWeather.UWP.Preferences
                     case GeolocationAccessStatus.Denied:
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
+                            var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
                             snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
                             {
                                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
@@ -621,7 +621,7 @@ namespace SimpleWeather.UWP.Preferences
                     case GeolocationAccessStatus.Unspecified:
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            ShowSnackbar(Snackbar.Make(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             sw.IsOn = false;
                         });
                         break;

@@ -1,10 +1,8 @@
 ﻿namespace SimpleWeather.UWP.Controls
 {
-    public interface ISnackbarManager
+    public interface ISnackbarManager : ISnackbarPage
     {
         void InitSnackManager();
-
-        void ShowSnackbar(Snackbar snackbar);
 
         void DismissAllSnackbars();
 

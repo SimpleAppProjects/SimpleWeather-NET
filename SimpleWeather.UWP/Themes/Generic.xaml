@@ -631,6 +631,8 @@
                             <AutoSuggestBox.Tag>
                                 <muxc:ProgressRing
                                     x:Name="LoadingRing"
+                                    Width="20"
+                                    Height="20"
                                     Margin="10,0,12,0"
                                     d:Visibility="Visible"
                                     Foreground="{ThemeResource SystemControlForegroundAccentBrush}"
