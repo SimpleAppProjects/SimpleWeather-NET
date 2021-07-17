@@ -476,7 +476,7 @@
                                     Visibility="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                            <localcontrols:DetailItem HorizontalAlignment="Center" ItemColor="{ThemeResource RegionColor}" />
+                                            <localcontrols:DetailItem HorizontalAlignment="Center" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                     <ItemsControl.ItemsPanel>

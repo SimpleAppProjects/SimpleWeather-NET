@@ -34,9 +34,9 @@
     <Border
         x:Name="ItemBorder"
         Margin="15"
-        Background="#B3FFFFFF"
-        BorderBrush="#40D3D3D3"
-        BorderThickness="1"
+        Background="{ThemeResource ButtonBackground}"
+        BorderBrush="{ThemeResource ButtonBorderBrush}"
+        BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
         CornerRadius="{ThemeResource ControlCornerRadius}">
         <Grid>
             <Grid.RowDefinitions>
