@@ -635,7 +635,7 @@ namespace SimpleWeather.UWP.Main
             EditMode = !EditMode;
 
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
-            EditButton.Content = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("action_editmode");
+            EditButton.Label = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("action_editmode");
             LocationsPanel.IsItemClickEnabled = !EditMode;
             // Enable selection mode for non-Mobile (non-Touch devices)
             if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))

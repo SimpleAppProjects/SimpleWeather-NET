@@ -266,6 +266,8 @@ namespace SimpleWeather.UWP.Main
         {
             return ParentListView?.Dispatcher?.RunOnUIThread(() =>
             {
+                if (!panelsToDelete.Any()) return;
+
                 var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>(panelsToDelete.Count());
                 foreach (LocationPanelViewModel panel in panelsToDelete)
                 {
