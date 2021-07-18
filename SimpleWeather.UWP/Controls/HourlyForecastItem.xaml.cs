@@ -2,6 +2,7 @@
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -21,9 +22,19 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class HourlyForecastItem : UserControl
     {
+        public HourlyForecastNowViewModel ViewModel
+        {
+            get => DataContext as HourlyForecastNowViewModel;
+        }
+
         public HourlyForecastItem()
         {
             this.InitializeComponent();
+        }
+
+        private void HourlyForecastItem_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            this.Bindings.Update();
         }
     }
 }

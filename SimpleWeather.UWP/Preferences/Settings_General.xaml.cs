@@ -665,6 +665,7 @@ namespace SimpleWeather.UWP.Preferences
             AnalyticsLogger.LogEvent("Settings_General: SystemMode_Checked");
 
             Settings.UserTheme = UserThemeMode.System;
+            App.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 
@@ -673,6 +674,7 @@ namespace SimpleWeather.UWP.Preferences
             AnalyticsLogger.LogEvent("Settings_General: DarkMode_Checked");
 
             Settings.UserTheme = UserThemeMode.Dark;
+            App.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 
@@ -681,6 +683,7 @@ namespace SimpleWeather.UWP.Preferences
             AnalyticsLogger.LogEvent("Settings_General: LightMode_Checked");
 
             Settings.UserTheme = UserThemeMode.Light;
+            App.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 

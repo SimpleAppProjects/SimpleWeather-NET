@@ -186,7 +186,6 @@ namespace SimpleWeather.UWP.Main
                         });
 
                     AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-                    UpdateTitleBarButtonColors(isDarkTheme);
                 }
             });
         }
@@ -213,9 +212,7 @@ namespace SimpleWeather.UWP.Main
                     break;
             }
 
-            FrameworkElement window = Window.Current.Content as FrameworkElement;
-            AppFrame.RequestedTheme = window.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-            UpdateTitleBarButtonColors(isDarkTheme);
+            AppFrame.RequestedTheme = isDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -515,20 +512,6 @@ namespace SimpleWeather.UWP.Main
                 {
                     AppTitle.Margin = new Thickness(largeLeftIndent, currMargin.Top, currMargin.Right, currMargin.Bottom);
                 }
-            }
-        }
-
-        private void UpdateTitleBarButtonColors(bool isDarkTheme)
-        {
-            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-
-            if (isDarkTheme)
-            {
-                titleBar.ButtonForegroundColor = Colors.White;
-            }
-            else
-            {
-                titleBar.ButtonForegroundColor = Colors.Black;
             }
         }
     }

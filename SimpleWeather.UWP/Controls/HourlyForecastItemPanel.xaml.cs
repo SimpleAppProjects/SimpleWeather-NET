@@ -27,11 +27,8 @@ namespace SimpleWeather.UWP.Controls
 
         public ICollection<HourlyForecastNowViewModel> ForecastData
         {
-            get { return (ICollection<HourlyForecastNowViewModel>)GetValue(ForecastDataProperty); }
-            set
-            {
-                SetValue(ForecastDataProperty, value);
-            }
+            get => (ICollection<HourlyForecastNowViewModel>)GetValue(ForecastDataProperty);
+            set => SetValue(ForecastDataProperty, value);
         }
 
         // Hooks

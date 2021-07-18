@@ -86,6 +86,7 @@ namespace SimpleWeather.UWP.Main
             DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(WeatherNow), new PropertyMetadata(ElementTheme.Default));
 
         private bool UpdateBindings = false;
+        private bool UpdateTheme = false;
         private bool ClearGraphIconCache = false;
 
         public void Dispose()
@@ -230,6 +231,8 @@ namespace SimpleWeather.UWP.Main
             else if (e.Key == Settings.KEY_USERTHEME)
             {
                 UpdateBindings = true;
+                // Update theme
+                UpdateTheme = true;
             }
         }
 
@@ -237,6 +240,7 @@ namespace SimpleWeather.UWP.Main
         {
             // When page is loaded again from cache, update bindings
             UpdateBindings = true;
+            UpdateTheme = true;
         }
 
         private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -364,6 +368,12 @@ namespace SimpleWeather.UWP.Main
 
             args = e?.Parameter as WeatherNowArgs;
 
+            if (UpdateTheme)
+            {
+                UpdateControlTheme();
+                UpdateTheme = false;
+            }
+
             if (ClearGraphIconCache)
             {
                 ForecastGraphPanel.ClearIconCache();
@@ -372,7 +382,6 @@ namespace SimpleWeather.UWP.Main
 
             if (UpdateBindings)
             {
-                UpdateControlTheme();
                 this.Bindings.Update();
                 UpdateBindings = false;
             }
@@ -941,13 +950,19 @@ namespace SimpleWeather.UWP.Main
         {
             if (backgroundEnabled)
             {
-                GradientOverlay.Visibility = Visibility.Visible;
+                if (GradientOverlay != null)
+                {
+                    GradientOverlay.Visibility = Visibility.Visible;
+                }
                 ControlTheme = ElementTheme.Dark;
                 ControlShadowOpacity = 1;
             }
             else
             {
-                GradientOverlay.Visibility = Visibility.Collapsed;
+                if (GradientOverlay != null)
+                {
+                    GradientOverlay.Visibility = Visibility.Collapsed;
+                }
                 ControlTheme = ElementTheme.Default;
                 ControlShadowOpacity = 0;
             }

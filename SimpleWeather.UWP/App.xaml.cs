@@ -578,22 +578,9 @@ namespace SimpleWeather.UWP
                 Window.Current.Content = RootFrame;
             }
 
-            if (Window.Current.Content is FrameworkElement rootElement)
+            if (Window.Current.Content is FrameworkElement)
             {
-                switch (Settings.UserTheme)
-                {
-                    case UserThemeMode.System:
-                        rootElement.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-                        break;
-
-                    case UserThemeMode.Light:
-                        rootElement.RequestedTheme = ElementTheme.Light;
-                        break;
-
-                    case UserThemeMode.Dark:
-                        rootElement.RequestedTheme = ElementTheme.Dark;
-                        break;
-                }
+                UpdateAppTheme();
             }
 
             if (ResLoader == null)
@@ -727,10 +714,7 @@ namespace SimpleWeather.UWP
                             { "IsSystemDarkTheme", IsSystemDarkTheme.ToString() }
                         });
 
-                    if (Shell.Instance == null && Settings.UserTheme == UserThemeMode.System)
-                    {
                         UpdateAppTheme();
-                    }
                 }).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -739,16 +723,32 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private static void UpdateAppTheme()
+        public static void UpdateAppTheme()
         {
-            if (Shell.Instance != null) return;
-
             if (Window.Current?.Content is FrameworkElement window)
             {
-                window.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                var isDarkTheme = false;
+
+                switch (Settings.UserTheme)
+                {
+                    case UserThemeMode.System:
+                        window.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                        isDarkTheme = IsSystemDarkTheme;
+                        break;
+
+                    case UserThemeMode.Light:
+                        window.RequestedTheme = ElementTheme.Light;
+                        isDarkTheme = false;
+                        break;
+
+                    case UserThemeMode.Dark:
+                        window.RequestedTheme = ElementTheme.Dark;
+                        isDarkTheme = true;
+                        break;
+                }
 
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                if (IsSystemDarkTheme)
+                if (isDarkTheme)
                 {
                     titleBar.ButtonForegroundColor = Colors.White;
                 }
