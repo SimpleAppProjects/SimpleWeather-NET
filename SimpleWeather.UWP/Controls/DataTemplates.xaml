@@ -27,7 +27,7 @@
                 Width="50"
                 Margin="-8,0,0,0"
                 FontFamily="Segoe MDL2 Assets"
-                Foreground="{ThemeResource SimpleBlue}"
+                Foreground="{ThemeResource AppAccentColorBrush}"
                 Glyph="&#xE7B7;"
                 Visibility="{x:Bind helpers:BindingExtensions.BoolToVisibility(IsEmpty, x:True), FallbackValue=Collapsed, Mode=OneWay}" />
             <TextBlock

@@ -18,5 +18,20 @@ namespace SimpleWeather.UWP.Helpers
         {
             return (inverse ? !value : value) ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        public static double Multiply(double value, double ratio)
+        {
+            return value * ratio;
+        }
+
+        public static string GetString(string resource)
+        {
+            return App.ResLoader.GetString(resource);
+        }
+
+        public static string GetStringForUri(Uri uri)
+        {
+            return App.ResLoader.GetStringForUri(uri);
+        }
     }
 }

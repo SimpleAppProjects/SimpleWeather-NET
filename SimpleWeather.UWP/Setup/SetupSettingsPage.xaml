@@ -3,31 +3,40 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    d:Background="{ThemeResource SimpleBlueDarkBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
-    <ScrollViewer>
-        <StackPanel Orientation="Vertical" RequestedTheme="Dark">
+    <ScrollViewer x:Name="Scroller">
+        <StackPanel VerticalAlignment="Center" Orientation="Vertical">
             <Viewbox
                 Height="50"
                 Margin="0,32,0,0"
-                HorizontalAlignment="Center">
-                <SymbolIcon Symbol="Setting" />
+                HorizontalAlignment="Center"
+                RequestedTheme="Dark">
+                <FontIcon Glyph="&#xF8B0;" />
             </Viewbox>
             <TextBlock
                 x:Uid="Setup_PreferencesPrompt"
                 Padding="8"
                 HorizontalAlignment="Center"
-                FontSize="18"
+                FontSize="{ThemeResource HubSectionHeaderThemeFontSize}"
+                RequestedTheme="Dark"
                 Text="Customize your settings below" />
             <StackPanel
-                MaxWidth="640"
+                Width="{x:Bind helpers:BindingExtensions.Multiply(Scroller.ViewportWidth, 0.75), Mode=OneWay}"
+                MinHeight="480"
                 Margin="0,16,0,0"
                 Padding="16"
-                Background="White"
-                Orientation="Vertical"
-                RequestedTheme="Light">
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Orientation="Vertical">
+                <StackPanel.Background>
+                    <SolidColorBrush Opacity="0.85" Color="{ThemeResource RegionColor}" />
+                </StackPanel.Background>
                 <TextBlock
                     x:Uid="Pref_SummaryUnits"
                     Padding="0,5"

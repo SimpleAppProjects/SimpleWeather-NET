@@ -29,7 +29,6 @@ namespace SimpleWeather.UWP.Main
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
         public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; private set; }
-        private muxc.ProgressRing LoadingRing { get { return Location?.ProgressRing; } }
 
         public LocationSearchPage()
         {
@@ -42,6 +41,11 @@ namespace SimpleWeather.UWP.Main
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
             AnalyticsLogger.LogEvent("LocationSearchPage");
+
+            var LocationAPI = wm.LocationProvider.LocationAPI;
+            var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
+            LocationSearchBox.Footer = String.Format("{0} {1}",
+                creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
         }
 
         public void ShowSnackbar(Snackbar snackbar)
@@ -69,12 +73,6 @@ namespace SimpleWeather.UWP.Main
             sender.ItemsSource = null;
             sender.ItemsSource = LocationQuerys;
             sender.IsSuggestionListOpen = true;
-        }
-
-        private void EnableControls(bool enable)
-        {
-            if (LoadingRing != null)
-                LoadingRing.IsActive = !enable;
         }
 
         /// <summary>
@@ -115,6 +113,8 @@ namespace SimpleWeather.UWP.Main
 
             if (!String.IsNullOrWhiteSpace(sender.Text) && args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
+                LocationSearchBox.IsLoading = true;
+
                 String query = sender.Text;
 
                 cts = new CancellationTokenSource();
@@ -136,6 +136,7 @@ namespace SimpleWeather.UWP.Main
                             LocationQuerys = results;
                             RefreshSuggestionList(sender);
                             timer?.Stop();
+                            LocationSearchBox.IsLoading = false;
                         });
                     }
                     catch (Exception ex)
@@ -150,6 +151,7 @@ namespace SimpleWeather.UWP.Main
                             LocationQuerys = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
                             RefreshSuggestionList(sender);
                             timer?.Stop();
+                            LocationSearchBox.IsLoading = false;
                         });
                     }
                 }, ctsToken);
@@ -163,6 +165,7 @@ namespace SimpleWeather.UWP.Main
                 LocationQuerys.Clear();
                 sender.IsSuggestionListOpen = false;
                 timer?.Stop();
+                LocationSearchBox.IsLoading = false;
             }
         }
 
@@ -192,7 +195,7 @@ namespace SimpleWeather.UWP.Main
         /// <exception cref="CustomException">Ignore.</exception>
         private void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            EnableControls(false);
+            LocationSearchBox.IsLoading = true;
 
             // Cancel other tasks
             cts?.Cancel();
@@ -369,7 +372,7 @@ namespace SimpleWeather.UWP.Main
                         }
 
                         // Restore controls
-                        EnableControls(true);
+                        LocationSearchBox.IsLoading = false;
                     });
                 }
                 else if (t.IsCompletedSuccessfully && t.Result)
@@ -380,6 +383,13 @@ namespace SimpleWeather.UWP.Main
                             Frame.GoBack();
                         else
                             Frame.Navigate(typeof(LocationsPage));
+                    });
+                }
+                else
+                {
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        LocationSearchBox.IsLoading = false;
                     });
                 }
             });

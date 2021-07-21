@@ -19,13 +19,12 @@
 
     <Grid>
         <localControls:ProgressAutoSuggestBox
-            x:Name="Location"
+            x:Name="LocationSearchBox"
             x:Uid="LocationSearchHint"
-            Margin="12"
-            VerticalAlignment="Top"
-            HeaderText="Add a location"
+            Header="Add a location"
             PlaceholderText="Enter a location"
             QuerySubmitted="Location_QuerySubmitted"
+            Style="{ThemeResource LocationQuerySearchBoxStyle}"
             SuggestionChosen="Location_SuggestionChosen"
             TextChanged="Location_TextChanged" />
     </Grid>

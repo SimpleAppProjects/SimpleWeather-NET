@@ -34,12 +34,15 @@ namespace SimpleWeather.UWP.Setup
         {
             this.InitializeComponent();
 
-            this.SizeChanged += SetupPage_SizeChanged;
-
             wm = WeatherManager.GetInstance();
 
             // Views
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
+
+            var LocationAPI = wm.LocationProvider.LocationAPI;
+            var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
+            LocationSearchBox.Footer = String.Format("{0} {1}",
+                creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
         }
 
         private SnackbarManager SnackMgr;
@@ -68,26 +71,6 @@ namespace SimpleWeather.UWP.Setup
             SnackMgr = null;
         }
 
-        private void SetupPage_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            ResizeControls();
-        }
-
-        private void ResizeControls()
-        {
-            if (this.ActualWidth <= 640)
-                Location.MaxWidth = this.ActualWidth;
-            else if (this.ActualWidth <= 1080)
-                Location.MaxWidth = this.ActualWidth * (0.75);
-            else
-                Location.MaxWidth = this.ActualWidth * (0.50);
-
-            if (this.ActualHeight > 480)
-                AppLogo.Height = 150;
-            else
-                AppLogo.Height = 100;
-        }
-
         public void Dispose()
         {
             cts.Dispose();
@@ -98,7 +81,6 @@ namespace SimpleWeather.UWP.Setup
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("SetupLocationsPage");
             InitSnackManager();
-            Restore();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -430,15 +412,9 @@ namespace SimpleWeather.UWP.Setup
 
         private void EnableControls(bool Enable)
         {
-            Location.IsEnabled = Enable;
+            LocationSearchBox.IsEnabled = Enable;
             GPSButton.IsEnabled = Enable;
             LoadingRing.IsActive = !Enable;
-        }
-
-        private void Restore()
-        {
-            // Sizing
-            ResizeControls();
         }
 
         private void GPS_Click(object sender, RoutedEventArgs e)

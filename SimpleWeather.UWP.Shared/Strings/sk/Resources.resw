@@ -457,7 +457,7 @@
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
     <value>Nie sú dostupné žiadne meteovýstrahy.</value>
   </data>
-  <data name="LocationSearchHint.HeaderText" xml:space="preserve">
+  <data name="LocationSearchHint.Header" xml:space="preserve">
     <value>Pridať lokalitu</value>
   </data>
   <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
@@ -518,10 +518,10 @@
   <data name="Attrib_Prefix.Text" xml:space="preserve">
     <value>Fotka od</value>
   </data>
-  <data name="Label_Back.Label" xml:space="preserve">
+  <data name="StepperNavBar.BackButtonLabel" xml:space="preserve">
     <value>Späť</value>
   </data>
-  <data name="Label_Next.Label" xml:space="preserve">
+  <data name="StepperNavBar.NextButtonLabel" xml:space="preserve">
     <value>Ďalej</value>
   </data>
   <data name="WelcomePrompt.Text" xml:space="preserve">

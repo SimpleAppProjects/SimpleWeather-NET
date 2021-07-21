@@ -458,7 +458,7 @@
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
     <value>No weather alerts available.</value>
   </data>
-  <data name="LocationSearchHint.HeaderText" xml:space="preserve">
+  <data name="LocationSearchHint.Header" xml:space="preserve">
     <value>Add a location</value>
   </data>
   <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
@@ -519,10 +519,10 @@
   <data name="Attrib_Prefix.Text" xml:space="preserve">
     <value>Photo by</value>
   </data>
-  <data name="Label_Back.Label" xml:space="preserve">
+  <data name="StepperNavBar.BackButtonLabel" xml:space="preserve">
     <value>Back</value>
   </data>
-  <data name="Label_Next.Label" xml:space="preserve">
+  <data name="StepperNavBar.NextButtonLabel" xml:space="preserve">
     <value>Next</value>
   </data>
   <data name="WelcomePrompt.Text" xml:space="preserve">
@@ -604,5 +604,11 @@
   <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
     <value>{0}% chance of rain in the next hour</value>
     <comment>{0} = Percentage</comment>
+  </data>
+  <data name="StepperNavBar.CompleteButtonLabel" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="StepperNavBar.StartButtonLabel" xml:space="preserve">
+    <value>Get Started</value>
   </data>
 </root>

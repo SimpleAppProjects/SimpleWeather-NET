@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -15,17 +16,29 @@ namespace SimpleWeather.UWP.Helpers
 
             if (depObj != null)
             {
-                for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+                var childCount = VisualTreeHelper.GetChildrenCount(depObj);
+                if (childCount > 0)
                 {
-                    FrameworkElement child = VisualTreeHelper.GetChild(depObj, i) as FrameworkElement;
-                    if (child != null && child is T && (String.IsNullOrWhiteSpace(Name) || String.Equals(Name, child.Name)))
+                    for (int i = 0; i < childCount; i++)
                     {
-                        return (T)child;
-                    }
+                        FrameworkElement child = VisualTreeHelper.GetChild(depObj, i) as FrameworkElement;
+                        if (child != null && child is T && (String.IsNullOrWhiteSpace(Name) || String.Equals(Name, child.Name)))
+                        {
+                            return (T)child;
+                        }
 
-                    if (FindChild<T>(child, Name) is FrameworkElement childOfChild)
+                        if (FindChild<T>(child, Name) is FrameworkElement childOfChild)
+                        {
+                            return (T)childOfChild;
+                        }
+                    }
+                }
+                else if (!String.IsNullOrWhiteSpace(Name))
+                {
+                    var obj = depObj.FindName(Name);
+                    if (obj != null && obj is T child && String.Equals(Name, child.Name))
                     {
-                        return (T)childOfChild;
+                        return child;
                     }
                 }
             }
@@ -49,6 +62,20 @@ namespace SimpleWeather.UWP.Helpers
             }
 
             return null;
+        }
+
+        public static List<DependencyObject> GetChildren(this FrameworkElement depObj)
+        {
+            var result = new List<DependencyObject>();
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                FrameworkElement child = VisualTreeHelper.GetChild(depObj, i) as FrameworkElement;
+                result.Add(child);
+                result.AddRange(GetChildren(child));
+            }
+
+            return result;
         }
     }
 }

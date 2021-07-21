@@ -118,6 +118,7 @@ namespace SimpleWeather.UWP.Main
 
             UISettings = new UISettings();
             UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
+            App.UpdateAppTheme();
             UpdateAppTheme();
 
             Window.Current.SetTitleBar(AppTitleBar);

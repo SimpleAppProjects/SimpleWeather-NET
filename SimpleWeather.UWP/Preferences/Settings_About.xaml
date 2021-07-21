@@ -96,6 +96,7 @@
             Text="SimpleWeather" />
         <TextBlock
             Name="Version"
+            FontSize="14"
             Foreground="{ThemeResource SystemBaseMediumHighColor}"
             Style="{StaticResource CaptionTextBlockStyle}"
             Text="v0.00" />

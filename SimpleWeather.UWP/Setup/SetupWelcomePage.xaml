@@ -5,13 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="{ThemeResource SimpleBlueDarkBrush}"
     Background="Transparent"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
     <Grid>
         <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <Viewbox
-                Name="AppLogo"
+                x:Name="AppLogo"
                 Height="125"
                 Margin="0,25,0,0"
                 RelativePanel.Above="Spacer"
@@ -38,7 +40,7 @@
                 x:Uid="WelcomeSubtitle"
                 Padding="4"
                 FontSize="18"
-                Foreground="#83FFFFFF"
+                Foreground="#B3FFFFFF"
                 RelativePanel.AlignHorizontalCenterWithPanel="True"
                 RelativePanel.Below="WelcomeText"
                 Text="Just a simple weather app" />

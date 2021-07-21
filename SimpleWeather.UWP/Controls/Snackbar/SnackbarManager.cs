@@ -46,7 +46,11 @@ namespace SimpleWeather.UWP.Controls
 
         public void DismissAll()
         {
-            if (Snacks.Count == 0) return;
+            if (Snacks.Count == 0)
+            {
+                UpdateView();
+                return;
+            }
 
             while (Snacks.Count > 0)
             {

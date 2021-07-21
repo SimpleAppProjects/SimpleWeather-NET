@@ -58,30 +58,6 @@ namespace SimpleWeather.UWP
             }
         }
 
-        public static Color AppColor
-        {
-            get
-            {
-                if (Window.Current?.Content is FrameworkElement window)
-                {
-                    if (window.RequestedTheme == ElementTheme.Light)
-                    {
-                        var brush = Application.Current.Resources["SimpleBlueBrush"] as SolidColorBrush;
-                        return brush.Color;
-                    }
-                    else
-                    {
-                        var brush = Application.Current.Resources["SimpleBlueDarkBrush"] as SolidColorBrush;
-                        return brush.Color;
-                    }
-                }
-                else
-                {
-                    return Color.FromArgb(0xff, 0x00, 0x70, 0xc0);
-                }
-            }
-        }
-
         public static ElementTheme CurrentTheme
         {
             get
@@ -526,16 +502,15 @@ namespace SimpleWeather.UWP
 
                 if (RootFrame.Content == null)
                 {
+                    UpdateAppTheme();
+
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
                     if (Settings.WeatherLoaded && Settings.OnBoardComplete)
                         RootFrame.Navigate(typeof(Shell), e.Arguments);
                     else
-                    {
-                        UpdateAppTheme();
                         RootFrame.Navigate(typeof(SetupPage), e.Arguments);
-                    }
                 }
 
                 // Ensure the current window is active
@@ -714,7 +689,7 @@ namespace SimpleWeather.UWP
                             { "IsSystemDarkTheme", IsSystemDarkTheme.ToString() }
                         });
 
-                        UpdateAppTheme();
+                    UpdateAppTheme();
                 }).ConfigureAwait(false);
             }
             catch (Exception ex)

@@ -174,6 +174,7 @@
     <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
     <Compile Include="Controls\BottomNavigationBarItem.cs" />
     <Compile Include="Controls\BottomNavigationBar.cs" />
+    <Compile Include="Controls\BottomStepperNavigationBar.cs" />
     <Compile Include="Controls\DataTemplates.xaml.cs">
       <DependentUpon>DataTemplates.xaml</DependentUpon>
     </Compile>
@@ -287,7 +288,6 @@
     <Compile Include="Radar\RainViewer\RainViewerViewProvider.cs" />
     <Compile Include="Radar\RainViewer\WeatherMapsResponse.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
-    <Compile Include="Helpers\StringBooleanConverter.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
     <Compile Include="Main\LocationSearchPage.xaml.cs">
       <DependentUpon>LocationSearchPage.xaml</DependentUpon>
@@ -333,8 +333,6 @@
     <Compile Include="Controls\ViewModels\LocationPanelViewModel.cs" />
     <Compile Include="Controls\Snackbar\SnackbarManager.cs" />
     <Compile Include="Controls\Toast.cs" />
-    <Compile Include="Helpers\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Helpers\StringVisibilityConverter.cs" />
     <Compile Include="Notifications\WeatherAlertCreator.cs" />
     <Compile Include="Tiles\WeatherTileCreator.cs" />
     <Compile Include="Main\LocationsPage.xaml.cs">
