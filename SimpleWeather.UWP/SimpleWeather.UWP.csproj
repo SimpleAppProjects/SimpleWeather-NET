@@ -172,8 +172,6 @@
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WeatherTileUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
-    <Compile Include="Controls\BottomNavigationBarItem.cs" />
-    <Compile Include="Controls\BottomNavigationBar.cs" />
     <Compile Include="Controls\BottomStepperNavigationBar.cs" />
     <Compile Include="Controls\DataTemplates.xaml.cs">
       <DependentUpon>DataTemplates.xaml</DependentUpon>
