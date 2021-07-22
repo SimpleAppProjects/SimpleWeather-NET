@@ -179,7 +179,8 @@
     <Compile Include="Controls\DetailItem.xaml.cs">
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ExtendingWrapPanel.cs" />
+    <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.cs" />
+    <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.Data.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphPanel.xaml.cs">
       <DependentUpon>RangeBarGraphPanel.xaml</DependentUpon>
     </Compile>
