@@ -42,10 +42,13 @@ namespace SimpleWeather.UWP.Main
             CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
             AnalyticsLogger.LogEvent("LocationSearchPage");
 
-            var LocationAPI = wm.LocationProvider.LocationAPI;
-            var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
-            LocationSearchBox.Footer = String.Format("{0} {1}",
-                creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
+            if (LocationSearchBox != null)
+            {
+                var LocationAPI = wm.LocationProvider.LocationAPI;
+                var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
+                LocationSearchBox.Footer = String.Format("{0} {1}",
+                    creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
+            }
         }
 
         public void ShowSnackbar(Snackbar snackbar)

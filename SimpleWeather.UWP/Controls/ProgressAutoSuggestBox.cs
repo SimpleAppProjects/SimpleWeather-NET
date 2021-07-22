@@ -74,15 +74,9 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty TextBoxStyleProperty =
             DependencyProperty.Register(nameof(TextBoxStyle), typeof(Style), typeof(ProgressAutoSuggestBox), new PropertyMetadata(null));
 
-        public IconElement QueryIcon
-        {
-            get => (IconElement)GetValue(QueryIconProperty);
-            set => SetValue(QueryIconProperty, value);
-        }
-
-        // Using a DependencyProperty as the backing store for QueryIcon.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty QueryIconProperty =
-            DependencyProperty.Register(nameof(QueryIcon), typeof(IconElement), typeof(ProgressAutoSuggestBox), new PropertyMetadata(new SymbolIcon(Symbol.Find)));
+        public IconElement QueryIcon { get { return _queryIcon; } set { _queryIcon = value; UpdateQueryIcon(); } }
+        private IconElement _queryIcon;
+        private readonly IconElement _defaultIcon = new SymbolIcon(Symbol.Find);
 
         public DataTemplate ItemTemplate
         {
@@ -149,12 +143,14 @@ namespace SimpleWeather.UWP.Controls
                 SuggestBox.ApplyTemplate();
                 SuggestBox.Loaded += SuggestBox_Loaded;
                 SuggestBox.Unloaded += SuggestBox_Unloaded;
+                UpdateQueryIcon();
             }
         }
 
         private void SuggestBox_Loaded(object sender, RoutedEventArgs e)
         {
             BindSuggestBox(true);
+            UpdateQueryIcon();
         }
 
         private void SuggestBox_Unloaded(object sender, RoutedEventArgs e)
@@ -215,6 +211,21 @@ namespace SimpleWeather.UWP.Controls
         private void SuggestBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
             QuerySubmitted?.Invoke(sender, args);
+        }
+
+        private void UpdateQueryIcon()
+        {
+            if (SuggestBox != null)
+            {
+                if (QueryIcon == null)
+                {
+                    SuggestBox.QueryIcon = _defaultIcon;
+                }
+                else
+                {
+                    SuggestBox.QueryIcon = QueryIcon;
+                }
+            }
         }
     }
 }

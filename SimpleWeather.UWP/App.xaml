@@ -634,7 +634,6 @@
                 BasedOn="{StaticResource DefaultProgressAutoSuggestBoxStyle}"
                 TargetType="localControls:ProgressAutoSuggestBox">
                 <Setter Property="ItemTemplate" Value="{StaticResource LocationQueryDataTemplate}" />
-                <Setter Property="QueryIcon" Value="Find" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="VerticalAlignment" Value="Top" />
@@ -656,7 +655,7 @@
                     <Setter.Value>
                         <DataTemplate>
                             <TextBlock
-                                Margin="8,6,8,0"
+                                Margin="8,6,8,4"
                                 FontWeight="SemiBold"
                                 Text="{Binding}" />
                         </DataTemplate>

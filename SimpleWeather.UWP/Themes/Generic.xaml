@@ -24,7 +24,7 @@
     <Style x:Key="DefaultProgressAutoSuggestBoxStyle" TargetType="localControls:ProgressAutoSuggestBox">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="QueryIcon" Value="Find" />
+        <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="TextBoxStyle" Value="{ThemeResource ProgressAutoSuggestBoxTextBoxStyle}" />
         <Setter Property="Template">
             <Setter.Value>
@@ -40,7 +40,6 @@
                                 Background="{TemplateBinding Background}"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
-                                QueryIcon="{TemplateBinding QueryIcon}"
                                 Style="{ThemeResource DefaultAutoSuggestBoxStyle}"
                                 TextBoxStyle="{TemplateBinding TextBoxStyle}"
                                 UpdateTextOnSelect="False" />
