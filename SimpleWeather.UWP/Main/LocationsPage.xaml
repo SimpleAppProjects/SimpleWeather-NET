@@ -8,6 +8,7 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    d:Background="{ThemeResource RegionBrush}"
     SizeChanged="StackControl_SizeChanged"
     mc:Ignorable="d">
 
@@ -58,12 +59,13 @@
             x:Name="LocationsPanel"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
+            d:ItemsSource=",,,,"
             ContainerContentChanging="LocationsPanel_ContainerContentChanging"
             IsItemClickEnabled="True"
             IsSwipeEnabled="False"
             ItemClick="LocationsPanel_ItemClick"
             SelectionMode="None">
-            <ItemsControl.GroupStyle>
+            <GridView.GroupStyle>
                 <GroupStyle HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}" HidesIfEmpty="True">
                     <GroupStyle.HeaderTemplate>
                         <DataTemplate>
@@ -75,9 +77,10 @@
                         </DataTemplate>
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
-            </ItemsControl.GroupStyle>
-            <ItemsControl.Resources>
+            </GridView.GroupStyle>
+            <GridView.Resources>
                 <SolidColorBrush x:Key="GridViewItemCheckBrush" Color="White" />
+                <SolidColorBrush x:Key="GridViewItemBackground" Color="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
                 <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;" />
                 <ui:SwipeItems x:Key="right" Mode="Execute">
                     <ui:SwipeItem
@@ -86,22 +89,28 @@
                         Invoked="SwipeItem_Invoked"
                         Text="Delete" />
                 </ui:SwipeItems>
-            </ItemsControl.Resources>
-            <ItemsControl.ItemTemplate>
+            </GridView.Resources>
+            <GridView.ItemTemplate>
                 <DataTemplate x:DataType="controls:LocationPanelViewModel">
-                    <ui:SwipeControl IsEnabled="{x:Bind EditMode, Mode=OneWay}" RightItems="{StaticResource right}">
+                    <ui:SwipeControl
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
+                        BorderThickness="2"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        IsEnabled="{x:Bind EditMode, Mode=OneWay}"
+                        RightItems="{StaticResource right}">
                         <localcontrols:LocationPanel Holding="LocationPanel_Holding" />
                     </ui:SwipeControl>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
+            </GridView.ItemTemplate>
+            <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid
                         Margin="16,0"
                         MaximumRowsOrColumns="4"
                         Orientation="Horizontal" />
                 </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+            </GridView.ItemsPanel>
             <GridView.Footer>
                 <Button
                     x:Name="AddLocationsButton"
