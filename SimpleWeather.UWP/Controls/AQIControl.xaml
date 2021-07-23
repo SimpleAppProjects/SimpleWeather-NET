@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -78,7 +79,7 @@
             HorizontalAlignment="Center"
             FontSize="12"
             Visibility="{x:Bind ViewModel.Attribution, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-            <Span><Run x:Uid="Credit_Prefix" Text="Data from" /><Run Text=" " /><Run d:Text="World Air Quality Index Project" Text="{x:Bind ViewModel.Attribution, Mode=OneWay, FallbackValue='World Air Quality Index Project'}" /></Span>
+            <Span><Run d:Text="Data from" Text="{helpers:StringRes Name='credit_prefix'}" /><Run Text=" " /><Run d:Text="World Air Quality Index Project" Text="{x:Bind ViewModel.Attribution, Mode=OneWay, FallbackValue='World Air Quality Index Project'}" /></Span>
         </TextBlock>
     </StackPanel>
 </UserControl>

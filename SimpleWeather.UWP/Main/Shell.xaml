@@ -9,13 +9,14 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="using:SimpleWeather.UWP.Shared.Helpers"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
+    xmlns:sharedHelpers="using:SimpleWeather.UWP.Shared.Helpers"
     muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
     mc:Ignorable="d">
 
@@ -78,7 +79,7 @@
                 x:Name="AppTitle"
                 VerticalAlignment="Center"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{x:Bind GetAppTitleFromSystem()}" />
+                Text="{helpers:StringRes Name='app_name'}" />
         </Border>
 
         <muxc:NavigationView
@@ -103,8 +104,8 @@
             PaneOpening="NavView_PaneOpening">
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem
-                    x:Uid="Nav_WeatherNow"
-                    Content="Weather"
+                    d:Content="Weather"
+                    Content="{helpers:StringRes Name='label_nav_weathernow'}"
                     Tag="WeatherNow">
                     <muxc:NavigationViewItem.Icon>
                         <BitmapIcon
@@ -115,24 +116,24 @@
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem
-                    x:Uid="Nav_WeatherAlerts"
-                    Content="Weather Alerts"
+                    d:Content="Weather Alerts"
+                    Content="{helpers:StringRes Name='pref_title_alerts'}"
                     Tag="WeatherAlertPage">
                     <muxc:NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE783;" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem
-                    x:Uid="Nav_WeatherRadar"
-                    Content="Radar"
+                    d:Content="Radar"
+                    Content="{helpers:StringRes Name='label_radar'}"
                     Tag="WeatherRadarPage">
                     <muxc:NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xEB44;" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem
-                    x:Uid="Nav_Locations"
-                    Content="Locations"
+                    d:Content="Locations"
+                    Content="{helpers:StringRes Name='label_nav_locations'}"
                     Tag="LocationsPage">
                     <muxc:NavigationViewItem.Icon>
                         <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE728;" />
@@ -156,7 +157,7 @@
             <VisualStateGroup>
                 <VisualState>
                     <VisualState.StateTriggers>
-                        <helpers:DeviceFamilyTrigger DeviceFamily="Xbox" />
+                        <sharedHelpers:DeviceFamilyTrigger DeviceFamily="Xbox" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="XboxContentSafeRect.Visibility" Value="Visible" />

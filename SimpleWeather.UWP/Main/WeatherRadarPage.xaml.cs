@@ -33,7 +33,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Label_Radar/Header");
+            CommandBarLabel = App.ResLoader.GetString("label_radar");
             AnalyticsLogger.LogEvent("WeatherRadarPage");
         }
 

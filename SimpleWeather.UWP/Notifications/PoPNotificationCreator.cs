@@ -21,7 +21,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task CreateToastCollection()
         {
-            string displayName = App.ResLoader.GetString("Pref_Title_PrecipNotification/Text").ReplaceFirst(":", "");
+            string displayName = App.ResLoader.GetString("not_channel_name_precipnotification");
             var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-umbrella.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
@@ -95,12 +95,12 @@ namespace SimpleWeather.UWP.Notifications
             else if (duration < 120)
             {
                 duraStr = string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                    App.ResLoader.GetString("Pref_Refresh30Min/Text").Replace("30", ((int)Math.Round(duration)).ToString()));
+                    App.ResLoader.GetString("refresh_30min").Replace("30", ((int)Math.Round(duration)).ToString()));
             }
             else
             {
                 duraStr = string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                    App.ResLoader.GetString("Pref_Refresh12Hrs/Text").Replace("12", ((int)Math.Round(duration / 60)).ToString()));
+                    App.ResLoader.GetString("refresh_12hrs").Replace("12", ((int)Math.Round(duration / 60)).ToString()));
             }
 
             return new ToastContent()

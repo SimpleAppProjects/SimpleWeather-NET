@@ -283,7 +283,7 @@ namespace SimpleWeather.WeatherData
                 if (todaysForecast?.extras?.pop.HasValue == true)
                 {
                     summaryStr.AppendFormat(" {0}: {1}%",
-                        resLoader.GetString("Label_Chance/Text"),
+                        resLoader.GetString("label_chance"),
                         todaysForecast.extras.pop.Value);
                 }
 

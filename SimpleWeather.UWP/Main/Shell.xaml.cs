@@ -432,7 +432,7 @@ namespace SimpleWeather.UWP.Main
                 }
                 else
                 {
-                    header.Title = App.ResLoader.GetString("AppName/Text");
+                    header.Title = App.ResLoader.GetString("app_name");
                     header.Commands = null;
                 }
             }
@@ -449,11 +449,6 @@ namespace SimpleWeather.UWP.Main
             //ensure the custom title bar does not overlap window caption controls
             Thickness currMargin = AppTitleBar.Margin;
             AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
-        }
-
-        public string GetAppTitleFromSystem()
-        {
-            return App.ResLoader.GetString("AppName/Text");
         }
 
         private void NavView_PaneOpening(muxc.NavigationView sender, object args)

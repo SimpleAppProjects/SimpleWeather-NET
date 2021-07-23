@@ -47,22 +47,22 @@ namespace SimpleWeather.Controls
             switch (detailsType)
             {
                 case WeatherDetailsType.Sunrise:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Sunrise/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_sunrise");
                     this.Icon = WeatherIcons.SUNRISE;
                     break;
 
                 case WeatherDetailsType.Sunset:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Sunset/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_sunset");
                     this.Icon = WeatherIcons.SUNSET;
                     break;
 
                 case WeatherDetailsType.FeelsLike:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_FeelsLike/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_feelslike");
                     this.Icon = WeatherIcons.THERMOMETER;
                     break;
 
                 case WeatherDetailsType.WindSpeed:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Wind/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_wind");
                     this.Icon = WeatherIcons.WIND_DIRECTION;
                     break;
 
@@ -72,37 +72,37 @@ namespace SimpleWeather.Controls
                     break;
 
                 case WeatherDetailsType.Humidity:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Humidity/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_humidity");
                     this.Icon = WeatherIcons.HUMIDITY;
                     break;
 
                 case WeatherDetailsType.Pressure:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Pressure/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_pressure");
                     this.Icon = WeatherIcons.BAROMETER;
                     break;
 
                 case WeatherDetailsType.Visibility:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Visibility/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_visibility");
                     this.Icon = WeatherIcons.FOG;
                     break;
 
                 case WeatherDetailsType.PoPCloudiness:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Cloudiness/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_cloudiness");
                     this.Icon = WeatherIcons.CLOUDY;
                     break;
 
                 case WeatherDetailsType.PoPChance:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Chance/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_chance");
                     this.Icon = WeatherIcons.UMBRELLA;
                     break;
 
                 case WeatherDetailsType.PoPRain:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Rain/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_qpf_rain");
                     this.Icon = WeatherIcons.RAINDROPS;
                     break;
 
                 case WeatherDetailsType.PoPSnow:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("Label_Snow/Text");
+                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_qpf_snow");
                     this.Icon = WeatherIcons.SNOWFLAKE_COLD;
                     break;
 

@@ -171,7 +171,7 @@ namespace SimpleWeather.UWP.Main
             ErrorCounter = new bool[Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Length];
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
+            CommandBarLabel = App.ResLoader.GetString("label_nav_locations");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()

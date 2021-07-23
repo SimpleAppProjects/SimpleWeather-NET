@@ -38,7 +38,7 @@ namespace SimpleWeather.UWP.Preferences
             this.InitializeComponent();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Settings/Content");
+            CommandBarLabel = App.ResLoader.GetString("title_activity_settings");
             AnalyticsLogger.LogEvent("SettingsPage");
 
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))

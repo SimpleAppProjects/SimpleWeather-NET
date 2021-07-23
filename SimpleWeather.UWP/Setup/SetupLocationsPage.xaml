@@ -7,6 +7,7 @@
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -377,10 +378,9 @@
                 </Viewbox>
                 <localControls:ProgressAutoSuggestBox
                     x:Name="LocationSearchBox"
-                    x:Uid="SetupLocationSearchHint"
                     MaxWidth="1080"
                     Background="#F0FFFFFF"
-                    PlaceholderText="Add a location to start"
+                    PlaceholderText="{helpers:StringRes Name='setup_location_prompt'}"
                     QuerySubmitted="Location_QuerySubmitted"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
@@ -414,11 +414,11 @@
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock
-                                x:Uid="Label_GPSFollow"
                                 Padding="5,0"
                                 VerticalAlignment="Center"
+                                d:Text="Current Location"
                                 FontSize="{ThemeResource ControlContentThemeFontSize}"
-                                Text="Current Location" />
+                                Text="{helpers:StringRes Name='label_gpsfollow'}" />
                             <TextBlock
                                 Padding="5,0"
                                 VerticalAlignment="Center"

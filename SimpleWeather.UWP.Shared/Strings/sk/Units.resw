@@ -158,9 +158,9 @@
     <comment>Meters per second</comment>
   </data>
   <data name="unit_fahrenheit" xml:space="preserve">
-    <value>Fahrenheit</value>
+    <value>Fahrenheita</value>
   </data>
   <data name="unit_celsius" xml:space="preserve">
-    <value>Celsius</value>
+    <value>Celzia</value>
   </data>
 </root>

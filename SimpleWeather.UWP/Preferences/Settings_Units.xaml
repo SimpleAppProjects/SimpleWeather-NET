@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mtuc="using:Microsoft.Toolkit.Uwp.UI.Controls"
@@ -33,47 +34,47 @@
             VerticalScrollMode="Auto">
             <StackPanel>
                 <TextBlock
-                    x:Uid="Pref_TitleUnits"
+                    d:Text="Units"
                     Style="{ThemeResource SettingTitleStyle}"
-                    Text="Units" />
+                    Text="{helpers:StringRes Name='pref_title_units'}" />
                 <muxc:RadioButtons x:Name="TemperatureUnits">
                     <muxc:RadioButtons.Header>
                         <TextBlock
-                            x:Uid="Label_Temperature"
                             Padding="0,5"
-                            Text="Temperature" />
+                            d:Text="Temperature"
+                            Text="{helpers:StringRes Name='label_temperature'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
                 <muxc:RadioButtons x:Name="SpeedUnits">
                     <muxc:RadioButtons.Header>
                         <TextBlock
-                            x:Uid="Label_Speed"
                             Padding="0,5"
-                            Text="Speed" />
+                            d:Text="Speed"
+                            Text="{helpers:StringRes Name='label_speed'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
                 <muxc:RadioButtons x:Name="DistanceUnits">
                     <muxc:RadioButtons.Header>
                         <TextBlock
-                            x:Uid="Label_Distance"
                             Padding="0,5"
-                            Text="Distance" />
+                            d:Text="Distance"
+                            Text="{helpers:StringRes Name='label_distance'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
                 <muxc:RadioButtons x:Name="PrecipitationUnits">
                     <muxc:RadioButtons.Header>
                         <TextBlock
-                            x:Uid="Label_Precipitation"
                             Padding="0,5"
-                            Text="Precipitation" />
+                            d:Text="Precipitation"
+                            Text="{helpers:StringRes Name='label_precipitation'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
                 <muxc:RadioButtons x:Name="PressureUnits">
                     <muxc:RadioButtons.Header>
                         <TextBlock
-                            x:Uid="Label_Pressure"
                             Padding="0,5"
-                            Text="Pressure" />
+                            d:Text="Pressure"
+                            Text="{helpers:StringRes Name='label_pressure'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
                 <Rectangle

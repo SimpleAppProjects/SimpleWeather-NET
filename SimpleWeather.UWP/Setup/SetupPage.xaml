@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -31,7 +32,7 @@
                 VerticalAlignment="Center"
                 d:Text="SimpleWeather"
                 Style="{StaticResource CaptionTextBlockStyle}"
-                Text="{x:Bind GetAppTitleFromSystem()}" />
+                Text="{helpers:StringRes Name='app_name'}" />
         </Border>
         <Frame
             x:Name="FrameContent"
@@ -39,16 +40,15 @@
             d:SourcePageType="local:SetupWelcomePage" />
         <localcontrols:BottomStepperNavigationBar
             x:Name="BottomNavBar"
-            x:Uid="StepperNavBar"
             Grid.Row="2"
             d:ItemCount="5"
             d:SelectedIndex="1"
-            BackButtonLabel="Back"
+            BackButtonLabel="{helpers:StringRes Name='label_back'}"
             CompleteButtonIcon="Accept"
-            CompleteButtonLabel="Done"
-            NextButtonLabel="Next"
+            CompleteButtonLabel="{helpers:StringRes Name='Label_Done'}"
+            NextButtonLabel="{helpers:StringRes Name='label_next'}"
             RequestedTheme="Dark"
-            StartButtonLabel="Get Started">
+            StartButtonLabel="{helpers:StringRes Name='label_getstarted'}">
             <localcontrols:BottomStepperNavigationBar.BackButtonIcon>
                 <FontIcon Glyph="&#xE76B;" />
             </localcontrols:BottomStepperNavigationBar.BackButtonIcon>

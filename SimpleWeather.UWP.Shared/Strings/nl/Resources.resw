@@ -117,11 +117,106 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Voer locatie in</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Weeraanbieder</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Sleutel weeraanbieder</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Huidige locatie</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Beginnen</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Welkom bij SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Gewoon een simpele weerapp</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Voeg een locatie toe om te beginnen</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Kies je instellingen</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Doorgaan</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Terug</value>
+  </data>
   <data name="action_settings" xml:space="preserve">
     <value>Instellingen</value>
   </data>
   <data name="action_retry" xml:space="preserve">
     <value>Opnieuw proberen</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Details</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Luchtvochtigheid</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Luchtdruk</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Zicht</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Gevoelstemperatuur</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Wind</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Voorspelling</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Staat</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Zon op / Zon onder</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Zonsopkomst</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Zonsondergang</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Per uur</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Neerslag</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Kans</value>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Bewolking</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Regen</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Sneeuw</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Data van</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Foto door</value>
   </data>
   <data name="label_high" xml:space="preserve">
     <value>Hoog</value>
@@ -150,6 +245,9 @@
   <data name="label_airquality" xml:space="preserve">
     <value>Luchtkwaliteitsindex</value>
   </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Radar</value>
+  </data>
   <data name="label_afternoon" xml:space="preserve">
     <value>Middag</value>
   </data>
@@ -165,11 +263,68 @@
   <data name="label_temp" xml:space="preserve">
     <value>Temp</value>
   </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Weer</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Waarschuwingen</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Locaties</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Instellingen</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Extreem weerwaarschuwingen</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>Algemeen</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Eenheden</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>Over</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Dank aan</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Open Source Bibliotheken</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Data Aanbieders</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Toegang tot huidige locatie via GPS toestaan</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Voer alsjeblieft een providersleutel in</value>
   </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Weeraanbieder</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Weerwaarschuwingen</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Toon melding voor weerwaarschuwingen</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Weerwaarschuwingen niet ondersteund door huidige weeraanbieder</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Account aanmaken om een providersleutel te verkrijgen</value>
+  </data>
   <data name="error_message_weather_region_unsupported" xml:space="preserve">
     <value>Land niet ondersteund door huidige weeraanbieder</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Locatie Toevoegen</value>
+    <comment>Locations</comment>
   </data>
   <data name="action_editmode" xml:space="preserve">
     <value>Bewerken</value>
@@ -188,6 +343,9 @@
   </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Geen resultaten</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Locatie Toevoegen</value>
   </data>
   <data name="message_locationremoved" xml:space="preserve">
     <value>Locatie verwijderd</value>
@@ -217,6 +375,25 @@
   <data name="werror_unknown" xml:space="preserve">
     <value>Onbekende fout opgetreden</value>
   </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Update Interval</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 uur</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 uur</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 uur</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>8 uur</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 uur</value>
+  </data>
   <data name="update_prefix" xml:space="preserve">
     <value>Vernieuwd op</value>
   </data>
@@ -226,157 +403,85 @@
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Geldig tot</value>
   </data>
-  <data name="About.Content" xml:space="preserve">
-    <value>Over</value>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Gebruik persoonlijk weersproviderssleutel</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Thema</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Systeem Standaard</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Donker</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Kenmerken</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Schakel kenmerken in of uit</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Achtergrondafbeelding</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Voorspelling</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Voorspelling per uur</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Weerdetails</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Luchtkwaliteitsindex</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Maanfase</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Zonfase</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Weer Radar</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Locatie Paneel Afbeelding</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Licht</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Donker</value>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Kies Weeraanbieder</value>
   </data>
-  <data name="API_Label.Text" xml:space="preserve">
-    <value>Weeraanbieder</value>
-  </data>
-  <data name="AppName.Text" xml:space="preserve">
-    <value>SimpleWeather</value>
-  </data>
-  <data name="Credits.Content" xml:space="preserve">
-    <value>Credits</value>
-  </data>
-  <data name="General.Content" xml:space="preserve">
-    <value>Generiek</value>
-  </data>
-  <data name="KeyEntry.PlaceholderText" xml:space="preserve">
-    <value>Sleutel Weeraanbieder</value>
-  </data>
-  <data name="Label_AddLocation.Text" xml:space="preserve">
-    <value>Locatie Toevoegen</value>
-  </data>
   <data name="Label_Cancel" xml:space="preserve">
     <value>Annuleren</value>
-  </data>
-  <data name="Label_Chance.Text" xml:space="preserve">
-    <value>Kans</value>
-    <comment>Chance of Precipitation</comment>
-  </data>
-  <data name="Label_Condition.Text" xml:space="preserve">
-    <value>Conditie</value>
-  </data>
-  <data name="Label_Details.Header" xml:space="preserve">
-    <value>Details</value>
   </data>
   <data name="Label_Done" xml:space="preserve">
     <value>Klaar</value>
   </data>
-  <data name="Label_FeelsLike.Text" xml:space="preserve">
-    <value>Gevoelstemperatuur</value>
-  </data>
-  <data name="Label_Forecast.Header" xml:space="preserve">
-    <value>Voorspelling</value>
-  </data>
-  <data name="Label_GPSFollow.Text" xml:space="preserve">
-    <value>Huidige Locatie</value>
-  </data>
-  <data name="Label_Hourly.Header" xml:space="preserve">
-    <value>Uurlijks</value>
-  </data>
-  <data name="Label_Humidity.Text" xml:space="preserve">
-    <value>Luchtvochtigheid</value>
-  </data>
-  <data name="Label_Precipitation.Text" xml:space="preserve">
-    <value>Neerslag</value>
-  </data>
-  <data name="Label_Pressure.Text" xml:space="preserve">
-    <value>Luchtdruk</value>
-  </data>
-  <data name="Label_Rain.Text" xml:space="preserve">
-    <value>Regen</value>
-  </data>
-  <data name="Label_Snow.Text" xml:space="preserve">
-    <value>Sneeuw</value>
-  </data>
-  <data name="Label_Sunrise.Text" xml:space="preserve">
-    <value>Zonsopkomst</value>
-  </data>
-  <data name="Label_Sunriseset.Header" xml:space="preserve">
-    <value>Zon Op / Onder</value>
-  </data>
-  <data name="Label_Sunset.Text" xml:space="preserve">
-    <value>Zonsopkomst</value>
-  </data>
-  <data name="Label_Visibility.Text" xml:space="preserve">
-    <value>Zicht</value>
-  </data>
-  <data name="Label_Wind.Text" xml:space="preserve">
-    <value>Wind</value>
-  </data>
-  <data name="LocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Voer een locatie in</value>
-  </data>
-  <data name="Message_EnterAPIKey.Text" xml:space="preserve">
-    <value>Geleive een weeraanbiederssleutel in te voeren</value>
-    <comment>message_enter_apikey</comment>
-  </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
     <value>Geen toegang tot locatie. Gelieve in te schakelen in instellingen.</value>
-  </data>
-  <data name="Nav_Locations.Content" xml:space="preserve">
-    <value>Locaties</value>
-  </data>
-  <data name="Nav_Settings.Content" xml:space="preserve">
-    <value>Instellingen</value>
-  </data>
-  <data name="Nav_WeatherNow.Content" xml:space="preserve">
-    <value>Weer</value>
-  </data>
-  <data name="OSSLibs.Content" xml:space="preserve">
-    <value>Open Source Bibliotheken</value>
-  </data>
-  <data name="Pref_SummaryFollowGPS.Text" xml:space="preserve">
-    <value>Huidige locatie volgen via GPS:</value>
   </data>
   <data name="Pref_SummaryUnits.Text" xml:space="preserve">
     <value>Eenheden weergeven in:</value>
   </data>
-  <data name="Pref_TitleProviders.Text" xml:space="preserve">
-    <value>Weeraanbieders</value>
-  </data>
-  <data name="KeyEntry.Text" xml:space="preserve">
-    <value>Sleutel weeraanbieder</value>
-  </data>
   <data name="Pref_GeneralHeader.Text" xml:space="preserve">
     <value>Algemene Instellingen</value>
-  </data>
-  <data name="Pref_Refresh2Hrs.Text" xml:space="preserve">
-    <value>2 uur</value>
-  </data>
-  <data name="Pref_Refresh12Hrs.Text" xml:space="preserve">
-    <value>12 uur</value>
-  </data>
-  <data name="Pref_Refresh60Min.Text" xml:space="preserve">
-    <value>1 uur (standaard)</value>
-  </data>
-  <data name="Pref_SummaryRefresh.Text" xml:space="preserve">
-    <value>Update-interval</value>
-  </data>
-  <data name="KeyBox.Text" xml:space="preserve">
-    <value>Sleutel weeraanbieder</value>
-  </data>
-  <data name="Pref_Refresh3Hrs.Text" xml:space="preserve">
-    <value>3 uur</value>
-  </data>
-  <data name="Pref_Refresh6Hrs.Text" xml:space="preserve">
-    <value>6 uur</value>
-  </data>
-  <data name="Credit_Prefix.Text" xml:space="preserve">
-    <value>Data van</value>
-  </data>
-  <data name="Label_Cloudiness.Text" xml:space="preserve">
-    <value>Bewolking</value>
-  </data>
-  <data name="Pref_WeatherAlerts.Text" xml:space="preserve">
-    <value>Toon melding voor weerwaarschuwingen:</value>
-  </data>
-  <data name="Label_WeatherAlerts.Text" xml:space="preserve">
-    <value>Extreem weerwaarschuwingen</value>
   </data>
   <data name="DateTime_DayAgo" xml:space="preserve">
     <value>{0}d geleden</value>
@@ -393,110 +498,20 @@
   <data name="Button_Refresh.Label" xml:space="preserve">
     <value>Vernieuwen</value>
   </data>
-  <data name="Cloudiness_Label" xml:space="preserve">
-    <value>Bewolking</value>
-  </data>
-  <data name="FeelsLike_Label" xml:space="preserve">
-    <value>Gevoelstemperatuur</value>
-  </data>
-  <data name="Precipitation_Label" xml:space="preserve">
-    <value>Precipitation</value>
-  </data>
-  <data name="Wind_Label" xml:space="preserve">
-    <value>Wind</value>
-  </data>
   <data name="Label_Pin.Text" xml:space="preserve">
     <value>Vastmaken aan Start</value>
   </data>
   <data name="Label_Unpin.Text" xml:space="preserve">
     <value>Losmaken van Start</value>
   </data>
-  <data name="RegisterKeyBox.Content" xml:space="preserve">
-    <value>Account aanmaken om een providersleutel te verkrijgen</value>
-  </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>Ok</value>
-  </data>
-  <data name="ConfirmDialog.SecondaryButtonText" xml:space="preserve">
-    <value>Annuleren</value>
-  </data>
-  <data name="Pref_PersonalKey.Text" xml:space="preserve">
-    <value>Gebruik persoonlijk weersproviderssleutel:</value>
-  </data>
-  <data name="Label_Temperature.Text" xml:space="preserve">
-    <value>Temperatuur</value>
-  </data>
-  <data name="Pref_DarkMode.Content" xml:space="preserve">
-    <value>Donker</value>
-  </data>
-  <data name="Pref_LightMode.Content" xml:space="preserve">
-    <value>Licht</value>
-  </data>
-  <data name="Pref_SystemMode.Content" xml:space="preserve">
-    <value>Systeemthema</value>
-  </data>
-  <data name="Pref_UserTheme.Text" xml:space="preserve">
-    <value>Thema</value>
-  </data>
-  <data name="Setup_PreferencesPrompt.Text" xml:space="preserve">
-    <value>Kies je instellingen</value>
-  </data>
-  <data name="AQI_Label" xml:space="preserve">
-    <value>Luchtkwaliteitsindex</value>
-  </data>
-  <data name="Label_Radar.Header" xml:space="preserve">
-    <value>Radar</value>
-  </data>
-  <data name="Nav_WeatherAlerts.Content" xml:space="preserve">
-    <value>Weerwaarschuwingen</value>
-  </data>
-  <data name="Nav_WeatherRadar.Content" xml:space="preserve">
-    <value>Radar</value>
   </data>
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
     <value>Geen weerwaarschuwingen beschikbaar.</value>
   </data>
-  <data name="LocationSearchHint.Header" xml:space="preserve">
-    <value>Locatie Toevoegen</value>
-  </data>
-  <data name="SetupLocationSearchHint.PlaceholderText" xml:space="preserve">
-    <value>Voeg een locatie toe om te beginnen</value>
-  </data>
   <data name="Features.Content" xml:space="preserve">
     <value>Kenmerken</value>
-  </data>
-  <data name="FeatureOption_AQI.Content" xml:space="preserve">
-    <value>Luchtkwaliteitsindex</value>
-  </data>
-  <data name="FeatureOption_Background.Content" xml:space="preserve">
-    <value>Achtergrondafbeelding</value>
-  </data>
-  <data name="FeatureOption_Beaufort.Content" xml:space="preserve">
-    <value>Beaufort</value>
-  </data>
-  <data name="FeatureOption_Details.Content" xml:space="preserve">
-    <value>Weerdetails</value>
-  </data>
-  <data name="FeatureOption_Forecast.Content" xml:space="preserve">
-    <value>Voorspelling</value>
-  </data>
-  <data name="FeatureOption_HrForecast.Content" xml:space="preserve">
-    <value>Hourly Forecast</value>
-  </data>
-  <data name="FeatureOption_LocPanelBackground.Content" xml:space="preserve">
-    <value>Locatie Paneel Afbeelding</value>
-  </data>
-  <data name="FeatureOption_MoonPhase.Content" xml:space="preserve">
-    <value>Maanfase</value>
-  </data>
-  <data name="FeatureOption_Radar.Content" xml:space="preserve">
-    <value>Weer Radar</value>
-  </data>
-  <data name="FeatureOption_SunPhase.Content" xml:space="preserve">
-    <value>Zonfase</value>
-  </data>
-  <data name="FeatureOption_UV.Content" xml:space="preserve">
-    <value>UV</value>
   </data>
   <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
     <value>Schakel kenmerken in of uit:</value>
@@ -510,24 +525,6 @@
   </data>
   <data name="label_windgust" xml:space="preserve">
     <value>Windstoten</value>
-  </data>
-  <data name="WindGust_Label" xml:space="preserve">
-    <value>Windstoten</value>
-  </data>
-  <data name="Attrib_Prefix.Text" xml:space="preserve">
-    <value>Foto door</value>
-  </data>
-  <data name="StepperNavBar.BackButtonLabel" xml:space="preserve">
-    <value>Terug</value>
-  </data>
-  <data name="StepperNavBar.NextButtonLabel" xml:space="preserve">
-    <value>Volgende</value>
-  </data>
-  <data name="WelcomePrompt.Text" xml:space="preserve">
-    <value>Welkom bij SimpleWeather</value>
-  </data>
-  <data name="WelcomeSubtitle.Text" xml:space="preserve">
-    <value>Gewoon een simpele weerapp</value>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
     <value>Controleren op updates...</value>
@@ -547,14 +544,29 @@
   <data name="FeebackButton.Content" xml:space="preserve">
     <value>Terugkoppeling</value>
   </data>
-  <data name="ReviewButton.Content" xml:space="preserve">
-    <value>Beoordeel en Review</value>
-  </data>
-  <data name="TranslateButton.Content" xml:space="preserve">
-    <value>Help de app te vertalen</value>
-  </data>
   <data name="prompt_update_available" xml:space="preserve">
     <value>Update beschikbaar. Klik om te installeren</value>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Terugkoppeling</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Beoordeel en Review</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Help de app te vertalen</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Temperatuur</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Snelheid</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Afstand</value>
   </data>
   <data name="pref_title_resetunits" xml:space="preserve">
     <value>Eenheden instellen op standaardwaarde</value>
@@ -565,35 +577,32 @@
   <data name="default_units_metric" xml:space="preserve">
     <value>°C, km/h, mm, mb, km</value>
   </data>
-  <data name="Label_Speed.Text" xml:space="preserve">
-    <value>Snelheid</value>
-  </data>
-  <data name="Label_Distance.Text" xml:space="preserve">
-    <value>Afstand</value>
-  </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Achtergrondafbeelding herhalen</value>
   </data>
-  <data name="Pref_TitleIcons.Content" xml:space="preserve">
+  <data name="pref_title_icons" xml:space="preserve">
     <value>Iconen</value>
+    <comment>Icons</comment>
   </data>
-  <data name="FeatureOption_Charts.Content" xml:space="preserve">
+  <data name="pref_title_feature_charts" xml:space="preserve">
     <value>Grafieken</value>
   </data>
-  <data name="Pref_Refresh30Min.Text" xml:space="preserve">
+  <data name="refresh_30min" xml:space="preserve">
     <value>30 minuten</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Dagelijkse Melding</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Tijd</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Neerslagmelding</value>
+    <comment>Precipitation Notification</comment>
   </data>
   <data name="label_day" xml:space="preserve">
     <value>Dag</value>
-  </data>
-  <data name="Pref_Title_DailyNotification.Text" xml:space="preserve">
-    <value>Dagelijkse Melding:</value>
-  </data>
-  <data name="Pref_Title_Time.Header" xml:space="preserve">
-    <value>Tijd</value>
-  </data>
-  <data name="Pref_Title_PrecipNotification.Text" xml:space="preserve">
-    <value>Neerslagmelding:</value>
   </data>
   <data name="Precipitation_Text_Format" xml:space="preserve">
     <value>{0}% kans op regen in {1}</value>
@@ -602,5 +611,9 @@
   <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
     <value>{0}% kans op regen in het komende uur</value>
     <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Weeroverzicht</value>
+    <comment>Weather Summary or Weather Overview</comment>
   </data>
 </root>

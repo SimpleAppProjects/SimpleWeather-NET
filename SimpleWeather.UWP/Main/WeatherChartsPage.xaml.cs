@@ -44,7 +44,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Label_Forecast/Header");
+            CommandBarLabel = App.ResLoader.GetString("label_forecast");
             AnalyticsLogger.LogEvent("WeatherChartsPage");
         }
 

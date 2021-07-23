@@ -35,7 +35,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Label_WeatherAlerts/Text");
+            CommandBarLabel = App.ResLoader.GetString("title_fragment_alerts");
             AnalyticsLogger.LogEvent("WeatherAlertPage");
         }
 

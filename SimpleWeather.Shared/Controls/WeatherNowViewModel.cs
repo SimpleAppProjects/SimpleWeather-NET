@@ -472,7 +472,7 @@ namespace SimpleWeather.Controls
 
             WeatherSource = weather?.source;
 
-            string creditPrefix = SimpleLibrary.GetInstance().ResLoader.GetString("Credit_Prefix/Text");
+            string creditPrefix = SimpleLibrary.GetInstance().ResLoader.GetString("credit_prefix");
             WeatherCredit = String.Format("{0} {1}",
                 creditPrefix, WeatherAPI.APIs.FirstOrDefault(WApi => Equals(WeatherSource, WApi.Value))?.ToString() ?? WeatherIcons.EM_DASH);
         }

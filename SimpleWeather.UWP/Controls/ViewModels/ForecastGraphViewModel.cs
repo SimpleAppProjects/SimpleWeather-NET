@@ -300,30 +300,30 @@ namespace SimpleWeather.UWP.Controls
             {
                 /*
                 case ForecastGraphType.Temperature:
-                    GraphLabel = App.ResLoader.GetString("Label_Temperature/Text");
+                    GraphLabel = App.ResLoader.GetString("label_temperature");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.OrangeRed);
                     break;
                 */
                 default:
                 case ForecastGraphType.Precipitation:
-                    GraphLabel = App.ResLoader.GetString("Label_Precipitation/Text");
+                    GraphLabel = App.ResLoader.GetString("label_precipitation");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Color.FromArgb(0xFF, 0, 0x70, 0xC0));
                     series.SetSeriesMinMax(0f, 100f);
                     break;
                 case ForecastGraphType.Wind:
-                    GraphLabel = App.ResLoader.GetString("Label_Wind/Text");
+                    GraphLabel = App.ResLoader.GetString("label_wind");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.SeaGreen);
                     break;
                 case ForecastGraphType.Rain:
-                    GraphLabel = App.ResLoader.GetString("Label_Rain/Text");
+                    GraphLabel = App.ResLoader.GetString("label_qpf_rain");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.DeepSkyBlue);
                     break;
                 case ForecastGraphType.Snow:
-                    GraphLabel = App.ResLoader.GetString("Label_Snow/Text");
+                    GraphLabel = App.ResLoader.GetString("label_qpf_snow");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.SkyBlue);
                     break;
@@ -334,7 +334,7 @@ namespace SimpleWeather.UWP.Controls
                     series.SetSeriesMinMax(0f, 12f);
                     break;
                 case ForecastGraphType.Humidity:
-                    GraphLabel = App.ResLoader.GetString("Label_Humidity/Text");
+                    GraphLabel = App.ResLoader.GetString("label_humidity");
                     series = new LineDataSeries(yData);
                     series.SetSeriesColors(Colors.MediumPurple);
                     series.SetSeriesMinMax(0f, 100f);

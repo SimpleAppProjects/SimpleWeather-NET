@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -23,9 +24,9 @@
                     Style="{StaticResource SettingTitleStyle}"
                     Text="General Settings" />
                 <TextBlock
-                    x:Uid="Pref_SummaryFollowGPS"
+                    d:Text="Follow current location via GPS"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Follow current location via GPS" />
+                    Text="{helpers:StringRes Name='pref_summary_currentlocation'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="FollowGPS" />
                 </StackPanel>
@@ -39,9 +40,9 @@
                     Margin="0,10">
                     <ComboBox.Header>
                         <TextBlock
-                            x:Uid="Pref_SummaryRefresh"
+                            d:Text="Update Frequency"
                             Style="{StaticResource PrefTitleStyle}"
-                            Text="Update Frequency" />
+                            Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
                     </ComboBox.Header>
                 </ComboBox>
                 <Rectangle
@@ -49,31 +50,31 @@
                     Margin="0,7.5"
                     Fill="LightGray" />
                 <TextBlock
-                    x:Uid="Pref_UserTheme"
+                    d:Text="Choose a theme"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Choose a theme" />
+                    Text="{helpers:StringRes Name='pref_title_userthememode'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <RadioButton
                         x:Name="LightMode"
-                        x:Uid="Pref_LightMode"
-                        Content="Light" />
+                        d:Content="Light"
+                        Content="{helpers:StringRes Name='userthememode_light'}" />
                     <RadioButton
                         x:Name="DarkMode"
-                        x:Uid="Pref_DarkMode"
-                        Content="Dark" />
+                        d:Content="Dark"
+                        Content="{helpers:StringRes Name='userthememode_dark'}" />
                     <RadioButton
                         x:Name="SystemMode"
-                        x:Uid="Pref_SystemMode"
-                        Content="System Theme" />
+                        d:Content="System Theme"
+                        Content="{helpers:StringRes Name='userthememode_default'}" />
                 </StackPanel>
                 <Rectangle
                     Height="1"
                     Margin="0,7.5"
                     Fill="LightGray" />
                 <TextBlock
-                    x:Uid="Pref_WeatherAlerts"
+                    d:Text="Show notifications for weather alerts:"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Show notifications for weather alerts:" />
+                    Text="{helpers:StringRes Name='pref_summary_alerts'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="AlertSwitch" />
                 </StackPanel>
@@ -82,9 +83,9 @@
                     Margin="0,7.5"
                     Fill="LightGray" />
                 <TextBlock
-                    x:Uid="Pref_Title_DailyNotification"
+                    d:Text="Daily Notification:"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Daily Notification:" />
+                    Text="{helpers:StringRes Name='not_channel_name_dailynotification'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="DailyNotifSwitch" />
                 </StackPanel>
@@ -94,9 +95,9 @@
                     Fill="Transparent" />
                 <TimePicker
                     x:Name="DailyNotifTimePicker"
-                    x:Uid="Pref_Title_Time"
                     Padding="0,5"
-                    Header="Time:"
+                    d:Header="Time:"
+                    Header="{helpers:StringRes Name='pref_title_time'}"
                     IsEnabled="{x:Bind DailyNotifSwitch.IsOn, Mode=OneWay}">
                     <TimePicker.HeaderTemplate>
                         <DataTemplate>
@@ -109,9 +110,9 @@
                     Margin="0,7.5"
                     Fill="LightGray" />
                 <TextBlock
-                    x:Uid="Pref_Title_PrecipNotification"
+                    d:Text="Precipitation Notification:"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Precipitation Notification:" />
+                    Text="{helpers:StringRes Name='not_channel_name_precipnotification'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="PoPChanceNotifSwitch" />
                 </StackPanel>
@@ -128,9 +129,9 @@
                     PlaceholderText="Select Weather Provider">
                     <ComboBox.Header>
                         <TextBlock
-                            x:Uid="API_Label"
+                            d:Text="Weather Provider"
                             Style="{StaticResource PrefTitleStyle}"
-                            Text="Weather Provider" />
+                            Text="{helpers:StringRes Name='api_label'}" />
                     </ComboBox.Header>
                 </ComboBox>
                 <Rectangle
@@ -139,9 +140,9 @@
                     Fill="Transparent" />
                 <StackPanel x:Name="KeyPanel">
                     <TextBlock
-                        x:Uid="Pref_PersonalKey"
+                        d:Text="Use personal provider key:"
                         Style="{StaticResource PrefTitleStyle}"
-                        Text="Use personal provider key:" />
+                        Text="{helpers:StringRes Name='pref_summary_personalkey'}" />
                     <StackPanel Padding="10,5" Orientation="Horizontal">
                         <ToggleSwitch x:Name="PersonalKeySwitch" />
                     </StackPanel>
@@ -150,9 +151,9 @@
                         Margin="0,7.5"
                         Fill="Transparent" />
                     <TextBlock
-                        x:Uid="KeyBox"
+                        d:Text="API Key"
                         Style="{StaticResource PrefTitleStyle}"
-                        Text="API Key"
+                        Text="{helpers:StringRes Name='key_hint'}"
                         Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
                     <Border
                         x:Name="KeyBorder"
@@ -164,27 +165,26 @@
                         Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
                         <TextBlock
                             x:Name="KeyEntry"
-                            x:Uid="KeyBox"
                             GotFocus="KeyEntry_GotFocus"
                             Tapped="KeyEntry_Tapped"
-                            Text="API Key"
+                            Text="{helpers:StringRes Name='key_hint'}"
                             Visibility="Visible" />
                     </Border>
                     <HyperlinkButton
                         x:Name="RegisterKeyButton"
-                        x:Uid="RegisterKeyBox"
                         Padding="0,10"
-                        Content="Register for API Key here"
+                        d:Content="Register for API Key here"
+                        Content="{helpers:StringRes Name='pref_summary_apiregister'}"
                         Style="{ThemeResource HyperlinkButtonStyle}"
                         Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
                 </StackPanel>
                 <ComboBox
                     x:Name="RadarComboBox"
-                    x:Uid="Label_Radar"
                     MinWidth="260"
                     Margin="0,10"
                     HorizontalAlignment="Left"
-                    Header="Radar">
+                    d:Header="Radar"
+                    Header="{helpers:StringRes Name='label_radar'}">
                     <ComboBox.HeaderTemplate>
                         <DataTemplate>
                             <TextBlock Style="{StaticResource PrefTitleStyle}" Text="{Binding}" />

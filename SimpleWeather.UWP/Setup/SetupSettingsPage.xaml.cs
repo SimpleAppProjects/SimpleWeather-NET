@@ -21,21 +21,21 @@ namespace SimpleWeather.UWP.Setup
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh30Min/Text"), "30"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh60Min/Text"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh2Hrs/Text"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh3Hrs/Text"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh6Hrs/Text"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("Pref_Refresh12Hrs/Text"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_30min"), "30"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         public SetupSettingsPage()

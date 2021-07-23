@@ -130,11 +130,11 @@
                                 Text="&#xE710;" />
                         </Viewbox>
                         <TextBlock
-                            x:Uid="Label_AddLocation"
                             Grid.Column="1"
                             Padding="5"
                             VerticalAlignment="Center"
-                            Text="Add Location" />
+                            d:Text="Add Location"
+                            Text="{helpers:StringRes Name='label_btn_add_location'}" />
                     </Grid>
                 </Button>
             </GridView.Footer>

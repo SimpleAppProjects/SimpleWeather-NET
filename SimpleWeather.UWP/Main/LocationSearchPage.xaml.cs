@@ -39,13 +39,13 @@ namespace SimpleWeather.UWP.Main
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_Locations/Content");
+            CommandBarLabel = App.ResLoader.GetString("label_nav_locations");
             AnalyticsLogger.LogEvent("LocationSearchPage");
 
             if (LocationSearchBox != null)
             {
                 var LocationAPI = wm.LocationProvider.LocationAPI;
-                var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
+                var creditPrefix = App.ResLoader.GetString("credit_prefix");
                 LocationSearchBox.Footer = String.Format("{0} {1}",
                     creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
             }

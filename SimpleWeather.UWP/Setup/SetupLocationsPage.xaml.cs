@@ -40,7 +40,7 @@ namespace SimpleWeather.UWP.Setup
             LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
 
             var LocationAPI = wm.LocationProvider.LocationAPI;
-            var creditPrefix = App.ResLoader.GetString("Credit_Prefix/Text");
+            var creditPrefix = App.ResLoader.GetString("credit_prefix");
             LocationSearchBox.Footer = String.Format("{0} {1}",
                 creditPrefix, WeatherAPI.LocationAPIs.First(LApi => LocationAPI.Equals(LApi.Value)));
         }

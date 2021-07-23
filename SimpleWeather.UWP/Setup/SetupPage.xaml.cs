@@ -204,10 +204,5 @@ namespace SimpleWeather.UWP.Setup
         {
             AppTitleBar.Visibility = coreTitleBar.IsVisible ? Visibility.Visible : Visibility.Collapsed;
         }
-
-        public string GetAppTitleFromSystem()
-        {
-            return App.ResLoader.GetString("AppName/Text");
-        }
     }
 }

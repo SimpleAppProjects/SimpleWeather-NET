@@ -189,7 +189,7 @@ namespace SimpleWeather.UWP.Main
             geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("Nav_WeatherNow/Content");
+            CommandBarLabel = App.ResLoader.GetString("label_nav_weathernow");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()

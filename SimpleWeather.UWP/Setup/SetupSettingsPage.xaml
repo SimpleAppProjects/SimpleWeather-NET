@@ -21,12 +21,12 @@
                 <FontIcon Glyph="&#xF8B0;" />
             </Viewbox>
             <TextBlock
-                x:Uid="Setup_PreferencesPrompt"
                 Padding="8"
                 HorizontalAlignment="Center"
+                d:Text="Customize your settings below"
                 FontSize="{ThemeResource HubSectionHeaderThemeFontSize}"
                 RequestedTheme="Dark"
-                Text="Customize your settings below" />
+                Text="{helpers:StringRes Name='setup_preferences_prompt'}" />
             <StackPanel
                 Width="{x:Bind helpers:BindingExtensions.Multiply(Scroller.ViewportWidth, 0.75), Mode=OneWay}"
                 MinHeight="480"
@@ -44,15 +44,15 @@
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <RadioButton
                         x:Name="Fahrenheit"
-                        x:Uid="Pref_UnitFahrenheit"
                         Margin="0,0,10,0"
-                        Content="Fahrenheit"
+                        d:Content="Fahrenheit"
+                        Content="{helpers:StringRes Name='/Units/unit_fahrenheit'}"
                         GroupName="Unit" />
                     <RadioButton
                         x:Name="Celsius"
-                        x:Uid="Pref_UnitCelsius"
                         Margin="10,0,0,0"
-                        Content="Celsius"
+                        d:Content="Celsius"
+                        Content="{helpers:StringRes Name='/Units/unit_celsius'}"
                         GroupName="Unit" />
                 </StackPanel>
                 <ComboBox
@@ -60,13 +60,13 @@
                     MinWidth="260"
                     Margin="0,10">
                     <ComboBox.Header>
-                        <TextBlock x:Uid="Pref_SummaryRefresh" Text="Update Frequency" />
+                        <TextBlock d:Text="Update Frequency" Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
                     </ComboBox.Header>
                 </ComboBox>
                 <TextBlock
-                    x:Uid="Pref_WeatherAlerts"
                     Padding="0,5"
-                    Text="Show notifications for weather alerts:" />
+                    d:Text="Show notifications for weather alerts:"
+                    Text="{helpers:StringRes Name='pref_summary_alerts'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="AlertSwitch" />
                 </StackPanel>

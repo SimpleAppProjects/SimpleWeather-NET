@@ -17,7 +17,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task CreateToastCollection()
         {
-            string displayName = App.ResLoader.GetString("Nav_WeatherAlerts/Content");
+            string displayName = App.ResLoader.GetString("label_nav_alerts");
             var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,

@@ -20,9 +20,10 @@
     <Grid>
         <localControls:ProgressAutoSuggestBox
             x:Name="LocationSearchBox"
-            x:Uid="LocationSearchHint"
-            Header="Add a location"
-            PlaceholderText="Enter a location"
+            d:Header="Add a location"
+            d:PlaceholderText="Enter a location"
+            Header="{helpers:StringRes Name='label_fab_add_location'}"
+            PlaceholderText="{helpers:StringRes Name='location_search_hint'}"
             QuerySubmitted="Location_QuerySubmitted"
             Style="{ThemeResource LocationQuerySearchBoxStyle}"
             SuggestionChosen="Location_SuggestionChosen"

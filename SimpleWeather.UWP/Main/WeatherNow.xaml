@@ -208,12 +208,12 @@
                                 FontFamily="Segoe MDL2 Assets"
                                 Glyph="&#xE783;" />
                             <TextBlock
-                                x:Uid="Label_WeatherAlerts"
                                 Grid.Column="1"
                                 Padding="5,0"
                                 VerticalAlignment="Center"
+                                d:Text="Severe Weather Alerts"
                                 FontSize="12"
-                                Text="Severe Weather Alerts" />
+                                Text="{helpers:StringRes Name='title_fragment_alerts'}" />
                             <FontIcon
                                 Grid.Column="2"
                                 Margin="5,0"
@@ -365,7 +365,7 @@
                                 ShadowOpacity="1"
                                 Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                                 <TextBlock>
-                                    <Span><Run x:Uid="Attrib_Prefix" Text="Photo by" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
+                                    <Span><Run d:Text="Photo by" Text="{helpers:StringRes Name='attrib_prefix'}" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
                                 </TextBlock>
                             </toolkitControls:DropShadowPanel>
                         </HyperlinkButton.Content>
@@ -386,10 +386,10 @@
                         Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
-                            x:Uid="Label_Forecast"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Forecast"
+                            d:Header="Forecast"
+                            Header="{helpers:StringRes Name='label_forecast'}"
                             Style="{ThemeResource NavigatableSectionStyle}">
                             <graphs:RangeBarGraphPanel
                                 x:Name="ForecastGraphPanel"
@@ -405,10 +405,10 @@
                         Visibility="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
-                            x:Uid="Label_Hourly"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Hourly"
+                            d:Header="Hourly"
+                            Header="{helpers:StringRes Name='label_hourlyforecast'}"
                             Style="{ThemeResource NavigatableSectionStyle}">
                             <localcontrols:HourlyForecastItemPanel
                                 x:Name="HourlyForecastControl"
@@ -431,9 +431,9 @@
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBlock
-                                            x:Uid="Label_Precipitation"
                                             Grid.Column="0"
-                                            Text="Precipitation" />
+                                            d:Text="Precipitation"
+                                            Text="{helpers:StringRes Name='label_precipitation'}" />
                                         <FontIcon
                                             Grid.Column="1"
                                             Margin="5,0,0,0"
@@ -466,10 +466,10 @@
                         x:Load="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
-                            x:Uid="Label_Details"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Details"
+                            d:Header="Details"
+                            Header="{helpers:StringRes Name='label_details'}"
                             Style="{ThemeResource SectionLabelStyle}">
                             <StackPanel>
                                 <ItemsControl
@@ -529,10 +529,10 @@
                         Visibility="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
-                            x:Uid="Label_Sunriseset"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Sunrise / Sunset"
+                            d:Header="Sunrise / Sunset"
+                            Header="{helpers:StringRes Name='label_sunriseset'}"
                             Style="{ThemeResource SectionLabelStyle}">
                             <localcontrols:SunPhasePanel
                                 x:Name="SunPhasePanel"
@@ -547,10 +547,10 @@
                         x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
-                            x:Uid="Label_Radar"
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
-                            Header="Radar"
+                            d:Header="Radar"
+                            Header="{helpers:StringRes Name='label_radar'}"
                             Style="{ThemeResource NavigatableSectionStyle}">
                             <Grid>
                                 <Rectangle

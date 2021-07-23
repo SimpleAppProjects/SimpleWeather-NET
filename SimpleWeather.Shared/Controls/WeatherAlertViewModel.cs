@@ -55,7 +55,7 @@ namespace SimpleWeather.Controls
 
             if (Attribution != null)
             {
-                Attribution = String.Format("{0} {1}", SimpleLibrary.GetInstance().ResLoader.GetString("Credit_Prefix/Text"), Attribution);
+                Attribution = String.Format("{0} {1}", SimpleLibrary.GetInstance().ResLoader.GetString("credit_prefix"), Attribution);
             }
         }
     }

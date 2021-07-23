@@ -22,65 +22,65 @@
             VerticalScrollMode="Auto">
             <StackPanel>
                 <TextBlock
-                    x:Uid="Pref_Features_Title"
+                    d:Text="Features"
                     Style="{ThemeResource SettingTitleStyle}"
-                    Text="Features" />
+                    Text="{helpers:StringRes Name='pref_title_features'}" />
                 <TextBlock
-                    x:Uid="Pref_Features_Subtitle"
                     Padding="0,5,0,10"
+                    d:Text="Select features to enable/disable:"
                     Style="{StaticResource PrefTitleStyle}"
-                    Text="Select features to enable/disable:" />
+                    Text="{helpers:StringRes Name='pref_summary_features'}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Background"
-                    Content="Background Image"
+                    d:Content="Background Image"
+                    Content="{helpers:StringRes Name='pref_title_feature_bgimage'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Forecast"
-                    Content="Forecast"
+                    d:Content="Forecast"
+                    Content="{helpers:StringRes Name='pref_title_feature_forecast'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_HrForecast"
-                    Content="Hourly Forecast"
+                    d:Content="Hourly Forecast"
+                    Content="{helpers:StringRes Name='pref_title_feature_hrforecast'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Charts"
-                    Content="Charts"
+                    d:Content="Charts"
+                    Content="{helpers:StringRes Name='pref_title_feature_charts'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
                 <CheckBox
                     d:Content="Weather Summary"
                     Content="{helpers:StringRes Name='pref_title_feature_summary'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Details"
-                    Content="Weather Details"
+                    d:Content="Weather Details"
+                    Content="{helpers:StringRes Name='pref_title_feature_details'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_UV"
-                    Content="UV"
+                    d:Content="UV"
+                    Content="{helpers:StringRes Name='pref_title_feature_uv'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Beaufort"
-                    Content="Beaufort"
+                    d:Content="Beaufort"
+                    Content="{helpers:StringRes Name='pref_title_feature_beaufort'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_AQI"
-                    Content="Air Quality Index"
+                    d:Content="Air Quality Index"
+                    Content="{helpers:StringRes Name='pref_title_feature_aqindex'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_MoonPhase"
-                    Content="Moon Phase"
+                    d:Content="Moon Phase"
+                    Content="{helpers:StringRes Name='pref_title_feature_moonphase'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_SunPhase"
-                    Content="Sun Phase"
+                    d:Content="Sun Phase"
+                    Content="{helpers:StringRes Name='pref_title_feature_sunphase'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_Radar"
-                    Content="Weather Radar"
+                    d:Content="Weather Radar"
+                    Content="{helpers:StringRes Name='pref_title_feature_radar'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
                 <CheckBox
-                    x:Uid="FeatureOption_LocPanelBackground"
-                    Content="Location Panel Image"
+                    d:Content="Location Panel Image"
+                    Content="{helpers:StringRes Name='pref_title_feature_locpanelimg'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
                 <CheckBox
                     x:Uid="FeatureOption_TileBackground"

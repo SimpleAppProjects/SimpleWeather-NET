@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -27,32 +28,32 @@
             PaneDisplayMode="Top">
             <muxc:NavigationView.MenuItems>
                 <muxc:NavigationViewItem
-                    x:Uid="General"
-                    Content="General"
+                    d:Content="General"
+                    Content="{helpers:StringRes Name='pref_title_general'}"
                     Tag="General" />
                 <muxc:NavigationViewItem
-                    x:Uid="Pref_TitleIcons"
-                    Content="Icons"
+                    d:Content="Icons"
+                    Content="{helpers:StringRes Name='pref_title_icons'}"
                     Tag="Icons" />
                 <muxc:NavigationViewItem
-                    x:Uid="Pref_TitleUnits"
-                    Content="Units"
+                    d:Content="Units"
+                    Content="{helpers:StringRes Name='pref_title_units'}"
                     Tag="Units" />
                 <muxc:NavigationViewItem
-                    x:Uid="Features"
-                    Content="Features"
+                    d:Content="Features"
+                    Content="{helpers:StringRes Name='pref_title_features'}"
                     Tag="Features" />
                 <muxc:NavigationViewItem
-                    x:Uid="Credits"
-                    Content="Credits"
+                    d:Content="Credits"
+                    Content="{helpers:StringRes Name='pref_title_credits'}"
                     Tag="Credits" />
                 <muxc:NavigationViewItem
-                    x:Uid="OSSLibs"
-                    Content="Open Source Libraries"
+                    d:Content="Open Source Libraries"
+                    Content="{helpers:StringRes Name='pref_title_oslibs'}"
                     Tag="OSSLibs" />
                 <muxc:NavigationViewItem
-                    x:Uid="About"
-                    Content="About"
+                    d:Content="About"
+                    Content="{helpers:StringRes Name='pref_title_about'}"
                     Tag="About" />
             </muxc:NavigationView.MenuItems>
             <Frame x:Name="SettingsFrame" Navigated="SettingsFrame_Navigated" />
