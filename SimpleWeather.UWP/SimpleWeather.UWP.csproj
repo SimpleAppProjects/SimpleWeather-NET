@@ -245,6 +245,7 @@
     <Compile Include="Helpers\IconThemeConverter.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
+    <Compile Include="Helpers\StringRes.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
     <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
