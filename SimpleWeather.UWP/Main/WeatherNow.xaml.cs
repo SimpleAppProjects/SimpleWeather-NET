@@ -342,6 +342,11 @@ namespace SimpleWeather.UWP.Main
             {
                 BackgroundOverlay.MaxHeight = h;
             }
+
+            if (SummaryText != null)
+            {
+                SummaryText.FontSize = w > 640 ? 14 : 12;
+            }
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)

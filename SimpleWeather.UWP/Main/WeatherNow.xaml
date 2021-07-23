@@ -585,25 +585,5 @@
             VerticalAlignment="Center"
             IsActive="True"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="SummaryTextGroup">
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="SummaryText.FontSize" Value="12" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Desktop">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="SummaryText.FontSize" Value="14" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>
