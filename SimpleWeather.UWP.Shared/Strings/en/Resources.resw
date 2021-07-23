@@ -611,4 +611,7 @@
   <data name="StepperNavBar.StartButtonLabel" xml:space="preserve">
     <value>Get Started</value>
   </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Weather Summary</value>
+  </data>
 </root>

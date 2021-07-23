@@ -331,6 +331,7 @@
                         Margin="0,10"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
+                        x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=OneWay}"
                         BlurRadius="15.0"
                         FontSize="12"
                         RelativePanel.Above="Attribution"
