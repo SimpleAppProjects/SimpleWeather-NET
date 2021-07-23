@@ -332,13 +332,16 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         BlurRadius="15.0"
+                        FontSize="12"
                         RelativePanel.Above="Attribution"
                         RelativePanel.AlignLeftWithPanel="True"
                         ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
                         Visibility="{x:Bind WeatherView.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <TextBlock
+                            x:Name="SummaryText"
                             Padding="5"
                             d:Text="Rain, some heavy, to affect the area tonight"
+                            FontSize="12"
                             FontWeight="Normal"
                             Text="{x:Bind WeatherView.WeatherSummary, Mode=OneWay}"
                             TextWrapping="Wrap" />
@@ -389,6 +392,7 @@
                             Style="{ThemeResource NavigatableSectionStyle}">
                             <graphs:RangeBarGraphPanel
                                 x:Name="ForecastGraphPanel"
+                                FontSize="16"
                                 ForecastData="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
                                 GraphViewTapped="ForecastGraphPanel_Tapped" />
                         </toolkitControls:HeaderedContentControl>
@@ -580,5 +584,25 @@
             VerticalAlignment="Center"
             IsActive="True"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="SummaryTextGroup">
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SummaryText.FontSize" Value="12" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SummaryText.FontSize" Value="14" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </Page>

@@ -11,9 +11,11 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:uiControls="using:Microsoft.UI.Xaml.Controls"
+    x:Name="Control"
     d:DataContext="{d:DesignInstance Type=local:ForecastGraphViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="400"
+    FontSize="12"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -208,8 +210,29 @@
             DrawGraphBackground="True"
             DrawGridLines="True"
             DrawIconLabels="True"
+            FontSize="{Binding ElementName=Control, Path=FontSize, Mode=TwoWay}"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LineGraphView.FontSize" Value="13" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="LineGraphView.FontSize" Value="15" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>

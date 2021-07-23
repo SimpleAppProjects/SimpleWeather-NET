@@ -104,7 +104,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public bool DrawDataLabels { get; set; }
         public bool DrawSeriesLabels { get; set; }
 
-        private const float BottomTextSize = 12;
         private readonly CanvasTextFormat BottomTextFormat;
 
         private double IconHeight;
@@ -127,7 +126,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             BottomTextFormat = new CanvasTextFormat
             {
-                FontSize = BottomTextSize,
+                FontSize = (float)FontSize,
+                FontWeight = FontWeight,
                 HorizontalAlignment = CanvasHorizontalAlignment.Center,
                 WordWrapping = CanvasWordWrapping.NoWrap
             };
@@ -138,6 +138,33 @@ namespace SimpleWeather.UWP.Controls.Graphs
             DOT_OUTER_CIR_RADIUS = Canvas.ConvertDipsToPixels(5, CanvasDpiRounding.Floor);
 
             backgroundGridWidth = Canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor);
+
+            RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
+            RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
+        }
+
+        private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
+        {
+            if (property == FontSizeProperty)
+            {
+                this.BottomTextFormat.FontSize = (float)FontSize;
+                CalculateDataLabelsSize();
+                CalculateYLabelSize();
+                if (Canvas.ReadyToDraw)
+                {
+                    Canvas.Invalidate();
+                }
+            }
+            else if (property == FontWeightProperty)
+            {
+                this.BottomTextFormat.FontWeight = FontWeight;
+                CalculateDataLabelsSize();
+                CalculateYLabelSize();
+                if (Canvas.ReadyToDraw)
+                {
+                    Canvas.Invalidate();
+                }
+            }
         }
 
         private float GraphTop
@@ -226,6 +253,11 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 this.dataLabels.AddRange(dataLabels);
             }
 
+            CalculateDataLabelsSize();
+        }
+
+        private void CalculateDataLabelsSize()
+        {
             double longestWidth = 0;
             bottomTextDescent = 0;
             longestTextWidth = 0;
@@ -275,6 +307,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 this.dataLists.AddRange(dataLists);
             }
 
+            CalculateYLabelSize();
+            InvalidateMeasure();
+        }
+
+        private void CalculateYLabelSize()
+        {
             float biggestData = 0;
             float prevLongestTextWidth = longestTextWidth;
             double longestWidth = 0;
@@ -324,7 +362,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
 
             RefreshAfterDataChanged();
-            InvalidateMeasure();
         }
 
         private void RefreshGridWidth()
@@ -524,7 +561,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         private void Canvas_CreateResources(CanvasVirtualControl sender, CanvasCreateResourcesEventArgs args)
         {
             // Calculate icon height
-            IconHeight = sender.ConvertDipsToPixels(30, CanvasDpiRounding.Floor);
+            IconHeight = sender.ConvertDipsToPixels(36, CanvasDpiRounding.Floor);
 
             IconCache = new Dictionary<string, CanvasBitmap>();
 

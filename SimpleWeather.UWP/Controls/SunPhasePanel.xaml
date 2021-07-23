@@ -6,10 +6,11 @@
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    x:Name="Control"
     d:DesignHeight="200"
     d:DesignWidth="600"
+    FontSize="12"
     mc:Ignorable="d">
-
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -30,10 +31,32 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <win2d:CanvasVirtualControl
-        x:Name="Canvas"
-        Background="Transparent"
-        ClearColor="Transparent"
-        CreateResources="Canvas_CreateResources"
-        RegionsInvalidated="Canvas_RegionsInvalidated" />
+    <Grid>
+        <win2d:CanvasVirtualControl
+            x:Name="Canvas"
+            Background="Transparent"
+            ClearColor="Transparent"
+            CreateResources="Canvas_CreateResources"
+            RegionsInvalidated="Canvas_RegionsInvalidated" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Control.FontSize" Value="13" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Control.FontSize" Value="15" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
 </UserControl>

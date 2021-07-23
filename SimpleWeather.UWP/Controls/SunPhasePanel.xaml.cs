@@ -26,7 +26,6 @@ namespace SimpleWeather.UWP.Controls
         private float ViewWidth;
         private float bottomTextHeight = 0;
 
-        //private Paint bottomTextPaint;
         private float bottomTextDescent;
 
         private TimeSpan sunrise = new TimeSpan(7, 0, 0);
@@ -44,7 +43,6 @@ namespace SimpleWeather.UWP.Controls
 
         private Thickness ViewPadding = new Thickness(20, 20, 20, 20);
 
-        private const float BottomTextSize = 12;
         private CanvasTextFormat BottomTextFormat;
 
         private float IconSize;
@@ -65,10 +63,36 @@ namespace SimpleWeather.UWP.Controls
 
             BottomTextFormat = new CanvasTextFormat
             {
-                FontSize = BottomTextSize,
+                FontSize = (float)FontSize,
+                FontWeight = FontWeight,
                 HorizontalAlignment = CanvasHorizontalAlignment.Center,
                 WordWrapping = CanvasWordWrapping.NoWrap
             };
+
+            RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
+            RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
+        }
+
+        private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
+        {
+            if (property == FontSizeProperty)
+            {
+                this.BottomTextFormat.FontSize = (float)FontSize;
+                CalculateBottomTextSize();
+                if (Canvas.ReadyToDraw)
+                {
+                    Canvas.Invalidate();
+                }
+            }
+            else if (property == FontWeightProperty)
+            {
+                this.BottomTextFormat.FontWeight = FontWeight;
+                CalculateBottomTextSize();
+                if (Canvas.ReadyToDraw)
+                {
+                    Canvas.Invalidate();
+                }
+            }
         }
 
         private float GraphHeight =>
@@ -105,6 +129,15 @@ namespace SimpleWeather.UWP.Controls
             this.sunset = sunset;
             this.offset = offset ?? TimeSpan.Zero;
 
+            CalculateBottomTextSize();
+            if (Canvas.ReadyToDraw)
+            {
+                Canvas.Invalidate();
+            }
+        }
+
+        private void CalculateBottomTextSize()
+        {
             double longestWidth = 0;
             String longestStr = "";
             bottomTextDescent = 0;
@@ -139,8 +172,6 @@ namespace SimpleWeather.UWP.Controls
             {
                 sideLineLength = (float)longestWidth / 2f;
             }
-
-            Canvas.Invalidate();
         }
 
         private void RefreshXCoordinateList()

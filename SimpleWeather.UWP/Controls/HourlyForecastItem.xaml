@@ -31,6 +31,7 @@
 
     <StackPanel Orientation="Vertical">
         <TextBlock
+            x:Name="DateBlock"
             Padding="10,5"
             HorizontalAlignment="Left"
             d:Text="Thu 4 pm"
@@ -56,6 +57,7 @@
             OpticalMarginAlignment="TrimSideBearings"
             Text="{Binding Temperature, Mode=OneWay}" />
         <TextBlock
+            x:Name="ConditionBlock"
             MinHeight="52"
             Padding="10,5"
             d:Text="Sunny&#x000A;With a Chance"
@@ -109,5 +111,27 @@
                 MaxLines="1"
                 Text="{Binding WindSpeed, Mode=OneWay}" />
         </Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DateBlock.FontSize" Value="14" />
+                        <Setter Target="ConditionBlock.FontSize" Value="12" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="DateBlock.FontSize" Value="16" />
+                        <Setter Target="ConditionBlock.FontSize" Value="14" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </StackPanel>
 </UserControl>

@@ -86,6 +86,7 @@
                             Padding="2"
                             VerticalAlignment="Center"
                             d:Text="50° | 44° - Sprinkles early. Mostly cloudy. Mild"
+                            FontSize="14"
                             Foreground="{ThemeResource ExpanderHeaderForeground}"
                             MaxLines="1"
                             Text="{x:Bind ViewModel.Condition, Mode=OneWay}"
@@ -100,8 +101,9 @@
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                                 <BitmapIcon
+                                    x:Name="PoPIcon"
                                     Width="20"
-                                    Height="20"
+                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
                                     Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
@@ -111,6 +113,7 @@
                                     Padding="2"
                                     VerticalAlignment="Center"
                                     d:Text="100%"
+                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.PoPChance, Mode=OneWay}"
@@ -122,8 +125,8 @@
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                                 <BitmapIcon
-                                    Width="20"
-                                    Height="20"
+                                    Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
+                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
                                     Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
@@ -133,6 +136,7 @@
                                     Padding="2"
                                     VerticalAlignment="Center"
                                     d:Text="80%"
+                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.Cloudiness, Mode=OneWay}"
@@ -144,8 +148,8 @@
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                                 <BitmapIcon
-                                    Width="20"
-                                    Height="20"
+                                    Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
+                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
                                     Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
@@ -155,6 +159,7 @@
                                     Padding="2"
                                     VerticalAlignment="Center"
                                     d:Text="7 mph, SSE"
+                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}"
@@ -196,5 +201,29 @@
                 </StackPanel>
             </muxc:Expander.Content>
         </muxc:Expander>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="WidthStates">
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Date.FontSize" Value="14" />
+                        <Setter Target="Condition.FontSize" Value="14" />
+                        <Setter Target="PoPIcon.Width" Value="20" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="Date.FontSize" Value="16" />
+                        <Setter Target="Condition.FontSize" Value="16" />
+                        <Setter Target="PoPIcon.Width" Value="25" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </Grid>
 </UserControl>
