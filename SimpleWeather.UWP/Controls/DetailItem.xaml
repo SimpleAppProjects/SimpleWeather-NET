@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
-    xmlns:local="using:SimpleWeather.Controls"
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utils="using:SimpleWeather.Utils"
     Name="Control"
@@ -24,10 +24,8 @@
                     <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <SolidColorBrush x:Key="IconPaintColorBrush" Color="{ThemeResource IconPaintColor}" />
             <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
-            <SolidColorBrush x:Name="IconPaintColorBrush" Color="{ThemeResource IconPaintColor}" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource IconPaintColor}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -51,24 +49,22 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" />
-            <Viewbox
-                Name="WeatherBox"
+            <localControls:IconControl
+                x:Name="IconCtrl"
                 Grid.Row="1"
+                Width="50"
                 Margin="10"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center">
-                <BitmapIcon
-                    x:Name="DetailIcon"
-                    Width="50"
-                    Foreground="{ThemeResource IconPaintColorBrush}"
-                    RenderTransformOrigin="0.5,0.5"
-                    ShowAsMonochrome="True"
-                    UriSource="{x:Bind Details.Icon, Converter={StaticResource iconThemeConverter}, Mode=OneWay}">
-                    <BitmapIcon.RenderTransform>
-                        <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
-                    </BitmapIcon.RenderTransform>
-                </BitmapIcon>
-            </Viewbox>
+                VerticalAlignment="Center"
+                ForceBitmapIcon="True"
+                Foreground="{ThemeResource IconPaintColorBrush}"
+                RenderTransformOrigin="0.5,0.5"
+                ShowAsMonochrome="False"
+                WeatherIcon="{x:Bind Details.Icon, Mode=OneWay}">
+                <localControls:IconControl.RenderTransform>
+                    <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
+                </localControls:IconControl.RenderTransform>
+            </localControls:IconControl>
             <Viewbox
                 Grid.Row="2"
                 HorizontalAlignment="Center"

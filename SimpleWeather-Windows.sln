@@ -19,15 +19,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TranslationImport", "Transl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.Shared", "SimpleWeather.Shared\SimpleWeather.Shared.csproj", "{A92BE3F1-3252-4650-A17E-498B223BD039}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.Shared.Extras", "SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.shproj", "{D1B93CAA-3F28-4514-97A8-68AC45F52681}"
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.UWP.Extras", "SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.shproj", "{DCDF58D5-D7F9-4282-9957-DB7CA59442AD}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{0cc8f69f-eebc-40b4-9e7c-c2974a00764d}*SharedItemsImports = 4
-		SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
+		SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{552847dd-608d-4da9-9ced-0c8416049742}*SharedItemsImports = 4
 		SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems*{71735c8a-0b72-4cc7-8118-e53723d416c1}*SharedItemsImports = 13
-		SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems*{d1b93caa-3f28-4514-97a8-68ac45f52681}*SharedItemsImports = 13
+		SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.projitems*{dcdf58d5-d7f9-4282-9957-db7ca59442ad}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

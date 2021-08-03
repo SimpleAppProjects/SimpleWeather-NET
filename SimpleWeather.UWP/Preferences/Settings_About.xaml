@@ -24,12 +24,11 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <SolidColorBrush x:Name="ProgressPaintColorBrush" Color="{ThemeResource ProgressPaintColor}" />
-            <SolidColorBrush x:Name="HyperlinkColorBrush" Color="{ThemeResource HyperlinkColor}" />
             <Style
                 x:Key="FeedbackHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColorBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -51,7 +50,7 @@
                 x:Key="RateHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColorBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -70,7 +69,7 @@
                 x:Key="TranslateHyperlinkButton"
                 BasedOn="{StaticResource HyperlinkButtonStyle}"
                 TargetType="HyperlinkButton">
-                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColorBrush}" />
+                <Setter Property="Foreground" Value="{ThemeResource HyperlinkColor}" />
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
                         <DataTemplate>
@@ -167,7 +166,7 @@
             x:Name="TranslateButton"
             d:Content="Help translate the app"
             d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
-            Content="{helpers:StringRes Name='pref_summary_translate'}"
+            Content="{helpers:StringRes Name='message_sub_thanksforsupport'}"
             NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
             Style="{ThemeResource TranslateHyperlinkButton}" />
     </StackPanel>

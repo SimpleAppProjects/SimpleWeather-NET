@@ -12,6 +12,15 @@
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     mc:Ignorable="d">
 
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            <x:Boolean x:Key="IsLightValue">false</x:Boolean>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <x:Boolean x:Key="IsLightValue">true</x:Boolean>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
     <Style
         x:Key="ProgressAutoSuggestBoxTextBoxStyle"
         BasedOn="{StaticResource AutoSuggestBoxTextBoxStyle}"
@@ -211,6 +220,25 @@
                             </Button>
                         </Grid>
                     </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="localControls:IconControl">
+        <Setter Property="IsLightTheme" Value="{ThemeResource IsLightValue}" />
+        <Setter Property="Foreground" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="localControls:IconControl">
+                    <Viewbox
+                        x:Name="IconBox"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        MinWidth="{TemplateBinding MinWidth}"
+                        MinHeight="{TemplateBinding MinHeight}"
+                        MaxWidth="{TemplateBinding MaxWidth}"
+                        MaxHeight="{TemplateBinding MaxHeight}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

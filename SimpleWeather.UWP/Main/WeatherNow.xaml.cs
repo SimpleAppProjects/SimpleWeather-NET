@@ -381,7 +381,7 @@ namespace SimpleWeather.UWP.Main
 
             if (ClearGraphIconCache)
             {
-                ForecastGraphPanel.ClearIconCache();
+                WeatherBox?.UpdateWeatherIcon();
                 ClearGraphIconCache = false;
             }
 

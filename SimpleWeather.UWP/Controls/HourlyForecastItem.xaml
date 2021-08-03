@@ -41,13 +41,12 @@
             OpticalMarginAlignment="TrimSideBearings"
             Text="{Binding Date, Mode=OneWay}" />
         <Border Style="{ThemeResource Divider}" Visibility="Collapsed" />
-        <BitmapIcon
+        <local:IconControl
             Height="50"
             Margin="5"
             HorizontalAlignment="Left"
-            d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png"
-            ShowAsMonochrome="False"
-            UriSource="{x:Bind ViewModel.Icon, TargetNullValue='', Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
+            d:WeatherIcon="&#xf00d;"
+            WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
         <TextBlock
             Padding="10,0"
             d:Text="36°"
@@ -71,12 +70,14 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <BitmapIcon
+            <local:IconControl
                 Width="20"
                 Height="20"
-                d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png"
+                d:WeatherIcon="&#xf078;"
                 Foreground="{ThemeResource SimpleBlueLight}"
-                UriSource="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime, Converter={StaticResource iconThemeConverter}}" />
+                IconProvider="wi-erik-flowers"
+                ShowAsMonochrome="True"
+                WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
             <TextBlock
                 Grid.Column="1"
                 Margin="5,0,0,0"
@@ -91,17 +92,19 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <BitmapIcon
+            <local:IconControl
                 Width="20"
                 Height="20"
-                d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png"
+                d:WeatherIcon="&#xf058;"
                 Foreground="LightSeaGreen"
+                IconProvider="wi-erik-flowers"
                 RenderTransformOrigin="0.5,0.5"
-                UriSource="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime, Converter={StaticResource iconThemeConverter}}">
-                <BitmapIcon.RenderTransform>
+                ShowAsMonochrome="True"
+                WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}">
+                <local:IconControl.RenderTransform>
                     <RotateTransform Angle="{Binding WindDirection, Mode=OneWay}" />
-                </BitmapIcon.RenderTransform>
-            </BitmapIcon>
+                </local:IconControl.RenderTransform>
+            </local:IconControl>
             <TextBlock
                 Grid.Column="1"
                 Margin="5,0,0,0"

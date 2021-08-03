@@ -117,11 +117,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
             UpdateView(true);
         }
 
-        public void ClearIconCache()
-        {
-            BarChartView.ClearIconCache();
-        }
-
         private void UpdateView(bool resetOffset)
         {
             BarChartView?.ResetData();

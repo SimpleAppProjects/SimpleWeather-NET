@@ -40,75 +40,83 @@ namespace SimpleWeather.UWP.Controls
                     switch (ViewModel.PhaseType)
                     {
                         case MoonPhase.MoonPhaseType.NewMoon:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_NEW))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_NEW))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.WaxingCrescent:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_WAXING_CRESCENT_3))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_WAXING_CRESCENT_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.FirstQtr:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_FIRST_QUARTER))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_FIRST_QUARTER))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.WaxingGibbous:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_WAXING_GIBBOUS_3))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_WAXING_GIBBOUS_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.FullMoon:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_FULL))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_FULL))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.WaningGibbous:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_WANING_GIBBOUS_3))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_WANING_GIBBOUS_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.LastQtr:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_THIRD_QUARTER))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_THIRD_QUARTER))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                         case MoonPhase.MoonPhaseType.WaningCrescent:
-                            foreach (BitmapIcon icon in MoonStack.Children)
+                            foreach (IconControl icon in MoonStack.Children)
                             {
-                                if (Equals(icon.Tag, WeatherIcons.MOON_WANING_CRESCENT_3))
+                                if (Equals(icon.WeatherIcon, WeatherIcons.MOON_WANING_CRESCENT_3))
                                     icon.Style = (Style)Resources["MoonStyle"];
                                 else
                                     icon.Style = (Style)Resources["DisabledMoonStyle"];
+                                icon.UpdateWeatherIcon();
                             }
                             break;
                     }

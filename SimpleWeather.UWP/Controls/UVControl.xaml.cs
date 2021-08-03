@@ -31,6 +31,7 @@ namespace SimpleWeather.UWP.Controls
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
+                this.UVIcon.UpdateWeatherIcon();
             };
         }
     }

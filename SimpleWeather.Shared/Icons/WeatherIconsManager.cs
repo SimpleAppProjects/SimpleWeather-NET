@@ -52,7 +52,7 @@ namespace SimpleWeather.Icons
             sIconsProvider = GetProvider(iconsSource);
         }
 
-        private static IWeatherIconsProvider GetProvider(string iconsSource)
+        public static IWeatherIconsProvider GetProvider(string iconsSource)
         {
             return SimpleLibrary.GetInstance().GetIconProvider(iconsSource);
         }

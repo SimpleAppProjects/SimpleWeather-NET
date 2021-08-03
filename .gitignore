@@ -280,3 +280,4 @@ API_KEY.txt
 /TranslationImport
 listingData-*.csv
 /SimpleWeather.Shared.Extras
+/SimpleWeather.UWP.Extras

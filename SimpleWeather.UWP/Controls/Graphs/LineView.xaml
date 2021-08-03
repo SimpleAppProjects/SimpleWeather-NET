@@ -43,11 +43,14 @@
         HorizontalScrollMode="Enabled"
         VerticalScrollBarVisibility="Disabled"
         VerticalScrollMode="Disabled">
-        <win2d:CanvasVirtualControl
-            x:Name="Canvas"
-            Background="Transparent"
-            ClearColor="Transparent"
-            CreateResources="Canvas_CreateResources"
-            RegionsInvalidated="Canvas_RegionsInvalidated" />
+        <Grid>
+            <win2d:CanvasVirtualControl
+                x:Name="Canvas"
+                Background="Transparent"
+                ClearColor="Transparent"
+                CreateResources="Canvas_CreateResources"
+                RegionsInvalidated="Canvas_RegionsInvalidated" />
+            <Canvas x:Name="IconCanvas" />
+        </Grid>
     </ScrollViewer>
 </UserControl>

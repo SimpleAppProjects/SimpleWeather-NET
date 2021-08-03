@@ -193,6 +193,7 @@
     <Compile Include="Controls\HourlyForecastItemPanel.xaml.cs">
       <DependentUpon>HourlyForecastItemPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\IconControl.cs" />
     <Compile Include="Controls\PageHeader.xaml.cs">
       <DependentUpon>PageHeader.xaml</DependentUpon>
     </Compile>
@@ -604,6 +605,9 @@
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls.Layout">
       <Version>7.0.2</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Lottie">
+      <Version>7.0.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.6.1</Version>
     </PackageReference>
@@ -635,7 +639,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="..\SimpleWeather.UWP.Shared\SimpleWeather.UWP.Shared.projitems" Label="Shared" />
-  <Import Project="..\SimpleWeather.Shared.Extras\SimpleWeather.Shared.Extras.projitems" Label="Shared" />
+  <Import Project="..\SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

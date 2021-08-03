@@ -50,26 +50,10 @@
                     </Setter>
                 </Style.Setters>
             </Style>
-            <toolkitConverters:BoolToObjectConverter
-                x:Key="boolToThemeConverter"
-                FalseValue="Default"
-                TrueValue="Dark" />
-            <toolkitConverters:BoolToObjectConverter
-                x:Key="boolToBinaryValueConverter"
-                FalseValue="0"
-                TrueValue="1" />
-            <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
-            <helpers:IconThemeConverter
-                x:Key="weatherIconThemeConverter"
-                ConverterParameter="{ThemeResource IsLight}"
-                ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}" />
             <helpers:TempToColorTempConverter
                 x:Key="tempToColorTempConverter"
                 FallbackColor="{ThemeResource ForegroundColor}"
                 UseFallback="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource inverseBoolConverter}}" />
-            <SolidColorBrush x:Key="ProgressBarBrush" Color="{ThemeResource ForegroundColor}" />
-            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -79,7 +63,6 @@
                         <Setter Property="Foreground" Value="White" />
                     </Style>
                     <Color x:Key="ForegroundColor">White</Color>
-                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Style
@@ -87,7 +70,6 @@
                         BasedOn="{StaticResource HyperlinkButtonStyle}"
                         TargetType="HyperlinkButton" />
                     <Color x:Key="ForegroundColor">Black</Color>
-                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -277,10 +259,12 @@
                                     FontSize="24"
                                     Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                             </toolkitControls:DropShadowPanel>
-                            <BitmapIcon
+                            <localcontrols:IconControl
                                 Width="25"
                                 Foreground="OrangeRed"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png" />
+                                IconProvider="wi-erik-flowers"
+                                ShowAsMonochrome="True"
+                                WeatherIcon="&#xf058;" />
                         </StackPanel>
                         <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                             <toolkitControls:DropShadowPanel
@@ -293,24 +277,25 @@
                                     FontSize="24"
                                     Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                             </toolkitControls:DropShadowPanel>
-                            <BitmapIcon
+                            <localcontrols:IconControl
                                 Width="25"
                                 Foreground="DeepSkyBlue"
-                                UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-down.png" />
+                                IconProvider="wi-erik-flowers"
+                                ShowAsMonochrome="True"
+                                WeatherIcon="&#xf044;" />
                         </StackPanel>
                     </StackPanel>
-                    <BitmapIcon
+                    <localcontrols:IconControl
                         x:Name="WeatherBox"
                         Width="96"
                         Height="96"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
-                        Foreground="{Binding ElementName=WeatherBox, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
+                        ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                         RelativePanel.Above="SummaryPanel"
                         RelativePanel.AlignRightWithPanel="True"
                         RelativePanel.AlignTopWithPanel="True"
-                        ShowAsMonochrome="False"
-                        UriSource="{x:Bind WeatherView.WeatherIcon, Mode=OneWay, Converter={StaticResource weatherIconThemeConverter}}" />
+                        WeatherIcon="{x:Bind WeatherView.WeatherIcon, Mode=OneWay}" />
                     <toolkitControls:DropShadowPanel
                         x:Name="CurConditionPanel"
                         HorizontalAlignment="Center"

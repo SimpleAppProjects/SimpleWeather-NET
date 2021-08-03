@@ -30,7 +30,7 @@
                 <TextBlock FontSize="15" Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='UV Index'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
-                <BitmapIcon
+                <local:IconControl
                     x:Name="UVIcon"
                     Width="55"
                     Margin="20,10"
@@ -40,7 +40,7 @@
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
                     ShowAsMonochrome="True"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png" />
+                    WeatherIcon="&#xf00d;" />
                 <TextBlock
                     x:Name="UVDescription"
                     Padding="5"

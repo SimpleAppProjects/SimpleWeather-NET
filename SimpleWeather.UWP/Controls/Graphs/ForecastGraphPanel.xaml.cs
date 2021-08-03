@@ -113,11 +113,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
             UpdateView(true);
         }
 
-        public void ClearIconCache()
-        {
-            LineGraphView.ClearIconCache();
-        }
-
         private void UpdateView(bool resetOffset)
         {
             LineGraphView.ResetData();

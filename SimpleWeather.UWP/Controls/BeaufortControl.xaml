@@ -37,7 +37,7 @@
                 <TextBlock FontSize="15" Text="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
-                <BitmapIcon
+                <local:IconControl
                     x:Name="BeaufortIcon"
                     Width="55"
                     Margin="20,10"
@@ -47,7 +47,7 @@
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
                     ShowAsMonochrome="True"
-                    UriSource="{x:Bind ViewModel.Beaufort.Icon, Converter={StaticResource iconThemeConverter}, Mode=OneWay}" />
+                    WeatherIcon="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay}" />
                 <TextBlock
                     x:Name="BeaufortDescription"
                     Padding="5"

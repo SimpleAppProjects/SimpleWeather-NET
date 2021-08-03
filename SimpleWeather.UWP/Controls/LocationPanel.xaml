@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
@@ -164,12 +165,13 @@
                         Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
                         TextAlignment="Right" />
                 </toolkitControls:DropShadowPanel>
-                <BitmapIcon
+                <local:IconControl
                     Grid.Column="1"
                     Width="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-up.png" />
+                    WeatherIcon="&#xf058;" />
             </Grid>
             <Grid HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.LoTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
@@ -190,12 +192,13 @@
                         Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
                         TextAlignment="Right" />
                 </toolkitControls:DropShadowPanel>
-                <BitmapIcon
+                <local:IconControl
                     Grid.Column="1"
                     Width="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
-                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-direction-down.png" />
+                    WeatherIcon="&#xf044;" />
             </Grid>
         </StackPanel>
         <StackPanel
@@ -210,12 +213,12 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <BitmapIcon
+                <local:IconControl
                     Width="25"
-                    d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/light/wi-umbrella.png"
-                    Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
-                    ShowAsMonochrome="False"
-                    UriSource="{x:Bind ViewModel.PoPIcon, Mode=OneWay, Converter={StaticResource weatherIconThemeConverter}}" />
+                    d:WeatherIcon="&#xf084;"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconProvider="wi-erik-flowers"
+                    WeatherIcon="{x:Bind ViewModel.PoPIcon, Mode=OneWay}" />
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
@@ -236,17 +239,17 @@
                 VerticalAlignment="Center"
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                <BitmapIcon
+                <local:IconControl
                     Width="25"
-                    d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/light/wi-wind-direction.png"
-                    Foreground="{Binding RelativeSource={RelativeSource Mode=Self}, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
+                    d:WeatherIcon="&#xf0b1;"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconProvider="wi-erik-flowers"
                     RenderTransformOrigin="0.5,0.5"
-                    ShowAsMonochrome="False"
-                    UriSource="{x:Bind ViewModel.WindIcon, Mode=OneWay, Converter={StaticResource weatherIconThemeConverter}}">
-                    <BitmapIcon.RenderTransform>
+                    WeatherIcon="{x:Bind ViewModel.WindIcon, Mode=OneWay}">
+                    <local:IconControl.RenderTransform>
                         <RotateTransform d:Angle="90" Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay}" />
-                    </BitmapIcon.RenderTransform>
-                </BitmapIcon>
+                    </local:IconControl.RenderTransform>
+                </local:IconControl>
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
                     ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"

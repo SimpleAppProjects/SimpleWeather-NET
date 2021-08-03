@@ -52,21 +52,15 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Viewbox
-                        Name="IconBox"
+                    <local:IconControl
+                        x:Name="IconBox"
                         Grid.Column="0"
                         Width="50"
                         Height="50"
                         Margin="8,0"
-                        VerticalAlignment="Center">
-                        <BitmapIcon
-                            x:Name="WeatherIcon"
-                            d:Foreground="White"
-                            d:UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png"
-                            Foreground="{Binding ElementName=WeatherIcon, Path=UriSource, Mode=OneWay, Converter={StaticResource iconForegroundConverter}}"
-                            ShowAsMonochrome="False"
-                            UriSource="{x:Bind ViewModel.Icon, Mode=OneWay, Converter={StaticResource iconThemeConverter}}" />
-                    </Viewbox>
+                        VerticalAlignment="Center"
+                        d:WeatherIcon="&#xf00d;"
+                        WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
                     <StackPanel
                         Grid.Column="1"
                         VerticalAlignment="Center"
@@ -96,27 +90,27 @@
                             VerticalAlignment="Center"
                             Orientation="Horizontal">
                             <StackPanel
-                                Padding="0,0"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <BitmapIcon
+                                <local:IconControl
                                     x:Name="PoPIcon"
                                     Width="20"
                                     Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
+                                    ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     ShowAsMonochrome="True"
-                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-raindrop.png" />
+                                    WeatherIcon="&#xf078;" />
                                 <TextBlock
-                                    Padding="2"
+                                    Margin="5,0,5,0"
                                     VerticalAlignment="Center"
                                     d:Text="100%"
                                     FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.PoPChance, Mode=OneWay}"
+                                    TextLineBounds="Tight"
                                     TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <StackPanel
@@ -124,22 +118,23 @@
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <BitmapIcon
+                                <local:IconControl
                                     Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
                                     Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
+                                    ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     ShowAsMonochrome="True"
-                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-cloudy.png" />
+                                    WeatherIcon="&#xf013;" />
                                 <TextBlock
-                                    Padding="2"
+                                    Margin="5,0,5,0"
                                     VerticalAlignment="Center"
                                     d:Text="80%"
                                     FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.Cloudiness, Mode=OneWay}"
+                                    TextLineBounds="Tight"
                                     TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                             <StackPanel
@@ -147,22 +142,23 @@
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal"
                                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <BitmapIcon
+                                <local:IconControl
                                     Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
                                     Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    Margin="0,0,2.5,0"
                                     VerticalAlignment="Center"
+                                    ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     ShowAsMonochrome="True"
-                                    UriSource="ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-strong-wind.png" />
+                                    WeatherIcon="&#xf050;" />
                                 <TextBlock
-                                    Padding="2"
+                                    Margin="5,0,5,0"
                                     VerticalAlignment="Center"
                                     d:Text="7 mph, SSE"
                                     FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     MaxLines="1"
                                     Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}"
+                                    TextLineBounds="Tight"
                                     TextTrimming="CharacterEllipsis" />
                             </StackPanel>
                         </StackPanel>

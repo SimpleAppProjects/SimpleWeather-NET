@@ -47,31 +47,20 @@ namespace SimpleWeather.UWP.Preferences
 
         public void SetIconProvider(WeatherIconProvider provider)
         {
-            var isLightObj = this.Resources["IsLight"] as Helpers.ObjectContainer;
-            bool isLight = false;
-
-            if (isLightObj?.Value is Color paramColor)
-            {
-                isLight = paramColor == Colors.Black;
-            }
-            else if (isLightObj?.Value is bool)
-            {
-                isLight = (bool)isLightObj.Value;
-            }
-
             IconPreference.Text = provider.DisplayName;
             Tag = Key = provider.Key;
 
             IconContainer.Children.Clear();
             foreach (var icon in PREVIEW_ICONS)
             {
-                IconContainer.Children.Add(new BitmapIcon()
+                IconContainer.Children.Add(new Controls.IconControl()
                 {
                     Height = 30,
                     Width = 30,
                     Margin = new Thickness(5, 0, 5, 0),
-                    ShowAsMonochrome = provider.IsFontIcon,
-                    UriSource = new Uri(provider.GetWeatherIconURI(icon, true, isLight))
+                    WeatherIcon = icon,
+                    IconProvider = provider.Key,
+                    RequestedTheme = this.ActualTheme
                 });
             }
         }

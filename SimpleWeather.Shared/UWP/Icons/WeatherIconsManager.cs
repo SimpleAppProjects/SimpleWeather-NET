@@ -11,7 +11,12 @@ namespace SimpleWeather.Icons
 {
     public sealed partial class WeatherIconsManager : IWeatherIconsProvider
     {
-        public static string GetBaseUri(bool isLight = false)
+        public static string GetBaseUri()
+        {
+            return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/";
+        }
+
+        public static string GetBaseUri(bool isLight)
         {
             return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/" + (isLight ? "light/" : "dark/");
         }
