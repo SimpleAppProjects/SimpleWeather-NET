@@ -16,12 +16,12 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Color x:Key="SunViewPaintColor">Yellow</Color>
-                    <Color x:Key="SunViewPhaseArcColor">White</Color>
+                    <Color x:Key="SunViewPhaseArcColor">#40FFFFFF</Color>
                     <Color x:Key="SunViewBottomTextColor">White</Color>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Color x:Key="SunViewPaintColor">Orange</Color>
-                    <Color x:Key="SunViewPhaseArcColor">Black</Color>
+                    <Color x:Key="SunViewPhaseArcColor">#40000000</Color>
                     <Color x:Key="SunViewBottomTextColor">Black</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>

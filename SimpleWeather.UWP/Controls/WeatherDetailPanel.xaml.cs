@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Icons;
+using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
@@ -17,11 +18,22 @@ namespace SimpleWeather.UWP.Controls
     {
         private WeatherDetailViewModel ViewModel { get; set; }
 
-        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        private readonly WeatherIconsManager wim;
+
+        public bool UseMonochrome
+        {
+            get { return (bool)GetValue(UseMonochromeProperty); }
+            set { SetValue(UseMonochromeProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for UseMonochrome.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty UseMonochromeProperty =
+            DependencyProperty.Register("UseMonochrome", typeof(bool), typeof(WeatherDetailPanel), new PropertyMetadata(false));
 
         public WeatherDetailPanel()
         {
             this.InitializeComponent();
+            wim = WeatherIconsManager.GetInstance();
             ViewModel = new WeatherDetailViewModel();
             this.DataContextChanged += (sender, args) =>
             {
@@ -31,6 +43,7 @@ namespace SimpleWeather.UWP.Controls
                     ViewModel.SetForecast(args.NewValue as ForecastItemViewModel);
 
                 this.Bindings.Update();
+                UseMonochrome = wim.ShouldUseMonochrome();
             };
             this.SizeChanged += (sender, args) =>
             {

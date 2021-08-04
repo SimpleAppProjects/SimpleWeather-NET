@@ -243,7 +243,6 @@
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\BindingExtensions.cs" />
-    <Compile Include="Helpers\IconThemeConverter.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
     <Compile Include="Helpers\StringRes.cs" />

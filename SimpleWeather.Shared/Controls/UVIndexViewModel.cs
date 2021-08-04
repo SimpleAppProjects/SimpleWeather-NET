@@ -20,7 +20,6 @@ namespace SimpleWeather.Controls
         public UVIndexViewModel(UV uvIdx)
         {
             Title = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
-            Icon = WeatherIcons.DAY_SUNNY;
             Index = (int)uvIdx.index;
             Progress = uvIdx.index >= 11 ? 100 : (int)((uvIdx.index / 11) * 100);
 
@@ -48,6 +47,46 @@ namespace SimpleWeather.Controls
             {
                 Description = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_11");
                 ProgressColor = Color.FromArgb(0xFF, 0xAA, 0x00, 0xFF); // Purple
+            }
+
+            switch (Index)
+            {
+                case 1:
+                    Icon = WeatherIcons.UV_INDEX_1;
+                    break;
+                case 2:
+                    Icon = WeatherIcons.UV_INDEX_2;
+                    break;
+                case 3:
+                    Icon = WeatherIcons.UV_INDEX_3;
+                    break;
+                case 4:
+                    Icon = WeatherIcons.UV_INDEX_4;
+                    break;
+                case 5:
+                    Icon = WeatherIcons.UV_INDEX_5;
+                    break;
+                case 6:
+                    Icon = WeatherIcons.UV_INDEX_6;
+                    break;
+                case 7:
+                    Icon = WeatherIcons.UV_INDEX_7;
+                    break;
+                case 8:
+                    Icon = WeatherIcons.UV_INDEX_8;
+                    break;
+                case 9:
+                    Icon = WeatherIcons.UV_INDEX_9;
+                    break;
+                case 10:
+                    Icon = WeatherIcons.UV_INDEX_10;
+                    break;
+                case 11:
+                    Icon = WeatherIcons.UV_INDEX_11;
+                    break;
+                default:
+                    Icon = WeatherIcons.UV_INDEX;
+                    break;
             }
         }
     }

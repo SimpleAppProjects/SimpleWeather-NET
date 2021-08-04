@@ -33,8 +33,6 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
-            <helpers:IconThemeConverter x:Key="weatherIconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
             <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
         </ResourceDictionary>
     </UserControl.Resources>

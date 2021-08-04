@@ -19,6 +19,8 @@ using lottie = Microsoft.Toolkit.Uwp.UI.Lottie;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -67,6 +69,9 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty IsLightThemeProperty =
             DependencyProperty.Register("IsLightTheme", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
+        /// <summary>
+        /// Gets or sets a value that indicates whether the bitmap is shown in a single color.
+        /// </summary>
         public bool ShowAsMonochrome
         {
             get => (bool)GetValue(ShowAsMonochromeProperty);
@@ -187,23 +192,43 @@ namespace SimpleWeather.UWP.Controls
             IconBox.Child = iconElement;
         }
 
-        private BitmapIcon CreateBitmapIcon(IWeatherIconsProvider provider)
+        private bool ShouldUseBitmap()
         {
-            var bmpIcon = new BitmapIcon()
+            return ShowAsMonochrome && Foreground is SolidColorBrush brush && brush.Color != Colors.Transparent && !IsBlackOrWhiteColor(brush.Color);
+        }
+
+        private bool IsBlackOrWhiteColor(Color c)
+        {
+            return (c.R == 0xFF && c.G == 0xFF && c.B == 0xFF) || (c.R == 0 && c.G == 0 && c.B == 0);
+        }
+
+        private IconElement CreateBitmapIcon(IWeatherIconsProvider provider)
+        {
+            if (provider is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
             {
-                UriSource = new Uri(provider.GetWeatherIconURI(WeatherIcon, true, ForceDarkTheme ? false : IsLightTheme))
-            };
-            bmpIcon.SetBinding(BitmapIcon.ForegroundProperty, new Binding()
+                return new muxc.ImageIcon()
+                {
+                    Source = new SvgImageSource(new Uri(svgProvider.GetSVGIconUri(WeatherIcon, ForceDarkTheme ? false : IsLightTheme)))
+                };
+            }
+            else
             {
-                Mode = BindingMode.OneWay,
-                Source = Foreground
-            });
-            bmpIcon.SetBinding(BitmapIcon.ShowAsMonochromeProperty, new Binding()
-            {
-                Mode = BindingMode.OneWay,
-                Source = ShowAsMonochrome
-            });
-            return bmpIcon;
+                var bmpIcon = new BitmapIcon()
+                {
+                    UriSource = new Uri(provider.GetWeatherIconURI(WeatherIcon, true, ForceDarkTheme ? false : IsLightTheme))
+                };
+                bmpIcon.SetBinding(BitmapIcon.ForegroundProperty, new Binding()
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = Foreground
+                });
+                bmpIcon.SetBinding(BitmapIcon.ShowAsMonochromeProperty, new Binding()
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = ShowAsMonochrome
+                });
+                return bmpIcon;
+            }
         }
 
         /*

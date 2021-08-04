@@ -20,7 +20,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class SunPhasePanel : UserControl, IDisposable
     {
-        private const string SunIconUri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-sunny.png";
+        private const string SunIconUri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/wi-day-sunny.png";
 
         private float ViewHeight;
         private float ViewWidth;

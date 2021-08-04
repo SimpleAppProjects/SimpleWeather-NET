@@ -36,7 +36,6 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty ControlThemeProperty =
             DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(LocationPanel), new PropertyMetadata(ElementTheme.Default));
 
-        private readonly Helpers.IconThemeConverter weatherIcoConverter;
         private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public LocationPanel()
@@ -47,8 +46,6 @@ namespace SimpleWeather.UWP.Controls
                 UpdateControlTheme();
                 //this.Bindings.Update(); // Update control theme updates bindings
             };
-
-            weatherIcoConverter = this.Resources["weatherIconThemeConverter"] as Helpers.IconThemeConverter;
         }
 
         private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
@@ -76,7 +73,6 @@ namespace SimpleWeather.UWP.Controls
                 }
                 ControlTheme = ElementTheme.Dark;
                 ControlShadowOpacity = 1;
-                weatherIcoConverter.ForceDarkTheme = true;
             }
             else
             {
@@ -86,7 +82,6 @@ namespace SimpleWeather.UWP.Controls
                 }
                 ControlTheme = ElementTheme.Default;
                 ControlShadowOpacity = 0;
-                weatherIcoConverter.ForceDarkTheme = false;
             }
             this.Bindings.Update();
         }

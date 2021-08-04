@@ -1,6 +1,7 @@
 ﻿using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -18,7 +19,7 @@ namespace SimpleWeather.UWP.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.ResLoader.GetString("label_nav_alerts");
-            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png");
+            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/ic_error.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new QueryString()
@@ -49,7 +50,7 @@ namespace SimpleWeather.UWP.Notifications
                 {
                     Visual = new ToastVisual()
                     {
-                        BaseUri = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/", UriKind.Absolute),
+                        BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
                         BindingGeneric = new ToastBindingGeneric()
                         {
                             Children =

@@ -27,7 +27,6 @@
             <helpers:ObjectContainer x:Name="IsLight" Value="{ThemeResource IsLightValue}" />
             <SolidColorBrush x:Name="BeaufortPaintColorBrush" Color="{ThemeResource BeaufortPaintColor}" />
             <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource BeaufortPaintColor}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 

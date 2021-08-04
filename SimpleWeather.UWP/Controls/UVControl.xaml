@@ -35,12 +35,12 @@
                     Width="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
+                    ForceBitmapIcon="True"
                     Foreground="{ThemeResource SunPaintColorBrush}"
                     RelativePanel.Above="UVProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    ShowAsMonochrome="True"
-                    WeatherIcon="&#xf00d;" />
+                    WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
                 <TextBlock
                     x:Name="UVDescription"
                     Padding="5"
@@ -51,20 +51,21 @@
                     RelativePanel.AlignTopWithPanel="True"
                     RelativePanel.RightOf="UVIcon"
                     TextLineBounds="Tight">
-                    <Span><Run Text="{x:Bind ViewModel.Index, Mode=OneWay, FallbackValue='9'}" /><Run Text=", " /><Run Text="{x:Bind ViewModel.Description, Mode=OneWay, FallbackValue='Very High'}" /></Span>
+                    <Span><Run d:Text="9" Text="{x:Bind ViewModel.Index, Mode=OneWay}" /><Run Text=", " /><Run d:Text="Very High" Text="{x:Bind ViewModel.Description, Mode=OneWay}" /></Span>
                 </TextBlock>
                 <muxc:ProgressBar
                     x:Name="UVProgressBar"
                     Height="5"
                     Margin="15,5"
+                    d:Value="66"
                     Background="{ThemeResource ProgressBarBackgroundBrush}"
                     Maximum="100"
                     RelativePanel.AlignBottomWithPanel="True"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
-                    Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='66'}">
+                    Value="{x:Bind ViewModel.Progress, Mode=OneWay}">
                     <muxc:ProgressBar.Foreground>
-                        <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Maroon'}" />
+                        <SolidColorBrush d:Color="Maroon" Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay}" />
                     </muxc:ProgressBar.Foreground>
                 </muxc:ProgressBar>
             </RelativePanel>

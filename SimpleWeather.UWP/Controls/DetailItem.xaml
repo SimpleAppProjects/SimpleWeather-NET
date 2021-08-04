@@ -53,6 +53,7 @@
                 x:Name="IconCtrl"
                 Grid.Row="1"
                 Width="50"
+                Height="50"
                 Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"

@@ -21,7 +21,7 @@ namespace SimpleWeather.UWP.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.ResLoader.GetString("not_channel_name_dailynotification");
-            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/wi-day-cloudy.png");
+            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/wi-day-cloudy.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new QueryString()
@@ -133,7 +133,7 @@ namespace SimpleWeather.UWP.Notifications
             {
                 Visual = new ToastVisual()
                 {
-                    BaseUri = new Uri(WeatherIconsManager.GetBaseUri(false), UriKind.Absolute),
+                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
                     BindingGeneric = new ToastBindingGeneric()
                     {
                         Children =

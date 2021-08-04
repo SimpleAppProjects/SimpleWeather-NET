@@ -136,6 +136,19 @@ namespace SimpleWeather.Icons
         public const String MOON_ALT_THIRD_QUARTER = "\uf0e4";
         public const String MOON_ALT_WANING_CRESCENT_3 = "\uf0e7";
 
+        public const String UV_INDEX = "\uf00d-uv";
+        public const String UV_INDEX_1 = "\uf00d-uv1";
+        public const String UV_INDEX_2 = "\uf00d-uv2";
+        public const String UV_INDEX_3 = "\uf00d-uv3";
+        public const String UV_INDEX_4 = "\uf00d-uv4";
+        public const String UV_INDEX_5 = "\uf00d-uv5";
+        public const String UV_INDEX_6 = "\uf00d-uv6";
+        public const String UV_INDEX_7 = "\uf00d-uv7";
+        public const String UV_INDEX_8 = "\uf00d-uv8";
+        public const String UV_INDEX_9 = "\uf00d-uv9";
+        public const String UV_INDEX_10 = "\uf00d-uv10";
+        public const String UV_INDEX_11 = "\uf00d-uv11";
+
         public const String FAHRENHEIT = "\uf045";
         public const String CELSIUS = "\uf03c";
 

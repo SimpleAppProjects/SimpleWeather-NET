@@ -25,7 +25,6 @@
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 

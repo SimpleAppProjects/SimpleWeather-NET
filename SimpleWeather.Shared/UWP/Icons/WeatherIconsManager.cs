@@ -11,14 +11,14 @@ namespace SimpleWeather.Icons
 {
     public sealed partial class WeatherIconsManager : IWeatherIconsProvider
     {
-        public static string GetBaseUri()
+        public static string GetPNGBaseUri(bool isLight = false)
         {
-            return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/";
+            return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
         }
 
-        public static string GetBaseUri(bool isLight)
+        public static string GetSVGBaseUri(bool isLight = false)
         {
-            return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/" + (isLight ? "light/" : "dark/");
+            return "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
         }
 
         public Uri GetWeatherIconURI(String icon)
@@ -29,6 +29,24 @@ namespace SimpleWeather.Icons
         public String GetWeatherIconURI(String icon, bool isAbsoluteUri, bool isLight = false)
         {
             return sIconsProvider.GetWeatherIconURI(icon, isAbsoluteUri, isLight);
+        }
+
+        public bool ShouldUseMonochrome() => ShouldUseMonochrome(Settings.IconProvider);
+
+        public bool ShouldUseMonochrome(string wip)
+        {
+            switch (wip)
+            {
+                case "wi-erik-flowers":
+                case "wui-ashley-jager":
+                case "w-iconic-jackd248":
+                case "pixeden-icons_set-weather":
+                default:
+                    return true;
+                case "meteocons-basmilius":
+                case "wci_sliu_iconfinder":
+                    return false;
+            }
         }
     }
 }

@@ -46,7 +46,7 @@
                         Grid.Column="0"
                         Width="25"
                         Margin="2,0,0,0"
-                        UriSource="{Binding AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
+                        UriSource="{Binding AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
                     <TextBlock
                         x:Name="Title"
                         Grid.Column="1"

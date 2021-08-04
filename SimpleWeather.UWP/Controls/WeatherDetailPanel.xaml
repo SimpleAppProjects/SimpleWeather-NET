@@ -11,6 +11,7 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
+    x:Name="Control"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -30,7 +31,6 @@
             <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
             <helpers:ObjectContainer x:Key="Foreground" Value="{ThemeResource ForegroundColor}" />
             <helpers:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource Foreground}" />
-            <helpers:IconThemeConverter x:Key="iconThemeConverter" ConverterParameter="{ThemeResource IsLight}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -100,7 +100,7 @@
                                     VerticalAlignment="Center"
                                     ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="True"
+                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
                                     WeatherIcon="&#xf078;" />
                                 <TextBlock
                                     Margin="5,0,5,0"
@@ -124,7 +124,7 @@
                                     VerticalAlignment="Center"
                                     ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="True"
+                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
                                     WeatherIcon="&#xf013;" />
                                 <TextBlock
                                     Margin="5,0,5,0"
@@ -148,7 +148,7 @@
                                     VerticalAlignment="Center"
                                     ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="True"
+                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
                                     WeatherIcon="&#xf050;" />
                                 <TextBlock
                                     Margin="5,0,5,0"

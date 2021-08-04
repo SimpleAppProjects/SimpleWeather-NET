@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Icons;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,7 @@ namespace SimpleWeather.Utils
     {
         public static string GetAssetFromAlertType(WeatherData.WeatherAlertType type, bool isAbsoluteUri = true)
         {
-            string baseuri = "ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/dark/";
+            string baseuri = WeatherIconsManager.GetPNGBaseUri();
             string fileIcon = string.Empty;
 
             switch (type)
