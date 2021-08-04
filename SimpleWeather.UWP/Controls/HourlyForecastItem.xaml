@@ -64,7 +64,10 @@
             OpticalMarginAlignment="TrimSideBearings"
             Text="{Binding Condition, Mode=OneWay}"
             TextTrimming="CharacterEllipsis" />
-        <Grid Padding="5" HorizontalAlignment="Left">
+        <Grid
+            MinHeight="20"
+            Padding="5"
+            HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="*" />
@@ -76,6 +79,7 @@
                 Foreground="{ThemeResource SimpleBlueLight}"
                 IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
+                Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
             <TextBlock
                 Grid.Column="1"
@@ -84,9 +88,13 @@
                 FontSize="14"
                 Foreground="{ThemeResource SimpleBlueLight}"
                 MaxLines="1"
-                Text="{Binding PoPChance, Mode=OneWay}" />
+                Text="{Binding PoPChance, Mode=OneWay}"
+                Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
         </Grid>
-        <Grid Padding="5" HorizontalAlignment="Left">
+        <Grid
+            MinHeight="20"
+            Padding="5"
+            HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="*" />
@@ -99,6 +107,7 @@
                 IconProvider="wi-erik-flowers"
                 RenderTransformOrigin="0.5,0.5"
                 ShowAsMonochrome="True"
+                Visibility="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}">
                 <local:IconControl.RenderTransform>
                     <RotateTransform Angle="{Binding WindDirection, Mode=OneWay}" />
@@ -111,7 +120,8 @@
                 FontSize="14"
                 Foreground="LightSeaGreen"
                 MaxLines="1"
-                Text="{Binding WindSpeed, Mode=OneWay}" />
+                Text="{Binding WindSpeed, Mode=OneWay}"
+                Visibility="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
