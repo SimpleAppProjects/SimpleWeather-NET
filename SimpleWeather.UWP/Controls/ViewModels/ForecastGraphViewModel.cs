@@ -57,6 +57,8 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty GraphLabelProperty =
             DependencyProperty.Register("GraphLabel", typeof(string), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
 
+        public bool IsEmpty => LabelData?.Count == 0 || SeriesData?.Count == 0;
+
         public event PropertyChangedEventHandler PropertyChanged;
         // Create the OnPropertyChanged method to raise the event
         protected void OnPropertyChanged(string name)
