@@ -50,10 +50,7 @@
                     </Setter>
                 </Style.Setters>
             </Style>
-            <helpers:TempToColorTempConverter
-                x:Key="tempToColorTempConverter"
-                FallbackColor="{ThemeResource ForegroundColor}"
-                UseFallback="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource inverseBoolConverter}}" />
+            <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -75,7 +72,37 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid x:Name="MainGrid">
+    <Grid x:Name="MainGrid" d:Background="LightGray">
+        <ParallaxView
+            x:Name="BackgroundOverlay"
+            x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+            Source="{x:Bind MainViewer}"
+            VerticalShift="100"
+            Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
+            <Image
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ImageFailed="BackgroundOverlay_ImageFailed"
+                ImageOpened="BackgroundOverlay_ImageOpened"
+                Stretch="UniformToFill">
+                <Image.Source>
+                    <BitmapImage UriSource="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}" />
+                </Image.Source>
+            </Image>
+        </ParallaxView>
+        <Grid
+            x:Name="GradientOverlay"
+            x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+            Visibility="Collapsed">
+            <Grid.Background>
+                <LinearGradientBrush SpreadMethod="Pad" StartPoint="0.5,0" EndPoint="0.5,1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0" Color="#50000000" />
+                        <GradientStop Offset="1" Color="#FF000000" />
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
         <ScrollViewer
             x:Name="MainViewer"
             x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
@@ -84,48 +111,22 @@
             Visibility="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
             <Grid>
                 <Grid.RowDefinitions>
+                    <!--  Row 0  -->
+                    <RowDefinition x:Name="LocationRow" Height="Auto" />
+                    <!--  Row 1  -->
+                    <RowDefinition x:Name="UpdateDateRow" Height="Auto" />
+                    <!--  Row 2  -->
                     <RowDefinition Height="Auto" />
+                    <!--  Row 3  -->
+                    <RowDefinition x:Name="SpacerRow" Height="*" />
+                    <!--  Row 4  -->
                     <RowDefinition Height="Auto" />
+                    <!--  Row 5  -->
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <toolkitControls:ImageEx
-                    x:Name="BackgroundOverlay"
-                    Grid.Row="0"
-                    Grid.RowSpan="5"
-                    MaxHeight="720"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-                    Foreground="White"
-                    ImageExFailed="BackgroundOverlay_ImageExFailed"
-                    ImageExOpened="BackgroundOverlay_ImageExOpened"
-                    IsCacheEnabled="True"
-                    Source="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}"
-                    Stretch="UniformToFill"
-                    Style="{StaticResource ImageExProgressStyle}"
-                    Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}" />
-                <Grid
-                    x:Name="GradientOverlay"
-                    Grid.Row="0"
-                    Grid.RowSpan="5"
-                    Height="{Binding ElementName=BackgroundOverlay, Path=Height, Mode=OneWay}"
-                    x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-                    Visibility="Collapsed">
-                    <Grid.Background>
-                        <LinearGradientBrush SpreadMethod="Pad" StartPoint="0.5,0" EndPoint="0.5,1">
-                            <LinearGradientBrush.GradientStops>
-                                <GradientStop Offset="0" Color="#00000000" />
-                                <GradientStop Offset="1" Color="#E0000000" />
-                            </LinearGradientBrush.GradientStops>
-                        </LinearGradientBrush>
-                    </Grid.Background>
-                </Grid>
                 <toolkitControls:DropShadowPanel
                     Grid.Row="0"
+                    MaxWidth="1280"
                     Margin="0,10,0,5"
                     HorizontalAlignment="Center"
                     BlurRadius="15.0"
@@ -134,7 +135,8 @@
                         Name="Location"
                         d:Text="New York, NY"
                         FontSize="28"
-                        FontWeight="Medium"
+                        FontWeight="SemiBold"
+                        Foreground="{ThemeResource ForegroundColor}"
                         MaxLines="2"
                         RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         Text="{x:Bind WeatherView.Location, Mode=OneWay}"
@@ -144,6 +146,7 @@
                 </toolkitControls:DropShadowPanel>
                 <toolkitControls:DropShadowPanel
                     Grid.Row="1"
+                    MaxWidth="1280"
                     HorizontalAlignment="Center"
                     BlurRadius="15.0"
                     ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
@@ -153,6 +156,7 @@
                         d:Text="Updated on 11:12 PM"
                         FontSize="12"
                         FontWeight="Medium"
+                        Foreground="{ThemeResource ForegroundColor}"
                         RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         Text="{x:Bind WeatherView.UpdateDate, Mode=OneWay}" />
                 </toolkitControls:DropShadowPanel>
@@ -213,7 +217,8 @@
                     MinHeight="108"
                     MaxWidth="1280"
                     Padding="16,0"
-                    RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}">
+                    RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+                    SizeChanged="ConditionPanel_SizeChanged">
                     <toolkitControls:DropShadowPanel
                         x:Name="CurTempPanel"
                         Margin="0,15"
@@ -257,6 +262,7 @@
                                     VerticalAlignment="Top"
                                     d:Text="70°"
                                     FontSize="24"
+                                    Foreground="{ThemeResource ForegroundColor}"
                                     Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                             </toolkitControls:DropShadowPanel>
                             <localcontrols:IconControl
@@ -275,6 +281,7 @@
                                 <TextBlock
                                     d:Text="60°"
                                     FontSize="24"
+                                    Foreground="{ThemeResource ForegroundColor}"
                                     Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                             </toolkitControls:DropShadowPanel>
                             <localcontrols:IconControl
@@ -309,6 +316,7 @@
                             Padding="5"
                             d:Text="Sunny"
                             FontSize="24"
+                            Foreground="{ThemeResource ForegroundColor}"
                             Text="{x:Bind WeatherView.CurCondition, Mode=OneWay}" />
                     </toolkitControls:DropShadowPanel>
                     <toolkitControls:DropShadowPanel
@@ -329,6 +337,7 @@
                             d:Text="Rain, some heavy, to affect the area tonight"
                             FontSize="12"
                             FontWeight="Normal"
+                            Foreground="{ThemeResource ForegroundColor}"
                             Text="{x:Bind WeatherView.WeatherSummary, Mode=OneWay}"
                             TextWrapping="Wrap" />
                     </toolkitControls:DropShadowPanel>
@@ -342,7 +351,7 @@
                         NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
                         RelativePanel.Above="BottomSpacer"
                         RelativePanel.AlignRightWithPanel="True"
-                        RequestedTheme="Dark"
+                        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         Style="{ThemeResource AttributionStyle}">
                         <HyperlinkButton.Content>
                             <toolkitControls:DropShadowPanel
@@ -362,14 +371,21 @@
                 </RelativePanel>
                 <StackPanel
                     Grid.Row="5"
-                    MaxWidth="1280"
-                    Padding="16,0">
+                    Padding="16,4,16,0"
+                    CornerRadius="{ThemeResource OverlayCornerRadius}">
+                    <StackPanel.Background>
+                        <SolidColorBrush
+                            x:Name="StackBackgroundBrush"
+                            Opacity="0.0"
+                            Color="{ThemeResource RegionColor}" />
+                    </StackPanel.Background>
                     <StackPanel
                         Name="ForecastPanel"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
                         Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                        <Border Style="{ThemeResource Divider}" />
+                        <Border Style="{ThemeResource Divider}" Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, ConverterParameter='true'}" />
                         <toolkitControls:HeaderedContentControl
                             HorizontalContentAlignment="Stretch"
                             VerticalContentAlignment="Stretch"
@@ -385,6 +401,7 @@
                     </StackPanel>
                     <StackPanel
                         Name="HourlyForecastPanel"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=OneWay}"
                         Visibility="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
@@ -403,6 +420,7 @@
                     </StackPanel>
                     <StackPanel
                         x:Name="PrecipitationPanel"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
                         Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
@@ -447,6 +465,7 @@
                     </StackPanel>
                     <StackPanel
                         x:Name="DetailsContainer"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
@@ -509,6 +528,7 @@
                     </StackPanel>
                     <StackPanel
                         x:Name="SunPhaseContainer"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
                         Visibility="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
@@ -528,6 +548,7 @@
                     </StackPanel>
                     <StackPanel
                         x:Name="RadarContainer"
+                        MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
@@ -552,8 +573,9 @@
                             </Grid>
                         </toolkitControls:HeaderedContentControl>
                     </StackPanel>
-                    <Border Style="{ThemeResource Divider}" />
+                    <Border MaxWidth="1280" Style="{ThemeResource Divider}" />
                     <TextBlock
+                        MaxWidth="1280"
                         Padding="10"
                         HorizontalAlignment="Center"
                         FontSize="14"

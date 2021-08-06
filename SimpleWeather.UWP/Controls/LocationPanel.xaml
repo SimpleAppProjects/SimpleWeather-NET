@@ -47,21 +47,20 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <toolkitControls:ImageEx
+        <Image
             x:Name="BackgroundOverlay"
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             x:Load="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=OneWay}"
-            DecodePixelWidth="720"
-            ImageExFailed="BackgroundOverlay_ImageExFailed"
-            ImageExOpened="BackgroundOverlay_ImageExOpened"
-            IsCacheEnabled="True"
-            RequestedTheme="Dark"
-            Source="{x:Bind ViewModel.ImageData.ImageUri, Mode=OneWay}"
-            Stretch="UniformToFill"
-            Style="{ThemeResource ImageExProgressStyle}" />
+            ImageFailed="BackgroundOverlay_ImageFailed"
+            ImageOpened="BackgroundOverlay_ImageOpened"
+            Stretch="UniformToFill">
+            <Image.Source>
+                <BitmapImage DecodePixelWidth="640" UriSource="{x:Bind ViewModel.ImageData.ImageUri, Mode=OneWay}" />
+            </Image.Source>
+        </Image>
         <Grid
             x:Name="GradientOverlay"
             Grid.RowSpan="2"
@@ -166,7 +165,6 @@
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
-                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
@@ -193,7 +191,6 @@
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
-                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf044;" />
@@ -212,10 +209,11 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="25"
+                    Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
+                    Height="{Binding ElementName=PoPCondition, Path=ActualHeight}"
                     d:WeatherIcon="&#xf084;"
-                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
+                    ShowAsMonochrome="True"
                     WeatherIcon="{x:Bind ViewModel.PoPIcon, Mode=OneWay}" />
                 <toolkitControls:DropShadowPanel
                     BlurRadius="15.0"
@@ -238,11 +236,12 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="25"
+                    Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
+                    Height="{Binding ElementName=WindCondition, Path=ActualHeight}"
                     d:WeatherIcon="&#xf0b1;"
-                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     RenderTransformOrigin="0.5,0.5"
+                    ShowAsMonochrome="True"
                     WeatherIcon="{x:Bind ViewModel.WindIcon, Mode=OneWay}">
                     <local:IconControl.RenderTransform>
                         <RotateTransform d:Angle="90" Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay}" />

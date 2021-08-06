@@ -320,6 +320,11 @@ namespace SimpleWeather.UWP.Main
             AdjustViewLayout();
         }
 
+        private void ConditionPanel_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            AdjustViewLayout();
+        }
+
         private void DeferedControl_Loaded(object sender, RoutedEventArgs e)
         {
             AdjustViewLayout();
@@ -338,9 +343,18 @@ namespace SimpleWeather.UWP.Main
 
             ResizeAlertPanel();
 
-            if (BackgroundOverlay != null)
+            if (SpacerRow != null)
             {
-                BackgroundOverlay.MaxHeight = h;
+                if (Utils.FeatureSettings.BackgroundImage)
+                {
+                    SpacerRow.Height = new GridLength(
+                        h - (ConditionPanel?.ActualHeight ?? 0) - (LocationRow?.ActualHeight ?? 0) - (UpdateDateRow?.ActualHeight ?? 0)
+                    );
+                }
+                else
+                {
+                    SpacerRow.Height = new GridLength(0);
+                }
             }
 
             if (SummaryText != null)
@@ -936,12 +950,12 @@ namespace SimpleWeather.UWP.Main
             Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.LocationCoord, new DrillInNavigationTransitionInfo());
         }
 
-        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
+        private void BackgroundOverlay_ImageOpened(object sender, RoutedEventArgs e)
         {
             UpdateControlTheme(true);
         }
 
-        private void BackgroundOverlay_ImageExFailed(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExFailedEventArgs e)
+        private void BackgroundOverlay_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             UpdateControlTheme(false);
         }
@@ -961,6 +975,14 @@ namespace SimpleWeather.UWP.Main
                 }
                 ControlTheme = ElementTheme.Dark;
                 ControlShadowOpacity = 1;
+                if (StackBackgroundBrush != null)
+                {
+                    StackBackgroundBrush.Opacity = 0.85;
+                }
+                if (this.Resources["tempToColorTempConverter"] is TempToColorTempConverter tempConv)
+                {
+                    tempConv.UseFallback = false;
+                }
             }
             else
             {
@@ -968,8 +990,27 @@ namespace SimpleWeather.UWP.Main
                 {
                     GradientOverlay.Visibility = Visibility.Collapsed;
                 }
-                ControlTheme = ElementTheme.Default;
+                switch (Settings.UserTheme)
+                {
+                    case UserThemeMode.System:
+                        ControlTheme = App.IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                        break;
+                    case UserThemeMode.Light:
+                        ControlTheme = ElementTheme.Light;
+                        break;
+                    case UserThemeMode.Dark:
+                        ControlTheme = ElementTheme.Dark;
+                        break;
+                }
                 ControlShadowOpacity = 0;
+                if (StackBackgroundBrush != null)
+                {
+                    StackBackgroundBrush.Opacity = 0.0;
+                }
+                if (this.Resources["tempToColorTempConverter"] is TempToColorTempConverter tempConv)
+                {
+                    tempConv.UseFallback = true;
+                }
             }
         }
 

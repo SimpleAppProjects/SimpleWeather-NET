@@ -48,12 +48,12 @@ namespace SimpleWeather.UWP.Controls
             };
         }
 
-        private void BackgroundOverlay_ImageExOpened(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExOpenedEventArgs e)
+        private void BackgroundOverlay_ImageOpened(object sender, RoutedEventArgs e)
         {
             UpdateControlTheme(true);
         }
 
-        private void BackgroundOverlay_ImageExFailed(object sender, Microsoft.Toolkit.Uwp.UI.Controls.ImageExFailedEventArgs e)
+        private void BackgroundOverlay_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             UpdateControlTheme(false);
         }
