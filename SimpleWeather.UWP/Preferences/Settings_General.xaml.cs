@@ -687,15 +687,30 @@ namespace SimpleWeather.UWP.Preferences
             Shell.Instance.UpdateAppTheme();
         }
 
-        private void DailyNotifSwitch_Toggled(object sender, RoutedEventArgs e)
+        private async void DailyNotifSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleSwitch sw = sender as ToggleSwitch;
+
+            if (sw.IsOn)
+            {
+                if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
+                {
+                    var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
+                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                    {
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
+                    });
+                    ShowSnackbar(snackbar);
+                    Settings.DailyNotificationEnabled = sw.IsOn = false;
+                    return;
+                }
+            }
 
             if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
             {
                 Settings.DailyNotificationEnabled = true;
                 // Register task
-                Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
+                _ = Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
             }
             else
             {
@@ -706,7 +721,7 @@ namespace SimpleWeather.UWP.Preferences
                 }
                 Settings.DailyNotificationEnabled = sw.IsOn = false;
                 // Unregister task
-                Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
+                _ = Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
             }
         }
 
@@ -719,16 +734,31 @@ namespace SimpleWeather.UWP.Preferences
             }
         }
 
-        private void PoPChanceNotifSwitch_Toggled(object sender, RoutedEventArgs e)
+        private async void PoPChanceNotifSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleSwitch sw = sender as ToggleSwitch;
+
+            if (sw.IsOn)
+            {
+                if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
+                {
+                    var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
+                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                    {
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
+                    });
+                    ShowSnackbar(snackbar);
+                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                    return;
+                }
+            }
 
             if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
             {
                 Settings.PoPChanceNotificationEnabled = true;
                 // Re-register background task if needed
-                Task.Run(async () => await WeatherTileUpdaterTask.RegisterBackgroundTask(false));
-                Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false));
+                _ = Task.Run(async () => await WeatherTileUpdaterTask.RegisterBackgroundTask(false));
+                _ = Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false));
             }
             else
             {

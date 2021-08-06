@@ -242,6 +242,7 @@
     <Compile Include="Controls\BeaufortControl.xaml.cs">
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Helpers\BindingExtensions.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />

@@ -617,4 +617,7 @@
     <value>Weather Summary</value>
     <comment>Weather Summary or Weather Overview</comment>
   </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Background access denied. Please enable in Settings.</value>
+  </data>
 </root>

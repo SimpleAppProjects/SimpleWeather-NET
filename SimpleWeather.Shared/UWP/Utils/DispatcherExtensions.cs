@@ -11,7 +11,7 @@ namespace SimpleWeather.Utils
 {
     public static class DispatcherExtensions
     {
-        public static Task RunOnUIThread(this CoreDispatcher Dispatcher, Action action)
+        public static Task RunOnUIThread(this CoreDispatcher Dispatcher, Action action, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal)
         {
             if (Dispatcher.HasThreadAccess)
             {
@@ -20,11 +20,11 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                return Dispatcher.AwaitableRunAsync(action);
+                return Dispatcher.AwaitableRunAsync(action, priority);
             }
         }
 
-        public static Task<T> RunOnUIThread<T>(this CoreDispatcher Dispatcher, Func<T> function)
+        public static Task<T> RunOnUIThread<T>(this CoreDispatcher Dispatcher, Func<T> function, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal)
         {
             if (Dispatcher.HasThreadAccess)
             {
@@ -32,7 +32,7 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                return Dispatcher.AwaitableRunAsync(function);
+                return Dispatcher.AwaitableRunAsync(function, priority);
             }
         }
 
@@ -68,7 +68,7 @@ namespace SimpleWeather.Utils
             return Dispatcher;
         }
 
-        public static Task TryRunOnUIThread(Action action)
+        public static Task TryRunOnUIThread(Action action, CoreDispatcherPriority priority = CoreDispatcherPriority.Normal)
         {
             if (CoreDispatcher == null)
             {
@@ -84,7 +84,7 @@ namespace SimpleWeather.Utils
                 }
                 else
                 {
-                    return CoreDispatcher.AwaitableRunAsync(action);
+                    return CoreDispatcher.AwaitableRunAsync(action, priority);
                 }
             }
             else

@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
-using SimpleWeather.AQICN;
+﻿using SimpleWeather.AQICN;
 using SimpleWeather.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
@@ -35,6 +34,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using muxc = Microsoft.UI.Xaml.Controls;
+using mtuh = Microsoft.Toolkit.Uwp.Helpers;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Main
@@ -861,43 +861,55 @@ namespace SimpleWeather.UWP.Main
             }
             else if (!string.IsNullOrWhiteSpace(query))
             {
-                // Initialize the tile with required arguments
-                var tileID = DateTime.Now.Ticks.ToInvariantString();
-                var tile = new SecondaryTile(
-                    tileID,
-                    "SimpleWeather",
-                    "action=view-weather&query=" + query,
-                    new Uri("ms-appx:///Assets/Square150x150Logo.png"),
-                    TileSize.Default);
-
-                // Enable wide and large tile sizes
-                tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Wide310x150Logo.png");
-                tile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Square310x310Logo.png");
-
-                // Add a small size logo for better looking small tile
-                tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Square71x71Logo.png");
-
-                // Add a unique corner logo for the secondary tile
-                tile.VisualElements.Square44x44Logo = new Uri("ms-appx:///Assets/Square44x44Logo.png");
-
-                // Show the display name on all sizes
-                tile.VisualElements.ShowNameOnSquare150x150Logo = true;
-                tile.VisualElements.ShowNameOnWide310x150Logo = true;
-                tile.VisualElements.ShowNameOnSquare310x310Logo = true;
-
-                bool isPinned = await tile.RequestCreateAsync().AsTask().ConfigureAwait(true);
-                if (isPinned)
+                if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
                 {
-                    // Update tile with notifications
-                    SecondaryTileUtils.AddTileId(query, tileID);
-                    await Task.Run(async () =>
+                    var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long, SnackbarInfoType.Error);
+                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
                     {
-                        await WeatherTileCreator.TileUpdater(locationData);
-                        await tile.UpdateAsync();
+                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
                     });
+                    ShowSnackbar(snackbar);
                 }
+                else
+                {
+                    // Initialize the tile with required arguments
+                    var tileID = DateTime.Now.Ticks.ToInvariantString();
+                    var tile = new SecondaryTile(
+                        tileID,
+                        "SimpleWeather",
+                        "action=view-weather&query=" + query,
+                        new Uri("ms-appx:///Assets/Square150x150Logo.png"),
+                        TileSize.Default);
 
-                SetPinButton(isPinned);
+                    // Enable wide and large tile sizes
+                    tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Wide310x150Logo.png");
+                    tile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Square310x310Logo.png");
+
+                    // Add a small size logo for better looking small tile
+                    tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Square71x71Logo.png");
+
+                    // Add a unique corner logo for the secondary tile
+                    tile.VisualElements.Square44x44Logo = new Uri("ms-appx:///Assets/Square44x44Logo.png");
+
+                    // Show the display name on all sizes
+                    tile.VisualElements.ShowNameOnSquare150x150Logo = true;
+                    tile.VisualElements.ShowNameOnWide310x150Logo = true;
+                    tile.VisualElements.ShowNameOnSquare310x310Logo = true;
+
+                    bool isPinned = await tile.RequestCreateAsync().AsTask().ConfigureAwait(true);
+                    if (isPinned)
+                    {
+                        // Update tile with notifications
+                        SecondaryTileUtils.AddTileId(query, tileID);
+                        await Task.Run(async () =>
+                        {
+                            await WeatherTileCreator.TileUpdater(locationData);
+                            await tile.UpdateAsync();
+                        });
+                    }
+
+                    SetPinButton(isPinned);
+                }
             }
 
             pinBtn.IsEnabled = true;
@@ -935,7 +947,7 @@ namespace SimpleWeather.UWP.Main
         {
             AsyncTask.Run(async () =>
             {
-                await Dispatcher.AwaitableRunAsync(() =>
+                await Dispatcher.RunOnUIThread(() =>
                 {
                     radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
                     radarViewProvider.EnableInteractions(false);
