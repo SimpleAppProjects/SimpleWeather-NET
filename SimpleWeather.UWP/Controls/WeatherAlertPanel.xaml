@@ -35,7 +35,7 @@
                 <SolidColorBrush x:Key="ExpanderChevronPressedBackground" Color="#0A000000" />
             </muxc:Expander.Resources>
             <muxc:Expander.Header>
-                <Grid Padding="5">
+                <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="*" />

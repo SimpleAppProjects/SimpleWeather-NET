@@ -348,7 +348,7 @@ namespace SimpleWeather.UWP.Main
                 if (Utils.FeatureSettings.BackgroundImage)
                 {
                     SpacerRow.Height = new GridLength(
-                        h - (ConditionPanel?.ActualHeight ?? 0) - (LocationRow?.ActualHeight ?? 0) - (UpdateDateRow?.ActualHeight ?? 0)
+                        h - (ConditionPanelRow?.ActualHeight ?? 0) - (AlertButtonRow?.ActualHeight ?? 0) - (LocationRow?.ActualHeight ?? 0) - (UpdateDateRow?.ActualHeight ?? 0)
                     );
                 }
                 else

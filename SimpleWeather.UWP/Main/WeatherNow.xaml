@@ -116,11 +116,11 @@
                     <!--  Row 1  -->
                     <RowDefinition x:Name="UpdateDateRow" Height="Auto" />
                     <!--  Row 2  -->
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition x:Name="AlertButtonRow" Height="Auto" />
                     <!--  Row 3  -->
                     <RowDefinition x:Name="SpacerRow" Height="*" />
                     <!--  Row 4  -->
-                    <RowDefinition Height="Auto" />
+                    <RowDefinition x:Name="ConditionPanelRow" Height="Auto" />
                     <!--  Row 5  -->
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
