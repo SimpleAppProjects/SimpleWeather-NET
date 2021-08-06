@@ -14,7 +14,7 @@
         MaxWidth="1280"
         VerticalAlignment="Bottom"
         Background="{ThemeResource SystemControlAcrylicElementBrush}"
-        BorderBrush="{ThemeResource ToolTipBorderThemeBrush}"
+        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
         BorderThickness="1"
         CornerRadius="{ThemeResource ControlCornerRadius}">
         <muxc:InfoBar
@@ -36,7 +36,7 @@
                     HorizontalAlignment="Right"
                     d:Content="Action Button"
                     d:Visibility="Visible"
-                    BorderBrush="{ThemeResource ButtonBorderThemeBrush}"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
                     Content="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay}"
                     Visibility="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
