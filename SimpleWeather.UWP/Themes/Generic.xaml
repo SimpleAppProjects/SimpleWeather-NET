@@ -238,7 +238,8 @@
                         MinWidth="{TemplateBinding MinWidth}"
                         MinHeight="{TemplateBinding MinHeight}"
                         MaxWidth="{TemplateBinding MaxWidth}"
-                        MaxHeight="{TemplateBinding MaxHeight}" />
+                        MaxHeight="{TemplateBinding MaxHeight}"
+                        Stretch="Uniform" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

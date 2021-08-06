@@ -52,9 +52,7 @@
             <localControls:IconControl
                 x:Name="IconCtrl"
                 Grid.Row="1"
-                Width="50"
-                Height="50"
-                Margin="10"
+                Margin="7.5"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 ForceBitmapIcon="True"
