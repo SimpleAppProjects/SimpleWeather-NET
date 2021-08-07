@@ -166,7 +166,7 @@
             x:Name="TranslateButton"
             d:Content="Help translate the app"
             d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
-            Content="{helpers:StringRes Name='message_sub_thanksforsupport'}"
+            Content="{helpers:StringRes Name='pref_summary_translate'}"
             NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
             Style="{ThemeResource TranslateHyperlinkButton}" />
     </StackPanel>
