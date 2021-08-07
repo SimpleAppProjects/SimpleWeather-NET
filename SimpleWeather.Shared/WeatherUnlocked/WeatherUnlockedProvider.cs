@@ -399,7 +399,13 @@ namespace SimpleWeather.WeatherUnlocked
                     sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                var tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                NodaTime.DateTimeZone tz = null;
+
+                if (weather.location.tz_long != null)
+                {
+                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                }
+
                 if (tz == null)
                     tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
 
