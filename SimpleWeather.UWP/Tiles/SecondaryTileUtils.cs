@@ -9,9 +9,9 @@ namespace SimpleWeather.UWP.Tiles
     public static class SecondaryTileUtils
     {
         // Shared Settings
-        private static ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+        private static readonly ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
 
-        private static ApplicationDataContainer tileIdContainer = localSettings.CreateContainer("SecondaryTileIds", ApplicationDataCreateDisposition.Always);
+        private static readonly ApplicationDataContainer tileIdContainer = localSettings.CreateContainer("SecondaryTileIds", ApplicationDataCreateDisposition.Always);
 
         public static string GetTileId(string query)
         {

@@ -4,6 +4,7 @@ using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -18,7 +19,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
     {
         private const string taskName = nameof(WeatherTileUpdaterTask);
         private readonly WeatherManager wm;
-        private static ApplicationTrigger AppTrigger = null;
+        private static ApplicationTrigger AppTrigger;
 
         public WeatherTileUpdaterTask()
         {
@@ -66,7 +67,16 @@ namespace SimpleWeather.UWP.BackgroundTasks
             await WeatherTileCreator.TileUpdater(await Settings.GetHomeData());
 
             // Update secondary tiles
-            var tiles = await SecondaryTile.FindAllAsync();
+            IReadOnlyList<SecondaryTile> tiles = null;
+
+            try
+            {
+                tiles = await SecondaryTile.FindAllAsync();
+            }
+            catch
+            {
+                // Note: COMException may occur ("Element not found")
+            }
 
             if (tiles?.Count > 0)
             {

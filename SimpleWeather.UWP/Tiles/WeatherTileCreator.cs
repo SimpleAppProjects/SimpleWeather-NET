@@ -1023,25 +1023,21 @@ namespace SimpleWeather.UWP.Tiles
                     await TileUpdater(location, weatherView);
                 }
             }
-            catch (WeatherException wEx)
+            catch (Exception ex)
             {
-                Logger.WriteLine(LoggerLevel.Error, wEx);
+                Logger.WriteLine(LoggerLevel.Error, ex);
             }
         }
 
         private static async Task TileUpdater(LocationData location, WeatherNowViewModel weather)
         {
-            // Check if Tile service is available
-            if (!DeviceTypeHelper.IsTileSupported())
-                return;
-
             if (weather.ImageData == null)
                 await weather.UpdateBackground();
 
             // And send the notification to the tile
             if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
             {
-                // Update both primary and secondary tile if it exists
+                // Update primary tile and lockscreen info (if exists)
                 var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
                 // Lock instance to avoid rare concurrency issue
                 // (when BGTask is running and tile is updated via WeatherNowPage)
@@ -1050,6 +1046,7 @@ namespace SimpleWeather.UWP.Tiles
                     UpdateContent(appTileUpdater, location, weather).Wait();
                 }
 
+                // Update secondary tile if exists
                 var query = location.locationType == LocationType.GPS ? Constants.KEY_GPS : location.query;
                 if (SecondaryTileUtils.Exists(query))
                 {

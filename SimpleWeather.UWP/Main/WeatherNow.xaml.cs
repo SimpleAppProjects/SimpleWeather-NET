@@ -798,7 +798,7 @@ namespace SimpleWeather.UWP.Main
         private void CheckTiles()
         {
             // Check if Tile service is available
-            if (!DeviceTypeHelper.IsTileSupported()) return;
+            if (!DeviceTypeHelper.IsSecondaryTileSupported()) return;
 
             var pinBtn = GetPinBtn();
 
@@ -840,7 +840,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("WeatherNow: PinButton_Click");
 
             // Check if Tile service is available
-            if (!DeviceTypeHelper.IsTileSupported() || locationData?.IsValid() == false) return;
+            if (!DeviceTypeHelper.IsSecondaryTileSupported() || locationData?.IsValid() == false) return;
 
             if (!(sender is AppBarButton pinBtn)) return;
 
@@ -848,68 +848,76 @@ namespace SimpleWeather.UWP.Main
 
             var query = locationData?.locationType == LocationType.GPS ? Constants.KEY_GPS : locationData?.query;
 
-            if (SecondaryTileUtils.Exists(query))
+            try
             {
-                bool deleted = await new SecondaryTile(
-                    SecondaryTileUtils.GetTileId(query)).RequestDeleteAsync().AsTask().ConfigureAwait(true);
-                if (deleted)
+                if (SecondaryTileUtils.Exists(query))
                 {
-                    SecondaryTileUtils.RemoveTileId(query);
-                }
-
-                SetPinButton(!deleted);
-            }
-            else if (!string.IsNullOrWhiteSpace(query))
-            {
-                if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
-                {
-                    var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long, SnackbarInfoType.Error);
-                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                    bool deleted = await new SecondaryTile(
+                        SecondaryTileUtils.GetTileId(query)).RequestDeleteAsync().AsTask().ConfigureAwait(true);
+                    if (deleted)
                     {
-                        await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
-                    });
-                    ShowSnackbar(snackbar);
-                }
-                else
-                {
-                    // Initialize the tile with required arguments
-                    var tileID = DateTime.Now.Ticks.ToInvariantString();
-                    var tile = new SecondaryTile(
-                        tileID,
-                        "SimpleWeather",
-                        "action=view-weather&query=" + query,
-                        new Uri("ms-appx:///Assets/Square150x150Logo.png"),
-                        TileSize.Default);
-
-                    // Enable wide and large tile sizes
-                    tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Wide310x150Logo.png");
-                    tile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Square310x310Logo.png");
-
-                    // Add a small size logo for better looking small tile
-                    tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Square71x71Logo.png");
-
-                    // Add a unique corner logo for the secondary tile
-                    tile.VisualElements.Square44x44Logo = new Uri("ms-appx:///Assets/Square44x44Logo.png");
-
-                    // Show the display name on all sizes
-                    tile.VisualElements.ShowNameOnSquare150x150Logo = true;
-                    tile.VisualElements.ShowNameOnWide310x150Logo = true;
-                    tile.VisualElements.ShowNameOnSquare310x310Logo = true;
-
-                    bool isPinned = await tile.RequestCreateAsync().AsTask().ConfigureAwait(true);
-                    if (isPinned)
-                    {
-                        // Update tile with notifications
-                        SecondaryTileUtils.AddTileId(query, tileID);
-                        await Task.Run(async () =>
-                        {
-                            await WeatherTileCreator.TileUpdater(locationData);
-                            await tile.UpdateAsync();
-                        });
+                        SecondaryTileUtils.RemoveTileId(query);
                     }
 
-                    SetPinButton(isPinned);
+                    SetPinButton(!deleted);
                 }
+                else if (!string.IsNullOrWhiteSpace(query))
+                {
+                    if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
+                    {
+                        var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long, SnackbarInfoType.Error);
+                        snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                        {
+                            await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
+                        });
+                        ShowSnackbar(snackbar);
+                    }
+                    else
+                    {
+                        // Initialize the tile with required arguments
+                        var tileID = DateTime.Now.Ticks.ToInvariantString();
+                        var tile = new SecondaryTile(
+                            tileID,
+                            "SimpleWeather",
+                            "action=view-weather&query=" + query,
+                            new Uri("ms-appx:///Assets/Square150x150Logo.png"),
+                            TileSize.Default);
+
+                        // Enable wide and large tile sizes
+                        tile.VisualElements.Wide310x150Logo = new Uri("ms-appx:///Assets/Wide310x150Logo.png");
+                        tile.VisualElements.Square310x310Logo = new Uri("ms-appx:///Assets/Square310x310Logo.png");
+
+                        // Add a small size logo for better looking small tile
+                        tile.VisualElements.Square71x71Logo = new Uri("ms-appx:///Assets/Square71x71Logo.png");
+
+                        // Add a unique corner logo for the secondary tile
+                        tile.VisualElements.Square44x44Logo = new Uri("ms-appx:///Assets/Square44x44Logo.png");
+
+                        // Show the display name on all sizes
+                        tile.VisualElements.ShowNameOnSquare150x150Logo = true;
+                        tile.VisualElements.ShowNameOnWide310x150Logo = true;
+                        tile.VisualElements.ShowNameOnSquare310x310Logo = true;
+
+                        bool isPinned = await tile.RequestCreateAsync().AsTask().ConfigureAwait(true);
+                        if (isPinned)
+                        {
+                            // Update tile with notifications
+                            SecondaryTileUtils.AddTileId(query, tileID);
+                            await Task.Run(async () =>
+                            {
+                                await WeatherTileCreator.TileUpdater(locationData);
+                                await tile.UpdateAsync();
+                            });
+                        }
+
+                        SetPinButton(isPinned);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Note: Exception - "Element not found."
+                Logger.WriteLine(LoggerLevel.Error, ex, "Error (un)pinning tile...");
             }
 
             pinBtn.IsEnabled = true;
