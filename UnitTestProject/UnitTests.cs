@@ -4,6 +4,7 @@ using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
 using SimpleWeather.Location;
 using SimpleWeather.NWS;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.SMC;
 using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
@@ -330,6 +331,26 @@ namespace UnitTestProject
             var imageData = await ImageDatabase.GetRandomImageForCondition(WeatherBackground.DAY).ConfigureAwait(false);
             Assert.IsNotNull(imageData);
             Assert.IsTrue(imageData.IsValid());
+        }
+
+        [TestMethod]
+        public async Task RemoteConfigUpdateTest()
+        {
+            var db = await FirebaseDatabaseHelper.GetFirebaseDatabase();
+            var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
+            if (uwpConfig?.Count > 0)
+            {
+                foreach (var prop in uwpConfig)
+                {
+                    if (!Equals(prop.Key, "default_weather_provider"))
+                    {
+                        Debug.WriteLine("RemoteConfigUpdateTest: KEY = {0}", (object)prop.Key);
+                        var configJson = prop.Object.ToString();
+                        var config = JSONParser.Deserializer<WeatherProviderConfig>(configJson);
+                        Assert.IsNotNull(config);
+                    }
+                }
+            }
         }
     }
 }
