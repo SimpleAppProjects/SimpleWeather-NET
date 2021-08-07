@@ -129,6 +129,11 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             if (GraphData != null)
             {
+                while (LineGraphView == null || !LineGraphView.ReadyToDraw)
+                {
+                    await Task.Delay(1).ConfigureAwait(true);
+                }
+
                 LineGraphView.DrawGridLines = false;
                 LineGraphView.DrawDotLine = false;
                 LineGraphView.DrawDataLabels = true;
@@ -136,11 +141,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 LineGraphView.DrawGraphBackground = true;
                 LineGraphView.DrawDotPoints = false;
                 LineGraphView.DrawSeriesLabels = false;
-
-                while (LineGraphView == null || !LineGraphView.ReadyToDraw)
-                {
-                    await Task.Delay(1).ConfigureAwait(true);
-                }
 
                 LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
             }

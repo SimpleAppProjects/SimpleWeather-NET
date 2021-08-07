@@ -133,14 +133,14 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             if (ForecastData != null)
             {
-                BarChartView.DrawDataLabels = true;
-                BarChartView.DrawIconLabels = true;
-                BarChartView.CenterGraphView = true;
-
                 while (BarChartView == null || !BarChartView.ReadyToDraw)
                 {
                     await Task.Delay(1).ConfigureAwait(true);
                 }
+
+                BarChartView.DrawDataLabels = true;
+                BarChartView.DrawIconLabels = true;
+                BarChartView.CenterGraphView = true;
 
                 BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
             }
