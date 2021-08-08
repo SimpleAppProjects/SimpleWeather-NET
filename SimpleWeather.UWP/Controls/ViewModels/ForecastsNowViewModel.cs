@@ -94,7 +94,7 @@ namespace SimpleWeather.UWP.Controls
         {
             if (dp == HourlyPrecipitationGraphDataProperty || dp == MinutelyPrecipitationGraphDataProperty)
             {
-                IsPrecipitationDataPresent = !(HourlyPrecipitationGraphData?.IsEmpty == true && MinutelyPrecipitationGraphData.IsEmpty == true);
+                IsPrecipitationDataPresent = !(HourlyPrecipitationGraphData?.IsEmpty == true && MinutelyPrecipitationGraphData?.IsEmpty == true);
             }
         }
 
