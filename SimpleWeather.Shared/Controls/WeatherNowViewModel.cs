@@ -42,6 +42,7 @@ namespace SimpleWeather.Controls
         private BeaufortViewModel beaufort;
         private MoonPhaseViewModel moonPhase;
         private AirQualityViewModel airQuality;
+        private PollenViewModel pollen;
 
         // Background
         private ImageDataViewModel imageData;
@@ -89,6 +90,7 @@ namespace SimpleWeather.Controls
         public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
         public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { if (!Equals(moonPhase, value)) { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } } }
         public AirQualityViewModel AirQuality { get => airQuality; private set { if (!Equals(airQuality, value)) { airQuality = value; OnPropertyChanged(nameof(AirQuality)); } } }
+        public PollenViewModel Pollen { get => pollen; private set { if (!Equals(pollen, value)) { pollen = value; OnPropertyChanged(nameof(Pollen)); } } }
         public ImageDataViewModel ImageData { get => imageData; private set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
         public Color PendingBackgroundColor { get => pendingBackgroundColor; private set { if (!Equals(pendingBackgroundColor, value)) { pendingBackgroundColor = value; OnPropertyChanged(nameof(PendingBackgroundColor)); } } }
         public WeatherUtils.Coordinate LocationCoord { get => locationCoord; private set { if (!Equals(locationCoord, value)) { locationCoord = value; OnPropertyChanged(nameof(LocationCoord)); } } }
@@ -469,6 +471,7 @@ namespace SimpleWeather.Controls
 
             // Additional Details
             AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
+            Pollen = weather.condition.pollen != null ? new PollenViewModel(weather.condition.pollen) : null;
 
             WeatherSource = weather?.source;
 

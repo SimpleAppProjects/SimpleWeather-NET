@@ -86,13 +86,25 @@ namespace SimpleWeather.WeatherData
             // Provider-specific updates/fixes
             await UpdateWeatherData(location, weather);
 
+            // Additional external data
             if (weather.condition.airQuality == null)
             {
                 if (this is IAirQualityProvider aqiProvider)
+                {
                     weather.condition.airQuality = await aqiProvider.GetAirQualityData(location);
+                }
                 else
-                    // Additional external data
+                {
                     await UpdateAQIData(location, weather);
+                }
+            }
+            
+            if (weather.condition.pollen == null)
+            {
+                if (DevSettingsEnabler.DevSettingsEnabled)
+                {
+                    weather.condition.pollen = await new Ambee.AmbeePollenProvider().GetPollenData(location);
+                }
             }
 
             return weather;

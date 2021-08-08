@@ -516,6 +516,11 @@
                                         x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
                                         DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}"
                                         Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                    <localcontrols:PollenCountControl
+                                        x:Name="PollenControl"
+                                        Margin="10,5"
+                                        DataContext="{x:Bind WeatherView.Pollen, Mode=OneWay}"
+                                        Visibility="{x:Bind WeatherView.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                     <localcontrols:MoonPhaseControl
                                         x:Name="MoonControl"
                                         Margin="10,5"

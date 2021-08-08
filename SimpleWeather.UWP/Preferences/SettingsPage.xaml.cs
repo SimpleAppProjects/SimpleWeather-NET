@@ -51,6 +51,36 @@ namespace SimpleWeather.UWP.Preferences
                     Tag = "Premium"
                 });
             }
+
+            DevSettingsEnabler.OnDevSettingsChanged += DevSettingsEnabler_OnDevSettingsChanged;
+
+            if (DevSettingsEnabler.DevSettingsEnabled)
+            {
+                _pages.Add(("DevSettings", typeof(DevSettingsPage)));
+                SettingsNavView.MenuItems.Add(new muxc.NavigationViewItem()
+                {
+                    Content = "Developer Settings",
+                    Tag = "DevSettings"
+                });
+            }
+        }
+
+        private void DevSettingsEnabler_OnDevSettingsChanged(object sender, DevSettingsEventArgs e)
+        {
+            if (e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page == null)
+            {
+                _pages.Add(("DevSettings", typeof(DevSettingsPage)));
+                SettingsNavView.MenuItems.Add(new muxc.NavigationViewItem()
+                {
+                    Content = "Developer Settings",
+                    Tag = "DevSettings"
+                });
+            }
+            else if (!e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page != null)
+            {
+                _pages.Remove(("DevSettings", typeof(DevSettingsPage)));
+                SettingsNavView.MenuItems.Remove(SettingsNavView.MenuItems.First(i => i is muxc.NavigationViewItem navItem && Equals(navItem.Tag, "DevSettings")));
+            }
         }
 
         public Task<bool> OnBackRequested()

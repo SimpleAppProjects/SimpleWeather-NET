@@ -121,6 +121,8 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Ambee\AmbeePollenProvider.cs" />
+    <Compile Include="Ambee\Rootobject.cs" />
     <Compile Include="AQICN\AQICNData.cs" />
     <Compile Include="AQICN\AQICNProvider.cs" />
     <Compile Include="AQICN\Rootobject.cs" />
@@ -139,6 +141,7 @@
     <Compile Include="Controls\ImageDataViewModel.cs" />
     <Compile Include="Controls\LocationQueryViewModel.cs" />
     <Compile Include="Controls\MoonPhaseViewModel.cs" />
+    <Compile Include="Controls\PollenViewModel.cs" />
     <Compile Include="Controls\ProviderEntry.cs" />
     <Compile Include="Controls\UVIndexViewModel.cs" />
     <Compile Include="Controls\WeatherAlertsViewModel.cs" />
@@ -244,6 +247,7 @@
     <Compile Include="Utils\DBMigrations\Migration.4_5.cs" />
     <Compile Include="Utils\DBMigrations\Migration.5_6.cs" />
     <Compile Include="Utils\DBUtils.cs" />
+    <Compile Include="Utils\DevSettingsEnabler.cs" />
     <Compile Include="Utils\FeatureSettings.cs" />
     <Compile Include="Utils\FileLoggingTree.cs" />
     <Compile Include="Utils\FileUtils.cs" />
@@ -275,6 +279,7 @@
     <Compile Include="UWP\Icons\WeatherIconsManager.cs" />
     <Compile Include="UWP\RemoteConfig\RemoteConfig.cs" />
     <Compile Include="UWP\Utils\APIRequestUtils.cs" />
+    <Compile Include="UWP\Utils\DevSettingsEnabler.cs" />
     <Compile Include="UWP\Utils\DispatcherExtensions.cs" />
     <Compile Include="UWP\Utils\FeatureSettings.cs" />
     <Compile Include="UWP\Utils\FileUtils.cs" />
@@ -296,6 +301,7 @@
     <Compile Include="WeatherData\Images\ImageDataDatabase.cs" />
     <Compile Include="WeatherData\Images\ImageDataHelper.cs" />
     <Compile Include="WeatherData\Images\Model\ImageData.cs" />
+    <Compile Include="WeatherData\IPollenProvider.cs" />
     <Compile Include="WeatherData\IWeatherAlertProvider.cs" />
     <Compile Include="WeatherData\IWeatherErrorListener.cs" />
     <Compile Include="WeatherData\IWeatherProviderImpl.cs" />

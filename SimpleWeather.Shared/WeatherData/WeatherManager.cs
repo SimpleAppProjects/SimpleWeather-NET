@@ -34,6 +34,9 @@ namespace SimpleWeather.WeatherData
         public const string BingMaps = "Bing";
         public const string WeatherApi = "weatherapi";
 
+        // External data providers
+        public const string Ambee = "ambee";
+
         /*
          * Note to self: Common steps to adding a new weather provider
          * 1) Implement WeatherProviderImpl class

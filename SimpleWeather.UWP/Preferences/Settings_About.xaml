@@ -101,6 +101,7 @@
             FontSize="14"
             Foreground="{ThemeResource SystemBaseMediumHighColor}"
             Style="{StaticResource CaptionTextBlockStyle}"
+            Tapped="Version_Tapped"
             Text="v0.00" />
         <StackPanel
             x:Name="UpdateProgressPanel"

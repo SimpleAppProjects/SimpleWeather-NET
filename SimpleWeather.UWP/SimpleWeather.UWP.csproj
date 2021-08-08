@@ -31,7 +31,7 @@
     <RuntimeIdentifiers>win10-arm;win10-arm-aot;win10-x86;win10-x86-aot;win10-x64;win10-x64-aot</RuntimeIdentifiers>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <GenerateTestArtifacts>False</GenerateTestArtifacts>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
   </PropertyGroup>
@@ -179,6 +179,9 @@
     <Compile Include="Controls\DetailItem.xaml.cs">
       <DependentUpon>DetailItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DevKeyEntry.xaml.cs">
+      <DependentUpon>DevKeyEntry.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.cs" />
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.Data.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphPanel.xaml.cs">
@@ -196,6 +199,9 @@
     <Compile Include="Controls\IconControl.cs" />
     <Compile Include="Controls\PageHeader.xaml.cs">
       <DependentUpon>PageHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\PollenCountControl.xaml.cs">
+      <DependentUpon>PollenCountControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarPage.cs" />
     <Compile Include="Controls\ViewModels\HourlyForecastNowViewModel.cs" />
@@ -266,6 +272,10 @@
     </Compile>
     <Compile Include="Notifications\PoPNotificationCreator.cs" />
     <Compile Include="Notifications\DailyNotificationCreator.cs" />
+    <Compile Include="Preferences\DevSettingsController.cs" />
+    <Compile Include="Preferences\DevSettingsPage.xaml.cs">
+      <DependentUpon>DevSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Preferences\IconRadioPreference.xaml.cs">
       <DependentUpon>IconRadioPreference.xaml</DependentUpon>
     </Compile>
@@ -394,6 +404,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\DevKeyEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Graphs\RangeBarGraphPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -431,6 +445,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\PageHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\PollenCountControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -477,6 +495,10 @@
     <Page Include="Main\WeatherRadarPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Preferences\DevSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Preferences\IconRadioPreference.xaml">
       <SubType>Designer</SubType>

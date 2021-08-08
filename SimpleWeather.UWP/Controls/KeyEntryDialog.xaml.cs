@@ -12,17 +12,26 @@ namespace SimpleWeather.UWP.Controls
         public string Key { get; set; }
         public bool CanClose { get; set; }
 
-        public KeyEntryDialog()
+        public KeyEntryDialog(bool UseDefaultKey = true)
         {
-            Initialize();
+            Initialize(UseDefaultKey);
         }
 
-        public void Initialize()
+        public void Initialize(bool UseDefaultKey = true)
         {
             this.InitializeComponent();
             this.Closing += KeyEntryDialog_Closing;
             KeyEntry.TextChanged += KeyEntry_TextChanged;
-            KeyEntry.Text = Key = Settings.API_KEY;
+
+            if (UseDefaultKey)
+            {
+                KeyEntry.Text = Key = Settings.API_KEY ?? string.Empty;
+            }
+        }
+
+        public void SetKey(string value)
+        {
+            KeyEntry.Text = Key = value ?? string.Empty;
         }
 
         private void KeyEntryDialog_Closing(ContentDialog sender, ContentDialogClosingEventArgs args)

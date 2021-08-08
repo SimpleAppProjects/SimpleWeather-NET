@@ -24,10 +24,13 @@ namespace SimpleWeather.UWP.Preferences
     public sealed partial class Settings_About : Page
     {
         private StoreContext context = null;
+        private DevSettingsController devSettingsController;
         
         public Settings_About()
         {
             this.InitializeComponent();
+
+            devSettingsController = new DevSettingsController();
 
             Version.Text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}.{3}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build, Package.Current.Id.Version.Revision);
@@ -191,6 +194,17 @@ namespace SimpleWeather.UWP.Preferences
             {
                 await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto://thewizrd.dev+SimpleWeatherWindows@gmail.com"));
             }
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            devSettingsController.OnStart();
+        }
+
+        private void Version_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            devSettingsController.OnClick();
         }
     }
 }

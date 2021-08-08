@@ -1580,6 +1580,7 @@ namespace SimpleWeather.WeatherData
         public float? low_f { get; set; }
         public float? low_c { get; set; }
         public AirQuality airQuality { get; set; }
+        public Pollen pollen { get; set; }
         public DateTimeOffset observation_time { get; set; }
         public string summary { get; set; }
 
@@ -1607,6 +1608,7 @@ namespace SimpleWeather.WeatherData
                    low_f == condition.low_f &&
                    low_c == condition.low_c &&
                    Object.Equals(airQuality, condition.airQuality) &&
+                   Object.Equals(pollen, condition.pollen) &&
                    observation_time == condition.observation_time &&
                    summary == condition.summary;
         }
@@ -1630,6 +1632,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(low_f);
             hash.Add(low_c);
             hash.Add(airQuality);
+            hash.Add(pollen);
             hash.Add(observation_time);
             hash.Add(summary);
             return hash.ToHashCode();
@@ -1737,6 +1740,12 @@ namespace SimpleWeather.WeatherData
                     case nameof(airQuality):
                         this.airQuality = new AirQuality();
                         this.airQuality.FromJson(ref reader);
+                        break;
+                        break;
+
+                    case nameof(pollen):
+                        this.pollen = new Pollen();
+                        this.pollen.FromJson(ref reader);
                         break;
 
                     case nameof(observation_time):
@@ -1874,6 +1883,15 @@ namespace SimpleWeather.WeatherData
 
                 writer.WritePropertyName(nameof(airQuality));
                 writer.WriteString(airQuality?.ToJson());
+            }
+
+            // "pollen" : ""
+            if (pollen != null)
+            {
+                writer.WriteValueSeparator();
+
+                writer.WritePropertyName(nameof(pollen));
+                writer.WriteString(pollen?.ToJson());
             }
 
             writer.WriteValueSeparator();
@@ -2709,6 +2727,118 @@ namespace SimpleWeather.WeatherData
             // "attribution" : ""
             writer.WritePropertyName(nameof(attribution));
             writer.WriteString(attribution);
+
+            // }
+            writer.WriteEndObject();
+
+            return writer.ToString();
+        }
+    }
+
+    [JsonFormatter(typeof(CustomJsonConverter<Pollen>))]
+    public partial class Pollen : CustomJsonObject
+    {
+        public enum PollenCount
+        {
+            Unknown,
+            Low,
+            Moderate,
+            High,
+            VeryHigh
+        }
+
+        public PollenCount? treePollenCount;
+        public PollenCount? grassPollenCount;
+        public PollenCount? ragweedPollenCount;
+
+        public Pollen()
+        {
+            // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Pollen pollen &&
+                   treePollenCount == pollen.treePollenCount &&
+                   grassPollenCount == pollen.grassPollenCount &&
+                   ragweedPollenCount == pollen.ragweedPollenCount;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(treePollenCount, grassPollenCount, ragweedPollenCount);
+        }
+
+        public override void FromJson(ref JsonReader extReader)
+        {
+            JsonReader reader;
+            string jsonValue;
+
+            if (extReader.GetCurrentJsonToken() == JsonToken.String)
+                jsonValue = extReader.ReadString();
+            else
+                jsonValue = null;
+
+            if (jsonValue == null)
+                reader = extReader;
+            else
+            {
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+#pragma warning restore CA2000 // Dispose objects before losing scope
+            }
+
+            var count = 0;
+            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            {
+                reader.ReadIsBeginObject(); // StartObject
+
+                string property = reader.ReadPropertyName();
+                //reader.ReadNext(); // prop value
+
+                switch (property)
+                {
+                    case nameof(treePollenCount):
+                        this.treePollenCount = (PollenCount)reader.ReadInt32();
+                        break;
+
+                    case nameof(grassPollenCount):
+                        this.grassPollenCount = (PollenCount)reader.ReadInt32();
+                        break;
+
+                    case nameof(ragweedPollenCount):
+                        this.ragweedPollenCount = (PollenCount)reader.ReadInt32();
+                        break;
+
+                    default:
+                        reader.ReadNextBlock();
+                        break;
+                }
+            }
+        }
+
+        public override string ToJson()
+        {
+            var writer = new JsonWriter();
+
+            // {
+            writer.WriteBeginObject();
+
+            // "treePollenCount" : ""
+            writer.WritePropertyName(nameof(treePollenCount));
+            writer.WriteInt32((int)(treePollenCount ?? PollenCount.Unknown));
+
+            writer.WriteValueSeparator();
+
+            // "grassPollenCount" : ""
+            writer.WritePropertyName(nameof(grassPollenCount));
+            writer.WriteInt32((int)(grassPollenCount ?? PollenCount.Unknown));
+
+            writer.WriteValueSeparator();
+
+            // "ragweedPollenCount" : ""
+            writer.WritePropertyName(nameof(ragweedPollenCount));
+            writer.WriteInt32((int)(ragweedPollenCount ?? PollenCount.Unknown));
 
             // }
             writer.WriteEndObject();
