@@ -33,5 +33,10 @@ namespace SimpleWeather.UWP.Helpers
         {
             return App.ResLoader.GetStringForUri(uri);
         }
+
+        public static bool IsNotNull(object obj)
+        {
+            return obj != null;
+        }
     }
 }
