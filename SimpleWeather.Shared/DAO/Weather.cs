@@ -1741,7 +1741,6 @@ namespace SimpleWeather.WeatherData
                         this.airQuality = new AirQuality();
                         this.airQuality.FromJson(ref reader);
                         break;
-                        break;
 
                     case nameof(pollen):
                         this.pollen = new Pollen();

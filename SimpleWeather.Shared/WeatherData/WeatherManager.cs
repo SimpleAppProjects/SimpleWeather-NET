@@ -10,11 +10,13 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherApi;
 using SimpleWeather.WeatherUnlocked;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI;
+using SimpleWeather.TomorrowIO;
 
 namespace SimpleWeather.WeatherData
 {
@@ -29,6 +31,7 @@ namespace SimpleWeather.WeatherData
         public const string NWS = "NWS";
         public const string WeatherUnlocked = "wunlocked";
         public const string MeteoFrance = "meteofrance";
+        public const string TomorrowIo = "tomorrowio";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -46,7 +49,15 @@ namespace SimpleWeather.WeatherData
          * 5) Add API to WeatherManager
          * 6) Add to remote_config_defaults
          */
-        public static readonly IReadOnlyList<ProviderEntry> APIs = new List<ProviderEntry>(5)
+        public static IReadOnlyList<ProviderEntry> APIs
+        {
+            get
+            {
+                return DevSettingsEnabler.DevSettingsEnabled ? DefaultAPIs.Concat(TestingAPIs).ToList() : DefaultAPIs;
+            }
+        }
+
+        private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(7)
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
@@ -71,6 +82,12 @@ namespace SimpleWeather.WeatherData
                     "https://bing.com/maps", "https://bing.com/maps"),
             new ProviderEntry("WeatherAPI.com", WeatherApi,
                 "https://weatherapi.com", "https://weatherapi.com/api")
+        };
+
+        private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(1)
+        {
+            new ProviderEntry("Tomorrow.io", TomorrowIo,
+                "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/")
         };
     }
 
@@ -138,6 +155,10 @@ namespace SimpleWeather.WeatherData
 
                 case WeatherData.WeatherAPI.MeteoFrance:
                     providerImpl = new MeteoFranceProvider();
+                    break;
+
+                case WeatherData.WeatherAPI.TomorrowIo:
+                    providerImpl = new TomorrowIOWeatherProvider();
                     break;
 
 #if !DEBUG

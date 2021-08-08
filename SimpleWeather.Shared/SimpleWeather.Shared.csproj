@@ -220,6 +220,11 @@
     <Compile Include="SMC\SunMoonCalcProvider.cs" />
     <Compile Include="SMC\SunMoonCalculator.cs" />
     <Compile Include="SQLiteNet\SQLiteNetPCLExtensions.cs" />
+    <Compile Include="TomorrowIO\AlertRootobject.cs" />
+    <Compile Include="TomorrowIO\Rootobject.cs" />
+    <Compile Include="TomorrowIO\TomorrowIOWeatherProvider.cs" />
+    <Compile Include="TomorrowIO\WeatherAlerts.cs" />
+    <Compile Include="TomorrowIO\WeatherData.cs" />
     <Compile Include="TZDB\ITimeZoneProvider.cs" />
     <Compile Include="TZDB\TimeZoneProvider.cs" />
     <Compile Include="TZDB\TZDB.cs" />
@@ -255,6 +260,7 @@
     <Compile Include="Utils\ListUtils.cs" />
     <Compile Include="Utils\LocationUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\NumberExtensions.cs" />
     <Compile Include="Utils\OAuthUtils.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
     <Compile Include="Utils\Settings.cs" />
@@ -265,6 +271,7 @@
     <Compile Include="Utils\StringValueAttribute.cs" />
     <Compile Include="Utils\StringValueAttribute.Utils.cs" />
     <Compile Include="Utils\Units.cs" />
+    <Compile Include="Utils\UriBuilder.cs" />
     <Compile Include="Utils\WeatherException.cs" />
     <Compile Include="Utils\WeatherUtils.Alerts.cs" />
     <Compile Include="Utils\WeatherUtils.Beaufort.cs" />
