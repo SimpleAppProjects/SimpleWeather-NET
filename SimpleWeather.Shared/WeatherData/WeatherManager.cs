@@ -69,13 +69,12 @@ namespace SimpleWeather.WeatherData
                 "https://www.weather.gov", "https://www.weather.gov"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
-            new ProviderEntry(
-                    "WeatherAPI.com", WeatherApi,
-                    "https://weatherapi.com", "https://weatherapi.com/api"),
+            new ProviderEntry("WeatherAPI.com", WeatherApi,
+                "https://weatherapi.com", "https://weatherapi.com/api"),
             new ProviderEntry("WeatherUnlocked", WeatherUnlocked,
-                    "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/"),
+                "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/"),
             new ProviderEntry("Meteo France", MeteoFrance,
-                    "https://meteofrance.com/", "https://meteofrance.com/")
+                "https://meteofrance.com/", "https://meteofrance.com/")
         };
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
@@ -89,7 +88,7 @@ namespace SimpleWeather.WeatherData
                 "https://bing.com/maps", "https://bing.com/maps")
         };
 
-        private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(1)
+        private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(2)
         {
             new ProviderEntry("Tomorrow.io", TomorrowIo,
                 "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),

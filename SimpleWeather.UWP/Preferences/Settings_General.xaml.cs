@@ -117,7 +117,10 @@ namespace SimpleWeather.UWP.Preferences
             FollowGPS.IsOn = Settings.FollowGPS;
 
             // Weather Providers
-            APIComboBox.ItemsSource = WeatherAPI.APIs;
+            if (APIComboBox.ItemsSource == null || !WeatherAPI.APIs.SequenceEqual(APIComboBox.ItemsSource as IEnumerable<SimpleWeather.Controls.ProviderEntry>))
+            {
+                APIComboBox.ItemsSource = WeatherAPI.APIs;
+            }
             APIComboBox.DisplayMemberPath = "Display";
             APIComboBox.SelectedValuePath = "Value";
 
@@ -437,7 +440,9 @@ namespace SimpleWeather.UWP.Preferences
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string API = box.SelectedValue.ToString();
+            string API = box.SelectedValue?.ToString();
+
+            if (API == null) return;
 
             if (!SharedExtras.IsWeatherAPISupported(API))
             {
