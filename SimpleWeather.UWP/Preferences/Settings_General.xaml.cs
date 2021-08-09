@@ -480,7 +480,7 @@ namespace SimpleWeather.UWP.Preferences
                     // User is using personal (unverified) keys
                     Settings.KeyVerified = false;
                     // Clear API KEY entry to avoid issues
-                    Settings.API_KEY = String.Empty;
+                    Settings.API_KEY = KeyEntry.Text = String.Empty;
 
                     KeyEntry.Visibility = Visibility.Visible;
                 }
