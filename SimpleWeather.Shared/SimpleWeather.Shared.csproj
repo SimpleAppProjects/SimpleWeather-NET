@@ -121,6 +121,14 @@
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AccuWeather\AccuWeatherLocationProvider.cs" />
+    <Compile Include="AccuWeather\CurrentRootobject.cs" />
+    <Compile Include="AccuWeather\DailyForecastRootobject.cs" />
+    <Compile Include="AccuWeather\GeopositionRootobject.cs" />
+    <Compile Include="AccuWeather\HourlyForecastRootobject.cs" />
+    <Compile Include="AccuWeather\AccuWeatherProvider.cs" />
+    <Compile Include="AccuWeather\LocationData.cs" />
+    <Compile Include="AccuWeather\WeatherData.cs" />
     <Compile Include="Ambee\AmbeePollenProvider.cs" />
     <Compile Include="Ambee\Rootobject.cs" />
     <Compile Include="AQICN\AQICNData.cs" />
@@ -260,7 +268,7 @@
     <Compile Include="Utils\ListUtils.cs" />
     <Compile Include="Utils\LocationUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
-    <Compile Include="Utils\NumberExtensions.cs" />
+    <Compile Include="Utils\CustomExtensions.cs" />
     <Compile Include="Utils\OAuthUtils.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
     <Compile Include="Utils\Settings.cs" />

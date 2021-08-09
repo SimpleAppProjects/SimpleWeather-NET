@@ -58,13 +58,18 @@ namespace SimpleWeather.Controls
 
         public bool IsEmpty => String.IsNullOrEmpty(LocationCountry) && String.IsNullOrEmpty(LocationQuery);
 
+        public LocationQueryViewModel Clone()
+        {
+            return this.MemberwiseClone() as LocationQueryViewModel;
+        }
+
         private void UpdateLocationQuery()
         {
             if (WeatherAPI.Here.Equals(WeatherSource))
             {
                 LocationQuery = String.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", LocationLat, LocationLong);
             }
-            else if (WeatherAPI.WeatherUnlocked.Equals(WeatherSource) || WeatherAPI.WeatherApi.Equals(WeatherSource) || WeatherAPI.TomorrowIo.Equals(WeatherSource))
+            else if (WeatherAPI.WeatherUnlocked.Equals(WeatherSource) || WeatherAPI.WeatherApi.Equals(WeatherSource) || WeatherAPI.TomorrowIo.Equals(WeatherSource) || WeatherAPI.AccuWeather.Equals(WeatherSource))
             {
                 LocationQuery = String.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong);
             }

@@ -17,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.UI;
 using SimpleWeather.TomorrowIO;
+using SimpleWeather.AccuWeather;
 
 namespace SimpleWeather.WeatherData
 {
@@ -32,6 +33,7 @@ namespace SimpleWeather.WeatherData
         public const string WeatherUnlocked = "wunlocked";
         public const string MeteoFrance = "meteofrance";
         public const string TomorrowIo = "tomorrowio";
+        public const string AccuWeather = "accuweather";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -81,13 +83,18 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("Bing Maps", BingMaps,
                     "https://bing.com/maps", "https://bing.com/maps"),
             new ProviderEntry("WeatherAPI.com", WeatherApi,
-                "https://weatherapi.com", "https://weatherapi.com/api")
+                "https://weatherapi.com", "https://weatherapi.com/api"),
+            new ProviderEntry("Bing Maps", AccuWeather,
+                /* Uses BingMapsLocationProvider | accuweather is used for locationid only */
+                "https://bing.com/maps", "https://bing.com/maps")
         };
 
         private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(1)
         {
             new ProviderEntry("Tomorrow.io", TomorrowIo,
-                "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/")
+                "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
+            new ProviderEntry("AccuWeather", AccuWeather,
+                "https://www.accuweather.com/", "https://developer.accuweather.com/")
         };
     }
 
@@ -159,6 +166,10 @@ namespace SimpleWeather.WeatherData
 
                 case WeatherData.WeatherAPI.TomorrowIo:
                     providerImpl = new TomorrowIOWeatherProvider();
+                    break;
+
+                case WeatherData.WeatherAPI.AccuWeather:
+                    providerImpl = new AccuWeatherProvider();
                     break;
 
 #if !DEBUG

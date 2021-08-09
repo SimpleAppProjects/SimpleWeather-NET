@@ -30,6 +30,12 @@
                     Fill="LightGray" />
                 <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Ambee Key (Pollen)" />
                 <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.Ambee, Mode=OneTime}" />
+                <Rectangle
+                    Height="1"
+                    Margin="0,7.5"
+                    Fill="LightGray" />
+                <TextBlock Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
+                <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
             </StackPanel>
         </ScrollViewer>
     </Grid>

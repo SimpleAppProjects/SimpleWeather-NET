@@ -264,9 +264,7 @@ namespace SimpleWeather.UWP.Main
 
                 // Need to get FULL location data for HERE API
                 // Data provided is incomplete
-                if (query_vm.LocationLat == -1 && query_vm.LocationLong == -1
-                        && query_vm.LocationTZLong == null
-                        && wm.LocationProvider.NeedsLocationFromID)
+                if (wm.LocationProvider.NeedsLocationFromID)
                 {
                     query_vm = await Task.Run(async () =>
                     {

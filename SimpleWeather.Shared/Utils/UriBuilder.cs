@@ -31,6 +31,25 @@ namespace SimpleWeather.Utils
             return this;
         }
 
+        public UriBuilderEx AppendPath(string path)
+        {
+            // Path returns '/' if empty
+            if (baseUriBuilder.Path == "/" || baseUriBuilder.Path.EndsWith('/'))
+            {
+                baseUriBuilder.Path += HttpUtility.UrlEncode(path); 
+            }
+            else if (path.StartsWith('/'))
+            {
+                baseUriBuilder.Path += HttpUtility.UrlEncode(path);
+            }
+            else
+            {
+                baseUriBuilder.Path += "/" + HttpUtility.UrlEncode(path);
+            }
+
+            return this;
+        }
+
         public Uri BuildUri()
         {
             baseUriBuilder.Query = query.ToString();
