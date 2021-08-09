@@ -40,6 +40,11 @@ namespace SimpleWeather.TomorrowIO
         public override bool KeyRequired => true;
         public override int HourlyForecastInterval => 1;
 
+        public override long GetRetryTime()
+        {
+            return 5000;
+        }
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {

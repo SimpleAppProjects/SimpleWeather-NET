@@ -38,6 +38,7 @@ namespace SimpleWeather.AccuWeather
 
             try
             {
+                // If were under rate limit, deny request
                 this.CheckRateLimit();
 
                 var key = (Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey()) ?? DevSettingsEnabler.GetAPIKey(WeatherData.WeatherAPI.AccuWeather);

@@ -34,6 +34,11 @@ namespace SimpleWeather.AccuWeather
         public override bool KeyRequired => true;
         public override bool NeedsExternalAlertData => true;
 
+        public override long GetRetryTime()
+        {
+            return 43200000L; // 12 hrs
+        }
+
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)
         {
