@@ -245,14 +245,22 @@ namespace SimpleWeather.AccuWeather
             return Task.CompletedTask;
         }
 
+        /// <exception cref="WeatherException">Ignore.</exception>
         public override string UpdateLocationQuery(WeatherData.Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", weather.location.latitude, weather.location.longitude);
+            // TODO: make a task?
+            var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(weather.location.latitude.Value, weather.location.longitude.Value), WeatherAPI).Result;
+
+            return locationModel.LocationQuery;
         }
 
+        /// <exception cref="WeatherException">Ignore.</exception>
         public override string UpdateLocationQuery(LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", location.latitude, location.longitude);
+            // TODO: make a task?
+            var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(location.latitude, location.longitude), WeatherAPI).Result;
+
+            return locationModel.LocationQuery;
         }
 
         public override string LocaleToLangCode(string iso, string name)
