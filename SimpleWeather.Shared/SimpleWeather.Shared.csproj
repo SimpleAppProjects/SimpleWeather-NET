@@ -151,6 +151,7 @@
     <Compile Include="Controls\MoonPhaseViewModel.cs" />
     <Compile Include="Controls\PollenViewModel.cs" />
     <Compile Include="Controls\ProviderEntry.cs" />
+    <Compile Include="Controls\SunPhaseViewModel.cs" />
     <Compile Include="Controls\UVIndexViewModel.cs" />
     <Compile Include="Controls\WeatherAlertsViewModel.cs" />
     <Compile Include="Controls\WeatherAlertViewModel.cs" />

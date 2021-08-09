@@ -35,8 +35,7 @@ namespace SimpleWeather.Controls
         private string weatherSummary;
 
         // Weather Details
-        private string sunrise;
-        private string sunset;
+        private SunPhaseViewModel sunPhase;
         private SimpleObservableList<DetailItemViewModel> weatherDetails;
         private UVIndexViewModel uvIndex;
         private BeaufortViewModel beaufort;
@@ -83,8 +82,7 @@ namespace SimpleWeather.Controls
         public string HiTemp { get => hiTemp; private set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
         public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
         public string WeatherSummary { get => weatherSummary; private set { if (!Equals(weatherSummary, value)) { weatherSummary = value; OnPropertyChanged(nameof(WeatherSummary)); } } }
-        public string Sunrise { get => sunrise; private set { if (!Equals(sunrise, value)) { sunrise = value; OnPropertyChanged(nameof(Sunrise)); } } }
-        public string Sunset { get => sunset; private set { if (!Equals(sunset, value)) { sunset = value; OnPropertyChanged(nameof(Sunset)); } } }
+        public SunPhaseViewModel SunPhase { get => sunPhase; private set { if (!Equals(sunPhase, value)) { sunPhase = value; OnPropertyChanged(nameof(SunPhase)); } } }
         public SimpleObservableList<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
         public UVIndexViewModel UVIndex { get => uvIndex; private set { if (!Equals(uvIndex, value)) { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } } }
         public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
@@ -428,8 +426,7 @@ namespace SimpleWeather.Controls
             // Astronomy
             if (weather.astronomy != null)
             {
-                Sunrise = weather.astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
-                Sunset = weather.astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);
+                SunPhase = new SunPhaseViewModel(weather.astronomy);
 
                 if (weather.astronomy.sunrise > DateTime.MinValue && weather.astronomy.sunset > DateTime.MinValue)
                 {
@@ -458,8 +455,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                Sunrise = null;
-                Sunset = null;
+                SunPhase = null;
                 MoonPhase = null;
             }
 

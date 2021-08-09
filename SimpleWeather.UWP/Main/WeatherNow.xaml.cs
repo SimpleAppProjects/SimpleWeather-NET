@@ -247,9 +247,8 @@ namespace SimpleWeather.UWP.Main
         {
             switch (e.PropertyName)
             {
-                case "Sunrise":
-                case "Sunset":
-                    if (!String.IsNullOrWhiteSpace(WeatherView.Sunrise) && !String.IsNullOrWhiteSpace(WeatherView.Sunset))
+                case "SunPhase":
+                    if (WeatherView.SunPhase?.SunriseTime != null && WeatherView.SunPhase?.SunsetTime != null)
                     {
                         while (SunPhasePanel == null || !SunPhasePanel.ReadyToDraw)
                         {
@@ -257,9 +256,9 @@ namespace SimpleWeather.UWP.Main
                         }
 
                         SunPhasePanel.SetSunriseSetTimes(
-                            DateTime.Parse(WeatherView.Sunrise, CultureInfo.InvariantCulture).TimeOfDay,
-                            DateTime.Parse(WeatherView.Sunset, CultureInfo.InvariantCulture).TimeOfDay,
-                            locationData?.tz_offset);
+                            WeatherView.SunPhase.SunriseTime, WeatherView.SunPhase.SunsetTime,
+                            locationData?.tz_offset ?? TimeSpan.Zero
+                        );
                     }
                     break;
 

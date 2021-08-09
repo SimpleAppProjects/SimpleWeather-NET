@@ -536,7 +536,7 @@
                         MaxWidth="1280"
                         Margin="0,0,0,25"
                         x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
-                        Visibility="{x:Bind WeatherView.Sunrise, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                        Visibility="{x:Bind WeatherView.SunPhase, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <Border Style="{ThemeResource Divider}" />
                         <toolkitControls:HeaderedContentControl
                             HorizontalContentAlignment="Stretch"
