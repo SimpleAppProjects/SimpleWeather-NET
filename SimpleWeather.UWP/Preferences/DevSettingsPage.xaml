@@ -28,14 +28,14 @@
                     Height="1"
                     Margin="0,-4,0,15"
                     Fill="LightGray" />
-                <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Ambee Key (Pollen)" />
-                <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.Ambee, Mode=OneTime}" />
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
-                <TextBlock Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
-                <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
+                <StackPanel Padding="0,0,0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Ambee Key (Pollen)" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.Ambee, Mode=OneTime}" />
+                </StackPanel>
+                <StackPanel Padding="0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>
