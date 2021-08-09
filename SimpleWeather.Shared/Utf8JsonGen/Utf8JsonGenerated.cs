@@ -27580,7 +27580,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
             writer.WriteRaw(this.____stringByteKeys[11]);
             formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.precipitationIntensity, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[12]);
-            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.precipitationProbability, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<float?>().Serialize(ref writer, value.precipitationProbability, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[13]);
             formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.sunriseTime, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[14]);
@@ -27637,7 +27637,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
             var __pressureSeaLevel__b__ = false;
             var __precipitationIntensity__ = default(float?);
             var __precipitationIntensity__b__ = false;
-            var __precipitationProbability__ = default(int?);
+            var __precipitationProbability__ = default(float?);
             var __precipitationProbability__b__ = false;
             var __sunriseTime__ = default(global::System.DateTimeOffset);
             var __sunriseTime__b__ = false;
@@ -27723,7 +27723,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
                         __precipitationIntensity__b__ = true;
                         break;
                     case 12:
-                        __precipitationProbability__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __precipitationProbability__ = formatterResolver.GetFormatterWithVerify<float?>().Deserialize(ref reader, formatterResolver);
                         __precipitationProbability__b__ = true;
                         break;
                     case 13:
