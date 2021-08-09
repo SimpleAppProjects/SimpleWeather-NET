@@ -109,7 +109,7 @@ namespace SimpleWeather.UWP.Main
 
                     Dispatcher.LaunchOnUIThread(() => 
                     {
-                        LoadingRing.IsActive = false;
+                        ShowProgressRing(false);
                         radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
                     });
                 });
@@ -172,7 +172,7 @@ namespace SimpleWeather.UWP.Main
                         break;
                 }
 
-                LoadingRing.IsActive = false;
+                ShowProgressRing(false);
             });
         }
 
@@ -685,6 +685,15 @@ namespace SimpleWeather.UWP.Main
             return locationChanged;
         }
 
+        private void ShowProgressRing(bool show)
+        {
+            LoadingRing.IsActive = show;
+            if (GetRefreshBtn() is AppBarButton btn)
+            {
+                btn.IsEnabled = !show;
+            }
+        }
+
         private async void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
@@ -707,7 +716,7 @@ namespace SimpleWeather.UWP.Main
             {
                 Dispatcher.LaunchOnUIThread(() =>
                 {
-                    LoadingRing.IsActive = true;
+                    ShowProgressRing(true);
 
                     if (wLoader == null && locationData != null)
                     {
