@@ -171,6 +171,8 @@ namespace SimpleWeather.UWP.Main
                         ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
                         break;
                 }
+
+                LoadingRing.IsActive = false;
             });
         }
 
