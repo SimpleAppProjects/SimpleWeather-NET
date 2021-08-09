@@ -289,6 +289,14 @@ namespace SimpleWeather.TomorrowIO
                 hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
             }
 
+            if (weather.min_forecast?.Any() == true)
+            {
+                foreach (var min_forecast in weather.min_forecast)
+                {
+                    min_forecast.date = min_forecast.date.ToOffset(offset);
+                }
+            }
+
             if (weather.weather_alerts?.Any() == true)
             {
                 foreach (var alert in weather.weather_alerts)
