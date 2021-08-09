@@ -55,7 +55,7 @@ namespace SimpleWeather.AccuWeather
     {
         public string Code { get; set; }
         public string Name { get; set; }
-        public int? GmtOffset { get; set; }
+        public float? GmtOffset { get; set; }
         public bool? IsDaylightSaving { get; set; }
         public DateTimeOffset NextOffsetChange { get; set; }
     }
@@ -75,14 +75,14 @@ namespace SimpleWeather.AccuWeather
 
     public class GeoMetric
     {
-        public int? Value { get; set; }
+        public float? Value { get; set; }
         public string Unit { get; set; }
         public int? UnitType { get; set; }
     }
 
     public class GeoImperial
     {
-        public int? Value { get; set; }
+        public float? Value { get; set; }
         public string Unit { get; set; }
         public int? UnitType { get; set; }
     }
