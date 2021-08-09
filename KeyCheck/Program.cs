@@ -12,7 +12,7 @@ namespace KeyCheck
     {
         private static void Main(string[] args)
         {
-            if (args == null || args.Length != 1)
+            if (args == null || args.Length == 0)
             {
                 Console.WriteLine("Missing arguments!!");
                 Environment.ExitCode = 1;
@@ -29,11 +29,24 @@ namespace KeyCheck
                 else
                 {
                     var KeyFiles = Directory.EnumerateFiles(DirectoryPath, "*.cs", SearchOption.TopDirectoryOnly);
+                    string[] ExcludeFiles = null;
+
+                    if (args.Length == 2)
+                    {
+                        ExcludeFiles = args[1].Split(',');
+                    }
 
                     foreach (var FilePath in KeyFiles)
                     {
                         try
                         {
+                            var info = new FileInfo(FilePath);
+                            if (ExcludeFiles != null && (ExcludeFiles.Contains(info.Name) || ExcludeFiles.Contains(info.FullName)))
+                            {
+                                Console.WriteLine("Skipping file path: {0}", FilePath);
+                                continue;
+                            }
+
                             Console.WriteLine("File path: {0}", FilePath);
                             var content = File.ReadAllText(FilePath);
                             if (content.Contains("return null;") ||

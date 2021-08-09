@@ -99,7 +99,7 @@ namespace SimpleWeather.AccuWeather
 
         public override string GetAPIKey()
         {
-            return null;
+            return APIKeys.GetAccuWeatherKey();
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

@@ -181,6 +181,8 @@
     <Compile Include="Icons\WeatherIconsManager.cs" />
     <Compile Include="Icons\WeatherIconsProvider.cs" />
     <Compile Include="Icons\WUndergroundIconsProvider.cs" />
+    <Compile Include="Keys\AccuWeatherKey.cs" />
+    <Compile Include="Keys\AmbeeKey.cs" />
     <Compile Include="Keys\AppCenterKey.cs" />
     <Compile Include="Keys\AQICNKey.cs" />
     <Compile Include="Keys\BingMapsKey.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="Keys\HEREWeatherKey.cs" />
     <Compile Include="Keys\OWMKey.cs" />
     <Compile Include="Keys\TimeZoneAPI.cs" />
+    <Compile Include="Keys\TomorrowIOKey.cs" />
     <Compile Include="Keys\WeatherApiKey.cs" />
     <Compile Include="Keys\MeteoFranceKey.cs" />
     <Compile Include="Keys\WUnlockedKey.cs" />

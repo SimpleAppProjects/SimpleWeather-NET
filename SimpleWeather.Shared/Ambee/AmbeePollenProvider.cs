@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Location;
+﻿using SimpleWeather.Keys;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -28,7 +29,7 @@ namespace SimpleWeather.Ambee
         {
             Pollen pollenData = null;
 
-            var key = DevSettingsEnabler.GetAPIKey(WeatherAPI.Ambee);
+            var key = DevSettingsEnabler.GetAPIKey(WeatherAPI.Ambee) ?? APIKeys.GetAmbeeKey();
             if (String.IsNullOrWhiteSpace(key)) return null;
 
             try

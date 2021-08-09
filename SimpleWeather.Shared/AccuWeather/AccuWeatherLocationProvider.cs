@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Controls;
+using SimpleWeather.Keys;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -24,6 +25,11 @@ namespace SimpleWeather.AccuWeather
         public override bool NeedsLocationFromID => true;
         public override bool NeedsLocationFromName => false;
         public override bool NeedsLocationFromGeocoder => false;
+
+        public override string GetAPIKey()
+        {
+            return APIKeys.GetAccuWeatherKey();
+        }
 
         /// <exception cref="WeatherException">Ignore. Thrown when task is unable to retrieve data</exception>
         public override async Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)

@@ -100,7 +100,7 @@ namespace SimpleWeather.TomorrowIO
 
         public override string GetAPIKey()
         {
-            return null;
+            return APIKeys.GetTomorrowIOKey();
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
