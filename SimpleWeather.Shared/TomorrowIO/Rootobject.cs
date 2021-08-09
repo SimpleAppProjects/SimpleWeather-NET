@@ -45,7 +45,7 @@ namespace SimpleWeather.TomorrowIO
         public float? windGust { get; set; }
         public float? pressureSeaLevel { get; set; }
         public float? precipitationIntensity { get; set; }
-        public int? precipitationProbability { get; set; }
+        public float? precipitationProbability { get; set; }
         public DateTimeOffset sunriseTime { get; set; }
         public DateTimeOffset sunsetTime { get; set; }
         public float? visibility { get; set; }

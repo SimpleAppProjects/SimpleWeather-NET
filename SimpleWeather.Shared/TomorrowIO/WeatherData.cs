@@ -129,10 +129,10 @@ namespace SimpleWeather.WeatherData
             }
             if (item.values.dewPoint.HasValue)
             {
-                extras.dewpoint_c = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
-                extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(extras.dewpoint_c.Value));
+                extras.dewpoint_c = item.values.dewPoint.Value;
+                extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
             }
-            extras.pop = item.values.precipitationProbability;
+            extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
             {
                 extras.cloudiness = (int)MathF.Round(item.values.cloudCover.Value);
@@ -141,6 +141,16 @@ namespace SimpleWeather.WeatherData
             {
                 extras.qpf_rain_mm = item.values.precipitationIntensity.Value;
                 extras.qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
+            }
+            if (item.values.snowAccumulation.HasValue)
+            {
+                extras.qpf_snow_cm = item.values.snowAccumulation.Value / 10;
+                extras.qpf_snow_in = ConversionMethods.MMToIn(item.values.snowAccumulation.Value);
+            }
+            if (item.values.pressureSeaLevel.HasValue)
+            {
+                extras.pressure_mb = item.values.pressureSeaLevel.Value;
+                extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value).RoundToInt();
             }
             if (item.values.windDirection.HasValue)
             {
@@ -151,15 +161,15 @@ namespace SimpleWeather.WeatherData
                 extras.wind_mph = ConversionMethods.MSecToMph(item.values.windSpeed.Value);
                 extras.wind_kph = ConversionMethods.MSecToKph(item.values.windSpeed.Value);
             }
-            if (item.values.visibility.HasValue)
-            {
-                extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
-                extras.visibility_km = item.values.visibility;
-            }
             if (item.values.windGust.HasValue)
             {
                 extras.wind_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
                 extras.wind_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
+            }
+            if (item.values.visibility.HasValue)
+            {
+                extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
+                extras.visibility_km = item.values.visibility;
             }
         }
     }
@@ -191,10 +201,10 @@ namespace SimpleWeather.WeatherData
             }
             if (item.values.dewPoint.HasValue)
             {
-                extras.dewpoint_c = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
-                extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(extras.dewpoint_c.Value));
+                extras.dewpoint_c = item.values.dewPoint.Value;
+                extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
             }
-            extras.pop = item.values.precipitationProbability;
+            extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
             {
                 extras.cloudiness = (int)MathF.Round(item.values.cloudCover.Value);
@@ -204,24 +214,38 @@ namespace SimpleWeather.WeatherData
                 extras.qpf_rain_mm = item.values.precipitationIntensity.Value;
                 extras.qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
             }
+            if (item.values.snowAccumulation.HasValue)
+            {
+                extras.qpf_snow_cm = item.values.snowAccumulation.Value / 10;
+                extras.qpf_snow_in = ConversionMethods.MMToIn(item.values.snowAccumulation.Value);
+            }
+            if (item.values.pressureSeaLevel.HasValue)
+            {
+                extras.pressure_mb = item.values.pressureSeaLevel.Value;
+                extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value).RoundToInt();
+            }
             if (item.values.windDirection.HasValue)
             {
                 extras.wind_degrees = (int)MathF.Round(item.values.windDirection.Value);
+                wind_degrees = extras.wind_degrees;
             }
             if (item.values.windSpeed.HasValue)
             {
                 extras.wind_mph = ConversionMethods.MSecToMph(item.values.windSpeed.Value);
+                wind_mph = extras.wind_mph;
+
                 extras.wind_kph = ConversionMethods.MSecToKph(item.values.windSpeed.Value);
-            }
-            if (item.values.visibility.HasValue)
-            {
-                extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
-                extras.visibility_km = item.values.visibility;
+                wind_kph = extras.wind_kph;
             }
             if (item.values.windGust.HasValue)
             {
                 extras.wind_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
                 extras.wind_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
+            }
+            if (item.values.visibility.HasValue)
+            {
+                extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
+                extras.visibility_km = item.values.visibility;
             }
         }
     }
@@ -268,6 +292,18 @@ namespace SimpleWeather.WeatherData
             }
 
             icon = item.values.weatherCode?.ToString();
+
+            if (item.values.temperatureMax.HasValue)
+            {
+                high_c = item.values.temperatureMax;
+                high_f = ConversionMethods.CtoF(item.values.temperatureMax.Value);
+            }
+
+            if (item.values.temperatureMin.HasValue)
+            {
+                low_c = item.values.temperatureMin;
+                low_f = ConversionMethods.CtoF(item.values.temperatureMin.Value);
+            }
 
             airQuality = new AirQuality()
             {
@@ -386,8 +422,9 @@ namespace SimpleWeather.WeatherData
     {
         public Precipitation(TomorrowIO.Interval item)
         {
-            pop = item.values.precipitationProbability;
+            pop = item.values.precipitationProbability?.RoundToInt();
             cloudiness = item.values.cloudCover?.RoundToInt();
+
             if (item.values.precipitationIntensity.HasValue)
             {
                 qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
