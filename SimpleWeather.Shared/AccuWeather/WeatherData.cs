@@ -48,6 +48,18 @@ namespace SimpleWeather.WeatherData
             atmosphere = new Atmosphere(currentItem);
             precipitation = new Precipitation(currentItem);
 
+            // Weather summary
+            if (dailyRoot.Headline?.EffectiveEpochDate != null && dailyRoot.Headline?.EndEpochDate != null)
+            {
+                var effectiveDate = DateTimeOffset.FromUnixTimeSeconds(dailyRoot.Headline.EffectiveEpochDate.Value).ToOffset(observationTime.Offset);
+                var endDate = DateTimeOffset.FromUnixTimeSeconds(dailyRoot.Headline.EndEpochDate.Value).ToOffset(observationTime.Offset);
+
+                if (observationTime >= effectiveDate && observationTime <= endDate)
+                {
+                    condition.summary = dailyRoot.Headline?.Text;
+                }
+            }
+
             ttl = 180;
             source = WeatherAPI.AccuWeather;
         }
@@ -378,6 +390,26 @@ namespace SimpleWeather.WeatherData
             }
 
             observation_time = current.LocalObservationDateTime;
+
+            summary = daily?.Let((it) =>
+            {
+                var ResLoader = SimpleLibrary.GetInstance().ResLoader;
+                var labelDay = ResLoader.GetString("label_day");
+                var labelNite = ResLoader.GetString("label_night");
+
+                var strBuilder = new StringBuilder();
+                if (!String.IsNullOrWhiteSpace(it.Day?.LongPhrase))
+                {
+                    strBuilder.Append($"{labelDay} - {it.Day.LongPhrase}");
+                }
+                if (!String.IsNullOrWhiteSpace(it.Night?.LongPhrase))
+                {
+                    if (strBuilder.Length > 0) strBuilder.AppendLine();
+                    strBuilder.Append($"{labelNite} - {it.Night.LongPhrase}");
+                }
+
+                return strBuilder.ToString();
+            });
         }
     }
 
