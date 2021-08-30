@@ -137,27 +137,12 @@ namespace SimpleWeather.Utils
 
         private static bool IsWeatherLoaded()
         {
-            if (!DBUtils.LocationDataExists(locationDB))
+            if (localSettings.Values.TryGetValue(KEY_WEATHERLOADED, out object value))
             {
-                if (!DBUtils.WeatherDataExists(weatherDB))
-                {
-                    SetWeatherLoaded(false);
-                    return false;
-                }
+                return (bool)value;
             }
 
-            if (localSettings.Values[KEY_WEATHERLOADED] == null)
-            {
-                return false;
-            }
-            else if (localSettings.Values[KEY_WEATHERLOADED].Equals(true))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         private static void SetWeatherLoaded(bool isLoaded)
