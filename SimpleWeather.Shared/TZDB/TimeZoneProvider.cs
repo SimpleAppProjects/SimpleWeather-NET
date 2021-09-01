@@ -55,7 +55,7 @@ namespace SimpleWeather.TZDB
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        CheckForErrors(API_ID, response.StatusCode);
+                        await CheckForErrors(API_ID, response);
                         response.EnsureSuccessStatusCode();
 
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

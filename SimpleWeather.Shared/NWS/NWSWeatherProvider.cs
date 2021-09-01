@@ -95,7 +95,7 @@ namespace SimpleWeather.NWS
                     using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
                     {
                         // Check for errors
-                        this.CheckForErrors(observationResponse.StatusCode);
+                        await this.CheckForErrors(observationResponse);
 
                         Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
 
@@ -106,7 +106,7 @@ namespace SimpleWeather.NWS
                         using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
                         {
                             // Check for errors
-                            this.CheckForErrors(forecastResponse.StatusCode);
+                            await this.CheckForErrors(forecastResponse);
 
                             Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
 

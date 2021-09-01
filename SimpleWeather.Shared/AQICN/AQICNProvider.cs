@@ -53,7 +53,7 @@ namespace SimpleWeather.AQICN
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                 using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                 {
-                    this.CheckForErrors(API_ID, response.StatusCode);
+                    await this.CheckForErrors(API_ID, response);
                     response.EnsureSuccessStatusCode();
 
                     Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

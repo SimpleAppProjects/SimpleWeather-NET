@@ -60,7 +60,7 @@ namespace SimpleWeather.HERE
                         using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var response = await webClient.SendAsync(request, cts.Token))
                         {
-                            CheckForErrors(WeatherAPI.Here, response.StatusCode, 10000);
+                            await response.CheckForErrors(WeatherAPI.Here, 10000);
                             response.EnsureSuccessStatusCode();
 
                             Stream contentStream = await response.Content.ReadAsStreamAsync();

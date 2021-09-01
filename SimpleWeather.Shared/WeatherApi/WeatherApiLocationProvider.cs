@@ -58,7 +58,7 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        this.CheckForErrors(response.StatusCode);
+                        await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
@@ -150,7 +150,7 @@ namespace SimpleWeather.WeatherApi
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        this.CheckForErrors(response.StatusCode);
+                        await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

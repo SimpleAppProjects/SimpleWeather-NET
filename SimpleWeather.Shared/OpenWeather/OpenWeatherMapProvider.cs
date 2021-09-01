@@ -60,7 +60,7 @@ namespace SimpleWeather.OpenWeather
                 using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
                 {
                     // Check for errors
-                    this.ThrowIfRateLimited(response.StatusCode);
+                    this.ThrowIfRateLimited(response);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -139,10 +139,10 @@ namespace SimpleWeather.OpenWeather
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
-                        this.CheckForErrors(currentResponse.StatusCode);
+                        await this.CheckForErrors(currentResponse);
                         currentResponse.EnsureSuccessStatusCode();
 
-                        this.CheckForErrors(forecastResponse.StatusCode);
+                        await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());

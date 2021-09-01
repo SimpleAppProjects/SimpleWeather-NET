@@ -44,7 +44,7 @@ namespace SimpleWeather.NWS
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
                     {
-                        this.CheckForErrors(WeatherAPI.NWS, response.StatusCode);
+                        await this.CheckForErrors(WeatherAPI.NWS, response);
                         response.EnsureSuccessStatusCode();
 
                         Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());

@@ -170,7 +170,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                 RefreshToken();
                 using (var response = await HttpClient.GetAsync(new Uri(MapsURL)).AsTask(cts.Token))
                 {
-                    CheckForErrors(API_ID, response.StatusCode);
+                    await response.CheckForErrors(API_ID);
                     response.EnsureSuccessStatusCode();
 
                     var stream = await response.Content.ReadAsInputStreamAsync();

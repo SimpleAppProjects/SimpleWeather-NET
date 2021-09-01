@@ -87,10 +87,10 @@ namespace SimpleWeather.WeatherUnlocked
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
-                        this.CheckForErrors(currentResponse.StatusCode);
+                        await this.CheckForErrors(currentResponse);
                         currentResponse.EnsureSuccessStatusCode();
 
-                        this.CheckForErrors(forecastResponse.StatusCode);
+                        await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());

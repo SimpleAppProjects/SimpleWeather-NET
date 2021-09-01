@@ -15,6 +15,12 @@ namespace SimpleWeather.Utils
             ErrorStatus = errorStatus;
         }
 
+        public WeatherException(WeatherUtils.ErrorStatus errorStatus, Exception innerException)
+            : base("", innerException)
+        {
+            ErrorStatus = errorStatus;
+        }
+
         public override string Message
         {
             get

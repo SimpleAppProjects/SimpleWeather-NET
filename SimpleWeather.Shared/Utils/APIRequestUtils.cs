@@ -11,93 +11,120 @@ namespace SimpleWeather.Utils
 {
     public static partial class APIRequestUtils
     {
+        #region Windows.Web.Http
         /// <summary>
         /// Checks if response was successful; if it was not, throw the appropriate WeatherException
         /// </summary>
         /// <param name="apiID">API ID of API where the request came from</param>
-        /// <param name="responseCode">HTTP response code</param>
+        /// <param name="response">HTTP response</param>
         /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
         /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(string apiID, int responseCode, long retryTimeInMs = 60000)
+        public static async Task CheckForErrors(this HttpResponseMessage response, string apiID, long retryTimeInMs = 60000)
         {
-            switch (responseCode)
+            await CheckForErrors(apiID, response, retryTimeInMs);
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="apiID">API ID of API where the request came from</param>
+        /// <param name="response">HTTP response</param>
+        /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(string apiID, HttpResponseMessage response, long retryTimeInMs = 60000)
+        {
+            if (!response.IsSuccessStatusCode)
             {
-                case (int)HttpStatusCode.Ok:
-                    // ok
-                    break;
-                case (int)HttpStatusCode.BadRequest:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
-                case (int)HttpStatusCode.NotFound:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
-                case (int)HttpStatusCode.TooManyRequests:
-                    ThrowIfRateLimited(apiID, responseCode, retryTimeInMs);
-                    break;
-                case (int)HttpStatusCode.InternalServerError:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
-                default:
-                    throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather);
+                switch (response.StatusCode)
+                {
+                    case HttpStatusCode.Ok:
+                        // ok
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather,
+                            await response.CreateException());
+                    case HttpStatusCode.NotFound:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                            await response.CreateException());
+                    case HttpStatusCode.TooManyRequests:
+                        ThrowIfRateLimited(apiID, response, retryTimeInMs);
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
+                            await response.CreateException());
+                    default:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather,
+                            await response.CreateException());
+                }
             }
         }
 
         /// <summary>
         /// Checks if response was successful; if it was not, throw the appropriate WeatherException
         /// </summary>
-        /// <param name="apiID">API ID of API where the request came from</param>
-        /// <param name="responseCode">HTTP response code</param>
-        /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
+        /// <param name="response">HTTP response</param>
         /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(string apiID, HttpStatusCode responseCode, long retryTimeInMs = 60000)
+        public static async Task CheckForErrors(this WeatherProviderImpl providerImpl, HttpResponseMessage response)
         {
-            CheckForErrors(apiID, (int)responseCode, retryTimeInMs);
+            await CheckForErrors(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this HttpResponseMessage response, WeatherProviderImpl providerImpl)
+        {
+            await CheckForErrors(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this LocationProviderImpl providerImpl, HttpResponseMessage response)
+        {
+            await CheckForErrors(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this HttpResponseMessage response, LocationProviderImpl providerImpl)
+        {
+            await CheckForErrors(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <summary>
         /// Checks if response was successful; if it was not, throw the appropriate WeatherException
         /// </summary>
         /// <param name="apiID">API ID of API where the request came from</param>
-        /// <param name="responseCode">HTTP response code</param>
-        /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
+        /// <param name="response">HTTP response</param>
         /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(string apiID, System.Net.HttpStatusCode responseCode, long retryTimeInMs = 60000)
+        public static async Task CheckForErrors(this IRateLimitedRequest @api, string apiID, HttpResponseMessage response)
         {
-            CheckForErrors(apiID, (int)responseCode, retryTimeInMs);
-        }
-
-        /// <summary>
-        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
-        /// </summary>
-        /// <param name="responseCode">HTTP response code</param>
-        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(this WeatherProviderImpl providerImpl, HttpStatusCode responseCode)
-        {
-            CheckForErrors(providerImpl.WeatherAPI, responseCode, providerImpl.GetRetryTime());
-        }
-
-        /// <summary>
-        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
-        /// </summary>
-        /// <param name="responseCode">HTTP response code</param>
-        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(this LocationProviderImpl providerImpl, HttpStatusCode responseCode)
-        {
-            CheckForErrors(providerImpl.LocationAPI, responseCode, providerImpl.GetRetryTime());
+            await CheckForErrors(apiID, response, @api.GetRetryTime());
         }
 
         /// <summary>
         /// Checks if response was successful; if it was not, throw the appropriate WeatherException
         /// </summary>
         /// <param name="apiID">API ID of API where the request came from</param>
-        /// <param name="responseCode">HTTP response code</param>
+        /// <param name="response">HTTP response</param>
         /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
-        public static void CheckForErrors(this IRateLimitedRequest @api, string apiID, HttpStatusCode responseCode)
+        public static async Task CheckForErrors(this HttpResponseMessage response, string apiID, IRateLimitedRequest @api)
         {
-            CheckForErrors(apiID, responseCode, @api.GetRetryTime());
+            await CheckForErrors(apiID, response, @api.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(string apiID, int responseCode, long retryTimeInMs = 60000)
+        public static void ThrowIfRateLimited(string apiID, HttpResponseMessage response, long retryTimeInMs = 60000)
         {
-            if (responseCode == ((int)HttpStatusCode.TooManyRequests))
+            if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 SetNextRetryTime(apiID, retryTimeInMs);
                 throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
@@ -105,22 +132,220 @@ namespace SimpleWeather.Utils
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this WeatherProviderImpl providerImpl, HttpStatusCode responseCode)
+        public static void ThrowIfRateLimited(this WeatherProviderImpl providerImpl, HttpResponseMessage response)
         {
-            ThrowIfRateLimited(providerImpl.WeatherAPI, (int)responseCode, providerImpl.GetRetryTime());
+            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this LocationProviderImpl providerImpl, HttpStatusCode responseCode)
+        public static void ThrowIfRateLimited(this HttpResponseMessage response, WeatherProviderImpl providerImpl)
         {
-            ThrowIfRateLimited(providerImpl.LocationAPI, (int)responseCode, providerImpl.GetRetryTime());
+            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, HttpStatusCode responseCode)
+        public static void ThrowIfRateLimited(this LocationProviderImpl providerImpl, HttpResponseMessage response)
         {
-            ThrowIfRateLimited(apiID, (int)responseCode, @api.GetRetryTime());
+            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this HttpResponseMessage response, LocationProviderImpl providerImpl)
+        {
+            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, HttpResponseMessage response)
+        {
+            ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
+        }
+
+        private static async Task<Exception> CreateException(this HttpResponseMessage response)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var responseCode = (int)response.StatusCode;
+            var requestMsg = response.RequestMessage?.ToString();
+            var responseMsg = response.ToString();
+
+            var exceptionMsg = new StringBuilder()
+                .AppendLine($"HTTP Error ${responseCode}")
+                .AppendLine($"Request: ${requestMsg}")
+                .AppendLine($"Response Message: ${responseMsg}")
+                .AppendLine($"Response: ${errorContent}")
+                .ToString();
+
+            return new Exception(exceptionMsg);
+        }
+        #endregion
+
+        #region System.Net.Http
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="apiID">API ID of API where the request came from</param>
+        /// <param name="response">HTTP response</param>
+        /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this System.Net.Http.HttpResponseMessage response, string apiID, long retryTimeInMs = 60000)
+        {
+            await CheckForErrors(apiID, response, retryTimeInMs);
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="apiID">API ID of API where the request came from</param>
+        /// <param name="response">HTTP response</param>
+        /// <param name="retryTimeInMs">Time in milliseconds to wait until next request</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(string apiID, System.Net.Http.HttpResponseMessage response, long retryTimeInMs = 60000)
+        {
+            if (!response.IsSuccessStatusCode)
+            {
+                switch ((int)response.StatusCode)
+                {
+                    case (int)System.Net.HttpStatusCode.OK:
+                        // ok
+                        break;
+                    case (int)System.Net.HttpStatusCode.BadRequest:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather,
+                            await response .CreateException());
+                    case (int)System.Net.HttpStatusCode.NotFound:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                            await response .CreateException());
+                    case 429:
+                        ThrowIfRateLimited(apiID, response, retryTimeInMs);
+                        break;
+                    case (int)System.Net.HttpStatusCode.InternalServerError:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
+                            await response.CreateException());
+                    default:
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather,
+                            await response.CreateException());
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this WeatherProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        {
+            await CheckForErrors(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this System.Net.Http.HttpResponseMessage response, WeatherProviderImpl providerImpl)
+        {
+            await CheckForErrors(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this LocationProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        {
+            await CheckForErrors(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this System.Net.Http.HttpResponseMessage response, LocationProviderImpl providerImpl)
+        {
+            await CheckForErrors(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="apiID">API ID of API where the request came from</param>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this IRateLimitedRequest @api, string apiID, System.Net.Http.HttpResponseMessage response)
+        {
+            await CheckForErrors(apiID, response, @api.GetRetryTime());
+        }
+
+        /// <summary>
+        /// Checks if response was successful; if it was not, throw the appropriate WeatherException
+        /// </summary>
+        /// <param name="apiID">API ID of API where the request came from</param>
+        /// <param name="response">HTTP response</param>
+        /// <exception cref="WeatherException">Error status will correspond to specific error status</exception>
+        public static async Task CheckForErrors(this System.Net.Http.HttpResponseMessage response, string apiID, IRateLimitedRequest @api)
+        {
+            await CheckForErrors(apiID, response, @api.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(string apiID, System.Net.Http.HttpResponseMessage response, long retryTimeInMs = 60000)
+        {
+            if ((int)response.StatusCode == ((int)HttpStatusCode.TooManyRequests))
+            {
+                SetNextRetryTime(apiID, retryTimeInMs);
+                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+            }
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this WeatherProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        {
+            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, WeatherProviderImpl providerImpl)
+        {
+            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this LocationProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        {
+            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, LocationProviderImpl providerImpl)
+        {
+            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+        }
+
+        /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
+        public static void ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, System.Net.Http.HttpResponseMessage response)
+        {
+            ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
+        }
+
+        private static async Task<Exception> CreateException(this System.Net.Http.HttpResponseMessage response)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            var responseCode = (int)response.StatusCode;
+            var requestMsg = response.RequestMessage?.ToString();
+            var responseMsg = response.ToString();
+
+            var exceptionMsg = new StringBuilder()
+                .AppendLine($"HTTP Error ${responseCode}")
+                .AppendLine($"Request: ${requestMsg}")
+                .AppendLine($"Response Message: ${responseMsg}")
+                .AppendLine($"Response: ${errorContent}")
+                .ToString();
+
+            return new Exception(exceptionMsg);
+        }
+        #endregion
 
         /// <summary>
         /// Check if API has been rate limited (HTTP Error 429 occurred recently).

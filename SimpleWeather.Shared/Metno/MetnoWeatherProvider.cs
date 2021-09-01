@@ -79,13 +79,13 @@ namespace SimpleWeather.Metno
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
                     {
-                        this.CheckForErrors(forecastResponse.StatusCode);
+                        await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
                         using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
                         {
-                            this.CheckForErrors(sunrisesetResponse.StatusCode);
+                            await this.CheckForErrors(sunrisesetResponse);
                             sunrisesetResponse.EnsureSuccessStatusCode();
 
                             Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
