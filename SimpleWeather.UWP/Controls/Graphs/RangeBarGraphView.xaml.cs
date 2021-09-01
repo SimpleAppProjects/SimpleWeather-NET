@@ -387,6 +387,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         loY = ((entry.LoTempData.Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
                     }
 
+                    // Skip empty entry
+                    if (hiY == null && loY == null)
+                    {
+                        continue;
+                    }
+
                     if (hiY == null)
                     {
                         hiY = loY;

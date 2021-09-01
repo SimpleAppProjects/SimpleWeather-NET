@@ -25,6 +25,9 @@ namespace SimpleWeather.UWP.Controls
 
             foreach (var forecast in forecasts)
             {
+                if (!forecast.high_f.HasValue && !forecast.low_f.HasValue)
+                    continue;
+
                 var tempData = new GraphTemperature();
                 string date = forecast.date.ToString("ddd dd", culture);
 
