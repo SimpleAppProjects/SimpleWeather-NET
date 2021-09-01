@@ -124,6 +124,7 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\outline_near_me_black_24dp.png" />
     <Content Include="Assets\SolarStroke.png" />
     <Content Include="Assets\LogoStroke.png" />
     <Content Include="Assets\SplashScreen.scale-100.png" />

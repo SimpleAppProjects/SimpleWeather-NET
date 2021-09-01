@@ -124,26 +124,36 @@
                     <!--  Row 5  -->
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
-                <toolkitControls:DropShadowPanel
+                <StackPanel
                     Grid.Row="0"
                     MaxWidth="1280"
                     Margin="0,10,0,5"
                     HorizontalAlignment="Center"
-                    BlurRadius="15.0"
-                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
-                    <TextBlock
-                        Name="Location"
-                        d:Text="New York, NY"
-                        FontSize="28"
-                        FontWeight="SemiBold"
-                        Foreground="{ThemeResource ForegroundColor}"
-                        MaxLines="2"
-                        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                        Text="{x:Bind WeatherView.Location, Mode=OneWay}"
-                        TextAlignment="Center"
-                        TextTrimming="CharacterEllipsis"
-                        TextWrapping="WrapWholeWords" />
-                </toolkitControls:DropShadowPanel>
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <BitmapIcon
+                        x:Name="GPSIcon"
+                        Margin="16,0"
+                        VerticalAlignment="Center"
+                        d:Visibility="Visible"
+                        ShowAsMonochrome="True"
+                        UriSource="/Assets/outline_near_me_black_24dp.png"
+                        Visibility="Collapsed" />
+                    <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                        <TextBlock
+                            Name="Location"
+                            d:Text="New York, NY"
+                            FontSize="28"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource ForegroundColor}"
+                            MaxLines="2"
+                            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+                            Text="{x:Bind WeatherView.Location, Mode=OneWay}"
+                            TextAlignment="Center"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="WrapWholeWords" />
+                    </toolkitControls:DropShadowPanel>
+                </StackPanel>
                 <toolkitControls:DropShadowPanel
                     Grid.Row="1"
                     MaxWidth="1280"

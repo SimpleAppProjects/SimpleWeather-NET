@@ -45,6 +45,14 @@ namespace SimpleWeather.UWP.Controls
             {
                 UpdateControlTheme();
                 //this.Bindings.Update(); // Update control theme updates bindings
+                if (ViewModel?.LocationType == (int)Location.LocationType.GPS)
+                {
+                    GPSIcon.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    GPSIcon.Visibility = Visibility.Collapsed;
+                }
             };
         }
 

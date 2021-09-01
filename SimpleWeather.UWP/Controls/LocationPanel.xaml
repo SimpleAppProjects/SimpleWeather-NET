@@ -84,23 +84,36 @@
             Height="36"
             Foreground="{ThemeResource TextFillColorPrimaryBrush}"
             IsActive="{x:Bind ViewModel.IsLoading, Mode=OneWay}" />
-        <toolkitControls:DropShadowPanel
+        <StackPanel
             Grid.Row="0"
             Grid.ColumnSpan="3"
             Margin="10,5,10,0"
             VerticalAlignment="Center"
-            BlurRadius="15.0"
-            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-            Color="{ThemeResource DropShadowColor}">
-            <TextBlock
-                x:Name="LocationName"
-                d:Text="San Fernando del Valle de Catamarca, Argentina"
-                FontSize="14"
-                FontWeight="Medium"
-                MaxLines="1"
-                Text="{x:Bind ViewModel.LocationName, Mode=OneWay}"
-                TextTrimming="CharacterEllipsis" />
-        </toolkitControls:DropShadowPanel>
+            Orientation="Horizontal">
+            <BitmapIcon
+                x:Name="GPSIcon"
+                Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height, Mode=OneWay}"
+                Height="{Binding ElementName=LocationName, Path=ActualHeight, Mode=OneWay}"
+                Margin="0,0,8,0"
+                VerticalAlignment="Center"
+                d:Visibility="Visible"
+                ShowAsMonochrome="True"
+                UriSource="/Assets/outline_near_me_black_24dp.png"
+                Visibility="Collapsed" />
+            <toolkitControls:DropShadowPanel
+                BlurRadius="15.0"
+                ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
+                Color="{ThemeResource DropShadowColor}">
+                <TextBlock
+                    x:Name="LocationName"
+                    d:Text="San Fernando del Valle de Catamarca, Argentina"
+                    FontSize="14"
+                    FontWeight="Medium"
+                    MaxLines="1"
+                    Text="{x:Bind ViewModel.LocationName, Mode=OneWay}"
+                    TextTrimming="CharacterEllipsis" />
+            </toolkitControls:DropShadowPanel>
+        </StackPanel>
         <StackPanel
             Grid.Row="1"
             Grid.Column="0"

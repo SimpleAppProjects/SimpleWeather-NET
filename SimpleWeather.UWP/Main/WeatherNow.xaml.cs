@@ -103,6 +103,18 @@ namespace SimpleWeather.UWP.Main
             {
                 WeatherView.UpdateView(weather);
 
+                Dispatcher.LaunchOnUIThread(() =>
+                {
+                    if (locationData?.locationType == LocationType.GPS)
+                    {
+                        GPSIcon.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        GPSIcon.Visibility = Visibility.Collapsed;
+                    }
+                });
+
                 Task.Run(async () =>
                 {
                     await WeatherView.UpdateBackground();
