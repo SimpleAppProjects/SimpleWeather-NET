@@ -466,6 +466,9 @@
   <data name="label_style_dark" xml:space="preserve">
     <value>Dark</value>
   </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Select Weather Provider</value>
   </data>
@@ -653,6 +656,9 @@
   </data>
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Very High</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Location not set. Please add a location</value>

@@ -466,6 +466,9 @@
   <data name="label_style_dark" xml:space="preserve">
     <value>Foncé</value>
   </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Défaut</value>
+  </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Choisir un fournisseur de services météo</value>
   </data>
@@ -654,5 +657,11 @@ Fuzzy</comment>
   </data>
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Très élevé</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>L&apos;emplacement n&apos;est pas défini. Veuillez ajouter un emplacement</value>
   </data>
 </root>

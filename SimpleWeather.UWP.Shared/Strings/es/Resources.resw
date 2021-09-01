@@ -472,6 +472,10 @@ Fuzzy</comment>
   <data name="label_style_dark" xml:space="preserve">
     <value>Oscuro</value>
   </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Por defecto</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Seleccionar proveedor del tiempo</value>
   </data>
@@ -669,5 +673,11 @@ Fuzzy</comment>
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Muy alto</value>
     <comment>Fuzzy</comment>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>La ubicación no está establecida. Por favor, añada una ubicación</value>
   </data>
 </root>

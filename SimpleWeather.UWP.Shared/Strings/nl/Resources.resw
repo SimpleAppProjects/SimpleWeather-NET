@@ -465,6 +465,9 @@
   <data name="label_style_dark" xml:space="preserve">
     <value>Donker</value>
   </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Standaard</value>
+  </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Kies Weeraanbieder</value>
   </data>
@@ -654,5 +657,11 @@ Fuzzy</comment>
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Zeer hoog</value>
     <comment>Fuzzy</comment>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Locatie niet ingesteld. Gelieve een locatie toe te voegen</value>
   </data>
 </root>

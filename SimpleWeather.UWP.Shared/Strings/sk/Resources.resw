@@ -465,6 +465,9 @@
   <data name="label_style_dark" xml:space="preserve">
     <value>Tmavá</value>
   </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Predvolené</value>
+  </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Vybrať poskytovateľa počasia</value>
   </data>
@@ -655,5 +658,11 @@ Fuzzy</comment>
   </data>
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Veľmi vysoká</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Poloha nie je stanovená. Prosím, pridajte umiestnenie</value>
   </data>
 </root>
