@@ -134,7 +134,7 @@
     <value>Huidige locatie</value>
   </data>
   <data name="label_getstarted" xml:space="preserve">
-    <value>Beginnen</value>
+    <value>Starten</value>
   </data>
   <data name="setup_welcome_prompt" xml:space="preserve">
     <value>Welkom bij SimpleWeather</value>
@@ -189,10 +189,10 @@
     <value>Zon op / Zon onder</value>
   </data>
   <data name="label_sunrise" xml:space="preserve">
-    <value>Zonsopkomst</value>
+    <value>Zon op</value>
   </data>
   <data name="label_sunset" xml:space="preserve">
-    <value>Zonsondergang</value>
+    <value>Zon onder</value>
   </data>
   <data name="label_hourlyforecast" xml:space="preserve">
     <value>Per uur</value>
@@ -225,7 +225,7 @@
     <value>Laag</value>
   </data>
   <data name="label_dewpoint" xml:space="preserve">
-    <value>Dauwppunt</value>
+    <value>Dauwpunt</value>
   </data>
   <data name="label_moonrise" xml:space="preserve">
     <value>Maan op</value>
@@ -240,7 +240,7 @@
     <value>Beaufort</value>
   </data>
   <data name="label_uv" xml:space="preserve">
-    <value>UV Inder</value>
+    <value>UV Index</value>
   </data>
   <data name="label_airquality" xml:space="preserve">
     <value>Luchtkwaliteitsindex</value>
@@ -404,7 +404,7 @@
     <value>Geldig tot</value>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
-    <value>Gebruik persoonlijk weersproviderssleutel</value>
+    <value>Gebruik persoonlijk weersprovidersleutel</value>
   </data>
   <data name="pref_title_userthememode" xml:space="preserve">
     <value>Thema</value>
@@ -420,11 +420,11 @@
     <value>Licht</value>
   </data>
   <data name="pref_title_features" xml:space="preserve">
-    <value>Kenmerken</value>
+    <value>Opties</value>
     <comment>Feature Settings</comment>
   </data>
   <data name="pref_summary_features" xml:space="preserve">
-    <value>Schakel kenmerken in of uit</value>
+    <value>Schakel opties in of uit</value>
   </data>
   <data name="pref_title_feature_bgimage" xml:space="preserve">
     <value>Achtergrondafbeelding</value>
@@ -511,13 +511,13 @@
     <value>Geen weerwaarschuwingen beschikbaar.</value>
   </data>
   <data name="Features.Content" xml:space="preserve">
-    <value>Kenmerken</value>
+    <value>Opties</value>
   </data>
   <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
-    <value>Schakel kenmerken in of uit:</value>
+    <value>Schakel opties in of uit:</value>
   </data>
   <data name="Pref_Features_Title.Text" xml:space="preserve">
-    <value>Kenmerken</value>
+    <value>Opties</value>
   </data>
   <data name="label_series" xml:space="preserve">
     <value>Reeks</value>
@@ -615,5 +615,44 @@
   <data name="pref_title_feature_summary" xml:space="preserve">
     <value>Weeroverzicht</value>
     <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Achtergrond toegang geweigerd. Inschakelen onder Instellingen.</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Pollen telling</value>
+    <comment>Pollen
+Fuzzy</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Boom</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Boompollen</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Gras</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Graspollen</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrosia</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Ambrosiapollen</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Laag</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Matig</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Hoog</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Zeer hoog</value>
+    <comment>Fuzzy</comment>
   </data>
 </root>

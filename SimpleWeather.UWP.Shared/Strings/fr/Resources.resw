@@ -618,4 +618,41 @@
     <comment>Weather Summary or Weather Overview
 Fuzzy</comment>
   </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Accès à l&apos;arrière-plan refusé. Veuillez l&apos;activer dans les paramètres.</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Compte de pollen</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Arbre</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Pollen d&apos;arbre</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Herbe</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Pollen d&apos;herbe</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambroisie</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Pollen d&apos;ambroisie</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Bas</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Modéré</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Élevé</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Très élevé</value>
+  </data>
 </root>

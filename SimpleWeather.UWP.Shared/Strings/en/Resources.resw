@@ -620,4 +620,38 @@
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
     <value>Background access denied. Please enable in Settings.</value>
   </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Pollen Count</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Tree</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Tree Pollen</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Grass</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Grass Pollen</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ragweed</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Ragweed Pollen</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Moderate</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Very High</value>
+  </data>
 </root>

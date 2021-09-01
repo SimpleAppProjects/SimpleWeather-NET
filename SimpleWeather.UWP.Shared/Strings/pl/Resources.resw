@@ -619,4 +619,43 @@
     <comment>Weather Summary or Weather Overview
 Fuzzy</comment>
   </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Odmowa dostępu w tle. Proszę włączyć w Ustawieniach.</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Ilość pyłku</value>
+    <comment>Pollen
+Fuzzy</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Drzewo</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Pyłki drzew</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Trawa</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Pyłki traw</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrozja</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Pyłki ambrozji</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Niski</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Średni</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Wysoki</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Bardzo wysoki</value>
+    <comment>Fuzzy</comment>
+  </data>
 </root>

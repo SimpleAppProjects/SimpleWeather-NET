@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
@@ -20,7 +21,7 @@
             VerticalContentAlignment="Stretch"
             Style="{StaticResource SectionLabelStyle}">
             <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="Pollen" />
+                <TextBlock FontSize="15" Text="{helpers:StringRes Name='label_pollen_count'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -40,7 +41,7 @@
                     VerticalAlignment="Top"
                     FontSize="18"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="Tree" />
+                    Text="{helpers:StringRes Name='label_pollen_tree'}" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="0"
@@ -56,7 +57,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="Grass" />
+                    Text="{helpers:StringRes Name='label_pollen_grass'}" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="1"
@@ -72,7 +73,7 @@
                     HorizontalAlignment="Center"
                     FontSize="18"
                     Style="{ThemeResource SubtitleTextBlockStyle}"
-                    Text="Ragweed" />
+                    Text="{helpers:StringRes Name='label_pollen_ragweed'}" />
                 <TextBlock
                     Grid.Row="1"
                     Grid.Column="2"

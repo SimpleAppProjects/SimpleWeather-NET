@@ -627,4 +627,47 @@ Fuzzy</comment>
     <value>Resumen del tiempo</value>
     <comment>Weather Summary or Weather Overview</comment>
   </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Acceso en segundo plano denegado. Por favor, habilítelo en la configuración.</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Nivel de polen</value>
+    <comment>Pollen
+Fuzzy</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Árbol</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Polen de los árboles</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Pasto</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Polen de pasto</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrosía</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Polen de la maleza</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Bajo</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Moderado</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Alto</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Muy alto</value>
+    <comment>Fuzzy</comment>
+  </data>
 </root>

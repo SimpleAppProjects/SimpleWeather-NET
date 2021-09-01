@@ -37,19 +37,21 @@ namespace SimpleWeather.Controls
 
         private (String, Color?) GetPollenCountDescription(Pollen.PollenCount? pollenCount)
         {
+            var ResLoader = SimpleLibrary.GetInstance().ResLoader;
+
             switch (pollenCount)
             {
                 default:
                 case Pollen.PollenCount.Unknown:
                     return (WeatherIcons.EM_DASH, null);
                 case Pollen.PollenCount.Low:
-                    return ("Low", Colors.LimeGreen);
+                    return (ResLoader.GetString("label_count_low"), Colors.LimeGreen);
                 case Pollen.PollenCount.Moderate:
-                    return ("Moderate", Colors.Orange);
+                    return (ResLoader.GetString("label_count_moderate"), Colors.Orange);
                 case Pollen.PollenCount.High:
-                    return ("High", Colors.OrangeRed);
+                    return (ResLoader.GetString("label_count_high"), Colors.OrangeRed);
                 case Pollen.PollenCount.VeryHigh:
-                    return ("Very High", Colors.Red);
+                    return (ResLoader.GetString("label_count_veryhigh"), Colors.Red);
             }
         }
     }

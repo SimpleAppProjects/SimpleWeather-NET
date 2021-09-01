@@ -321,7 +321,6 @@
   </data>
   <data name="error_message_weather_region_unsupported" xml:space="preserve">
     <value>Táto krajina nie je podporovaná týmto poskytovateľom počasia</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="label_btn_add_location" xml:space="preserve">
     <value>Pridať lokalitu</value>
@@ -617,5 +616,44 @@
   <data name="pref_title_feature_summary" xml:space="preserve">
     <value>Prehľad počasia</value>
     <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Prístup na pozadie zamietnutý. Povoľte to v nastaveniach.</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Počet peľov</value>
+    <comment>Pollen
+Fuzzy</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Strom</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Peľ zo stromov</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Tráva</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Peľ z tráv</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrózia</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Peľ ambrózie</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Nízka</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Stredná</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Vysoká</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Veľmi vysoká</value>
   </data>
 </root>
