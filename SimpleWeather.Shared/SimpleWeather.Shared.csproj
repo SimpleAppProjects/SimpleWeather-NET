@@ -412,8 +412,6 @@
     <Content Include="Assets\Providers\weatherapi_logo.png" />
     <Content Include="Assets\Providers\weatherapi_logo_dark.png" />
     <Content Include="Assets\Providers\wunlocked.png" />
-    <Content Include="Assets\Providers\yahoo.png" />
-    <Content Include="Assets\Providers\yahoo_dark.png" />
     <Content Include="Assets\WeatherIcons\png\dark\mc-barometer.png" />
     <Content Include="Assets\WeatherIcons\png\dark\mc-celsius.png" />
     <Content Include="Assets\WeatherIcons\png\dark\mc-clear-day.png" />
