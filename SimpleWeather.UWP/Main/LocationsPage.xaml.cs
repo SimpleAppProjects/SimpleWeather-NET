@@ -182,6 +182,7 @@ namespace SimpleWeather.UWP.Main
             };
             EditButton = PrimaryCommands[0] as AppBarButton;
             EditButton.Tapped += AppBarButton_Click;
+            EditButton.Visibility = PanelAdapter.FavoritesCount > 1 ? Visibility.Visible : Visibility.Collapsed;
             cts = new CancellationTokenSource();
 
             AnalyticsLogger.LogEvent("LocationsPage");
@@ -292,7 +293,7 @@ namespace SimpleWeather.UWP.Main
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
-            bool onlyHomeIsLeft = PanelAdapter.FavoritesCount == 1;
+            bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
             bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
 
             // Flag that data has changed
@@ -344,31 +345,48 @@ namespace SimpleWeather.UWP.Main
                         locations.Insert(0, gpsData);
                 }
 
-                foreach (LocationData location in locations)
+                cts?.Token.ThrowIfCancellationRequested();
+
+                if (locations.Any())
                 {
                     await Dispatcher.RunOnUIThread(() =>
                     {
-                        var panel = new LocationPanelViewModel()
-                        {
-                            // Save index to tag (to easily retreive)
-                            LocationData = location
-                        };
-
-                        PanelAdapter.Add(panel);
+                        NoLocationsPrompt.Visibility = Visibility.Collapsed;
                     });
 
-                    _ = Task.Run(() => new WeatherDataLoader(location)
-                                .LoadWeatherData(new WeatherRequest.Builder()
-                                    .ForceRefresh(false)
-                                    .SetErrorListener(this)
-                                    .Build())
-                                .ContinueWith((t) =>
-                                {
-                                    if (t.IsCompletedSuccessfully)
+                    foreach (LocationData location in locations)
+                    {
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            var panel = new LocationPanelViewModel()
+                            {
+                                // Save index to tag (to easily retreive)
+                                LocationData = location
+                            };
+
+                            PanelAdapter.Add(panel);
+                        });
+
+                        _ = Task.Run(() => new WeatherDataLoader(location)
+                                    .LoadWeatherData(new WeatherRequest.Builder()
+                                        .ForceRefresh(false)
+                                        .SetErrorListener(this)
+                                        .Build())
+                                    .ContinueWith((t) =>
                                     {
-                                        OnWeatherLoaded(location, t.Result);
-                                    }
-                                }));
+                                        if (t.IsCompletedSuccessfully)
+                                        {
+                                            OnWeatherLoaded(location, t.Result);
+                                        }
+                                    }));
+                    }
+                }
+                else
+                {
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        NoLocationsPrompt.Visibility = Visibility.Visible;
+                    });
                 }
 
                 await Dispatcher.RunOnUIThread(() =>
@@ -471,20 +489,35 @@ namespace SimpleWeather.UWP.Main
                 {
                     var dataset = PanelAdapter.GetDataset();
 
-                    foreach (var view in dataset)
+                    if (dataset.Any())
                     {
-                        _ = Task.Run(() => new WeatherDataLoader(view.LocationData)
-                            .LoadWeatherData(new WeatherRequest.Builder()
-                                    .ForceRefresh(false)
-                                    .SetErrorListener(this)
-                                    .Build())
-                                    .ContinueWith((t) =>
-                                    {
-                                        if (t.IsCompletedSuccessfully)
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            NoLocationsPrompt.Visibility = Visibility.Collapsed;
+                        });
+
+                        foreach (var view in dataset)
+                        {
+                            _ = Task.Run(() => new WeatherDataLoader(view.LocationData)
+                                .LoadWeatherData(new WeatherRequest.Builder()
+                                        .ForceRefresh(false)
+                                        .SetErrorListener(this)
+                                        .Build())
+                                        .ContinueWith((t) =>
                                         {
-                                            OnWeatherLoaded(view.LocationData, t.Result);
-                                        }
-                                    }));
+                                            if (t.IsCompletedSuccessfully)
+                                            {
+                                                OnWeatherLoaded(view.LocationData, t.Result);
+                                            }
+                                        }));
+                        }
+                    }
+                    else
+                    {
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            NoLocationsPrompt.Visibility = Visibility.Visible;
+                        });
                     }
 
                     await Dispatcher.RunOnUIThread(() =>

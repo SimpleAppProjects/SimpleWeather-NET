@@ -654,4 +654,7 @@
   <data name="label_count_veryhigh" xml:space="preserve">
     <value>Very High</value>
   </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Location not set. Please add a location</value>
+  </data>
 </root>

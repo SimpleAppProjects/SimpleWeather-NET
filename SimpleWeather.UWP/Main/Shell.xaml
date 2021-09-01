@@ -142,12 +142,23 @@
             </muxc:NavigationView.MenuItems>
 
             <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid
+                    x:Name="BannerContainer"
+                    Grid.Row="0"
+                    VerticalAlignment="Top"
+                    Canvas.ZIndex="0" />
                 <Grid
                     x:Name="SnackbarContainer"
+                    Grid.RowSpan="2"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="1" />
                 <Frame
                     x:Name="FrameContent"
+                    Grid.Row="1"
                     Canvas.ZIndex="0"
                     NavigationFailed="FrameContent_NavigationFailed" />
             </Grid>

@@ -32,11 +32,12 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Shell : Page, ISnackbarManager
+    public sealed partial class Shell : Page, ISnackbarManager, IBannerManager
     {
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; private set; }
         private SnackbarManager SnackMgr { get; set; }
+        private BannerManager BannerMgr { get; set; }
 
         private UISettings UISettings;
 
@@ -109,6 +110,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("Shell");
 
             InitSnackManager();
+            InitBannerManager();
 
             NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
             NavView.IsPaneOpen = false;
@@ -168,6 +170,36 @@ namespace SimpleWeather.UWP.Main
             SnackMgr = null;
         }
 
+        public void InitBannerManager()
+        {
+            if (BannerMgr == null)
+            {
+                BannerMgr = new BannerManager(BannerContainer);
+            }
+        }
+
+        public void ShowBanner(Banner banner)
+        {
+            Dispatcher.RunOnUIThread(() =>
+            {
+                BannerMgr?.Show(banner);
+            });
+        }
+
+        public void DismissBanner()
+        {
+            Dispatcher.RunOnUIThread(() =>
+            {
+                BannerMgr?.Dismiss();
+            });
+        }
+
+        public void UnloadBannerManager()
+        {
+            DismissBanner();
+            BannerMgr = null;
+        }
+
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
             // NOTE: Run on UI Thread since this may be called off the main thread
@@ -219,6 +251,7 @@ namespace SimpleWeather.UWP.Main
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             InitSnackManager();
+            InitBannerManager();
 
             bool suppressNavigate = false;
 
@@ -249,6 +282,7 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedFrom(e);
             UnloadSnackManager();
+            UnloadBannerManager();
         }
 
         private void FrameContent_NavigationFailed(object sender, NavigationFailedEventArgs e)
@@ -392,6 +426,7 @@ namespace SimpleWeather.UWP.Main
         private void On_Navigated(object sender, NavigationEventArgs e)
         {
             OnNavigated(e.SourcePageType);
+            DismissBanner();
             DismissAllSnackbars();
         }
 

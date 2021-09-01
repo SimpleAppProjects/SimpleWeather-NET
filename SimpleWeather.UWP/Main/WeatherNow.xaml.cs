@@ -42,7 +42,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IDisposable, IWeatherErrorListener
+    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IBannerPage, IDisposable, IWeatherErrorListener
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
@@ -232,6 +232,11 @@ namespace SimpleWeather.UWP.Main
         public void ShowSnackbar(Snackbar snackbar)
         {
             Shell.Instance?.ShowSnackbar(snackbar);
+        }
+
+        public void ShowBanner(Banner banner)
+        {
+            Shell.Instance?.ShowBanner(banner);
         }
 
         private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
@@ -569,8 +574,27 @@ namespace SimpleWeather.UWP.Main
                     locationData = await Settings.GetHomeData();
                 }
 
-                if (locationData != null)
+                if (locationData?.IsValid() == true)
+                {
                     wLoader = new WeatherDataLoader(locationData);
+                }
+                else
+                {
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        var banner = Banner.MakeError(App.ResLoader.GetString("prompt_location_not_set"));
+                        banner.Icon = new muxc.SymbolIconSource()
+                        {
+                            Symbol = Symbol.Map
+                        };
+                        banner.SetAction(App.ResLoader.GetString("label_fab_add_location"), () =>
+                        {
+                            Frame.Navigate(typeof(LocationsPage));
+                        });
+                        ShowBanner(banner);
+                    }).ConfigureAwait(false);
+                    throw new TaskCanceledException();
+                }
 
                 return forceRefresh;
             }).ContinueWith((t) =>
@@ -585,6 +609,10 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Load up weather data
                     RefreshWeather(t.Result);
+                }
+                else
+                {
+                    Dispatcher.LaunchOnUIThread(() => ShowProgressRing(false));
                 }
             });
         }
@@ -735,62 +763,64 @@ namespace SimpleWeather.UWP.Main
                         wLoader = new WeatherDataLoader(locationData);
                     }
 
-                    Task.Run(() => wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
-                            .ForceRefresh(forceRefresh)
-                            .SetErrorListener(this)
-                            .Build())
-                            .ContinueWith((t) =>
-                            {
-                                if (t.IsCompletedSuccessfully)
-                                {
-                                    Dispatcher.RunOnUIThread(() =>
-                                    {
-                                        OnWeatherLoaded(t.Result.Weather);
-                                        if (AlertButton != null)
-                                            AlertButton.Visibility = Visibility.Collapsed;
-                                    });
-                                    return wLoader.LoadWeatherAlerts(t.Result.IsSavedData);
-                                }
-                                else
-                                {
-                                    return Task.FromCanceled<ICollection<WeatherAlert>>(new CancellationToken(true));
-                                }
-                            })
-                            .Unwrap()
-                            .ContinueWith((t) =>
-                            {
-                                Dispatcher.LaunchOnUIThread(() =>
-                                {
-                                    if (locationData != null)
-                                    {
-                                        AlertsView.UpdateAlerts(locationData);
-                                    }
+                    var task = Task.Run(async () =>
+                    {
+                        var result = await wLoader?.LoadWeatherResult(new WeatherRequest.Builder()
+                                                    .ForceRefresh(forceRefresh)
+                                                    .SetErrorListener(this)
+                                                    .Build());
 
-                                    if (t.IsCompletedSuccessfully)
-                                    {
-                                        if (wm.SupportsAlerts && locationData != null)
-                                        {
-                                            if (t.Result?.Any() == true)
-                                            {
-                                                if (AlertButton != null)
-                                                    AlertButton.Visibility = Visibility.Visible;
+                        if (result == null)
+                        {
+                            throw new TaskCanceledException();
+                        }
 
-                                                _ = Task.Run(async () =>
-                                                {
-                                                    // Alerts are posted to the user here. Set them as notified.
+                        Dispatcher.LaunchOnUIThread(() =>
+                        {
+                            OnWeatherLoaded(result.Weather);
+                            if (AlertButton != null)
+                                AlertButton.Visibility = Visibility.Collapsed;
+                        });
+
+                        var weatherAlerts = await wLoader?.LoadWeatherAlerts(result.IsSavedData);
+
+                        Dispatcher.LaunchOnUIThread(() =>
+                        {
+                            if (locationData != null)
+                            {
+                                AlertsView.UpdateAlerts(locationData);
+                            }
+
+                            if (wm.SupportsAlerts && locationData != null)
+                            {
+                                if (weatherAlerts?.Any() == true)
+                                {
+                                    if (AlertButton != null)
+                                        AlertButton.Visibility = Visibility.Visible;
+
+                                    _ = Task.Run(async () =>
+                                    {
+                                        // Alerts are posted to the user here. Set them as notified.
 #if DEBUG
-                                                    await WeatherAlertHandler.PostAlerts(locationData, t.Result)
-                                                            .ConfigureAwait(false);
+                                        await WeatherAlertHandler.PostAlerts(locationData, weatherAlerts)
+                                                                        .ConfigureAwait(false);
 #endif
-                                                    await WeatherAlertHandler.SetasNotified(locationData, t.Result)
-                                                            .ConfigureAwait(false);
+                                        await WeatherAlertHandler.SetasNotified(locationData, weatherAlerts)
+                                                                        .ConfigureAwait(false);
 
-                                                });
-                                            }
-                                        }
-                                    }
-                                });
-                            }));
+                                    });
+                                }
+                            }
+                        });
+                    });
+
+                    task.ContinueWith((t) =>
+                    {
+                        if (t.IsFaulted || !t.IsCompletedSuccessfully)
+                        {
+                            Dispatcher.LaunchOnUIThread(() => ShowProgressRing(false));
+                        }
+                    });
                 });
             }
         }
@@ -830,11 +860,18 @@ namespace SimpleWeather.UWP.Main
 
                 // Check if your app is currently pinned
                 var query = locationData?.locationType == LocationType.GPS ? Constants.KEY_GPS : locationData?.query;
-                bool isPinned = SecondaryTileUtils.Exists(query);
+                if (query != null)
+                {
+                    bool isPinned = SecondaryTileUtils.Exists(query);
 
-                SetPinButton(isPinned);
-                pinBtn.Visibility = Visibility.Visible;
-                pinBtn.IsEnabled = true;
+                    SetPinButton(isPinned);
+                    pinBtn.Visibility = Visibility.Visible;
+                    pinBtn.IsEnabled = true;
+                }
+                else
+                {
+                    pinBtn.Visibility = Visibility.Collapsed;
+                }
             }
         }
 

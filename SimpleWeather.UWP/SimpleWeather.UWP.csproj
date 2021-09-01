@@ -175,6 +175,13 @@
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WeatherTileUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
+    <Compile Include="Controls\Banner\IBannerManager.cs" />
+    <Compile Include="Controls\Banner\IBannerPage.cs" />
+    <Compile Include="Controls\Banner\Banner.cs" />
+    <Compile Include="Controls\Banner\BannerContent.xaml.cs">
+      <DependentUpon>BannerContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Banner\BannerManager.cs" />
     <Compile Include="Controls\BottomStepperNavigationBar.cs" />
     <Compile Include="Controls\DataTemplates.xaml.cs">
       <DependentUpon>DataTemplates.xaml</DependentUpon>
@@ -399,6 +406,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\Banner\BannerContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\DataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

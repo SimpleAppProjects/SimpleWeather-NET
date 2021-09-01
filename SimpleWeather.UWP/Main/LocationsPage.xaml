@@ -55,11 +55,25 @@
     </Page.Resources>
 
     <Grid>
+        <StackPanel
+            x:Name="NoLocationsPrompt"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Vertical"
+            Margin="0,0,0,48">
+            <SymbolIcon Margin="8" Symbol="Add" />
+            <TextBlock
+                d:Text="Location not set. Please add a location"
+                Style="{ThemeResource SubtitleTextBlockStyle}"
+                Text="{helpers:StringRes Name='prompt_location_not_set'}"
+                TextWrapping="Wrap" />
+        </StackPanel>
         <GridView
             x:Name="LocationsPanel"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             d:ItemsSource=",,,,"
+            d:Visibility="Collapsed"
             ContainerContentChanging="LocationsPanel_ContainerContentChanging"
             IsItemClickEnabled="True"
             IsSwipeEnabled="False"

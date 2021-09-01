@@ -1,0 +1,42 @@
+﻿<UserControl
+    x:Class="SimpleWeather.UWP.Controls.BannerContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.UWP.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="ContentRoot"
+        MaxWidth="1280"
+        VerticalAlignment="Top">
+        <muxc:InfoBar
+            x:Name="Infobar"
+            Title="{x:Bind BannerModel.Title, Mode=OneWay}"
+            d:IsOpen="True"
+            d:Message="This is a snackbar test message for the snackbar"
+            d:Title="SnackTitle"
+            IconSource="{x:Bind BannerModel.Icon, Mode=OneWay}"
+            IsClosable="False"
+            IsIconVisible="{x:Bind BannerModel.Icon, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+            IsOpen="False"
+            Message="{x:Bind BannerModel.Message, Mode=OneWay}"
+            Severity="{x:Bind local:BannerContent.ToSeverity(BannerModel.InfoType), Mode=OneWay}">
+            <muxc:InfoBar.ActionButton>
+                <Button
+                    x:Name="ActionButton"
+                    HorizontalAlignment="Right"
+                    d:Content="Action Button"
+                    d:Visibility="Visible"
+                    BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                    BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
+                    Content="{x:Bind BannerModel.ButtonLabel, Mode=OneWay}"
+                    Visibility="{x:Bind BannerModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+            </muxc:InfoBar.ActionButton>
+        </muxc:InfoBar>
+    </Grid>
+
+</UserControl>

@@ -71,6 +71,8 @@ namespace SimpleWeather.Utils
                 _long = longitude;
             }
 
+            public bool IsValid => Latitude != 0 || Longitude != 0;
+
             public override string ToString()
             {
                 return string.Format(CultureInfo.InvariantCulture, "{0},{1}",
