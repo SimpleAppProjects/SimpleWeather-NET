@@ -144,13 +144,13 @@ namespace SimpleWeather.UWP.Main
                     }
                     catch (Exception ex)
                     {
-                        if (ex is WeatherException)
-                        {
-                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
-                        }
-
                         await Dispatcher.RunOnUIThread(() =>
                         {
+                            if (ex is WeatherException)
+                            {
+                                ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
+                            }
+
                             LocationQuerys = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
                             RefreshSuggestionList(sender);
                             timer?.Stop();
@@ -176,13 +176,12 @@ namespace SimpleWeather.UWP.Main
         {
             if (args.SelectedItem is LocationQueryViewModel theChosenOne)
             {
-                if (String.IsNullOrEmpty(theChosenOne.LocationQuery))
-                    sender.Text = String.Empty;
-                else
+                if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                {
                     sender.Text = theChosenOne.LocationName;
+                    sender.IsSuggestionListOpen = false;
+                }
             }
-
-            sender.IsSuggestionListOpen = false;
         }
 
         /// <summary>
@@ -246,13 +245,13 @@ namespace SimpleWeather.UWP.Main
                 else if (String.IsNullOrWhiteSpace(queryText))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
+                    throw new TaskCanceledException();
                 }
 
-                if (String.IsNullOrWhiteSpace(query_vm.LocationQuery))
+                if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
                 {
                     // Stop since there is no valid query
-                    throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
+                    throw new TaskCanceledException();
                 }
 
                 if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
@@ -363,13 +362,16 @@ namespace SimpleWeather.UWP.Main
 
                     await Dispatcher.RunOnUIThread(() =>
                     {
-                        if (ex is WeatherException || ex is CustomException)
+                        if (ex is not TaskCanceledException)
                         {
-                            ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
-                        }
-                        else
-                        {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            if (ex is WeatherException || ex is CustomException)
+                            {
+                                ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
+                            }
+                            else
+                            {
+                                ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            }
                         }
 
                         // Restore controls

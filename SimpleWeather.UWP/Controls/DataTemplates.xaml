@@ -8,12 +8,7 @@
     xmlns:localControls="using:SimpleWeather.UWP.Controls">
 
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="controls:LocationQueryViewModel">
-        <Grid Padding="0,5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-
+        <Grid MinHeight="65" Padding="0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -30,22 +25,24 @@
                 Foreground="{ThemeResource AppAccentColorBrush}"
                 Glyph="&#xE7B7;"
                 Visibility="{x:Bind helpers:BindingExtensions.BoolToVisibility(IsEmpty, x:True), FallbackValue=Collapsed, Mode=OneWay}" />
-            <TextBlock
-                x:Name="LocationName"
-                Grid.Row="0"
+            <StackPanel
                 Grid.Column="1"
-                Padding="5"
-                FontSize="14"
-                Text="{x:Bind LocationName, Mode=OneWay}"
-                TextAlignment="Left" />
-            <TextBlock
-                x:Name="LocationCountry"
-                Grid.Row="1"
-                Grid.Column="1"
-                Padding="5"
-                FontSize="12"
-                Text="{x:Bind LocationRegionText, Mode=OneWay}"
-                TextAlignment="Left" />
+                VerticalAlignment="Center"
+                Orientation="Vertical">
+                <TextBlock
+                    x:Name="LocationName"
+                    Padding="5"
+                    FontSize="14"
+                    Text="{x:Bind LocationName, Mode=OneWay}"
+                    TextAlignment="Left" />
+                <TextBlock
+                    x:Name="LocationCountry"
+                    Padding="5"
+                    FontSize="12"
+                    Text="{x:Bind LocationRegionText, Mode=OneWay}"
+                    TextAlignment="Left"
+                    Visibility="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Text, Converter={StaticResource stringVisibilityConverter}}" />
+            </StackPanel>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
