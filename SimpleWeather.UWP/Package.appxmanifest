@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="49586DaveAntoine.SimpleWeatherDebug" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.2.1.0" />
+  <Identity Name="49586DaveAntoine.SimpleWeatherDebug" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.2.3.0" />
   <mp:PhoneIdentity PhoneProductId="7b88598e-f540-44ef-ba44-7f9c08b36834" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SimpleWeather - A simple weather app</DisplayName>
