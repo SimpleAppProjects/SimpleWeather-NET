@@ -13,7 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Networking.BackgroundTransfer;
 using Windows.Storage;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using System.Net;
 using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.UWP.Shared.WeatherData.Images
@@ -85,16 +88,19 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                     using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
                     using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
                     {
-                        request.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(15);
+                        request.Headers.CacheControl = new CacheControlHeaderValue()
+                        {
+                            MaxAge = TimeSpan.FromMinutes(15)
+                        };
 
                         // Connect to webstream
                         var webClient = SimpleLibrary.GetInstance().WebClient;
-                        using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                        using (var response = await webClient.SendAsync(request, cts.Token))
                         {
                             response.EnsureSuccessStatusCode();
 
                             // Download content to file
-                            await response.Content.WriteToStreamAsync(fStream);
+                            await response.Content.CopyToAsync(fStream.AsStreamForWrite());
                             await fStream.FlushAsync();
                         }
                     }

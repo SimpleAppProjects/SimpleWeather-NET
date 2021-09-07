@@ -39,52 +39,48 @@ namespace SimpleWeather.HERE
 
                     var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
 
-                    using (HttpClient webClient = new HttpClient())
-                    using (var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL))
+                    using var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL);
+                    // Add headers to request
+                    var authHeader = oAuthRequest.GetAuthorizationHeader(request.RequestUri, true);
+                    request.Headers.Add("Authorization", authHeader);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        // Add headers to request
-                        var authHeader = oAuthRequest.GetAuthorizationHeader(request.RequestUri, true);
-                        request.Headers.Add("Authorization", authHeader);
-                        request.Headers.CacheControl = new CacheControlHeaderValue()
+                        NoCache = true
+                    };
+
+                    // Connect to webstream
+                    var contentList = new List<KeyValuePair<string, string>>(1)
+                    {
+                        new KeyValuePair<string, string>("grant_type", "client_credentials")
+                    };
+                    request.Content = new FormUrlEncodedContent(contentList);
+
+                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                    using var response = await webClient.SendAsync(request, cts.Token);
+                    await response.CheckForErrors(WeatherAPI.Here, 10000);
+                    response.EnsureSuccessStatusCode();
+
+                    Stream contentStream = await response.Content.ReadAsStreamAsync();
+
+                    var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
+
+                    var tokenRoot = await JSONParser.DeserializerAsync<TokenRootobject>(contentStream);
+
+                    if (tokenRoot != null)
+                    {
+                        var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
+
+                        // Store token for future operations
+                        var token = new Token()
                         {
-                            NoCache = true
+                            expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
+                            access_token = tokenStr
                         };
 
-                        // Connect to webstream
-                        var contentList = new List<KeyValuePair<string, string>>(1)
-                            {
-                                new KeyValuePair<string, string>("grant_type", "client_credentials")
-                            };
-                        request.Content = new FormUrlEncodedContent(contentList);
+                        StoreToken(token);
 
-                        using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var response = await webClient.SendAsync(request, cts.Token))
-                        {
-                            await response.CheckForErrors(WeatherAPI.Here, 10000);
-                            response.EnsureSuccessStatusCode();
-
-                            Stream contentStream = await response.Content.ReadAsStreamAsync();
-
-                            var date = response.Headers.Date.GetValueOrDefault(DateTimeOffset.UtcNow);
-
-                            var tokenRoot = await JSONParser.DeserializerAsync<TokenRootobject>(contentStream);
-
-                            if (tokenRoot != null)
-                            {
-                                var tokenStr = String.Format(CultureInfo.InvariantCulture, "Bearer {0}", tokenRoot.access_token);
-
-                                // Store token for future operations
-                                var token = new Token()
-                                {
-                                    expiration_date = date.UtcDateTime.AddSeconds(tokenRoot.expires_in),
-                                    access_token = tokenStr
-                                };
-
-                                StoreToken(token);
-
-                                return tokenStr;
-                            }
-                        }
+                        return tokenStr;
                     }
                 }
                 catch (Exception e)

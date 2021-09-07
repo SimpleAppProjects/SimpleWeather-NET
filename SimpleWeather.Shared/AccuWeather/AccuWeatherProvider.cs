@@ -13,8 +13,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.AccuWeather
 {
@@ -59,10 +61,10 @@ namespace SimpleWeather.AccuWeather
                 // Connect to webstream
                 var webClient = SimpleLibrary.GetInstance().WebClient;
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var response = await webClient.GetAsync(requestUri).AsTask(cts.Token))
+                using (var response = await webClient.GetAsync(requestUri, cts.Token))
                 {
                     // Check for errors
-                    this.ThrowIfRateLimited(response);
+                    await this.ThrowIfRateLimited(response);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -150,17 +152,20 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestCurrentUri))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    using var response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                    using var response = await webClient.SendAsync(request, cts.Token);
 
                     await this.CheckForErrors(response);
                     response.EnsureSuccessStatusCode();
 
-                    using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    using var stream = await response.Content.ReadAsStreamAsync();
 
                     // Load weather
                     currentRoot = new CurrentRootobject() 
@@ -171,17 +176,20 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, request5dayUri))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    using var response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                    using var response = await webClient.SendAsync(request, cts.Token);
 
                     await this.CheckForErrors(response);
                     response.EnsureSuccessStatusCode();
 
-                    using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    using var stream = await response.Content.ReadAsStreamAsync();
 
                     // Load weather
                     dailyRoot = await JSONParser.DeserializerAsync<DailyForecastRootobject>(stream);
@@ -189,17 +197,20 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestHourlyUri))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    using var response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                    using var response = await webClient.SendAsync(request, cts.Token);
 
                     await this.CheckForErrors(response);
                     response.EnsureSuccessStatusCode();
 
-                    using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    using var stream = await response.Content.ReadAsStreamAsync();
 
                     // Load weather
                     hourlyRoot = new HourlyForecastRootobject()
@@ -214,9 +225,9 @@ namespace SimpleWeather.AccuWeather
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

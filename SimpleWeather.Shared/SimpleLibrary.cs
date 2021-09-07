@@ -1,14 +1,18 @@
-﻿using System;
+﻿using CacheCow.Client;
+using CacheCow.Client.FileCacheStore;
+using SimpleWeather.HttpClientExtensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
-using Windows.Web.Http.Headers;
+using Windows.Foundation;
 using static SimpleWeather.CommonActionChangedEventArgs;
 
 namespace SimpleWeather
@@ -80,13 +84,10 @@ namespace SimpleWeather
         {
             if (HttpWebClient == null)
             {
-                var handler = new HttpBaseProtocolFilter()
-                {
-                    AllowAutoRedirect = true,
-                    AutomaticDecompression = true,
-                    AllowUI = false
-                };
-                HttpWebClient = new HttpClient(handler);
+                var CacheRoot = System.IO.Path.Combine(
+                    Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path,
+                    "CacheCow");
+                HttpWebClient = ClientExtensions.CreateClient(new FileStore(CacheRoot) { MinExpiry = TimeSpan.FromDays(7) }, handler: new CacheFilter());
             }
 
             return HttpWebClient;

@@ -12,9 +12,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using Windows.Web;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Sockets;
 
 namespace SimpleWeather.TomorrowIO
 {
@@ -63,10 +65,10 @@ namespace SimpleWeather.TomorrowIO
                 // Connect to webstream
                 var webClient = SimpleLibrary.GetInstance().WebClient;
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
+                using (var response = await webClient.GetAsync(queryURL, cts.Token))
                 {
                     // Check for errors
-                    this.ThrowIfRateLimited(response);
+                    await this.ThrowIfRateLimited(response);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -143,24 +145,37 @@ namespace SimpleWeather.TomorrowIO
                 var alertsRequestUri = EVENTS_BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", location_query)
-                    .AppendQueryParameter("insights", "air,fires,wind,winter,thunderstorms,floods,temperature,tropical,marine,fog,tornado")
+                    .AppendQueryParameter("insights", "air")
+                    .AppendQueryParameter("insights", "fires")
+                    .AppendQueryParameter("insights", "wind")
+                    .AppendQueryParameter("insights", "winter")
+                    .AppendQueryParameter("insights", "thunderstorms")
+                    .AppendQueryParameter("insights", "floods")
+                    .AppendQueryParameter("insights", "temperature")
+                    .AppendQueryParameter("insights", "tropical")
+                    .AppendQueryParameter("insights", "marine")
+                    .AppendQueryParameter("insights", "fog")
+                    .AppendQueryParameter("insights", "tornado")
                     .AppendQueryParameter("buffer", "20")
                     .BuildUri();
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
-                    request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                    using var response = await webClient.SendRequestAsync(request).AsTask(cts.Token);
+                    using var response = await webClient.SendAsync(request, cts.Token);
 
                     await this.CheckForErrors(response);
                     response.EnsureSuccessStatusCode();
 
-                    using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    using var stream = await response.Content.ReadAsStreamAsync();
 
                     // Load weather
                     root = await JSONParser.DeserializerAsync<Rootobject>(stream);
@@ -170,18 +185,21 @@ namespace SimpleWeather.TomorrowIO
                 {
                     using (var minutelyRequest = new HttpRequestMessage(HttpMethod.Get, minutelyRequestUri))
                     {
-                        minutelyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(45);
-                        minutelyRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                        minutelyRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                        {
+                            MaxAge = TimeSpan.FromMinutes(45)
+                        };
+                        minutelyRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
                         var webClient = SimpleLibrary.GetInstance().WebClient;
                         using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                        using var response = await webClient.SendRequestAsync(minutelyRequest).AsTask(cts.Token);
+                        using var response = await webClient.SendAsync(minutelyRequest, cts.Token);
 
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        using var stream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         minutelyRoot = await JSONParser.DeserializerAsync<Rootobject>(stream);
@@ -193,18 +211,21 @@ namespace SimpleWeather.TomorrowIO
                 {
                     using (var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsRequestUri))
                     {
-                        alertsRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
-                        alertsRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/json"));
+                        alertsRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                        {
+                            MaxAge = TimeSpan.FromHours(6)
+                        };
+                        alertsRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
                         var webClient = SimpleLibrary.GetInstance().WebClient;
                         using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
-                        using var response = await webClient.SendRequestAsync(alertsRequest).AsTask(cts.Token);
+                        using var response = await webClient.SendAsync(alertsRequest, cts.Token);
 
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        using var stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        using var stream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         alertsRoot = await JSONParser.DeserializerAsync<AlertRootobject>(stream);
@@ -218,9 +239,9 @@ namespace SimpleWeather.TomorrowIO
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

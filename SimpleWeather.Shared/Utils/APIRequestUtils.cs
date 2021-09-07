@@ -47,7 +47,7 @@ namespace SimpleWeather.Utils
                         throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
                             await response.CreateException());
                     case HttpStatusCode.TooManyRequests:
-                        ThrowIfRateLimited(apiID, response, retryTimeInMs);
+                        await ThrowIfRateLimited(apiID, response, retryTimeInMs);
                         break;
                     case HttpStatusCode.InternalServerError:
                         throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
@@ -122,43 +122,44 @@ namespace SimpleWeather.Utils
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(string apiID, HttpResponseMessage response, long retryTimeInMs = 60000)
+        public static async Task ThrowIfRateLimited(string apiID, HttpResponseMessage response, long retryTimeInMs = 60000)
         {
             if (response.StatusCode == HttpStatusCode.TooManyRequests)
             {
                 SetNextRetryTime(apiID, retryTimeInMs);
-                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
+                            await response.CreateException());
             }
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this WeatherProviderImpl providerImpl, HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this WeatherProviderImpl providerImpl, HttpResponseMessage response)
         {
-            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this HttpResponseMessage response, WeatherProviderImpl providerImpl)
+        public static async Task ThrowIfRateLimited(this HttpResponseMessage response, WeatherProviderImpl providerImpl)
         {
-            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this LocationProviderImpl providerImpl, HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this LocationProviderImpl providerImpl, HttpResponseMessage response)
         {
-            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this HttpResponseMessage response, LocationProviderImpl providerImpl)
+        public static async Task ThrowIfRateLimited(this HttpResponseMessage response, LocationProviderImpl providerImpl)
         {
-            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, HttpResponseMessage response)
         {
-            ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
+            await ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
         }
 
         private static async Task<Exception> CreateException(this HttpResponseMessage response)
@@ -210,7 +211,7 @@ namespace SimpleWeather.Utils
                         break;
                     case (int)System.Net.HttpStatusCode.BadRequest:
                         throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather,
-                            await response .CreateException());
+                            await response.CreateException());
                     case (int)System.Net.HttpStatusCode.NotFound:
                         throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
                             await response .CreateException());
@@ -290,43 +291,44 @@ namespace SimpleWeather.Utils
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(string apiID, System.Net.Http.HttpResponseMessage response, long retryTimeInMs = 60000)
+        public static async Task ThrowIfRateLimited(string apiID, System.Net.Http.HttpResponseMessage response, long retryTimeInMs = 60000)
         {
             if ((int)response.StatusCode == ((int)HttpStatusCode.TooManyRequests))
             {
                 SetNextRetryTime(apiID, retryTimeInMs);
-                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
+                    await response.CreateException());
             }
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this WeatherProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this WeatherProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
         {
-            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, WeatherProviderImpl providerImpl)
+        public static async Task ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, WeatherProviderImpl providerImpl)
         {
-            ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.WeatherAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this LocationProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this LocationProviderImpl providerImpl, System.Net.Http.HttpResponseMessage response)
         {
-            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, LocationProviderImpl providerImpl)
+        public static async Task ThrowIfRateLimited(this System.Net.Http.HttpResponseMessage response, LocationProviderImpl providerImpl)
         {
-            ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
+            await ThrowIfRateLimited(providerImpl.LocationAPI, response, providerImpl.GetRetryTime());
         }
 
         /// <exception cref="WeatherException">Will be thrown if response code is HTTP error code 429 *Too Many Requests*</exception>
-        public static void ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, System.Net.Http.HttpResponseMessage response)
+        public static async Task ThrowIfRateLimited(this IRateLimitedRequest @api, string apiID, System.Net.Http.HttpResponseMessage response)
         {
-            ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
+            await ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
         }
 
         private static async Task<Exception> CreateException(this System.Net.Http.HttpResponseMessage response)
@@ -360,7 +362,8 @@ namespace SimpleWeather.Utils
 
             if (currentTime < nextRetryTime)
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
+                    new Exception($"Rate-limited: currentTime ${currentTime}, nextRetryTime ${nextRetryTime}"));
             }
         }
 

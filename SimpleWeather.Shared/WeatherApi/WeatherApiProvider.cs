@@ -12,7 +12,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace SimpleWeather.WeatherApi
 {
@@ -57,10 +60,10 @@ namespace SimpleWeather.WeatherApi
                 // Connect to webstream
                 var webClient = SimpleLibrary.GetInstance().WebClient;
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var response = await webClient.GetAsync(queryURL).AsTask(cts.Token))
+                using (var response = await webClient.GetAsync(queryURL, cts.Token))
                 {
                     // Check for errors
-                    this.ThrowIfRateLimited(response);
+                    await this.ThrowIfRateLimited(response);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
@@ -117,17 +120,20 @@ namespace SimpleWeather.WeatherApi
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream stream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         var root = await JSONParser.DeserializerAsync<ForecastRootobject>(stream);
@@ -140,9 +146,9 @@ namespace SimpleWeather.WeatherApi
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {
@@ -188,17 +194,20 @@ namespace SimpleWeather.WeatherApi
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, alertsURL))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(6)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream stream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream stream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         var root = await JSONParser.DeserializerAsync<ForecastRootobject>(stream);

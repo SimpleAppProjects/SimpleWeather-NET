@@ -12,7 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.HERE
 {
@@ -85,17 +87,20 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
@@ -129,9 +134,9 @@ namespace SimpleWeather.HERE
             catch (Exception ex)
             {
                 weather = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {
@@ -230,17 +235,20 @@ namespace SimpleWeather.HERE
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
                     // Updates 4x per day
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(6)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);

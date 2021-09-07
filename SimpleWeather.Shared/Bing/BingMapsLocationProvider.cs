@@ -14,7 +14,9 @@ using Windows.Devices.Geolocation;
 using Windows.Services.Maps;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.Bing
 {
@@ -56,15 +58,18 @@ namespace SimpleWeather.Bing
                 var webClient = SimpleLibrary.GetInstance().WebClient;
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromDays(1)
+                    };
 
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         var locationSet = new HashSet<LocationQueryViewModel>();
@@ -94,9 +99,9 @@ namespace SimpleWeather.Bing
             }
             catch (Exception ex)
             {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {
@@ -171,9 +176,9 @@ namespace SimpleWeather.Bing
             }
             catch (Exception ex)
             {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
             }
@@ -252,9 +257,9 @@ namespace SimpleWeather.Bing
             catch (Exception ex)
             {
                 result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
             }

@@ -12,7 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.MeteoFrance
 {
@@ -80,15 +82,21 @@ namespace SimpleWeather.MeteoFrance
                 using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                 {
-                    currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromMinutes(30);
-                    forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                    currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(30)
+                    };
+                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var currentResponse = await webClient.SendRequestAsync(currentRequest).AsTask(ctsC.Token))
+                    using (var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token))
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
+                    using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
                     {
                         await this.CheckForErrors(currentResponse);
                         currentResponse.EnsureSuccessStatusCode();
@@ -96,8 +104,8 @@ namespace SimpleWeather.MeteoFrance
                         await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
-                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                        Stream currentStream = await currentResponse.Content.ReadAsStreamAsync();
+                        Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
 
                         // Load weather
                         var currRoot = await JSONParser.DeserializerAsync<CurrentsRootobject>(currentStream);
@@ -110,12 +118,15 @@ namespace SimpleWeather.MeteoFrance
 
                             using (var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsURL))
                             {
-                                alertsRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(12);
+                                alertsRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                                {
+                                    MaxAge = TimeSpan.FromHours(12)
+                                };
 
                                 using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                                using (var alertsResponse = await webClient.SendRequestAsync(alertsRequest).AsTask(ctsA.Token))
+                                using (var alertsResponse = await webClient.SendAsync(alertsRequest, ctsA.Token))
                                 {
-                                    var alertsStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await alertsResponse.Content.ReadAsInputStreamAsync());
+                                    var alertsStream = await alertsResponse.Content.ReadAsStreamAsync();
                                     alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertsStream);
                                 }
                             }
@@ -129,9 +140,9 @@ namespace SimpleWeather.MeteoFrance
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

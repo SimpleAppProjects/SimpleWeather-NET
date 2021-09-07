@@ -13,8 +13,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
 using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.HERE
@@ -65,17 +66,20 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromDays(1)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         var locationSet = new HashSet<LocationQueryViewModel>();
@@ -107,9 +111,9 @@ namespace SimpleWeather.HERE
             }
             catch (Exception ex)
             {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {
@@ -156,17 +160,20 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromDays(1)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         Geo_Rootobject root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
@@ -180,9 +187,9 @@ namespace SimpleWeather.HERE
             {
                 result = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {
@@ -230,17 +237,20 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromDays(1)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         Geo_Rootobject root = JSONParser.Deserializer<Geo_Rootobject>(contentStream);
@@ -254,9 +264,9 @@ namespace SimpleWeather.HERE
             {
                 result = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

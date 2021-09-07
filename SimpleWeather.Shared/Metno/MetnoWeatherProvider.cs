@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Windows.ApplicationModel;
 using Windows.Web;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using SimpleWeather.HttpClientExtensions;
 
 namespace SimpleWeather.Metno
 {
@@ -63,33 +64,37 @@ namespace SimpleWeather.Metno
                 using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
                 {
                     // Add headers
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                    forecastRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                    forecastRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    forecastRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-                    forecastRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-                    astronomyRequest.Headers.AcceptEncoding.Add(new HttpContentCodingWithQualityHeaderValue("gzip"));
-                    astronomyRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                    astronomyRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                    astronomyRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                    astronomyRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
+                    astronomyRequest.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
+                    using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
                     {
                         await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
                         using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                        using (var sunrisesetResponse = await webClient.SendRequestAsync(astronomyRequest).AsTask(ctsA.Token))
+                        using (var sunrisesetResponse = await webClient.SendAsync(astronomyRequest, ctsA.Token))
                         {
                             await this.CheckForErrors(sunrisesetResponse);
                             sunrisesetResponse.EnsureSuccessStatusCode();
 
-                            Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
-                            Stream sunrisesetStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await sunrisesetResponse.Content.ReadAsInputStreamAsync());
+                            Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
+                            Stream sunrisesetStream = await sunrisesetResponse.Content.ReadAsStreamAsync();
 
                             // Reset exception
                             wEx = null;
@@ -107,9 +112,9 @@ namespace SimpleWeather.Metno
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

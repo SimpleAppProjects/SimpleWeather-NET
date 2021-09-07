@@ -10,9 +10,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
 using static SimpleWeather.Utils.APIRequestUtils;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.Ambee
 {
@@ -42,17 +43,20 @@ namespace SimpleWeather.Ambee
                 HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
                 var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
-                request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(6);
+                request.Headers.CacheControl = new CacheControlHeaderValue()
+                {
+                    MaxAge = TimeSpan.FromHours(6)
+                };
                 request.Headers.Add("x-api-key", key);
 
                 using (request)
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                using (var response = await webClient.SendAsync(request, cts.Token))
                 {
                     await this.CheckForErrors(WeatherAPI.Ambee, response);
                     response.EnsureSuccessStatusCode();
 
-                    using var contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    using var contentStream = await response.Content.ReadAsStreamAsync();
 
                     // Load data
                     var root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);

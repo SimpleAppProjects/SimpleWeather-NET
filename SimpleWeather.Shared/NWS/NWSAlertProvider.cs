@@ -8,9 +8,11 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
 using static SimpleWeather.Utils.APIRequestUtils;
+using SimpleWeather.HttpClientExtensions;
 
 namespace SimpleWeather.NWS
 {
@@ -32,22 +34,18 @@ namespace SimpleWeather.NWS
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    request.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-                    request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                    request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                    request.Headers.UserAgent.AddAppUserAgent();
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(WeatherAPI.NWS, response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
                         var root = await JSONParser.DeserializerAsync<AlertRootobject>(contentStream);

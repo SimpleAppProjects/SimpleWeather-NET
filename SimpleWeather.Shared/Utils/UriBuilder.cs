@@ -10,41 +10,55 @@ namespace SimpleWeather.Utils
 {
     public class UriBuilderEx
     {
-        private UriBuilder baseUriBuilder { get; }
-        private NameValueCollection query { get; set; }
+        private UriBuilder BaseUriBuilder { get; }
 
         public UriBuilderEx(string uri)
         {
-            baseUriBuilder = new UriBuilder(uri);
-            query = HttpUtility.ParseQueryString(baseUriBuilder.Query);
+            BaseUriBuilder = new UriBuilder(uri);
         }
 
         public UriBuilderEx(Uri uri)
         {
-            baseUriBuilder = new UriBuilder(uri);
-            query = HttpUtility.ParseQueryString(baseUriBuilder.Query);
+            BaseUriBuilder = new UriBuilder(uri);
         }
 
-        public UriBuilderEx AppendQueryParameter(string key, string value)
+        public UriBuilderEx AppendQueryParameter(string key, string value, bool encode = true)
         {
-            query[key] = value;
+            string encodedParameter = (encode ? HttpUtility.UrlEncode(key) : key) + "="
+                + (encode ? HttpUtility.UrlEncode(value) : value);
+
+            if (BaseUriBuilder.Query == null)
+            {
+                BaseUriBuilder.Query = encodedParameter;
+            }
+
+            string oldQuery = BaseUriBuilder.Query;
+            if (oldQuery?.Length == 0)
+            {
+                BaseUriBuilder.Query = encodedParameter;
+            }
+            else
+            {
+                BaseUriBuilder.Query = oldQuery + "&" + encodedParameter;
+            }
+
             return this;
         }
 
         public UriBuilderEx AppendPath(string path)
         {
             // Path returns '/' if empty
-            if (baseUriBuilder.Path == "/" || baseUriBuilder.Path.EndsWith('/'))
+            if (BaseUriBuilder.Path == "/" || BaseUriBuilder.Path.EndsWith('/'))
             {
-                baseUriBuilder.Path += HttpUtility.UrlEncode(path); 
+                BaseUriBuilder.Path += HttpUtility.UrlEncode(path); 
             }
             else if (path.StartsWith('/'))
             {
-                baseUriBuilder.Path += HttpUtility.UrlEncode(path);
+                BaseUriBuilder.Path += HttpUtility.UrlEncode(path);
             }
             else
             {
-                baseUriBuilder.Path += "/" + HttpUtility.UrlEncode(path);
+                BaseUriBuilder.Path += "/" + HttpUtility.UrlEncode(path);
             }
 
             return this;
@@ -52,14 +66,12 @@ namespace SimpleWeather.Utils
 
         public Uri BuildUri()
         {
-            baseUriBuilder.Query = query.ToString();
-            return baseUriBuilder.Uri;
+            return BaseUriBuilder.Uri;
         }
 
         public override string ToString()
         {
-            baseUriBuilder.Query = query.ToString();
-            return baseUriBuilder.ToString();
+            return BaseUriBuilder.ToString();
         }
     }
 

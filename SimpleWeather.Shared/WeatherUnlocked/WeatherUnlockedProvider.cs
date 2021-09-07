@@ -11,7 +11,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System.UserProfile;
 using Windows.Web;
-using Windows.Web.Http;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using System.Net;
 
 namespace SimpleWeather.WeatherUnlocked
 {
@@ -74,18 +77,24 @@ namespace SimpleWeather.WeatherUnlocked
                 using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                 {
-                    currentRequest.Headers.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
-                    forecastRequest.Headers.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
+                    currentRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    forecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    currentRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                    forecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
+                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var currentResponse = await webClient.SendRequestAsync(currentRequest).AsTask(ctsC.Token))
+                    using (var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token))
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var forecastResponse = await webClient.SendRequestAsync(forecastRequest).AsTask(ctsF.Token))
+                    using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
                     {
                         await this.CheckForErrors(currentResponse);
                         currentResponse.EnsureSuccessStatusCode();
@@ -93,8 +102,8 @@ namespace SimpleWeather.WeatherUnlocked
                         await this.CheckForErrors(forecastResponse);
                         forecastResponse.EnsureSuccessStatusCode();
 
-                        Stream currentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await currentResponse.Content.ReadAsInputStreamAsync());
-                        Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                        Stream currentStream = await currentResponse.Content.ReadAsStreamAsync();
+                        Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
 
                         // Load weather
                         CurrentRootobject currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream);
@@ -108,9 +117,9 @@ namespace SimpleWeather.WeatherUnlocked
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

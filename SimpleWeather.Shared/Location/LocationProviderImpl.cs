@@ -3,6 +3,8 @@ using SimpleWeather.Keys;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.ObjectModel;
+using System.Net.Http;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
@@ -90,9 +92,9 @@ namespace SimpleWeather.Location
             catch (Exception ex)
             {
                 result = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting location");
             }

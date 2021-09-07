@@ -168,13 +168,13 @@ namespace SimpleWeather.UWP.Radar.RainViewer
             try
             {
                 RefreshToken();
-                using (var response = await HttpClient.GetAsync(new Uri(MapsURL)).AsTask(cts.Token))
+                using (var response = await HttpClient.GetAsync(new Uri(MapsURL), cts.Token))
                 {
                     await response.CheckForErrors(API_ID);
                     response.EnsureSuccessStatusCode();
 
-                    var stream = await response.Content.ReadAsInputStreamAsync();
-                    var root = await JSONParser.DeserializerAsync<Rootobject>(stream.AsStreamForRead());
+                    var stream = await response.Content.ReadAsStreamAsync();
+                    var root = await JSONParser.DeserializerAsync<Rootobject>(stream);
 
                     AvailableRadarFrames.Clear();
 

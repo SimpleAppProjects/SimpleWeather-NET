@@ -9,8 +9,10 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using System.Net;
 using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.TZDB
@@ -47,18 +49,21 @@ namespace SimpleWeather.TZDB
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
                     // Add headers to request
-                    request.Headers.Authorization = new HttpCredentialsHeaderValue("Bearer", userToken);
-                    request.Headers.CacheControl.MaxAge = TimeSpan.FromDays(1);
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", userToken);
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromDays(1)
+                    };
 
                     // Connect to webstream
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                    using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                    using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await CheckForErrors(API_ID, response);
                         response.EnsureSuccessStatusCode();
 
-                        Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                        Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
                         var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);

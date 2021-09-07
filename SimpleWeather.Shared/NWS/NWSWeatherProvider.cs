@@ -15,9 +15,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Web;
-using Windows.Web.Http;
-using Windows.Web.Http.Filters;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Net.Http.Headers;
+using SimpleWeather.HttpClientExtensions;
 
 namespace SimpleWeather.NWS
 {
@@ -78,37 +79,41 @@ namespace SimpleWeather.NWS
                 using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
                 using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
                 {
-                    var version = string.Format("v{0}.{1}.{2}",
-                        Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+                    observationRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                    observationRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    observationRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                    observationRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-                    hrForecastRequest.Headers.Accept.Add(new HttpMediaTypeWithQualityHeaderValue("application/ld+json"));
-                    hrForecastRequest.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
+                    hrForecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                    hrForecastRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    observationRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
-                    hrForecastRequest.Headers.CacheControl.MaxAge = TimeSpan.FromHours(3);
+                    observationRequest.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(1)
+                    };
+                    hrForecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
+                    {
+                        MaxAge = TimeSpan.FromHours(3)
+                    };
 
                     // Get response
                     var webClient = SimpleLibrary.GetInstance().WebClient;
                     using (var ctsO = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                    using (var observationResponse = await webClient.SendRequestAsync(observationRequest).AsTask(ctsO.Token))
+                    using (var observationResponse = await webClient.SendAsync(observationRequest, ctsO.Token))
                     {
                         // Check for errors
                         await this.CheckForErrors(observationResponse);
 
-                        Stream observationStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await observationResponse.Content.ReadAsInputStreamAsync());
+                        Stream observationStream = await observationResponse.Content.ReadAsStreamAsync();
 
                         // Load point json data
                         Observation.ForecastRootobject observationData = await JSONParser.DeserializerAsync<Observation.ForecastRootobject>(observationStream);
 
                         using (var ctsF = new CancellationTokenSource((int)(Settings.READ_TIMEOUT * 1.5f)))
-                        using (var forecastResponse = await webClient.SendRequestAsync(hrForecastRequest).AsTask(ctsF.Token))
+                        using (var forecastResponse = await webClient.SendAsync(hrForecastRequest, ctsF.Token))
                         {
                             // Check for errors
                             await this.CheckForErrors(forecastResponse);
 
-                            Stream forecastStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await forecastResponse.Content.ReadAsInputStreamAsync());
+                            Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
 
                             // Load point json data
                             Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
@@ -122,9 +127,9 @@ namespace SimpleWeather.NWS
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown)
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
                 {
-                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
                 else if (ex is WeatherException)
                 {

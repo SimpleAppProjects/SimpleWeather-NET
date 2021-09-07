@@ -11,9 +11,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
-using Windows.Web.Http;
-using Windows.Web.Http.Headers;
+using System.Net.Http;
+using System.Net.Sockets;
 using static SimpleWeather.Utils.APIRequestUtils;
+using System.Net.Http.Headers;
+using SimpleWeather.HttpClientExtensions;
 
 namespace SimpleWeather.AQICN
 {
@@ -43,20 +45,20 @@ namespace SimpleWeather.AQICN
                 HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
                 var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
-                var version = string.Format("v{0}.{1}.{2}",
-                    Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
-
-                request.Headers.UserAgent.Add(new HttpProductInfoHeaderValue("SimpleWeather (thewizrd.dev@gmail.com)", version));
-                request.Headers.CacheControl.MaxAge = TimeSpan.FromHours(1);
+                request.Headers.UserAgent.AddAppUserAgent();
+                request.Headers.CacheControl = new CacheControlHeaderValue() 
+                {
+                    MaxAge = TimeSpan.FromHours(1)
+                };
 
                 using (request)
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
-                using (var response = await webClient.SendRequestAsync(request).AsTask(cts.Token))
+                using (var response = await webClient.SendAsync(request, cts.Token))
                 {
                     await this.CheckForErrors(API_ID, response);
                     response.EnsureSuccessStatusCode();
 
-                    Stream contentStream = WindowsRuntimeStreamExtensions.AsStreamForRead(await response.Content.ReadAsInputStreamAsync());
+                    Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                     // Load data
                     var root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
