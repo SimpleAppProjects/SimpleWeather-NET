@@ -20634,13 +20634,13 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
             writer.WriteRaw(this.____stringByteKeys[12]);
             writer.WriteSingle(value.avghumidity);
             writer.WriteRaw(this.____stringByteKeys[13]);
-            writer.WriteInt32(value.daily_will_it_rain);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.daily_will_it_rain, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[14]);
-            writer.WriteString(value.daily_chance_of_rain);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.daily_chance_of_rain, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[15]);
-            writer.WriteInt32(value.daily_will_it_snow);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.daily_will_it_snow, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[16]);
-            writer.WriteString(value.daily_chance_of_snow);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.daily_chance_of_snow, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[17]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.WeatherApi.Condition>().Serialize(ref writer, value.condition, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[18]);
@@ -20683,13 +20683,13 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
             var __avgvis_miles__b__ = false;
             var __avghumidity__ = default(float);
             var __avghumidity__b__ = false;
-            var __daily_will_it_rain__ = default(int);
+            var __daily_will_it_rain__ = default(int?);
             var __daily_will_it_rain__b__ = false;
-            var __daily_chance_of_rain__ = default(string);
+            var __daily_chance_of_rain__ = default(int?);
             var __daily_chance_of_rain__b__ = false;
-            var __daily_will_it_snow__ = default(int);
+            var __daily_will_it_snow__ = default(int?);
             var __daily_will_it_snow__b__ = false;
-            var __daily_chance_of_snow__ = default(string);
+            var __daily_chance_of_snow__ = default(int?);
             var __daily_chance_of_snow__b__ = false;
             var __condition__ = default(global::SimpleWeather.WeatherApi.Condition);
             var __condition__b__ = false;
@@ -20763,19 +20763,19 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
                         __avghumidity__b__ = true;
                         break;
                     case 13:
-                        __daily_will_it_rain__ = reader.ReadInt32();
+                        __daily_will_it_rain__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __daily_will_it_rain__b__ = true;
                         break;
                     case 14:
-                        __daily_chance_of_rain__ = reader.ReadString();
+                        __daily_chance_of_rain__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __daily_chance_of_rain__b__ = true;
                         break;
                     case 15:
-                        __daily_will_it_snow__ = reader.ReadInt32();
+                        __daily_will_it_snow__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __daily_will_it_snow__b__ = true;
                         break;
                     case 16:
-                        __daily_chance_of_snow__ = reader.ReadString();
+                        __daily_chance_of_snow__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __daily_chance_of_snow__b__ = true;
                         break;
                     case 17:
@@ -21099,11 +21099,11 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
             writer.WriteRaw(this.____stringByteKeys[24]);
             writer.WriteInt32(value.will_it_rain);
             writer.WriteRaw(this.____stringByteKeys[25]);
-            writer.WriteString(value.chance_of_rain);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.chance_of_rain, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[26]);
             writer.WriteInt32(value.will_it_snow);
             writer.WriteRaw(this.____stringByteKeys[27]);
-            writer.WriteString(value.chance_of_snow);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.chance_of_snow, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[28]);
             writer.WriteSingle(value.vis_km);
             writer.WriteRaw(this.____stringByteKeys[29]);
@@ -21176,11 +21176,11 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
             var __dewpoint_f__b__ = false;
             var __will_it_rain__ = default(int);
             var __will_it_rain__b__ = false;
-            var __chance_of_rain__ = default(string);
+            var __chance_of_rain__ = default(int?);
             var __chance_of_rain__b__ = false;
             var __will_it_snow__ = default(int);
             var __will_it_snow__b__ = false;
-            var __chance_of_snow__ = default(string);
+            var __chance_of_snow__ = default(int?);
             var __chance_of_snow__b__ = false;
             var __vis_km__ = default(float);
             var __vis_km__b__ = false;
@@ -21308,7 +21308,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
                         __will_it_rain__b__ = true;
                         break;
                     case 25:
-                        __chance_of_rain__ = reader.ReadString();
+                        __chance_of_rain__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __chance_of_rain__b__ = true;
                         break;
                     case 26:
@@ -21316,7 +21316,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.WeatherApi
                         __will_it_snow__b__ = true;
                         break;
                     case 27:
-                        __chance_of_snow__ = reader.ReadString();
+                        __chance_of_snow__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __chance_of_snow__b__ = true;
                         break;
                     case 28:

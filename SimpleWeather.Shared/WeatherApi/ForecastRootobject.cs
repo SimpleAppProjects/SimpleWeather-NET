@@ -103,10 +103,10 @@ namespace SimpleWeather.WeatherApi
         public float avgvis_km { get; set; }
         public float avgvis_miles { get; set; }
         public float avghumidity { get; set; }
-        public int daily_will_it_rain { get; set; }
-        public string daily_chance_of_rain { get; set; }
-        public int daily_will_it_snow { get; set; }
-        public string daily_chance_of_snow { get; set; }
+        public int? daily_will_it_rain { get; set; }
+        public int? daily_chance_of_rain { get; set; }
+        public int? daily_will_it_snow { get; set; }
+        public int? daily_chance_of_snow { get; set; }
         public Condition condition { get; set; }
         public float uv { get; set; }
     }
@@ -148,9 +148,9 @@ namespace SimpleWeather.WeatherApi
         public float dewpoint_c { get; set; }
         public float dewpoint_f { get; set; }
         public int will_it_rain { get; set; }
-        public string chance_of_rain { get; set; }
+        public int? chance_of_rain { get; set; }
         public int will_it_snow { get; set; }
-        public string chance_of_snow { get; set; }
+        public int? chance_of_snow { get; set; }
         public float vis_km { get; set; }
         public float vis_miles { get; set; }
         public float gust_mph { get; set; }

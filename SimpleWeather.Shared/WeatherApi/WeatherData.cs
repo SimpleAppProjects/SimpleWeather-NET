@@ -104,13 +104,13 @@ namespace SimpleWeather.WeatherData
             extras.dewpoint_c = MathF.Round(WeatherUtils.CalculateDewpointC(day.day.avgtemp_c, extras.humidity.Value));
             extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(extras.dewpoint_c.Value));
             extras.uv_index = day.day.uv;
-            if (int.TryParse(day.day.daily_chance_of_rain, out int popRain))
+            if (day.day.daily_chance_of_rain.HasValue)
             {
-                extras.pop = popRain;
+                extras.pop = day.day.daily_chance_of_rain;
             }
-            else if (int.TryParse(day.day.daily_chance_of_snow, out int popSnow))
+            else
             {
-                extras.pop = popSnow;
+                extras.pop = day.day.daily_chance_of_snow;
             }
             extras.qpf_rain_mm = day.day.totalprecip_mm;
             extras.qpf_rain_in = day.day.totalprecip_in;
@@ -146,13 +146,13 @@ namespace SimpleWeather.WeatherData
             extras.dewpoint_f = hour.dewpoint_f;
             extras.dewpoint_c = hour.dewpoint_c;
             extras.uv_index = hour.uv;
-            if (int.TryParse(hour.chance_of_rain, out int popRain))
+            if (hour.chance_of_rain.HasValue)
             {
-                extras.pop = popRain;
+                extras.pop = hour.chance_of_rain;
             }
-            else if (int.TryParse(hour.chance_of_snow, out int popSnow))
+            else
             {
-                extras.pop = popSnow;
+                extras.pop = hour.chance_of_snow;
             }
             extras.cloudiness = hour.cloud;
             extras.qpf_rain_in = hour.precip_in;
