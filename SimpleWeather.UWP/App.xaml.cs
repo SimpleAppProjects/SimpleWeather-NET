@@ -518,6 +518,17 @@ namespace SimpleWeather.UWP
             }
         }
 
+        protected override void OnWindowCreated(WindowCreatedEventArgs args)
+        {
+            base.OnWindowCreated(args);
+            args.Window.Closed += Window_Closed;
+        }
+
+        private void Window_Closed(object sender, CoreWindowEventArgs e)
+        {
+            Radar.MapControlCreator.Instance.RemoveMapControl();
+        }
+
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
             IsInBackground = false;

@@ -298,6 +298,7 @@
     <Compile Include="Preferences\Settings_Features.xaml.cs">
       <DependentUpon>Settings_Features.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Radar\MapControlCreator.cs" />
     <Compile Include="Radar\NullSchool\EarthWindMapViewProvider.cs" />
     <Compile Include="Radar\MapTileRadarViewProvider.cs" />
     <Compile Include="Radar\OpenWeather\OWMRadarViewProvider.cs" />

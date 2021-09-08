@@ -96,24 +96,15 @@ namespace SimpleWeather.UWP.Radar
         public override void OnDestroyView()
         {
             RadarContainer.Child = null;
+            RadarMapContainer.MapContainerChild = null;
+            RadarMapContainer = null;
             mapControl?.TileSources.Clear();
             mapControl = null;
         }
 
         private MapControl CreateMapControl()
         {
-            var mapControl = new MapControl()
-            {
-                MapServiceToken = APIKeys.GetBingMapsKey(),
-                LandmarksVisible = true,
-                PedestrianFeaturesVisible = false,
-                TransitFeaturesVisible = false,
-                ZoomLevel = 6,
-                PanInteractionMode = MapPanInteractionMode.Disabled,
-                RotateInteractionMode = MapInteractionMode.Disabled,
-                TiltInteractionMode = MapInteractionMode.Disabled,
-                ZoomInteractionMode = MapInteractionMode.Disabled,
-            };
+            var mapControl = MapControlCreator.Instance.Map;
 
             if (locationCoords != null)
             {

@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
@@ -34,7 +35,23 @@ namespace SimpleWeather.UWP.Main
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("label_radar");
+            PrimaryCommands = new List<ICommandBarElement>()
+            {
+                new AppBarButton()
+                {
+                    Icon = new SymbolIcon(Symbol.Refresh),
+                    Label = App.ResLoader.GetString("Button_Refresh/Label"),
+                    Tag = "refresh"
+                }
+            };
+            GetRefreshBtn().Tapped += RefreshButton_Click;
+
             AnalyticsLogger.LogEvent("WeatherRadarPage");
+        }
+
+        private AppBarButton GetRefreshBtn()
+        {
+            return PrimaryCommands.LastOrDefault() as AppBarButton;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -45,20 +62,31 @@ namespace SimpleWeather.UWP.Main
             radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            base.OnNavigatedFrom(e);
-
             radarViewProvider?.OnDestroyView();
+            AnalyticsLogger.LogEvent("WeatherRadarPage: OnNavigatingFrom");
+            base.OnNavigatingFrom(e);
         }
 
         private void RadarWebViewContainer_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
-            radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            if (radarViewProvider == null)
+            {
+                radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            }
             radarViewProvider.EnableInteractions(true);
             if (WeatherView.LocationCoord != null)
             {
                 radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
+            }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (WeatherView.LocationCoord != null)
+            {
+                radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
             }
         }
     }

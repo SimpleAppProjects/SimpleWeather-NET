@@ -383,8 +383,9 @@ namespace SimpleWeather.UWP.Main
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            base.OnNavigatingFrom(e);
             cts?.Cancel();
+            radarViewProvider?.OnDestroyView();
+            base.OnNavigatingFrom(e);
         }
 
         /// <summary>
@@ -1016,7 +1017,10 @@ namespace SimpleWeather.UWP.Main
             {
                 await Dispatcher.RunOnUIThread(() =>
                 {
-                    radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+                    if (radarViewProvider == null)
+                    {
+                        radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+                    }
                     radarViewProvider.EnableInteractions(false);
                     radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
                 }, CoreDispatcherPriority.Low);
