@@ -12,7 +12,7 @@ namespace SimpleWeather.UWP.Helpers
         {
             if (!IsInverse)
             {
-                Color color = (Color)value;
+                Color color = value is Color ? (Color)value : new Color();
                 return new SolidColorBrush(color);
             }
             else
