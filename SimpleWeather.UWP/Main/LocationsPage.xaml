@@ -57,10 +57,11 @@
     <Grid>
         <StackPanel
             x:Name="NoLocationsPrompt"
+            Margin="0,0,0,48"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Vertical"
-            Margin="0,0,0,48">
+            Visibility="Collapsed">
             <SymbolIcon Margin="8" Symbol="Add" />
             <TextBlock
                 d:Text="Location not set. Please add a location"
