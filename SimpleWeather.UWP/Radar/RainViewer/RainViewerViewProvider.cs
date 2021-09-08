@@ -71,7 +71,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
                     {
                         TileSource.FrameCount = InteractionsEnabled() && AvailableRadarFrames.Count > 0 ? AvailableRadarFrames.Count : 0;
                     }
-                    RadarMapContainer.UpdateSeekbarRange(0, (TileSource?.FrameCount ?? 0) - 1);
+                    RadarMapContainer?.UpdateSeekbarRange(0, (TileSource?.FrameCount ?? 0) - 1);
                     AnimationTimer?.Stop();
                     TileSource?.Stop();
                     AnimationPosition = 0;
