@@ -1,7 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using CacheCow.Client;
+using CacheCow.Client.FileCacheStore;
+using CacheCow.Client.Headers;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.AQICN;
 using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
+using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Location;
 using SimpleWeather.NWS;
 using SimpleWeather.RemoteConfig;
@@ -13,9 +17,11 @@ using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace UnitTestProject
 {
@@ -351,6 +357,26 @@ namespace UnitTestProject
                     }
                 }
             }
+        }
+
+        [TestMethod]
+        public async Task CacheCowTest()
+        {
+            var CacheRootDir = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "CacheCowTest");
+            if (Directory.Exists(CacheRootDir))
+            {
+                Directory.Delete(CacheRootDir, true);
+            }
+            var client = ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRootDir)));
+            const string CacheableResource = "https://code.jquery.com/jquery-3.3.1.slim.min.js";
+            var response = await client.GetAsync(CacheableResource);
+            var responseFromCache = await client.GetAsync(CacheableResource);
+
+            var serverResponseHeaders = response.Headers.GetCacheCowHeader();
+            Assert.IsFalse(serverResponseHeaders.RetrievedFromCache.GetValueOrDefault(false));
+
+            var cacheResponseHeaders = responseFromCache.Headers.GetCacheCowHeader();
+            Assert.IsTrue(cacheResponseHeaders.RetrievedFromCache.GetValueOrDefault(false));
         }
     }
 }

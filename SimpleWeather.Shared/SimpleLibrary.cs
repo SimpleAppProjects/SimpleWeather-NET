@@ -87,7 +87,7 @@ namespace SimpleWeather
                 var CacheRoot = System.IO.Path.Combine(
                     Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path,
                     "CacheCow");
-                HttpWebClient = ClientExtensions.CreateClient(new FileStore(CacheRoot) { MinExpiry = TimeSpan.FromDays(7) }, handler: new CacheFilter());
+                HttpWebClient = ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRoot) { MinExpiry = TimeSpan.FromDays(7) }), handler: new CacheFilter());
             }
 
             return HttpWebClient;

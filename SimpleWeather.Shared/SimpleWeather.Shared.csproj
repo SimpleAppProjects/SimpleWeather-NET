@@ -178,6 +178,7 @@
     <Compile Include="HttpClientExtensions\CacheFilter.cs" />
     <Compile Include="HttpClientExtensions\FileStore.cs" />
     <Compile Include="HttpClientExtensions\HttpClientExtensions.cs" />
+    <Compile Include="HttpClientExtensions\RemoveHeaderDelagatingCacheStore.cs" />
     <Compile Include="Icons\IWeatherIconsProvider.cs" />
     <Compile Include="Icons\WeatherIconicProvider.cs" />
     <Compile Include="Icons\WeatherIconProvider.cs" />
