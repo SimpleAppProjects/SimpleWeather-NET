@@ -272,6 +272,7 @@
     <Compile Include="Utils\FeatureSettings.cs" />
     <Compile Include="Utils\FileLoggingTree.cs" />
     <Compile Include="Utils\FileUtils.cs" />
+    <Compile Include="Utils\ImageUtils.cs" />
     <Compile Include="Utils\JSONParser.cs" />
     <Compile Include="Utils\ListUtils.cs" />
     <Compile Include="Utils\LocationUtils.cs" />

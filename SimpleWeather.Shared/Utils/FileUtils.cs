@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -122,14 +123,43 @@ namespace SimpleWeather.Utils
         }
 
 #if !WINDOWS_UWP
-        public static Task DeleteDirectory(String path)
+        public static Task<bool> DeleteDirectory(String path)
         {
             if (Directory.Exists(path))
             {
-                var directory = new DirectoryInfo(path);
-                directory.Delete(true);
+                return Task.Run(() =>
+                {
+                    var directory = new DirectoryInfo(path);
+                    directory.Delete(true);
+                    return true;
+                });
             }
+
+            return Task.FromResult(false);
         }
 #endif
+
+        /*
+        public static Task<string> CalculateMD5Hash(string filePath)
+        {
+            return Task.Run(() =>
+            {
+                if (!File.Exists(filePath))
+                {
+                    return null;
+                }
+
+                while (IsFileLocked(filePath))
+                {
+                    Task.Delay(100);
+                }
+
+                using var md5 = MD5.Create();
+                using var stream = File.OpenRead(filePath);
+                var hash = md5.ComputeHash(stream);
+                return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+            });
+        }
+        */
     }
 }

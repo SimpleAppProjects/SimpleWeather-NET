@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SimpleWeather.WeatherData.Images.Model
 {
@@ -29,7 +27,7 @@ namespace SimpleWeather.WeatherData.Images.Model
 
         public bool IsValid()
         {
-            return ImageUrl != null && 
+            return ImageUrl != null &&
                 (File.Exists(ImageUrl) || Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute)) &&
                 !String.IsNullOrWhiteSpace(HexColor);
         }
