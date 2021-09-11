@@ -63,7 +63,7 @@ namespace SimpleWeather.OpenWeather
                 using (var response = await webClient.GetAsync(queryURL, cts.Token))
                 {
                     // Check for errors
-                    this.ThrowIfRateLimited(response);
+                    await this.ThrowIfRateLimited(response);
                     switch (response.StatusCode)
                     {
                         // 400 (OK since this isn't a valid request)
