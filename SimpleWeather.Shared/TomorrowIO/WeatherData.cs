@@ -163,8 +163,8 @@ namespace SimpleWeather.WeatherData
             }
             if (item.values.windGust.HasValue)
             {
-                extras.wind_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
-                extras.wind_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
+                extras.windgust_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
+                extras.windgust_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
             }
             if (item.values.visibility.HasValue)
             {
@@ -239,8 +239,8 @@ namespace SimpleWeather.WeatherData
             }
             if (item.values.windGust.HasValue)
             {
-                extras.wind_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
-                extras.wind_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
+                extras.windgust_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
+                extras.windgust_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
             }
             if (item.values.visibility.HasValue)
             {
