@@ -15,6 +15,13 @@
     d:DesignWidth="400"
     mc:Ignorable="d">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="FallbackColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
+            <helpers:ColorToSolidColorBrushConverter x:Key="color2solidConv" FallbackColor="{ThemeResource FallbackColorBrush}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
         <toolkitControls:HeaderedContentControl
             HorizontalContentAlignment="Stretch"
@@ -47,8 +54,9 @@
                     Grid.Column="0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     FontSize="24"
-                    Foreground="{x:Bind ViewModel.TreePollenDescriptionColor, Mode=OneWay, TargetNullValue={ThemeResource TextFillColorPrimary}, Converter={StaticResource color2SolidColorConverter}}"
+                    Foreground="{x:Bind ViewModel.TreePollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Text="{x:Bind ViewModel.TreePollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
                 <TextBlock
@@ -63,8 +71,9 @@
                     Grid.Column="1"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     FontSize="24"
-                    Foreground="{x:Bind ViewModel.GrassPollenDescriptionColor, Mode=OneWay, TargetNullValue={ThemeResource TextFillColorPrimary}, Converter={StaticResource color2SolidColorConverter}}"
+                    Foreground="{x:Bind ViewModel.GrassPollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Text="{x:Bind ViewModel.GrassPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
                 <TextBlock
@@ -79,8 +88,9 @@
                     Grid.Column="2"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     FontSize="24"
-                    Foreground="{x:Bind ViewModel.RagweedPollenDescriptionColor, Mode=OneWay, TargetNullValue={ThemeResource TextFillColorPrimary}, Converter={StaticResource color2SolidColorConverter}}"
+                    Foreground="{x:Bind ViewModel.RagweedPollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
                     Style="{ThemeResource CaptionTextBlockStyle}"
                     Text="{x:Bind ViewModel.RagweedPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
             </Grid>

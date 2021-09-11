@@ -50,7 +50,7 @@
                     </Setter>
                 </Style.Setters>
             </Style>
-            <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
+            <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -137,6 +137,8 @@
                             Margin="16,0"
                             VerticalAlignment="Center"
                             d:Visibility="Visible"
+                            Foreground="{ThemeResource ForegroundColor}"
+                            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                             ShowAsMonochrome="True"
                             UriSource="/Assets/outline_near_me_black_24dp.png"
                             Visibility="Collapsed" />
@@ -244,12 +246,9 @@
                                 d:Text="70°F"
                                 FontSize="84"
                                 FontWeight="Light"
+                                Foreground="{ThemeResource ForegroundColor}"
                                 Text="{x:Bind WeatherView.CurTemp, Mode=OneWay}"
-                                TextLineBounds="Tight">
-                                <TextBlock.Foreground>
-                                    <SolidColorBrush d:Color="OrangeRed" Color="{x:Bind WeatherView.CurTemp, Mode=OneWay, Converter={StaticResource tempToColorTempConverter}}" />
-                                </TextBlock.Foreground>
-                            </TextBlock>
+                                TextLineBounds="Tight" />
                         </toolkitControls:DropShadowPanel>
                         <StackPanel
                             x:Name="HiLoPanel"

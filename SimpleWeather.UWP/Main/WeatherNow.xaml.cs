@@ -1062,9 +1062,9 @@ namespace SimpleWeather.UWP.Main
                 {
                     StackBackgroundBrush.Opacity = 0.85;
                 }
-                if (this.Resources["tempToColorTempConverter"] is TempToColorTempConverter tempConv)
+                if (CurTemp != null)
                 {
-                    tempConv.UseFallback = false;
+                    CurTemp.Foreground = new SolidColorBrush(Colors.White);
                 }
             }
             else
@@ -1090,11 +1090,36 @@ namespace SimpleWeather.UWP.Main
                 {
                     StackBackgroundBrush.Opacity = 0.0;
                 }
-                if (this.Resources["tempToColorTempConverter"] is TempToColorTempConverter tempConv)
+                if (CurTemp != null)
                 {
-                    tempConv.UseFallback = true;
+                    CurTemp.Foreground = GetTempColorBrush();
                 }
             }
+        }
+
+        private SolidColorBrush GetTempColorBrush()
+        {
+            string temp = WeatherView?.CurTemp;
+            string temp_str = temp?.RemoveNonDigitChars();
+
+            if (float.TryParse(temp_str, out float temp_f))
+            {
+                var tempUnit = Settings.TemperatureUnit;
+
+                if (Equals(tempUnit, Units.CELSIUS) || temp.EndsWith(Units.CELSIUS))
+                {
+                    temp_f = ConversionMethods.CtoF(temp_f);
+                }
+
+                var color = WeatherUtils.GetColorFromTempF(temp_f, Colors.Transparent);
+
+                if (color != Colors.Transparent)
+                {
+                    return new SolidColorBrush(color);
+                }
+            }
+
+            return ForegroundColorBrush;
         }
 
         private void ForecastGraphPanel_GraphViewTapped(object sender, TappedRoutedEventArgs e)

@@ -1,19 +1,39 @@
 ﻿using System;
 using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Helpers
 {
-    public class ColorToSolidColorBrushConverter : IValueConverter
+    public class ColorToSolidColorBrushConverter : DependencyObject, IValueConverter
     {
-        public bool IsInverse { get; set; }
+        public bool IsInverse
+        {
+            get => (bool)GetValue(IsInverseProperty);
+            set => SetValue(IsInverseProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for IsInverse.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsInverseProperty =
+            DependencyProperty.Register("IsInverse", typeof(bool), typeof(ColorToSolidColorBrushConverter), new PropertyMetadata(false));
+
+        public object FallbackColor
+        {
+            get => GetValue(FallbackColorProperty);
+            set => SetValue(FallbackColorProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for FallbackColor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty FallbackColorProperty =
+            DependencyProperty.Register("FallbackColor", typeof(object), typeof(ColorToSolidColorBrushConverter), new PropertyMetadata(null));
+
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (!IsInverse)
             {
-                Color color = value is Color ? (Color)value : new Color();
-                return new SolidColorBrush(color);
+                Color? color = value is Color ? (Color)value : null;
+                return color != null ? new SolidColorBrush(color.Value) : FallbackColor;
             }
             else
             {
