@@ -3,8 +3,10 @@ using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
+using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -144,10 +146,27 @@ namespace SimpleWeather.Utils
             var imageHelper = ImageDataHelper.ImageDataHelperImpl;
             var imageData = await imageHelper.GetCachedImageData(backgroundCode);
             // Check if cache is available and valid
-            if (imageData?.IsValid() == true)
+            var imgDataValid = imageData != null && imageData.IsValid();
+            // Validate image header/contents
+            var imgValid = imgDataValid && (await imageData?.IsImageValid());
+            if (imgValid)
                 return new ImageDataViewModel(imageData);
             else
             {
+                // Delete invalid file
+                var uri = new Uri(imageData.ImageUrl);
+                if (imgDataValid && !imgValid && uri.Scheme == "file")
+                {
+                    try
+                    {
+                        if (File.Exists(imageData.ImageUrl))
+                        {
+                            File.Delete(imageData.ImageUrl);
+                        }
+                    }
+                    catch { }
+                }
+
 #if WINDOWS_UWP && !UNIT_TEST
                 if (!FeatureSettings.IsUpdateAvailable)
                 {
@@ -173,6 +192,52 @@ namespace SimpleWeather.Utils
             }
 
             return null;
+        }
+
+        public static async Task<bool> IsImageValid(this ImageData imgData)
+        {
+            if (imgData.IsValid())
+            {
+                var uri = new Uri(imgData.ImageUrl);
+                if (uri.Scheme == "file" || uri.Scheme == "ms-appx")
+                {
+                    Stream stream = null;
+                    try
+                    {
+                        while (FileUtils.IsFileLocked(imgData.ImageUrl))
+                        {
+                            await Task.Delay(250);
+                        }
+                        var fs = File.OpenRead(imgData.ImageUrl);
+                        var bs = new BufferedStream(fs);
+                        stream = bs;
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                    }
+
+                    if (stream != null)
+                    {
+                        using (stream)
+                        {
+                            return ImageUtils.GuessImageType(stream) != ImageUtils.ImageType.Unknown;
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

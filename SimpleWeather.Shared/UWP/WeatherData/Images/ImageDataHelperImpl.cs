@@ -85,12 +85,12 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                         });
 
                     using (var fStream = await imageFile.OpenAsync(FileAccessMode.ReadWrite))
-                    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10)))
+                    using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15)))
                     using (var request = new HttpRequestMessage(HttpMethod.Get, imageDownloadUri))
                     {
                         request.Headers.CacheControl = new CacheControlHeaderValue()
                         {
-                            MaxAge = TimeSpan.FromMinutes(15)
+                            MaxAge = TimeSpan.FromDays(1)
                         };
 
                         // Connect to webstream
@@ -126,6 +126,16 @@ namespace SimpleWeather.UWP.Shared.WeatherData.Images
                 }
 
                 ImageData newImageData = ImageData.CopyWithNewImageUrl(imageData, imageFile.Path);
+
+                if (!await newImageData.IsImageValid())
+                {
+                    try
+                    {
+                        await imageFile.DeleteAsync(StorageDeleteOption.PermanentDelete);
+                    }
+                    catch { }
+                    return null;
+                }
 
                 ImageDataContainer.Values[imageData.Condition] = await JSONParser.SerializerAsync(newImageData);
 
