@@ -21,6 +21,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -428,6 +429,107 @@ namespace UnitTestProject
             }
 
             Assert.IsFalse(results.Contains(ImageUtils.ImageType.Unknown));
+        }
+
+        [TestMethod]
+        public async Task ImageFileTest()
+        {
+            var CacheRootDir = ApplicationData.Current.LocalCacheFolder;
+            var CacheFolder = await CacheRootDir.GetFolderAsync("images");
+            var CacheFiles = await CacheFolder.GetFilesAsync();
+            var file = CacheFiles.First();
+
+            var t1 = new Thread(async () =>
+            {
+                Thread.Sleep(2000);
+                while (FileUtils.IsFileLocked(file))
+                {
+                    Thread.Sleep(100);
+                }
+
+                using var stream = new BufferedStream(await file.OpenStreamForReadAsync());
+                var imageType = ImageUtils.GuessImageType(stream);
+                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: type: {imageType}");
+            });
+
+            var t2 = new Thread(() =>
+            {
+                Thread.Sleep(2000);
+                while (FileUtils.IsFileLocked(file))
+                {
+                    Thread.Sleep(100);
+                }
+
+                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                var imageType = ImageUtils.GuessImageType(stream);
+                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: type: {imageType}");
+            });
+
+            var t3 = new Thread(() =>
+            {
+                Thread.Sleep(2000);
+                while (FileUtils.IsFileLocked(file))
+                {
+                    Thread.Sleep(100);
+                }
+
+                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                var imageType = ImageUtils.GuessImageType(stream);
+                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: type: {imageType}");
+            });
+
+            var t4 = new Thread(() =>
+            {
+                Thread.Sleep(2000);
+                while (FileUtils.IsFileLocked(file))
+                {
+                    Thread.Sleep(100);
+                }
+
+                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                var imageType = ImageUtils.GuessImageType(stream);
+                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: type: {imageType}");
+            });
+
+            var t5 = new Thread(() =>
+            {
+                Thread.Sleep(2000);
+                while (FileUtils.IsFileLocked(file))
+                {
+                    Thread.Sleep(100);
+                }
+
+                using var stream = new BufferedStream(File.Open(file.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
+                var imageType = ImageUtils.GuessImageType(stream);
+                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: type: {imageType}");
+            });
+
+            t1.Start();
+            t2.Start();
+            t3.Start();
+            t4.Start();
+            t5.Start();
+
+            await Task.Run(() =>
+            {
+                bool completed = false;
+
+                do
+                {
+                    completed =
+                    t1.ThreadState == System.Threading.ThreadState.Stopped &&
+                    t2.ThreadState == System.Threading.ThreadState.Stopped &&
+                    t3.ThreadState == System.Threading.ThreadState.Stopped &&
+                    t4.ThreadState == System.Threading.ThreadState.Stopped &&
+                    t5.ThreadState == System.Threading.ThreadState.Stopped;
+                }
+                while (!completed);
+            });
         }
     }
 }

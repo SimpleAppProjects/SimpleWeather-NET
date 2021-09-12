@@ -98,7 +98,7 @@ namespace SimpleWeather.Utils
 
             try
             {
-                stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
+                stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             }
             catch (IOException)
             {
