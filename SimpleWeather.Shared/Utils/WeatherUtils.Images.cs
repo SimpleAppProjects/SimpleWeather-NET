@@ -204,7 +204,7 @@ namespace SimpleWeather.Utils
                 var uri = new Uri(imgData.ImageUrl);
                 if (uri.Scheme == "file" || uri.Scheme == "ms-appx")
                 {
-                    Stream stream = null;
+                    Stream stream;
                     try
                     {
                         while (FileUtils.IsFileLocked(imgData.ImageUrl))
@@ -218,6 +218,8 @@ namespace SimpleWeather.Utils
                     catch (Exception e)
                     {
                         Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                        // Assume we're ok
+                        return true;
                     }
 
                     if (stream != null)
