@@ -37,9 +37,7 @@ namespace SimpleWeather.RemoteConfig
 
         public static bool IsProviderEnabled(string weatherAPI)
         {
-            string configJson = GetConfigString(weatherAPI);
-
-            var config = JSONParser.Deserializer<WeatherProviderConfig>(configJson);
+            var config = GetConfig(weatherAPI);
 
             if (config != null)
             {
@@ -53,8 +51,7 @@ namespace SimpleWeather.RemoteConfig
         {
             string API = Settings.API;
 
-            string configJson = GetConfigString(API);
-            var config = JSONParser.Deserializer<WeatherProviderConfig>(configJson);
+            var config = GetConfig(API);
 
             if (config != null)
             {
@@ -98,6 +95,31 @@ namespace SimpleWeather.RemoteConfig
             {
                 return GetDefaultWeatherProvider();
             }
+        }
+
+        private static WeatherProviderConfig GetConfig(string API)
+        {
+            WeatherProviderConfig config;
+
+            try
+            {
+                config = JSONParser.Deserializer<WeatherProviderConfig>(GetConfigString(API));
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e, "Error loading remote config");
+
+                try
+                {
+                    config = JSONParser.Deserializer<WeatherProviderConfig>(GetConfigString(API, true));
+                }
+                catch
+                {
+                    config = null;
+                }
+            }
+
+            return config;
         }
     }
 }

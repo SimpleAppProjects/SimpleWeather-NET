@@ -15,8 +15,13 @@ namespace SimpleWeather.RemoteConfig
         private static ApplicationDataContainer RemoteConfigContainer = ApplicationData.Current.LocalSettings
             .CreateContainer("firebase_remoteconfig", ApplicationDataCreateDisposition.Always);
 
-        private static String GetConfigString(String weatherAPI)
+        private static String GetConfigString(String weatherAPI, bool useFallback = false)
         {
+            if (useFallback)
+            {
+                return SimpleLibrary.GetInstance().ResLoader.GetString("/Config/" + weatherAPI);
+            }
+
             return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SimpleLibrary.GetInstance().ResLoader.GetString("/Config/" + weatherAPI);
         }
 
