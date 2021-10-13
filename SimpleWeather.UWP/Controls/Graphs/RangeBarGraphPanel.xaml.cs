@@ -142,7 +142,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 BarChartView.DrawIconLabels = true;
                 BarChartView.CenterGraphView = true;
 
-                BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
+                if (ForecastData?.LabelData != null && ForecastData?.TempData != null)
+                {
+                    BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
+                }
             }
         }
     }

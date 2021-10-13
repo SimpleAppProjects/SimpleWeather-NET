@@ -142,7 +142,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 LineGraphView.DrawDotPoints = false;
                 LineGraphView.DrawSeriesLabels = false;
 
-                LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
+                if (GraphData?.LabelData != null && GraphData?.SeriesData != null)
+                {
+                    LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
+                }
             }
         }
     }
