@@ -23897,14 +23897,12 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phenomenon_id"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phenomenon_max_color_id"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("text_advice"), 2},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("phenomenon_id"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("phenomenon_max_color_id"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("text_advice"),
                 
             };
         }
@@ -23922,8 +23920,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             writer.WriteInt32(value.phenomenon_id);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteInt32(value.phenomenon_max_color_id);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<object>().Serialize(ref writer, value.text_advice, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -23940,8 +23936,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             var __phenomenon_id__b__ = false;
             var __phenomenon_max_color_id__ = default(int);
             var __phenomenon_max_color_id__b__ = false;
-            var __text_advice__ = default(object);
-            var __text_advice__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -23965,10 +23959,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                         __phenomenon_max_color_id__ = reader.ReadInt32();
                         __phenomenon_max_color_id__b__ = true;
                         break;
-                    case 2:
-                        __text_advice__ = formatterResolver.GetFormatterWithVerify<object>().Deserialize(ref reader, formatterResolver);
-                        __text_advice__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -23981,7 +23971,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             var ____result = new global::SimpleWeather.MeteoFrance.Advice();
             if(__phenomenon_id__b__) ____result.phenomenon_id = __phenomenon_id__;
             if(__phenomenon_max_color_id__b__) ____result.phenomenon_max_color_id = __phenomenon_max_color_id__;
-            if(__text_advice__b__) ____result.text_advice = __text_advice__;
 
             return ____result;
         }
@@ -23999,14 +23988,12 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             {
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phenomenon_id"), 0},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phenomenon_max_color_id"), 1},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("text_consequence"), 2},
             };
 
             this.____stringByteKeys = new byte[][]
             {
                 JsonWriter.GetEncodedPropertyNameWithBeginObject("phenomenon_id"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("phenomenon_max_color_id"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("text_consequence"),
                 
             };
         }
@@ -24024,8 +24011,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             writer.WriteInt32(value.phenomenon_id);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteInt32(value.phenomenon_max_color_id);
-            writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<object>().Serialize(ref writer, value.text_consequence, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -24042,8 +24027,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             var __phenomenon_id__b__ = false;
             var __phenomenon_max_color_id__ = default(int);
             var __phenomenon_max_color_id__b__ = false;
-            var __text_consequence__ = default(object);
-            var __text_consequence__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -24067,10 +24050,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                         __phenomenon_max_color_id__ = reader.ReadInt32();
                         __phenomenon_max_color_id__b__ = true;
                         break;
-                    case 2:
-                        __text_consequence__ = formatterResolver.GetFormatterWithVerify<object>().Deserialize(ref reader, formatterResolver);
-                        __text_consequence__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -24083,7 +24062,6 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             var ____result = new global::SimpleWeather.MeteoFrance.Consequence();
             if(__phenomenon_id__b__) ____result.phenomenon_id = __phenomenon_id__;
             if(__phenomenon_max_color_id__b__) ____result.phenomenon_max_color_id = __phenomenon_max_color_id__;
-            if(__text_consequence__b__) ____result.text_consequence = __text_consequence__;
 
             return ____result;
         }
@@ -24311,10 +24289,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("phenomenons_items"), 5},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("advices"), 6},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("consequences"), 7},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("max_count_items"), 8},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("comments"), 9},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("text"), 10},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("text_avalanche"), 11},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("comments"), 8},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -24327,10 +24302,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("phenomenons_items"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("advices"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("consequences"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("max_count_items"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("comments"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("text"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("text_avalanche"),
                 
             };
         }
@@ -24361,13 +24333,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             writer.WriteRaw(this.____stringByteKeys[7]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Consequence[]>().Serialize(ref writer, value.consequences, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[8]);
-            formatterResolver.GetFormatterWithVerify<object>().Serialize(ref writer, value.max_count_items, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[9]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Comments>().Serialize(ref writer, value.comments, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[10]);
-            formatterResolver.GetFormatterWithVerify<object>().Serialize(ref writer, value.text, formatterResolver);
-            writer.WriteRaw(this.____stringByteKeys[11]);
-            formatterResolver.GetFormatterWithVerify<object>().Serialize(ref writer, value.text_avalanche, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -24396,14 +24362,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             var __advices__b__ = false;
             var __consequences__ = default(global::SimpleWeather.MeteoFrance.Consequence[]);
             var __consequences__b__ = false;
-            var __max_count_items__ = default(object);
-            var __max_count_items__b__ = false;
             var __comments__ = default(global::SimpleWeather.MeteoFrance.Comments);
             var __comments__b__ = false;
-            var __text__ = default(object);
-            var __text__b__ = false;
-            var __text_avalanche__ = default(object);
-            var __text_avalanche__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -24452,20 +24412,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
                         __consequences__b__ = true;
                         break;
                     case 8:
-                        __max_count_items__ = formatterResolver.GetFormatterWithVerify<object>().Deserialize(ref reader, formatterResolver);
-                        __max_count_items__b__ = true;
-                        break;
-                    case 9:
                         __comments__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.MeteoFrance.Comments>().Deserialize(ref reader, formatterResolver);
                         __comments__b__ = true;
-                        break;
-                    case 10:
-                        __text__ = formatterResolver.GetFormatterWithVerify<object>().Deserialize(ref reader, formatterResolver);
-                        __text__b__ = true;
-                        break;
-                    case 11:
-                        __text_avalanche__ = formatterResolver.GetFormatterWithVerify<object>().Deserialize(ref reader, formatterResolver);
-                        __text_avalanche__b__ = true;
                         break;
                     default:
                         reader.ReadNextBlock();
@@ -24485,10 +24433,7 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.MeteoFrance
             if(__phenomenons_items__b__) ____result.phenomenons_items = __phenomenons_items__;
             if(__advices__b__) ____result.advices = __advices__;
             if(__consequences__b__) ____result.consequences = __consequences__;
-            if(__max_count_items__b__) ____result.max_count_items = __max_count_items__;
             if(__comments__b__) ____result.comments = __comments__;
-            if(__text__b__) ____result.text = __text__;
-            if(__text_avalanche__b__) ____result.text_avalanche = __text_avalanche__;
 
             return ____result;
         }

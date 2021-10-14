@@ -16,10 +16,10 @@ namespace SimpleWeather.MeteoFrance
         public Phenomenons_Items[] phenomenons_items { get; set; }
         public Advice[] advices { get; set; }
         public Consequence[] consequences { get; set; }
-        public object max_count_items { get; set; }
+        //public object max_count_items { get; set; }
         public Comments comments { get; set; }
-        public object text { get; set; }
-        public object text_avalanche { get; set; }
+        //public object text { get; set; }
+        //public object text_avalanche { get; set; }
     }
 
     public class Comments
@@ -59,13 +59,13 @@ namespace SimpleWeather.MeteoFrance
     {
         public int phenomenon_id { get; set; }
         public int phenomenon_max_color_id { get; set; }
-        public object text_advice { get; set; }
+        //public object text_advice { get; set; }
     }
 
     public class Consequence
     {
         public int phenomenon_id { get; set; }
         public int phenomenon_max_color_id { get; set; }
-        public object text_consequence { get; set; }
+        //public object text_consequence { get; set; }
     }
 }
