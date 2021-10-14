@@ -1,5 +1,4 @@
 ﻿using SimpleWeather.Utils;
-using SimpleWeather.UWP.WNS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +34,6 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     // If not register
                     await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
                 }
-
-                await WNSHelper.InitNotificationChannel();
             });
 
             // Inform the system that the task is finished.

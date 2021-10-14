@@ -255,20 +255,6 @@ namespace UnitTestProject
         }
 
         [TestMethod]
-        public async Task RealtimeDBTest()
-        {
-            var updateTime = await FirebaseImageDatabase.GetLastUpdateTime().ConfigureAwait(false);
-            Assert.IsTrue(updateTime > 0);
-        }
-
-        [TestMethod]
-        public async Task FirestoreAPITest()
-        {
-            var storage = await FirebaseStorageHelper.GetFirebaseStorage().ConfigureAwait(false);
-            var storageRef = storage.GetReferenceFromUrl(new Uri(""));
-        }
-
-        [TestMethod]
         public void UnicodeTest()
         {
             var str = "Siln&#253; morsk&#253; pr&#237;liv o&#269;ak.";
@@ -331,14 +317,6 @@ namespace UnitTestProject
             var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
-        }
-
-        [TestMethod]
-        public async Task FirestoreImageDBTest()
-        {
-            var imageData = await FirebaseImageDatabase.GetRandomImageForCondition(WeatherBackground.DAY).ConfigureAwait(false);
-            Assert.IsNotNull(imageData);
-            Assert.IsTrue(imageData.IsValid());
         }
 
         [TestMethod]

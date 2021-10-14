@@ -161,9 +161,6 @@
     <Compile Include="DAO\WeatherAlert.cs" />
     <Compile Include="Firebase\FirebaseAuthHelper.cs" />
     <Compile Include="Firebase\FirebaseDatabaseHelper.cs" />
-    <Compile Include="Firebase\FirebaseStorageHelper.cs" />
-    <Compile Include="Firebase\FirestoreAPI.cs" />
-    <Compile Include="Firebase\FirestoreHelper.cs" />
     <Compile Include="HERE\Alerts.cs" />
     <Compile Include="HERE\AutoCompleteQuery.cs" />
     <Compile Include="HERE\GeopositionQuery.cs" />
@@ -309,8 +306,6 @@
     <Compile Include="UWP\Utils\FileUtils.cs" />
     <Compile Include="UWP\Utils\Settings.cs" />
     <Compile Include="UWP\Icons\WeatherIconsProvider.cs" />
-    <Compile Include="UWP\WeatherData\Images\FirebaseImageDatabase.cs" />
-    <Compile Include="UWP\WeatherData\Images\ImageDataHelperImplUWP.cs" />
     <Compile Include="UWP\WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="ComponentModel\IViewModel.cs" />
     <Compile Include="WeatherApi\ForecastRootobject.cs" />
@@ -322,8 +317,6 @@
     <Compile Include="WeatherApi\WeatherData.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />
     <Compile Include="WeatherData\IAstroDataProvider.cs" />
-    <Compile Include="WeatherData\Images\FirebaseImageDatabase.cs" />
-    <Compile Include="WeatherData\Images\FirebaseImageDataHelper.cs" />
     <Compile Include="WeatherData\Images\ImageDataHelper.cs" />
     <Compile Include="WeatherData\Images\ImageDataHelperRes.cs" />
     <Compile Include="WeatherData\Images\Model\ImageData.cs" />
@@ -353,12 +346,6 @@
     </PackageReference>
     <PackageReference Include="FirebaseDatabase.net">
       <Version>4.0.6</Version>
-    </PackageReference>
-    <PackageReference Include="FirebaseStorage.net">
-      <Version>1.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Google.Apis.Firestore.v1">
-      <Version>1.55.0.2461</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>4.4.0</Version>

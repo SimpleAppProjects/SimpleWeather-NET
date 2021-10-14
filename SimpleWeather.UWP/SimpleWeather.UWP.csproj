@@ -170,11 +170,9 @@
     </Compile>
     <Compile Include="BackgroundTasks\AppUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\RemoteConfigUpdateTask.cs" />
-    <Compile Include="BackgroundTasks\ImageDatabaseTask.cs" />
     <Compile Include="BackgroundTasks\DailyNotificationTask.cs" />
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WeatherTileUpdaterTask.cs" />
-    <Compile Include="BackgroundTasks\WNSPushBackgroundTask.cs" />
     <Compile Include="Controls\Banner\IBannerManager.cs" />
     <Compile Include="Controls\Banner\IBannerPage.cs" />
     <Compile Include="Controls\Banner\Banner.cs" />
@@ -373,7 +371,6 @@
     <Compile Include="Main\WeatherNow.xaml.cs">
       <DependentUpon>WeatherNow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WNS\WNSHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

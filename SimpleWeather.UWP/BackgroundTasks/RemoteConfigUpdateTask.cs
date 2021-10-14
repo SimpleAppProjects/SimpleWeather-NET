@@ -1,5 +1,4 @@
-﻿using Google.Apis.Auth.OAuth2;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;

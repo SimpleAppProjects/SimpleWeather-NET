@@ -27,10 +27,6 @@ namespace SimpleWeather.UWP
                     }
                 }
             }
-            else if (e.Action == CommonActions.ACTION_IMAGES_UPDATETASK)
-            {
-                await Task.Run(() => ImageDatabaseTask.RegisterBackgroundTask());
-            }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI ||
                 e.Action == CommonActions.ACTION_WEATHER_UPDATE)
             {

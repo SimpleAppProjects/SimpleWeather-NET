@@ -13,7 +13,6 @@ using SimpleWeather.UWP.Preferences;
 using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.Utils;
-using SimpleWeather.UWP.WNS;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -391,21 +390,6 @@ namespace SimpleWeather.UWP
                     new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
                     break;
 
-                case nameof(ImageDatabaseTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting ImageDatabaseTask");
-                    new ImageDatabaseTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(WNSPushBackgroundTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WNSPushBackgroundTask");
-                    new WNSPushBackgroundTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(WNSWorkerBackgroundTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WNSWorkerBackgroundTask");
-                    new WNSWorkerBackgroundTask().Run(args.TaskInstance);
-                    break;
-
                 case nameof(UpdateTask):
                     Logger.WriteLine(LoggerLevel.Debug, "App: Starting UpdateTask");
                     new UpdateTask().Run(args.TaskInstance);
@@ -459,7 +443,6 @@ namespace SimpleWeather.UWP
             _ = Task.Run(async () =>
             {
                 // Register background tasks
-                await WNSHelper.InitNotificationChannel();
                 await UpdateTask.RegisterBackgroundTask();
                 await AppUpdaterTask.RegisterBackgroundTask();
                 await RemoteConfigUpdateTask.RegisterBackgroundTask();
