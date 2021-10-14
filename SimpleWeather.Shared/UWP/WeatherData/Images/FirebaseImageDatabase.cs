@@ -10,7 +10,7 @@ using Windows.Storage;
 
 namespace SimpleWeather.WeatherData.Images
 {
-    public sealed partial class ImageDatabaseSnapshotCacheImpl
+    internal sealed partial class ImageDatabaseSnapshotCacheImpl
     {
         internal static String imageDBPath =
             Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "imageStore");

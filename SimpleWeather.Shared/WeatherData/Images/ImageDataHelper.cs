@@ -18,7 +18,8 @@ namespace SimpleWeather.WeatherData.Images
                 if (sImageDataHelperImpl == null)
                 {
 #if WINDOWS_UWP
-                    sImageDataHelperImpl = new UWP.Shared.WeatherData.Images.ImageDataHelperImplUWP();
+                    //sImageDataHelperImpl = new UWP.Shared.WeatherData.Images.ImageDataHelperImplUWP();
+                    sImageDataHelperImpl = new ImageDataHelperRes();
 #else
                     throw new NotImplementedException();
 #endif
@@ -70,38 +71,9 @@ namespace SimpleWeather.WeatherData.Images
     {
         public abstract Task<ImageData> GetCachedImageData(String backgroundCode);
 
-        public async Task<ImageData> GetRemoteImageData(String backgroundCode)
-        {
-            var imageData = await ImageDatabase.GetRandomImageForCondition(backgroundCode);
+        public abstract Task<ImageData> GetRemoteImageData(String backgroundCode);
 
-            if (imageData?.IsValid() == true)
-            {
-                var cachedImage = await CacheImage(imageData);
-                return cachedImage;
-            }
-
-            return null;
-        }
-
-        public async Task<ImageData> CacheImage(ImageData imageData)
-        {
-            if (imageData?.IsValid() == true)
-            {
-                // Check if image url is valid
-                Uri imageUri = new Uri(imageData.ImageUrl);
-                if (imageUri.IsWellFormedOriginalString() &&
-                    (imageUri.Scheme.Equals("gs") || imageUri.Scheme.Equals("https") || imageUri.Scheme.Equals("http")))
-                {
-                    // Download image to storage
-                    // and image metadata to settings
-                    var cachedImage = await StoreImage(imageUri, imageData);
-                    return cachedImage;
-                }
-            }
-
-            // Invalid image uri
-            return null;
-        }
+        public abstract Task<ImageData> CacheImage(ImageData imageData);
 
         protected abstract Task<ImageData> StoreImage(Uri imageUri, ImageData imageData);
 

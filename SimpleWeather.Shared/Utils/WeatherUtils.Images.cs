@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace SimpleWeather.Utils
 {
@@ -205,21 +206,46 @@ namespace SimpleWeather.Utils
                 if (uri.Scheme == "file" || uri.Scheme == "ms-appx")
                 {
                     Stream stream;
-                    try
+
+                    if (uri.Scheme == "ms-appx")
                     {
-                        while (FileUtils.IsFileLocked(imgData.ImageUrl))
+                        try
                         {
-                            await Task.Delay(250);
+                            var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
+
+                            while (FileUtils.IsFileLocked(file))
+                            {
+                                await Task.Delay(250);
+                            }
+                            var fs = await file.OpenStreamForReadAsync();
+                            var bs = new BufferedStream(fs);
+                            stream = bs;
                         }
-                        var fs = File.OpenRead(imgData.ImageUrl);
-                        var bs = new BufferedStream(fs);
-                        stream = bs;
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                            // Assume we're ok
+                            return true;
+                        }
                     }
-                    catch (Exception e)
+                    else
                     {
-                        Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
-                        // Assume we're ok
-                        return true;
+                        try
+                        {
+                            while (FileUtils.IsFileLocked(imgData.ImageUrl))
+                            {
+                                await Task.Delay(250);
+                            }
+                            var fs = File.OpenRead(imgData.ImageUrl);
+                            var bs = new BufferedStream(fs);
+                            stream = bs;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                            // Assume we're ok
+                            return true;
+                        }
                     }
 
                     if (stream != null)

@@ -257,7 +257,7 @@ namespace UnitTestProject
         [TestMethod]
         public async Task RealtimeDBTest()
         {
-            var updateTime = await ImageDatabase.GetLastUpdateTime().ConfigureAwait(false);
+            var updateTime = await FirebaseImageDatabase.GetLastUpdateTime().ConfigureAwait(false);
             Assert.IsTrue(updateTime > 0);
         }
 
@@ -336,7 +336,7 @@ namespace UnitTestProject
         [TestMethod]
         public async Task FirestoreImageDBTest()
         {
-            var imageData = await ImageDatabase.GetRandomImageForCondition(WeatherBackground.DAY).ConfigureAwait(false);
+            var imageData = await FirebaseImageDatabase.GetRandomImageForCondition(WeatherBackground.DAY).ConfigureAwait(false);
             Assert.IsNotNull(imageData);
             Assert.IsTrue(imageData.IsValid());
         }
@@ -530,6 +530,16 @@ namespace UnitTestProject
                 }
                 while (!completed);
             });
+        }
+
+        [TestMethod]
+        public async Task LocalImageTest()
+        {
+            var repo = new ImageDataHelperRes();
+
+            var data = await repo.GetRemoteImageData(WeatherBackground.DAY);
+
+            Assert.IsTrue(data != null && await data.IsImageValid());
         }
     }
 }

@@ -21,7 +21,7 @@ using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.UWP.Shared.WeatherData.Images
 {
-    public sealed class ImageDataHelperImplUWP : ImageDataHelperImpl
+    public sealed class ImageDataHelperImplUWP : FirebaseImageDataHelper
     {
         // Shared Settings
         private ApplicationDataContainer ImageDataContainer;

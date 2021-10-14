@@ -281,3 +281,5 @@ API_KEY.txt
 listingData-*.csv
 /SimpleWeather.Shared.Extras
 /SimpleWeather.UWP.Extras
+/SimpleWeather.Shared/Assets/Backgrounds
+/SimpleWeather.Shared/Strings/en-US/Backgrounds.resw

@@ -10,7 +10,7 @@ using Firebase.Database.Query;
 
 namespace SimpleWeather.WeatherData.Images
 {
-    public static class ImageDatabase
+    public static class FirebaseImageDatabase
     {
         private static ImageDatabaseSnapshotCacheImpl sImageDBCache;
         internal static ImageDatabaseSnapshotCacheImpl ImageDatabaseCache
@@ -186,7 +186,7 @@ namespace SimpleWeather.WeatherData.Images
                 ImageDataHelper.ShouldInvalidateCache = false;
                 if (ImageDataHelper.ImageDBUpdateTime == 0)
                 {
-                    ImageDataHelper.ImageDBUpdateTime = await ImageDatabase.GetLastUpdateTime();
+                    ImageDataHelper.ImageDBUpdateTime = await FirebaseImageDatabase.GetLastUpdateTime();
                 }
 
                 // Register background task to update
@@ -221,7 +221,7 @@ namespace SimpleWeather.WeatherData.Images
         }
     }
 
-    public sealed partial class ImageDatabaseSnapshotCacheImpl
+    internal sealed partial class ImageDatabaseSnapshotCacheImpl
     {
         private SQLite.SQLiteAsyncConnection dbConnection;
 

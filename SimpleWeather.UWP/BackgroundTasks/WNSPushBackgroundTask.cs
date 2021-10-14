@@ -127,7 +127,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 if (!(await ImageDataHelper.ImageDataHelperImpl.IsEmpty()) && !FeatureSettings.IsUpdateAvailable)
                 {
                     // If so, check if we need to invalidate
-                    var updateTime = await ImageDatabase.GetLastUpdateTime();
+                    var updateTime = await FirebaseImageDatabase.GetLastUpdateTime();
 
                     if (updateTime > ImageDataHelper.ImageDBUpdateTime)
                     {
