@@ -366,12 +366,14 @@ namespace SimpleWeather.UWP.Main
                 if (Utils.FeatureSettings.BackgroundImage)
                 {
                     SpacerRow.Height = new GridLength(
-                        h - (ConditionPanelRow?.ActualHeight ?? 0) - (AlertButtonRow?.ActualHeight ?? 0) - (LocationRow?.ActualHeight ?? 0) - (UpdateDateRow?.ActualHeight ?? 0)
-                    );
+                        Math.Max(0, h - (ConditionPanelRow?.ActualHeight ?? 0) - (AlertButtonRow?.ActualHeight ?? 0) - (LocationRow?.ActualHeight ?? 0) - (UpdateDateRow?.ActualHeight ?? 0)),
+                        GridUnitType.Pixel);
                 }
                 else
                 {
-                    SpacerRow.Height = new GridLength(0);
+                    SpacerRow.Height = new GridLength(
+                        0,
+                        GridUnitType.Pixel);
                 }
             }
 
