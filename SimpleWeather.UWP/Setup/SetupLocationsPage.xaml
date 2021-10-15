@@ -357,8 +357,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <SolidColorBrush x:Key="ListViewItemBackgroundPointerOver" Color="White" />
-        <SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="#C5FFFFFF" />
+        <SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="#20FFFFFF" />
     </Page.Resources>
 
     <Grid>
