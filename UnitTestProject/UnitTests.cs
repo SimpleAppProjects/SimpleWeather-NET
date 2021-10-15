@@ -321,6 +321,15 @@ namespace UnitTestProject
         }
 
         [TestMethod]
+        public async Task GetTomorrowIOWeather()
+        {
+            var provider = WeatherManager.GetProvider(WeatherAPI.TomorrowIo);
+            var weather = await GetWeather(provider).ConfigureAwait(false);
+            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [TestMethod]
         public async Task RemoteConfigUpdateTest()
         {
             var db = await FirebaseDatabaseHelper.GetFirebaseDatabase();
