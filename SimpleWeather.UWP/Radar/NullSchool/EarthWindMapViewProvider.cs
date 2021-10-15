@@ -34,7 +34,15 @@ namespace SimpleWeather.UWP.Radar.NullSchool
             }
 
             webview.NavigationStarting -= RadarWebView_NavigationStarting;
-            webview.Navigate(RadarURL);
+            try
+            {
+                webview.Navigate(RadarURL);
+            }
+            catch (Exception e)
+            {
+                // System.Exception: The remote procedure call failed
+                Logger.WriteLine(LoggerLevel.Error, e);
+            }
             webview.NavigationStarting += RadarWebView_NavigationStarting;
         }
 
