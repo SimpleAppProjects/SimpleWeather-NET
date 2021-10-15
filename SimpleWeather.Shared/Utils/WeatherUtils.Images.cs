@@ -180,7 +180,7 @@ namespace SimpleWeather.Utils
                         return new ImageDataViewModel(imageData);
                     else
                     {
-                        imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                        imageData = imageHelper.GetDefaultImageData(backgroundCode);
                         if (imageData?.IsValid() == true)
                             return new ImageDataViewModel(imageData);
                     }
@@ -188,7 +188,7 @@ namespace SimpleWeather.Utils
                 }
                 else
                 {
-                    imageData = imageHelper.GetDefaultImageData(backgroundCode, weather);
+                    imageData = imageHelper.GetDefaultImageData(backgroundCode);
                     if (imageData?.IsValid() == true)
                         return new ImageDataViewModel(imageData);
                 }

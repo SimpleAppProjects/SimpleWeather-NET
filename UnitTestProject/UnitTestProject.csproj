@@ -161,6 +161,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj">
+      <Project>{0CAA3B62-12E0-4418-8E32-95AEECA0AF97}</Project>
+      <Name>SimpleWeather.Backgrounds</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
       <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
       <Name>SimpleWeather.Shared</Name>

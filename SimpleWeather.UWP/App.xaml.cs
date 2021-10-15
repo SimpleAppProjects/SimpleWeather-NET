@@ -110,6 +110,8 @@ namespace SimpleWeather.UWP
             UISettings = new UISettings();
 
             RegisterSettingsListener();
+
+            WeatherData.Images.ImageDataHelper.ImageDataHelperImpl = new Backgrounds.ImageDataHelperRes();
         }
 
         /// <summary>

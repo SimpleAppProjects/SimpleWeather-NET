@@ -3,6 +3,7 @@ using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.AQICN;
+using SimpleWeather.Backgrounds;
 using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
 using SimpleWeather.HttpClientExtensions;

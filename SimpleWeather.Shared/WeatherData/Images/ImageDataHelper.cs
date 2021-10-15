@@ -17,14 +17,14 @@ namespace SimpleWeather.WeatherData.Images
             {
                 if (sImageDataHelperImpl == null)
                 {
-#if WINDOWS_UWP
-                    sImageDataHelperImpl = new ImageDataHelperRes();
-#else
-                    throw new NotImplementedException();
-#endif
+                    sImageDataHelperImpl = new ImageDataHelperDefault();
                 }
 
                 return sImageDataHelperImpl;
+            }
+            set
+            {
+                sImageDataHelperImpl = value;
             }
         }
     }
@@ -41,7 +41,7 @@ namespace SimpleWeather.WeatherData.Images
 
         public abstract Task ClearCachedImageData();
 
-        public abstract ImageData GetDefaultImageData(String backgroundCode, Weather weather);
+        public abstract ImageData GetDefaultImageData(String backgroundCode);
 
         public abstract Task<bool> IsEmpty();
     }
