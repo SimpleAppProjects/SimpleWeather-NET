@@ -450,7 +450,7 @@ namespace SimpleWeather.UWP.Setup
 
             // Cancel other tasks
             cts?.Cancel();
-            cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            cts = new CancellationTokenSource(TimeSpan.FromSeconds(45));
             var ctsToken = cts.Token;
 
             if (geoPos == null)
