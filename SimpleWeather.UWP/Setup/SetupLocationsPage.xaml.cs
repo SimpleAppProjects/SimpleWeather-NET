@@ -87,6 +87,7 @@ namespace SimpleWeather.UWP.Setup
         {
             base.OnNavigatedFrom(e);
             UnloadSnackManager();
+            cts?.Cancel();
         }
 
         private DispatcherTimer timer;
@@ -99,26 +100,29 @@ namespace SimpleWeather.UWP.Setup
         /// <exception cref="ObjectDisposedException">Ignore.</exception>
         private void Location_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            // user is typing: reset already started timer (if existing)
-            if (timer?.IsEnabled == true)
-                timer.Stop();
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                // user is typing: reset already started timer (if existing)
+                if (timer?.IsEnabled == true)
+                    timer.Stop();
 
-            if (String.IsNullOrEmpty(sender.Text))
-            {
-                FetchLocations(sender, args);
-            }
-            else
-            {
-                timer = new DispatcherTimer()
+                if (String.IsNullOrEmpty(sender.Text))
                 {
-                    Interval = TimeSpan.FromMilliseconds(1000)
-                };
-                timer.Tick += (t, e) =>
-                {
-                    timer?.Stop();
                     FetchLocations(sender, args);
-                };
-                timer.Start();
+                }
+                else
+                {
+                    timer = new DispatcherTimer()
+                    {
+                        Interval = TimeSpan.FromMilliseconds(1000)
+                    };
+                    timer.Tick += (t, e) =>
+                    {
+                        timer?.Stop();
+                        FetchLocations(sender, args);
+                    };
+                    timer.Start();
+                }
             }
         }
 
@@ -131,7 +135,7 @@ namespace SimpleWeather.UWP.Setup
             {
                 String query = sender.Text;
 
-                cts = new CancellationTokenSource();
+                cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 var ctsToken = cts.Token;
 
                 Task.Run(async () =>
@@ -214,7 +218,7 @@ namespace SimpleWeather.UWP.Setup
 
             // Cancel other tasks
             cts?.Cancel();
-            cts = new CancellationTokenSource();
+            cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var ctsToken = cts.Token;
 
             var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
@@ -399,6 +403,14 @@ namespace SimpleWeather.UWP.Setup
                         SetupPage.Instance.Next();
                     });
                 }
+                else
+                {
+                    await Dispatcher.RunOnUIThread(() =>
+                    {
+                        // Restore controls
+                        EnableControls(true);
+                    });
+                }
             });
         }
 
@@ -438,7 +450,7 @@ namespace SimpleWeather.UWP.Setup
 
             // Cancel other tasks
             cts?.Cancel();
-            cts = new CancellationTokenSource();
+            cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var ctsToken = cts.Token;
 
             if (geoPos == null)
@@ -562,6 +574,14 @@ namespace SimpleWeather.UWP.Setup
                         {
                             SetupPage.Instance.Location = t.Result;
                             SetupPage.Instance.Next();
+                        });
+                    }
+                    else
+                    {
+                        await Dispatcher.RunOnUIThread(() =>
+                        {
+                            // Restore controls
+                            EnableControls(true);
                         });
                     }
                 });
