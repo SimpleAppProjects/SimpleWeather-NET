@@ -292,7 +292,7 @@ namespace UnitTestProject
         public async Task WeatherAPILocationTest()
         {
             var locationProvider = new WeatherApiLocationProvider();
-            var locations = await locationProvider.GetLocations("Redmond, WA", null).ConfigureAwait(false);
+            var locations = await locationProvider.GetLocations("Redmond, WA", WeatherAPI.WeatherApi).ConfigureAwait(false);
             Assert.IsTrue(locations?.Count > 0);
 
             var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond, "));
