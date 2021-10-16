@@ -4,6 +4,7 @@ using CacheCow.Client.Headers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather.AQICN;
 using SimpleWeather.Backgrounds;
+using SimpleWeather.Controls;
 using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
 using SimpleWeather.HttpClientExtensions;
@@ -142,7 +143,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.Here);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -151,7 +152,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MetNo);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -171,7 +172,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.forecast?.Count > 0 && weather?.hr_forecast?.Count > 0);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -180,7 +181,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -194,7 +195,7 @@ namespace UnitTestProject
             Settings.API_KEY = provider.GetAPIKey();
 
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
 
             Settings.API_KEY = null;
@@ -206,7 +207,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherUnlocked);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -307,7 +308,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MeteoFrance);
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.85, 2.34)).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -316,7 +317,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherApi);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -324,8 +325,8 @@ namespace UnitTestProject
         public async Task GetTomorrowIOWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.TomorrowIo);
-            var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(53.9202, 15.1955)).ConfigureAwait(false);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
