@@ -354,7 +354,7 @@ namespace SimpleWeather.Controls
                     String.Format(culture, "{0:0.##} {1}", visibilityVal, visibilityUnit)));
             }
 
-            UVIndex = weather.condition.uv != null ? new UVIndexViewModel(weather.condition.uv) : null;
+            UVIndex = weather.condition.uv?.index != null ? new UVIndexViewModel(weather.condition.uv) : null;
 
             if (weather.condition.feelslike_f.HasValue && (weather.condition.feelslike_f != weather.condition.feelslike_c))
             {
@@ -470,7 +470,7 @@ namespace SimpleWeather.Controls
 #endif
 
             // Additional Details
-            AirQuality = weather.condition.airQuality != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
+            AirQuality = weather.condition.airQuality?.index != null ? new AirQualityViewModel(weather.condition.airQuality) : null;
             Pollen = weather.condition.pollen != null ? new PollenViewModel(weather.condition.pollen) : null;
 
             WeatherSource = weather?.source;
