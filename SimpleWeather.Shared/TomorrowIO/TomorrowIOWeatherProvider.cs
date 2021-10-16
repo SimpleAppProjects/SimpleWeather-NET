@@ -295,14 +295,14 @@ namespace SimpleWeather.TomorrowIO
             var sunrise = weather.astronomy.sunrise.TimeOfDay;
             var sunset = weather.astronomy.sunset.TimeOfDay;
 
-            weather.condition.weather = GetWeatherCondition(weather.condition.icon);
             weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+            weather.condition.weather = GetWeatherCondition(weather.condition.icon);
 
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.AddSeconds(offset.TotalSeconds);
-                forecast.condition = GetWeatherCondition(forecast.icon);
                 forecast.icon = GetWeatherIcon(forecast.icon);
+                forecast.condition = GetWeatherCondition(forecast.icon);
             }
 
             foreach (HourlyForecast hr_forecast in weather.hr_forecast)
@@ -311,8 +311,8 @@ namespace SimpleWeather.TomorrowIO
                 hr_forecast.date = hrf_date;
 
                 var hrf_localTime = hrf_date.DateTime.TimeOfDay;
-                hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
                 hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
+                hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
             }
 
             if (weather.min_forecast?.Any() == true)
