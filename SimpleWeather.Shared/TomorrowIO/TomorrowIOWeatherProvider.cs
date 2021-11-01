@@ -459,6 +459,20 @@ namespace SimpleWeather.TomorrowIO
                 case 4201:
                     WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND;
                     break;
+
+                /*
+                 * 3000: Light Wind
+                 * 3001: Wind
+                 */
+                case 3000:
+                case 3001:
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY_WINDY : WeatherIcons.DAY_CLOUDY_WINDY;
+                    break;
+
+                /* Strong Wind */
+                case 3002:
+                    WeatherIcon = WeatherIcons.STRONG_WIND;
+                    break;
             }
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
