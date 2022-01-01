@@ -349,6 +349,13 @@
                 <Setter Property="Padding" Value="0,5" />
                 <Setter Property="FontWeight" Value="SemiBold" />
             </Style>
+            <Style x:Key="SectionLabelContentPresenterStyle" TargetType="ContentPresenter">
+                <Setter Property="Padding" Value="10,20" />
+                <Setter Property="FontSize" Value="18" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Top" />
+            </Style>
             <Style x:Key="SectionLabelStyle" TargetType="toolkitControls:HeaderedContentControl">
                 <Setter Property="HorizontalContentAlignment" Value="Left" />
                 <Setter Property="VerticalContentAlignment" Value="Top" />
@@ -356,15 +363,6 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="toolkitControls:HeaderedContentControl">
                             <Grid>
-                                <Grid.Resources>
-                                    <Style x:Key="SectionLabel" TargetType="ContentPresenter">
-                                        <Setter Property="Padding" Value="15,10" />
-                                        <Setter Property="FontSize" Value="18" />
-                                        <Setter Property="FontWeight" Value="SemiBold" />
-                                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                        <Setter Property="VerticalAlignment" Value="Top" />
-                                    </Style>
-                                </Grid.Resources>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition />
@@ -379,7 +377,7 @@
                                     x:DeferLoadStrategy="Lazy"
                                     Content="{TemplateBinding Header}"
                                     ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                    Style="{ThemeResource SectionLabel}" />
+                                    Style="{ThemeResource SectionLabelContentPresenterStyle}" />
                                 <ContentPresenter
                                     x:Name="ContentPresenter"
                                     Grid.Row="1"

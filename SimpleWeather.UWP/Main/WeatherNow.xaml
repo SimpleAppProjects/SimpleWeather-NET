@@ -395,7 +395,6 @@
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
                             Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                            <Border Style="{ThemeResource Divider}" Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, ConverterParameter='true'}" />
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -415,7 +414,6 @@
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=OneWay}"
                             Visibility="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
-                            <Border Style="{ThemeResource Divider}" />
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -434,7 +432,6 @@
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
                             Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
-                            <Border Style="{ThemeResource Divider}" />
                             <toolkitControls:HeaderedContentControl Header="Placeholder" Style="{ThemeResource NavigatableSectionStyle}">
                                 <toolkitControls:HeaderedContentControl.HeaderTemplate>
                                     <DataTemplate>
@@ -478,7 +475,6 @@
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Mode=OneWay}">
-                            <Border Style="{ThemeResource Divider}" />
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -547,7 +543,6 @@
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
                             Visibility="{x:Bind WeatherView.SunPhase, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
-                            <Border Style="{ThemeResource Divider}" />
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -566,7 +561,6 @@
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}">
-                            <Border Style="{ThemeResource Divider}" />
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -588,7 +582,6 @@
                                 </Grid>
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
-                        <Border MaxWidth="1280" Style="{ThemeResource Divider}" />
                         <TextBlock
                             MaxWidth="1280"
                             Padding="10"
