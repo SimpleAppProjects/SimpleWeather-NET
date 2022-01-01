@@ -27,7 +27,7 @@ namespace SimpleWeather.WeatherData
                 _ => WeatherAlertType.SpecialWeatherAlert
             };
 
-            if (Type == WeatherAlertType.SpecialWeatherAlert)
+            if (Type == WeatherAlertType.SpecialWeatherAlert && !string.IsNullOrWhiteSpace(@event.eventValues.title))
             {
                 if (@event.eventValues.title.Contains("Heat"))
                 {
@@ -73,13 +73,32 @@ namespace SimpleWeather.WeatherData
             };
 
             Title = @event.eventValues.title;
-            Message = new StringBuilder()
-                .AppendLine(@event.eventValues.headline)
-                .AppendLine()
-                .AppendLine(@event.eventValues.description)
-                .AppendLine()
-                .AppendLine(@event.eventValues.response[0].instruction)
-                .ToString();
+
+            var messageStr = new StringBuilder();
+
+            if (!string.IsNullOrWhiteSpace(@event.eventValues.headline))
+            {
+                messageStr.AppendLine(@event.eventValues.headline);
+            }
+
+            if (!string.IsNullOrWhiteSpace(@event.eventValues.description))
+            {
+                if (messageStr.Length > 0)
+                    messageStr.AppendLine();
+
+                messageStr.AppendLine(@event.eventValues.description);
+            }
+
+            var instruction = @event.eventValues.response?.FirstOrDefault()?.instruction;
+            if (!string.IsNullOrWhiteSpace(instruction))
+            {
+                if (messageStr.Length > 0)
+                    messageStr.AppendLine();
+
+                messageStr.AppendLine(instruction);
+            }
+
+            Message = messageStr.ToString();
 
             Attribution = @event.eventValues.origin ?? "tomorrow.io";
         }

@@ -325,7 +325,7 @@ namespace UnitTestProject
         public async Task GetTomorrowIOWeather()
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.TomorrowIo);
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(53.9202, 15.1955)).ConfigureAwait(false);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
             Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }

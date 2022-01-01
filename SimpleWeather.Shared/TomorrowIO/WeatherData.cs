@@ -76,7 +76,11 @@ namespace SimpleWeather.WeatherData
 
                 foreach (var @event in alertRoot.data.events)
                 {
-                    weather_alerts.Add(new WeatherAlert(@event));
+                    // Skip "Active Fire" alerts (not enough info)
+                    if (@event.eventValues.origin != "VIIRS")
+                    {
+                        weather_alerts.Add(new WeatherAlert(@event));
+                    }
                 }
             }
 
