@@ -170,7 +170,8 @@ namespace SimpleWeather.UWP.Controls
         {
             Dispatcher.LaunchOnUIThread(() =>
             {
-                ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast) : null;
+                // At most 10 forecasts
+                ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast.Take(10)) : null;
                 RefreshMinutelyForecasts(fcasts?.min_forecast);
             });
         }

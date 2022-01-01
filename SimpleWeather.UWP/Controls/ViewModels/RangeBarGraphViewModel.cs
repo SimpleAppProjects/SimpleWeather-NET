@@ -15,7 +15,7 @@ namespace SimpleWeather.UWP.Controls
         public List<XLabelData> LabelData { get; private set; }
         public List<GraphTemperature> TempData { get; private set; }
 
-        public RangeBarGraphViewModel(ICollection<Forecast> forecasts)
+        public RangeBarGraphViewModel(IEnumerable<Forecast> forecasts)
         {
             var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
