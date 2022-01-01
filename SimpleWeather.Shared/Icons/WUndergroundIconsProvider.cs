@@ -43,6 +43,7 @@ namespace SimpleWeather.Icons
                     fileIcon = "wui-mostlycloudy.png";
                     break;
 
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     fileIcon = "wui-partlycloudy.png";
                     break;
@@ -423,6 +424,7 @@ namespace SimpleWeather.Icons
                     fileIcon = "wui-mostlycloudy.svg";
                     break;
 
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     fileIcon = "wui-partlycloudy.svg";
                     break;

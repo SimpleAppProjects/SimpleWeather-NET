@@ -230,6 +230,7 @@ namespace SimpleWeather.WeatherData
                     return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_clear");
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_overcast");
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                     return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
                 case WeatherIcons.DAY_CLOUDY:

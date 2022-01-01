@@ -62,6 +62,10 @@ namespace SimpleWeather.Icons
                     fileIcon = "wic-sun-cloud-lightning.png";
                     break;
 
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
+                    fileIcon = "wic-sun-cloud.png";
+                    break;
+
                 case WeatherIcons.DAY_RAIN:
                 case WeatherIcons.DAY_RAIN_MIX:
                 case WeatherIcons.DAY_RAIN_WIND:
@@ -458,6 +462,10 @@ namespace SimpleWeather.Icons
 
                 case WeatherIcons.DAY_LIGHTNING:
                     fileIcon = "wic-sun-cloud-lightning.svg";
+                    break;
+
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
+                    fileIcon = "wic-sun-cloud.svg";
                     break;
 
                 case WeatherIcons.DAY_RAIN:

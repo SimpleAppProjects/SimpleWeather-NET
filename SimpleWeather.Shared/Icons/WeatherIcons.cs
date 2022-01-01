@@ -30,9 +30,11 @@ namespace SimpleWeather.Icons
         public const String DAY_HOT = "\uf072";
         public const String DAY_CLOUDY_HIGH = "\uf07d";
         public const String DAY_LIGHT_WIND = "\uf0c4";
+        public const String DAY_PARTLY_CLOUDY = "\uf00c-pc";
 
         // NIGHT_ALT
         public const String NIGHT_CLEAR = "\uf02e";
+        public const String NIGHT_FOG = "\uf04a";
         public const String NIGHT_ALT_CLOUDY = "\uf086";
         public const String NIGHT_ALT_CLOUDY_GUSTS = "\uf022";
         public const String NIGHT_ALT_CLOUDY_WINDY = "\uf023";
@@ -52,9 +54,6 @@ namespace SimpleWeather.Icons
         public const String NIGHT_ALT_THUNDERSTORM = "\uf02d";
         public const String NIGHT_ALT_PARTLY_CLOUDY = "\uf081";
         public const String NIGHT_ALT_CLOUDY_HIGH = "\uf07e";
-
-        // NIGHT
-        public const String NIGHT_FOG = "\uf04a";
 
         // NEUTRAL
         public const String CLOUD = "\uf041";

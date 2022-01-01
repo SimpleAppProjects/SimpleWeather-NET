@@ -375,7 +375,7 @@ namespace SimpleWeather.TomorrowIO
                  */
                 case 1101:
                 case 1100:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
                     break;
 
                 /*

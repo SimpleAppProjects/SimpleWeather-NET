@@ -98,6 +98,7 @@ namespace SimpleWeather.Icons
                     fileIcon = "wi-day-storm-showers.png";
                     break;
 
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     fileIcon = "wi-day-sunny-overcast.png";
                     break;
@@ -622,6 +623,7 @@ namespace SimpleWeather.Icons
                     fileIcon = "wi-day-storm-showers.svg";
                     break;
 
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                     fileIcon = "wi-day-sunny-overcast.svg";
                     break;
