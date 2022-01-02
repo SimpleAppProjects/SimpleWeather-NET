@@ -1003,7 +1003,7 @@ namespace SimpleWeather.UWP.Main
             if (sender is IGraph control)
             {
                 GotoDetailsPage(false,
-                    control.GetItemPositionFromPoint((float)(e.GetPosition(control.GetControl()).X + control.GetScrollViewer().HorizontalOffset)));
+                    control.GetItemPositionFromPoint((float)(e.GetPosition(control.Control).X + control.ScrollViewer.HorizontalOffset)));
             }
         }
 

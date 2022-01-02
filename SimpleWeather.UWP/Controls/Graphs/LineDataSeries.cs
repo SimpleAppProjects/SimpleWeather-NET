@@ -1,30 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Windows.UI;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
-    public class LineDataSeries
+    public class LineDataSeries : GraphDataSet<LineGraphEntry>
     {
         private readonly Color[] DefaultColors = { Color.FromArgb(0xFF, 0, 0x70, 0xC0), Colors.LightSeaGreen, Colors.YellowGreen };
 
-        public String SeriesLabel { get; set; }
-        public List<YEntryData> SeriesData { get; private set; }
+        public string SeriesLabel { get; set; }
         public List<Color> SeriesColors { get; private set; }
 
         public float? SeriesMin { get; set; }
         public float? SeriesMax { get; set; }
 
-        public LineDataSeries(List<YEntryData> seriesData)
+        public LineDataSeries(List<LineGraphEntry> seriesData) : base(seriesData)
         {
-            SeriesData = seriesData ?? new List<YEntryData>();
             SeriesLabel = null;
             SeriesColors = DefaultColors.ToList();
         }
 
-        public LineDataSeries(String seriesLabel, List<YEntryData> seriesData) : this(seriesData)
+        public LineDataSeries(string seriesLabel, List<LineGraphEntry> seriesData) : this(seriesData)
         {
             SeriesLabel = seriesLabel;
         }
@@ -45,95 +42,19 @@ namespace SimpleWeather.UWP.Controls.Graphs
             SeriesMax = seriesMax;
         }
 
-        public override bool Equals(object obj)
+        protected override void CalcMinMax(LineGraphEntry entry)
         {
-            return obj is LineDataSeries series &&
-                   SeriesLabel == series.SeriesLabel &&
-                   EqualityComparer<List<YEntryData>>.Default.Equals(SeriesData, series.SeriesData);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(SeriesLabel, SeriesData);
-        }
-    }
-
-    public class XLabelData
-    {
-        public String XLabel { get; set; }
-        public String XIcon { get; set; }
-        public int XIconRotation { get; set; }
-
-        public XLabelData(String label)
-        {
-            XLabel = label;
-        }
-
-        public XLabelData(String label, String icon)
-            : this(label)
-        {
-            XIcon = icon;
-        }
-
-        public XLabelData(String label, String icon, int iconRotation)
-            : this(label, icon)
-        {
-            XIconRotation = iconRotation;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is XLabelData data &&
-                   XLabel == data.XLabel &&
-                   XIcon == data.XIcon &&
-                   XIconRotation == data.XIconRotation;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(XLabel, XIcon, XIconRotation);
-        }
-    }
-
-    [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>")]
-    public class YEntryData : IComparable<YEntryData>, IEquatable<YEntryData>
-    {
-        public float Y { get; set; }
-        public String YLabel { get; set; }
-
-        public YEntryData(float yValue, String label)
-        {
-            Y = yValue;
-            YLabel = label;
-        }
-
-        public int CompareTo(YEntryData other)
-        {
-            if (other == null)
+            if (SeriesMin == null && SeriesMax == null)
             {
-                return 1;
+                if (entry.YEntryData.Y > YMax)
+                {
+                    YMax = entry.YEntryData.Y;
+                }
+                if (entry.YEntryData.Y < YMin)
+                {
+                    YMin = entry.YEntryData.Y;
+                }
             }
-            else
-            {
-                return Y.CompareTo(other.Y);
-            }
-        }
-
-        public override bool Equals(object obj)
-        {
-            return Equals(obj as YEntryData);
-        }
-
-        public bool Equals(YEntryData other)
-        {
-            return other != null &&
-                   Y == other.Y &&
-                   YLabel == other.YLabel;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(Y, YLabel);
         }
     }
 }

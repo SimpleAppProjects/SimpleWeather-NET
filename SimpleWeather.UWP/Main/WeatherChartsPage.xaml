@@ -39,7 +39,7 @@
             SelectionMode="None">
             <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="controls:ForecastGraphViewModel">
-                    <toolkitControls:HeaderedContentControl Header="{Binding GraphLabel}">
+                    <toolkitControls:HeaderedContentControl Header="{Binding GraphData.GraphLabel}">
                         <toolkitControls:HeaderedContentControl.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -48,7 +48,6 @@
                                         FontSize="16"
                                         FontWeight="SemiBold"
                                         Text="{Binding}" />
-                                    <Border Style="{ThemeResource Divider}" />
                                 </StackPanel>
                             </DataTemplate>
                         </toolkitControls:HeaderedContentControl.HeaderTemplate>

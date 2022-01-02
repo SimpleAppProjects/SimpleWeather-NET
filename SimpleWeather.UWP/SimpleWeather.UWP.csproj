@@ -192,12 +192,26 @@
     </Compile>
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.cs" />
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.Data.cs" />
+    <Compile Include="Controls\Graphs\BaseGraphView.cs" />
+    <Compile Include="Controls\Graphs\BaseGraphViewControl.cs" />
+    <Compile Include="Controls\Graphs\GraphData.cs" />
+    <Compile Include="Controls\Graphs\GraphDataSet.cs" />
+    <Compile Include="Controls\Graphs\GraphEntry.cs" />
+    <Compile Include="Controls\Graphs\IGraphData.cs" />
+    <Compile Include="Controls\Graphs\LineGraphEntry.cs" />
+    <Compile Include="Controls\Graphs\LineView.cs" />
+    <Compile Include="Controls\Graphs\LineViewData.cs" />
+    <Compile Include="Controls\Graphs\RangeBarGraphData.cs" />
+    <Compile Include="Controls\Graphs\RangeBarGraphDataSet.cs" />
+    <Compile Include="Controls\Graphs\RangeBarGraphEntry.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphPanel.xaml.cs">
       <DependentUpon>RangeBarGraphPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Graphs\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Graphs\RangeBarGraphView.cs" />
+    <Compile Include="Controls\Graphs\YEntryData.cs" />
     <Compile Include="Controls\HourlyForecastItem.xaml.cs">
       <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
     </Compile>
@@ -216,22 +230,15 @@
     <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsListViewModel.cs" />
-    <Compile Include="Controls\ViewModels\RangeBarGraphViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastGraphViewModel.cs" />
     <Compile Include="Controls\Graphs\IGraph.cs" />
     <Compile Include="Controls\Graphs\ItemSizeChangedEventArgs.cs" />
-    <Compile Include="Controls\Graphs\RangeBarGraphView.xaml.cs">
-      <DependentUpon>RangeBarGraphView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ViewModels\GraphTemperature.cs" />
     <Compile Include="Controls\MoonPhaseControl.xaml.cs">
       <DependentUpon>MoonPhaseControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarManager.cs" />
     <Compile Include="Controls\Graphs\LineDataSeries.cs" />
-    <Compile Include="Controls\Graphs\LineView.xaml.cs">
-      <DependentUpon>LineView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\ProgressAutoSuggestBox.cs" />
     <Compile Include="Controls\RelayCommand.cs" />
     <Compile Include="Controls\Snackbar\Snackbar.cs" />
@@ -260,6 +267,7 @@
     <Compile Include="Helpers\BindingExtensions.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
+    <Compile Include="Helpers\RectHelperExtensions.cs" />
     <Compile Include="Helpers\StringRes.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
     <Compile Include="Helpers\LocationTypeConverter.cs" />
@@ -428,10 +436,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Controls\Graphs\RangeBarGraphView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Controls\HourlyForecastItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -445,10 +449,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LocationPanel.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Controls\Graphs\LineView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

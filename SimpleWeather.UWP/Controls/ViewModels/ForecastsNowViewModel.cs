@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using SimpleWeather.UWP.Controls.Graphs;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -29,15 +30,15 @@ namespace SimpleWeather.UWP.Controls
         private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
-        public RangeBarGraphViewModel ForecastGraphData
+        public RangeBarGraphData ForecastGraphData
         {
-            get { return (RangeBarGraphViewModel)GetValue(ForecastGraphDataProperty); }
+            get { return (RangeBarGraphData)GetValue(ForecastGraphDataProperty); }
             set { SetValue(ForecastGraphDataProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for ForecastGraphData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForecastGraphDataProperty =
-            DependencyProperty.Register("ForecastGraphData", typeof(RangeBarGraphViewModel), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+            DependencyProperty.Register("ForecastGraphData", typeof(RangeBarGraphData), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
 
         public List<HourlyForecastNowViewModel> HourlyForecastData
         {
@@ -171,7 +172,7 @@ namespace SimpleWeather.UWP.Controls
             Dispatcher.LaunchOnUIThread(() =>
             {
                 // At most 10 forecasts
-                ForecastGraphData = fcasts?.forecast?.Count > 0 ? new RangeBarGraphViewModel(fcasts.forecast.Take(10)) : null;
+                ForecastGraphData = CreateGraphData(fcasts?.forecast?.Take(10));
                 RefreshMinutelyForecasts(fcasts?.min_forecast);
             });
         }
@@ -223,6 +224,46 @@ namespace SimpleWeather.UWP.Controls
                     MinutelyPrecipitationGraphData = null;
                 }
             });
+        }
+
+        private RangeBarGraphData CreateGraphData(IEnumerable<Forecast> forecastData)
+        {
+            if (forecastData == null) return null;
+
+            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var culture = CultureUtils.UserCulture;
+
+            var entryData = new List<RangeBarGraphEntry>(forecastData.Count());
+
+            foreach (var forecast in forecastData)
+            {
+                if (!forecast.high_f.HasValue && !forecast.low_f.HasValue)
+                    continue;
+
+                var entry = new RangeBarGraphEntry();
+                string date = forecast.date.ToString("ddd dd", culture);
+
+                entry.XLabel = date;
+                entry.XIcon = forecast.icon;
+
+                // Temp Data
+                if (forecast.high_f.HasValue && forecast.high_c.HasValue)
+                {
+                    int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
+                    var hiTemp = string.Format(culture, "{0}°", value);
+                    entry.HiTempData = new YEntryData(value, hiTemp);
+                }
+                if (forecast.low_f.HasValue && forecast.low_c.HasValue)
+                {
+                    int value = (int)(isFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value));
+                    var loTemp = string.Format(culture, "{0}°", value);
+                    entry.LoTempData = new YEntryData(value, loTemp);
+                }
+
+                entryData.Add(entry);
+            }
+
+            return new RangeBarGraphData(new RangeBarGraphDataSet(entryData));
         }
 
         private bool isDisposed;

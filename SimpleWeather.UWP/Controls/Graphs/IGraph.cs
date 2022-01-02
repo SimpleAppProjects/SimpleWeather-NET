@@ -16,7 +16,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
     public interface IGraph
     {
         int GetItemPositionFromPoint(float xCoordinate);
-        FrameworkElement GetControl();
-        ScrollViewer GetScrollViewer();
+        FrameworkElement Control { get; }
+        ScrollViewer ScrollViewer { get; }
     }
 }

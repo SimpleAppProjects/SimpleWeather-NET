@@ -51,9 +51,9 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
         {
-            if (sender is IGraph graph && graph.GetControl().Visibility == Visibility.Visible)
+            if (sender is IGraph graph && graph.Control.Visibility == Visibility.Visible)
             {
-                UpdateScrollButtons(graph.GetScrollViewer());
+                UpdateScrollButtons(graph.ScrollViewer);
             }
         }
 
@@ -94,12 +94,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
         }
 
         public static readonly DependencyProperty ForecastDataProperty =
-            DependencyProperty.Register("ForecastData", typeof(RangeBarGraphViewModel),
+            DependencyProperty.Register("ForecastData", typeof(RangeBarGraphData),
             typeof(RangeBarGraphPanel), new PropertyMetadata(null));
 
-        public RangeBarGraphViewModel ForecastData
+        public RangeBarGraphData ForecastData
         {
-            get { return (RangeBarGraphViewModel)GetValue(ForecastDataProperty); }
+            get { return (RangeBarGraphData)GetValue(ForecastDataProperty); }
             set
             {
                 SetValue(ForecastDataProperty, value);
@@ -125,7 +125,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             if (resetOffset)
             {
-                BarChartView.ScrollViewer.ChangeView(0, null, null);
+                BarChartView.ScrollViewer?.ChangeView(0, null, null);
             }
         }
 
@@ -138,14 +138,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     await Task.Delay(1).ConfigureAwait(true);
                 }
 
-                BarChartView.DrawDataLabels = true;
-                BarChartView.DrawIconLabels = true;
-                BarChartView.CenterGraphView = true;
-
-                if (ForecastData?.LabelData != null && ForecastData?.TempData != null)
-                {
-                    BarChartView.SetData(ForecastData.LabelData, ForecastData.TempData);
-                }
+                BarChartView.SetData(ForecastData);
             }
         }
     }

@@ -152,7 +152,13 @@ namespace SimpleWeather.UWP.Controls
             if (hrfcasts?.Any() == true)
             {
                 // TODO: replace with [Sorted||Ordered]Dictionary
-                ForecastGraphViewModel /*tempData = null, */popData = null, windData = null, rainData = null, snowData = null, uviData = null, humidityData = null;
+                //ForecastGraphViewModel tempData = null;
+                ForecastGraphViewModel popData = null;
+                ForecastGraphViewModel windData = null;
+                ForecastGraphViewModel rainData = null;
+                ForecastGraphViewModel snowData = null;
+                ForecastGraphViewModel uviData = null;
+                ForecastGraphViewModel humidityData = null;
 
                 for (int i = 0; i < hrfcasts.Count; i++)
                 {
@@ -194,12 +200,7 @@ namespace SimpleWeather.UWP.Controls
                         }
                     }
 
-                    /*
-                    if (tempData != null)
-                    {
-                        tempData.AddForecastData(hrfcast, ForecastGraphType.Temperature);
-                    }
-                    */
+                    //tempData?.AddForecastData(hrfcast, ForecastGraphType.Temperature);
                     if (popData != null)
                     {
                         if (hrfcast.extras?.pop.HasValue == true && hrfcast.extras.pop >= 0)
@@ -250,27 +251,27 @@ namespace SimpleWeather.UWP.Controls
                     data.Add(tempData);
                 }
                 */
-                if (popData?.SeriesData?.Count > 0)
+                if (popData?.GraphData?.DataCount > 0)
                 {
                     data.Add(popData);
                 }
-                if (windData?.SeriesData?.Count > 0)
+                if (windData?.GraphData?.DataCount > 0)
                 {
                     data.Add(windData);
                 }
-                if (humidityData?.SeriesData?.Count > 0)
+                if (humidityData?.GraphData?.DataCount > 0)
                 {
                     data.Add(humidityData);
                 }
-                if (uviData?.SeriesData?.Count > 0)
+                if (uviData?.GraphData?.DataCount > 0)
                 {
                     data.Add(uviData);
                 }
-                if (rainData?.SeriesData?.Count > 0)
+                if (rainData?.GraphData?.DataCount > 0)
                 {
                     data.Add(rainData);
                 }
-                if (snowData?.SeriesData?.Count > 0)
+                if (snowData?.GraphData?.DataCount > 0)
                 {
                     data.Add(snowData);
                 }

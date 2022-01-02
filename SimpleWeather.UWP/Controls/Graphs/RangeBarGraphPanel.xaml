@@ -52,7 +52,6 @@
         <graphs:RangeBarGraphView
             x:Name="BarChartView"
             Grid.Column="1"
-            Height="275"
             DrawDataLabels="True"
             DrawIconLabels="True"
             FontSize="{Binding ElementName=Control, Path=FontSize, Mode=TwoWay}"

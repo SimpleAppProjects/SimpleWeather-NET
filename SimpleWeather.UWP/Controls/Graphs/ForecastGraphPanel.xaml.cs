@@ -51,9 +51,9 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
         {
-            if (sender is IGraph graph && graph.GetControl().Visibility == Visibility.Visible)
+            if (sender is IGraph graph && graph.Control.Visibility == Visibility.Visible)
             {
-                UpdateScrollButtons(graph.GetScrollViewer());
+                UpdateScrollButtons(graph.ScrollViewer);
             }
         }
 
@@ -121,7 +121,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             if (resetOffset)
             {
-                LineGraphView.ScrollViewer.ChangeView(0, null, null);
+                LineGraphView.ScrollViewer?.ChangeView(0, null, null);
             }
         }
 
@@ -134,18 +134,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     await Task.Delay(1).ConfigureAwait(true);
                 }
 
-                LineGraphView.DrawGridLines = false;
-                LineGraphView.DrawDotLine = false;
-                LineGraphView.DrawDataLabels = true;
-                LineGraphView.DrawIconLabels = false;
-                LineGraphView.DrawGraphBackground = true;
-                LineGraphView.DrawDotPoints = false;
-                LineGraphView.DrawSeriesLabels = false;
-
-                if (GraphData?.LabelData != null && GraphData?.SeriesData != null)
-                {
-                    LineGraphView.SetData(GraphData.LabelData, GraphData.SeriesData);
-                }
+                LineGraphView.SetData(GraphData?.GraphData);
             }
         }
     }

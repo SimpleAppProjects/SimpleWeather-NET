@@ -5,7 +5,9 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:localGraphs="using:SimpleWeather.UWP.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mtuc="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
@@ -15,9 +17,21 @@
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <x:Boolean x:Key="IsLightValue">false</x:Boolean>
+
+            <!--  Graphs  -->
+            <Color x:Key="LineViewBackgroundLineColor">#80808080</Color>
+            <Color x:Key="LineViewBottomTextColor">White</Color>
+            <Color x:Key="LineViewLineColor">#80808080</Color>
+            <Color x:Key="LineViewSmallCirColor">#80808080</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <x:Boolean x:Key="IsLightValue">true</x:Boolean>
+
+            <!--  Graphs  -->
+            <Color x:Key="LineViewBackgroundLineColor">#80FFFFFF</Color>
+            <Color x:Key="LineViewBottomTextColor">Black</Color>
+            <Color x:Key="LineViewLineColor">#80808080</Color>
+            <Color x:Key="LineViewSmallCirColor">#80808080</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -243,5 +257,52 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Height" Value="275" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="localGraphs:BaseGraphViewControl">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <ScrollViewer
+                            x:Name="InternalScrollViewer"
+                            HorizontalScrollBarVisibility="Hidden"
+                            HorizontalScrollMode="Enabled"
+                            VerticalScrollBarVisibility="Disabled"
+                            VerticalScrollMode="Disabled">
+                            <Grid xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml">
+                                <win2d:CanvasVirtualControl
+                                    x:Name="Canvas"
+                                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                    Background="Transparent"
+                                    ClearColor="Transparent" />
+                                <Canvas
+                                    x:Name="IconCanvas"
+                                    Width="{Binding ElementName=Canvas, Path=Width}"
+                                    Height="{Binding ElementName=Canvas, Path=Height}"
+                                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}" />
+                            </Grid>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:LineView">
+        <Setter Property="BackgroundLineColor" Value="{ThemeResource LineViewBackgroundLineColor}" />
+        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
+    </Style>
+
+    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:RangeBarGraphView">
+        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
 </ResourceDictionary>

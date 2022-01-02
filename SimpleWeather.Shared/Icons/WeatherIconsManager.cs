@@ -52,6 +52,15 @@ namespace SimpleWeather.Icons
             sIconsProvider = GetProvider(iconsSource);
         }
 
+        public IWeatherIconsProvider GetProvider()
+        {
+            if (sIconsProvider == null)
+            {
+                UpdateIconProvider();
+            }
+            return sIconsProvider;
+        }
+
         public static IWeatherIconsProvider GetProvider(string iconsSource)
         {
             return SimpleLibrary.GetInstance().GetIconProvider(iconsSource);
