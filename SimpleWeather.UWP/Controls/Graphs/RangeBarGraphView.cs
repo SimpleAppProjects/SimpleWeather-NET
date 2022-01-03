@@ -300,6 +300,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
             backgroundGridWidth = canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor);
 
             LineStrokeWidth = canvas.ConvertDipsToPixels(6, CanvasDpiRounding.Floor);
+
+            UpdateGraph();
         }
 
         protected override void OnCanvasRegionsInvalidated(CanvasVirtualControl canvas, CanvasRegionsInvalidatedEventArgs args)
