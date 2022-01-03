@@ -32,6 +32,7 @@ namespace SimpleWeather.Controls
         private string weatherIcon;
         private string hiTemp;
         private string loTemp;
+        private bool showHiLo;
         private string weatherSummary;
 
         // Weather Details
@@ -81,6 +82,7 @@ namespace SimpleWeather.Controls
         public string WeatherIcon { get => weatherIcon; private set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
         public string HiTemp { get => hiTemp; private set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
         public string LoTemp { get => loTemp; private set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
+        public bool ShowHiLo { get => showHiLo; private set { if (!Equals(showHiLo, value)) { showHiLo = value; OnPropertyChanged(nameof(ShowHiLo)); } } }
         public string WeatherSummary { get => weatherSummary; private set { if (!Equals(weatherSummary, value)) { weatherSummary = value; OnPropertyChanged(nameof(WeatherSummary)); } } }
         public SunPhaseViewModel SunPhase { get => sunPhase; private set { if (!Equals(sunPhase, value)) { sunPhase = value; OnPropertyChanged(nameof(SunPhase)); } } }
         public SimpleObservableList<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
@@ -212,6 +214,9 @@ namespace SimpleWeather.Controls
             CurCondition = (String.IsNullOrWhiteSpace(weatherCondition)) ? WeatherIcons.EM_DASH : weatherCondition;
             WeatherIcon = weather.condition.icon;
 
+            var shouldHideHi = false;
+            var shouldHideLo = false;
+
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
                 var value = isFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
@@ -220,6 +225,7 @@ namespace SimpleWeather.Controls
             else
             {
                 HiTemp = null;
+                shouldHideHi = true;
             }
 
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
@@ -230,7 +236,10 @@ namespace SimpleWeather.Controls
             else
             {
                 LoTemp = null;
+                shouldHideLo = true;
             }
+
+            ShowHiLo = (!shouldHideHi || !shouldHideLo) && !Equals(HiTemp, LoTemp);
 
             // WeatherDetails
             WeatherDetails.Clear();

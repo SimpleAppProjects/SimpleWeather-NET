@@ -260,7 +260,7 @@
                             RelativePanel.AlignTopWith="CurTempPanel"
                             RelativePanel.AlignVerticalCenterWith="CurTempPanel"
                             RelativePanel.RightOf="CurTempPanel"
-                            Visibility="{x:Bind WeatherView.HiTemp, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            Visibility="{x:Bind WeatherView.ShowHiLo, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                 <toolkitControls:DropShadowPanel
                                     HorizontalAlignment="Center"
