@@ -23,6 +23,10 @@
             <Color x:Key="LineViewBottomTextColor">White</Color>
             <Color x:Key="LineViewLineColor">#80808080</Color>
             <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+            <!--  SunPhaseView  -->
+            <Color x:Key="SunViewPaintColor">Yellow</Color>
+            <Color x:Key="SunViewPhaseArcColor">#40FFFFFF</Color>
+            <Color x:Key="SunViewBottomTextColor">White</Color>
         </ResourceDictionary>
         <ResourceDictionary x:Key="Light">
             <x:Boolean x:Key="IsLightValue">true</x:Boolean>
@@ -32,6 +36,10 @@
             <Color x:Key="LineViewBottomTextColor">Black</Color>
             <Color x:Key="LineViewLineColor">#80808080</Color>
             <Color x:Key="LineViewSmallCirColor">#80808080</Color>
+            <!--  SunPhaseView  -->
+            <Color x:Key="SunViewPaintColor">Orange</Color>
+            <Color x:Key="SunViewPhaseArcColor">#40000000</Color>
+            <Color x:Key="SunViewBottomTextColor">Black</Color>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
 
@@ -304,5 +312,52 @@
         <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style TargetType="localControls:SunPhaseView">
+        <Setter Property="PaintColor" Value="{ThemeResource SunViewPaintColor}" />
+        <Setter Property="PhaseArcColor" Value="{ThemeResource SunViewPhaseArcColor}" />
+        <Setter Property="BottomTextColor" Value="{ThemeResource SunViewBottomTextColor}" />
+        <Setter Property="Height" Value="225" />
+        <Setter Property="MaxWidth" Value="560" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="localControls:SunPhaseView">
+                    <Grid
+                        xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <win2d:CanvasVirtualControl
+                            x:Name="Canvas"
+                            Background="Transparent"
+                            ClearColor="Transparent"
+                            FontSize="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=FontSize, Mode=TwoWay}"
+                            FontWeight="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=FontWeight, Mode=TwoWay}" />
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup>
+                                <VisualState x:Name="Mobile">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="0" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="Canvas.FontSize" Value="13" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Desktop">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="641" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="Canvas.FontSize" Value="15" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>

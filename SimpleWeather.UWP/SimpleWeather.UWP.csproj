@@ -124,6 +124,7 @@
     <Content Include="Assets\BadgeLogo.scale-150.png" />
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
+    <Content Include="Assets\FullSun.png" />
     <Content Include="Assets\outline_near_me_black_24dp.png" />
     <Content Include="Assets\SolarStroke.png" />
     <Content Include="Assets\LogoStroke.png" />
@@ -226,6 +227,7 @@
       <DependentUpon>PollenCountControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarPage.cs" />
+    <Compile Include="Controls\SunPhaseView.cs" />
     <Compile Include="Controls\ViewModels\HourlyForecastNowViewModel.cs" />
     <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
@@ -244,9 +246,6 @@
     <Compile Include="Controls\Snackbar\Snackbar.cs" />
     <Compile Include="Controls\Snackbar\SnackbarContent.xaml.cs">
       <DependentUpon>SnackbarContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\SunPhasePanel.xaml.cs">
-      <DependentUpon>SunPhasePanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\AQIControl.xaml.cs">
       <DependentUpon>AQIControl.xaml</DependentUpon>
@@ -465,10 +464,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Snackbar\SnackbarContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\SunPhasePanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

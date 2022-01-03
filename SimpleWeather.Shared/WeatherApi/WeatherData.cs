@@ -231,6 +231,12 @@ namespace SimpleWeather.WeatherData
             try
             {
                 sunset = DateTime.ParseExact(astro.sunset, "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+
+                if (sunrise != null && sunrise != DateTime.MinValue && sunset.CompareTo(sunrise) < 0)
+                {
+                    // Is next day
+                    sunset = sunset.AddDays(1);
+                }
             }
             catch (Exception) { }
 

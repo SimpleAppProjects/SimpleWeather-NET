@@ -11,16 +11,16 @@ namespace SimpleWeather.Controls
 {
     public class SunPhaseViewModel
     {
-        public TimeSpan SunriseTime { get; }
-        public TimeSpan SunsetTime { get; }
+        public DateTime SunriseTime { get; }
+        public DateTime SunsetTime { get; }
 
         public string Sunrise { get; }
         public string Sunset { get; }
 
         public SunPhaseViewModel(Astronomy astronomy)
         {
-            SunriseTime = astronomy.sunrise.TimeOfDay;
-            SunsetTime = astronomy.sunset.TimeOfDay;
+            SunriseTime = astronomy.sunrise;
+            SunsetTime = astronomy.sunset;
 
             Sunrise = astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
             Sunset = astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);

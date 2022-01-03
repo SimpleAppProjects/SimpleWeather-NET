@@ -549,11 +549,7 @@
                                 d:Header="Sunrise / Sunset"
                                 Header="{helpers:StringRes Name='label_sunriseset'}"
                                 Style="{ThemeResource SectionLabelStyle}">
-                                <localcontrols:SunPhasePanel
-                                    x:Name="SunPhasePanel"
-                                    Height="275"
-                                    MaxWidth="640"
-                                    Margin="0,0,0,0" />
+                                <localcontrols:SunPhaseView x:Name="SunPhaseView" />
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
                         <StackPanel

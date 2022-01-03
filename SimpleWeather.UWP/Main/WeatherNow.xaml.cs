@@ -269,12 +269,12 @@ namespace SimpleWeather.UWP.Main
                 case "SunPhase":
                     if (WeatherView.SunPhase?.SunriseTime != null && WeatherView.SunPhase?.SunsetTime != null)
                     {
-                        while (SunPhasePanel == null || !SunPhasePanel.ReadyToDraw)
+                        while (SunPhaseView == null || !SunPhaseView.ReadyToDraw)
                         {
                             await Task.Delay(1).ConfigureAwait(true);
                         }
 
-                        SunPhasePanel.SetSunriseSetTimes(
+                        SunPhaseView.SetSunriseSetTimes(
                             WeatherView.SunPhase.SunriseTime, WeatherView.SunPhase.SunsetTime,
                             locationData?.tz_offset ?? TimeSpan.Zero
                         );

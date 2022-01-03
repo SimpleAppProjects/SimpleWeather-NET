@@ -331,7 +331,17 @@ namespace SimpleWeather.WeatherData
             if (DateTime.TryParse(astroData.sunrise, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunrise))
                 this.sunrise = sunrise;
             if (DateTime.TryParse(astroData.sunset, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunset))
-                this.sunset = sunset;
+            {
+                if (sunrise != null && sunrise != DateTime.MinValue && sunset.CompareTo(sunrise) < 0)
+                {
+                    // Is next day
+                    this.sunset = sunset.AddDays(1);
+                }
+                else
+                {
+                    this.sunset = sunset;
+                }
+            }
             if (DateTime.TryParse(astroData.moonrise, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime moonrise))
                 this.moonrise = moonrise;
             if (DateTime.TryParse(astroData.moonset, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime moonset))
