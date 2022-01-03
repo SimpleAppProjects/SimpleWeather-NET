@@ -42,11 +42,11 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" Style="{StaticResource SectionLabelStyle}">
-            <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Moon'}" />
-            </toolkitControls:HeaderedContentControl.Header>
-            <StackPanel Padding="15,0">
+        <toolkitControls:HeaderedContentControl
+            HorizontalContentAlignment="Stretch"
+            Header="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Moon'}"
+            Style="{StaticResource SectionLabelStyle}">
+            <StackPanel>
                 <StackPanel
                     x:Name="MoonStack"
                     Padding="15,0"

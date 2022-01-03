@@ -31,10 +31,10 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" Style="{StaticResource SectionLabelStyle}">
-            <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}" />
-            </toolkitControls:HeaderedContentControl.Header>
+        <toolkitControls:HeaderedContentControl
+            HorizontalContentAlignment="Stretch"
+            Header="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}"
+            Style="{StaticResource SectionLabelStyle}">
             <RelativePanel>
                 <local:IconControl
                     x:Name="BeaufortIcon"

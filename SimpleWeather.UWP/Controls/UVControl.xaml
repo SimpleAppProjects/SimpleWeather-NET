@@ -27,7 +27,7 @@
     <StackPanel>
         <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" Style="{StaticResource SectionLabelStyle}">
             <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='UV Index'}" />
+                <TextBlock Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='UV Index'}" />
             </toolkitControls:HeaderedContentControl.Header>
             <RelativePanel>
                 <local:IconControl

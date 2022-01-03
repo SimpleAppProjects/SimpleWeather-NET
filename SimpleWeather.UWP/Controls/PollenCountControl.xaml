@@ -26,10 +26,8 @@
         <toolkitControls:HeaderedContentControl
             HorizontalContentAlignment="Stretch"
             VerticalContentAlignment="Stretch"
+            Header="{helpers:StringRes Name='label_pollen_count'}"
             Style="{StaticResource SectionLabelStyle}">
-            <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="{helpers:StringRes Name='label_pollen_count'}" />
-            </toolkitControls:HeaderedContentControl.Header>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

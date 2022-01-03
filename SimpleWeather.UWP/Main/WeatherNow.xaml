@@ -506,30 +506,25 @@
                                         Orientation="Horizontal">
                                         <localcontrols:UVControl
                                             x:Name="UVContrl"
-                                            Margin="10,5"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
                                             DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}"
                                             Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:BeaufortControl
                                             x:Name="BeaufControl"
-                                            Margin="10,5"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
                                             DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}"
                                             Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:AQIControl
                                             x:Name="AQIndexControl"
-                                            Margin="10,5"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
                                             DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}"
                                             Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:PollenCountControl
                                             x:Name="PollenControl"
-                                            Margin="10,5"
                                             DataContext="{x:Bind WeatherView.Pollen, Mode=OneWay}"
                                             Visibility="{x:Bind WeatherView.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:MoonPhaseControl
                                             x:Name="MoonControl"
-                                            Margin="10,5"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
                                             DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}"
                                             Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />

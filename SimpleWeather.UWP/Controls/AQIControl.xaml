@@ -12,10 +12,10 @@
     mc:Ignorable="d">
 
     <StackPanel>
-        <toolkitControls:HeaderedContentControl HorizontalContentAlignment="Stretch" Style="{StaticResource SectionLabelStyle}">
-            <toolkitControls:HeaderedContentControl.Header>
-                <TextBlock FontSize="15" Text="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Air Quality Index'}" />
-            </toolkitControls:HeaderedContentControl.Header>
+        <toolkitControls:HeaderedContentControl
+            HorizontalContentAlignment="Stretch"
+            Header="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Air Quality Index'}"
+            Style="{StaticResource SectionLabelStyle}">
             <RelativePanel MinHeight="90">
                 <TextBlock
                     x:Name="AQIndex"
