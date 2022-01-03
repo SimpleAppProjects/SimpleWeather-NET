@@ -60,6 +60,7 @@ namespace SimpleWeather.UWP.Controls
             HorizontalScroller = VisualTreeHelperExtensions.FindChild<ScrollViewer>(HourlyForecastControl);
             HorizontalScroller.ViewChanged += HorizontalScroller_ViewChanged;
             HorizontalScroller.SizeChanged += HorizontalScroller_SizeChanged;
+            UpdateScrollButtons(HorizontalScroller);
         }
 
         private void HorizontalScroller_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
