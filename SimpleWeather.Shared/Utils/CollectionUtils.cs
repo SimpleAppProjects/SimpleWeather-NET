@@ -19,9 +19,9 @@ namespace SimpleWeather.Utils
             return e.ElementAtOrDefault(new Random().Next(0, e.Count()));
         }
 
-        public static List<T> SingletonList<T>(T item)
+        public static IEnumerable<T> WhereNot<T>(this IEnumerable<T> e, Func<T, bool> predicate)
         {
-            return new List<T>(1) { item };
+            return e.Where(it => !predicate(it));
         }
     }
 }

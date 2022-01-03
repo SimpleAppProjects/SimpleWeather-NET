@@ -10,6 +10,8 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:wicons="using:SimpleWeather.Icons"
     MinWidth="450"
+    d:DesignHeight="250"
+    d:DesignWidth="500"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -44,7 +46,7 @@
     <StackPanel>
         <toolkitControls:HeaderedContentControl
             HorizontalContentAlignment="Stretch"
-            Header="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Moon'}"
+            Header="{helpers:StringRes Name='label_moonphase'}"
             Style="{StaticResource SectionLabelStyle}">
             <StackPanel>
                 <StackPanel
@@ -54,35 +56,40 @@
                     Orientation="Horizontal">
                     <!--  New Moon  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="NewMoonIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0eb;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_NEW}" />
                     <!--  Waxing Crescent  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="WaxCresIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0d2;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}" />
                     <!--  First Qtr  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="FirstQtrIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0d6;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_FIRST_QUARTER}" />
                     <!--  Waxing Gibbous  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="WaxGibbousIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0d9;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}" />
                     <!--  Full Moon  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="FullMoonIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:Style="{ThemeResource MoonStyle}"
                         d:WeatherIcon="&#xf0dd;"
@@ -90,34 +97,123 @@
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_FULL}" />
                     <!--  Waning Gibbous  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="WanGibbousIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0e0;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}" />
                     <!--  Third Qtr  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="ThirdQtrIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0e4;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_THIRD_QUARTER}" />
                     <!--  Waning Crescent  -->
                     <local:IconControl
-                        Width="40"
+                        x:Name="WanCrescentIcon"
+                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                         Height="40"
                         d:WeatherIcon="&#xf0e7;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_CRESCENT_3}" />
                 </StackPanel>
                 <TextBlock
-                    Padding="5"
+                    Padding="10"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     d:Text="Full Moon"
                     FontSize="18"
                     Text="{x:Bind ViewModel.MoonPhase.Value, Mode=OneWay}" />
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <StackPanel
+                        Margin="10,0"
+                        Padding="5"
+                        Orientation="Horizontal"
+                        Visibility="{x:Bind ViewModel.Moonrise, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                        <local:IconControl
+                            x:Name="MoonriseIcon"
+                            Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
+                            Height="35"
+                            d:WeatherIcon="&#xf0c9;"
+                            WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}" />
+                        <TextBlock
+                            x:Name="MoonriseText"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            d:Text="6:00 PM"
+                            FontSize="16"
+                            Text="{x:Bind ViewModel.Moonrise, Mode=OneWay}"
+                            TextLineBounds="Tight" />
+                    </StackPanel>
+                    <StackPanel
+                        Margin="10,0"
+                        Padding="5"
+                        Orientation="Horizontal"
+                        Visibility="{x:Bind ViewModel.Moonset, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                        <local:IconControl
+                            x:Name="MoonsetIcon"
+                            Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
+                            Height="35"
+                            d:WeatherIcon="&#xf0ca;"
+                            WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}" />
+                        <TextBlock
+                            x:Name="MoonsetText"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            d:Text="3:00 AM"
+                            FontSize="16"
+                            Text="{x:Bind ViewModel.Moonset, Mode=OneWay}"
+                            TextLineBounds="Tight" />
+                    </StackPanel>
+                </StackPanel>
             </StackPanel>
         </toolkitControls:HeaderedContentControl>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MoonriseIcon.Height" Value="35" />
+                        <Setter Target="MoonriseText.FontSize" Value="16" />
+                        <Setter Target="MoonsetIcon.Height" Value="35" />
+                        <Setter Target="MoonsetText.FontSize" Value="16" />
+
+                        <Setter Target="NewMoonIcon.Height" Value="40" />
+                        <Setter Target="WaxCresIcon.Height" Value="40" />
+                        <Setter Target="FirstQtrIcon.Height" Value="40" />
+                        <Setter Target="WaxGibbousIcon.Height" Value="40" />
+                        <Setter Target="FullMoonIcon.Height" Value="40" />
+                        <Setter Target="WanGibbousIcon.Height" Value="40" />
+                        <Setter Target="ThirdQtrIcon.Height" Value="40" />
+                        <Setter Target="WanCrescentIcon.Height" Value="40" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="MoonriseIcon.Height" Value="40" />
+                        <Setter Target="MoonriseText.FontSize" Value="18" />
+                        <Setter Target="MoonsetIcon.Height" Value="40" />
+                        <Setter Target="MoonsetText.FontSize" Value="18" />
+
+                        <Setter Target="NewMoonIcon.Height" Value="50" />
+                        <Setter Target="WaxCresIcon.Height" Value="50" />
+                        <Setter Target="FirstQtrIcon.Height" Value="50" />
+                        <Setter Target="WaxGibbousIcon.Height" Value="50" />
+                        <Setter Target="FullMoonIcon.Height" Value="50" />
+                        <Setter Target="WanGibbousIcon.Height" Value="50" />
+                        <Setter Target="ThirdQtrIcon.Height" Value="50" />
+                        <Setter Target="WanCrescentIcon.Height" Value="50" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
     </StackPanel>
 </UserControl>

@@ -445,6 +445,8 @@ namespace SimpleWeather.Controls
                            weather.astronomy.sunset.ToString("t", culture)));
                 }
 
+                MoonPhase = new MoonPhaseViewModel(weather.astronomy);
+
                 if (weather.astronomy.moonrise != null && weather.astronomy.moonset != null)
                 {
                     if (weather.astronomy.moonrise > DateTime.MinValue)
@@ -460,7 +462,10 @@ namespace SimpleWeather.Controls
                     }
                 }
 
-                MoonPhase = weather.astronomy.moonphase != null ? new MoonPhaseViewModel(weather.astronomy.moonphase) : null;
+                if (weather.astronomy.moonphase != null)
+                {
+                    //WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase));
+                }
             }
             else
             {

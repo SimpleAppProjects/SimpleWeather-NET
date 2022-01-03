@@ -51,6 +51,7 @@
                 </Style.Setters>
             </Style>
             <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
+            <helpers:DetailsItemGridFilterConverter x:Key="detailsFilter" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -487,7 +488,7 @@
                                         HorizontalAlignment="Center"
                                         HorizontalContentAlignment="Center"
                                         x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=OneWay}"
-                                        ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay}"
+                                        ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}"
                                         Visibility="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="controls:DetailItemViewModel">
