@@ -18,7 +18,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             EntryData = new List<T>();
         }
 
-        public GraphDataSet(List<T> entries)
+        public GraphDataSet(IEnumerable<T> entries)
         {
             EntryData = entries?.ToList() ?? new List<T>();
             CalcMinMax();
@@ -42,7 +42,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         protected abstract void CalcMinMax(T entry);
 
-        public void SetEntries(List<T> entries)
+        public void SetEntries(IEnumerable<T> entries)
         {
             EntryData = entries?.ToList() ?? new List<T>();
             NotifyDataSetChanged();

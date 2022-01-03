@@ -8,7 +8,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 {
     public class RangeBarGraphDataSet : GraphDataSet<RangeBarGraphEntry>
     {
-        public RangeBarGraphDataSet(List<RangeBarGraphEntry> entries) : base(entries) { }
+        public RangeBarGraphDataSet(IEnumerable<RangeBarGraphEntry> entries) : base(entries) { }
 
         protected override void CalcMinMax(RangeBarGraphEntry entry)
         {

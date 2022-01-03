@@ -8,8 +8,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
 {
     public class LineViewData : GraphData<LineDataSeries, LineGraphEntry>
     {
-        public LineViewData(List<LineDataSeries> sets) : base(sets) { }
-        public LineViewData(string label, List<LineDataSeries> sets) : base(sets)
+        public LineViewData(IEnumerable<LineDataSeries> sets) : base(sets) { }
+        public LineViewData(string label, IEnumerable<LineDataSeries> sets) : base(sets)
         {
             this.GraphLabel = label;
         }

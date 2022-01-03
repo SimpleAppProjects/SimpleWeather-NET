@@ -5,6 +5,7 @@ using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -63,9 +64,9 @@ namespace SimpleWeather.UWP.Controls
         {
             if (GraphData == null)
             {
-                var series = CreateSeriesData(new (), graphType);
+                var series = CreateSeriesData(new List<LineGraphEntry>(), graphType);
                 AddEntryData(forecast, series, graphType);
-                this.GraphData = CreateGraphData(CollectionUtils.SingletonList(series), graphType);
+                this.GraphData = CreateGraphData(ImmutableList.Create(series), graphType);
             }
             else
             {
@@ -75,27 +76,27 @@ namespace SimpleWeather.UWP.Controls
 
         public void SetForecastData<T>(IList<T> forecasts, ForecastGraphType graphType) where T : BaseForecast
         {
-            var series = CreateSeriesData(new (forecasts.Count), graphType);
+            var series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count), graphType);
 
             foreach (var forecast in forecasts)
             {
                 AddEntryData(forecast, series, graphType);
             }
 
-            this.GraphData = CreateGraphData(CollectionUtils.SingletonList(series), graphType);
+            this.GraphData = CreateGraphData(ImmutableList.Create(series), graphType);
             this.GraphType = graphType;
         }
 
         public void SetMinutelyForecastData(IEnumerable<MinutelyForecast> forecasts)
         {
-            var series = CreateSeriesData(new (forecasts.Count()), ForecastGraphType.Precipitation);
+            var series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count()), ForecastGraphType.Precipitation);
 
             foreach (var forecast in forecasts)
             {
                 AddMinutelyEntryData(forecast, series);
             }
 
-            this.GraphData = CreateGraphData(CollectionUtils.SingletonList(series), ForecastGraphType.Precipitation);
+            this.GraphData = CreateGraphData(ImmutableList.Create(series), ForecastGraphType.Precipitation);
             this.GraphType = ForecastGraphType.Precipitation;
         }
 
@@ -276,7 +277,7 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        private LineDataSeries CreateSeriesData(List<LineGraphEntry> entryData, ForecastGraphType graphType)
+        private LineDataSeries CreateSeriesData(IList<LineGraphEntry> entryData, ForecastGraphType graphType)
         {
             LineDataSeries series;
 
@@ -321,7 +322,7 @@ namespace SimpleWeather.UWP.Controls
             return series;
         }
 
-        private LineViewData CreateGraphData(List<LineDataSeries> seriesData, ForecastGraphType graphType)
+        private LineViewData CreateGraphData(IList<LineDataSeries> seriesData, ForecastGraphType graphType)
         {
             String graphLabel;
 

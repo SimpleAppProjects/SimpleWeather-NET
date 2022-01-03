@@ -15,7 +15,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public float? SeriesMin { get; set; }
         public float? SeriesMax { get; set; }
 
-        public LineDataSeries(List<LineGraphEntry> seriesData) : base(seriesData)
+        public LineDataSeries(IEnumerable<LineGraphEntry> seriesData) : base(seriesData)
         {
             SeriesLabel = null;
             SeriesColors = DefaultColors.ToList();
