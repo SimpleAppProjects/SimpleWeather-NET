@@ -22,30 +22,11 @@ using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
-    public sealed partial class RangeBarGraphView : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>, IDisposable
+    public sealed partial class RangeBarGraphView : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
     {
-        private float bottomTextHeight;
+        private bool disposedValue;
 
         private List<Bar> drawDotLists; // Y data
-
-        private readonly CanvasTextFormat BottomTextFormat;
-        private float bottomTextDescent;
-
-        private float iconBottomMargin;
-        private float bottomTextTopMargin;
-
-        public Color BottomTextColor
-        {
-            get { return (Color)GetValue(BottomTextColorProperty); }
-            set { SetValue(BottomTextColorProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BottomTextColorProperty =
-            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(RangeBarGraphView), new PropertyMetadata(Colors.White));
-
-        public bool DrawIconLabels { get; set; }
-        public bool DrawDataLabels { get; set; }
 
         private float LineStrokeWidth;
         private readonly CanvasStrokeStyle LineStrokeStyle;
@@ -58,44 +39,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             ResetData(false);
 
-            BottomTextFormat = new CanvasTextFormat
-            {
-                FontSize = (float)FontSize,
-                FontWeight = FontWeight,
-                HorizontalAlignment = CanvasHorizontalAlignment.Center,
-                VerticalAlignment = CanvasVerticalAlignment.Center,
-                WordWrapping = CanvasWordWrapping.NoWrap
-            };
-
             LineStrokeStyle = new CanvasStrokeStyle()
             {
                 StartCap = CanvasCapStyle.Round,
                 EndCap = CanvasCapStyle.Round,
                 LineJoin = CanvasLineJoin.Round
             };
-
-            RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
-            RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
-        }
-
-        private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
-        {
-            if (property == FontSizeProperty)
-            {
-                this.BottomTextFormat.FontSize = (float)FontSize;
-                if (ReadyToDraw)
-                {
-                    UpdateGraph();
-                }
-            }
-            else if (property == FontWeightProperty)
-            {
-                this.BottomTextFormat.FontWeight = FontWeight;
-                if (ReadyToDraw)
-                {
-                    UpdateGraph();
-                }
-            }
         }
 
         private float GraphTop
@@ -332,49 +281,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
-        // TODO: move to common
-        private void DrawIcons()
-        {
-            if (DrawIconLabels)
-            {
-                IconCanvas.Children.Clear();
-                if (!IsDataEmpty && Data.DataLabels.Count > 0)
-                {
-                    for (int i = 0; i < Data.DataLabels.Count; i++)
-                    {
-                        float x = xCoordinateList[i];
-                        float y = ViewHeight - bottomTextDescent;
-
-                        var entry = Data.DataLabels[i];
-                        var control = CreateIconControl(entry.XIcon);
-                        control.RenderTransform = new RotateTransform()
-                        {
-                            Angle = entry.XIconRotation,
-                            CenterX = IconHeight / 2,
-                            CenterY = IconHeight / 2
-                        };
-                        Windows.UI.Xaml.Controls.Canvas.SetLeft(control, x - IconHeight / 2);
-                        Windows.UI.Xaml.Controls.Canvas.SetTop(control, y - IconHeight - bottomTextHeight - iconBottomMargin);
-                        IconCanvas.Children.Add(control);
-                    }
-                }
-            }
-        }
-
-        // TODO: move to common
-        private void RepositionIcons()
-        {
-            if (DrawIconLabels)
-            {
-                for (int i = 0; i < IconCanvas.Children.Count; i++)
-                {
-                    var control = IconCanvas.Children[i];
-                    Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
-                    Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
-                }
-            }
-        }
-
         private void DrawText(Rect region, CanvasDrawingSession drawingSession)
         {
             // Draw Bottom Text
@@ -502,8 +408,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             // Redraw View
             RefreshDrawDotList();
-            Canvas.Invalidate();
-            RepositionIcons();
         }
 
         internal class Bar
@@ -520,10 +424,18 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            BottomTextFormat?.Dispose();
-            LineStrokeStyle?.Dispose();
+            base.Dispose(disposing);
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    LineStrokeStyle?.Dispose();
+                }
+
+                disposedValue = true;
+            }
         }
     }
 }

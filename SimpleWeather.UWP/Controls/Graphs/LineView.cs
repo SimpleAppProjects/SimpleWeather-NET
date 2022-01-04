@@ -31,20 +31,14 @@ namespace SimpleWeather.UWP.Controls.Graphs
      *  Graph background (under line) based on - https://github.com/jjoe64/GraphView (LineGraphSeries)
      */
 
-    public sealed class LineView : BaseGraphView<LineViewData, LineDataSeries, LineGraphEntry>, IDisposable
+    public sealed class LineView : BaseGraphView<LineViewData, LineDataSeries, LineGraphEntry>
     {
         private int DataOfAGrid = 10;
-        private float bottomTextHeight = 0;
 
         private List<float> yCoordinateList;
 
         private List<List<Dot>> drawDotLists; // Y data
 
-        private readonly CanvasTextFormat BottomTextFormat;
-        private float bottomTextDescent;
-
-        private float iconBottomMargin;
-        private float bottomTextTopMargin;
         private float DOT_INNER_CIR_RADIUS;
         private float DOT_OUTER_CIR_RADIUS;
         private const int MIN_VERTICAL_GRID_NUM = 4;
@@ -59,22 +53,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public static readonly DependencyProperty BackgroundLineColorProperty =
             DependencyProperty.Register("BackgroundLineColor", typeof(Color), typeof(LineView), new PropertyMetadata(Colors.White));
 
-        public Color BottomTextColor
-        {
-            get { return (Color)GetValue(BottomTextColorProperty); }
-            set { SetValue(BottomTextColorProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty BottomTextColorProperty =
-            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(LineView), new PropertyMetadata(Colors.White));
-
         public bool DrawGridLines { get; set; }
         public bool DrawDotLine { get; set; }
         public bool DrawDotPoints { get; set; }
         public bool DrawGraphBackground { get; set; }
-        public bool DrawIconLabels { get; set; }
-        public bool DrawDataLabels { get; set; }
         public bool DrawSeriesLabels { get; set; }
 
         private float LineStrokeWidth;
@@ -87,38 +69,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
             drawDotLists = new List<List<Dot>>();
 
             ResetData(false);
-
-            BottomTextFormat = new CanvasTextFormat
-            {
-                FontSize = (float)FontSize,
-                FontWeight = FontWeight,
-                HorizontalAlignment = CanvasHorizontalAlignment.Center,
-                VerticalAlignment = CanvasVerticalAlignment.Center,
-                WordWrapping = CanvasWordWrapping.NoWrap
-            };
-
-            RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
-            RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
-        }
-
-        private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
-        {
-            if (property == FontSizeProperty)
-            {
-                this.BottomTextFormat.FontSize = (float)FontSize;
-                if (ReadyToDraw)
-                {
-                    UpdateGraph();
-                }
-            }
-            else if (property == FontWeightProperty)
-            {
-                this.BottomTextFormat.FontWeight = FontWeight;
-                if (ReadyToDraw)
-                {
-                    UpdateGraph();
-                }
-            }
         }
 
         private float GraphTop
@@ -447,46 +397,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     DrawLines(InvalidatedRegion, drawingSession);
                     DrawDots(InvalidatedRegion, drawingSession);
                     DrawSeriesLegend(InvalidatedRegion, drawingSession);
-                }
-            }
-        }
-
-        // TODO: move to common
-        private void DrawIcons()
-        {
-            if (DrawIconLabels)
-            {
-                IconCanvas.Children.Clear();
-                if (!IsDataEmpty && Data.DataLabels.Count > 0)
-                {
-                    for (int i = 0; i < Data.DataLabels.Count; i++)
-                    {
-                        var entry = Data.DataLabels[i];
-                        var control = CreateIconControl(entry.XIcon);
-                        control.RenderTransform = new RotateTransform()
-                        {
-                            Angle = entry.XIconRotation,
-                            CenterX = IconHeight / 2,
-                            CenterY = IconHeight / 2
-                        };
-                        Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
-                        Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
-                        IconCanvas.Children.Add(control);
-                    }
-                }
-            }
-        }
-
-        // TODO: move to common
-        private void RepositionIcons()
-        {
-            if (DrawIconLabels)
-            {
-                for (int i = 0; i < IconCanvas.Children.Count; i++)
-                {
-                    var control = IconCanvas.Children[i];
-                    Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
-                    Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
                 }
             }
         }
@@ -835,8 +745,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             // Redraw View
             RefreshAfterDataChanged();
-            Canvas.Invalidate();
-            RepositionIcons();
         }
 
         internal class Dot
@@ -863,11 +771,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 this.X = x;
                 this.Y = y;
             }
-        }
-
-        public void Dispose()
-        {
-            BottomTextFormat?.Dispose();
         }
     }
 }

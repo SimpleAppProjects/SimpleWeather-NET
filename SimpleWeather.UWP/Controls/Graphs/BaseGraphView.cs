@@ -1,4 +1,5 @@
 ﻿using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using SimpleWeather.Icons;
 using System;
@@ -7,15 +8,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
     [TemplatePart(Name = nameof(InternalScrollViewer), Type = typeof(ScrollViewer))]
-    public abstract class BaseGraphView<T, S, E> : BaseGraphViewControl, IGraph
+    public abstract class BaseGraphView<T, S, E> : BaseGraphViewControl, IGraph, IDisposable
         where T : GraphData<S, E> where S : GraphDataSet<E> where E : GraphEntry
     {
+        private bool disposedValue;
+
         protected T Data { get; set; }
         private int MaxXEntries { get; set; }
 
@@ -26,21 +31,72 @@ namespace SimpleWeather.UWP.Controls.Graphs
         protected int verticalGridNum;
         protected const int MIN_HORIZONTAL_GRID_NUM = 1;
 
-        protected float sideLineLength = 0f;
+        protected readonly CanvasTextFormat BottomTextFormat;
+        protected float bottomTextHeight;
+        protected float bottomTextDescent;
+
+        protected float iconBottomMargin;
+        protected float bottomTextTopMargin;
+
+        protected float sideLineLength;
         protected float backgroundGridWidth;
         protected float longestTextWidth;
 
         protected float IconHeight;
-
         protected readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
 
         public BaseGraphView() : base()
         {
             xCoordinateList = new List<float>();
+
+            BottomTextFormat = new CanvasTextFormat
+            {
+                FontSize = (float)FontSize,
+                FontWeight = FontWeight,
+                HorizontalAlignment = CanvasHorizontalAlignment.Center,
+                VerticalAlignment = CanvasVerticalAlignment.Center,
+                WordWrapping = CanvasWordWrapping.NoWrap
+            };
+
+            RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
+            RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
         }
 
         public ScrollViewer ScrollViewer => InternalScrollViewer;
         public FrameworkElement Control => this;
+
+        public Color BottomTextColor
+        {
+            get => (Color)GetValue(BottomTextColorProperty);
+            set => SetValue(BottomTextColorProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty BottomTextColorProperty =
+            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(Colors.White));
+
+        public bool DrawIconLabels { get; set; }
+        public bool DrawDataLabels { get; set; }
+
+        private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
+        {
+            if (property == FontSizeProperty)
+            {
+                this.BottomTextFormat.FontSize = (float)FontSize;
+                if (ReadyToDraw)
+                {
+                    UpdateGraph();
+                }
+            }
+            else if (property == FontWeightProperty)
+            {
+                this.BottomTextFormat.FontWeight = FontWeight;
+                if (ReadyToDraw)
+                {
+                    UpdateGraph();
+                }
+            }
+        }
 
         protected override void OnCreateCanvasResources(CanvasVirtualControl canvas)
         {
@@ -166,6 +222,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             OnPostMeasure();
 
+            // Redraw View
+            Canvas.Invalidate();
+            RepositionIcons();
+
             // Post the event to the dispatcher to allow the method to complete first
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
@@ -180,15 +240,58 @@ namespace SimpleWeather.UWP.Controls.Graphs
             return size;
         }
 
+        /// <summary>
+        /// Places icons from data labels on canvas.
+        /// Should be called in UpdateGraph method
+        /// </summary>
+        protected virtual void DrawIcons()
+        {
+            if (DrawIconLabels)
+            {
+                IconCanvas.Children.Clear();
+                if (!IsDataEmpty && Data.DataLabels.Count > 0)
+                {
+                    for (int i = 0; i < Data.DataLabels.Count; i++)
+                    {
+                        var entry = Data.DataLabels[i];
+                        var control = CreateIconControl(entry.XIcon);
+                        control.RenderTransform = new RotateTransform()
+                        {
+                            Angle = entry.XIconRotation,
+                            CenterX = IconHeight / 2,
+                            CenterY = IconHeight / 2
+                        };
+                        Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
+                        Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
+                        IconCanvas.Children.Add(control);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Repositions icons on canvas.
+        /// Called on MeasureOverride
+        /// </summary>
+        protected virtual void RepositionIcons()
+        {
+            if (DrawIconLabels)
+            {
+                for (int i = 0; i < IconCanvas.Children.Count; i++)
+                {
+                    var control = IconCanvas.Children[i];
+                    Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
+                    Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
+                }
+            }
+        }
+
         protected virtual void OnPreMeasure()
         {
-            
         }
 
         protected virtual void OnPostMeasure()
         {
-            // Redraw View
-            Canvas.Invalidate();
         }
 
         protected virtual float GetGraphExtentWidth()
@@ -199,6 +302,36 @@ namespace SimpleWeather.UWP.Controls.Graphs
         protected virtual float GetPreferredWidth()
         {
             return GetGraphExtentWidth();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: dispose managed state (managed objects)
+                    BottomTextFormat?.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~BaseGraphView()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
