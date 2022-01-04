@@ -82,6 +82,7 @@
                         </DataTemplate>
                         <DataTemplate x:Key="AQIGraphTemplate" x:DataType="graphs:BarGraphData">
                             <toolkitControls:HeaderedContentControl
+                                Margin="0,16"
                                 HorizontalContentAlignment="Stretch"
                                 d:Header="Today"
                                 Header="{Binding GraphLabel}">
