@@ -204,8 +204,6 @@
             x:Name="LineGraphView"
             Grid.Column="1"
             Height="275"
-            HorizontalAlignment="Center"
-            HorizontalContentAlignment="Center"
             DrawDataLabels="True"
             DrawDotLine="False"
             DrawDotPoints="False"

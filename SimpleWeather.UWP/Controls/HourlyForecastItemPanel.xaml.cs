@@ -77,6 +77,16 @@ namespace SimpleWeather.UWP.Controls
         {
             CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
             CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
+            if (scroller.ExtentWidth > scroller.ViewportWidth)
+            {
+                LeftButton.Visibility = Visibility.Visible;
+                RightButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LeftButton.Visibility = Visibility.Collapsed;
+                RightButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         public static readonly DependencyProperty CanScrollToStartProperty =

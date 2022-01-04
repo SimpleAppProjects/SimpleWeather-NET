@@ -192,14 +192,28 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 float freeSpace = (float)(ScrollViewer.Width - GetGraphExtentWidth());
                 float availableAdditionalSpace = freeSpace / MaxEntryCount;
-                var requestedPadding = Canvas.ConvertDipsToPixels(48, CanvasDpiRounding.Floor);
-                if (availableAdditionalSpace > 0 && requestedPadding < availableAdditionalSpace)
+                if (HorizontalAlignment == HorizontalAlignment.Stretch)
                 {
-                    backgroundGridWidth += requestedPadding;
+                    if (availableAdditionalSpace > 0)
+                    {
+                        backgroundGridWidth += availableAdditionalSpace;
+                    }
+                    else
+                    {
+                        backgroundGridWidth += defaultPadding;
+                    }
                 }
                 else
                 {
-                    backgroundGridWidth += defaultPadding;
+                    var requestedPadding = Canvas.ConvertDipsToPixels(48, CanvasDpiRounding.Floor);
+                    if (availableAdditionalSpace > 0 && requestedPadding < availableAdditionalSpace)
+                    {
+                        backgroundGridWidth += requestedPadding;
+                    }
+                    else
+                    {
+                        backgroundGridWidth += defaultPadding;
+                    }
                 }
             }
             else

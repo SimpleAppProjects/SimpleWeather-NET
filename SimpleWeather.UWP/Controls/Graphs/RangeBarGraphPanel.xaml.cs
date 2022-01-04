@@ -61,6 +61,16 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
             CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
+            if (scroller.ExtentWidth > scroller.ViewportWidth)
+            {
+                LeftButton.Visibility = Visibility.Visible;
+                RightButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LeftButton.Visibility = Visibility.Collapsed;
+                RightButton.Visibility = Visibility.Collapsed;
+            }
         }
 
         public static readonly DependencyProperty CanScrollToStartProperty =
@@ -73,14 +83,14 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         public bool CanScrollToStart
         {
-            get { return (bool)GetValue(CanScrollToStartProperty); }
-            set { SetValue(CanScrollToStartProperty, value); }
+            get => (bool)GetValue(CanScrollToStartProperty);
+            set => SetValue(CanScrollToStartProperty, value);
         }
 
         public bool CanScrollToEnd
         {
-            get { return (bool)GetValue(CanScrollToEndProperty); }
-            set { SetValue(CanScrollToEndProperty, value); }
+            get => (bool)GetValue(CanScrollToEndProperty);
+            set => SetValue(CanScrollToEndProperty, value);
         }
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
@@ -99,7 +109,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         public RangeBarGraphData ForecastData
         {
-            get { return (RangeBarGraphData)GetValue(ForecastDataProperty); }
+            get => (RangeBarGraphData)GetValue(ForecastDataProperty);
             set
             {
                 SetValue(ForecastDataProperty, value);

@@ -275,9 +275,12 @@ namespace SimpleWeather.UWP.Controls.Graphs
             {
                 float freeSpace = (float)(ScrollViewer.Width - GetGraphExtentWidth());
                 float additionalSpace = freeSpace / MaxEntryCount;
-                if (additionalSpace > 0)
+                if (HorizontalAlignment == HorizontalAlignment.Stretch)
                 {
-                    backgroundGridWidth += additionalSpace;
+                    if (additionalSpace > 0)
+                    {
+                        backgroundGridWidth += additionalSpace;
+                    }
                 }
             }
             RefreshXCoordinateList();
