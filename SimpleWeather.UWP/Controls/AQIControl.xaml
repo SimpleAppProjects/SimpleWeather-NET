@@ -9,66 +9,73 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     MinWidth="400"
+    d:DesignHeight="400"
+    d:DesignWidth="600"
     mc:Ignorable="d">
 
     <StackPanel>
         <toolkitControls:HeaderedContentControl
             HorizontalContentAlignment="Stretch"
-            Header="{x:Bind ViewModel.Title, Mode=OneWay, FallbackValue='Air Quality Index'}"
-            Style="{StaticResource SectionLabelStyle}">
+            Header="{helpers:StringRes Name='label_airquality'}"
+            Style="{StaticResource NavigatableSectionStyle}">
             <RelativePanel MinHeight="90">
                 <TextBlock
                     x:Name="AQIndex"
                     Width="75"
                     Padding="15,5,5,5"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Center"
+                    d:Text="101"
                     FontSize="32"
                     FontWeight="Medium"
                     RelativePanel.Above="AQIProgresBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    Text="{x:Bind ViewModel.Index, Mode=OneWay, FallbackValue='101'}"
+                    Text="{x:Bind ViewModel.Index, Mode=OneWay}"
                     TextAlignment="Center">
                     <TextBlock.Foreground>
-                        <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
+                        <SolidColorBrush d:Color="Red" Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay}" />
                     </TextBlock.Foreground>
                 </TextBlock>
-                <TextBlock
-                    x:Name="AQILevel"
-                    Padding="5,2"
-                    FontSize="18"
-                    FontWeight="Medium"
+                <StackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    RelativePanel.AlignBottomWith="ProgressBarBarrier"
                     RelativePanel.AlignRightWith="AQIndex"
                     RelativePanel.AlignRightWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    RelativePanel.RightOf="AQIndex"
-                    Text="{x:Bind ViewModel.Level, Mode=OneWay, FallbackValue='Unhealthy'}" />
-                <TextBlock
-                    x:Name="AQIBlock"
-                    Padding="5,2"
-                    VerticalAlignment="Top"
-                    FontSize="14"
-                    MaxLines="3"
-                    RelativePanel.Above="AQIProgresBar"
-                    RelativePanel.AlignRightWith="AQIndex"
-                    RelativePanel.AlignRightWithPanel="True"
-                    RelativePanel.Below="AQILevel"
-                    RelativePanel.RightOf="AQIndex"
-                    Text="{x:Bind ViewModel.Description, Mode=OneWay, FallbackValue='Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects'}"
-                    TextTrimming="WordEllipsis"
-                    TextWrapping="Wrap" />
+                    RelativePanel.RightOf="AQIndex">
+                    <TextBlock
+                        x:Name="AQILevel"
+                        Padding="5,2"
+                        d:Text="Unhealthy"
+                        FontSize="18"
+                        FontWeight="Medium"
+                        Text="{x:Bind ViewModel.Level, Mode=OneWay}" />
+                    <TextBlock
+                        x:Name="AQIBlock"
+                        Padding="5,2"
+                        VerticalAlignment="Top"
+                        d:Text="Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects"
+                        FontSize="14"
+                        MaxLines="3"
+                        Text="{x:Bind ViewModel.Description, Mode=OneWay}"
+                        TextTrimming="WordEllipsis"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+                <Rectangle x:Name="ProgressBarBarrier" RelativePanel.Above="AQIProgresBar" />
                 <muxc:ProgressBar
                     x:Name="AQIProgresBar"
                     Height="5"
                     Margin="15,5"
+                    d:Value="50"
                     Background="{ThemeResource ProgressBarBackgroundBrush}"
                     Maximum="100"
                     RelativePanel.AlignBottomWithPanel="True"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignRightWithPanel="True"
-                    Value="{x:Bind ViewModel.Progress, Mode=OneWay, FallbackValue='50'}">
+                    Value="{x:Bind ViewModel.Progress, Mode=OneWay}">
                     <muxc:ProgressBar.Foreground>
-                        <SolidColorBrush Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay, FallbackValue='Red'}" />
+                        <SolidColorBrush d:Color="Red" Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay}" />
                     </muxc:ProgressBar.Foreground>
                 </muxc:ProgressBar>
             </RelativePanel>

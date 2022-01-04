@@ -27,7 +27,7 @@ namespace SimpleWeather.AQICN
 
         public long GetRetryTime() => 1000;
 
-        public async Task<AirQuality> GetAirQualityData(LocationData location)
+        public async Task<AirQualityData> GetAirQualityData(LocationData location)
         {
             AQICNData aqiData = null;
 

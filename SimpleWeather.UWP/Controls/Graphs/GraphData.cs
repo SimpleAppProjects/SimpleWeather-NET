@@ -13,7 +13,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         public float YMax { get; protected set; } = -float.MaxValue;
         public float YMin { get; protected set; } = float.MaxValue;
 
-        public string GraphLabel { get; protected set; } = string.Empty;
+        public string GraphLabel { get; set; } = string.Empty;
 
         public GraphData()
         {

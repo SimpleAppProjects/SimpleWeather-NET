@@ -52,6 +52,8 @@ namespace SimpleWeather.WeatherData
 
         [Ignore]
         public IList<MinutelyForecast> min_forecast { get; set; }
+        [Ignore]
+        public IList<AirQuality> aqi_forecast { get; set; }
 
         [TextBlob(nameof(conditionblob))]
         public Condition condition { get; set; }
@@ -210,6 +212,24 @@ namespace SimpleWeather.WeatherData
                         this.min_forecast = min_forecasts;
                         break;
 
+                    case nameof(aqi_forecast):
+                        // Set initial cap to 10
+                        var aqi_forecasts = new List<AirQuality>(10);
+                        count = 0;
+                        reader.ReadIsBeginArrayWithVerify();
+                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        {
+                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            {
+                                var fcast = new AirQuality();
+                                fcast.FromJson(ref reader);
+                                aqi_forecasts.Add(fcast);
+                            }
+                        }
+                        if (count == 0) reader.ReadIsValueSeparator();
+                        this.aqi_forecast = aqi_forecasts;
+                        break;
+
                     case nameof(condition):
                         this.condition = new Condition();
                         this.condition.FromJson(ref reader);
@@ -362,6 +382,24 @@ namespace SimpleWeather.WeatherData
                 writer.WriteValueSeparator();
             }
 
+            // "aqi_forecast" : ""
+            if (aqi_forecast != null)
+            {
+                writer.WritePropertyName(nameof(aqi_forecast));
+                writer.WriteBeginArray();
+                var itemCount = 0;
+                foreach (AirQuality aqi_cast in aqi_forecast)
+                {
+                    if (itemCount > 0)
+                        writer.WriteValueSeparator();
+                    writer.WriteString(aqi_cast?.ToJson());
+                    itemCount++;
+                }
+                writer.WriteEndArray();
+
+                writer.WriteValueSeparator();
+            }
+
             // "condition" : ""
             writer.WritePropertyName(nameof(condition));
             writer.WriteString(condition?.ToJson());
@@ -452,6 +490,7 @@ namespace SimpleWeather.WeatherData
                    ((hr_forecast == null && weather.hr_forecast == null) || weather.hr_forecast != null && hr_forecast?.SequenceEqual(weather.hr_forecast) == true) &&
                    ((txt_forecast == null && weather.txt_forecast == null) || weather.txt_forecast != null && txt_forecast?.SequenceEqual(weather.txt_forecast) == true) &&
                    ((min_forecast == null && weather.min_forecast == null) || weather.min_forecast != null && min_forecast?.SequenceEqual(weather.min_forecast) == true) &&
+                   ((aqi_forecast == null && weather.aqi_forecast == null) || weather.aqi_forecast != null && aqi_forecast?.SequenceEqual(weather.aqi_forecast) == true) &&
                    Object.Equals(condition, weather.condition) &&
                    Object.Equals(atmosphere, weather.atmosphere) &&
                    Object.Equals(astronomy, weather.astronomy) &&
@@ -473,6 +512,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(hr_forecast);
             hash.Add(txt_forecast);
             hash.Add(min_forecast);
+            hash.Add(aqi_forecast);
             hash.Add(condition);
             hash.Add(atmosphere);
             hash.Add(astronomy);
@@ -2648,6 +2688,13 @@ namespace SimpleWeather.WeatherData
     {
         public int? index { get; set; }
         public string attribution { get; set; }
+        public int? no2 { get; set; }
+        public int? o3 { get; set; }
+        public int? so2 { get; set; }
+        public int? pm25 { get; set; }
+        public int? pm10 { get; set; }
+        public int? co { get; set; }
+        public DateTime? date { get; set; }
 
         public AirQuality()
         {
@@ -2656,14 +2703,31 @@ namespace SimpleWeather.WeatherData
 
         public override bool Equals(object obj)
         {
-            return obj is AirQuality aqi &&
-                   index == aqi.index &&
-                   attribution == aqi.attribution;
+            return obj is AirQuality quality &&
+                   index == quality.index &&
+                   attribution == quality.attribution &&
+                   no2 == quality.no2 &&
+                   o3 == quality.o3 &&
+                   so2 == quality.so2 &&
+                   pm25 == quality.pm25 &&
+                   pm10 == quality.pm10 &&
+                   co == quality.co &&
+                   date == quality.date;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(index, attribution);
+            HashCode hash = new HashCode();
+            hash.Add(index);
+            hash.Add(attribution);
+            hash.Add(no2);
+            hash.Add(o3);
+            hash.Add(so2);
+            hash.Add(pm25);
+            hash.Add(pm10);
+            hash.Add(co);
+            hash.Add(date);
+            return hash.ToHashCode();
         }
 
         public override void FromJson(ref JsonReader extReader)
@@ -2703,6 +2767,34 @@ namespace SimpleWeather.WeatherData
                         this.attribution = reader.ReadString();
                         break;
 
+                    case nameof(no2):
+                        this.no2 = reader.ReadInt32();
+                        break;
+
+                    case nameof(o3):
+                        this.o3 = reader.ReadInt32();
+                        break;
+
+                    case nameof(so2):
+                        this.so2 = reader.ReadInt32();
+                        break;
+
+                    case nameof(pm25):
+                        this.pm25 = reader.ReadInt32();
+                        break;
+
+                    case nameof(pm10):
+                        this.pm10 = reader.ReadInt32();
+                        break;
+
+                    case nameof(co):
+                        this.co = reader.ReadInt32();
+                        break;
+
+                    case nameof(date):
+                        this.date = DateTime.ParseExact(reader.ReadString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        break;
+
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -2726,6 +2818,69 @@ namespace SimpleWeather.WeatherData
             // "attribution" : ""
             writer.WritePropertyName(nameof(attribution));
             writer.WriteString(attribution);
+
+            if (no2.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "no2" : ""
+                writer.WritePropertyName(nameof(no2));
+                writer.WriteSingle(no2.Value);
+            }
+
+            if (o3.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "o3" : ""
+                writer.WritePropertyName(nameof(o3));
+                writer.WriteSingle(o3.Value);
+            }
+
+            if (so2.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "so2" : ""
+                writer.WritePropertyName(nameof(so2));
+                writer.WriteSingle(so2.Value);
+            }
+
+            if (pm25.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "no2" : ""
+                writer.WritePropertyName(nameof(pm25));
+                writer.WriteSingle(pm25.Value);
+            }
+
+            if (pm10.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "pm10" : ""
+                writer.WritePropertyName(nameof(pm10));
+                writer.WriteSingle(pm10.Value);
+            }
+
+            if (co.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "co" : ""
+                writer.WritePropertyName(nameof(co));
+                writer.WriteSingle(co.Value);
+            }
+
+            if (date.HasValue)
+            {
+                writer.WriteValueSeparator();
+
+                // "date" : ""
+                writer.WritePropertyName(nameof(date));
+                writer.WriteString(date.Value.ToInvariantString("yyyy-MM-dd"));
+            }
 
             // }
             writer.WriteEndObject();
@@ -2863,6 +3018,9 @@ namespace SimpleWeather.WeatherData
         [TextBlob(nameof(minforecastblob))]
         public IList<MinutelyForecast> min_forecast { get; set; }
 
+        [TextBlob(nameof(aqiforecastblob))]
+        public IList<AirQuality> aqi_forecast { get; set; }
+
         [IgnoreDataMember]
         public string forecastblob { get; set; }
 
@@ -2871,6 +3029,9 @@ namespace SimpleWeather.WeatherData
 
         [IgnoreDataMember]
         public string minforecastblob { get; set; }
+
+        [IgnoreDataMember]
+        public string aqiforecastblob { get; set; }
 
         public Forecasts()
         {
@@ -2882,6 +3043,7 @@ namespace SimpleWeather.WeatherData
             this.forecast = weatherData?.forecast;
             this.txt_forecast = weatherData?.txt_forecast;
             this.min_forecast = weatherData?.min_forecast;
+            this.aqi_forecast = weatherData?.aqi_forecast;
         }
     }
 

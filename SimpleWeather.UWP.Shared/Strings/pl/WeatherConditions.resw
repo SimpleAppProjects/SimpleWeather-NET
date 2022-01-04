@@ -152,7 +152,7 @@
     <value>Lekkie opady śniegu</value>
   </data>
   <data name="weather_blowingsnow" xml:space="preserve">
-    <value>Zawieja</value>
+    <value>Zamieć śnieżna</value>
   </data>
   <data name="weather_snow" xml:space="preserve">
     <value>Śnieg</value>
@@ -161,13 +161,13 @@
     <value>Grad</value>
   </data>
   <data name="weather_sleet" xml:space="preserve">
-    <value>Gołoledź</value>
+    <value>Deszcz ze śniegiem</value>
   </data>
   <data name="weather_dust" xml:space="preserve">
     <value>Pył</value>
   </data>
   <data name="weather_foggy" xml:space="preserve">
-    <value>Mgła</value>
+    <value>Mgliście</value>
   </data>
   <data name="weather_haze" xml:space="preserve">
     <value>Zmętnienie</value>
@@ -215,7 +215,7 @@
     <value>Rozproszone przelotne opady</value>
   </data>
   <data name="weather_heavysnow" xml:space="preserve">
-    <value>Silne opady śniegu</value>
+    <value>Obfite opady śniegu</value>
   </data>
   <data name="weather_notavailable" xml:space="preserve">
     <value>N/A</value>
@@ -234,13 +234,13 @@
     <value>Przelotne deszcze</value>
   </data>
   <data name="weather_blizzard" xml:space="preserve">
-    <value>Śnieżyca</value>
+    <value>Zawieja śnieżna</value>
   </data>
   <data name="weather_overcast" xml:space="preserve">
     <value>Zachmurzenie całkowite</value>
   </data>
   <data name="weather_sleet_tstorms" xml:space="preserve">
-    <value>Burza i gołoledź</value>
+    <value>Deszcz ze śniegiem i burza</value>
   </data>
   <data name="weather_snow_tstorms" xml:space="preserve">
     <value>Śnieg i burza</value>

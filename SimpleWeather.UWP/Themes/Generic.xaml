@@ -360,4 +360,11 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:BarGraphView">
+        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="225" />
+    </Style>
 </ResourceDictionary>

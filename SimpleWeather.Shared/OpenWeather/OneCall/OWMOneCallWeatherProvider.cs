@@ -245,9 +245,9 @@ namespace SimpleWeather.OpenWeather.OneCall
             }
         }
 
-        public async Task<AirQuality> GetAirQualityData(LocationData location)
+        public async Task<AirQualityData> GetAirQualityData(LocationData location)
         {
-            AirQuality aqiData = null;
+            AirQualityData aqiData = null;
 
             string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
 

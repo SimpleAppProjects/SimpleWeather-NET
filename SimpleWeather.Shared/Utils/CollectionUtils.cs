@@ -23,5 +23,13 @@ namespace SimpleWeather.Utils
         {
             return e.Where(it => !predicate(it));
         }
+
+        public static void ForEach<T>(this IEnumerable<T> e, Action<T> action)
+        {
+            foreach (T item in e)
+            {
+                action(item);
+            }
+        }
     }
 }

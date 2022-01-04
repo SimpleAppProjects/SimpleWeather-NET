@@ -122,5 +122,30 @@ namespace SimpleWeather.Utils
             }
             return "UTC";
         }
+
+        public static string ToInvariantString(this DateTime date)
+        {
+            return date.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static string ToInvariantString(this DateTime date, string format)
+        {
+            return date.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static string ToInvariantString(this DateTimeOffset date)
+        {
+            return date.ToString(CultureInfo.InvariantCulture);
+        }
+
+        public static string ToInvariantString(this DateTimeOffset date, string format)
+        {
+            return date.ToString(format, CultureInfo.InvariantCulture);
+        }
+
+        public static string ToInvariantString(this TimeSpan time, string format)
+        {
+            return time.ToString(format, CultureInfo.InvariantCulture);
+        }
     }
 }

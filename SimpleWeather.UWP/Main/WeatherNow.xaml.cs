@@ -1132,5 +1132,14 @@ namespace SimpleWeather.UWP.Main
                     Location = locationData
                 }, new DrillInNavigationTransitionInfo());
         }
+
+        private void AQIndexControl_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            Frame.Navigate(typeof(WeatherAQIPage),
+                new WeatherPageArgs()
+                {
+                    Location = locationData
+                }, new DrillInNavigationTransitionInfo());
+        }
     }
 }

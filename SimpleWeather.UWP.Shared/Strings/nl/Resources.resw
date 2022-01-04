@@ -664,4 +664,7 @@ Fuzzy</comment>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Locatie niet ingesteld. Gelieve een locatie toe te voegen</value>
   </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Huidige</value>
+  </data>
 </root>

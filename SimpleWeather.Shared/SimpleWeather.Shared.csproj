@@ -275,6 +275,7 @@
     <Compile Include="Utils\LocationUtils.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\CustomExtensions.cs" />
+    <Compile Include="Utils\NumberUtils.cs" />
     <Compile Include="Utils\OAuthUtils.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
     <Compile Include="Utils\Settings.cs" />
@@ -315,6 +316,7 @@
     <Compile Include="WeatherApi\WeatherApiProvider.cs" />
     <Compile Include="WeatherApi\WeatherApiLocationProvider.cs" />
     <Compile Include="WeatherApi\WeatherData.cs" />
+    <Compile Include="WeatherData\AirQualityData.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />
     <Compile Include="WeatherData\IAstroDataProvider.cs" />
     <Compile Include="WeatherData\Images\ImageDataHelper.cs" />

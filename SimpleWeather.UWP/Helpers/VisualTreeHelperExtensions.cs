@@ -50,11 +50,11 @@ namespace SimpleWeather.UWP.Helpers
         {
             if (depObj != null)
             {
-                var parent = depObj?.Parent;
+                var parent = depObj?.Parent ?? VisualTreeHelper.GetParent(depObj);
 
                 while (parent is FrameworkElement element && !(parent is T))
                 {
-                    parent = element.Parent;
+                    parent = element.Parent ?? VisualTreeHelper.GetParent(element);
                 }
 
                 if (parent is T)

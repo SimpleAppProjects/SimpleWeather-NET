@@ -154,4 +154,44 @@
   <data name="aqi_desc_300" xml:space="preserve">
     <value>Gesundheitsalarm: Jeder könnte ernstere Auswirkungen auf die Gesundheit verspüren</value>
   </data>
+  <data name="units_pm25" xml:space="preserve">
+    <value>PM2.5</value>
+    <comment>AQI Units
+Particulate &lt;2.5 microns</comment>
+  </data>
+  <data name="units_pm10" xml:space="preserve">
+    <value>PM10</value>
+    <comment>Particulate &lt;10 microns</comment>
+  </data>
+  <data name="units_o3" xml:space="preserve">
+    <value>O3</value>
+    <comment>Ozone</comment>
+  </data>
+  <data name="units_so2" xml:space="preserve">
+    <value>SO2</value>
+    <comment>Sulfur Dioxide</comment>
+  </data>
+  <data name="units_no2" xml:space="preserve">
+    <value>NO2</value>
+    <comment>Nitrogen Dioxide</comment>
+  </data>
+  <data name="units_co" xml:space="preserve">
+    <value>CO</value>
+    <comment>Carbon Monoxide</comment>
+  </data>
+  <data name="units_pm25_formatted" xml:space="preserve">
+    <value>PM&lt;sub&gt;&lt;small&gt;2.5&lt;/small&gt;&lt;/sub&gt;</value>
+  </data>
+  <data name="units_pm10_formatted" xml:space="preserve">
+    <value>PM&lt;sub&gt;&lt;small&gt;10&lt;/small&gt;&lt;/sub&gt;</value>
+  </data>
+  <data name="units_o3_formatted" xml:space="preserve">
+    <value>O&lt;sub&gt;&lt;small&gt;3&lt;/small&gt;&lt;/sub&gt;</value>
+  </data>
+  <data name="units_so2_formatted" xml:space="preserve">
+    <value>SO&lt;sub&gt;&lt;small&gt;2&lt;/small&gt;&lt;/sub&gt;</value>
+  </data>
+  <data name="units_no2_formatted" xml:space="preserve">
+    <value>NO&lt;sub&gt;&lt;small&gt;2&lt;/small&gt;&lt;/sub&gt;</value>
+  </data>
 </root>

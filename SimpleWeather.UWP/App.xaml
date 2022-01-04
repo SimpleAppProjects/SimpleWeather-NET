@@ -420,6 +420,35 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+            <Style
+                x:Key="NavigatableSectionStyle"
+                BasedOn="{StaticResource SectionLabelStyle}"
+                TargetType="toolkitControls:HeaderedContentControl">
+                <Style.Setters>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="HeaderTemplate">
+                        <Setter.Value>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="{Binding}" />
+                                    <FontIcon
+                                        Grid.Column="1"
+                                        Margin="5,0,0,0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        FontFamily="Segoe MDL2 Assets"
+                                        FontSize="12"
+                                        Glyph="&#xE76C;" />
+                                </Grid>
+                            </DataTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style.Setters>
+            </Style>
             <Style x:Key="Divider" TargetType="Border">
                 <Setter Property="BorderThickness" Value="0.5" />
                 <Setter Property="Opacity" Value="0.2" />

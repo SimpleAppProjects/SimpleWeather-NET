@@ -686,4 +686,7 @@ Fuzzy</comment>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Ort nicht festgelegt. Bitte fügen Sie einen Ort hinzu</value>
   </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Aktuell</value>
+  </data>
 </root>

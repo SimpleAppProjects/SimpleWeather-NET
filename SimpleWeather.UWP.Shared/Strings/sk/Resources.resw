@@ -665,4 +665,7 @@ Fuzzy</comment>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Poloha nie je stanovená. Prosím, pridajte umiestnenie</value>
   </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Aktuálne</value>
+  </data>
 </root>

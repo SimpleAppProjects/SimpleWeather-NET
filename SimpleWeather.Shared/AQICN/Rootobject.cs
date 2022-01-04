@@ -13,21 +13,16 @@ namespace SimpleWeather.AQICN
     public class Data
     {
         public int aqi { get; set; }
-        /*
         public float idx { get; set; }
         public Attribution[] attributions { get; set; }
         public City city { get; set; }
         public string dominentpol { get; set; }
         public Iaqi iaqi { get; set; }
         public Time time { get; set; }
-        */
         public Forecast forecast { get; set; }
-        /*
         public Debug debug { get; set; }
-        */
     }
 
-    /*
     public class City
     {
         public float[] geo { get; set; }
@@ -45,7 +40,8 @@ namespace SimpleWeather.AQICN
         public Pm25 pm25 { get; set; }
         public T t { get; set; }
         public W w { get; set; }
-        public Wg wg { get; set; }
+        public So2 so2 { get; set; }
+        public Pm10 pm10 { get; set; }
     }
 
     public class Co
@@ -88,7 +84,12 @@ namespace SimpleWeather.AQICN
         public float v { get; set; }
     }
 
-    public class Wg
+    public class So2
+    {
+        public float v { get; set; }
+    }
+
+    public class Pm10
     {
         public float v { get; set; }
     }
@@ -98,9 +99,8 @@ namespace SimpleWeather.AQICN
         public string s { get; set; }
         public string tz { get; set; }
         public long v { get; set; }
-        public DateTime iso { get; set; }
+        public string iso { get; set; }
     }
-    */
 
     public class Forecast
     {
@@ -109,16 +109,13 @@ namespace SimpleWeather.AQICN
 
     public class Daily
     {
-        /*
-        public O31[] o3 { get; set; }
-        public Pm10[] pm10 { get; set; }
-        public Pm251[] pm25 { get; set; }
-        */
-        public Uvi[] uvi { get; set; }
+        public O3Item[] o3 { get; set; }
+        public Pm10Item[] pm10 { get; set; }
+        public Pm25Item[] pm25 { get; set; }
+        public UviItem[] uvi { get; set; }
     }
 
-    /*
-    public class O31
+    public class O3Item
     {
         public int avg { get; set; }
         public string day { get; set; }
@@ -126,7 +123,7 @@ namespace SimpleWeather.AQICN
         public int min { get; set; }
     }
 
-    public class Pm10
+    public class Pm10Item
     {
         public int avg { get; set; }
         public string day { get; set; }
@@ -134,16 +131,15 @@ namespace SimpleWeather.AQICN
         public int min { get; set; }
     }
 
-    public class Pm251
+    public class Pm25Item
     {
         public int avg { get; set; }
         public string day { get; set; }
         public int max { get; set; }
         public int min { get; set; }
     }
-    */
 
-    public class Uvi
+    public class UviItem
     {
         public float avg { get; set; }
         public string day { get; set; }
@@ -151,10 +147,9 @@ namespace SimpleWeather.AQICN
         public float min { get; set; }
     }
 
-    /*
     public class Debug
     {
-        public DateTime sync { get; set; }
+        public string sync { get; set; }
     }
 
     public class Attribution
@@ -163,5 +158,4 @@ namespace SimpleWeather.AQICN
         public string name { get; set; }
         public string logo { get; set; }
     }
-    */
 }

@@ -87,18 +87,18 @@ namespace SimpleWeather.WeatherData
             await UpdateWeatherData(location, weather);
 
             // Additional external data
-            if (weather.condition.airQuality == null)
+            if (weather.condition.airQuality == null && weather.aqi_forecast == null)
             {
+                await UpdateAQIData(location, weather);
+                /*
                 if (this is IAirQualityProvider aqiProvider)
                 {
-                    weather.condition.airQuality = await aqiProvider.GetAirQualityData(location);
+                    var aqiData = await aqiProvider.GetAirQualityData(location);
+                    await UpdateAQIData(location, weather, aqiData);
                 }
-                else
-                {
-                    await UpdateAQIData(location, weather);
-                }
+                */
             }
-            
+
             if (weather.condition.pollen == null)
             {
                 if (DevSettingsEnabler.DevSettingsEnabled)
@@ -121,64 +121,74 @@ namespace SimpleWeather.WeatherData
 
         private async Task UpdateAQIData(LocationData location, Weather weather)
         {
-            var aqicnData = (await new AQICN.AQICNProvider().GetAirQualityData(location)) as AQICN.AQICNData;
-            weather.condition.airQuality = aqicnData;
+            var aqicnData = await new AQICN.AQICNProvider().GetAirQualityData(location);
+            UpdateAQIData(location, weather, aqicnData);
+        }
 
-            try
+        private void UpdateAQIData(LocationData location, Weather weather, AirQualityData aqiData)
+        {
+            weather.condition.airQuality = aqiData?.current;
+
+            if (aqiData is AQICN.AQICNData aqicnData)
             {
-                if (aqicnData?.uvi_forecast?.Count > 0)
+                try
                 {
-                    for (int i = 0; i < aqicnData.uvi_forecast.Count; i++)
+                    if (aqicnData?.uvi_forecast?.Count > 0)
                     {
-                        var uviData = aqicnData.uvi_forecast[i];
-                        var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-
-                        if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
+                        for (int i = 0; i < aqicnData.uvi_forecast.Count; i++)
                         {
-                            if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
-                            {
-                                var obsLocalTime = weather.condition.observation_time.DateTime.TimeOfDay;
-                                // if before sunrise or after sunset, uv min
-                                if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay || obsLocalTime > weather.astronomy.sunset.TimeOfDay)
-                                {
-                                    weather.condition.uv = new UV(uviData.min);
-                                }
-                                else
-                                {
-                                    var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
-                                    var solarNoon = weather.astronomy.sunrise + (totalSunlightTime / 2);
+                            var uviData = aqicnData.uvi_forecast[i];
+                            var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                                    // If +/- 2hrs within solar noon, UV max
-                                    if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
+                            if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
+                            {
+                                if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
+                                {
+                                    var obsLocalTime = weather.condition.observation_time.DateTime.TimeOfDay;
+                                    // if before sunrise or after sunset, uv min
+                                    if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay || obsLocalTime > weather.astronomy.sunset.TimeOfDay)
                                     {
-                                        weather.condition.uv = new UV(uviData.max);
+                                        weather.condition.uv = new UV(uviData.min);
                                     }
-                                    // else uv avg
                                     else
                                     {
-                                        weather.condition.uv = new UV(uviData.avg);
+                                        var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
+                                        var solarNoon = weather.astronomy.sunrise + (totalSunlightTime / 2);
+
+                                        // If +/- 2hrs within solar noon, UV max
+                                        if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
+                                        {
+                                            weather.condition.uv = new UV(uviData.max);
+                                        }
+                                        // else uv avg
+                                        else
+                                        {
+                                            weather.condition.uv = new UV(uviData.avg);
+                                        }
                                     }
                                 }
                             }
-                        }
 
-                        var forecastObj = weather.forecast.FirstOrDefault(f => f.date.Date.Equals(date));
-                        if (forecastObj != null && forecastObj.extras?.uv_index == null)
-                        {
-                            if (forecastObj.extras == null)
+                            var forecastObj = weather.forecast.FirstOrDefault(f => f.date.Date.Equals(date));
+                            if (forecastObj != null && forecastObj.extras?.uv_index == null)
                             {
-                                forecastObj.extras = new ForecastExtras();
-                            }
+                                if (forecastObj.extras == null)
+                                {
+                                    forecastObj.extras = new ForecastExtras();
+                                }
 
-                            forecastObj.extras.uv_index = uviData.max;
+                                forecastObj.extras.uv_index = uviData.max;
+                            }
                         }
                     }
                 }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e, "Error parsing AQI data");
+                }
             }
-            catch (Exception e)
-            {
-                Logger.WriteLine(LoggerLevel.Error, e, "Error parsing AQI data");
-            }
+
+            weather.aqi_forecast = aqiData?.aqiForecast;
         }
 
         // Alerts

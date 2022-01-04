@@ -323,93 +323,62 @@ namespace SimpleWeather.WeatherData
     {
         public AirQuality(WeatherApi.Air_Quality airQuality)
         {
-            var aqiData = new List<int>(6);
-
             // Convert
             if (airQuality.co.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQICO(AirQualityUtils.CO_ugm3_TO_ppm(airQuality.co.Value)));
+                    co = AirQualityUtils.AQICO(AirQualityUtils.CO_ugm3_TO_ppm(airQuality.co.Value));
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
             if (airQuality.no2.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQINO2(AirQualityUtils.NO2_ugm3_to_ppb(airQuality.no2.Value)));
+                    no2 = AirQualityUtils.AQINO2(AirQualityUtils.NO2_ugm3_to_ppb(airQuality.no2.Value));
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
             if (airQuality.o3.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQIO3(AirQualityUtils.O3_ugm3_to_ppb(airQuality.o3.Value)));
+                    o3 = AirQualityUtils.AQIO3(AirQualityUtils.O3_ugm3_to_ppb(airQuality.o3.Value));
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
             if (airQuality.so2.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQISO2(AirQualityUtils.SO2_ugm3_to_ppb(airQuality.so2.Value)));
+                    so2 = AirQualityUtils.AQISO2(AirQualityUtils.SO2_ugm3_to_ppb(airQuality.so2.Value));
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
             if (airQuality.pm2_5.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQIPM2_5(airQuality.pm2_5.Value));
+                    pm25 = AirQualityUtils.AQIPM2_5(airQuality.pm2_5.Value);
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
             if (airQuality.pm10.HasValue)
             {
                 try
                 {
-                    aqiData.Add(AirQualityUtils.AQIPM10(airQuality.pm10.Value));
+                    pm10 = AirQualityUtils.AQIPM10(airQuality.pm10.Value);
                 }
-                catch (ArgumentOutOfRangeException) { aqiData.Add(-1); }
-            }
-            else
-            {
-                aqiData.Add(-1);
+                catch (ArgumentOutOfRangeException) { }
             }
 
-            var idx = aqiData.Max();
-
-            if (idx >= 0)
-            {
-                index = idx;
-            }
+            index = this.GetIndexFromData();
         }
     }
 }

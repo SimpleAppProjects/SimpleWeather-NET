@@ -174,6 +174,9 @@
     <Compile Include="BackgroundTasks\DailyNotificationTask.cs" />
     <Compile Include="BackgroundTasks\UpdateTask.cs" />
     <Compile Include="BackgroundTasks\WeatherTileUpdaterTask.cs" />
+    <Compile Include="Controls\AQIForecastControl.xaml.cs">
+      <DependentUpon>AQIForecastControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Banner\IBannerManager.cs" />
     <Compile Include="Controls\Banner\IBannerPage.cs" />
     <Compile Include="Controls\Banner\Banner.cs" />
@@ -193,6 +196,9 @@
     </Compile>
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.cs" />
     <Compile Include="Controls\ExtendingWrapPanel\ExtendingWrapPanel.Data.cs" />
+    <Compile Include="Controls\Graphs\BarGraphData.cs" />
+    <Compile Include="Controls\Graphs\BarGraphDataSet.cs" />
+    <Compile Include="Controls\Graphs\BarGraphEntry.cs" />
     <Compile Include="Controls\Graphs\BaseGraphView.cs" />
     <Compile Include="Controls\Graphs\BaseGraphViewControl.cs" />
     <Compile Include="Controls\Graphs\GraphData.cs" />
@@ -205,12 +211,16 @@
     <Compile Include="Controls\Graphs\RangeBarGraphData.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphDataSet.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphEntry.cs" />
+    <Compile Include="Controls\Graphs\BarGraphPanel.xaml.cs">
+      <DependentUpon>BarGraphPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Graphs\RangeBarGraphPanel.xaml.cs">
       <DependentUpon>RangeBarGraphPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Graphs\ForecastGraphPanel.xaml.cs">
       <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Graphs\BarGraphView.cs" />
     <Compile Include="Controls\Graphs\RangeBarGraphView.cs" />
     <Compile Include="Controls\Graphs\YEntryData.cs" />
     <Compile Include="Controls\HourlyForecastItem.xaml.cs">
@@ -228,6 +238,7 @@
     </Compile>
     <Compile Include="Controls\Snackbar\ISnackbarPage.cs" />
     <Compile Include="Controls\SunPhaseView.cs" />
+    <Compile Include="Controls\ViewModels\AirQualityForecastViewModel.cs" />
     <Compile Include="Controls\ViewModels\HourlyForecastNowViewModel.cs" />
     <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
@@ -280,6 +291,9 @@
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Main\Args.cs" />
+    <Compile Include="Main\WeatherAQIPage.xaml.cs">
+      <DependentUpon>WeatherAQIPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Main\WeatherChartsPage.xaml.cs">
       <DependentUpon>WeatherChartsPage.xaml</DependentUpon>
     </Compile>
@@ -412,6 +426,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\AQIForecastControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Banner\BannerContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -427,6 +445,10 @@
     <Page Include="Controls\DevKeyEntry.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Graphs\BarGraphPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\Graphs\RangeBarGraphPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -495,6 +517,10 @@
     <Page Include="Main\LocationsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Main\WeatherAQIPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Main\WeatherChartsPage.xaml">
       <SubType>Designer</SubType>

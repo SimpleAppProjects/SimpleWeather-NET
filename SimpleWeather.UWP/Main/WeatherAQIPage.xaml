@@ -1,0 +1,132 @@
+﻿<Page
+    x:Class="SimpleWeather.UWP.Main.WeatherAQIPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:graphs="using:SimpleWeather.UWP.Controls.Graphs"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
+    xmlns:local="using:SimpleWeather.UWP.Main"
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    d:Background="{ThemeResource RegionBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <local:AQIDataTemplateSelector x:Key="aqiTemplateSelector" />
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0">
+            <Viewbox Height="48" HorizontalAlignment="Left">
+                <TextBlock
+                    Padding="16"
+                    d:Text="New York, NY"
+                    FontSize="16"
+                    Text="{x:Bind WeatherView.Location, Mode=OneWay}" />
+            </Viewbox>
+            <Rectangle Height="1" Fill="{ThemeResource NavigationViewContentGridBorderBrush}" />
+        </StackPanel>
+        <ScrollViewer Grid.Row="1">
+            <StackPanel>
+                <toolkitControls:HeaderedContentControl
+                    MaxWidth="1280"
+                    HorizontalContentAlignment="Stretch"
+                    Header="{helpers:StringRes Name='time_current'}">
+                    <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBlock
+                                    Padding="16,10"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{Binding}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                    <localControls:AQIForecastControl x:Name="AQIndexControl" DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" />
+                </toolkitControls:HeaderedContentControl>
+                <ItemsControl
+                    x:Name="AQIContainer"
+                    MaxWidth="1280"
+                    Margin="0,0,0,16"
+                    d:ItemTemplate="{StaticResource AQIGraphTemplate}"
+                    d:ItemsSource=",,,"
+                    AllowDrop="False"
+                    ItemTemplateSelector="{StaticResource aqiTemplateSelector}"
+                    ItemsSource="{x:Bind AQIView.AQIForecastData, Mode=OneWay}">
+                    <ItemsControl.Resources>
+                        <DataTemplate x:Key="AQIForecastTemplate" x:DataType="controls:AirQualityViewModel">
+                            <toolkitControls:HeaderedContentControl
+                                HorizontalContentAlignment="Stretch"
+                                d:Header="Today"
+                                Header="{Binding Date}">
+                                <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock
+                                                Padding="16,10"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                <localControls:AQIForecastControl />
+                            </toolkitControls:HeaderedContentControl>
+                        </DataTemplate>
+                        <DataTemplate x:Key="AQIGraphTemplate" x:DataType="graphs:BarGraphData">
+                            <toolkitControls:HeaderedContentControl
+                                HorizontalContentAlignment="Stretch"
+                                d:Header="Today"
+                                Header="{Binding GraphLabel}">
+                                <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock
+                                                Padding="16,10"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                <graphs:BarGraphPanel GraphData="{Binding}" />
+                            </toolkitControls:HeaderedContentControl>
+                        </DataTemplate>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AQIContainer.ItemsSource" Value="{x:Bind AQIView.AQIGraphData, Mode=OneWay}" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="691" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="AQIContainer.ItemsSource" Value="{x:Bind AQIView.AQIForecastData, Mode=OneWay}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</Page>

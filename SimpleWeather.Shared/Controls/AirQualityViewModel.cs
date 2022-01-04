@@ -1,4 +1,5 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,17 +9,23 @@ namespace SimpleWeather.Controls
 {
     public class AirQualityViewModel
     {
-        public String Title { get; set; }
         public int Index { get; set; }
         public String Level { get; set; }
         public String Description { get; set; }
         public int Progress { get; set; }
         public Color ProgressColor { get; set; }
         public String Attribution { get; set; }
+        public String Date { get; set; }
+
+        public int? NO2Index { get; set; }
+        public int? O3Index { get; set; }
+        public int? SO2Index { get; set; }
+        public int? PM25Index { get; set; }
+        public int? PM10Index { get; set; }
+        public int? COIndex { get; set; }
 
         public AirQualityViewModel(AirQuality aqi)
         {
-            Title = SimpleLibrary.GetInstance().ResLoader.GetString("label_airquality");
             Index = aqi.index.GetValueOrDefault();
             Progress = aqi.index >= 300 ? 100 : (int)((aqi.index / 300f) * 100);
 
@@ -60,6 +67,55 @@ namespace SimpleWeather.Controls
             }
 
             Attribution = aqi.attribution;
+
+            NO2Index = aqi.no2;
+            O3Index = aqi.o3;
+            SO2Index = aqi.so2;
+            PM25Index = aqi.pm25;
+            PM10Index = aqi.pm10;
+            COIndex = aqi.co;
+
+            if (aqi.date.HasValue && aqi.date.Value != DateTime.MinValue)
+            {
+                Date = aqi.date.Value.ToString("dddd", CultureUtils.UserCulture);
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AirQualityViewModel model &&
+                   Index == model.Index &&
+                   Level == model.Level &&
+                   Description == model.Description &&
+                   Progress == model.Progress &&
+                   EqualityComparer<Color>.Default.Equals(ProgressColor, model.ProgressColor) &&
+                   Attribution == model.Attribution &&
+                   NO2Index == model.NO2Index &&
+                   O3Index == model.O3Index &&
+                   SO2Index == model.SO2Index &&
+                   PM25Index == model.PM25Index &&
+                   PM10Index == model.PM10Index &&
+                   COIndex == model.COIndex &&
+                   Date == model.Date;
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Index);
+            hash.Add(Level);
+            hash.Add(Description);
+            hash.Add(Progress);
+            hash.Add(ProgressColor);
+            hash.Add(Attribution);
+            hash.Add(NO2Index);
+            hash.Add(O3Index);
+            hash.Add(SO2Index);
+            hash.Add(PM25Index);
+            hash.Add(PM10Index);
+            hash.Add(COIndex);
+            hash.Add(Date);
+            return hash.ToHashCode();
         }
     }
 }

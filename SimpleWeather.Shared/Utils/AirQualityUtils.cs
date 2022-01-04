@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 
 namespace SimpleWeather.Utils
 {
@@ -346,6 +347,38 @@ namespace SimpleWeather.Utils
             {
                 throw new ArgumentOutOfRangeException(nameof(conc), "value out of range");
             }
+        }
+
+        public static int? GetIndexFromData(this WeatherData.AirQuality aqi)
+        {
+            var idx = NumberUtils.MaxOf(
+                    aqi.no2 ?? -1,
+                    aqi.o3 ?? -1,
+                    aqi.so2 ?? -1,
+                    aqi.pm25 ?? -1,
+                    aqi.pm10 ?? -1,
+                    aqi.co ?? -1
+                );
+
+            return idx <= 0 ? null : idx;
+        }
+
+        public static Color GetColorFromIndex(int index)
+        {
+            return index switch
+            {
+                < 51 => Colors.LimeGreen,
+                < 101 => Color.FromArgb(0xff, 0xff, 0xde, 0x33),
+                < 151 => Color.FromArgb(0xff, 0xff, 0x99, 0x33),
+                < 201 => Color.FromArgb(0xff, 0xcc, 0x00, 0x33),
+                < 301 => Color.FromArgb(0xff, 0xaa, 0x00, 0xff),    // 0xff660099
+                _ => Color.FromArgb(0xff, 0xbd, 0x00, 0x35),        // 0xff7e0023
+            };
+        }
+
+        public static Windows.UI.Xaml.Media.SolidColorBrush GetBrushFromIndex(int? index)
+        {
+            return index.HasValue ? new Windows.UI.Xaml.Media.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
         }
     }
 }
