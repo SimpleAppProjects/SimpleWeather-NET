@@ -66,11 +66,17 @@ namespace SimpleWeather.UWP.Controls.Graphs
             Canvas = GetTemplateChild(nameof(Canvas)) as CanvasVirtualControl;
             IconCanvas = GetTemplateChild(nameof(IconCanvas)) as Canvas;
 
-            Canvas.CreateResources += Canvas_CreateResources;
-            Canvas.RegionsInvalidated += Canvas_RegionsInvalidated;
+            if (Canvas != null)
+            {
+                Canvas.CreateResources += Canvas_CreateResources;
+                Canvas.RegionsInvalidated += Canvas_RegionsInvalidated;
+            }
 
-            InternalScrollViewer.ViewChanged += InternalScrollViewer_ViewChanged;
-            InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
+            if (InternalScrollViewer != null)
+            {
+                InternalScrollViewer.ViewChanged += InternalScrollViewer_ViewChanged;
+                InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
+            }
         }
 
         private void InternalScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)

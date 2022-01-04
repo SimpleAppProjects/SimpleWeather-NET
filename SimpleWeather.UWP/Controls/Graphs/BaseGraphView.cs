@@ -207,6 +207,11 @@ namespace SimpleWeather.UWP.Controls.Graphs
         {
             Size size = base.MeasureOverride(availableSize);
 
+            if (this.ScrollViewer == null || this.Canvas == null)
+            {
+                return size;
+            }
+
             ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
             ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
 
