@@ -41,5 +41,21 @@ namespace SimpleWeather.Controls
                 MoonPhase = new DetailItemViewModel(astronomy.moonphase.phase);
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MoonPhaseViewModel model &&
+                   EqualityComparer<DetailItemViewModel>.Default.Equals(MoonPhase, model.MoonPhase) &&
+                   PhaseType == model.PhaseType &&
+                   MoonriseTime == model.MoonriseTime &&
+                   MoonsetTime == model.MoonsetTime &&
+                   Moonrise == model.Moonrise &&
+                   Moonset == model.Moonset;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(MoonPhase, PhaseType, MoonriseTime, MoonsetTime, Moonrise, Moonset);
+        }
     }
 }

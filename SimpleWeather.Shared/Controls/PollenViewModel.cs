@@ -54,5 +54,21 @@ namespace SimpleWeather.Controls
                     return (ResLoader.GetString("label_count_veryhigh"), Colors.Red);
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is PollenViewModel model &&
+                   TreePollenDescription == model.TreePollenDescription &&
+                   EqualityComparer<Color?>.Default.Equals(TreePollenDescriptionColor, model.TreePollenDescriptionColor) &&
+                   GrassPollenDescription == model.GrassPollenDescription &&
+                   EqualityComparer<Color?>.Default.Equals(GrassPollenDescriptionColor, model.GrassPollenDescriptionColor) &&
+                   RagweedPollenDescription == model.RagweedPollenDescription &&
+                   EqualityComparer<Color?>.Default.Equals(RagweedPollenDescriptionColor, model.RagweedPollenDescriptionColor);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(TreePollenDescription, TreePollenDescriptionColor, GrassPollenDescription, GrassPollenDescriptionColor, RagweedPollenDescription, RagweedPollenDescriptionColor);
+        }
     }
 }

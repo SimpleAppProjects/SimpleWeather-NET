@@ -25,5 +25,19 @@ namespace SimpleWeather.Controls
             Sunrise = astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
             Sunset = astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SunPhaseViewModel model &&
+                   SunriseTime == model.SunriseTime &&
+                   SunsetTime == model.SunsetTime &&
+                   Sunrise == model.Sunrise &&
+                   Sunset == model.Sunset;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(SunriseTime, SunsetTime, Sunrise, Sunset);
+        }
     }
 }

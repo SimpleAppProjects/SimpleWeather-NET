@@ -80,5 +80,19 @@ namespace SimpleWeather.Controls
                 }
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is BeaufortViewModel model &&
+                   Title == model.Title &&
+                   EqualityComparer<DetailItemViewModel>.Default.Equals(Beaufort, model.Beaufort) &&
+                   BeaufortScaleProgress == model.BeaufortScaleProgress &&
+                   EqualityComparer<Color>.Default.Equals(BeaufortScaleProgressColor, model.BeaufortScaleProgressColor);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Title, Beaufort, BeaufortScaleProgress, BeaufortScaleProgressColor);
+        }
     }
 }

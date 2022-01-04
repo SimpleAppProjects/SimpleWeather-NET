@@ -89,5 +89,22 @@ namespace SimpleWeather.Controls
                     break;
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is UVIndexViewModel model &&
+                   Title == model.Title &&
+                   Label == model.Label &&
+                   Icon == model.Icon &&
+                   Index == model.Index &&
+                   Description == model.Description &&
+                   Progress == model.Progress &&
+                   EqualityComparer<Color>.Default.Equals(ProgressColor, model.ProgressColor);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Title, Label, Icon, Index, Description, Progress, ProgressColor);
+        }
     }
 }
