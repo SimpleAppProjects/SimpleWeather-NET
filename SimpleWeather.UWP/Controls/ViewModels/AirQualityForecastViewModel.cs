@@ -184,7 +184,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         pm10Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_pm25")
+                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_pm10")
                         };
                     }
 
@@ -288,7 +288,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         so2Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_pm25")
+                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_so2")
                         };
                     }
 
