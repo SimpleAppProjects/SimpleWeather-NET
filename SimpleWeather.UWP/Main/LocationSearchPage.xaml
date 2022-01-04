@@ -20,6 +20,7 @@
     <Grid>
         <localControls:ProgressAutoSuggestBox
             x:Name="LocationSearchBox"
+            MaxWidth="1280"
             d:Header="Add a location"
             d:PlaceholderText="Enter a location"
             Header="{helpers:StringRes Name='label_fab_add_location'}"

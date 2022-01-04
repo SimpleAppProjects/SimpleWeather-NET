@@ -121,6 +121,7 @@
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid
+                        MaxWidth="1280"
                         Margin="16,0"
                         MaximumRowsOrColumns="4"
                         Orientation="Horizontal" />
@@ -129,6 +130,7 @@
             <GridView.Footer>
                 <Button
                     x:Name="AddLocationsButton"
+                    MaxWidth="1280"
                     Margin="16,0,20,0"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
