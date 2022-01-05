@@ -2,7 +2,6 @@
 using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleWeather.AQICN;
 using SimpleWeather.Backgrounds;
 using SimpleWeather.Controls;
 using SimpleWeather.Firebase;
@@ -230,7 +229,7 @@ namespace UnitTestProject
         public async Task GetAQIData()
         {
             var tz_long = "America/Los_Angeles";
-            var aqi = await new AQICNProvider().GetAirQualityData(
+            var aqi = await new SimpleWeather.AQICN.AQICNProvider().GetAirQualityData(
                 new LocationData()
                 {
                     latitude = 47.6721646,
@@ -296,7 +295,7 @@ namespace UnitTestProject
             var locations = await locationProvider.GetLocations("Redmond, WA", WeatherAPI.WeatherApi).ConfigureAwait(false);
             Assert.IsTrue(locations?.Count > 0);
 
-            var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond, "));
+            var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond"));
             Assert.IsNotNull(queryVM);
 
             var nameModel = await locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false);
