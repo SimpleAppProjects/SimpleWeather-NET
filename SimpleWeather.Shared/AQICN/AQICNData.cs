@@ -29,6 +29,8 @@ namespace SimpleWeather.AQICN
             current.index = root.data?.aqi ?? current.GetIndexFromData();
 
             aqiForecast = CreateAQIForecasts(root);
+
+            uvi_forecast = root.data?.forecast?.daily?.uvi?.ToList();
         }
 
         private List<AirQuality> CreateAQIForecasts(Rootobject root)

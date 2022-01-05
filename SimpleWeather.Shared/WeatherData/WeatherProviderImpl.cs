@@ -140,7 +140,7 @@ namespace SimpleWeather.WeatherData
                             var uviData = aqicnData.uvi_forecast[i];
                             var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                            if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
+                            if (i == 0 && weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
                             {
                                 if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
                                 {
