@@ -510,6 +510,7 @@ namespace SimpleWeather.UWP.Main
             }
 
             UpdateAppTitleMargin(sender);
+            UpdateHeaderMargin(sender);
         }
 
         private void UpdateAppTitleMargin(muxc.NavigationView sender)
@@ -542,6 +543,23 @@ namespace SimpleWeather.UWP.Main
                 else
                 {
                     AppTitle.Margin = new Thickness(largeLeftIndent, currMargin.Top, currMargin.Right, currMargin.Bottom);
+                }
+            }
+        }
+
+        private void UpdateHeaderMargin(muxc.NavigationView sender)
+        {
+            if (PageHeader != null)
+            {
+                Thickness currMargin = PageHeader.Margin;
+
+                if (sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
+                {
+                    PageHeader.Margin = new Thickness(currMargin.Left, sender.CompactPaneLength, currMargin.Right, currMargin.Bottom);
+                }
+                else
+                {
+                    PageHeader.Margin = new Thickness(currMargin.Left, 0, currMargin.Right, currMargin.Bottom);
                 }
             }
         }

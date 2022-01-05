@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="Control"
     Height="Auto"
     d:DesignHeight="300"
     d:DesignWidth="400"
@@ -24,7 +25,7 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Padding="{Binding ElementName=Control, Path=Padding}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" />
