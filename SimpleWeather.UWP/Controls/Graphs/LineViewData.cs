@@ -29,13 +29,28 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
             else
             {
-                if (set.SeriesMax.HasValue && YMax < set.SeriesMax)
+                if (set.SeriesMax.HasValue)
                 {
-                    YMax = set.SeriesMax.Value;
+                    if (YMax < set.SeriesMax)
+                    {
+                        YMax = set.SeriesMax.Value;
+                    }
                 }
-                if (set.SeriesMin.HasValue && YMin > set.SeriesMin)
+                else if (YMax < set.YMax)
                 {
-                    YMin = set.SeriesMin.Value;
+                    YMax = set.YMax;
+                }
+
+                if (set.SeriesMin.HasValue)
+                {
+                    if (YMin > set.SeriesMin)
+                    {
+                        YMin = set.SeriesMin.Value;
+                    }
+                }
+                else if (YMin > set.YMin)
+                {
+                    YMin = set.YMin;
                 }
             }
         }

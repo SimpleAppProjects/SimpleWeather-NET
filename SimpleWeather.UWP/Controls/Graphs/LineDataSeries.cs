@@ -44,15 +44,18 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         protected override void CalcMinMax(LineGraphEntry entry)
         {
-            if (SeriesMin == null && SeriesMax == null)
+            if (SeriesMin == null)
+            {
+                if (entry.YEntryData.Y < YMin)
+                {
+                    YMin = entry.YEntryData.Y;
+                }
+            }
+            if (SeriesMax == null)
             {
                 if (entry.YEntryData.Y > YMax)
                 {
                     YMax = entry.YEntryData.Y;
-                }
-                if (entry.YEntryData.Y < YMin)
-                {
-                    YMin = entry.YEntryData.Y;
                 }
             }
         }
