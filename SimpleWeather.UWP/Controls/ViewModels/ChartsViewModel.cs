@@ -167,12 +167,8 @@ namespace SimpleWeather.UWP.Controls
                     if (i == 0)
                     {
                         //tempData = new ForecastGraphViewModel();
+                        popData = new ForecastGraphDataCreator();
 
-                        if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
-                            hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
-                        {
-                            popData = new ForecastGraphDataCreator();
-                        }
                         if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
                             hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
                         {
@@ -201,13 +197,7 @@ namespace SimpleWeather.UWP.Controls
                     }
 
                     //tempData?.AddForecastData(hrfcast, ForecastGraphType.Temperature);
-                    if (popData != null)
-                    {
-                        if (hrfcast.extras?.pop.HasValue == true && hrfcast.extras.pop >= 0)
-                        {
-                            popData.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
-                        }
-                    }
+                    popData?.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
                     if (windData != null)
                     {
                         if (hrfcast.wind_mph.HasValue && hrfcast.wind_mph >= 0)
