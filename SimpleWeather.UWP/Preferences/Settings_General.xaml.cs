@@ -310,7 +310,7 @@ namespace SimpleWeather.UWP.Preferences
 
         private bool EnqueueAction(string action)
         {
-            if (!string.IsNullOrEmpty(action))
+            if (string.IsNullOrWhiteSpace(action))
             {
                 return false;
             }
@@ -322,7 +322,7 @@ namespace SimpleWeather.UWP.Preferences
 
         private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(e.Key)) return;
+            if (string.IsNullOrWhiteSpace(e.Key)) return;
 
             switch (e.Key)
             {
