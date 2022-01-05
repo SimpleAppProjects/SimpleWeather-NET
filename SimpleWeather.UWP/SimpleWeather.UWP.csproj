@@ -323,6 +323,7 @@
     <Compile Include="Radar\MapTileRadarViewProvider.cs" />
     <Compile Include="Radar\OpenWeather\OWMRadarViewProvider.cs" />
     <Compile Include="Radar\RadarProvider.cs" />
+    <Compile Include="Radar\RadarProviderChangedEventArgs.cs" />
     <Compile Include="Radar\RadarToolbar.xaml.cs">
       <DependentUpon>RadarToolbar.xaml</DependentUpon>
     </Compile>

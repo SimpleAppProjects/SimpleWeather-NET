@@ -227,6 +227,7 @@ namespace SimpleWeather.UWP.Main
 
             Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
             Settings.OnSettingsChanged += Settings_OnSettingsChanged;
+            RadarProvider.RadarProviderChanged += RadarProvider_RadarProviderChanged;
         }
 
         public void ShowSnackbar(Snackbar snackbar)
@@ -1033,6 +1034,15 @@ namespace SimpleWeather.UWP.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
             Frame.Navigate(typeof(WeatherRadarPage), WeatherView?.LocationCoord, new DrillInNavigationTransitionInfo());
+        }
+
+        private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
+        {
+            if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
+            {
+                radarViewProvider?.OnDestroyView();
+                radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            }
         }
 
         private void BackgroundOverlay_ImageOpened(object sender, RoutedEventArgs e)

@@ -12,6 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using static SimpleWeather.UWP.Radar.RadarProviderChangedEventArgs;
 
 namespace SimpleWeather.UWP.Radar
 {
@@ -23,6 +24,8 @@ namespace SimpleWeather.UWP.Radar
         private const string EARTHWINDMAP = "nullschool";
         private const string RAINVIEWER = "rainviewer";
         private const string OPENWEATHERMAP = "openweather";
+
+        public static event RadarProviderChangedEventHandler RadarProviderChanged;
 
         public enum RadarProviders
         {
@@ -57,7 +60,7 @@ namespace SimpleWeather.UWP.Radar
             }
         }
 
-        public static RadarProviders RadarAPIProvider { 
+        public static RadarProviders RadarAPIProvider {
             get 
             {
                 var value = GetRadarProvider();
@@ -109,6 +112,7 @@ namespace SimpleWeather.UWP.Radar
         private static void SetRadarProvider(RadarProviders value)
         {
             localSettings.Values[KEY_RADARPROVIDER] = value.GetStringValue();
+            RadarProviderChanged?.Invoke(new RadarProviderChangedEventArgs() { NewValue = value });
         }
     }
 }
