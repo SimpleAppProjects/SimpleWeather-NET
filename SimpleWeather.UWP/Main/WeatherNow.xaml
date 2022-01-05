@@ -97,24 +97,36 @@
                         <!--  Row 5  -->
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <StackPanel
+                    <Grid
                         Grid.Row="0"
                         MaxWidth="1280"
-                        Margin="0,10,0,5"
+                        Margin="5,10,5,5"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Orientation="Horizontal">
-                        <BitmapIcon
+                        VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
                             x:Name="GPSIcon"
+                            Grid.Column="0"
                             Margin="16,0"
                             VerticalAlignment="Center"
                             d:Visibility="Visible"
-                            Foreground="{ThemeResource ForegroundColor}"
-                            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                            ShowAsMonochrome="True"
-                            UriSource="/Assets/outline_near_me_black_24dp.png"
-                            Visibility="Collapsed" />
-                        <toolkitControls:DropShadowPanel BlurRadius="15.0" ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                            Visibility="Collapsed">
+                            <BitmapIcon
+                                Width="24"
+                                Height="24"
+                                Foreground="{ThemeResource ForegroundColor}"
+                                RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+                                ShowAsMonochrome="True"
+                                UriSource="/Assets/outline_near_me_black_24dp.png" />
+                        </Border>
+                        <toolkitControls:DropShadowPanel
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            BlurRadius="15.0"
+                            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
                             <TextBlock
                                 Name="Location"
                                 d:Text="New York, NY"
@@ -122,13 +134,14 @@
                                 FontWeight="SemiBold"
                                 Foreground="{ThemeResource ForegroundColor}"
                                 MaxLines="2"
+                                Margin="0,0,0,4"
                                 RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                                 Text="{x:Bind WeatherView.Location, Mode=OneWay}"
                                 TextAlignment="Center"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="WrapWholeWords" />
                         </toolkitControls:DropShadowPanel>
-                    </StackPanel>
+                    </Grid>
                     <toolkitControls:DropShadowPanel
                         Grid.Row="1"
                         MaxWidth="1280"
