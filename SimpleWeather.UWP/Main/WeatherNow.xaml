@@ -375,7 +375,6 @@
                                 Style="{ThemeResource NavigatableSectionStyle}">
                                 <graphs:RangeBarGraphPanel
                                     x:Name="ForecastGraphPanel"
-                                    FontSize="16"
                                     ForecastData="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
                                     GraphViewTapped="ForecastGraphPanel_Tapped" />
                             </toolkitControls:HeaderedContentControl>

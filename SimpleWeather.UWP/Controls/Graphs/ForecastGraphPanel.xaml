@@ -15,7 +15,6 @@
     d:DataContext="{d:DesignInstance Type=local:ForecastGraphViewModel}"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    FontSize="12"
     mc:Ignorable="d">
 
     <UserControl.Resources>
