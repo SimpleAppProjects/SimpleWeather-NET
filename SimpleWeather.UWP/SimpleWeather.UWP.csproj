@@ -205,6 +205,7 @@
     <Compile Include="Controls\Graphs\GraphDataSet.cs" />
     <Compile Include="Controls\Graphs\GraphEntry.cs" />
     <Compile Include="Controls\Graphs\IGraphData.cs" />
+    <Compile Include="Controls\Graphs\IGraphDataSet.cs" />
     <Compile Include="Controls\Graphs\LineGraphEntry.cs" />
     <Compile Include="Controls\Graphs\LineView.cs" />
     <Compile Include="Controls\Graphs\LineViewData.cs" />
@@ -243,7 +244,7 @@
     <Compile Include="Controls\ViewModels\ChartsViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsNowViewModel.cs" />
     <Compile Include="Controls\ViewModels\ForecastsListViewModel.cs" />
-    <Compile Include="Controls\ViewModels\ForecastGraphViewModel.cs" />
+    <Compile Include="Controls\ViewModels\ForecastGraphDataCreator.cs" />
     <Compile Include="Controls\Graphs\IGraph.cs" />
     <Compile Include="Controls\Graphs\ItemSizeChangedEventArgs.cs" />
     <Compile Include="Controls\ViewModels\GraphTemperature.cs" />

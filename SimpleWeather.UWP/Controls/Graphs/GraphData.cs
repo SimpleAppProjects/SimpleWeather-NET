@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
-    public abstract class GraphData<T, E> : IGraphData where T : GraphDataSet<E> where E : GraphEntry
+    public abstract class GraphData<T, E> : IGraphData<T, E> where T : GraphDataSet<E> where E : GraphEntry
     {
         public List<T> DataSets { get; protected set; }
 
@@ -66,10 +66,20 @@ namespace SimpleWeather.UWP.Controls.Graphs
             return DataSets[index];
         }
 
+        object? IGraphData.GetDataSetByIndex(int index)
+        {
+            return GetDataSetByIndex(index);
+        }
+
         public void AddDataSet(T set)
         {
             CalcMinMax(set);
             DataSets.Add(set);
+        }
+
+        void IGraphData.AddDataSet(object? set)
+        {
+            AddDataSet((T)set!);
         }
 
         public bool RemoveDataSet(T set)
@@ -82,6 +92,16 @@ namespace SimpleWeather.UWP.Controls.Graphs
             }
 
             return removed;
+        }
+
+        bool IGraphData.RemoveDataSet(object? set)
+        {
+            if (IsCompatibleObject(set))
+            {
+                return RemoveDataSet((T)set!);
+            }
+
+            return false;
         }
 
         protected virtual void CalcMinMax(T set)
@@ -125,6 +145,13 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 var set = DataSets.FirstOrDefault();
                 return set?.EntryData ?? new List<E>();
             }
+        }
+
+        private static bool IsCompatibleObject(object? value)
+        {
+            // Non-null values are fine.  Only accept nulls if T is a class or Nullable<U>.
+            // Note that default(T) is not equal to null for value types except when T is Nullable<U>.
+            return (value is T) || (value == null && default(T) == null);
         }
     }
 }

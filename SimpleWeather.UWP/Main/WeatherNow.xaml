@@ -129,12 +129,12 @@
                             ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
                             <TextBlock
                                 Name="Location"
+                                Margin="0,0,0,4"
                                 d:Text="New York, NY"
                                 FontSize="28"
                                 FontWeight="SemiBold"
                                 Foreground="{ThemeResource ForegroundColor}"
                                 MaxLines="2"
-                                Margin="0,0,0,4"
                                 RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                                 Text="{x:Bind WeatherView.Location, Mode=OneWay}"
                                 TextAlignment="Center"

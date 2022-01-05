@@ -26,57 +26,56 @@ namespace SimpleWeather.UWP.Controls
         Snow
     }
 
-    public class ForecastGraphViewModel : DependencyObject, IViewModel
+    public class ForecastGraphDataCreator
     {
-        public LineViewData GraphData
+        internal IGraphData GraphData { get; set; }
+
+        public ForecastGraphType GraphType { get; set; }
+
+        public bool IsEmpty
         {
-            get { return (LineViewData)GetValue(GraphDataProperty); }
-            set { SetValue(GraphDataProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for GraphLabel.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GraphDataProperty =
-            DependencyProperty.Register("GraphData", typeof(LineViewData), typeof(ForecastGraphViewModel), new PropertyMetadata(null));
-
-        public ForecastGraphType GraphType
-        {
-            get { return (ForecastGraphType)GetValue(GraphTypeProperty); }
-            set { SetValue(GraphTypeProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for GraphType.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GraphTypeProperty =
-            DependencyProperty.Register("GraphType", typeof(ForecastGraphType), typeof(ForecastGraphViewModel), new PropertyMetadata(0));
-
-        public bool IsEmpty => GraphData?.IsEmpty ?? true;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
+            get
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
+                return GraphData?.IsEmpty ?? true;
+            }
         }
 
         public void AddForecastData<T>(T forecast, ForecastGraphType graphType) where T : BaseForecast
         {
-            if (GraphData == null)
+            if (graphType != ForecastGraphType.UVIndex)
             {
-                var series = CreateSeriesData(new List<LineGraphEntry>(), graphType);
-                AddEntryData(forecast, series, graphType);
-                this.GraphData = CreateGraphData(ImmutableList.Create(series), graphType);
+                if (GraphData == null)
+                {
+                    LineDataSeries series = CreateSeriesData(new List<LineGraphEntry>(), graphType);
+                    AddEntryData(forecast, series, graphType);
+                    this.GraphData = CreateGraphData(ImmutableList.Create(series), graphType);
+                }
+                else
+                {
+                    AddEntryData(forecast, (LineDataSeries)GraphData.GetDataSetByIndex(0), graphType);
+                }
             }
             else
             {
-                AddEntryData(forecast, GraphData.GetDataSetByIndex(0), graphType);
+                if (GraphData == null)
+                {
+                    BarGraphDataSet dataSet = CreateDataSet(new List<BarGraphEntry>(), graphType);
+                    AddEntryData(forecast, dataSet, graphType);
+                    this.GraphData = CreateGraphData(dataSet, graphType);
+                }
+                else
+                {
+                    AddEntryData(forecast, (BarGraphDataSet)GraphData.GetDataSetByIndex(0), graphType);
+                }
             }
+
+            // Re-calc min/max
+            this.GraphData.NotifyDataChanged();
         }
 
         public void SetForecastData<T>(IList<T> forecasts, ForecastGraphType graphType) where T : BaseForecast
         {
-            var series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count), graphType);
+            LineDataSeries series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count), graphType);
 
             foreach (var forecast in forecasts)
             {
@@ -89,7 +88,7 @@ namespace SimpleWeather.UWP.Controls
 
         public void SetMinutelyForecastData(IEnumerable<MinutelyForecast> forecasts)
         {
-            var series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count()), ForecastGraphType.Precipitation);
+            LineDataSeries series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count()), ForecastGraphType.Precipitation);
 
             foreach (var forecast in forecasts)
             {
@@ -105,26 +104,7 @@ namespace SimpleWeather.UWP.Controls
             var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
 
-            string date;
-            if (forecast is Forecast fcast)
-            {
-                date = fcast.date.ToString("ddd dd", culture);
-            }
-            else if (forecast is HourlyForecast hrfcast)
-            {
-                if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
-                {
-                    date = hrfcast.date.ToString("ddd HH:00", culture);
-                }
-                else
-                {
-                    date = hrfcast.date.ToString("ddd h tt", culture);
-                }
-            }
-            else
-            {
-                date = string.Empty;
-            }
+            string date = GetDateFromForecast(forecast);
 
             switch (graphType)
             {
@@ -324,7 +304,83 @@ namespace SimpleWeather.UWP.Controls
 
         private LineViewData CreateGraphData(IList<LineDataSeries> seriesData, ForecastGraphType graphType)
         {
-            String graphLabel;
+            string graphLabel = GetLabelForGraphType(graphType);
+            this.GraphType = graphType;
+
+            return new LineViewData(graphLabel, seriesData);
+        }
+
+        private BarGraphDataSet CreateDataSet(IList<BarGraphEntry> entryData, ForecastGraphType graphType)
+        {
+            BarGraphDataSet dataSet = new(entryData);
+
+            switch (graphType)
+            {
+                case ForecastGraphType.UVIndex:
+                    dataSet.SetMinMax(0, 12);
+                    break;
+            }
+
+            return dataSet;
+        }
+
+        private BarGraphData CreateGraphData(BarGraphDataSet dataSet, ForecastGraphType graphType)
+        {
+            string graphLabel = GetLabelForGraphType(graphType);
+            this.GraphType = graphType;
+
+            return new BarGraphData(graphLabel, dataSet);
+        }
+
+        private void AddEntryData<T>(T forecast, BarGraphDataSet dataSet, ForecastGraphType graphType) where T : BaseForecast
+        {
+            string date = GetDateFromForecast(forecast);
+            var culture = CultureUtils.UserCulture;
+
+            if (graphType == ForecastGraphType.UVIndex)
+            {
+                if (forecast.extras?.uv_index.HasValue == true)
+                {
+                    BarGraphEntry entry = new(date, new(forecast.extras.uv_index.Value, string.Format(culture, "{0:0.#}", forecast.extras.uv_index.Value)))
+                    {
+                        FillColor = WeatherUtils.GetColorFromUVIndex(forecast.extras.uv_index)
+                    };
+                    dataSet.AddEntry(entry);
+                }
+            }
+        }
+
+        private string GetDateFromForecast<T>(T forecast) where T : BaseForecast
+        {
+            string date;
+            var culture = CultureUtils.UserCulture;
+
+            if (forecast is Forecast fcast)
+            {
+                date = fcast.date.ToString("ddd dd", culture);
+            }
+            else if (forecast is HourlyForecast hrfcast)
+            {
+                if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
+                {
+                    date = hrfcast.date.ToString("ddd HH:00", culture);
+                }
+                else
+                {
+                    date = hrfcast.date.ToString("ddd h tt", culture);
+                }
+            }
+            else
+            {
+                date = string.Empty;
+            }
+
+            return date;
+        }
+
+        private string GetLabelForGraphType(ForecastGraphType graphType)
+        {
+            string graphLabel;
 
             switch (graphType)
             {
@@ -354,9 +410,7 @@ namespace SimpleWeather.UWP.Controls
                     break;
             }
 
-            this.GraphType = graphType;
-
-            return new LineViewData(graphLabel, seriesData);
+            return graphLabel;
         }
     }
 }

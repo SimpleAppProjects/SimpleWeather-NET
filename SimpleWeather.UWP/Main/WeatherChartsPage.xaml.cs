@@ -2,6 +2,7 @@
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
+using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
@@ -139,6 +140,26 @@ namespace SimpleWeather.UWP.Main
                     }
                 });
             }
+        }
+    }
+
+    public class ChartsDataTemplateSelector : DataTemplateSelector
+    {
+        protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
+        {
+            if (container is FrameworkElement element && VisualTreeHelperExtensions.GetParent<ItemsControl>(element) is FrameworkElement elementParent)
+            {
+                if (item is LineViewData)
+                {
+                    return elementParent.Resources["LineViewDataTemplate"] as DataTemplate;
+                }
+                else if (item is BarGraphData)
+                {
+                    return elementParent.Resources["BarChartDataTemplate"] as DataTemplate;
+                }
+            }
+
+            return null;
         }
     }
 }

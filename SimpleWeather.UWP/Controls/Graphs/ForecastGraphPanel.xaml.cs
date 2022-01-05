@@ -103,15 +103,15 @@ namespace SimpleWeather.UWP.Controls.Graphs
             ScrollViewerHelper.ScrollRight(LineGraphView.ScrollViewer);
         }
 
-        public ForecastGraphViewModel GraphData
+        public LineViewData GraphData
         {
-            get => (ForecastGraphViewModel)GetValue(GraphDataProperty);
+            get => (LineViewData)GetValue(GraphDataProperty);
             set { SetValue(GraphDataProperty, value); UpdateView(false); }
         }
 
         // Using a DependencyProperty as the backing store for GraphData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GraphDataProperty =
-            DependencyProperty.Register("GraphData", typeof(ForecastGraphViewModel), typeof(ForecastGraphPanel), new PropertyMetadata(null));
+            DependencyProperty.Register("GraphData", typeof(LineViewData), typeof(ForecastGraphPanel), new PropertyMetadata(null));
 
         public ForecastGraphPanel()
         {
@@ -144,7 +144,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     await Task.Delay(1).ConfigureAwait(true);
                 }
 
-                LineGraphView.SetData(GraphData?.GraphData);
+                LineGraphView.SetData(GraphData);
             }
         }
     }

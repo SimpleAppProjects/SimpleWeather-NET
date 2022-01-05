@@ -156,6 +156,23 @@ namespace SimpleWeather.Utils
             return color;
         }
 
-        ////
+        public static Color GetColorFromUVIndex(float? index)
+        {
+            return GetColorFromUVIndex(index, Colors.Orange);
+        }
+
+        public static Color GetColorFromUVIndex(float? index, Color defaultColor)
+        {
+            return index switch
+            {
+                null => defaultColor,
+                < 3 => Colors.LimeGreen,
+                < 6 => Colors.Yellow,
+                < 8 => Colors.Orange,
+                < 11 => Color.FromArgb(0xFF, 0xBD, 0x00, 0x35), // Maroon
+                >= 11 => Color.FromArgb(0xFF, 0xAA, 0x00, 0xFF), // Purple
+                _ => defaultColor
+            };
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
-    public abstract class GraphDataSet<T> : IGraphData where T : GraphEntry
+    public abstract class GraphDataSet<T> : IGraphDataSet<T> where T : GraphEntry
     {
         public List<T> EntryData { get; protected set; }
 
@@ -63,6 +63,11 @@ namespace SimpleWeather.UWP.Controls.Graphs
             EntryData.Add(entry);
         }
 
+        void IGraphDataSet.AddEntry(object? entry)
+        {
+            AddEntry((T)entry!);
+        }
+
         public bool RemoveEntry(T entry)
         {
             var removed = EntryData.Remove(entry);
@@ -75,9 +80,29 @@ namespace SimpleWeather.UWP.Controls.Graphs
             return removed;
         }
 
+        bool IGraphDataSet.RemoveEntry(object? entry)
+        {
+            if (IsCompatibleObject(entry))
+            {
+                return RemoveEntry((T)entry!);
+            }
+
+            return false;
+        }
+
         public int GetEntryIndex(T entry)
         {
             return EntryData?.IndexOf(entry) ?? 0;
+        }
+
+        int IGraphDataSet.GetEntryIndex(object? entry)
+        {
+            if (IsCompatibleObject(entry))
+            {
+                return GetEntryIndex((T)entry!);
+            }
+
+            return -1;
         }
 
         public T GetEntryForIndex(int index)
@@ -85,9 +110,21 @@ namespace SimpleWeather.UWP.Controls.Graphs
             return EntryData[index];
         }
 
+        object? IGraphDataSet.GetEntryForIndex(int index)
+        {
+            return GetEntryForIndex(index);
+        }
+
         public void NotifyDataSetChanged()
         {
             CalcMinMax();
+        }
+
+        private static bool IsCompatibleObject(object? value)
+        {
+            // Non-null values are fine.  Only accept nulls if T is a class or Nullable<U>.
+            // Note that default(T) is not equal to null for value types except when T is Nullable<U>.
+            return (value is T) || (value == null && default(T) == null);
         }
     }
 }

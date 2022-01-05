@@ -30,15 +30,15 @@ namespace SimpleWeather.UWP.Controls
         private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
-        public ICollection<ForecastGraphViewModel> GraphModels
+        public ICollection<object> GraphModels
         {
-            get { return (ICollection<ForecastGraphViewModel>)GetValue(GraphModelsProperty); }
+            get { return (ICollection<object>)GetValue(GraphModelsProperty); }
             set { SetValue(GraphModelsProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for GraphModels.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GraphModelsProperty =
-            DependencyProperty.Register("GraphModels", typeof(ICollection<ForecastGraphViewModel>), typeof(ChartsViewModel), new PropertyMetadata(null));
+            DependencyProperty.Register("GraphModels", typeof(ICollection<object>), typeof(ChartsViewModel), new PropertyMetadata(null));
 
         public ChartsViewModel()
         {
@@ -136,29 +136,29 @@ namespace SimpleWeather.UWP.Controls
             });
         }
 
-        private ICollection<ForecastGraphViewModel> CreateGraphModelData(IEnumerable<MinutelyForecast> minfcasts, IList<HourlyForecast> hrfcasts)
+        private ICollection<object> CreateGraphModelData(IEnumerable<MinutelyForecast> minfcasts, IList<HourlyForecast> hrfcasts)
         {
             IReadOnlyList<ForecastGraphType> graphTypes = 
                 Enum.GetValues(typeof(ForecastGraphType)).Cast<ForecastGraphType>().ToList();
-            var data = new List<ForecastGraphViewModel>(graphTypes.Count + (minfcasts?.Any() == true ? 1 : 0));
+            var data = new List<object>(graphTypes.Count + (minfcasts?.Any() == true ? 1 : 0));
 
             if (minfcasts?.Any() == true)
             {
-                var model = new ForecastGraphViewModel();
+                var model = new ForecastGraphDataCreator();
                 model.SetMinutelyForecastData(minfcasts);
-                data.Add(model);
+                data.Add(model.GraphData);
             }
 
             if (hrfcasts?.Any() == true)
             {
                 // TODO: replace with [Sorted||Ordered]Dictionary
                 //ForecastGraphViewModel tempData = null;
-                ForecastGraphViewModel popData = null;
-                ForecastGraphViewModel windData = null;
-                ForecastGraphViewModel rainData = null;
-                ForecastGraphViewModel snowData = null;
-                ForecastGraphViewModel uviData = null;
-                ForecastGraphViewModel humidityData = null;
+                ForecastGraphDataCreator popData = null;
+                ForecastGraphDataCreator windData = null;
+                ForecastGraphDataCreator rainData = null;
+                ForecastGraphDataCreator snowData = null;
+                ForecastGraphDataCreator uviData = null;
+                ForecastGraphDataCreator humidityData = null;
 
                 for (int i = 0; i < hrfcasts.Count; i++)
                 {
@@ -171,32 +171,32 @@ namespace SimpleWeather.UWP.Controls
                         if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
                             hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
                         {
-                            popData = new ForecastGraphViewModel();
+                            popData = new ForecastGraphDataCreator();
                         }
                         if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
                             hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
                         {
-                            windData = new ForecastGraphViewModel();
+                            windData = new ForecastGraphDataCreator();
                         }
                         if (hrfcasts.FirstOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true ||
                             hrfcasts.LastOrDefault()?.extras?.qpf_rain_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
                         {
-                            rainData = new ForecastGraphViewModel();
+                            rainData = new ForecastGraphDataCreator();
                         }
                         if (hrfcasts.FirstOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.qpf_snow_cm.HasValue == true ||
                             hrfcasts.LastOrDefault()?.extras?.qpf_snow_in.HasValue == true && hrfcasts.LastOrDefault()?.extras?.qpf_snow_cm.HasValue == true)
                         {
-                            snowData = new ForecastGraphViewModel();
+                            snowData = new ForecastGraphDataCreator();
                         }
                         if (hrfcasts.FirstOrDefault()?.extras?.uv_index.HasValue == true ||
                             hrfcasts.LastOrDefault()?.extras?.uv_index.HasValue == true)
                         {
-                            uviData = new ForecastGraphViewModel();
+                            uviData = new ForecastGraphDataCreator();
                         }
                         if (hrfcasts.FirstOrDefault()?.extras?.humidity.HasValue == true ||
                             hrfcasts.LastOrDefault()?.extras?.humidity.HasValue == true)
                         {
-                            humidityData = new ForecastGraphViewModel();
+                            humidityData = new ForecastGraphDataCreator();
                         }
                     }
 
@@ -253,27 +253,27 @@ namespace SimpleWeather.UWP.Controls
                 */
                 if (popData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(popData);
+                    data.Add(popData.GraphData);
                 }
                 if (windData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(windData);
+                    data.Add(windData.GraphData);
                 }
                 if (humidityData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(humidityData);
+                    data.Add(humidityData.GraphData);
                 }
                 if (uviData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(uviData);
+                    data.Add(uviData.GraphData);
                 }
                 if (rainData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(rainData);
+                    data.Add(rainData.GraphData);
                 }
                 if (snowData?.GraphData?.DataCount > 0)
                 {
-                    data.Add(snowData);
+                    data.Add(snowData.GraphData);
                 }
             }
 

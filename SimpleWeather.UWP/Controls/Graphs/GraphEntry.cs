@@ -8,8 +8,8 @@ namespace SimpleWeather.UWP.Controls.Graphs
 {
     public abstract class GraphEntry
     {
-        public String XLabel { get; set; }
-        public String XIcon { get; set; }
+        public string XLabel { get; set; }
+        public string XIcon { get; set; }
         public int XIconRotation { get; set; }
 
         public override bool Equals(object obj)

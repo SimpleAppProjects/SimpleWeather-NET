@@ -12,6 +12,10 @@
     d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
+    <Page.Resources>
+        <local:ChartsDataTemplateSelector x:Key="chartsDataTemplateSelector" />
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -35,11 +39,12 @@
             IsItemClickEnabled="False"
             IsMultiSelectCheckBoxEnabled="False"
             IsSwipeEnabled="False"
+            ItemTemplateSelector="{StaticResource chartsDataTemplateSelector}"
             ItemsSource="{x:Bind ChartsView.GraphModels, Mode=OneWay}"
             SelectionMode="None">
-            <ItemsControl.ItemTemplate>
-                <DataTemplate x:DataType="controls:ForecastGraphViewModel">
-                    <toolkitControls:HeaderedContentControl Header="{Binding GraphData.GraphLabel}">
+            <ListView.Resources>
+                <DataTemplate x:Key="LineViewDataTemplate" x:DataType="graphs:LineViewData">
+                    <toolkitControls:HeaderedContentControl Header="{Binding GraphLabel}">
                         <toolkitControls:HeaderedContentControl.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -54,7 +59,23 @@
                         <graphs:ForecastGraphPanel Margin="16,0" GraphData="{Binding}" />
                     </toolkitControls:HeaderedContentControl>
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
+                <DataTemplate x:Key="BarChartDataTemplate" x:DataType="graphs:BarGraphData">
+                    <toolkitControls:HeaderedContentControl Header="{Binding GraphLabel}">
+                        <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock
+                                        Padding="16,10"
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        Text="{Binding}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                        <graphs:BarGraphPanel Margin="16,0" GraphData="{Binding}" />
+                    </toolkitControls:HeaderedContentControl>
+                </DataTemplate>
+            </ListView.Resources>
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Vertical" />

@@ -12,7 +12,7 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:uiControls="using:Microsoft.UI.Xaml.Controls"
     x:Name="Control"
-    d:DataContext="{d:DesignInstance Type=local:ForecastGraphViewModel}"
+    d:DataContext="{d:DesignInstance Type=local:ForecastGraphDataCreator}"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
