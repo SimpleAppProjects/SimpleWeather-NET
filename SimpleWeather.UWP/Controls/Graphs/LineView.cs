@@ -480,11 +480,18 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         {
                             // Draw top label
                             var txtLayout = new CanvasTextLayout(drawingSession, entry.YLabel, BottomTextFormat, 0, 0);
-                            drawingRect.Set(dot.X, dot.Y, dot.X + txtLayout.DrawBounds.Width, dot.Y + bottomTextHeight);
+                            drawingRect.Set(
+                                dot.X - txtLayout.DrawBounds.Width / 2, dot.Y - txtLayout.DrawBounds.Height / 2,
+                                dot.X + txtLayout.DrawBounds.Width / 2, dot.Y + txtLayout.DrawBounds.Height / 2
+                                );
 
                             if (drawingRect.Intersects(region))
                             {
                                 textEntries.Add(new TextEntry(txtLayout, dot.X, dot.Y - bottomTextHeight - bottomTextDescent));
+                            }
+                            else
+                            {
+                                txtLayout.Dispose();
                             }
                         }
 
@@ -509,7 +516,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                             {
                                 // Draw top label
                                 var txtLayout = new CanvasTextLayout(drawingSession, nextEntry.YLabel, BottomTextFormat, 0, 0);
-                                drawingRect.Set(nextDot.X, nextDot.Y, nextDot.X + txtLayout.DrawBounds.Width, nextDot.Y + bottomTextHeight);
+                                drawingRect.Set(
+                                    nextDot.X - txtLayout.DrawBounds.Width / 2, nextDot.Y - txtLayout.DrawBounds.Height / 2,
+                                    nextDot.X + txtLayout.DrawBounds.Width / 2, nextDot.Y + txtLayout.DrawBounds.Height / 2
+                                    );
 
                                 if (drawingRect.Intersects(region))
                                 {
@@ -635,7 +645,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     if (!String.IsNullOrWhiteSpace(entry.XLabel))
                     {
                         using var btmTxtLayout = new CanvasTextLayout(drawingSession, entry.XLabel, BottomTextFormat, 0, 0);
-                        drawingRect.Set(x, y, x + btmTxtLayout.DrawBounds.Width, y);
+                        drawingRect.Set(
+                            x - btmTxtLayout.DrawBounds.Width / 2, y - btmTxtLayout.DrawBounds.Height / 2,
+                            x + btmTxtLayout.DrawBounds.Width / 2, y + btmTxtLayout.DrawBounds.Height / 2
+                            );
 
                         if (drawingRect.Intersects(region))
                             drawingSession.DrawTextLayout(btmTxtLayout, x, y, BottomTextColor);

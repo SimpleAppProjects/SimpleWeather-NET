@@ -280,7 +280,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     if (!String.IsNullOrWhiteSpace(entry.XLabel))
                     {
                         using var btmTxtLayout = new CanvasTextLayout(drawingSession, entry.XLabel, BottomTextFormat, 0, 0);
-                        drawingRect.Set(x, y, x + btmTxtLayout.DrawBounds.Width, y);
+                        drawingRect.Set(
+                            x - btmTxtLayout.DrawBounds.Width / 2, y - btmTxtLayout.DrawBounds.Height / 2,
+                            x + btmTxtLayout.DrawBounds.Width / 2, y + btmTxtLayout.DrawBounds.Height / 2
+                            );
 
                         if (drawingRect.Intersects(region))
                             drawingSession.DrawTextLayout(btmTxtLayout, x, y, BottomTextColor);
