@@ -8,6 +8,7 @@ using System.Text;
 using Utf8Json;
 using SQLiteNetExtensions.Attributes;
 using System.Runtime.Serialization;
+using Utf8Json.Formatters;
 
 namespace SimpleWeather.WeatherData
 {
@@ -56,7 +57,9 @@ namespace SimpleWeather.WeatherData
         public string Title { get; set; }
         public string Message { get; set; }
         public string Attribution { get; set; }
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset Date { get; set; }
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset ExpiresDate { get; set; }
         public bool Notified { get; set; } = false;
 

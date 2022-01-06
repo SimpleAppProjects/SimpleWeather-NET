@@ -10,6 +10,7 @@ using System.Text;
 using Utf8Json;
 using Utf8Json.Formatters;
 using NodaTime;
+using SimpleWeather.Utf8JsonGen;
 
 namespace SimpleWeather.WeatherData
 {
@@ -25,6 +26,7 @@ namespace SimpleWeather.WeatherData
 
         [Ignore]
         [IgnoreDataMember]
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
         // Store as string (blob) instead
@@ -624,11 +626,11 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(latitude):
-                        this.latitude = float.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                        this.latitude = reader.TryReadSingle();
                         break;
 
                     case nameof(longitude):
-                        this.longitude = float.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                        this.longitude = reader.TryReadSingle();
                         break;
 
                     case nameof(tz_long):
@@ -657,13 +659,13 @@ namespace SimpleWeather.WeatherData
 
             // "latitude" : ""
             writer.WritePropertyName(nameof(latitude));
-            writer.WriteString(latitude?.ToInvariantString());
+            writer.WriteSingle(latitude);
 
             writer.WriteValueSeparator();
 
             // "longitude" : ""
             writer.WritePropertyName(nameof(longitude));
-            writer.WriteString(longitude?.ToInvariantString());
+            writer.WriteSingle(longitude);
 
             writer.WriteValueSeparator();
 
@@ -753,23 +755,19 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(high_f):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
-                            this.high_f = highF;
+                        this.high_f = reader.TryReadSingle();
                         break;
 
                     case nameof(high_c):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highC))
-                            this.high_c = highC;
+                        this.high_c = reader.TryReadSingle();
                         break;
 
                     case nameof(low_f):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float lowF))
-                            this.low_f = lowF;
+                        this.low_f = reader.TryReadSingle();
                         break;
 
                     case nameof(low_c):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float lowC))
-                            this.low_c = lowC;
+                        this.low_c = reader.TryReadSingle();
                         break;
 
                     case nameof(condition):
@@ -807,25 +805,25 @@ namespace SimpleWeather.WeatherData
 
             // "high_f" : ""
             writer.WritePropertyName(nameof(high_f));
-            writer.WriteString(high_f?.ToInvariantString());
+            writer.WriteSingle(high_f);
 
             writer.WriteValueSeparator();
 
             // "high_c" : ""
             writer.WritePropertyName(nameof(high_c));
-            writer.WriteString(high_c?.ToInvariantString());
+            writer.WriteSingle(high_c);
 
             writer.WriteValueSeparator();
 
             // "low_f" : ""
             writer.WritePropertyName(nameof(low_f));
-            writer.WriteString(low_f?.ToInvariantString());
+            writer.WriteSingle(low_f);
 
             writer.WriteValueSeparator();
 
             // "low_c" : ""
             writer.WritePropertyName(nameof(low_c));
-            writer.WriteString(low_c?.ToInvariantString());
+            writer.WriteSingle(low_c);
 
             writer.WriteValueSeparator();
 
@@ -930,17 +928,15 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(high_f):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
-                            this.high_f = highF;
+                        this.high_f = reader.TryReadSingle();
                         break;
 
                     case nameof(high_c):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float highC))
-                            this.high_c = highC;
+                        this.high_c = reader.TryReadSingle();
                         break;
 
                     case nameof(condition):
@@ -952,15 +948,15 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.ReadInt32();
+                        this.wind_degrees = reader.TryReadInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.ReadSingle();
+                        this.wind_mph = reader.TryReadSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.ReadSingle();
+                        this.wind_kph = reader.TryReadSingle();
                         break;
 
                     case nameof(extras):
@@ -990,13 +986,13 @@ namespace SimpleWeather.WeatherData
 
             // "high_f" : ""
             writer.WritePropertyName(nameof(high_f));
-            writer.WriteString(high_f?.ToInvariantString());
+            writer.WriteSingle(high_f);
 
             writer.WriteValueSeparator();
 
             // "high_c" : ""
             writer.WritePropertyName(nameof(high_c));
-            writer.WriteString(high_c?.ToInvariantString());
+            writer.WriteSingle(high_c);
 
             writer.WriteValueSeparator();
 
@@ -1014,19 +1010,19 @@ namespace SimpleWeather.WeatherData
 
             // "wind_degrees" : ""
             writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees.GetValueOrDefault(-1));
+            writer.WriteInt32(wind_degrees);
 
             writer.WriteValueSeparator();
 
             // "wind_mph" : ""
             writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_mph);
 
             writer.WriteValueSeparator();
 
             // "wind_kph" : ""
             writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_kph);
 
             // "extras" : ""
             if (extras != null)
@@ -1102,12 +1098,11 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(rain_mm):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float rainMm))
-                            this.rain_mm = rainMm;
+                        this.rain_mm = reader.TryReadSingle();
                         break;
 
                     default:
@@ -1132,7 +1127,7 @@ namespace SimpleWeather.WeatherData
 
             // "rain_mm" : ""
             writer.WritePropertyName(nameof(rain_mm));
-            writer.WriteString(rain_mm?.ToInvariantString());
+            writer.WriteSingle(rain_mm);
 
             // }
             writer.WriteEndObject();
@@ -1202,7 +1197,7 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(fcttext):
@@ -1363,96 +1358,87 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(feelslike_f):
-                        this.feelslike_f = reader.ReadSingle();
+                        this.feelslike_f = reader.TryReadSingle();
                         break;
 
                     case nameof(feelslike_c):
-                        this.feelslike_c = reader.ReadSingle();
+                        this.feelslike_c = reader.TryReadSingle();
                         break;
 
                     case nameof(humidity):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Humidity))
-                            this.humidity = Humidity;
+                        this.humidity = reader.TryReadInt32();
                         break;
 
                     case nameof(dewpoint_f):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointF))
-                            this.dewpoint_f = dewpointF;
+                        this.dewpoint_f = reader.TryReadSingle();
                         break;
 
                     case nameof(dewpoint_c):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointC))
-                            this.dewpoint_c = dewpointC;
+                        this.dewpoint_c = reader.TryReadSingle();
                         break;
 
                     case nameof(uv_index):
-                        this.uv_index = reader.ReadSingle();
+                        this.uv_index = reader.TryReadSingle();
                         break;
 
                     case nameof(pop):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int POP))
-                            this.pop = POP;
+                        this.pop = reader.TryReadInt32();
                         break;
 
                     case nameof(cloudiness):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Clouds))
-                            this.cloudiness = Clouds;
+                        this.cloudiness = reader.TryReadInt32();
                         break;
 
                     case nameof(qpf_rain_in):
-                        this.qpf_rain_in = reader.ReadSingle();
+                        this.qpf_rain_in = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_rain_mm):
-                        this.qpf_rain_mm = reader.ReadSingle();
+                        this.qpf_rain_mm = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_snow_in):
-                        this.qpf_snow_in = reader.ReadSingle();
+                        this.qpf_snow_in = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_snow_cm):
-                        this.qpf_snow_cm = reader.ReadSingle();
+                        this.qpf_snow_cm = reader.TryReadSingle();
                         break;
 
                     case nameof(pressure_mb):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureMB))
-                            this.pressure_mb = pressureMB;
+                        this.pressure_mb = reader.TryReadSingle();
                         break;
 
                     case nameof(pressure_in):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
-                            this.pressure_in = pressureIN;
+                        this.pressure_in = reader.TryReadSingle();
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.ReadInt32();
+                        this.wind_degrees = reader.TryReadInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.ReadSingle();
+                        this.wind_mph = reader.TryReadSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.ReadSingle();
+                        this.wind_kph = reader.TryReadSingle();
                         break;
 
                     case nameof(visibility_mi):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityMI))
-                            this.visibility_mi = visibilityMI;
+                        this.visibility_mi = reader.TryReadSingle();
                         break;
 
                     case nameof(visibility_km):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityKM))
-                            this.visibility_km = visibilityKM;
+                        this.visibility_km = reader.TryReadSingle();
                         break;
 
                     case nameof(windgust_mph):
-                        this.windgust_mph = reader.ReadSingle();
+                        this.windgust_mph = reader.TryReadSingle();
                         break;
 
                     case nameof(windgust_kph):
-                        this.windgust_kph = reader.ReadSingle();
+                        this.windgust_kph = reader.TryReadSingle();
                         break;
 
                     default:
@@ -1470,127 +1456,127 @@ namespace SimpleWeather.WeatherData
 
             // "feelslike_f" : ""
             writer.WritePropertyName(nameof(feelslike_f));
-            writer.WriteSingle(feelslike_f.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(feelslike_f);
 
             writer.WriteValueSeparator();
 
             // "feelslike_c" : ""
             writer.WritePropertyName(nameof(feelslike_c));
-            writer.WriteSingle(feelslike_c.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(feelslike_c);
 
             writer.WriteValueSeparator();
 
             // "humidity" : ""
             writer.WritePropertyName(nameof(humidity));
-            writer.WriteString(humidity?.ToInvariantString());
+            writer.WriteInt32(humidity);
 
             writer.WriteValueSeparator();
 
             // "dewpoint_f" : ""
             writer.WritePropertyName(nameof(dewpoint_f));
-            writer.WriteString(dewpoint_f?.ToInvariantString());
+            writer.WriteSingle(dewpoint_f);
 
             writer.WriteValueSeparator();
 
             // "dewpoint_c" : ""
             writer.WritePropertyName(nameof(dewpoint_c));
-            writer.WriteString(dewpoint_c?.ToInvariantString());
+            writer.WriteSingle(dewpoint_c);
 
             writer.WriteValueSeparator();
 
             // "uv_index" : ""
             writer.WritePropertyName(nameof(uv_index));
-            writer.WriteSingle(uv_index.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(uv_index);
 
             writer.WriteValueSeparator();
 
             // "pop" : ""
             writer.WritePropertyName(nameof(pop));
-            writer.WriteString(pop?.ToInvariantString());
+            writer.WriteInt32(pop);
 
             writer.WriteValueSeparator();
 
             // "cloudiness" : ""
             writer.WritePropertyName(nameof(cloudiness));
-            writer.WriteString(cloudiness?.ToInvariantString());
+            writer.WriteInt32(cloudiness);
 
             writer.WriteValueSeparator();
 
             // "qpf_rain_in" : ""
             writer.WritePropertyName(nameof(qpf_rain_in));
-            writer.WriteSingle(qpf_rain_in.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_rain_in);
 
             writer.WriteValueSeparator();
 
             // "qpf_rain_mm" : ""
             writer.WritePropertyName(nameof(qpf_rain_mm));
-            writer.WriteSingle(qpf_rain_mm.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_rain_mm);
 
             writer.WriteValueSeparator();
 
             // "qpf_snow_in" : ""
             writer.WritePropertyName(nameof(qpf_snow_in));
-            writer.WriteSingle(qpf_snow_in.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_snow_in);
 
             writer.WriteValueSeparator();
 
             // "qpf_snow_cm" : ""
             writer.WritePropertyName(nameof(qpf_snow_cm));
-            writer.WriteSingle(qpf_snow_cm.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_snow_cm);
 
             writer.WriteValueSeparator();
 
             // "pressure_mb" : ""
             writer.WritePropertyName(nameof(pressure_mb));
-            writer.WriteString(pressure_mb?.ToInvariantString());
+            writer.WriteSingle(pressure_mb);
 
             writer.WriteValueSeparator();
 
             // "pressure_in" : ""
             writer.WritePropertyName(nameof(pressure_in));
-            writer.WriteString(pressure_in?.ToInvariantString());
+            writer.WriteSingle(pressure_in);
 
             writer.WriteValueSeparator();
 
             // "wind_degrees" : ""
             writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees.GetValueOrDefault(-1));
+            writer.WriteInt32(wind_degrees);
 
             writer.WriteValueSeparator();
 
             // "wind_mph" : ""
             writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_mph);
 
             writer.WriteValueSeparator();
 
             // "wind_kph" : ""
             writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_kph);
 
             writer.WriteValueSeparator();
 
             // "visibility_mi" : ""
             writer.WritePropertyName(nameof(visibility_mi));
-            writer.WriteString(visibility_mi?.ToInvariantString());
+            writer.WriteSingle(visibility_mi);
 
             writer.WriteValueSeparator();
 
             // "visibility_km" : ""
             writer.WritePropertyName(nameof(visibility_km));
-            writer.WriteString(visibility_km?.ToInvariantString());
+            writer.WriteSingle(visibility_km);
 
             writer.WriteValueSeparator();
 
             // "windgust_mph" : ""
             writer.WritePropertyName(nameof(windgust_mph));
-            writer.WriteSingle(windgust_mph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(windgust_mph);
 
             writer.WriteValueSeparator();
 
             // "windgust_kph" : ""
             writer.WritePropertyName(nameof(windgust_kph));
-            writer.WriteSingle(windgust_kph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(windgust_kph);
 
             // }
             writer.WriteEndObject();
@@ -1621,6 +1607,7 @@ namespace SimpleWeather.WeatherData
         public float? low_c { get; set; }
         public AirQuality airQuality { get; set; }
         public Pollen pollen { get; set; }
+        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
         public DateTimeOffset observation_time { get; set; }
         public string summary { get; set; }
 
@@ -1712,39 +1699,39 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(temp_f):
-                        this.temp_f = reader.ReadSingle();
+                        this.temp_f = reader.TryReadSingle();
                         break;
 
                     case nameof(temp_c):
-                        this.temp_c = reader.ReadSingle();
+                        this.temp_c = reader.TryReadSingle();
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.ReadInt32();
+                        this.wind_degrees = reader.TryReadInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.ReadSingle();
+                        this.wind_mph = reader.TryReadSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.ReadSingle();
+                        this.wind_kph = reader.TryReadSingle();
                         break;
 
                     case nameof(windgust_mph):
-                        this.windgust_mph = reader.ReadSingle();
+                        this.windgust_mph = reader.TryReadSingle();
                         break;
 
                     case nameof(windgust_kph):
-                        this.windgust_kph = reader.ReadSingle();
+                        this.windgust_kph = reader.TryReadSingle();
                         break;
 
                     case nameof(feelslike_f):
-                        this.feelslike_f = reader.ReadSingle();
+                        this.feelslike_f = reader.TryReadSingle();
                         break;
 
                     case nameof(feelslike_c):
-                        this.feelslike_c = reader.ReadSingle();
+                        this.feelslike_c = reader.TryReadSingle();
                         break;
 
                     case nameof(icon):
@@ -1762,19 +1749,19 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(high_f):
-                        this.high_f = reader.ReadSingle();
+                        this.high_f = reader.TryReadSingle();
                         break;
 
                     case nameof(high_c):
-                        this.high_c = reader.ReadSingle();
+                        this.high_c = reader.TryReadSingle();
                         break;
 
                     case nameof(low_f):
-                        this.low_f = reader.ReadSingle();
+                        this.low_f = reader.TryReadSingle();
                         break;
 
                     case nameof(low_c):
-                        this.low_c = reader.ReadSingle();
+                        this.low_c = reader.TryReadSingle();
                         break;
 
                     case nameof(airQuality):
@@ -1788,7 +1775,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(observation_time):
-                        this.observation_time = DateTimeOffset.ParseExact(reader.ReadString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.observation_time = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(summary):
@@ -1817,55 +1804,55 @@ namespace SimpleWeather.WeatherData
 
             // "temp_f" : ""
             writer.WritePropertyName(nameof(temp_f));
-            writer.WriteSingle(temp_f.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(temp_f);
 
             writer.WriteValueSeparator();
 
             // "temp_c" : ""
             writer.WritePropertyName(nameof(temp_c));
-            writer.WriteSingle(temp_c.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(temp_c);
 
             writer.WriteValueSeparator();
 
             // "wind_degrees" : ""
             writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees.GetValueOrDefault(-1));
+            writer.WriteInt32(wind_degrees);
 
             writer.WriteValueSeparator();
 
             // "wind_mph" : ""
             writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_mph);
 
             writer.WriteValueSeparator();
 
             // "wind_kph" : ""
             writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(wind_kph);
 
             writer.WriteValueSeparator();
 
             // "windgust_mph" : ""
             writer.WritePropertyName(nameof(windgust_mph));
-            writer.WriteSingle(windgust_mph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(windgust_mph);
 
             writer.WriteValueSeparator();
 
             // "windgust_kph" : ""
             writer.WritePropertyName(nameof(windgust_kph));
-            writer.WriteSingle(windgust_kph.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(windgust_kph);
 
             writer.WriteValueSeparator();
 
             // "feelslike_f" : ""
             writer.WritePropertyName(nameof(feelslike_f));
-            writer.WriteSingle(feelslike_f.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(feelslike_f);
 
             writer.WriteValueSeparator();
 
             // "feelslike_c" : ""
             writer.WritePropertyName(nameof(feelslike_c));
-            writer.WriteSingle(feelslike_c.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(feelslike_c);
 
             writer.WriteValueSeparator();
 
@@ -1895,25 +1882,25 @@ namespace SimpleWeather.WeatherData
 
             // "high_f" : ""
             writer.WritePropertyName(nameof(high_f));
-            writer.WriteSingle(high_f.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(high_f);
 
             writer.WriteValueSeparator();
 
             // "high_c" : ""
             writer.WritePropertyName(nameof(high_c));
-            writer.WriteSingle(high_c.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(high_c);
 
             writer.WriteValueSeparator();
 
             // "low_f" : ""
             writer.WritePropertyName(nameof(low_f));
-            writer.WriteSingle(low_f.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(low_f);
 
             writer.WriteValueSeparator();
 
             // "low_c" : ""
             writer.WritePropertyName(nameof(low_c));
-            writer.WriteSingle(low_c.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(low_c);
 
             // "airQuality" : ""
             if (airQuality != null)
@@ -2017,18 +2004,15 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(humidity):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Humidity))
-                            this.humidity = Humidity;
+                        this.humidity = reader.TryReadInt32();
                         break;
 
                     case nameof(pressure_mb):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureMB))
-                            this.pressure_mb = pressureMB;
+                        this.pressure_mb = reader.TryReadSingle();
                         break;
 
                     case nameof(pressure_in):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
-                            this.pressure_in = pressureIN;
+                        this.pressure_in = reader.TryReadSingle();
                         break;
 
                     case nameof(pressure_trend):
@@ -2036,23 +2020,19 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(visibility_mi):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityMI))
-                            this.visibility_mi = visibilityMI;
+                        this.visibility_mi = reader.TryReadSingle();
                         break;
 
                     case nameof(visibility_km):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float visibilityKM))
-                            this.visibility_km = visibilityKM;
+                        this.visibility_km = reader.TryReadSingle();
                         break;
 
                     case nameof(dewpoint_f):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointF))
-                            this.dewpoint_f = dewpointF;
+                        this.dewpoint_f = reader.TryReadSingle();
                         break;
 
                     case nameof(dewpoint_c):
-                        if (float.TryParse(reader.ReadString(), NumberStyles.Float, CultureInfo.InvariantCulture, out float dewpointC))
-                            this.dewpoint_c = dewpointC;
+                        this.dewpoint_c = reader.TryReadSingle();
                         break;
 
                     default:
@@ -2071,19 +2051,19 @@ namespace SimpleWeather.WeatherData
 
             // "humidity" : ""
             writer.WritePropertyName(nameof(humidity));
-            writer.WriteString(humidity?.ToInvariantString());
+            writer.WriteInt32(humidity);
 
             writer.WriteValueSeparator();
 
             // "pressure_mb" : ""
             writer.WritePropertyName(nameof(pressure_mb));
-            writer.WriteString(pressure_mb?.ToInvariantString());
+            writer.WriteSingle(pressure_mb);
 
             writer.WriteValueSeparator();
 
             // "pressure_in" : ""
             writer.WritePropertyName(nameof(pressure_in));
-            writer.WriteString(pressure_in?.ToInvariantString());
+            writer.WriteSingle(pressure_in);
 
             writer.WriteValueSeparator();
 
@@ -2095,25 +2075,25 @@ namespace SimpleWeather.WeatherData
 
             // "visibility_mi" : ""
             writer.WritePropertyName(nameof(visibility_mi));
-            writer.WriteString(visibility_mi?.ToInvariantString());
+            writer.WriteSingle(visibility_mi);
 
             writer.WriteValueSeparator();
 
             // "visibility_km" : ""
             writer.WritePropertyName(nameof(visibility_km));
-            writer.WriteString(visibility_km?.ToInvariantString());
+            writer.WriteSingle(visibility_km);
 
             writer.WriteValueSeparator();
 
             // "dewpoint_f" : ""
             writer.WritePropertyName(nameof(dewpoint_f));
-            writer.WriteString(dewpoint_f?.ToInvariantString());
+            writer.WriteSingle(dewpoint_f);
 
             writer.WriteValueSeparator();
 
             // "dewpoint_c" : ""
             writer.WritePropertyName(nameof(dewpoint_c));
-            writer.WriteString(dewpoint_c?.ToInvariantString());
+            writer.WriteSingle(dewpoint_c);
 
             // }
             writer.WriteEndObject();
@@ -2322,29 +2302,27 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(pop):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int POP))
-                            this.pop = POP;
+                        this.pop = reader.TryReadInt32();
                         break;
 
                     case nameof(cloudiness):
-                        if (int.TryParse(reader.ReadString(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int Clouds))
-                            this.cloudiness = Clouds;
+                        this.cloudiness = reader.TryReadInt32();
                         break;
 
                     case nameof(qpf_rain_in):
-                        this.qpf_rain_in = reader.ReadSingle();
+                        this.qpf_rain_in = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_rain_mm):
-                        this.qpf_rain_mm = reader.ReadSingle();
+                        this.qpf_rain_mm = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_snow_in):
-                        this.qpf_snow_in = reader.ReadSingle();
+                        this.qpf_snow_in = reader.TryReadSingle();
                         break;
 
                     case nameof(qpf_snow_cm):
-                        this.qpf_snow_cm = reader.ReadSingle();
+                        this.qpf_snow_cm = reader.TryReadSingle();
                         break;
 
                     default:
@@ -2363,37 +2341,37 @@ namespace SimpleWeather.WeatherData
 
             // "pop" : ""
             writer.WritePropertyName(nameof(pop));
-            writer.WriteString(pop?.ToInvariantString());
+            writer.WriteInt32(pop);
 
             writer.WriteValueSeparator();
 
             // "cloudiness" : ""
             writer.WritePropertyName(nameof(cloudiness));
-            writer.WriteString(cloudiness?.ToInvariantString());
+            writer.WriteInt32(cloudiness);
 
             writer.WriteValueSeparator();
 
             // "qpf_rain_in" : ""
             writer.WritePropertyName(nameof(qpf_rain_in));
-            writer.WriteSingle(qpf_rain_in.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_rain_in);
 
             writer.WriteValueSeparator();
 
             // "qpf_rain_mm" : ""
             writer.WritePropertyName(nameof(qpf_rain_mm));
-            writer.WriteSingle(qpf_rain_mm.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_rain_mm);
 
             writer.WriteValueSeparator();
 
             // "qpf_snow_in" : ""
             writer.WritePropertyName(nameof(qpf_snow_in));
-            writer.WriteSingle(qpf_snow_in.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_snow_in);
 
             writer.WriteValueSeparator();
 
             // "qpf_snow_cm" : ""
             writer.WritePropertyName(nameof(qpf_snow_cm));
-            writer.WriteSingle(qpf_snow_cm.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(qpf_snow_cm);
 
             // }
             writer.WriteEndObject();
@@ -2655,7 +2633,7 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(index):
-                        this.index = reader.ReadSingle();
+                        this.index = reader.TryReadSingle();
                         break;
 
                     default:
@@ -2674,7 +2652,7 @@ namespace SimpleWeather.WeatherData
 
             // "scale" : ""
             writer.WritePropertyName(nameof(index));
-            writer.WriteSingle(index.GetValueOrDefault(-1.0f));
+            writer.WriteSingle(index);
 
             // }
             writer.WriteEndObject();
@@ -2694,6 +2672,7 @@ namespace SimpleWeather.WeatherData
         public int? pm25 { get; set; }
         public int? pm10 { get; set; }
         public int? co { get; set; }
+        [JsonFormatter(typeof(NullableDateTimeFormatter), "yyyy-MM-dd")]
         public DateTime? date { get; set; }
 
         public AirQuality()
@@ -2760,7 +2739,7 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(index):
-                        this.index = reader.ReadInt32();
+                        this.index = reader.TryReadInt32();
                         break;
 
                     case nameof(attribution):
@@ -2768,31 +2747,31 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(no2):
-                        this.no2 = reader.ReadInt32();
+                        this.no2 = reader.TryReadInt32();
                         break;
 
                     case nameof(o3):
-                        this.o3 = reader.ReadInt32();
+                        this.o3 = reader.TryReadInt32();
                         break;
 
                     case nameof(so2):
-                        this.so2 = reader.ReadInt32();
+                        this.so2 = reader.TryReadInt32();
                         break;
 
                     case nameof(pm25):
-                        this.pm25 = reader.ReadInt32();
+                        this.pm25 = reader.TryReadInt32();
                         break;
 
                     case nameof(pm10):
-                        this.pm10 = reader.ReadInt32();
+                        this.pm10 = reader.TryReadInt32();
                         break;
 
                     case nameof(co):
-                        this.co = reader.ReadInt32();
+                        this.co = reader.TryReadInt32();
                         break;
 
                     case nameof(date):
-                        this.date = DateTime.ParseExact(reader.ReadString(), "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.date = reader.TryReadDateTime("yyyy-MM-dd");
                         break;
 
                     default:
@@ -2811,7 +2790,7 @@ namespace SimpleWeather.WeatherData
 
             // "index" : ""
             writer.WritePropertyName(nameof(index));
-            writer.WriteSingle(index.GetValueOrDefault(-1));
+            writer.WriteSingle(index);
 
             writer.WriteValueSeparator();
 

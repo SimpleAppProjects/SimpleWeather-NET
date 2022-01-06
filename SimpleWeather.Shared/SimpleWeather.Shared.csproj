@@ -245,6 +245,7 @@
     <Compile Include="Utf8JsonGen\EnumerableFormatter.cs" />
     <Compile Include="Utf8JsonGen\EnumFormatter.cs" />
     <Compile Include="Utf8JsonGen\EnumResolver.cs" />
+    <Compile Include="Utf8JsonGen\Utf8JsonExtensions.cs" />
     <Compile Include="Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="Utf8JsonGen\Utf8JsonResolver.cs" />
     <Compile Include="Utils\AirQualityUtils.cs" />
