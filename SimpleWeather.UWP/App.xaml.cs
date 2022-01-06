@@ -511,7 +511,7 @@ namespace SimpleWeather.UWP
 
         private void Window_Closed(object sender, CoreWindowEventArgs e)
         {
-            Radar.MapControlCreator.Instance.RemoveMapControl();
+            Radar.MapControlCreator.Instance?.RemoveMapControl();
         }
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
