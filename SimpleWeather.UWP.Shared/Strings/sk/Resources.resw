@@ -498,7 +498,7 @@
   <data name="DateTime_SecAgo" xml:space="preserve">
     <value>{0}s dozadu</value>
   </data>
-  <data name="Button_Refresh.Label" xml:space="preserve">
+  <data name="action_refresh" xml:space="preserve">
     <value>Obnoviť</value>
   </data>
   <data name="Label_Pin.Text" xml:space="preserve">

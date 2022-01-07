@@ -216,7 +216,7 @@ namespace SimpleWeather.UWP.Main
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Refresh),
-                    Label = App.ResLoader.GetString("Button_Refresh/Label"),
+                    Label = App.ResLoader.GetString("action_refresh"),
                     Tag = "refresh"
                 }
             };

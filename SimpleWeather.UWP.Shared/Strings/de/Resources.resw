@@ -517,7 +517,7 @@
     <value>vor {0} Sekunden</value>
     <comment>Fuzzy</comment>
   </data>
-  <data name="Button_Refresh.Label" xml:space="preserve">
+  <data name="action_refresh" xml:space="preserve">
     <value>Aktualisieren</value>
   </data>
   <data name="Label_Pin.Text" xml:space="preserve">
