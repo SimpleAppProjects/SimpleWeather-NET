@@ -30,6 +30,7 @@ namespace SimpleWeather.UWP.Utils
 
         public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_LOCPANELBGIMAGE, NewValue = value }); } }
         public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_TILEBGIMAGE, NewValue = value }); } }
+        public static bool PollenEnabled { get { return GetPollenEnabled(); } set { SetPollenEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_POLLEN, NewValue = value }); } }
 
         #region Settings Keys
 
@@ -47,6 +48,7 @@ namespace SimpleWeather.UWP.Utils
         private const string KEY_RADAR = "key_radar";
         private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
         private const string KEY_TILEBGIMAGE = "key_tilebgimage";
+        private const string KEY_POLLEN = "key_pollen";
 
         #endregion Settings Keys
 
@@ -267,6 +269,21 @@ namespace SimpleWeather.UWP.Utils
         {
             featureSettings.Values[KEY_TILEBGIMAGE] = value;
             Task.Run(BackgroundTasks.WeatherUpdateBackgroundTask.RequestAppTrigger);
+        }
+
+        private static bool GetPollenEnabled()
+        {
+            if (featureSettings.Values.TryGetValue(KEY_POLLEN, out object value))
+            {
+                return (bool)value;
+            }
+
+            return true;
+        }
+
+        private static void SetPollenEnabled(bool value)
+        {
+            featureSettings.Values[KEY_POLLEN] = value;
         }
     }
 }

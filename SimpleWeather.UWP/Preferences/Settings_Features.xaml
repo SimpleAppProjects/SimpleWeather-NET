@@ -67,6 +67,10 @@
                     Content="{helpers:StringRes Name='pref_title_feature_aqindex'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
                 <CheckBox
+                    d:Content="Pollen Count"
+                    Content="{helpers:StringRes Name='label_pollen_count'}"
+                    IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
+                <CheckBox
                     d:Content="Moon Phase"
                     Content="{helpers:StringRes Name='pref_title_feature_moonphase'}"
                     IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
