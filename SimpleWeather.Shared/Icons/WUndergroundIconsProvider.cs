@@ -55,12 +55,13 @@ namespace SimpleWeather.Icons
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
+                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
                     fileIcon = "wui-nt_mostlycloudy.png";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
+                case WeatherIcons.NIGHT_OVERCAST:
                     fileIcon = "wui-nt_partlycloudy.png";
                     break;
 
@@ -436,12 +437,13 @@ namespace SimpleWeather.Icons
 
                 case WeatherIcons.NIGHT_ALT_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
+                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
                     fileIcon = "wui-nt_mostlycloudy.svg";
                     break;
 
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
+                case WeatherIcons.NIGHT_OVERCAST:
                     fileIcon = "wui-nt_partlycloudy.svg";
                     break;
 

@@ -141,6 +141,10 @@ namespace SimpleWeather.Icons
                     fileIcon = "wic-moon-fog.png";
                     break;
 
+                case WeatherIcons.NIGHT_OVERCAST:
+                    fileIcon = "wic-moon-cloud.png";
+                    break;
+
                 // Neutral
                 case WeatherIcons.CLOUD:
                     fileIcon = "wic-cloud.png";
@@ -541,6 +545,10 @@ namespace SimpleWeather.Icons
 
                 case WeatherIcons.NIGHT_FOG:
                     fileIcon = "wic-moon-fog.svg";
+                    break;
+
+                case WeatherIcons.NIGHT_OVERCAST:
+                    fileIcon = "wic-moon-cloud.svg";
                     break;
 
                 // Neutral

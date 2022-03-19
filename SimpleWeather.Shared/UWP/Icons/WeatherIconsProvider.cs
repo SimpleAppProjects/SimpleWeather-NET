@@ -197,6 +197,7 @@ namespace SimpleWeather.Icons
                     break;
 
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
+                case WeatherIcons.NIGHT_OVERCAST:
                     fileIcon = "wi-night-alt-partly-cloudy.png";
                     break;
 
@@ -722,6 +723,7 @@ namespace SimpleWeather.Icons
                     break;
 
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
+                case WeatherIcons.NIGHT_OVERCAST:
                     fileIcon = "wi-night-alt-partly-cloudy.svg";
                     break;
 

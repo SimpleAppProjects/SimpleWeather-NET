@@ -35,6 +35,7 @@ namespace SimpleWeather.Icons
         // NIGHT_ALT
         public const String NIGHT_CLEAR = "\uf02e";
         public const String NIGHT_FOG = "\uf04a";
+        public const String NIGHT_OVERCAST = "\uf00c-nt";
         public const String NIGHT_ALT_CLOUDY = "\uf086";
         public const String NIGHT_ALT_CLOUDY_GUSTS = "\uf022";
         public const String NIGHT_ALT_CLOUDY_WINDY = "\uf023";
