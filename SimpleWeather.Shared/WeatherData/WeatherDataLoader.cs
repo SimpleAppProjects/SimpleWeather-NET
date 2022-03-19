@@ -407,7 +407,7 @@ namespace SimpleWeather.WeatherData
                 // Check for outdated observation
                 var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
                 var durationMins = weather?.condition?.observation_time == null ? 61 : (now - weather.condition.observation_time).TotalMinutes;
-                if (durationMins > 60)
+                if (durationMins > 180)
                 {
                     var interval = WeatherManager.GetProvider(weather.source).HourlyForecastInterval;
 
