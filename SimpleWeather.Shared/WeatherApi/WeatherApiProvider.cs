@@ -23,7 +23,7 @@ namespace SimpleWeather.WeatherApi
     {
         private const String BASE_URL = "https://api.weatherapi.com/v1/";
         private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast.json?key={0}";
-        private const String WEATHER_QUERY_URL = BASE_URL + "forecast.json?q={0}&days=5&aqi=yes&alerts=yes&lang={1}&key={2}";
+        private const String WEATHER_QUERY_URL = BASE_URL + "forecast.json?q={0}&days=10&aqi=yes&alerts=yes&lang={1}&key={2}";
         private const String ALERTS_QUERY_URL = BASE_URL + "forecast.json?q={0}&days=1&hour=6&aqi=no&alerts=yes&lang={1}&key={2}";
 
         public WeatherApiProvider() : base()
