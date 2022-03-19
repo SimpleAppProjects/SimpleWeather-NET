@@ -239,6 +239,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_CLEAR:
                     return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_clear");
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
+                case WeatherIcons.NIGHT_OVERCAST:
                     return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_overcast");
                 case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
@@ -349,6 +350,7 @@ namespace SimpleWeather.WeatherData
                 case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
                 case WeatherIcons.NIGHT_FOG:
                 case WeatherIcons.NIGHT_CLEAR:
+                case WeatherIcons.NIGHT_OVERCAST:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
@@ -466,6 +468,8 @@ namespace SimpleWeather.WeatherData
                     break;
                 // Partly Cloudy
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
+                case WeatherIcons.NIGHT_OVERCAST:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                     if (IsNight(weather))
                         argb = new byte[4] { 0xff, 0x18, 0x18, 0x20 };

@@ -305,14 +305,19 @@ namespace SimpleWeather.HERE
             if (icon == null)
                 return WeatherIcons.NA;
 
-            if (icon.Contains("mostly_sunny") || icon.Contains("mostly_clear") || icon.Contains("partly_cloudy")
+            if (icon.Contains("overcast"))
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+            else if (icon.Contains("mostly_sunny") || icon.Contains("mostly_clear") || icon.Contains("partly_cloudy")
                     || icon.Contains("passing_clounds") || icon.Contains("more_sun_than_clouds") || icon.Contains("scattered_clouds")
-                    || icon.Contains("decreasing_cloudiness") || icon.Contains("clearing_skies") || icon.Contains("overcast")
+                    || icon.Contains("decreasing_cloudiness") || icon.Contains("clearing_skies")
                     || icon.Contains("low_clouds") || icon.Contains("passing_clouds"))
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                 else
-                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
             else if (icon.Contains("cloudy") || icon.Contains("a_mixture_of_sun_and_clouds") || icon.Contains("increasing_cloudiness")
                      || icon.Contains("breaks_of_sun_late") || icon.Contains("afternoon_clouds") || icon.Contains("morning_clouds")
                      || icon.Contains("partly_sunny") || icon.Contains("more_clouds_than_sun") || icon.Contains("broken_clouds"))

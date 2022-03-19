@@ -502,15 +502,21 @@ namespace SimpleWeather.OpenWeather
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                     else
-                        WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                        WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
                     break;
 
                 case "803": // broken clouds
-                case "804": // overcast clouds
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
                     else
                         WeatherIcon = WeatherIcons.DAY_CLOUDY;
+                    break;
+
+                case "804": // overcast clouds
+                    if (isNight)
+                        WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
+                    else
+                        WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
                     break;
 
                 case "901": // tropical storm

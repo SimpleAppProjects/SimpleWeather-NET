@@ -319,13 +319,14 @@ namespace SimpleWeather.WeatherApi
                     WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
                     break;
 
-                /*
-                 * 1003: Partly cloudy
-                 * 1009: Overcast
-                 */
+                /* Partly cloudy */
                 case 1003:
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
+                    break;
+
+                /* Overcast */
                 case 1009:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
                     break;
 
                 /* Cloudy */

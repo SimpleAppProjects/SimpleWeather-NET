@@ -317,24 +317,27 @@ namespace SimpleWeather.AccuWeather
                 case 3:
                 case 34:
                 case 35:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
                     break;
 
                 /*
                  *  4: Intermittent Clouds
                  *  6: Mostly Cloudy
                  *  7: Cloudy
-                 *  8: Dreary (Overcast)
                  * 36: Intermittent Clouds
                  * 38: Mostly Cloudy
                  */
                 case 4:
                 case 6:
                 case 7:
-                case 8:
                 case 36:
                 case 38:
                     WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY;
+                    break;
+
+                /* 8: Dreary (Overcast) */
+                case 8:
+                    WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
                     break;
 
                 /*

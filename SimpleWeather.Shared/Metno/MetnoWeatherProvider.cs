@@ -228,7 +228,7 @@ namespace SimpleWeather.Metno
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                     else
-                        WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                        WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
                     break;
 
                 case "cloudy":

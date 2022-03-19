@@ -549,12 +549,19 @@ namespace SimpleWeather.NWS
                 else
                     WeatherIcon = WeatherIcons.DAY_WINDY;
             }
-            else if (icon.Contains("ovc") || icon.Contains("sct") || icon.Contains("few"))
+            else if (icon.Contains("ovc"))
+            {
+                if (isNight)
+                    WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
+                else
+                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+            }
+            else if (icon.Contains("sct") || icon.Contains("few"))
             {
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                 else
-                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
             }
             else if (icon.Contains("bkn"))
             {

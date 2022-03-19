@@ -310,7 +310,7 @@ namespace SimpleWeather.MeteoFrance
             else if (icon.StartsWith("p2"))
             {
                 // Partly Cloudy
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_SUNNY_OVERCAST;
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
             }
             else if (icon.StartsWith("p3"))
             {

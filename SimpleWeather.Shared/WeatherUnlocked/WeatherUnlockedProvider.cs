@@ -256,11 +256,10 @@ namespace SimpleWeather.WeatherUnlocked
                             WeatherIcon = WeatherIcons.DAY_SUNNY;
                         break;
                     case 1: // Partly cloudy skies
-                    case 3: // Cloudy skies
                         if (isNight)
                             WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                         else
-                            WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                            WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
                         break;
                     case 2: // Cloudy skies
                         if (isNight)
@@ -268,7 +267,13 @@ namespace SimpleWeather.WeatherUnlocked
                         else
                             WeatherIcon = WeatherIcons.DAY_CLOUDY;
                         break;
-                    case 10: // Haze
+                    case 3: // Overcast skies
+                        if (isNight)
+                            WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
+                        else
+                            WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                        break;
+                    case 10: // Mist
                     case 45: // Fog
                     case 49: // Freezing fog
                         if (isNight)
