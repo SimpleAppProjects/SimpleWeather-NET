@@ -491,7 +491,6 @@ namespace SimpleWeather.OpenWeather.OneCall
                 case "520": // light intensity shower rain
                 case "521": // shower rain
                 case "522": // heavy intensity shower rain
-                case "701": // mist
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SHOWERS;
                     else
@@ -535,8 +534,8 @@ namespace SimpleWeather.OpenWeather.OneCall
                     WeatherIcon = WeatherIcons.DUST;
                     break;
 
-                // fog
-                case "741":
+                case "741": // fog
+                case "701": // mist
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_FOG;
                     else
