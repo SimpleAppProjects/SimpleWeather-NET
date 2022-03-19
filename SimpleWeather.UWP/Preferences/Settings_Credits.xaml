@@ -41,7 +41,7 @@
                     Style="{StaticResource SettingTitleStyle}"
                     Text="{helpers:StringRes Name='pref_category_providers'}" />
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="HERE Weather" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_here}" />
                     <RichTextBlock Padding="0,10">
                         <Paragraph>
                             The HERE Logo is a trademark or registered trademark of HERE Global B.V.
@@ -55,7 +55,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="MET Norway" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_metno}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://www.met.no/en">
                         <Image
                             Height="50"
@@ -64,7 +64,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="U.S. National Weather Service" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_nws}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="http://www.weather.gov">
                         <Image
                             Height="50"
@@ -73,7 +73,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="OpenWeatherMap" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_owm}" />
                     <HyperlinkButton Padding="0,20" NavigateUri="http://openweathermap.org/">
                         <Image
                             Height="25"
@@ -91,7 +91,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="World Air Quality Index Project" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_waqi}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://aqicn.org/">
                         <Image
                             Height="50"
@@ -100,7 +100,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="WeatherUnlocked" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_wunlocked}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://developer.weatherunlocked.com/">
                         <BitmapIcon
                             Height="50"
@@ -111,7 +111,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="WeatherAPI.com" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_weatherapi}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://www.weatherapi.com/">
                         <Image
                             Height="50"
@@ -120,7 +120,7 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Tomorrow.io" />
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_tomorrowio}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://tomorrow.io">
                         <Image
                             Height="50"
