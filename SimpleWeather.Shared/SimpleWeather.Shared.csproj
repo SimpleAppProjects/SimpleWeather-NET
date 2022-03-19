@@ -278,6 +278,7 @@
     <Compile Include="Utils\CustomExtensions.cs" />
     <Compile Include="Utils\NumberUtils.cs" />
     <Compile Include="Utils\OAuthUtils.cs" />
+    <Compile Include="Utils\ObservableCollectionWrapper.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\Settings.SettingsChangedEvent.cs" />

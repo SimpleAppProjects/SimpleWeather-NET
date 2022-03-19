@@ -143,6 +143,7 @@ namespace SimpleWeather.Controls
 
         public DetailItemViewModel(MoonPhase.MoonPhaseType moonPhaseType)
         {
+            this.DetailsType = WeatherDetailsType.MoonPhase;
             this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonphase");
             this.IconRotation = 0;
 
@@ -192,6 +193,7 @@ namespace SimpleWeather.Controls
 
         public DetailItemViewModel(Beaufort.BeaufortScale beaufortScale)
         {
+            this.DetailsType = WeatherDetailsType.Beaufort;
             this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_beaufort");
             this.IconRotation = 0;
 

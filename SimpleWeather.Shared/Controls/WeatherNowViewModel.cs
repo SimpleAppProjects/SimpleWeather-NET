@@ -37,7 +37,7 @@ namespace SimpleWeather.Controls
 
         // Weather Details
         private SunPhaseViewModel sunPhase;
-        private SimpleObservableList<DetailItemViewModel> weatherDetails;
+        private DetailsMap<WeatherDetailsType, DetailItemViewModel> weatherDetailsMap;
         private UVIndexViewModel uvIndex;
         private BeaufortViewModel beaufort;
         private MoonPhaseViewModel moonPhase;
@@ -85,7 +85,8 @@ namespace SimpleWeather.Controls
         public bool ShowHiLo { get => showHiLo; private set { if (!Equals(showHiLo, value)) { showHiLo = value; OnPropertyChanged(nameof(ShowHiLo)); } } }
         public string WeatherSummary { get => weatherSummary; private set { if (!Equals(weatherSummary, value)) { weatherSummary = value; OnPropertyChanged(nameof(WeatherSummary)); } } }
         public SunPhaseViewModel SunPhase { get => sunPhase; private set { if (!Equals(sunPhase, value)) { sunPhase = value; OnPropertyChanged(nameof(SunPhase)); } } }
-        public SimpleObservableList<DetailItemViewModel> WeatherDetails { get => weatherDetails; private set { weatherDetails = value; OnPropertyChanged(nameof(WeatherDetails)); } }
+        public IReadOnlyCollection<DetailItemViewModel> WeatherDetails { get => weatherDetailsMap.ValuesWrapper; }
+        public DetailsMap<WeatherDetailsType, DetailItemViewModel> WeatherDetailsMap { get => weatherDetailsMap; private set { weatherDetailsMap = value; OnPropertyChanged(nameof(WeatherDetailsMap)); } }
         public UVIndexViewModel UVIndex { get => uvIndex; private set { if (!Equals(uvIndex, value)) { uvIndex = value; OnPropertyChanged(nameof(UVIndex)); } } }
         public BeaufortViewModel Beaufort { get => beaufort; private set { if (!Equals(beaufort, value)) { beaufort = value; OnPropertyChanged(nameof(Beaufort)); } } }
         public MoonPhaseViewModel MoonPhase { get => moonPhase; private set { if (!Equals(moonPhase, value)) { moonPhase = value; OnPropertyChanged(nameof(MoonPhase)); } } }
@@ -125,7 +126,7 @@ namespace SimpleWeather.Controls
         private void Initialize()
         {
             wm = WeatherManager.GetInstance();
-            WeatherDetails = new SimpleObservableList<DetailItemViewModel>();
+            WeatherDetailsMap = new DetailsMap<WeatherDetailsType, DetailItemViewModel>();
             LocationCoord = new WeatherUtils.Coordinate(0, 0);
         }
 
@@ -242,7 +243,7 @@ namespace SimpleWeather.Controls
             ShowHiLo = (!shouldHideHi || !shouldHideLo) && !Equals(HiTemp, LoTemp);
 
             // WeatherDetails
-            WeatherDetails.Clear();
+            WeatherDetailsMap.Clear();
 
             // Precipitation
             if (weather.precipitation != null)
@@ -250,7 +251,7 @@ namespace SimpleWeather.Controls
                 string Chance = weather.precipitation.pop.HasValue ? weather.precipitation.pop.Value + "%" : null;
 
                 if (weather.precipitation.pop.HasValue && weather.precipitation.pop >= 0)
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, weather.precipitation.pop.Value + "%"));
+                    WeatherDetailsMap.Add(WeatherDetailsType.PoPChance, new DetailItemViewModel(WeatherDetailsType.PoPChance, weather.precipitation.pop.Value + "%"));
                 if (weather.precipitation.qpf_rain_in.HasValue && weather.precipitation.qpf_rain_in >= 0)
                 {
                     string unit = Settings.PrecipitationUnit;
@@ -270,7 +271,7 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                    WeatherDetailsMap.Add(WeatherDetailsType.PoPRain, new DetailItemViewModel(WeatherDetailsType.PoPRain,
                         String.Format(culture, "{0:0.00} {1}", precipValue, precipUnit)));
                 }
                 if (weather.precipitation.qpf_snow_in.HasValue && weather.precipitation.qpf_snow_in >= 0)
@@ -292,11 +293,11 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                    WeatherDetailsMap.Add(WeatherDetailsType.PoPSnow, new DetailItemViewModel(WeatherDetailsType.PoPSnow,
                         String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                 }
                 if (weather.precipitation.cloudiness.HasValue && weather.precipitation.cloudiness >= 0)
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, weather.precipitation.cloudiness.Value + "%"));
+                    WeatherDetailsMap.Add(WeatherDetailsType.PoPCloudiness, new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, weather.precipitation.cloudiness.Value + "%"));
             }
 
             // Atmosphere
@@ -319,7 +320,7 @@ namespace SimpleWeather.Controls
                         break;
                 }
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                WeatherDetailsMap.Add(WeatherDetailsType.Pressure, new DetailItemViewModel(WeatherDetailsType.Pressure,
                     String.Format(culture, "{0} {1:0.00} {2}",
                     WeatherUtils.GetPressureStateIcon(weather.atmosphere.pressure_trend),
                     pressureVal, pressureUnit)));
@@ -327,13 +328,13 @@ namespace SimpleWeather.Controls
 
             if (weather.atmosphere.humidity.HasValue)
             {
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
+                WeatherDetailsMap.Add(WeatherDetailsType.Humidity, new DetailItemViewModel(WeatherDetailsType.Humidity,
                     String.Format(culture, "{0}%", weather.atmosphere.humidity.Value)));
             }
 
             if (weather.atmosphere.dewpoint_f.HasValue && (weather.atmosphere.dewpoint_f != weather.atmosphere.dewpoint_c))
             {
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
+                WeatherDetailsMap.Add(WeatherDetailsType.Dewpoint, new DetailItemViewModel(WeatherDetailsType.Dewpoint,
                     String.Format(culture, "{0}°",
                     isFahrenheit ?
                         Math.Round(weather.atmosphere.dewpoint_f.Value) :
@@ -359,7 +360,7 @@ namespace SimpleWeather.Controls
                         break;
                 }
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                WeatherDetailsMap.Add(WeatherDetailsType.Visibility, new DetailItemViewModel(WeatherDetailsType.Visibility,
                     String.Format(culture, "{0:0.##} {1}", visibilityVal, visibilityUnit)));
             }
 
@@ -369,7 +370,7 @@ namespace SimpleWeather.Controls
             {
                 var value = isFahrenheit ? Math.Round(weather.condition.feelslike_f.Value) : Math.Round(weather.condition.feelslike_c.Value);
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                WeatherDetailsMap.Add(WeatherDetailsType.FeelsLike, new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                        String.Format(culture, "{0}°", value)));
             }
 
@@ -398,7 +399,7 @@ namespace SimpleWeather.Controls
                         break;
                 }
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
+                WeatherDetailsMap.Add(WeatherDetailsType.WindSpeed, new DetailItemViewModel(WeatherDetailsType.WindSpeed,
                    String.Format(culture, "{0} {1}, {2}", speedVal, speedUnit, WeatherUtils.GetWindDirection(weather.condition.wind_degrees.Value)),
                    weather.condition.wind_degrees.Value + 180));
             }
@@ -426,7 +427,7 @@ namespace SimpleWeather.Controls
                         break;
                 }
 
-                WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.WindGust,
+                WeatherDetailsMap.Add(WeatherDetailsType.WindGust, new DetailItemViewModel(WeatherDetailsType.WindGust,
                     String.Format(culture, "{0} {1}", speedVal, speedUnit)));
             }
 
@@ -439,9 +440,9 @@ namespace SimpleWeather.Controls
 
                 if (weather.astronomy.sunrise > DateTime.MinValue && weather.astronomy.sunset > DateTime.MinValue)
                 {
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunrise,
+                    WeatherDetailsMap.Add(WeatherDetailsType.Sunrise, new DetailItemViewModel(WeatherDetailsType.Sunrise,
                            weather.astronomy.sunrise.ToString("t", culture)));
-                    WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Sunset,
+                    WeatherDetailsMap.Add(WeatherDetailsType.Sunset, new DetailItemViewModel(WeatherDetailsType.Sunset,
                            weather.astronomy.sunset.ToString("t", culture)));
                 }
 
@@ -451,20 +452,20 @@ namespace SimpleWeather.Controls
                 {
                     if (weather.astronomy.moonrise > DateTime.MinValue)
                     {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                        WeatherDetailsMap.Add(WeatherDetailsType.Moonrise, new DetailItemViewModel(WeatherDetailsType.Moonrise,
                            weather.astronomy.moonrise.ToString("t", culture)));
                     }
 
                     if (weather.astronomy.moonset > DateTime.MinValue)
                     {
-                        WeatherDetails.Add(new DetailItemViewModel(WeatherDetailsType.Moonset,
+                        WeatherDetailsMap.Add(WeatherDetailsType.Moonset, new DetailItemViewModel(WeatherDetailsType.Moonset,
                            weather.astronomy.moonset.ToString("t", culture)));
                     }
                 }
 
                 if (weather.astronomy.moonphase != null)
                 {
-                    //WeatherDetails.Add(new DetailItemViewModel(weather.astronomy.moonphase.phase));
+                    WeatherDetailsMap.Add(WeatherDetailsType.MoonPhase, new DetailItemViewModel(weather.astronomy.moonphase.phase));
                 }
             }
             else
@@ -478,7 +479,7 @@ namespace SimpleWeather.Controls
             {
 #endif
                 OnPropertyChanged(nameof(WeatherDetails));
-                WeatherDetails.NotifyCollectionChanged();
+                WeatherDetailsMap.NotifyCollectionChanged();
 #if WINDOWS_UWP
             });
 #endif
@@ -513,5 +514,28 @@ namespace SimpleWeather.Controls
         }
 
         public bool IsValid => weather != null && weather.IsValid();
+
+        public sealed class DetailsMap<TKey, TValue> : Dictionary<TKey, TValue>, INotifyCollectionChanged where TValue : DetailItemViewModel
+        {
+            public event NotifyCollectionChangedEventHandler CollectionChanged;
+            private ObservableCollectionWrapper<TValue> _valueWrapper;
+
+            public IReadOnlyCollection<TValue> ValuesWrapper
+            {
+                get
+                {
+                    if (_valueWrapper == null)
+                        _valueWrapper = new ObservableCollectionWrapper<TValue>(this.Values);
+
+                    return _valueWrapper;
+                }
+            }
+
+            public void NotifyCollectionChanged()
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                _valueWrapper?.NotifyCollectionChanged();
+            }
+        }
     }
 }
