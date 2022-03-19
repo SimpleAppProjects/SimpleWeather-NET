@@ -411,6 +411,8 @@
     <Content Include="Assets\Providers\metno.png" />
     <Content Include="Assets\Providers\nws.png" />
     <Content Include="Assets\Providers\openweathermap.png" />
+    <Content Include="Assets\Providers\tomorrow-logo-colored-dark.png" />
+    <Content Include="Assets\Providers\tomorrow-logo-colored.png" />
     <Content Include="Assets\Providers\waqi.png" />
     <Content Include="Assets\Providers\weatherapi_logo.png" />
     <Content Include="Assets\Providers\weatherapi_logo_dark.png" />

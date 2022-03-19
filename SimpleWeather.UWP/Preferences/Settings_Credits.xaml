@@ -17,11 +17,13 @@
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/here_dark.png</x:String>
                     <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/bingmaps_dark.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/weatherapi_logo_dark.png</x:String>
+                    <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/tomorrow-logo-colored-dark.png</x:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/here.png</x:String>
                     <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/bingmaps.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/weatherapi_logo.png</x:String>
+                    <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Assets/Providers/tomorrow-logo-colored.png</x:String>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -115,6 +117,15 @@
                             Height="50"
                             HorizontalAlignment="Left"
                             Source="{ThemeResource WeatherApiImageSrc}" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Tomorrow.io" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://tomorrow.io">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource TomorrowIoImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <ContentPresenter d:Content="Icons" Content="{helpers:StringRes Name='pref_title_icons'}">
