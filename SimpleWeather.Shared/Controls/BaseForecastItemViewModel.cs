@@ -5,7 +5,7 @@ namespace SimpleWeather.Controls
 {
     public class BaseForecastItemViewModel
     {
-        protected WeatherManager wm { get; private set; }
+        protected readonly WeatherManager wm = WeatherManager.GetInstance();
 
         public string WeatherIcon { get; set; }
         public string Date { get; set; }
@@ -16,13 +16,12 @@ namespace SimpleWeather.Controls
         public int WindDirection { get; set; }
         public string WindSpeed { get; set; }
 
-        public IList<DetailItemViewModel> DetailExtras { get; private set; }
+        public IDictionary<WeatherDetailsType, DetailItemViewModel> DetailExtras { get; private set; }
 
         public BaseForecastItemViewModel()
         {
-            wm = WeatherManager.GetInstance();
             int capacity = System.Enum.GetNames(typeof(WeatherDetailsType)).Length;
-            DetailExtras = new List<DetailItemViewModel>(capacity);
+            DetailExtras = new Dictionary<WeatherDetailsType, DetailItemViewModel>(capacity);
         }
     }
 }

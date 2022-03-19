@@ -80,21 +80,8 @@ namespace SimpleWeather.UWP.Notifications
             var loTemp = viewModel.LoTemp ?? WeatherIcons.PLACEHOLDER;
             var condition = viewModel.Condition ?? WeatherIcons.EM_DASH;
 
-            DetailItemViewModel chanceModel = null;
-            DetailItemViewModel feelsLikeModel = null;
-            foreach (var model in viewModel.DetailExtras)
-            {
-                if (model.DetailsType == WeatherDetailsType.PoPChance)
-                {
-                    chanceModel = model;
-                }
-                else if (model.DetailsType == WeatherDetailsType.FeelsLike)
-                {
-                    feelsLikeModel = model;
-                }
-
-                if (chanceModel != null && feelsLikeModel != null) break;
-            }
+            var chanceModel = viewModel.DetailExtras[WeatherDetailsType.PoPChance];
+            var feelsLikeModel = viewModel.DetailExtras[WeatherDetailsType.FeelsLike];
 
             var contentText = new StringBuilder().Append(condition);
             var appendDiv = false;

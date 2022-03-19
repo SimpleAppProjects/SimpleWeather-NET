@@ -280,6 +280,7 @@
     <Compile Include="Utils\OAuthUtils.cs" />
     <Compile Include="Utils\ObservableCollectionWrapper.cs" />
     <Compile Include="Utils\ObservableItem.cs" />
+    <Compile Include="Utils\OrderedDictionary.cs" />
     <Compile Include="Utils\Settings.cs" />
     <Compile Include="Utils\Settings.SettingsChangedEvent.cs" />
     <Compile Include="Utils\SimpleObservableList.cs" />

@@ -91,12 +91,12 @@ namespace SimpleWeather.Controls
                 {
                     var value = isFahrenheit ? Math.Round(forecast.extras.feelslike_f.Value) : Math.Round(forecast.extras.feelslike_c.Value);
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.FeelsLike,
+                    DetailExtras.Add(WeatherDetailsType.FeelsLike, new DetailItemViewModel(WeatherDetailsType.FeelsLike,
                            String.Format(culture, "{0}°", value)));
                 }
 
                 if (forecast.extras.pop.HasValue && forecast.extras.pop >= 0)
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPChance, forecast.extras.pop.Value + "%"));
+                    DetailExtras.Add(WeatherDetailsType.PoPChance, new DetailItemViewModel(WeatherDetailsType.PoPChance, forecast.extras.pop.Value + "%"));
                 if (forecast.extras.qpf_rain_in.HasValue && forecast.extras.qpf_rain_in >= 0)
                 {
                     string unit = Settings.PrecipitationUnit;
@@ -116,7 +116,7 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPRain,
+                    DetailExtras.Add(WeatherDetailsType.PoPRain, new DetailItemViewModel(WeatherDetailsType.PoPRain,
                         String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                 }
                 if (forecast.extras.qpf_snow_in.HasValue && forecast.extras.qpf_snow_in >= 0)
@@ -138,21 +138,21 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPSnow,
+                    DetailExtras.Add(WeatherDetailsType.PoPSnow, new DetailItemViewModel(WeatherDetailsType.PoPSnow,
                         String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit)));
                 }
                 if (forecast.extras.cloudiness.HasValue && forecast.extras.cloudiness >= 0)
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, forecast.extras.cloudiness.Value + "%"));
+                    DetailExtras.Add(WeatherDetailsType.PoPCloudiness, new DetailItemViewModel(WeatherDetailsType.PoPCloudiness, forecast.extras.cloudiness.Value + "%"));
 
                 if (forecast.extras.humidity.HasValue)
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Humidity,
+                    DetailExtras.Add(WeatherDetailsType.Humidity, new DetailItemViewModel(WeatherDetailsType.Humidity,
                         String.Format(culture, "{0}%", forecast.extras.humidity)));
                 }
 
                 if (forecast.extras.dewpoint_f.HasValue && (forecast.extras.dewpoint_f != forecast.extras.dewpoint_c))
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Dewpoint,
+                    DetailExtras.Add(WeatherDetailsType.Dewpoint, new DetailItemViewModel(WeatherDetailsType.Dewpoint,
                         String.Format(culture, "{0}°",
                         isFahrenheit ?
                                 Math.Round(forecast.extras.dewpoint_f.Value) :
@@ -163,7 +163,7 @@ namespace SimpleWeather.Controls
                 {
                     UV uv = new UV(forecast.extras.uv_index.Value);
 
-                    DetailExtras.Add(new DetailItemViewModel(uv));
+                    DetailExtras.Add(WeatherDetailsType.UV, new DetailItemViewModel(uv));
                 }
 
                 if (forecast.extras.pressure_in.HasValue)
@@ -185,13 +185,13 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Pressure,
+                    DetailExtras.Add(WeatherDetailsType.Pressure, new DetailItemViewModel(WeatherDetailsType.Pressure,
                         String.Format(culture, "{0:0.##} {1}", pressureVal, pressureUnit)));
                 }
 
                 if (!String.IsNullOrWhiteSpace(WindSpeed))
                 {
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindSpeed,
+                    DetailExtras.Add(WeatherDetailsType.WindSpeed, new DetailItemViewModel(WeatherDetailsType.WindSpeed,
                         String.Format(culture, "{0}, {1}", WindSpeed, WindDir), WindDirection));
                 }
 
@@ -219,7 +219,7 @@ namespace SimpleWeather.Controls
                     }
 
                     var windGustSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.WindGust, windGustSpeed));
+                    DetailExtras.Add(WeatherDetailsType.WindGust, new DetailItemViewModel(WeatherDetailsType.WindGust, windGustSpeed));
                 }
 
                 if (forecast.extras.visibility_mi.HasValue && forecast.extras.visibility_mi >= 0)
@@ -241,7 +241,7 @@ namespace SimpleWeather.Controls
                             break;
                     }
 
-                    DetailExtras.Add(new DetailItemViewModel(WeatherDetailsType.Visibility,
+                    DetailExtras.Add(WeatherDetailsType.Visibility, new DetailItemViewModel(WeatherDetailsType.Visibility,
                            String.Format(culture, "{0:0.##} {1}", visibilityVal, visibilityUnit)));
                 }
             }

@@ -95,7 +95,7 @@ namespace SimpleWeather.UWP.Controls
 
                 PoPChance = Cloudiness = WindSpeed = null;
 
-                foreach (DetailItemViewModel detailItem in forecastViewModel.DetailExtras)
+                foreach (DetailItemViewModel detailItem in forecastViewModel.DetailExtras.Values)
                 {
                     if (detailItem.DetailsType == WeatherDetailsType.PoPChance)
                     {
@@ -127,7 +127,7 @@ namespace SimpleWeather.UWP.Controls
 
                 PoPChance = Cloudiness = WindSpeed = null;
 
-                foreach (DetailItemViewModel detailItem in hrforecastViewModel.DetailExtras)
+                foreach (DetailItemViewModel detailItem in hrforecastViewModel.DetailExtras.Values)
                 {
                     if (detailItem.DetailsType == WeatherDetailsType.PoPChance)
                     {
