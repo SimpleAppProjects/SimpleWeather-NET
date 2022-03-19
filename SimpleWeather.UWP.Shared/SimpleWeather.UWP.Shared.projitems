@@ -66,6 +66,14 @@
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\UVIndex.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WeatherConditions.resw" />
     <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\WindDirection.resw" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceFamilyTrigger.cs" />

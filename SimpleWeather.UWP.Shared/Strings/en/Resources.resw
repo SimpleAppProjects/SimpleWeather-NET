@@ -130,6 +130,24 @@
   <data name="key_hint" xml:space="preserve">
     <value>Provider Key</value>
   </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
   <data name="label_gpsfollow" xml:space="preserve">
     <value>Current Location</value>
   </data>
@@ -591,6 +609,9 @@
   <data name="pref_title_feature_charts" xml:space="preserve">
     <value>Charts</value>
   </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
   <data name="refresh_30min" xml:space="preserve">
     <value>30 minutes</value>
   </data>
@@ -622,6 +643,9 @@
   </data>
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
     <value>Background access denied. Please enable in Settings.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
   </data>
   <data name="label_pollen_count" xml:space="preserve">
     <value>Pollen Count</value>
@@ -665,5 +689,8 @@
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Current</value>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
   </data>
 </root>

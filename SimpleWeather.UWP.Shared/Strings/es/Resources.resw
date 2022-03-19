@@ -130,6 +130,24 @@
   <data name="key_hint" xml:space="preserve">
     <value>Clave del proveedor</value>
   </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
   <data name="label_gpsfollow" xml:space="preserve">
     <value>Ubicación actual</value>
   </data>
@@ -602,6 +620,9 @@ Fuzzy</comment>
     <value>Gráficos</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
   <data name="refresh_30min" xml:space="preserve">
     <value>30 minutos</value>
   </data>
@@ -633,6 +654,9 @@ Fuzzy</comment>
   </data>
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
     <value>Acceso en segundo plano denegado. Por favor, habilítelo en la configuración.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
   </data>
   <data name="label_pollen_count" xml:space="preserve">
     <value>Nivel de polen</value>
@@ -682,5 +706,8 @@ Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Actual</value>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
   </data>
 </root>
