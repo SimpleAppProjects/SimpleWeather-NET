@@ -50,6 +50,11 @@ namespace SimpleWeather.UWP.Controls
 
             public Size ToSize(Orientation orientation)
                 => orientation == Orientation.Horizontal ? new Size(U, V) : new Size(V, U);
+
+            public override string ToString()
+            {
+                return String.Format("U = {0} V = {1}", U, V);
+            }
         }
 
         private struct UvRect

@@ -126,6 +126,38 @@ namespace SimpleWeather.UWP.Controls
             }
 
             var requiredSize = UpdateRows(availableSize);
+
+            if (_rows.Count > 0)
+            {
+                // Need to re-measure row children with preferred size
+                var childIndex = 0;
+                foreach (var row in _rows)
+                {
+                    var rectCount = row.ChildrenRects.Count;
+                    var rectIdx = 0;
+
+                    foreach (var rect in row.ChildrenRects)
+                    {
+                        var child = Children[childIndex++];
+                        while (child.Visibility == Visibility.Collapsed)
+                        {
+                            // Collapsed children are not added into the rows,
+                            // we skip them.
+                            child = Children[childIndex++];
+                        }
+
+                        // Only re-measure last item
+                        // This seems to be the only item that gets cut off
+                        if (rectIdx == rectCount - 1)
+                        {
+                            child.Measure(rect.Size.ToSize(Orientation));
+                        }
+
+                        rectIdx++;
+                    }
+                }
+            }
+
             return requiredSize;
         }
 
@@ -163,6 +195,7 @@ namespace SimpleWeather.UWP.Controls
 
                         var finalRect = arrangeRect.ToRect(Orientation);
                         child.Arrange(finalRect);
+                        System.Diagnostics.Debug.WriteLine("ExtendingWrapPanel: RowItem: {0}", finalRect);
                     }
                 }
             }
@@ -186,6 +219,8 @@ namespace SimpleWeather.UWP.Controls
             var parentMeasure = new UvMeasure(Orientation, availableSize.Width, availableSize.Height);
             var spacingMeasure = new UvMeasure(Orientation, HorizontalSpacing, VerticalSpacing);
             var position = new UvMeasure(Orientation, Padding.Left, Padding.Top);
+
+            System.Diagnostics.Debug.WriteLine("ExtendingWrapPanel: Parent Measure: {0}", parentMeasure);
 
             var currentRow = new Row(new List<UvRect>(), default);
             var finalMeasure = new UvMeasure(Orientation, width: 0.0, height: 0.0);
