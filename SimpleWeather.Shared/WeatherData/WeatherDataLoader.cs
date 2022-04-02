@@ -15,7 +15,7 @@ namespace SimpleWeather.WeatherData
         private readonly LocationData location;
         private Weather weather = null;
         private ICollection<WeatherAlert> weatherAlerts = null;
-        private WeatherManager wm = WeatherManager.GetInstance();
+        private readonly WeatherManager wm = WeatherManager.GetInstance();
 
         private const String TAG = nameof(WeatherDataLoader);
 
@@ -407,7 +407,7 @@ namespace SimpleWeather.WeatherData
                 // Check for outdated observation
                 var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
                 var durationMins = weather?.condition?.observation_time == null ? 61 : (now - weather.condition.observation_time).TotalMinutes;
-                if (durationMins > 180)
+                if (durationMins > 90)
                 {
                     var interval = WeatherManager.GetProvider(weather.source).HourlyForecastInterval;
 
