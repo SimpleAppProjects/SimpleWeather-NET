@@ -82,7 +82,7 @@ namespace SimpleWeather.WeatherUnlocked
 
                     currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromHours(1)
+                        MaxAge = TimeSpan.FromMinutes(30)
                     };
                     forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
                     {

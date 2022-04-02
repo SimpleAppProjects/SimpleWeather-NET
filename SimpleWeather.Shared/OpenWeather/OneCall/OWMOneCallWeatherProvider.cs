@@ -135,7 +135,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue() 
                     {
-                        MaxAge = TimeSpan.FromHours(1)
+                        MaxAge = TimeSpan.FromMinutes(30)
                     };
 
                     // Get response

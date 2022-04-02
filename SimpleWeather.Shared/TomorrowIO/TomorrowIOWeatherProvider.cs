@@ -163,7 +163,7 @@ namespace SimpleWeather.TomorrowIO
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromHours(3)
+                        MaxAge = TimeSpan.FromHours(1)
                     };
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

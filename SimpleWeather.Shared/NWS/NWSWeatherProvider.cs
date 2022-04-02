@@ -87,7 +87,7 @@ namespace SimpleWeather.NWS
 
                     observationRequest.Headers.CacheControl = new CacheControlHeaderValue() 
                     {
-                        MaxAge = TimeSpan.FromHours(1)
+                        MaxAge = TimeSpan.FromMinutes(30)
                     };
                     hrForecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
                     {

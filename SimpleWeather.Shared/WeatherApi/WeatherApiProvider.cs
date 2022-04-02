@@ -122,7 +122,7 @@ namespace SimpleWeather.WeatherApi
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue() 
                     {
-                        MaxAge = TimeSpan.FromHours(3)
+                        MaxAge = TimeSpan.FromHours(1)
                     };
 
                     // Get response
