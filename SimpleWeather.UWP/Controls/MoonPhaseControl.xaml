@@ -8,7 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:toolkitTriggers="using:Microsoft.Toolkit.Uwp.UI.Triggers"
     xmlns:wicons="using:SimpleWeather.Icons"
+    x:Name="Control"
     MinWidth="450"
     d:DesignHeight="250"
     d:DesignWidth="500"
@@ -175,7 +177,10 @@
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
+                        <toolkitTriggers:ControlSizeTrigger
+                            MinWidth="0"
+                            MaxWidth="640"
+                            TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MoonriseIcon.Height" Value="35" />
@@ -195,7 +200,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
+                        <toolkitTriggers:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MoonriseIcon.Height" Value="40" />
