@@ -156,6 +156,8 @@
     <Compile Include="Controls\WeatherAlertsViewModel.cs" />
     <Compile Include="Controls\WeatherAlertViewModel.cs" />
     <Compile Include="Controls\WeatherNowViewModel.cs" />
+    <Compile Include="Controls\WeatherNowViewModel.DetailsMap.cs" />
+    <Compile Include="Controls\WeatherNowViewModel.DetailsMap.Dictionary.cs" />
     <Compile Include="DAO\LocationData.cs" />
     <Compile Include="DAO\Weather.cs" />
     <Compile Include="DAO\WeatherAlert.cs" />

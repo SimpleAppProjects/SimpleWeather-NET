@@ -3,12 +3,14 @@ using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 #if WINDOWS_UWP
 using Windows.System.UserProfile;
@@ -19,7 +21,7 @@ using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
 {
-    public class WeatherNowViewModel : IViewModel
+    public partial class WeatherNowViewModel : IViewModel
     {
         #region DependencyProperties
 
@@ -514,28 +516,5 @@ namespace SimpleWeather.Controls
         }
 
         public bool IsValid => weather != null && weather.IsValid();
-
-        public sealed class DetailsMap<TKey, TValue> : Dictionary<TKey, TValue>, INotifyCollectionChanged where TValue : DetailItemViewModel
-        {
-            public event NotifyCollectionChangedEventHandler CollectionChanged;
-            private ObservableCollectionWrapper<TValue> _valueWrapper;
-
-            public IReadOnlyCollection<TValue> ValuesWrapper
-            {
-                get
-                {
-                    if (_valueWrapper == null)
-                        _valueWrapper = new ObservableCollectionWrapper<TValue>(this.Values);
-
-                    return _valueWrapper;
-                }
-            }
-
-            public void NotifyCollectionChanged()
-            {
-                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-                _valueWrapper?.NotifyCollectionChanged();
-            }
-        }
     }
 }
