@@ -21,7 +21,13 @@ namespace SimpleWeather.WeatherData
 
         public WeatherDataLoader(LocationData location)
         {
-            this.location = location ?? throw new ArgumentNullException(nameof(location));
+            if (location == null || !location.IsValid())
+            {
+                Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
+                throw new ArgumentException(nameof(location));
+            }
+
+            this.location = location;
         }
 
         /// <summary>

@@ -10,6 +10,21 @@ namespace SimpleWeather.Location
 {
     public partial class LocationData
     {
+        public static LocationData BuildGPSLocation()
+        {
+            string weatherSource = null;
+
+            if (Settings.IsLoaded())
+            {
+                weatherSource = Settings.API;
+            }
+
+            return new LocationData(Controls.LocationQueryViewModel.BuildEmptyModel(weatherSource))
+            {
+                locationType = LocationType.GPS
+            };
+        }
+
         public LocationData()
         {
             if (Settings.IsLoaded())

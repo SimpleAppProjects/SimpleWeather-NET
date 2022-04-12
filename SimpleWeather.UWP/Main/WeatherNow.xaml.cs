@@ -561,7 +561,9 @@ namespace SimpleWeather.UWP.Main
                     {
                         // Reset locdata if source is different
                         if (locData.weatherSource != Settings.API)
-                            Settings.SaveLastGPSLocData(new LocationData());
+                        {
+                            Settings.SaveLastGPSLocData(LocationData.BuildGPSLocation());
+                        }
 
                         if (await UpdateLocation())
                         {

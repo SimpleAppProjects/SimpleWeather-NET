@@ -63,6 +63,16 @@ namespace SimpleWeather.Controls
             return this.MemberwiseClone() as LocationQueryViewModel;
         }
 
+        internal static LocationQueryViewModel BuildEmptyModel(String weatherSource)
+        {
+            var vm = new LocationQueryViewModel
+            {
+                LocationName = "" // Reset name
+            };
+            vm.UpdateWeatherSource(weatherSource);
+            return vm;
+        }
+
         private void UpdateLocationQuery()
         {
             if (WeatherAPI.Here.Equals(WeatherSource))

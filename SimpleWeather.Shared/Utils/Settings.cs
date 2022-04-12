@@ -258,8 +258,8 @@ namespace SimpleWeather.Utils
                 }
                 finally
                 {
-                    if (lastGPSLocData == null || !lastGPSLocData.IsValid())
-                        lastGPSLocData = new LocationData();
+                    if (lastGPSLocData?.tz_long == null || !lastGPSLocData.IsValid())
+                        lastGPSLocData = LocationData.BuildGPSLocation();
                 }
             }
 
