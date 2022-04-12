@@ -697,10 +697,10 @@ namespace SimpleWeather.UWP.Main
                             {
                                 view = new LocationQueryViewModel();
                             }
-                            else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                            else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                             {
                                 String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
-                                if (!String.IsNullOrWhiteSpace(tzId))
+                                if (!Equals("unknown", tzId))
                                     view.LocationTZLong = tzId;
                             }
                         }

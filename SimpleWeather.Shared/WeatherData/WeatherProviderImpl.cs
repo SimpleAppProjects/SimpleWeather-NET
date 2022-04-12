@@ -64,7 +64,7 @@ namespace SimpleWeather.WeatherData
                 else if (location.latitude != 0 && location.longitude != 0)
                 {
                     String tzId = await TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude);
-                    if (!String.IsNullOrWhiteSpace(tzId))
+                    if (!Equals("unknown", tzId))
                         location.tz_long = tzId;
                 }
 

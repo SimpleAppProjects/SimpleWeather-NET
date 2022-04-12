@@ -373,18 +373,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             view = await wm.GetLocation(newGeoPos);
 
-                            if (String.IsNullOrEmpty(view.LocationQuery))
+                            if (String.IsNullOrWhiteSpace(view.LocationQuery))
                             {
                                 view = new LocationQueryViewModel();
                             }
-                            else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                            else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                             {
                                 String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
-                                if (!String.IsNullOrWhiteSpace(tzId))
+                                if (!Equals("unknown", tzId))
                                     view.LocationTZLong = tzId;
                             }
                         }
-                        catch (WeatherException ex)
+                        catch (WeatherException)
                         {
                             view = new LocationQueryViewModel();
                         }

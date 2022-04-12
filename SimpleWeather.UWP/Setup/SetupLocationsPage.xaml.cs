@@ -313,7 +313,7 @@ namespace SimpleWeather.UWP.Setup
                     {
                         return await TZDB.TZDBCache.GetTimeZone(query_vm.LocationLat, query_vm.LocationLong).ConfigureAwait(false);
                     }, ctsToken).ConfigureAwait(false);
-                    if (!String.IsNullOrWhiteSpace(tzId))
+                    if (!Equals("unknown", tzId))
                         query_vm.LocationTZLong = tzId;
                 }
 
@@ -475,13 +475,13 @@ namespace SimpleWeather.UWP.Setup
                         // Stop since there is no valid query
                         throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
                     }
-                    else if (String.IsNullOrEmpty(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                    else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                     {
                         String tzId = await Task.Run(async () => 
                         {
                             return await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong).ConfigureAwait(false);
                         }, ctsToken).ConfigureAwait(false);
-                        if (!String.IsNullOrWhiteSpace(tzId))
+                        if (!Equals("unknown", tzId))
                             view.LocationTZLong = tzId;
                     }
 

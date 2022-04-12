@@ -598,7 +598,7 @@ namespace SimpleWeather.UWP.Main
                             if (String.IsNullOrWhiteSpace(locView.LocationTZLong) && locView.LocationLat != 0 && locView.LocationLong != 0)
                             {
                                 String tzId = await TZDB.TZDBCache.GetTimeZone(locView.LocationLat, locView.LocationLong);
-                                if (!String.IsNullOrWhiteSpace(tzId))
+                                if (!Equals("unknown", tzId))
                                     locView.LocationTZLong = tzId;
                             }
                         }

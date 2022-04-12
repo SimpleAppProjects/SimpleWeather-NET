@@ -136,10 +136,10 @@ namespace SimpleWeather.Location
                 location.latitude = qview.LocationLat;
                 location.longitude = qview.LocationLong;
                 location.tz_long = qview.LocationTZLong;
-                if (String.IsNullOrEmpty(qview.LocationTZLong) && location.latitude != 0 && location.longitude != 0)
+                if (String.IsNullOrWhiteSpace(qview.LocationTZLong) && location.latitude != 0 && location.longitude != 0)
                 {
                     String tzId = await TZDB.TZDBCache.GetTimeZone(location.latitude, location.longitude);
-                    if (!String.IsNullOrWhiteSpace(tzId))
+                    if (!Equals("unknown", tzId))
                         location.tz_long = tzId;
                 }
                 location.locationSource = qview.LocationSource;
