@@ -166,7 +166,7 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_API] = value;
         }
 
-        [Deprecated("Replace with Settings.GetAPIKey(String)", DeprecationType.Remove, 5520)]
+        [Deprecated("Replace with Settings.GetAPIKey(String)", DeprecationType.Remove, 5530)]
         private static string GetAPIKEY()
         {
             if (localSettings.Values.TryGetValue(KEY_APIKEY, out object value))
@@ -177,7 +177,7 @@ namespace SimpleWeather.Utils
             return String.Empty;
         }
 
-        [Deprecated("Replace with Settings.SetAPIKey(String, String)", DeprecationType.Remove, 5520)]
+        [Deprecated("Replace with Settings.SetAPIKey(String, String)", DeprecationType.Remove, 5530)]
         private static void SetAPIKEY(string API_KEY)
         {
             localSettings.Values[KEY_APIKEY] = API_KEY;
@@ -293,6 +293,7 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_USEALERTS] = value;
         }
 
+        [Deprecated("Replace with Settings.IsKeyVerified(String)", DeprecationType.Remove, 5530)]
         private static bool IsKeyVerified()
         {
             if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
@@ -304,12 +305,32 @@ namespace SimpleWeather.Utils
             return false;
         }
 
+        [Deprecated("Replace with Settings.SetKeyVerified(String, Boolean)", DeprecationType.Remove, 5530)]
         private static void SetKeyVerified(bool value)
         {
             localSettings.Containers[WeatherAPI.WeatherUnderground].Values[KEY_APIKEY_VERIFIED] = value;
 
             if (!value)
                 localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove(KEY_APIKEY_VERIFIED);
+        }
+
+        private static bool IsKeyVerified(string provider)
+        {
+            if (localSettings.Containers.ContainsKey(WeatherAPI.WeatherUnderground))
+            {
+                if (localSettings.Containers[WeatherAPI.WeatherUnderground].Values.TryGetValue($"{KEY_APIKEY_VERIFIED}_{provider}", out object value))
+                    return (bool)value;
+            }
+
+            return false;
+        }
+
+        private static void SetKeyVerified(string provider, bool value)
+        {
+            localSettings.Containers[WeatherAPI.WeatherUnderground].Values[$"{KEY_APIKEY_VERIFIED}_{provider}"] = value;
+
+            if (!value)
+                localSettings.Containers[WeatherAPI.WeatherUnderground].Values.Remove($"{KEY_APIKEY_VERIFIED}_{provider}");
         }
 
         private static bool IsPersonalKey()

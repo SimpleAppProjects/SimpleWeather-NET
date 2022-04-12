@@ -156,6 +156,7 @@ namespace SimpleWeather.Utils
                     if (weatherAPI != null)
                     {
                         Settings.APIKeys[weatherAPI] = Settings.API_KEY;
+                        Settings.KeysVerified[weatherAPI] = Settings.KeyVerified;
                     }
 
                     // DevSettings -> Settings.SetAPIKey
@@ -165,6 +166,7 @@ namespace SimpleWeather.Utils
                         if (kvp.Value is string)
                         {
                             Settings.APIKeys[kvp.Key] = kvp.Value.ToString();
+                            Settings.KeysVerified[kvp.Key] = true;
                         }
                     });
                     DevSettingsEnabler.ClearPreferences();

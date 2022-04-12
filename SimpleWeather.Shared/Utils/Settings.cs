@@ -25,7 +25,9 @@ namespace SimpleWeather.Utils
         internal static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY, NewValue = value }); } }
         public static string APIKey { get { return API?.Let(it => APIKeys[it]); } set { API?.Let(it => APIKeys[it] = value); } }
         public static IAPIKeyMap APIKeys { get; private set; }
-        public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY_VERIFIED, NewValue = value }); } }
+        [Deprecated("Replace with Settings.IsKeyVerified(String) or Settings.SetKeyVerified(String, Boolean)", DeprecationType.Deprecate, 5530)]
+        internal static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY_VERIFIED, NewValue = value }); } }
+        public static IKeyVerifiedMap KeysVerified { get; private set; }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_FOLLOWGPS, NewValue = value }); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
         public static DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_UPDATETIME, NewValue = value }); } }
@@ -74,7 +76,7 @@ namespace SimpleWeather.Utils
         // Settings Keys
         public const string KEY_API = "API";
         public const string KEY_APIKEY = "API_KEY";
-        public const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
+        private const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
         private const string KEY_APIKEY_PREFIX = "api_key";
         private const string KEY_APIKEYS = "api_keys";
         private const string KEY_USECELSIUS = "key_usecelsius";
@@ -113,6 +115,7 @@ namespace SimpleWeather.Utils
         static Settings()
         {
             APIKeys = new APIKeyMap();
+            KeysVerified = new KeyVerifiedMap();
 
             Init();
         }

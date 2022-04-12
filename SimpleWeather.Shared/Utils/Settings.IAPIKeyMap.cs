@@ -15,6 +15,15 @@ namespace SimpleWeather.Utils
         }
     }
 
+    public interface IKeyVerifiedMap
+    {
+        bool this[string provider]
+        {
+            get;
+            set;
+        }
+    }
+
     public static partial class Settings
     {
         private class APIKeyMap : IAPIKeyMap
@@ -27,6 +36,23 @@ namespace SimpleWeather.Utils
                     SetAPIKEY(provider, value);
                     OnSettingsChanged?.Invoke(new SettingsChangedEventArgs {
                         Key = $"{KEY_APIKEY_PREFIX}_{provider}", NewValue = value
+                    });
+                }
+            }
+        }
+
+        private class KeyVerifiedMap : IKeyVerifiedMap
+        {
+            public bool this[string provider]
+            {
+                get => IsKeyVerified(provider);
+                set
+                {
+                    SetKeyVerified(provider, value);
+                    OnSettingsChanged?.Invoke(new SettingsChangedEventArgs
+                    {
+                        Key = $"{KEY_APIKEY_VERIFIED}_{provider}",
+                        NewValue = value
                     });
                 }
             }
