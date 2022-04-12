@@ -80,8 +80,8 @@ namespace SimpleWeather.Utils
         internal static async Task PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
         {
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
-            var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}{3}",
-                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build, PackageVersion.Revision);
+            var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
+                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build); // Exclude revision number used by Xbox & others
             var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
 
             if (Settings.WeatherLoaded && Settings.VersionCode < CurrentVersionCode)
@@ -147,6 +147,27 @@ namespace SimpleWeather.Utils
                     {
                         Settings.SaveLastGPSLocData(new LocationData());
                     }
+                }
+                // API_KEY -> GetAPIKey(String)
+                if (Settings.VersionCode < 5520)
+                {
+                    // API_KEY -> GetAPIKey(String)
+                    var weatherAPI = Settings.API;
+                    if (weatherAPI != null)
+                    {
+                        Settings.APIKeys[weatherAPI] = Settings.API_KEY;
+                    }
+
+                    // DevSettings -> Settings.SetAPIKey
+                    var devSettingsMap = DevSettingsEnabler.GetPreferenceMap();
+                    devSettingsMap.ForEach((kvp) =>
+                    {
+                        if (kvp.Value is string)
+                        {
+                            Settings.APIKeys[kvp.Key] = kvp.Value.ToString();
+                        }
+                    });
+                    DevSettingsEnabler.ClearPreferences();
                 }
                 AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {

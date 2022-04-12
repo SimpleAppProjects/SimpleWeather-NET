@@ -123,7 +123,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                 query = location_query;
             }
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.OpenWeatherMap] : GetAPIKey();
 
             try
             {
@@ -249,7 +249,7 @@ namespace SimpleWeather.OpenWeather.OneCall
         {
             AirQualityData aqiData = null;
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.OpenWeatherMap] : GetAPIKey();
 
             try
             {

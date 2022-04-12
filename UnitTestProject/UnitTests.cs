@@ -191,13 +191,13 @@ namespace UnitTestProject
 
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
 
-            Settings.API_KEY = provider.GetAPIKey();
+            Settings.APIKeys[WeatherAPI.OpenWeatherMap] = provider.GetAPIKey();
 
             var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
 
-            Settings.API_KEY = null;
+            Settings.APIKeys[WeatherAPI.OpenWeatherMap] = null;
             Settings.UsePersonalKey = false;
         }
 

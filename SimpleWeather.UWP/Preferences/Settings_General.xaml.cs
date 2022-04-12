@@ -142,12 +142,12 @@ namespace SimpleWeather.UWP.Preferences
 
             if (wm.KeyRequired)
             {
-                if (!String.IsNullOrWhiteSpace(Settings.API_KEY) && !Settings.KeyVerified)
+                if (!string.IsNullOrWhiteSpace(Settings.APIKey) && !Settings.KeyVerified)
                     Settings.KeyVerified = true;
 
                 PersonalKeySwitch.IsOn = Settings.UsePersonalKey;
 
-                if (String.IsNullOrWhiteSpace(wm.GetAPIKey()))
+                if (string.IsNullOrWhiteSpace(wm.GetAPIKey()))
                 {
                     PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
                     PersonalKeySwitch.IsEnabled = false;
@@ -180,7 +180,7 @@ namespace SimpleWeather.UWP.Preferences
             {
                 Settings.KeyVerified = false;
                 // Clear API KEY entry to avoid issues
-                Settings.API_KEY = String.Empty;
+                Settings.APIKey = String.Empty;
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
 
@@ -216,7 +216,7 @@ namespace SimpleWeather.UWP.Preferences
                     break;
             }
 
-            KeyEntry.Text = Settings.API_KEY;
+            KeyEntry.Text = Settings.APIKey;
             UpdateKeyBorder();
             UpdateRegisterLink();
 
@@ -243,7 +243,10 @@ namespace SimpleWeather.UWP.Preferences
 
         public Task<bool> OnBackRequested()
         {
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            var provider = APIComboBox.SelectedValue.ToString();
+
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) &&
+                WeatherManager.IsKeyRequired(provider))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
                 ShowSnackbar(Snackbar.MakeWarning(App.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
@@ -272,7 +275,9 @@ namespace SimpleWeather.UWP.Preferences
 
         public void OnNavigatingFromPage(NavigatingCancelEventArgs e)
         {
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            var provider = APIComboBox.SelectedValue.ToString();
+
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) && WeatherManager.IsKeyRequired(provider))
             {
                 e.Cancel = true;
             }
@@ -289,7 +294,9 @@ namespace SimpleWeather.UWP.Preferences
 
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && WeatherManager.IsKeyRequired(APIComboBox.SelectedValue.ToString()))
+            var provider = APIComboBox.SelectedValue.ToString();
+
+            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) && WeatherManager.IsKeyRequired(provider))
             {
                 // Fallback to supported weather provider
                 string API = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider();
@@ -376,7 +383,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             AnalyticsLogger.LogEvent("Settings_General: KeyEntry_Tapped");
 
-            var keydialog = new KeyEntryDialog()
+            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
             {
                 RequestedTheme = Shell.Instance.AppFrame.RequestedTheme
             };
@@ -385,19 +392,20 @@ namespace SimpleWeather.UWP.Preferences
             {
                 var diag = dialog as KeyEntryDialog;
 
+                string provider = diag.APIProvider;
                 string key = diag.Key;
-                string API = APIComboBox.SelectedValue.ToString();
 
                 try
                 {
-                    if (await WeatherManager.IsKeyValid(key, API))
+                    if (await WeatherManager.IsKeyValid(key, provider))
                     {
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            KeyEntry.Text = Settings.API_KEY = key;
-                            Settings.API = API;
+                            Settings.APIKeys[provider] = key;
+                            Settings.API = provider;
 
                             Settings.KeyVerified = true;
+                            KeyEntry.Text = key;
                             UpdateKeyBorder();
 
                             AlertSwitch.IsEnabled = wm.SupportsAlerts;
@@ -440,11 +448,11 @@ namespace SimpleWeather.UWP.Preferences
         private void APIComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string API = box.SelectedValue?.ToString();
+            string selectedProvider = box.SelectedValue?.ToString();
 
-            if (API == null) return;
+            if (selectedProvider == null) return;
 
-            if (!SharedExtras.IsWeatherAPISupported(API))
+            if (!SharedExtras.IsWeatherAPISupported(selectedProvider))
             {
                 var prevItem = e.RemovedItems?.FirstOrDefault() as SimpleWeather.Controls.ProviderEntry;
                 // Revert value
@@ -454,7 +462,7 @@ namespace SimpleWeather.UWP.Preferences
                 return;
             }
 
-            var selectedWProv = WeatherManager.GetProvider(API);
+            var selectedWProv = WeatherManager.GetProvider(selectedProvider);
 
             if (selectedWProv.KeyRequired)
             {
@@ -480,7 +488,7 @@ namespace SimpleWeather.UWP.Preferences
                     // User is using personal (unverified) keys
                     Settings.KeyVerified = false;
                     // Clear API KEY entry to avoid issues
-                    Settings.API_KEY = KeyEntry.Text = String.Empty;
+                    Settings.APIKeys[selectedProvider] = KeyEntry.Text = String.Empty;
 
                     KeyEntry.Visibility = Visibility.Visible;
                 }
@@ -490,16 +498,16 @@ namespace SimpleWeather.UWP.Preferences
 
                 if (Settings.KeyVerified)
                 {
-                    Settings.API = API;
+                    Settings.API = selectedProvider;
                 }
             }
             else
             {
                 Settings.KeyVerified = false;
 
-                Settings.API = API;
+                Settings.API = selectedProvider;
                 // Clear API KEY entry to avoid issues
-                Settings.API_KEY = KeyEntry.Text = String.Empty;
+                Settings.APIKeys[selectedProvider] = KeyEntry.Text = String.Empty;
 
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;

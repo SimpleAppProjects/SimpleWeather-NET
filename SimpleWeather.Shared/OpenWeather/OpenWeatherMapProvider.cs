@@ -120,7 +120,7 @@ namespace SimpleWeather.OpenWeather
                 query = location_query;
             }
 
-            string key = Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey();
+            var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.OpenWeatherMap] : GetAPIKey();
 
             try
             {

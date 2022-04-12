@@ -257,7 +257,7 @@ namespace SimpleWeather.UWP.Main
                     throw new TaskCanceledException();
                 }
 
-                if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.API_KEY) && wm.KeyRequired)
+                if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKey) && wm.KeyRequired)
                 {
                     throw new CustomException(App.ResLoader.GetString("werror_invalidkey"));
                 }

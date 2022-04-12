@@ -30,7 +30,7 @@ namespace SimpleWeather.Ambee
         {
             Pollen pollenData = null;
 
-            var key = DevSettingsEnabler.GetAPIKey(WeatherAPI.Ambee) ?? APIKeys.GetAmbeeKey();
+            var key = Settings.APIKeys[WeatherAPI.Ambee] ?? APIKeys.GetAmbeeKey();
             if (String.IsNullOrWhiteSpace(key)) return null;
 
             try

@@ -100,7 +100,7 @@ namespace SimpleWeather.UWP.Radar
             {
                 var owm = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
                 // Fallback to default since API KEY is unavailable
-                if ((Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null) || Settings.API_KEY == null)
+                if ((Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null) || Settings.APIKeys[WeatherAPI.OpenWeatherMap] == null)
                 {
                     return EARTHWINDMAP;
                 }

@@ -9,6 +9,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using Windows.Storage;
 
 namespace SimpleWeather.Utils
@@ -165,6 +166,7 @@ namespace SimpleWeather.Utils
             localSettings.Values[KEY_API] = value;
         }
 
+        [Deprecated("Replace with Settings.GetAPIKey(String)", DeprecationType.Remove, 5520)]
         private static string GetAPIKEY()
         {
             if (localSettings.Values.TryGetValue(KEY_APIKEY, out object value))
@@ -175,9 +177,25 @@ namespace SimpleWeather.Utils
             return String.Empty;
         }
 
+        [Deprecated("Replace with Settings.SetAPIKey(String, String)", DeprecationType.Remove, 5520)]
         private static void SetAPIKEY(string API_KEY)
         {
             localSettings.Values[KEY_APIKEY] = API_KEY;
+        }
+
+        private static string GetAPIKEY(string provider)
+        {
+            if (localSettings.Values.TryGetValue($"{KEY_APIKEY_PREFIX}_{provider}", out object value))
+            {
+                return value.ToString();
+            }
+
+            return String.Empty;
+        }
+
+        private static void SetAPIKEY(string provider, string key)
+        {
+            localSettings.Values[$"{KEY_APIKEY_PREFIX}_{provider}"] = key;
         }
 
         private static bool UseFollowGPS()

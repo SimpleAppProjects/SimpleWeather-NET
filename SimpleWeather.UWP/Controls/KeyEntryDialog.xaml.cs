@@ -10,10 +10,13 @@ namespace SimpleWeather.UWP.Controls
     public sealed partial class KeyEntryDialog : ContentDialog
     {
         public string Key { get; set; }
+        public string APIProvider { get; private set; }
+
         public bool CanClose { get; set; }
 
-        public KeyEntryDialog(bool UseDefaultKey = true)
+        public KeyEntryDialog(string APIProvider, bool UseDefaultKey = true)
         {
+            this.APIProvider = APIProvider;
             Initialize(UseDefaultKey);
         }
 
@@ -25,7 +28,7 @@ namespace SimpleWeather.UWP.Controls
 
             if (UseDefaultKey)
             {
-                KeyEntry.Text = Key = Settings.API_KEY ?? string.Empty;
+                KeyEntry.Text = Key = Settings.APIKeys[APIProvider] ?? string.Empty;
             }
         }
 

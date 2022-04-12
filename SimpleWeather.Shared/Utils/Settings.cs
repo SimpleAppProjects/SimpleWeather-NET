@@ -10,6 +10,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.Foundation.Metadata;
 using static SimpleWeather.Utils.SettingsChangedEventArgs;
 
 namespace SimpleWeather.Utils
@@ -20,7 +21,10 @@ namespace SimpleWeather.Utils
         public static bool WeatherLoaded { get { return IsWeatherLoaded(); } set { SetWeatherLoaded(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_WEATHERLOADED, NewValue = value }); } }
         public static bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ONBOARDINGCOMPLETE, NewValue = value }); } }
         public static string API { get { return GetAPI(); } set { SetAPI(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_API, NewValue = value }); } }
-        public static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY, NewValue = value }); } }
+        [Deprecated("Replace with Settings.APIKey or Settings.APIKeys[String]", DeprecationType.Deprecate, 5530)]
+        internal static string API_KEY { get { return GetAPIKEY(); } set { SetAPIKEY(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY, NewValue = value }); } }
+        public static string APIKey { get { return API?.Let(it => APIKeys[it]); } set { API?.Let(it => APIKeys[it] = value); } }
+        public static IAPIKeyMap APIKeys { get; private set; }
         public static bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY_VERIFIED, NewValue = value }); } }
         public static bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_FOLLOWGPS, NewValue = value }); } }
         private static string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
@@ -71,6 +75,8 @@ namespace SimpleWeather.Utils
         public const string KEY_API = "API";
         public const string KEY_APIKEY = "API_KEY";
         public const string KEY_APIKEY_VERIFIED = "API_KEY_VERIFIED";
+        private const string KEY_APIKEY_PREFIX = "api_key";
+        private const string KEY_APIKEYS = "api_keys";
         private const string KEY_USECELSIUS = "key_usecelsius";
         private const string KEY_UNITS = "Units";
         public const string KEY_WEATHERLOADED = "weatherLoaded";
@@ -106,6 +112,8 @@ namespace SimpleWeather.Utils
 
         static Settings()
         {
+            APIKeys = new APIKeyMap();
+
             Init();
         }
 

@@ -19,8 +19,10 @@ namespace SimpleWeather.Utils
                 OnDevSettingsChanged?.Invoke(null, new DevSettingsEventArgs() { NewValue = value });
             }
         }
-        public static partial string GetAPIKey(string key);
-        public static partial void SetAPIKey(string key, string value);
+
+        internal static partial IDictionary<string, object> GetPreferenceMap();
+
+        internal static partial void ClearPreferences(bool? enable = null);
 
         public static event EventHandler<DevSettingsEventArgs> OnDevSettingsChanged;
     }

@@ -37,16 +37,16 @@ namespace SimpleWeather.UWP.Controls
 
         public void UpdateKeyEntry()
         {
-            KeyEntryTextBlock.Text = DevSettingsEnabler.GetAPIKey(API) ?? App.ResLoader.GetString("key_hint");
+            KeyEntryTextBlock.Text = Settings.APIKeys[API] ?? App.ResLoader.GetString("key_hint");
         }
 
         private async void TextBlock_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            var keydialog = new KeyEntryDialog(false)
+            var keydialog = new KeyEntryDialog(API, false)
             {
                 RequestedTheme = this.ActualTheme
             };
-            keydialog.SetKey(DevSettingsEnabler.GetAPIKey(API));
+            keydialog.SetKey(Settings.APIKeys[API]);
 
             keydialog.PrimaryButtonClick += (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
             {
@@ -54,7 +54,7 @@ namespace SimpleWeather.UWP.Controls
 
                 string key = diag.Key;
                 KeyEntryTextBlock.Text = key ?? string.Empty;
-                DevSettingsEnabler.SetAPIKey(API, key);
+                Settings.APIKeys[API] = key;
 
                 diag.CanClose = true;
                 diag.Hide();

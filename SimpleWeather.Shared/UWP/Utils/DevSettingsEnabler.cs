@@ -25,14 +25,19 @@ namespace SimpleWeather.Utils
             devSettings.Values[KEY_DEVSETTINGSENABLED] = value;
         }
 
-        public static partial string GetAPIKey(string key)
+        internal static partial IDictionary<string, object> GetPreferenceMap()
         {
-            return devSettings.Values[key] as string;
+            return devSettings.Values.WhereNot(kvp => Equals(kvp.Key, KEY_DEVSETTINGSENABLED))
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
-        public static partial void SetAPIKey(string key, string value)
+        internal static partial void ClearPreferences(bool? enable = null)
         {
-            devSettings.Values[key] = value;
+            var enabled = enable ?? IsDevSettingsEnabled();
+
+            devSettings.Values.Clear();
+
+            SetDevSettingsEnabled(enabled);
         }
     }
 }

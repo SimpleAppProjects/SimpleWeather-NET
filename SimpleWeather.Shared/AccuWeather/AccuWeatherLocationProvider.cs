@@ -49,7 +49,7 @@ namespace SimpleWeather.AccuWeather
                 // If were under rate limit, deny request
                 this.CheckRateLimit();
 
-                var key = (Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey()) ?? DevSettingsEnabler.GetAPIKey(WeatherData.WeatherAPI.AccuWeather);
+                var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.AccuWeather] : GetAPIKey();
 
                 if (String.IsNullOrWhiteSpace(key))
                     throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
@@ -126,7 +126,7 @@ namespace SimpleWeather.AccuWeather
             {
                 this.CheckRateLimit();
 
-                var key = (Settings.UsePersonalKey ? Settings.API_KEY : GetAPIKey()) ?? DevSettingsEnabler.GetAPIKey(WeatherData.WeatherAPI.AccuWeather);
+                var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.AccuWeather] : GetAPIKey();
 
                 if (String.IsNullOrWhiteSpace(key))
                     throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
