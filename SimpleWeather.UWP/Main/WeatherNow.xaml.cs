@@ -152,7 +152,7 @@ namespace SimpleWeather.UWP.Main
             if (cts?.IsCancellationRequested == true)
                 return;
 
-            Dispatcher.LaunchOnUIThread(() =>
+            Dispatcher.LaunchOnUIThread(async () =>
             {
                 switch (wEx.ErrorStatus)
                 {
@@ -168,8 +168,12 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (!wm.IsRegionSupported(locationData.country_code))
+                        if (locationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
+                            Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(locationData));
+                            Logger.WriteLine(LoggerLevel.Warn, "Home: {0}", JSONParser.Serializer(await Settings.GetHomeData()));
+                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(App.ResLoader.GetString("error_message_weather_region_unsupported")));
+
                             ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
@@ -584,6 +588,10 @@ namespace SimpleWeather.UWP.Main
                 }
                 else
                 {
+                    Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(locationData));
+                    Logger.WriteLine(LoggerLevel.Warn, "Home: {0}", JSONParser.Serializer(await Settings.GetHomeData()));
+                    Logger.WriteLine(LoggerLevel.Warn, new InvalidOperationException("Invalid location data"));
+
                     await Dispatcher.RunOnUIThread(() =>
                     {
                         var banner = Banner.MakeError(App.ResLoader.GetString("prompt_location_not_set"));

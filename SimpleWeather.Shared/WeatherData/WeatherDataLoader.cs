@@ -153,7 +153,8 @@ namespace SimpleWeather.WeatherData
                     // Nothing to fallback on; error out
                     if (weather == null)
                     {
-                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                        Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
+                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new InvalidOperationException("Invalid location data"));
                     }
                 }
                 else
@@ -171,6 +172,7 @@ namespace SimpleWeather.WeatherData
             {
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
                 weather = null;
+                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
             }
 
             if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
@@ -479,7 +481,7 @@ namespace SimpleWeather.WeatherData
                             weather.precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm >= 0 ? hrf.extras.qpf_snow_cm : 0.0f;
                         }
 
-                        await Settings.SaveWeatherData(weather).ConfigureAwait(false);
+                        await SaveWeatherData().ConfigureAwait(false);
                     }
                 }
 
