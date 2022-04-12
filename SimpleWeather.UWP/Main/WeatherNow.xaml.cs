@@ -669,13 +669,13 @@ namespace SimpleWeather.UWP.Main
                     LocationData lastGPSLocData = await Settings.GetLastGPSLocData().ConfigureAwait(false);
 
                     // Check previous location difference
-                    if (lastGPSLocData?.query != null
+                    if (lastGPSLocData?.IsValid() == true
                         && geoPos != null && ConversionMethods.CalculateGeopositionDistance(geoPos, newGeoPos) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
 
-                    if (lastGPSLocData?.query != null
+                    if (lastGPSLocData?.IsValid() == true
                         && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {

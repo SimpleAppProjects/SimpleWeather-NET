@@ -341,7 +341,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     gpsData = await GetGPSPanel();
 
-                    if (gpsData != null)
+                    if (gpsData?.IsValid() == true)
                         locations.Insert(0, gpsData);
                 }
 
@@ -409,20 +409,21 @@ namespace SimpleWeather.UWP.Main
                     if (cts?.IsCancellationRequested == true)
                         return null;
 
-                    if (locData?.query == null)
+                    if (locData?.IsValid() != true)
                     {
                         locData = await UpdateLocation();
                         if (locData != null)
                         {
                             Settings.SaveLastGPSLocData(locData);
-                            SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                            SimpleLibrary.GetInstance()
+                                .RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
                         }
                     }
 
                     if (cts?.IsCancellationRequested == true)
                         return null;
 
-                    if (locData?.query != null)
+                    if (locData?.IsValid() == true)
                     {
                         return locData;
                     }

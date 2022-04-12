@@ -358,7 +358,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (cts.IsCancellationRequested) return locationChanged;
 
                     // Check previous location difference
-                    if (lastGPSLocData?.query != null
+                    if (lastGPSLocData?.IsValid() == true
                         && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
                         newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
                     {

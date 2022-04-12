@@ -148,7 +148,7 @@ namespace SimpleWeather.WeatherApi
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(1)
                     };
