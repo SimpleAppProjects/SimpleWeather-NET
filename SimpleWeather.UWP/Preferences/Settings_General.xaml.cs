@@ -477,7 +477,7 @@ namespace SimpleWeather.UWP.Preferences
                 if (String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
                 {
                     PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
-                    PersonalKeySwitch.IsEnabled = false;
+                    PersonalKeySwitch.IsEnabled = Equals(selectedProvider, WeatherAPI.OpenWeatherMap);
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
                 else
