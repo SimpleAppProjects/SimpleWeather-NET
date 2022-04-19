@@ -330,6 +330,15 @@ namespace UnitTestProject
         }
 
         [TestMethod]
+        public async Task GetWeatherBitIOWeather()
+        {
+            var provider = WeatherManager.GetProvider(WeatherAPI.WeatherBitIo);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [TestMethod]
         public async Task RemoteConfigUpdateTest()
         {
             var db = await FirebaseDatabaseHelper.GetFirebaseDatabase();

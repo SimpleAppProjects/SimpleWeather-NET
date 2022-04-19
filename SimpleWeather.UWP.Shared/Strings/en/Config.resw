@@ -176,6 +176,13 @@
         "newWeatherSource": ""
 }</value>
   </data>
+  <data name="weatherbitio" xml:space="preserve">
+    <value>{
+        "enabled": true,
+        "locSource": "Bing",
+        "newWeatherSource": ""
+}</value>
+  </data>
   <data name="wunlocked" xml:space="preserve">
     <value>{
         "enabled": true,

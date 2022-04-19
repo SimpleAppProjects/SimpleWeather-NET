@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using Windows.UI;
 using SimpleWeather.TomorrowIO;
 using SimpleWeather.AccuWeather;
+using SimpleWeather.WeatherBit;
 
 namespace SimpleWeather.WeatherData
 {
@@ -34,6 +35,7 @@ namespace SimpleWeather.WeatherData
         public const string MeteoFrance = "meteofrance";
         public const string TomorrowIo = "tomorrowio";
         public const string AccuWeather = "accuweather";
+        public const string WeatherBitIo = "weatherbitio";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -59,7 +61,7 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(7)
+        private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(9)
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
@@ -76,7 +78,9 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("Meteo France", MeteoFrance,
                 "https://meteofrance.com/", "https://meteofrance.com/"),
             new ProviderEntry("Tomorrow.io", TomorrowIo,
-                "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/")
+                "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
+            new ProviderEntry("Weatherbit.io", WeatherBitIo,
+                "https://www.weatherbit.io/", "https://www.weatherbit.io/pricing")
         };
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
@@ -169,6 +173,10 @@ namespace SimpleWeather.WeatherData
 
                 case WeatherData.WeatherAPI.AccuWeather:
                     providerImpl = new AccuWeatherProvider();
+                    break;
+
+                case WeatherData.WeatherAPI.WeatherBitIo:
+                    providerImpl = new WeatherBitIOProvider();
                     break;
 
 #if !DEBUG

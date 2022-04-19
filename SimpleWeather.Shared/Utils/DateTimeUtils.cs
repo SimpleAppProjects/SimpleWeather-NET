@@ -147,5 +147,15 @@ namespace SimpleWeather.Utils
         {
             return time.ToString(format, CultureInfo.InvariantCulture);
         }
+
+        public static DateTimeOffset AtOffset(this DateTime date, TimeSpan offset)
+        {
+            return new DateTimeOffset(date, offset);
+        }
+
+        public static DateTimeOffset AtOffset(this DateTime date, String tzID)
+        {
+            return new DateTimeOffset(date, TzidToOffset(tzID));
+        }
     }
 }

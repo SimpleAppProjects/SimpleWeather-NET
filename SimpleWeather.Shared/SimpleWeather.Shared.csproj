@@ -322,6 +322,12 @@
     <Compile Include="WeatherApi\WeatherApiProvider.cs" />
     <Compile Include="WeatherApi\WeatherApiLocationProvider.cs" />
     <Compile Include="WeatherApi\WeatherData.cs" />
+    <Compile Include="WeatherBit\AlertRootobject.cs" />
+    <Compile Include="WeatherBit\CurrentRootobject.cs" />
+    <Compile Include="WeatherBit\ForecastRootobject.cs" />
+    <Compile Include="WeatherBit\WeatherAlerts.cs" />
+    <Compile Include="WeatherBit\WeatherBitIOProvider.cs" />
+    <Compile Include="WeatherBit\WeatherData.cs" />
     <Compile Include="WeatherData\AirQualityData.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />
     <Compile Include="WeatherData\IAstroDataProvider.cs" />
