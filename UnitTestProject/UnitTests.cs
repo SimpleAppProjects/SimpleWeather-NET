@@ -11,6 +11,7 @@ using SimpleWeather.Location;
 using SimpleWeather.NWS;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.SMC;
+using SimpleWeather.TomorrowIO;
 using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherApi;
@@ -336,6 +337,22 @@ namespace UnitTestProject
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
             Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// GetPollenData
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        [TestMethod]
+        public async Task GetPollenData()
+        {
+            var provider = new TomorrowIOWeatherProvider();
+            var location = await provider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
+            var locData = new LocationData(location);
+            Assert.IsNotNull(locData);
+            var pollenData = await provider.GetPollenData(locData);
+            Assert.IsNotNull(pollenData);
         }
 
         [TestMethod]

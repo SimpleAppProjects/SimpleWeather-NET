@@ -99,6 +99,14 @@ namespace SimpleWeather.WeatherData
                 */
             }
 
+            if (weather.condition.pollen == null)
+            {
+                if (DevSettingsEnabler.DevSettingsEnabled)
+                {
+                    weather.condition.pollen = await new TomorrowIO.TomorrowIOWeatherProvider().GetPollenData(location);
+                }
+            }
+
             return weather;
         }
 

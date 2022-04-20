@@ -190,7 +190,7 @@ namespace SimpleWeather.Utils
                 return value.ToString();
             }
 
-            return String.Empty;
+            return null;
         }
 
         private static void SetAPIKEY(string provider, string key)

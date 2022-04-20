@@ -32,6 +32,10 @@
                     <TextBlock Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
                     <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
                 </StackPanel>
+                <StackPanel Padding="0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

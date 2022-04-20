@@ -20,7 +20,7 @@ using System.Net.Sockets;
 
 namespace SimpleWeather.TomorrowIO
 {
-    public partial class TomorrowIOWeatherProvider : WeatherProviderImpl
+    public partial class TomorrowIOWeatherProvider : WeatherProviderImpl, IPollenProvider
     {
         private const String BASE_URL = "https://api.tomorrow.io/v4/timelines";
         private const String EVENTS_BASE_URL = "https://api.tomorrow.io/v4/events";
@@ -267,6 +267,88 @@ namespace SimpleWeather.TomorrowIO
                 throw wEx;
 
             return weather;
+        }
+
+        public async Task<Pollen> GetPollenData(LocationData location)
+        {
+            Pollen pollenData = null;
+
+            var key = Settings.APIKeys[WeatherData.WeatherAPI.TomorrowIo] ?? GetAPIKey();
+            if (String.IsNullOrWhiteSpace(key)) return null;
+
+            try
+            {
+                this.CheckRateLimit();
+
+                Rootobject root;
+
+                var requestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendQueryParameter("apikey", key)
+                    .AppendQueryParameter("location", UpdateLocationQuery(location))
+                    .AppendQueryParameter("fields", "treeIndex,grassIndex,weedIndex")
+                    .AppendQueryParameter("timesteps", "current")
+                    .AppendQueryParameter("units", "metric")
+                    .AppendQueryParameter("timezone", "UTC")
+                    .BuildUri();
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
+                request.Headers.CacheControl = new CacheControlHeaderValue()
+                {
+                    MaxAge = TimeSpan.FromHours(1)
+                };
+                request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                // Get response
+                var webClient = SimpleLibrary.GetInstance().WebClient;
+                using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
+                using var response = await webClient.SendAsync(request, cts.Token);
+
+                await this.CheckForErrors(response);
+                response.EnsureSuccessStatusCode();
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+
+                // Load weather
+                root = await JSONParser.DeserializerAsync<Rootobject>(stream);
+
+                root?.data?.timelines?.FirstOrDefault()?.intervals?.FirstOrDefault()?.Let((item) =>
+                {
+                    pollenData = new Pollen()
+                    {
+                        treePollenCount = item.values.treeIndex switch
+                        {
+                            1 or 2 => Pollen.PollenCount.Low,
+                            3 => Pollen.PollenCount.Moderate,
+                            4 => Pollen.PollenCount.High,
+                            5 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        },
+                        grassPollenCount = item.values.grassIndex switch
+                        {
+                            1 or 2 => Pollen.PollenCount.Low,
+                            3 => Pollen.PollenCount.Moderate,
+                            4 => Pollen.PollenCount.High,
+                            5 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        },
+                        ragweedPollenCount = item.values.weedIndex switch
+                        {
+                            1 or 2 => Pollen.PollenCount.Low,
+                            3 => Pollen.PollenCount.Moderate,
+                            4 => Pollen.PollenCount.High,
+                            5 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        }
+                    };
+                });
+            }
+            catch (Exception ex)
+            {
+                pollenData = null;
+                Logger.WriteLine(LoggerLevel.Error, ex, "TomorrowIOWeatherProvider: error getting pollen data");
+            }
+
+            return pollenData;
         }
 
         protected override async Task UpdateWeatherData(LocationData location, WeatherData.Weather weather)
