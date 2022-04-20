@@ -277,6 +277,7 @@
     <Compile Include="Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Helpers\BindingExtensions.cs" />
     <Compile Include="Helpers\DetailsItemGridFilterConverter.cs" />
+    <Compile Include="Helpers\GraphDataVisibilityConverter.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
     <Compile Include="Helpers\RectHelperExtensions.cs" />

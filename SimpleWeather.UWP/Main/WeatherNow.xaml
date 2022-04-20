@@ -23,6 +23,7 @@
         <ResourceDictionary>
             <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
             <helpers:DetailsItemGridFilterConverter x:Key="detailsFilter" />
+            <helpers:GraphDataVisibilityConverter x:Key="graphDataConv" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -379,7 +380,7 @@
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
-                            Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                            Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -445,12 +446,12 @@
                                         Margin="0,5"
                                         GraphData="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay}"
                                         GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
-                                        Visibility="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                        Visibility="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}" />
                                     <graphs:ForecastGraphPanel
                                         Margin="0,5"
                                         GraphData="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay}"
                                         GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
-                                        Visibility="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                        Visibility="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}" />
                                 </StackPanel>
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
