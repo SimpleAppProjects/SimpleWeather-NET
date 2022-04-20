@@ -129,8 +129,6 @@
     <Compile Include="AccuWeather\AccuWeatherProvider.cs" />
     <Compile Include="AccuWeather\LocationData.cs" />
     <Compile Include="AccuWeather\WeatherData.cs" />
-    <Compile Include="Ambee\AmbeePollenProvider.cs" />
-    <Compile Include="Ambee\Rootobject.cs" />
     <Compile Include="AQICN\AQICNData.cs" />
     <Compile Include="AQICN\AQICNProvider.cs" />
     <Compile Include="AQICN\Rootobject.cs" />
@@ -185,7 +183,6 @@
     <Compile Include="Icons\WeatherIconsProvider.cs" />
     <Compile Include="Icons\WUndergroundIconsProvider.cs" />
     <Compile Include="Keys\AccuWeatherKey.cs" />
-    <Compile Include="Keys\AmbeeKey.cs" />
     <Compile Include="Keys\AppCenterKey.cs" />
     <Compile Include="Keys\AQICNKey.cs" />
     <Compile Include="Keys\BingMapsKey.cs" />

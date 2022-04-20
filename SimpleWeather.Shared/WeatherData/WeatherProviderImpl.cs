@@ -99,14 +99,6 @@ namespace SimpleWeather.WeatherData
                 */
             }
 
-            if (weather.condition.pollen == null)
-            {
-                if (DevSettingsEnabler.DevSettingsEnabled)
-                {
-                    weather.condition.pollen = await new Ambee.AmbeePollenProvider().GetPollenData(location);
-                }
-            }
-
             return weather;
         }
 
