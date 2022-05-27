@@ -123,7 +123,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                 query = location_query;
             }
 
-            var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.OpenWeatherMap] : GetAPIKey();
+            var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherAPI] : GetAPIKey();
 
             try
             {
@@ -302,106 +302,74 @@ namespace SimpleWeather.OpenWeather.OneCall
 
         public override String LocaleToLangCode(String iso, String name)
         {
-            string code = "en";
-
-            switch (iso)
+            string code = iso switch
             {
                 // Arabic
-                case "ar":
-                // Bulgarian
-                case "bg":
-                // Catalan
-                case "ca":
-                // Croatian
-                case "hr":
-                // Dutch
-                case "nl":
-                // Farsi / Persian
-                case "fa":
-                // Finnish
-                case "fi":
-                // French
-                case "fr":
-                // Galician
-                case "gl":
-                // German
-                case "de":
-                // Greek
-                case "el":
-                // Hungarian
-                case "hu":
-                // Italian
-                case "it":
-                // Japanese
-                case "ja":
-                // Lithuanian
-                case "lt":
-                // Macedonian
-                case "mk":
-                // Polish
-                case "pl":
-                // Portuguese
-                case "pt":
-                // Romanian
-                case "ro":
-                // Russian
-                case "ru":
-                // Slovak
-                case "sk":
-                // Slovenian
-                case "sl":
-                // Spanish
-                case "es":
-                // Turkish
-                case "tr":
-                // Vietnamese
-                case "vi":
-                    code = iso;
-                    break;
+                "af" or // Afrikaans
+                "ar" or // Arabic
+                "az" or // Azerbaijani
+                "bg" or // Bulgarian
+                "ca" or // Catalan
+                "da" or // Danish
+                "de" or // German
+                "el" or // Greek
+                "eu" or // Basque
+                "fa" or // Persian (Farsi)
+                "fi" or // Finnish
+                "fr" or // French
+                "gl" or // Galician
+                "he" or // Hebrew
+                "hi" or // Hindi
+                "hr" or // Croatian
+                "hu" or // Hungarian
+                "id" or // Indonesian
+                "it" or // Italian
+                "ja" or // Japanese
+                "lt" or // Lithuanian
+                "mk" or // Macedonian
+                "no" or // Norwegian
+                "nl" or // Dutch
+                "pl" or // Polish
+                "ro" or // Romanian
+                "ru" or // Russian
+                "sv" or // Swedish (sv or se)
+                "sk" or // Slovak
+                "sl" or // Slovenian
+                "es" or // Spanish
+                "sr" or // Serbian
+                "th" or // Thai
+                "tr" or // Turkish
+                "uk" or // Ukrainian
+                "vi" or // Vietnamese
+                "zu" /* Zulu */ => iso,
                 // Chinese
-                case "zh":
-                    switch (name)
-                    {
-                        // Chinese - Traditional
-                        case "zh-Hant":
-                        case "zh-HK":
-                        case "zh-MO":
-                        case "zh-TW":
-                            code = "zh_tw";
-                            break;
-                        // Chinese - Simplified
-                        default:
-                            code = "zh_cn";
-                            break;
-                    }
-                    break;
+                "zh" => name switch
+                {
+                    // Chinese - Traditional
+                    "zh-Hant" or
+                    "zh-HK" or
+                    "zh-MO" or
+                    "zh-TW" => "zh_tw",
+                    // Chinese - Simplified
+                    _ => "zh_cn",
+                },
+                // Portuguese
+                "pt" => name switch
+                {
+                    // Português Brasil
+                    "pt-BR" => "pt_br",
+                    _ => "pt"
+                },
+                // Albanian
+                "sq" => "al",
                 // Czech
-                case "cs":
-                    code = "cz";
-                    break;
+                "cs" => "cz",
                 // Korean
-                case "ko":
-                    code = "kr";
-                    break;
+                "ko" => "kr",
                 // Latvian
-                case "lv":
-                    code = "la";
-                    break;
-                // Swedish
-                case "sv":
-                    code = "se";
-                    break;
-                // Ukrainian
-                case "uk":
-                    code = "ua";
-                    break;
-
-                default:
-                    // Default is English
-                    code = "en";
-                    break;
-            }
-
+                "lv" => "la",
+                _ => "en" // Default is English
+            };
             return code;
         }
 
@@ -477,7 +445,8 @@ namespace SimpleWeather.OpenWeather.OneCall
                 case "310": // light intensity drizzle rain
                 case "511": // freezing rain
                 case "611": // sleet
-                case "612": // shower sleet
+                case "612": // light shower sleet
+                case "613": // shower sleet
                 case "615": // light rain and snow
                 case "616": // rain and snow
                 case "620": // light shower snow
@@ -527,10 +496,8 @@ namespace SimpleWeather.OpenWeather.OneCall
                         WeatherIcon = WeatherIcons.DAY_HAZE;
                     break;
 
-                // dust
-                case "731":
-                case "761":
-                case "762":
+                case "731": // sand/ dust whirls
+                case "761": /* dust */
                     WeatherIcon = WeatherIcons.DUST;
                     break;
 
@@ -540,6 +507,16 @@ namespace SimpleWeather.OpenWeather.OneCall
                         WeatherIcon = WeatherIcons.NIGHT_FOG;
                     else
                         WeatherIcon = WeatherIcons.DAY_FOG;
+                    break;
+
+                // Sand
+                case "751":
+                    WeatherIcon = WeatherIcons.SANDSTORM;
+                    break;
+
+                // volcanic ash
+                case "762":
+                    WeatherIcon = WeatherIcons.VOLCANO;
                     break;
 
                 // cloudy-gusts
@@ -556,7 +533,6 @@ namespace SimpleWeather.OpenWeather.OneCall
                     WeatherIcon = WeatherIcons.TORNADO;
                     break;
 
-                // day-sunny
                 case "800": // clear sky
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_CLEAR;
@@ -645,12 +621,13 @@ namespace SimpleWeather.OpenWeather.OneCall
             {
                 // The following cases can be present at any time of day
                 case WeatherIcons.SMOKE:
-                case WeatherIcons.WINDY:
                 case WeatherIcons.DUST:
+                case WeatherIcons.SANDSTORM:
+                case WeatherIcons.VOLCANO:
                 case WeatherIcons.TORNADO:
                 case WeatherIcons.HURRICANE:
                 case WeatherIcons.SNOWFLAKE_COLD:
-                case WeatherIcons.HAIL:
+                case WeatherIcons.WINDY:
                 case WeatherIcons.STRONG_WIND:
                     if (!isNight)
                     {
