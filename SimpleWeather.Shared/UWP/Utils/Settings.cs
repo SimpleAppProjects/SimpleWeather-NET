@@ -403,7 +403,7 @@ namespace SimpleWeather.Utils
                 return value.ToString();
             }
 
-            return WeatherIconsProvider.KEY;
+            return WeatherIconsEFProvider.KEY;
         }
 
         private static void SetIconsProvider(string value)

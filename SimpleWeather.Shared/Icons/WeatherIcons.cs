@@ -34,12 +34,12 @@ namespace SimpleWeather.Icons
 
         // NIGHT_ALT
         public const String NIGHT_CLEAR = "\uf02e";
-        public const String NIGHT_FOG = "\uf04a";
-        public const String NIGHT_OVERCAST = "\uf00c-nt";
         public const String NIGHT_ALT_CLOUDY = "\uf086";
         public const String NIGHT_ALT_CLOUDY_GUSTS = "\uf022";
         public const String NIGHT_ALT_CLOUDY_WINDY = "\uf023";
+        public const String NIGHT_FOG = "\uf04a";
         public const String NIGHT_ALT_HAIL = "\uf024";
+        public const String NIGHT_HAZE = "\uf0b6-nt";
         public const String NIGHT_ALT_LIGHTNING = "\uf025";
         public const String NIGHT_ALT_RAIN = "\uf028";
         public const String NIGHT_ALT_RAIN_MIX = "\uf026";
@@ -52,9 +52,13 @@ namespace SimpleWeather.Icons
         public const String NIGHT_ALT_SNOW_WIND = "\uf067";
         public const String NIGHT_ALT_SPRINKLE = "\uf02b";
         public const String NIGHT_ALT_STORM_SHOWERS = "\uf02c";
+        public const String NIGHT_OVERCAST = "\uf00c-nt";
         public const String NIGHT_ALT_THUNDERSTORM = "\uf02d";
-        public const String NIGHT_ALT_PARTLY_CLOUDY = "\uf081";
+        public const String NIGHT_WINDY = "\uf085-nt";
+        public const String NIGHT_HOT = "\uf072-nt";
         public const String NIGHT_ALT_CLOUDY_HIGH = "\uf07e";
+        public const String NIGHT_LIGHT_WIND = "\uf0c4-nt";
+        public const String NIGHT_ALT_PARTLY_CLOUDY = "\uf081";
 
         // NEUTRAL
         public const String CLOUD = "\uf041";
@@ -63,22 +67,28 @@ namespace SimpleWeather.Icons
         public const String CLOUDY_WINDY = "\uf012";
         public const String FOG = "\uf014";
         public const String HAIL = "\uf015";
+        public const String HAZE = "\uf0b6-neutral";
+        public const String LIGHTNING = "\uf016";
         public const String RAIN = "\uf019";
         public const String RAIN_MIX = "\uf017";
         public const String RAIN_WIND = "\uf018";
         public const String SHOWERS = "\uf01a";
         public const String SLEET = "\uf0b5";
+        public const String SLEET_STORM = "\uf0b5-storm";
         public const String SNOW = "\uf01b";
+        public const String SNOW_THUNDERSTORM = "\uf01b-tstorms";
+        public const String SNOW_WIND = "\uf064";
         public const String SPRINKLE = "\uf01c";
         public const String STORM_SHOWERS = "\uf01d";
+        public const String OVERCAST = "\uf00c-neutral";
         public const String THUNDERSTORM = "\uf01e";
-        public const String SNOW_WIND = "\uf064";
+        public const String WINDY = "\uf021";
+        public const String HOT = "\uf072-neutral";
+        public const String LIGHT_WIND = "\uf0c4-neutral";
         public const String SMOG = "\uf074";
         public const String SMOKE = "\uf062";
-        public const String LIGHTNING = "\uf016";
         public const String DUST = "\uf063";
         public const String SNOWFLAKE_COLD = "\uf076";
-        public const String WINDY = "\uf021";
         public const String STRONG_WIND = "\uf050";
         public const String SANDSTORM = "\uf082";
         public const String HURRICANE = "\uf073";
@@ -148,6 +158,10 @@ namespace SimpleWeather.Icons
         public const String UV_INDEX_9 = "\uf00d-uv9";
         public const String UV_INDEX_10 = "\uf00d-uv10";
         public const String UV_INDEX_11 = "\uf00d-uv11";
+
+        public const String TREE_POLLEN = "\u2eee";
+        public const String GRASS_POLLEN = "\u2eef";
+        public const String RAGWEED_POLLEN = "\u2eed";
 
         public const String FAHRENHEIT = "\uf045";
         public const String CELSIUS = "\uf03c";

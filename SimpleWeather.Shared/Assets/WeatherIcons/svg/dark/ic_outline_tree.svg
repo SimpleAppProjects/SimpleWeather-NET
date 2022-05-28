@@ -1,0 +1,13 @@
+<svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    id="vector">
+    <g
+        id="group"
+        transform="translate(2.5 2.5) scale(0.8 0.8)">
+        <path
+            id="path"
+            d="M 17 12 L 19 12 L 12 2 L 5.05 12 L 7 12 L 3.1 18 L 10.02 18 L 10.02 22 L 13.97 22 L 13.97 18 L 21 18 L 17 12 Z M 6.79 16 L 10.69 10 L 8.88 10 L 12.01 5.5 L 15.16 10 L 13.26 10 L 17.26 16 L 6.79 16 Z"
+            fill="#ffffff"/>
+    </g>
+</svg>

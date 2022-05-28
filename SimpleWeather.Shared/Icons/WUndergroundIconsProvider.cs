@@ -25,368 +25,189 @@ namespace SimpleWeather.Icons
         public override String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false)
         {
             string baseuri = WeatherIconsManager.GetPNGBaseUri(isLight);
-            string fileIcon = string.Empty;
 
-            switch (icon)
+            string fileIcon = icon switch
             {
                 // Day
-                case WeatherIcons.DAY_SUNNY:
-                case WeatherIcons.DAY_HOT:
-                case WeatherIcons.DAY_LIGHT_WIND:
-                    fileIcon = "wui-clear.png";
-                    break;
+                WeatherIcons.DAY_SUNNY or
+                WeatherIcons.DAY_HOT or
+                WeatherIcons.DAY_LIGHT_WIND => "wui-clear.png",
 
-                case WeatherIcons.DAY_CLOUDY:
-                case WeatherIcons.DAY_CLOUDY_GUSTS:
-                case WeatherIcons.DAY_CLOUDY_WINDY:
-                case WeatherIcons.DAY_CLOUDY_HIGH:
-                    fileIcon = "wui-mostlycloudy.png";
-                    break;
+                WeatherIcons.DAY_CLOUDY or
+                WeatherIcons.DAY_CLOUDY_GUSTS or
+                WeatherIcons.DAY_CLOUDY_WINDY or
+                WeatherIcons.DAY_CLOUDY_HIGH => "wui-mostlycloudy.png",
 
-                case WeatherIcons.DAY_PARTLY_CLOUDY:
-                case WeatherIcons.DAY_SUNNY_OVERCAST:
-                    fileIcon = "wui-partlycloudy.png";
-                    break;
+                WeatherIcons.DAY_PARTLY_CLOUDY or
+                WeatherIcons.DAY_SUNNY_OVERCAST => "wui-partlycloudy.png",
 
                 // Night
-                case WeatherIcons.NIGHT_CLEAR:
-                    fileIcon = "wui-nt_clear.png";
-                    break;
+                WeatherIcons.NIGHT_CLEAR or
+                WeatherIcons.NIGHT_HOT or
+                WeatherIcons.NIGHT_LIGHT_WIND => "wui-nt_clear.png",
 
-                case WeatherIcons.NIGHT_ALT_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                    fileIcon = "wui-nt_mostlycloudy.png";
-                    break;
+                WeatherIcons.NIGHT_ALT_CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
+                WeatherIcons.NIGHT_ALT_CLOUDY_WINDY => "wui-nt_mostlycloudy.png",
 
-                case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_OVERCAST:
-                    fileIcon = "wui-nt_partlycloudy.png";
-                    break;
+                WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY or
+                WeatherIcons.NIGHT_OVERCAST => "wui-nt_partlycloudy.png",
+
+                WeatherIcons.NIGHT_ALT_CLOUDY_HIGH => "wui-nt_mostlycloudy.png",
 
                 // Neutral
-                case WeatherIcons.DAY_FOG:
-                case WeatherIcons.DAY_HAZE:
-                case WeatherIcons.NIGHT_FOG:
-                case WeatherIcons.FOG:
-                    fileIcon = "wui-fog.png";
-                    break;
+                WeatherIcons.DAY_FOG or
+                WeatherIcons.DAY_HAZE or
+                WeatherIcons.NIGHT_FOG or
+                WeatherIcons.NIGHT_HAZE or
+                WeatherIcons.FOG or
+                WeatherIcons.HAZE => "wui-fog.png",
 
-                case WeatherIcons.DAY_LIGHTNING:
-                case WeatherIcons.NIGHT_ALT_LIGHTNING:
-                case WeatherIcons.LIGHTNING:
-                    fileIcon = "wui-chancetstorms.png";
-                    break;
+                WeatherIcons.DAY_LIGHTNING or
+                WeatherIcons.NIGHT_ALT_LIGHTNING or
+                WeatherIcons.LIGHTNING => "wui-chancetstorms.png",
 
-                case WeatherIcons.DAY_HAIL:
-                case WeatherIcons.DAY_SLEET:
-                case WeatherIcons.DAY_SLEET_STORM:
-                case WeatherIcons.NIGHT_ALT_HAIL:
-                case WeatherIcons.NIGHT_ALT_SLEET:
-                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
-                case WeatherIcons.SLEET:
-                    fileIcon = "wui-sleet.png";
-                    break;
+                WeatherIcons.DAY_HAIL or
+                WeatherIcons.DAY_SLEET or
+                WeatherIcons.DAY_SLEET_STORM or
+                WeatherIcons.NIGHT_ALT_HAIL or
+                WeatherIcons.NIGHT_ALT_SLEET or
+                WeatherIcons.NIGHT_ALT_SLEET_STORM or
+                WeatherIcons.SLEET or
+                WeatherIcons.SLEET_STORM => "wui-sleet.png",
 
-                case WeatherIcons.DAY_RAIN_MIX:
-                case WeatherIcons.NIGHT_ALT_RAIN_MIX:
-                case WeatherIcons.RAIN_MIX:
-                case WeatherIcons.HAIL:
-                    fileIcon = "wui-chancesleet.png";
-                    break;
+                WeatherIcons.DAY_RAIN_MIX or
+                WeatherIcons.NIGHT_ALT_RAIN_MIX or
+                WeatherIcons.RAIN_MIX or
+                WeatherIcons.HAIL => "wui-chancesleet.png",
 
-                case WeatherIcons.DAY_RAIN:
-                case WeatherIcons.DAY_RAIN_WIND:
-                case WeatherIcons.DAY_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_RAIN:
-                case WeatherIcons.NIGHT_ALT_RAIN_WIND:
-                case WeatherIcons.NIGHT_ALT_SHOWERS:
-                case WeatherIcons.RAIN:
-                case WeatherIcons.RAIN_WIND:
-                case WeatherIcons.SHOWERS:
-                    fileIcon = "wui-rain.png";
-                    break;
+                WeatherIcons.DAY_RAIN or
+                WeatherIcons.DAY_RAIN_WIND or 
+                WeatherIcons.DAY_SHOWERS or
+                WeatherIcons.NIGHT_ALT_RAIN or 
+                WeatherIcons.NIGHT_ALT_RAIN_WIND or
+                WeatherIcons.NIGHT_ALT_SHOWERS or
+                WeatherIcons.RAIN or 
+                WeatherIcons.RAIN_WIND or 
+                WeatherIcons.SHOWERS => "wui-rain.png",
 
-                case WeatherIcons.DAY_SNOW:
-                case WeatherIcons.DAY_SNOW_THUNDERSTORM:
-                case WeatherIcons.DAY_SNOW_WIND:
-                case WeatherIcons.NIGHT_ALT_SNOW:
-                case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                case WeatherIcons.SNOW:
-                case WeatherIcons.SNOW_WIND:
-                case WeatherIcons.SNOWFLAKE_COLD:
-                    fileIcon = "wui-snow.png";
-                    break;
+                WeatherIcons.DAY_SNOW or 
+                WeatherIcons.DAY_SNOW_THUNDERSTORM or 
+                WeatherIcons.DAY_SNOW_WIND or 
+                WeatherIcons.NIGHT_ALT_SNOW or 
+                WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or 
+                WeatherIcons.NIGHT_ALT_SNOW_WIND or 
+                WeatherIcons.SNOW or 
+                WeatherIcons.SNOW_THUNDERSTORM or 
+                WeatherIcons.SNOW_WIND or 
+                WeatherIcons.SNOWFLAKE_COLD => "wui-snow.png",
 
-                case WeatherIcons.DAY_SPRINKLE:
-                case WeatherIcons.NIGHT_ALT_SPRINKLE:
-                case WeatherIcons.SPRINKLE:
-                    fileIcon = "wui-chancerain.png";
-                    break;
+                WeatherIcons.DAY_SPRINKLE or
+                WeatherIcons.NIGHT_ALT_SPRINKLE or
+                WeatherIcons.SPRINKLE => "wui-chancerain.png",
 
-                case WeatherIcons.DAY_STORM_SHOWERS:
-                case WeatherIcons.DAY_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                case WeatherIcons.STORM_SHOWERS:
-                case WeatherIcons.THUNDERSTORM:
-                    fileIcon = "wui-tstorms.png";
-                    break;
+                WeatherIcons.DAY_STORM_SHOWERS or
+                WeatherIcons.DAY_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS or
+                WeatherIcons.NIGHT_ALT_THUNDERSTORM or
+                WeatherIcons.STORM_SHOWERS or
+                WeatherIcons.THUNDERSTORM => "wui-tstorms.png",
 
-                case WeatherIcons.DAY_WINDY:
-                    fileIcon = "wi-day-windy.png";
-                    break;
+                WeatherIcons.DAY_WINDY or
+                WeatherIcons.NIGHT_WINDY => "wi-windy.png",
 
-                case WeatherIcons.CLOUD:
-                case WeatherIcons.CLOUDY:
-                case WeatherIcons.CLOUDY_GUSTS:
-                case WeatherIcons.CLOUDY_WINDY:
-                    fileIcon = "wui-cloudy.png";
-                    break;
+                WeatherIcons.CLOUD or
+                WeatherIcons.CLOUDY or
+                WeatherIcons.CLOUDY_GUSTS or
+                WeatherIcons.CLOUDY_WINDY or
+                WeatherIcons.OVERCAST => "wui-cloudy.png",
 
-                case WeatherIcons.SMOG:
-                    fileIcon = "wi-smog.png";
-                    break;
+                WeatherIcons.HOT => "wi-thermometer-up.png",
+                WeatherIcons.SMOG => "wi-smog.png",
+                WeatherIcons.SMOKE => "wi-smoke.png",
+                WeatherIcons.DUST => "wi-dust.png",
+                WeatherIcons.WINDY or
+                WeatherIcons.LIGHT_WIND => "wi-windy.png",
+                WeatherIcons.STRONG_WIND => "wi-strong-wind.png",
+                WeatherIcons.SANDSTORM => "wi-sandstorm.png",
+                WeatherIcons.HURRICANE => "wi-hurricane.png",
+                WeatherIcons.TORNADO => "wi-tornado.png",
 
-                case WeatherIcons.SMOKE:
-                    fileIcon = "wi-smoke.png";
-                    break;
-
-                case WeatherIcons.DUST:
-                    fileIcon = "wi-dust.png";
-                    break;
-
-                case WeatherIcons.WINDY:
-                    fileIcon = "wi-windy.png";
-                    break;
-
-                case WeatherIcons.STRONG_WIND:
-                    fileIcon = "wi-strong-wind.png";
-                    break;
-
-                case WeatherIcons.SANDSTORM:
-                    fileIcon = "wi-sandstorm.png";
-                    break;
-
-                case WeatherIcons.HURRICANE:
-                    fileIcon = "wi-hurricane.png";
-                    break;
-
-                case WeatherIcons.TORNADO:
-                    fileIcon = "wi-tornado.png";
-                    break;
-
-                case WeatherIcons.FIRE:
-                    fileIcon = "wi-fire.png";
-                    break;
-
-                case WeatherIcons.FLOOD:
-                    fileIcon = "wi-flood.png";
-                    break;
-
-                case WeatherIcons.VOLCANO:
-                    fileIcon = "wi-volcano.png";
-                    break;
-
-                case WeatherIcons.BAROMETER:
-                    fileIcon = "wi-barometer.png";
-                    break;
-
-                case WeatherIcons.HUMIDITY:
-                    fileIcon = "wi-humidity.png";
-                    break;
-
-                case WeatherIcons.MOONRISE:
-                    fileIcon = "wi-moonrise.png";
-                    break;
-
-                case WeatherIcons.MOONSET:
-                    fileIcon = "wi-moonset.png";
-                    break;
-
-                case WeatherIcons.RAINDROP:
-                    fileIcon = "wi-raindrop.png";
-                    break;
-
-                case WeatherIcons.RAINDROPS:
-                    fileIcon = "wi-raindrops.png";
-                    break;
-
-                case WeatherIcons.SUNRISE:
-                    fileIcon = "wi-sunrise.png";
-                    break;
-
-                case WeatherIcons.SUNSET:
-                    fileIcon = "wi-sunset.png";
-                    break;
-
-                case WeatherIcons.THERMOMETER:
-                    fileIcon = "wi-thermometer.png";
-                    break;
-
-                case WeatherIcons.UMBRELLA:
-                    fileIcon = "wi-umbrella.png";
-                    break;
-
-                case WeatherIcons.WIND_DIRECTION:
-                    fileIcon = "wi-wind-direction.png";
-                    break;
-
-                case WeatherIcons.DIRECTION_UP:
-                    fileIcon = "wi-direction-up.png";
-                    break;
-
-                case WeatherIcons.DIRECTION_DOWN:
-                    fileIcon = "wi-direction-down.png";
-                    break;
+                // Misc icons
+                WeatherIcons.FIRE => "wi-fire.png",
+                WeatherIcons.FLOOD => "wi-flood.png",
+                WeatherIcons.VOLCANO => "wi-volcano.png",
+                WeatherIcons.BAROMETER => "wi-barometer.png",
+                WeatherIcons.HUMIDITY => "wi-humidity.png",
+                WeatherIcons.MOONRISE => "wi-moonrise.png",
+                WeatherIcons.MOONSET => "wi-moonset.png",
+                WeatherIcons.RAINDROP => "wi-raindrop.png",
+                WeatherIcons.RAINDROPS => "wi-raindrops.png",
+                WeatherIcons.SUNRISE => "wi-sunrise.png",
+                WeatherIcons.SUNSET => "wi-sunset.png",
+                WeatherIcons.THERMOMETER => "wi-thermometer.png",
+                WeatherIcons.UMBRELLA => "wi-umbrella.png",
+                WeatherIcons.WIND_DIRECTION => "wi-wind-direction.png",
+                WeatherIcons.DIRECTION_UP => "wi-direction-up.png",
+                WeatherIcons.DIRECTION_DOWN => "wi-direction-down.png",
 
                 // Beaufort
-                case WeatherIcons.WIND_BEAUFORT_0:
-                    fileIcon = "wi-wind-beaufort-0.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_1:
-                    fileIcon = "wi-wind-beaufort-1.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_2:
-                    fileIcon = "wi-wind-beaufort-2.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_3:
-                    fileIcon = "wi-wind-beaufort-3.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_4:
-                    fileIcon = "wi-wind-beaufort-4.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_5:
-                    fileIcon = "wi-wind-beaufort-5.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_6:
-                    fileIcon = "wi-wind-beaufort-6.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_7:
-                    fileIcon = "wi-wind-beaufort-7.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_8:
-                    fileIcon = "wi-wind-beaufort-8.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_9:
-                    fileIcon = "wi-wind-beaufort-9.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_10:
-                    fileIcon = "wi-wind-beaufort-10.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_11:
-                    fileIcon = "wi-wind-beaufort-11.png";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_12:
-                    fileIcon = "wi-wind-beaufort-12.png";
-                    break;
+                WeatherIcons.WIND_BEAUFORT_0 => "wi-wind-beaufort-0.png",
+                WeatherIcons.WIND_BEAUFORT_1 => "wi-wind-beaufort-1.png",
+                WeatherIcons.WIND_BEAUFORT_2 => "wi-wind-beaufort-2.png",
+                WeatherIcons.WIND_BEAUFORT_3 => "wi-wind-beaufort-3.png",
+                WeatherIcons.WIND_BEAUFORT_4 => "wi-wind-beaufort-4.png",
+                WeatherIcons.WIND_BEAUFORT_5 => "wi-wind-beaufort-5.png",
+                WeatherIcons.WIND_BEAUFORT_6 => "wi-wind-beaufort-6.png",
+                WeatherIcons.WIND_BEAUFORT_7 => "wi-wind-beaufort-7.png",
+                WeatherIcons.WIND_BEAUFORT_8 => "wi-wind-beaufort-8.png",
+                WeatherIcons.WIND_BEAUFORT_9 => "wi-wind-beaufort-9.png",
+                WeatherIcons.WIND_BEAUFORT_10 => "wi-wind-beaufort-10.png",
+                WeatherIcons.WIND_BEAUFORT_11 => "wi-wind-beaufort-11.png",
+                WeatherIcons.WIND_BEAUFORT_12 => "wi-wind-beaufort-12.png",
 
                 // Moon Phase
-                case WeatherIcons.MOON_NEW:
-                    fileIcon = "wi-moon-new.png";
-                    break;
+                WeatherIcons.MOON_NEW => "wi-moon-new.png",
+                WeatherIcons.MOON_WAXING_CRESCENT_3 => "wi-moon-waxing-crescent-3.png",
+                WeatherIcons.MOON_FIRST_QUARTER => "wi-moon-first-quarter.png",
+                WeatherIcons.MOON_WAXING_GIBBOUS_3 => "wi-moon-waxing-gibbous-3.png",
+                WeatherIcons.MOON_FULL => "wi-moon-full.png",
+                WeatherIcons.MOON_WANING_GIBBOUS_3 => "wi-moon-waning-gibbous-3.png",
+                WeatherIcons.MOON_THIRD_QUARTER => "wi-moon-third-quarter.png",
+                WeatherIcons.MOON_WANING_CRESCENT_3 => "wi-moon-waning-crescent-3.png",
+                WeatherIcons.MOON_ALT_NEW => "wi-moon-alt-new.png",
+                WeatherIcons.MOON_ALT_WAXING_CRESCENT_3 => "wi-moon-alt-waxing-crescent-3.png",
+                WeatherIcons.MOON_ALT_FIRST_QUARTER => "wi-moon-alt-first-quarter.png",
+                WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3 => "wi-moon-alt-waxing-gibbous-3.png",
+                WeatherIcons.MOON_ALT_FULL => "wi-moon-alt-full.png",
+                WeatherIcons.MOON_ALT_WANING_GIBBOUS_3 => "wi-moon-alt-waning-gibbous-3.png",
+                WeatherIcons.MOON_ALT_THIRD_QUARTER => "wi-moon-alt-third-quarter.png",
+                WeatherIcons.MOON_ALT_WANING_CRESCENT_3 => "wi-moon-alt-waning-crescent-3.png",
 
-                case WeatherIcons.MOON_WAXING_CRESCENT_3:
-                    fileIcon = "wi-moon-waxing-crescent-3.png";
-                    break;
+                WeatherIcons.UV_INDEX or
+                WeatherIcons.UV_INDEX_1 or
+                WeatherIcons.UV_INDEX_2 or
+                WeatherIcons.UV_INDEX_3 or
+                WeatherIcons.UV_INDEX_4 or
+                WeatherIcons.UV_INDEX_5 or
+                WeatherIcons.UV_INDEX_6 or
+                WeatherIcons.UV_INDEX_7 or
+                WeatherIcons.UV_INDEX_8 or 
+                WeatherIcons.UV_INDEX_9 or 
+                WeatherIcons.UV_INDEX_10 or
+                WeatherIcons.UV_INDEX_11 => "wui-clear.png",
 
-                case WeatherIcons.MOON_FIRST_QUARTER:
-                    fileIcon = "wi-moon-first-quarter.png";
-                    break;
+                WeatherIcons.TREE_POLLEN => "ic_outline_tree.png",
+                WeatherIcons.GRASS_POLLEN => "ic_baseline_grass.png",
+                WeatherIcons.RAGWEED_POLLEN => "ic_ragweed_pollen.png",
 
-                case WeatherIcons.MOON_WAXING_GIBBOUS_3:
-                    fileIcon = "wi-moon-waxing-gibbous-3.png";
-                    break;
+                WeatherIcons.FAHRENHEIT => "wi-fahrenheit.png",
+                WeatherIcons.CELSIUS => "wi-celsius.png",
 
-                case WeatherIcons.MOON_FULL:
-                    fileIcon = "wi-moon-full.png";
-                    break;
+                WeatherIcons.NA => "wui-unknown.png",
 
-                case WeatherIcons.MOON_WANING_GIBBOUS_3:
-                    fileIcon = "wi-moon-waning-gibbous-3.png";
-                    break;
-
-                case WeatherIcons.MOON_THIRD_QUARTER:
-                    fileIcon = "wi-moon-third-quarter.png";
-                    break;
-
-                case WeatherIcons.MOON_WANING_CRESCENT_3:
-                    fileIcon = "wi-moon-waning-crescent-3.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_NEW:
-                    fileIcon = "wi-moon-alt-new.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WAXING_CRESCENT_3:
-                    fileIcon = "wi-moon-alt-waxing-crescent-3.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_FIRST_QUARTER:
-                    fileIcon = "wi-moon-alt-first-quarter.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3:
-                    fileIcon = "wi-moon-alt-waxing-gibbous-3.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_FULL:
-                    fileIcon = "wi-moon-alt-full.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WANING_GIBBOUS_3:
-                    fileIcon = "wi-moon-alt-waning-gibbous-3.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_THIRD_QUARTER:
-                    fileIcon = "wi-moon-alt-third-quarter.png";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WANING_CRESCENT_3:
-                    fileIcon = "wi-moon-alt-waning-crescent-3.png";
-                    break;
-
-                case WeatherIcons.FAHRENHEIT:
-                    fileIcon = "wi-fahrenheit.png";
-                    break;
-
-                case WeatherIcons.CELSIUS:
-                    fileIcon = "wi-celsius.png";
-                    break;
-
-                case WeatherIcons.UV_INDEX:
-                case WeatherIcons.UV_INDEX_1:
-                case WeatherIcons.UV_INDEX_2:
-                case WeatherIcons.UV_INDEX_3:
-                case WeatherIcons.UV_INDEX_4:
-                case WeatherIcons.UV_INDEX_5:
-                case WeatherIcons.UV_INDEX_6:
-                case WeatherIcons.UV_INDEX_7:
-                case WeatherIcons.UV_INDEX_8:
-                case WeatherIcons.UV_INDEX_9:
-                case WeatherIcons.UV_INDEX_10:
-                case WeatherIcons.UV_INDEX_11:
-                    fileIcon = "wui-clear.png";
-                    break;
-
-                case WeatherIcons.NA:
-                    fileIcon = "wui-unknown.png";
-                    break;
-            }
+                _ => string.Empty,
+            };
 
             if (String.IsNullOrWhiteSpace(fileIcon))
             {
@@ -407,368 +228,189 @@ namespace SimpleWeather.Icons
         public override String GetSVGIconUri(string icon, bool isLight = false)
         {
             string baseuri = WeatherIconsManager.GetSVGBaseUri(isLight);
-            string fileIcon = string.Empty;
 
-            switch (icon)
+            string fileIcon = icon switch
             {
                 // Day
-                case WeatherIcons.DAY_SUNNY:
-                case WeatherIcons.DAY_HOT:
-                case WeatherIcons.DAY_LIGHT_WIND:
-                    fileIcon = "wui-clear.svg";
-                    break;
+                WeatherIcons.DAY_SUNNY or
+                WeatherIcons.DAY_HOT or
+                WeatherIcons.DAY_LIGHT_WIND => "wui-clear.svg",
 
-                case WeatherIcons.DAY_CLOUDY:
-                case WeatherIcons.DAY_CLOUDY_GUSTS:
-                case WeatherIcons.DAY_CLOUDY_WINDY:
-                case WeatherIcons.DAY_CLOUDY_HIGH:
-                    fileIcon = "wui-mostlycloudy.svg";
-                    break;
+                WeatherIcons.DAY_CLOUDY or
+                WeatherIcons.DAY_CLOUDY_GUSTS or
+                WeatherIcons.DAY_CLOUDY_WINDY or
+                WeatherIcons.DAY_CLOUDY_HIGH => "wui-mostlycloudy.svg",
 
-                case WeatherIcons.DAY_PARTLY_CLOUDY:
-                case WeatherIcons.DAY_SUNNY_OVERCAST:
-                    fileIcon = "wui-partlycloudy.svg";
-                    break;
+                WeatherIcons.DAY_PARTLY_CLOUDY or
+                WeatherIcons.DAY_SUNNY_OVERCAST => "wui-partlycloudy.svg",
 
                 // Night
-                case WeatherIcons.NIGHT_CLEAR:
-                    fileIcon = "wui-nt_clear.svg";
-                    break;
+                WeatherIcons.NIGHT_CLEAR or
+                WeatherIcons.NIGHT_HOT or
+                WeatherIcons.NIGHT_LIGHT_WIND => "wui-nt_clear.svg",
 
-                case WeatherIcons.NIGHT_ALT_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                    fileIcon = "wui-nt_mostlycloudy.svg";
-                    break;
+                WeatherIcons.NIGHT_ALT_CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
+                WeatherIcons.NIGHT_ALT_CLOUDY_WINDY => "wui-nt_mostlycloudy.svg",
 
-                case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_OVERCAST:
-                    fileIcon = "wui-nt_partlycloudy.svg";
-                    break;
+                WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY or
+                WeatherIcons.NIGHT_OVERCAST => "wui-nt_partlycloudy.svg",
+
+                WeatherIcons.NIGHT_ALT_CLOUDY_HIGH => "wui-nt_mostlycloudy.svg",
 
                 // Neutral
-                case WeatherIcons.DAY_FOG:
-                case WeatherIcons.DAY_HAZE:
-                case WeatherIcons.NIGHT_FOG:
-                case WeatherIcons.FOG:
-                    fileIcon = "wui-fog.svg";
-                    break;
+                WeatherIcons.DAY_FOG or
+                WeatherIcons.DAY_HAZE or
+                WeatherIcons.NIGHT_FOG or
+                WeatherIcons.NIGHT_HAZE or
+                WeatherIcons.FOG or
+                WeatherIcons.HAZE => "wui-fog.svg",
 
-                case WeatherIcons.DAY_LIGHTNING:
-                case WeatherIcons.NIGHT_ALT_LIGHTNING:
-                case WeatherIcons.LIGHTNING:
-                    fileIcon = "wui-chancetstorms.svg";
-                    break;
+                WeatherIcons.DAY_LIGHTNING or
+                WeatherIcons.NIGHT_ALT_LIGHTNING or
+                WeatherIcons.LIGHTNING => "wui-chancetstorms.svg",
 
-                case WeatherIcons.DAY_HAIL:
-                case WeatherIcons.DAY_SLEET:
-                case WeatherIcons.DAY_SLEET_STORM:
-                case WeatherIcons.NIGHT_ALT_HAIL:
-                case WeatherIcons.NIGHT_ALT_SLEET:
-                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
-                case WeatherIcons.SLEET:
-                    fileIcon = "wui-sleet.svg";
-                    break;
+                WeatherIcons.DAY_HAIL or
+                WeatherIcons.DAY_SLEET or
+                WeatherIcons.DAY_SLEET_STORM or
+                WeatherIcons.NIGHT_ALT_HAIL or
+                WeatherIcons.NIGHT_ALT_SLEET or
+                WeatherIcons.NIGHT_ALT_SLEET_STORM or
+                WeatherIcons.SLEET or
+                WeatherIcons.SLEET_STORM => "wui-sleet.svg",
 
-                case WeatherIcons.DAY_RAIN_MIX:
-                case WeatherIcons.NIGHT_ALT_RAIN_MIX:
-                case WeatherIcons.RAIN_MIX:
-                case WeatherIcons.HAIL:
-                    fileIcon = "wui-chancesleet.svg";
-                    break;
+                WeatherIcons.DAY_RAIN_MIX or
+                WeatherIcons.NIGHT_ALT_RAIN_MIX or
+                WeatherIcons.RAIN_MIX or
+                WeatherIcons.HAIL => "wui-chancesleet.svg",
 
-                case WeatherIcons.DAY_RAIN:
-                case WeatherIcons.DAY_RAIN_WIND:
-                case WeatherIcons.DAY_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_RAIN:
-                case WeatherIcons.NIGHT_ALT_RAIN_WIND:
-                case WeatherIcons.NIGHT_ALT_SHOWERS:
-                case WeatherIcons.RAIN:
-                case WeatherIcons.RAIN_WIND:
-                case WeatherIcons.SHOWERS:
-                    fileIcon = "wui-rain.svg";
-                    break;
+                WeatherIcons.DAY_RAIN or
+                WeatherIcons.DAY_RAIN_WIND or
+                WeatherIcons.DAY_SHOWERS or
+                WeatherIcons.NIGHT_ALT_RAIN or
+                WeatherIcons.NIGHT_ALT_RAIN_WIND or
+                WeatherIcons.NIGHT_ALT_SHOWERS or
+                WeatherIcons.RAIN or
+                WeatherIcons.RAIN_WIND or
+                WeatherIcons.SHOWERS => "wui-rain.svg",
 
-                case WeatherIcons.DAY_SNOW:
-                case WeatherIcons.DAY_SNOW_THUNDERSTORM:
-                case WeatherIcons.DAY_SNOW_WIND:
-                case WeatherIcons.NIGHT_ALT_SNOW:
-                case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                case WeatherIcons.SNOW:
-                case WeatherIcons.SNOW_WIND:
-                case WeatherIcons.SNOWFLAKE_COLD:
-                    fileIcon = "wui-snow.svg";
-                    break;
+                WeatherIcons.DAY_SNOW or
+                WeatherIcons.DAY_SNOW_THUNDERSTORM or
+                WeatherIcons.DAY_SNOW_WIND or
+                WeatherIcons.NIGHT_ALT_SNOW or
+                WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_SNOW_WIND or
+                WeatherIcons.SNOW or
+                WeatherIcons.SNOW_THUNDERSTORM or
+                WeatherIcons.SNOW_WIND or
+                WeatherIcons.SNOWFLAKE_COLD => "wui-snow.svg",
 
-                case WeatherIcons.DAY_SPRINKLE:
-                case WeatherIcons.NIGHT_ALT_SPRINKLE:
-                case WeatherIcons.SPRINKLE:
-                    fileIcon = "wui-chancerain.svg";
-                    break;
+                WeatherIcons.DAY_SPRINKLE or
+                WeatherIcons.NIGHT_ALT_SPRINKLE or
+                WeatherIcons.SPRINKLE => "wui-chancerain.svg",
 
-                case WeatherIcons.DAY_STORM_SHOWERS:
-                case WeatherIcons.DAY_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                case WeatherIcons.STORM_SHOWERS:
-                case WeatherIcons.THUNDERSTORM:
-                    fileIcon = "wui-tstorms.svg";
-                    break;
+                WeatherIcons.DAY_STORM_SHOWERS or
+                WeatherIcons.DAY_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS or
+                WeatherIcons.NIGHT_ALT_THUNDERSTORM or
+                WeatherIcons.STORM_SHOWERS or
+                WeatherIcons.THUNDERSTORM => "wui-tstorms.svg",
 
-                case WeatherIcons.DAY_WINDY:
-                    fileIcon = "wi-day-windy.svg";
-                    break;
+                WeatherIcons.DAY_WINDY or
+                WeatherIcons.NIGHT_WINDY => "wi-windy.svg",
 
-                case WeatherIcons.CLOUD:
-                case WeatherIcons.CLOUDY:
-                case WeatherIcons.CLOUDY_GUSTS:
-                case WeatherIcons.CLOUDY_WINDY:
-                    fileIcon = "wui-cloudy.svg";
-                    break;
+                WeatherIcons.CLOUD or
+                WeatherIcons.CLOUDY or
+                WeatherIcons.CLOUDY_GUSTS or
+                WeatherIcons.CLOUDY_WINDY or
+                WeatherIcons.OVERCAST => "wui-cloudy.svg",
 
-                case WeatherIcons.SMOG:
-                    fileIcon = "wi-smog.svg";
-                    break;
+                WeatherIcons.HOT => "wi-thermometer-up.svg",
+                WeatherIcons.SMOG => "wi-smog.svg",
+                WeatherIcons.SMOKE => "wi-smoke.svg",
+                WeatherIcons.DUST => "wi-dust.svg",
+                WeatherIcons.WINDY or
+                WeatherIcons.LIGHT_WIND => "wi-windy.svg",
+                WeatherIcons.STRONG_WIND => "wi-strong-wind.svg",
+                WeatherIcons.SANDSTORM => "wi-sandstorm.svg",
+                WeatherIcons.HURRICANE => "wi-hurricane.svg",
+                WeatherIcons.TORNADO => "wi-tornado.svg",
 
-                case WeatherIcons.SMOKE:
-                    fileIcon = "wi-smoke.svg";
-                    break;
-
-                case WeatherIcons.DUST:
-                    fileIcon = "wi-dust.svg";
-                    break;
-
-                case WeatherIcons.WINDY:
-                    fileIcon = "wi-windy.svg";
-                    break;
-
-                case WeatherIcons.STRONG_WIND:
-                    fileIcon = "wi-strong-wind.svg";
-                    break;
-
-                case WeatherIcons.SANDSTORM:
-                    fileIcon = "wi-sandstorm.svg";
-                    break;
-
-                case WeatherIcons.HURRICANE:
-                    fileIcon = "wi-hurricane.svg";
-                    break;
-
-                case WeatherIcons.TORNADO:
-                    fileIcon = "wi-tornado.svg";
-                    break;
-
-                case WeatherIcons.FIRE:
-                    fileIcon = "wi-fire.svg";
-                    break;
-
-                case WeatherIcons.FLOOD:
-                    fileIcon = "wi-flood.svg";
-                    break;
-
-                case WeatherIcons.VOLCANO:
-                    fileIcon = "wi-volcano.svg";
-                    break;
-
-                case WeatherIcons.BAROMETER:
-                    fileIcon = "wi-barometer.svg";
-                    break;
-
-                case WeatherIcons.HUMIDITY:
-                    fileIcon = "wi-humidity.svg";
-                    break;
-
-                case WeatherIcons.MOONRISE:
-                    fileIcon = "wi-moonrise.svg";
-                    break;
-
-                case WeatherIcons.MOONSET:
-                    fileIcon = "wi-moonset.svg";
-                    break;
-
-                case WeatherIcons.RAINDROP:
-                    fileIcon = "wi-raindrop.svg";
-                    break;
-
-                case WeatherIcons.RAINDROPS:
-                    fileIcon = "wi-raindrops.svg";
-                    break;
-
-                case WeatherIcons.SUNRISE:
-                    fileIcon = "wi-sunrise.svg";
-                    break;
-
-                case WeatherIcons.SUNSET:
-                    fileIcon = "wi-sunset.svg";
-                    break;
-
-                case WeatherIcons.THERMOMETER:
-                    fileIcon = "wi-thermometer.svg";
-                    break;
-
-                case WeatherIcons.UMBRELLA:
-                    fileIcon = "wi-umbrella.svg";
-                    break;
-
-                case WeatherIcons.WIND_DIRECTION:
-                    fileIcon = "wi-wind-direction.svg";
-                    break;
-
-                case WeatherIcons.DIRECTION_UP:
-                    fileIcon = "wi-direction-up.svg";
-                    break;
-
-                case WeatherIcons.DIRECTION_DOWN:
-                    fileIcon = "wi-direction-down.svg";
-                    break;
+                // Misc icons
+                WeatherIcons.FIRE => "wi-fire.svg",
+                WeatherIcons.FLOOD => "wi-flood.svg",
+                WeatherIcons.VOLCANO => "wi-volcano.svg",
+                WeatherIcons.BAROMETER => "wi-barometer.svg",
+                WeatherIcons.HUMIDITY => "wi-humidity.svg",
+                WeatherIcons.MOONRISE => "wi-moonrise.svg",
+                WeatherIcons.MOONSET => "wi-moonset.svg",
+                WeatherIcons.RAINDROP => "wi-raindrop.svg",
+                WeatherIcons.RAINDROPS => "wi-raindrops.svg",
+                WeatherIcons.SUNRISE => "wi-sunrise.svg",
+                WeatherIcons.SUNSET => "wi-sunset.svg",
+                WeatherIcons.THERMOMETER => "wi-thermometer.svg",
+                WeatherIcons.UMBRELLA => "wi-umbrella.svg",
+                WeatherIcons.WIND_DIRECTION => "wi-wind-direction.svg",
+                WeatherIcons.DIRECTION_UP => "wi-direction-up.svg",
+                WeatherIcons.DIRECTION_DOWN => "wi-direction-down.svg",
 
                 // Beaufort
-                case WeatherIcons.WIND_BEAUFORT_0:
-                    fileIcon = "wi-wind-beaufort-0.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_1:
-                    fileIcon = "wi-wind-beaufort-1.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_2:
-                    fileIcon = "wi-wind-beaufort-2.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_3:
-                    fileIcon = "wi-wind-beaufort-3.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_4:
-                    fileIcon = "wi-wind-beaufort-4.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_5:
-                    fileIcon = "wi-wind-beaufort-5.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_6:
-                    fileIcon = "wi-wind-beaufort-6.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_7:
-                    fileIcon = "wi-wind-beaufort-7.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_8:
-                    fileIcon = "wi-wind-beaufort-8.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_9:
-                    fileIcon = "wi-wind-beaufort-9.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_10:
-                    fileIcon = "wi-wind-beaufort-10.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_11:
-                    fileIcon = "wi-wind-beaufort-11.svg";
-                    break;
-
-                case WeatherIcons.WIND_BEAUFORT_12:
-                    fileIcon = "wi-wind-beaufort-12.svg";
-                    break;
+                WeatherIcons.WIND_BEAUFORT_0 => "wi-wind-beaufort-0.svg",
+                WeatherIcons.WIND_BEAUFORT_1 => "wi-wind-beaufort-1.svg",
+                WeatherIcons.WIND_BEAUFORT_2 => "wi-wind-beaufort-2.svg",
+                WeatherIcons.WIND_BEAUFORT_3 => "wi-wind-beaufort-3.svg",
+                WeatherIcons.WIND_BEAUFORT_4 => "wi-wind-beaufort-4.svg",
+                WeatherIcons.WIND_BEAUFORT_5 => "wi-wind-beaufort-5.svg",
+                WeatherIcons.WIND_BEAUFORT_6 => "wi-wind-beaufort-6.svg",
+                WeatherIcons.WIND_BEAUFORT_7 => "wi-wind-beaufort-7.svg",
+                WeatherIcons.WIND_BEAUFORT_8 => "wi-wind-beaufort-8.svg",
+                WeatherIcons.WIND_BEAUFORT_9 => "wi-wind-beaufort-9.svg",
+                WeatherIcons.WIND_BEAUFORT_10 => "wi-wind-beaufort-10.svg",
+                WeatherIcons.WIND_BEAUFORT_11 => "wi-wind-beaufort-11.svg",
+                WeatherIcons.WIND_BEAUFORT_12 => "wi-wind-beaufort-12.svg",
 
                 // Moon Phase
-                case WeatherIcons.MOON_NEW:
-                    fileIcon = "wi-moon-new.svg";
-                    break;
+                WeatherIcons.MOON_NEW => "wi-moon-new.svg",
+                WeatherIcons.MOON_WAXING_CRESCENT_3 => "wi-moon-waxing-crescent-3.svg",
+                WeatherIcons.MOON_FIRST_QUARTER => "wi-moon-first-quarter.svg",
+                WeatherIcons.MOON_WAXING_GIBBOUS_3 => "wi-moon-waxing-gibbous-3.svg",
+                WeatherIcons.MOON_FULL => "wi-moon-full.svg",
+                WeatherIcons.MOON_WANING_GIBBOUS_3 => "wi-moon-waning-gibbous-3.svg",
+                WeatherIcons.MOON_THIRD_QUARTER => "wi-moon-third-quarter.svg",
+                WeatherIcons.MOON_WANING_CRESCENT_3 => "wi-moon-waning-crescent-3.svg",
+                WeatherIcons.MOON_ALT_NEW => "wi-moon-alt-new.svg",
+                WeatherIcons.MOON_ALT_WAXING_CRESCENT_3 => "wi-moon-alt-waxing-crescent-3.svg",
+                WeatherIcons.MOON_ALT_FIRST_QUARTER => "wi-moon-alt-first-quarter.svg",
+                WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3 => "wi-moon-alt-waxing-gibbous-3.svg",
+                WeatherIcons.MOON_ALT_FULL => "wi-moon-alt-full.svg",
+                WeatherIcons.MOON_ALT_WANING_GIBBOUS_3 => "wi-moon-alt-waning-gibbous-3.svg",
+                WeatherIcons.MOON_ALT_THIRD_QUARTER => "wi-moon-alt-third-quarter.svg",
+                WeatherIcons.MOON_ALT_WANING_CRESCENT_3 => "wi-moon-alt-waning-crescent-3.svg",
 
-                case WeatherIcons.MOON_WAXING_CRESCENT_3:
-                    fileIcon = "wi-moon-waxing-crescent-3.svg";
-                    break;
+                WeatherIcons.UV_INDEX or
+                WeatherIcons.UV_INDEX_1 or
+                WeatherIcons.UV_INDEX_2 or
+                WeatherIcons.UV_INDEX_3 or
+                WeatherIcons.UV_INDEX_4 or
+                WeatherIcons.UV_INDEX_5 or
+                WeatherIcons.UV_INDEX_6 or
+                WeatherIcons.UV_INDEX_7 or
+                WeatherIcons.UV_INDEX_8 or
+                WeatherIcons.UV_INDEX_9 or
+                WeatherIcons.UV_INDEX_10 or
+                WeatherIcons.UV_INDEX_11 => "wui-clear.svg",
 
-                case WeatherIcons.MOON_FIRST_QUARTER:
-                    fileIcon = "wi-moon-first-quarter.svg";
-                    break;
+                WeatherIcons.TREE_POLLEN => "ic_outline_tree.svg",
+                WeatherIcons.GRASS_POLLEN => "ic_baseline_grass.svg",
+                WeatherIcons.RAGWEED_POLLEN => "ic_ragweed_pollen.svg",
 
-                case WeatherIcons.MOON_WAXING_GIBBOUS_3:
-                    fileIcon = "wi-moon-waxing-gibbous-3.svg";
-                    break;
+                WeatherIcons.FAHRENHEIT => "wi-fahrenheit.svg",
+                WeatherIcons.CELSIUS => "wi-celsius.svg",
 
-                case WeatherIcons.MOON_FULL:
-                    fileIcon = "wi-moon-full.svg";
-                    break;
+                WeatherIcons.NA => "wui-unknown.svg",
 
-                case WeatherIcons.MOON_WANING_GIBBOUS_3:
-                    fileIcon = "wi-moon-waning-gibbous-3.svg";
-                    break;
-
-                case WeatherIcons.MOON_THIRD_QUARTER:
-                    fileIcon = "wi-moon-third-quarter.svg";
-                    break;
-
-                case WeatherIcons.MOON_WANING_CRESCENT_3:
-                    fileIcon = "wi-moon-waning-crescent-3.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_NEW:
-                    fileIcon = "wi-moon-alt-new.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WAXING_CRESCENT_3:
-                    fileIcon = "wi-moon-alt-waxing-crescent-3.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_FIRST_QUARTER:
-                    fileIcon = "wi-moon-alt-first-quarter.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3:
-                    fileIcon = "wi-moon-alt-waxing-gibbous-3.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_FULL:
-                    fileIcon = "wi-moon-alt-full.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WANING_GIBBOUS_3:
-                    fileIcon = "wi-moon-alt-waning-gibbous-3.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_THIRD_QUARTER:
-                    fileIcon = "wi-moon-alt-third-quarter.svg";
-                    break;
-
-                case WeatherIcons.MOON_ALT_WANING_CRESCENT_3:
-                    fileIcon = "wi-moon-alt-waning-crescent-3.svg";
-                    break;
-
-                case WeatherIcons.FAHRENHEIT:
-                    fileIcon = "wi-fahrenheit.svg";
-                    break;
-
-                case WeatherIcons.CELSIUS:
-                    fileIcon = "wi-celsius.svg";
-                    break;
-
-                case WeatherIcons.UV_INDEX:
-                case WeatherIcons.UV_INDEX_1:
-                case WeatherIcons.UV_INDEX_2:
-                case WeatherIcons.UV_INDEX_3:
-                case WeatherIcons.UV_INDEX_4:
-                case WeatherIcons.UV_INDEX_5:
-                case WeatherIcons.UV_INDEX_6:
-                case WeatherIcons.UV_INDEX_7:
-                case WeatherIcons.UV_INDEX_8:
-                case WeatherIcons.UV_INDEX_9:
-                case WeatherIcons.UV_INDEX_10:
-                case WeatherIcons.UV_INDEX_11:
-                    fileIcon = "wui-clear.svg";
-                    break;
-
-                case WeatherIcons.NA:
-                    fileIcon = "wui-unknown.svg";
-                    break;
-            }
+                _ => string.Empty,
+            };
 
             if (String.IsNullOrWhiteSpace(fileIcon))
             {

@@ -18,7 +18,7 @@ namespace SimpleWeather.Icons
         static WeatherIconsManager()
         {
             var defaultIcons = new Dictionary<string, WeatherIconProvider>(3);
-            AddIconProvider(defaultIcons, new WeatherIconsProvider());
+            AddIconProvider(defaultIcons, new WeatherIconsEFProvider());
             AddIconProvider(defaultIcons, new WUndergroundIconsProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider());
             DefaultIcons = defaultIcons;

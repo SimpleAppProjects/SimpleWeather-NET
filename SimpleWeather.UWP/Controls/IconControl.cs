@@ -138,7 +138,6 @@ namespace SimpleWeather.UWP.Controls
                     }
                 }
             }
-            /*
             else if (wip is ILottieGenWeatherIconProvider lottieGenProvider)
             {
                 var sourceGen = lottieGenProvider.GetLottieGenSource(WeatherIcon);
@@ -181,13 +180,12 @@ namespace SimpleWeather.UWP.Controls
                     }
                 }
             }
-            */
             else
             {
                 iconElement = CreateBitmapIcon(wip);
             }
 
-            //DestroyLottiePlayer();
+            DestroyLottiePlayer();
 
             IconBox.Child = iconElement;
         }
@@ -231,7 +229,6 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        /*
         private muxc.AnimatedVisualPlayer CreateLottiePlayer(string lottieJsonURI)
         {
             return new muxc.AnimatedVisualPlayer()
@@ -269,7 +266,6 @@ namespace SimpleWeather.UWP.Controls
                 player.Source = null;
             }
         }
-        */
 
         private async Task<UIElement> CreateXAMLIconElement(string uri)
         {

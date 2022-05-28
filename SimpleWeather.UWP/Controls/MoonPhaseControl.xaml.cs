@@ -120,6 +120,9 @@ namespace SimpleWeather.UWP.Controls
                             }
                             break;
                     }
+
+                    MoonriseIcon.UpdateWeatherIcon();
+                    MoonsetIcon.UpdateWeatherIcon();
                 }
             };
         }

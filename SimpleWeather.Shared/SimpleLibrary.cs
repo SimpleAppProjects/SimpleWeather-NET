@@ -111,7 +111,7 @@ namespace SimpleWeather
                 }
                 else
                 {
-                    RegisterIconProvider(provider = new Icons.WeatherIconsProvider());
+                    RegisterIconProvider(provider = new Icons.WeatherIconsEFProvider());
                 }
             }
             return provider;

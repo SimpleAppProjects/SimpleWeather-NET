@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Icons
 {
-    public sealed partial class WeatherIconsProvider : WeatherIconProvider
+    public sealed partial class WeatherIconsEFProvider : WeatherIconProvider
     {
         public const string KEY = "wi-erik-flowers";
 
