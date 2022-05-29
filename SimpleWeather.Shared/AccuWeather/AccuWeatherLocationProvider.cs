@@ -70,7 +70,7 @@ namespace SimpleWeather.AccuWeather
                     };
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendAsync(request, cts.Token))
                     {
@@ -147,7 +147,7 @@ namespace SimpleWeather.AccuWeather
                     };
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var response = await webClient.SendAsync(request, cts.Token))
                     {

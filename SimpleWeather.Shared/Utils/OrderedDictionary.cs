@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
-    public class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
+    public class OrderedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyCollection<KeyValuePair<TKey, TValue>>, IReadOnlyDictionary<TKey, TValue>
     {
         private readonly System.Collections.Specialized.OrderedDictionary _dictionary = new System.Collections.Specialized.OrderedDictionary();
 
@@ -28,6 +28,10 @@ namespace SimpleWeather.Utils
                 return _dictionary.OfType<DictionaryEntry>().Select(kvp => new KeyValuePair<TKey, TValue>((TKey)kvp.Key, (TValue)kvp.Value));
             }
         }
+
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
         public void Add(TKey key, TValue value)
         {

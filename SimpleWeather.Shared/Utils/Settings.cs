@@ -273,8 +273,6 @@ namespace SimpleWeather.Utils
                         lastGPSLocData = LocationData.BuildGPSLocation();
                 }
             }
-
-            await DataMigrations.PerformVersionMigrations(weatherDB, locationDB);
         }
 
         public static Task<LocationData> GetFirstFavorite()

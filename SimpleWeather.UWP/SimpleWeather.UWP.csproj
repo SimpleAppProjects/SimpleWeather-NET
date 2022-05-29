@@ -688,6 +688,10 @@
       <Project>{0caa3b62-12e0-4418-8e32-95aeeca0af97}</Project>
       <Name>SimpleWeather.Backgrounds</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj">
+      <Project>{0cc840eb-6362-44e7-95fe-22602abddc8b}</Project>
+      <Name>SimpleWeather.Extras</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
       <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
       <Name>SimpleWeather.Shared</Name>

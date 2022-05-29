@@ -145,7 +145,7 @@ namespace SimpleWeather.WeatherData
         {
             date = daily.Date;
 
-            var ResLoader = SimpleLibrary.GetInstance().ResLoader;
+            var ResLoader = SharedModule.Instance.ResLoader;
             var fctStr = new StringBuilder();
             if (daily.Day != null)
             {
@@ -393,7 +393,7 @@ namespace SimpleWeather.WeatherData
 
             summary = daily?.Let((it) =>
             {
-                var ResLoader = SimpleLibrary.GetInstance().ResLoader;
+                var ResLoader = SharedModule.Instance.ResLoader;
                 var labelDay = ResLoader.GetString("label_day");
                 var labelNite = ResLoader.GetString("label_night");
 

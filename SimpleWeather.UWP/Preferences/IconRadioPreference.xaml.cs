@@ -24,7 +24,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             if (Key != null)
             {
-                var provider = SimpleLibrary.GetInstance().GetIconProvider(Key);
+                var provider = SharedModule.Instance.WeatherIconsManager.GetIconProvider(Key);
                 if (provider != null)
                 {
                     SetIconProvider(provider);

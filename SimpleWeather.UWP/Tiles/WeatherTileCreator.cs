@@ -22,7 +22,7 @@ namespace SimpleWeather.UWP.Tiles
         private const int WIDE_FORECAST_LENGTH = 3;
         private const int LARGE_FORECAST_LENGTH = 5;
 
-        private static readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        private static readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         public enum ForecastTileType
         {

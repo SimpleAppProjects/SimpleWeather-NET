@@ -47,92 +47,92 @@ namespace SimpleWeather.Controls
             switch (detailsType)
             {
                 case WeatherDetailsType.Sunrise:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_sunrise");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_sunrise");
                     this.Icon = WeatherIcons.SUNRISE;
                     break;
 
                 case WeatherDetailsType.Sunset:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_sunset");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_sunset");
                     this.Icon = WeatherIcons.SUNSET;
                     break;
 
                 case WeatherDetailsType.FeelsLike:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_feelslike");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_feelslike");
                     this.Icon = WeatherIcons.THERMOMETER;
                     break;
 
                 case WeatherDetailsType.WindSpeed:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_wind");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_wind");
                     this.Icon = WeatherIcons.WIND_DIRECTION;
                     break;
 
                 case WeatherDetailsType.WindGust:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_windgust");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_windgust");
                     this.Icon = WeatherIcons.CLOUDY_GUSTS;
                     break;
 
                 case WeatherDetailsType.Humidity:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_humidity");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_humidity");
                     this.Icon = WeatherIcons.HUMIDITY;
                     break;
 
                 case WeatherDetailsType.Pressure:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_pressure");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_pressure");
                     this.Icon = WeatherIcons.BAROMETER;
                     break;
 
                 case WeatherDetailsType.Visibility:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_visibility");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_visibility");
                     this.Icon = WeatherIcons.FOG;
                     break;
 
                 case WeatherDetailsType.PoPCloudiness:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_cloudiness");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_cloudiness");
                     this.Icon = WeatherIcons.CLOUDY;
                     break;
 
                 case WeatherDetailsType.PoPChance:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_chance");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_chance");
                     this.Icon = WeatherIcons.UMBRELLA;
                     break;
 
                 case WeatherDetailsType.PoPRain:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_qpf_rain");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_qpf_rain");
                     this.Icon = WeatherIcons.RAINDROPS;
                     break;
 
                 case WeatherDetailsType.PoPSnow:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_qpf_snow");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_qpf_snow");
                     this.Icon = WeatherIcons.SNOWFLAKE_COLD;
                     break;
 
                 case WeatherDetailsType.Dewpoint:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_dewpoint");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_dewpoint");
                     this.Icon = WeatherIcons.THERMOMETER;
                     break;
 
                 case WeatherDetailsType.Moonrise:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonrise");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_moonrise");
                     this.Icon = WeatherIcons.MOONRISE;
                     break;
 
                 case WeatherDetailsType.Moonset:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonset");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_moonset");
                     this.Icon = WeatherIcons.MOONSET;
                     break;
 
                 case WeatherDetailsType.MoonPhase:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonphase");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_moonphase");
                     this.Icon = WeatherIcons.MOON_ALT_NEW;
                     break;
 
                 case WeatherDetailsType.Beaufort:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_beaufort");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_beaufort");
                     this.Icon = WeatherIcons.WIND_BEAUFORT_0;
                     break;
 
                 case WeatherDetailsType.UV:
-                    this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
+                    this.Label = SharedModule.Instance.ResLoader.GetString("label_uv");
                     this.Icon = WeatherIcons.DAY_SUNNY;
                     break;
             }
@@ -144,49 +144,49 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(MoonPhase.MoonPhaseType moonPhaseType)
         {
             this.DetailsType = WeatherDetailsType.MoonPhase;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_moonphase");
+            this.Label = SharedModule.Instance.ResLoader.GetString("label_moonphase");
             this.IconRotation = 0;
 
             switch (moonPhaseType)
             {
                 case MoonPhase.MoonPhaseType.NewMoon:
                     this.Icon = WeatherIcons.MOON_ALT_NEW;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_New");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_New");
                     break;
 
                 case MoonPhase.MoonPhaseType.WaxingCrescent:
                     this.Icon = WeatherIcons.MOON_ALT_WAXING_CRESCENT_3;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_WaxCrescent");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_WaxCrescent");
                     break;
 
                 case MoonPhase.MoonPhaseType.FirstQtr:
                     this.Icon = WeatherIcons.MOON_ALT_FIRST_QUARTER;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_FirstQtr");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_FirstQtr");
                     break;
 
                 case MoonPhase.MoonPhaseType.WaxingGibbous:
                     this.Icon = WeatherIcons.MOON_ALT_WAXING_GIBBOUS_3;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_WaxGibbous");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_WaxGibbous");
                     break;
 
                 case MoonPhase.MoonPhaseType.FullMoon:
                     this.Icon = WeatherIcons.MOON_ALT_FULL;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_Full");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_Full");
                     break;
 
                 case MoonPhase.MoonPhaseType.WaningGibbous:
                     this.Icon = WeatherIcons.MOON_ALT_WANING_GIBBOUS_3;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_WanGibbous");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_WanGibbous");
                     break;
 
                 case MoonPhase.MoonPhaseType.LastQtr:
                     this.Icon = WeatherIcons.MOON_ALT_THIRD_QUARTER;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_LastQtr");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_LastQtr");
                     break;
 
                 case MoonPhase.MoonPhaseType.WaningCrescent:
                     this.Icon = WeatherIcons.MOON_ALT_WANING_CRESCENT_3;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/MoonPhases/MoonPhase_WanCrescent");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/MoonPhases/MoonPhase_WanCrescent");
                     break;
             }
         }
@@ -194,74 +194,74 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(Beaufort.BeaufortScale beaufortScale)
         {
             this.DetailsType = WeatherDetailsType.Beaufort;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_beaufort");
+            this.Label = SharedModule.Instance.ResLoader.GetString("label_beaufort");
             this.IconRotation = 0;
 
             switch (beaufortScale)
             {
                 case Beaufort.BeaufortScale.B0:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_0;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_0");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_0");
                     break;
 
                 case Beaufort.BeaufortScale.B1:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_1;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_1");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_1");
                     break;
 
                 case Beaufort.BeaufortScale.B2:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_2;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_2");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_2");
                     break;
 
                 case Beaufort.BeaufortScale.B3:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_3;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_3");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_3");
                     break;
 
                 case Beaufort.BeaufortScale.B4:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_4;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_4");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_4");
                     break;
 
                 case Beaufort.BeaufortScale.B5:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_5;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_5");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_5");
                     break;
 
                 case Beaufort.BeaufortScale.B6:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_6;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_6");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_6");
                     break;
 
                 case Beaufort.BeaufortScale.B7:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_7;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_7");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_7");
                     break;
 
                 case Beaufort.BeaufortScale.B8:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_8;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_8");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_8");
                     break;
 
                 case Beaufort.BeaufortScale.B9:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_9;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_9");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_9");
                     break;
 
                 case Beaufort.BeaufortScale.B10:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_10;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_10");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_10");
                     break;
 
                 case Beaufort.BeaufortScale.B11:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_11;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_11");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_11");
                     break;
 
                 case Beaufort.BeaufortScale.B12:
                     this.Icon = WeatherIcons.WIND_BEAUFORT_12;
-                    this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/Beaufort/Beaufort_12");
+                    this.Value = SharedModule.Instance.ResLoader.GetString("/Beaufort/Beaufort_12");
                     break;
             }
         }
@@ -269,28 +269,28 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(UV uv)
         {
             this.DetailsType = WeatherDetailsType.UV;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_uv");
+            this.Label = SharedModule.Instance.ResLoader.GetString("label_uv");
             this.IconRotation = 0;
 
             if (uv.index < 3)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_0");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_0");
             }
             else if (uv.index < 6)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_3");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_3");
             }
             else if (uv.index < 8)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_6");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_6");
             }
             else if (uv.index < 11)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_8");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_8");
             }
             else if (uv.index >= 11)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/UVIndex/UV_11");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_11");
             }
 
             if (uv.index.HasValue)
@@ -340,33 +340,33 @@ namespace SimpleWeather.Controls
         public DetailItemViewModel(AirQuality aqi)
         {
             this.DetailsType = WeatherDetailsType.AirQuality;
-            this.Label = SimpleLibrary.GetInstance().ResLoader.GetString("label_airquality");
+            this.Label = SharedModule.Instance.ResLoader.GetString("label_airquality");
             this.Icon = WeatherIcons.CLOUDY_GUSTS;
             this.IconRotation = 0;
 
             if (aqi.index < 51)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_0_50");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_0_50");
             }
             else if (aqi.index < 101)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_51_100");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_51_100");
             }
             else if (aqi.index < 151)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_101_150");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_101_150");
             }
             else if (aqi.index < 201)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_151_200");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_151_200");
             }
             else if (aqi.index < 301)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_201_300");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_201_300");
             }
             else if (aqi.index >= 301)
             {
-                this.Value = SimpleLibrary.GetInstance().ResLoader.GetString("/AQIndex/AQI_Level_300");
+                this.Value = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_300");
             }
         }
     }

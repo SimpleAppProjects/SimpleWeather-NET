@@ -282,3 +282,5 @@ listingData-*.csv
 /SimpleWeather.Shared.Extras
 /SimpleWeather.UWP.Extras
 /SimpleWeather.Backgrounds
+/SimpleWeather.Extras
+/SimpleWeather.WeatherIcons

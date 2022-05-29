@@ -58,7 +58,7 @@ namespace SimpleWeather.OpenWeather
                 Uri queryURL = new Uri(String.Format(KEYCHECK_QUERY_URL, key));
 
                 // Connect to webstream
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                 using (var response = await webClient.GetAsync(queryURL, cts.Token))
                 {
@@ -142,7 +142,7 @@ namespace SimpleWeather.OpenWeather
                     };
 
                     // Get response
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token))
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))

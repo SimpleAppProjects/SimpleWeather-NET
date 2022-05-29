@@ -8,27 +8,6 @@ using Windows.Storage;
 
 namespace SimpleWeather.WeatherData.Images
 {
-    public static partial class ImageDataHelper
-    {
-        private static ImageDataHelperImpl sImageDataHelperImpl;
-        public static ImageDataHelperImpl ImageDataHelperImpl
-        {
-            get
-            {
-                if (sImageDataHelperImpl == null)
-                {
-                    sImageDataHelperImpl = new ImageDataHelperDefault();
-                }
-
-                return sImageDataHelperImpl;
-            }
-            set
-            {
-                sImageDataHelperImpl = value;
-            }
-        }
-    }
-
     public abstract class ImageDataHelperImpl
     {
         public abstract Task<ImageData> GetCachedImageData(String backgroundCode);

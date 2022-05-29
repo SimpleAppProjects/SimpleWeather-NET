@@ -1,8 +1,11 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QueryStringDotNET;
 using SimpleWeather.Controls;
+using SimpleWeather.Extras;
+using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -14,6 +17,7 @@ using SimpleWeather.UWP.Setup;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,6 +76,9 @@ namespace SimpleWeather.UWP
             }
         }
 
+        public static IServiceProvider Services => SharedModule.Instance.Services;
+        private IExtrasService ExtrasService { get; set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -97,21 +104,40 @@ namespace SimpleWeather.UWP
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
-            // Initialize depencies for library
-            SimpleLibrary.GetInstance().OnCommonActionChanged += App_OnCommonActionChanged;
-            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-                JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
-                );
-            Extras.ExtrasLibrary.Init();
-
             AppCenter.LogLevel = LogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+
+            // Initialize depencies for library
+            InitializeDependencies();
 
             UISettings = new UISettings();
 
             RegisterSettingsListener();
+        }
 
-            WeatherData.Images.ImageDataHelper.ImageDataHelperImpl = new Backgrounds.ImageDataHelperRes();
+        private void InitializeDependencies()
+        {
+            SharedModule.Instance.OnCommonActionChanged += App_OnCommonActionChanged;
+            SharedModule.Instance.Initialize();
+
+            // Set UTF8Json Resolver
+            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
+                JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
+                );
+
+            ExtrasModule.Instance.Initialize();
+
+            // Build DI Services
+            ConfigureServices(SharedModule.Instance.GetServiceCollection());
+            ExtrasModule.Instance.ConfigureServices(SharedModule.Instance.GetServiceCollection());
+            SharedModule.Instance.BuildServiceProvider();
+
+            ExtrasService = Services.GetService<IExtrasService>();
+        }
+
+        private void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddSingleton<ImageDataHelperImpl, Backgrounds.ImageDataHelperRes>();
         }
 
         /// <summary>
@@ -417,6 +443,11 @@ namespace SimpleWeather.UWP
                     new DailyNotificationTask().Run(args.TaskInstance);
                     break;
 
+                case nameof(PremiumStatusTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting PremiumStatusTask");
+                    new PremiumStatusTask().Run(args.TaskInstance);
+                    break;
+
                 default:
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
@@ -574,7 +605,7 @@ namespace SimpleWeather.UWP
 
             RemoteConfig.RemoteConfig.UpdateWeatherProvider();
 
-            await InitializeExtras();
+            ExtrasService.CheckPremiumStatus();
 
             Initialized = true;
         }
@@ -591,30 +622,9 @@ namespace SimpleWeather.UWP
 
             RemoteConfig.RemoteConfig.UpdateWeatherProvider();
 
-            await InitializeExtras();
+            ExtrasService.CheckPremiumStatus();
 
             Initialized = true;
-        }
-
-        private async Task InitializeExtras()
-        {
-            try
-            {
-                if (await Extras.Store.WindowsStoreManager.CheckIfUserHasActiveSubscriptionAsync())
-                {
-                    // Enable extras
-                    Extras.ExtrasLibrary.EnableExtras();
-                }
-                else
-                {
-                    // Disable extras
-                    Extras.ExtrasLibrary.DisableExtras();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(LoggerLevel.Error, e);
-            }
         }
 
         /// <summary>
@@ -741,23 +751,23 @@ namespace SimpleWeather.UWP
                     WeatherManager.GetInstance().UpdateAPI();
                     if (isWeatherLoaded)
                     {
-                        SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
                     }
                     break;
                 case Settings.KEY_USEPERSONALKEY:
                     WeatherManager.GetInstance().UpdateAPI();
                     break;
                 case Settings.KEY_FOLLOWGPS:
-                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                     break;
                 case Settings.KEY_REFRESHINTERVAL:
-                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                     break;
                 case Settings.KEY_ICONSSOURCE:
-                    Icons.WeatherIconsManager.GetInstance().UpdateIconProvider();
+                    SharedModule.Instance.WeatherIconsManager.UpdateIconProvider();
                     break;
                 case Settings.KEY_DAILYNOTIFICATION:
-                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION);
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION);
                     break;
             }
         }

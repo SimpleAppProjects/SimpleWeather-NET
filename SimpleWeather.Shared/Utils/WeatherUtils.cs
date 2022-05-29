@@ -27,12 +27,12 @@ namespace SimpleWeather.Utils
 
             if (update_time.DayOfWeek == DateTime.Now.DayOfWeek)
             {
-                prefix = SimpleLibrary.GetInstance().ResLoader.GetString("update_prefix_day");
+                prefix = SharedModule.Instance.ResLoader.GetString("update_prefix_day");
                 date = string.Format("{0} {1}", prefix, timeformat);
             }
             else
             {
-                prefix = SimpleLibrary.GetInstance().ResLoader.GetString("update_prefix");
+                prefix = SharedModule.Instance.ResLoader.GetString("update_prefix");
                 date = string.Format("{0} {1} {2}",
                     prefix, update_time.ToString("ddd", culture), timeformat);
             }

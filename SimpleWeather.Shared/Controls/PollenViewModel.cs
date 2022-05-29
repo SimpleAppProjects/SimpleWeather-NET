@@ -37,7 +37,7 @@ namespace SimpleWeather.Controls
 
         private (String, Color?) GetPollenCountDescription(Pollen.PollenCount? pollenCount)
         {
-            var ResLoader = SimpleLibrary.GetInstance().ResLoader;
+            var ResLoader = SharedModule.Instance.ResLoader;
 
             switch (pollenCount)
             {

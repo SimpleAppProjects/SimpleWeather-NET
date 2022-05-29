@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Controls;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -144,7 +145,7 @@ namespace SimpleWeather.Utils
             }
 
             // Check cache for image data
-            var imageHelper = ImageDataHelper.ImageDataHelperImpl;
+            var imageHelper = SharedModule.Instance.Services.GetService<ImageDataHelperImpl>();
             var imageData = await imageHelper.GetCachedImageData(backgroundCode);
             // Check if cache is available and valid
             var imgDataValid = imageData != null && imageData.IsValid();

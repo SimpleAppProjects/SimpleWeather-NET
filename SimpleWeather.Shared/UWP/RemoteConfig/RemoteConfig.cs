@@ -19,10 +19,10 @@ namespace SimpleWeather.RemoteConfig
         {
             if (useFallback)
             {
-                return SimpleLibrary.GetInstance().ResLoader.GetString("/Config/" + weatherAPI);
+                return SharedModule.Instance.ResLoader.GetString("/Config/" + weatherAPI);
             }
 
-            return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SimpleLibrary.GetInstance().ResLoader.GetString("/Config/" + weatherAPI);
+            return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SharedModule.Instance.ResLoader.GetString("/Config/" + weatherAPI);
         }
 
         public static void SetConfigString(String key, String value)

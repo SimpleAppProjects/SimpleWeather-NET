@@ -33,7 +33,7 @@ namespace SimpleWeather.UWP.Controls
         public DetailItem()
         {
             this.InitializeComponent();
-            wim = WeatherIconsManager.GetInstance();
+            wim = SharedModule.Instance.WeatherIconsManager;
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();

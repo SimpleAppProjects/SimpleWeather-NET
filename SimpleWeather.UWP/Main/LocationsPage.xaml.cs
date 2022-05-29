@@ -415,7 +415,7 @@ namespace SimpleWeather.UWP.Main
                         if (locData != null)
                         {
                             Settings.SaveLastGPSLocData(locData);
-                            SimpleLibrary.GetInstance()
+                            SharedModule.Instance
                                 .RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
                         }
                     }
@@ -725,7 +725,7 @@ namespace SimpleWeather.UWP.Main
 
             if (!EditMode && HomeChanged)
             {
-                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
+                SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
                     new Dictionary<string, object>
                     {
                         { CommonActions.EXTRA_FORCEUPDATE, false }

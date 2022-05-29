@@ -55,7 +55,7 @@ namespace SimpleWeather.UWP.Preferences
             // Trigger background task if necessary
             if (UnitsChanged)
             {
-                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_SETTINGS_UPDATEUNIT);
+                SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEUNIT);
                 UnitsChanged = false;
             }
         }

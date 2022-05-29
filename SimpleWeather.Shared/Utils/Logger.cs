@@ -20,10 +20,6 @@ namespace SimpleWeather.Utils
 
     public static class Logger
     {
-        static Logger()
-        {
-            Init();
-        }
 
         public static void Init()
         {

@@ -92,7 +92,7 @@ namespace SimpleWeather.MeteoFrance
                     };
 
                     // Get response
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using (var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token))
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))

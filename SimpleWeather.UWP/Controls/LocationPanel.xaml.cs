@@ -36,7 +36,7 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty ControlThemeProperty =
             DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(LocationPanel), new PropertyMetadata(ElementTheme.Default));
 
-        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         public LocationPanel()
         {

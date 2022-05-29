@@ -63,7 +63,7 @@ namespace SimpleWeather.TomorrowIO
                 Uri queryURL = new Uri(String.Format(KEYCHECK_QUERY_URL, key));
 
                 // Connect to webstream
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
                 using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
                 using (var response = await webClient.GetAsync(queryURL, cts.Token))
                 {
@@ -168,7 +168,7 @@ namespace SimpleWeather.TomorrowIO
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     // Get response
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                     using var response = await webClient.SendAsync(request, cts.Token);
 
@@ -192,7 +192,7 @@ namespace SimpleWeather.TomorrowIO
                         minutelyRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
+                        var webClient = SharedModule.Instance.WebClient;
                         using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                         using var response = await webClient.SendAsync(minutelyRequest, cts.Token);
 
@@ -218,7 +218,7 @@ namespace SimpleWeather.TomorrowIO
                         alertsRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
-                        var webClient = SimpleLibrary.GetInstance().WebClient;
+                        var webClient = SharedModule.Instance.WebClient;
                         using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                         using var response = await webClient.SendAsync(alertsRequest, cts.Token);
 
@@ -299,7 +299,7 @@ namespace SimpleWeather.TomorrowIO
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 // Get response
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
                 using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                 using var response = await webClient.SendAsync(request, cts.Token);
 

@@ -48,7 +48,7 @@ namespace SimpleWeather.UWP.Main
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
-        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         private WeatherDataLoader wLoader = null;
         private RadarViewProvider radarViewProvider;
@@ -728,7 +728,7 @@ namespace SimpleWeather.UWP.Main
                     lastGPSLocData = new LocationData(view, newGeoPos);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
 
-                    SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
 
                     locationData = lastGPSLocData;
                     geoPos = newGeoPos;

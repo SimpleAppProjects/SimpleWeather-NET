@@ -23,8 +23,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             IconCreditsContainer.Children.Clear();
 
-            var providers = SimpleLibrary.GetInstance().GetIconProviders().Values
-                .Cast<WeatherIconProvider>();
+            var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
 
             foreach (var provider in providers)
             {
@@ -38,18 +37,18 @@ namespace SimpleWeather.UWP.Preferences
                 var title = new Paragraph();
                 title.Inlines.Add(new Run()
                 {
-                    Text = provider.DisplayName
+                    Text = provider.Value.DisplayName
                 });
                 var subtitle = new Paragraph() { FontSize = 13 };
-                if (provider.AttributionLink != null)
+                if (provider.Value.AttributionLink != null)
                 {
                     var link = new Hyperlink()
                     {
-                        NavigateUri = provider.AttributionLink,
+                        NavigateUri = provider.Value.AttributionLink,
                     };
                     link.Inlines.Add(new Run()
                     {
-                        Text = provider.AuthorName
+                        Text = provider.Value.AuthorName
                     });
                     subtitle.Inlines.Add(link);
                 }
@@ -57,7 +56,7 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     subtitle.Inlines.Add(new Run()
                     {
-                        Text = provider.AuthorName
+                        Text = provider.Value.AuthorName
                     });
                 }
 

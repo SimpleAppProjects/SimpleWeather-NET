@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Icons;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using System;
@@ -15,7 +17,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using SharedExtras = SimpleWeather.Shared.Extras.Extras;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -26,6 +27,8 @@ namespace SimpleWeather.UWP.Preferences
     /// </summary>
     public sealed partial class Settings_Icons : Page
     {
+        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
+
         public Settings_Icons()
         {
             this.InitializeComponent();
@@ -43,8 +46,7 @@ namespace SimpleWeather.UWP.Preferences
 
             var currentProvider = Settings.IconProvider;
 
-            var providers = SimpleLibrary.GetInstance().GetIconProviders().Values
-                .Cast<WeatherIconProvider>();
+            var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
 
             foreach (var provider in providers)
             {
@@ -53,7 +55,7 @@ namespace SimpleWeather.UWP.Preferences
                     Padding = new Thickness(0, 10, 0, 10),
                     RequestedTheme = this.ActualTheme
                 };
-                radioBtn.SetIconProvider(provider);
+                radioBtn.SetIconProvider(provider.Value);
 
                 IconRadioContainer.Children.Add(radioBtn);
 
@@ -86,13 +88,13 @@ namespace SimpleWeather.UWP.Preferences
             {
                 return false;
             }
-            if (!SharedExtras.IsIconPackSupported(key))
+            if (!ExtrasService.IsIconPackSupported(key))
             {
                 Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 return false;
             }
             Settings.IconProvider = key;
-            WeatherIconsManager.GetInstance().UpdateIconProvider();
+            SharedModule.Instance.WeatherIconsManager.UpdateIconProvider();
             return true;
         }
 

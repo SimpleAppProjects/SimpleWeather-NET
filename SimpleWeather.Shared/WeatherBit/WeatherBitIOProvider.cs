@@ -59,7 +59,7 @@ namespace SimpleWeather.WeatherBit
                 Uri queryURL = new(String.Format(KEYCHECK_QUERY_URL, key));
 
                 // Connect to webstream
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
 
                 using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                 using var response = await webClient.GetAsync(queryURL, cts.Token);
@@ -132,7 +132,7 @@ namespace SimpleWeather.WeatherBit
                     MaxAge = TimeSpan.FromHours(1)
                 };
 
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
 
                 // Get response
                 using var ctsC = new CancellationTokenSource(Settings.READ_TIMEOUT);
@@ -210,7 +210,7 @@ namespace SimpleWeather.WeatherBit
                     MaxAge = TimeSpan.FromHours(6)
                 };
 
-                var webClient = SimpleLibrary.GetInstance().WebClient;
+                var webClient = SharedModule.Instance.WebClient;
 
                 // Get response
                 using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);

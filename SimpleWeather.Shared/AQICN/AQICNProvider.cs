@@ -42,7 +42,7 @@ namespace SimpleWeather.AQICN
                 Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
 
                 // Connect to webstream
-                HttpClient webClient = SimpleLibrary.GetInstance().WebClient;
+                HttpClient webClient = SharedModule.Instance.WebClient;
                 var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
                 request.Headers.UserAgent.AddAppUserAgent();

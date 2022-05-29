@@ -94,7 +94,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                             if (locationChanged)
                             {
-                                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
+                                SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
                                     new Dictionary<string, object> 
                                     {
                                         { CommonActions.EXTRA_FORCEUPDATE, false }

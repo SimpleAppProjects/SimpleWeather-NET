@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Utils;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Extras;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using System;
@@ -18,6 +20,7 @@ namespace SimpleWeather.UWP.Setup
     public sealed partial class SetupSettingsPage : Page, IPageVerification
     {
         private readonly WeatherManager wm;
+        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
@@ -56,7 +59,7 @@ namespace SimpleWeather.UWP.Setup
             wm.UpdateAPI();
 
             // Refresh interval
-            if (Extras.ExtrasLibrary.IsEnabled())
+            if (ExtrasService.IsEnabled())
             {
                 RefreshComboBox.ItemsSource = PremiumRefreshOptions;
             }

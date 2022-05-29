@@ -73,7 +73,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task<ToastContent> CreateToastContent(LocationData location, Forecast forecast)
         {
-            var wim = WeatherIconsManager.GetInstance();
+            var wim = SharedModule.Instance.WeatherIconsManager;
 
             var viewModel = new ForecastItemViewModel(forecast);
             var hiTemp = viewModel.HiTemp ?? WeatherIcons.PLACEHOLDER;

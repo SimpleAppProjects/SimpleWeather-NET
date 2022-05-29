@@ -112,7 +112,7 @@ namespace SimpleWeather.UWP.Controls
 
             UIElement iconElement;
 
-            var wip = WeatherIconsManager.GetProvider(IconProvider ?? Settings.IconProvider);
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? Settings.IconProvider);
             if (ForceBitmapIcon)
             {
                 iconElement = CreateBitmapIcon(wip);

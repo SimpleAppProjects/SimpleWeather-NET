@@ -320,14 +320,14 @@ namespace SimpleWeather.WeatherData
                             if (location.locationType == LocationType.GPS)
                             {
                                 Settings.SaveLastGPSLocData(location);
-                                SimpleLibrary.GetInstance().RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                                SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
                             }
                             else
                             {
                                 await Settings.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 #if WINDOWS_UWP && !UNIT_TEST
                                 // Update tile id for location
-                                SimpleLibrary.GetInstance().RequestAction(
+                                SharedModule.Instance.RequestAction(
                                     CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
                                     new Dictionary<string, object>
                                     {

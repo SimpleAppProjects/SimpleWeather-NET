@@ -43,7 +43,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         protected float longestTextWidth;
 
         protected float IconHeight;
-        protected readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        protected readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         public BaseGraphView() : base()
         {

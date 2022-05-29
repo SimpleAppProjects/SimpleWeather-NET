@@ -55,7 +55,7 @@ namespace SimpleWeather.HERE
                     };
                     request.Content = new FormUrlEncodedContent(contentList);
 
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using var cts = new CancellationTokenSource(Settings.READ_TIMEOUT);
                     using var response = await webClient.SendAsync(request, cts.Token);
                     await response.CheckForErrors(WeatherAPI.Here, 10000);

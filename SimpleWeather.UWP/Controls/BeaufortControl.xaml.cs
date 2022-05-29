@@ -26,7 +26,7 @@ namespace SimpleWeather.UWP.Controls
             get { return (this.DataContext as BeaufortViewModel); }
         }
 
-        private readonly WeatherIconsManager wim = WeatherIconsManager.GetInstance();
+        private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         public BeaufortControl()
         {

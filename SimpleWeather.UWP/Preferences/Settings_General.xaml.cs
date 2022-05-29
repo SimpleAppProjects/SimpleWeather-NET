@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Utils;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Extras;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
@@ -19,7 +21,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using SharedExtras = SimpleWeather.Shared.Extras.Extras;
 
 #if !DEBUG
 
@@ -41,6 +42,8 @@ namespace SimpleWeather.UWP.Preferences
         private SnackbarManager SnackMgr;
 
         private readonly HashSet<String> ActionQueue;
+
+        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
@@ -130,7 +133,7 @@ namespace SimpleWeather.UWP.Preferences
             APIComboBox.SelectedValue = selectedProvider;
 
             // Refresh interval
-            if (Extras.ExtrasLibrary.IsEnabled())
+            if (ExtrasService.IsEnabled())
             {
                 RefreshComboBox.ItemsSource = PremiumRefreshOptions;
             }
@@ -460,7 +463,7 @@ namespace SimpleWeather.UWP.Preferences
 
             if (selectedProvider == null) return;
 
-            if (!SharedExtras.IsWeatherAPISupported(selectedProvider))
+            if (!ExtrasService.IsWeatherAPISupported(selectedProvider))
             {
                 var prevItem = e.RemovedItems?.FirstOrDefault() as SimpleWeather.Controls.ProviderEntry;
                 // Revert value
@@ -728,7 +731,7 @@ namespace SimpleWeather.UWP.Preferences
                 }
             }
 
-            if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
+            if (sw.IsOn && ExtrasService.IsEnabled())
             {
                 Settings.DailyNotificationEnabled = true;
                 // Register task
@@ -736,7 +739,7 @@ namespace SimpleWeather.UWP.Preferences
             }
             else
             {
-                if (sw.IsOn && !Extras.ExtrasLibrary.IsEnabled())
+                if (sw.IsOn && !ExtrasService.IsEnabled())
                 {
                     // show premium popup
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
@@ -775,7 +778,7 @@ namespace SimpleWeather.UWP.Preferences
                 }
             }
 
-            if (sw.IsOn && Extras.ExtrasLibrary.IsEnabled())
+            if (sw.IsOn && ExtrasService.IsEnabled())
             {
                 Settings.PoPChanceNotificationEnabled = true;
                 // Re-register background task if needed
@@ -784,7 +787,7 @@ namespace SimpleWeather.UWP.Preferences
             }
             else
             {
-                if (sw.IsOn && !Extras.ExtrasLibrary.IsEnabled())
+                if (sw.IsOn && !ExtrasService.IsEnabled())
                 {
                     // show premium popup
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));

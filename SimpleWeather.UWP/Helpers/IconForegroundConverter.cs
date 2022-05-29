@@ -25,7 +25,7 @@ namespace SimpleWeather.UWP.Helpers
 
         public object Convert(object value, Type targetType, object p_, string l_)
         {
-            var wim = WeatherIconsManager.GetInstance();
+            var wim = SharedModule.Instance.WeatherIconsManager;
 
             if (wim.IsFontIcon)
             {

@@ -163,7 +163,7 @@ namespace SimpleWeather.UWP.Radar.RainViewer
 
         private async Task GetRadarFrames()
         {
-            var HttpClient = SimpleLibrary.GetInstance().WebClient;
+            var HttpClient = SharedModule.Instance.WebClient;
 
             try
             {

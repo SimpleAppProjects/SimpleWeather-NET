@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Keys;
+﻿using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Extras;
+using SimpleWeather.Keys;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
 
@@ -21,6 +24,8 @@ namespace SimpleWeather.UWP.Radar
         protected RadarToolbar RadarMapContainer { get; private set; }
 
         protected bool IsAnimationAvailable { get; }
+
+        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
 
         public MapTileRadarViewProvider(Border container) : base(container)
         {
@@ -86,7 +91,7 @@ namespace SimpleWeather.UWP.Radar
             mapControl.PanInteractionMode = InteractionsEnabled() ? MapPanInteractionMode.Auto : MapPanInteractionMode.Disabled;
 
             RadarMapContainer.ToolbarVisibility = 
-                InteractionsEnabled() && IsAnimationAvailable && Extras.ExtrasLibrary.IsEnabled() ? Windows.UI.Xaml.Visibility.Visible : Windows.UI.Xaml.Visibility.Collapsed;
+                InteractionsEnabled() && IsAnimationAvailable && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
 
             UpdateMap(mapControl);
         }

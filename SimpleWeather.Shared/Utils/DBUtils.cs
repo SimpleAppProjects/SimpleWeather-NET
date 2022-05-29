@@ -63,7 +63,7 @@ namespace SimpleWeather.Utils
                 if (oldKey != null)
                 {
                     // Update tile id for location
-                    SimpleLibrary.GetInstance().RequestAction(
+                    SharedModule.Instance.RequestAction(
                         CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
                         new Dictionary<string, object>
                         {

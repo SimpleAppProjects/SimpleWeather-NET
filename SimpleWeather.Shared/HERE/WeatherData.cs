@@ -275,7 +275,7 @@ namespace SimpleWeather.WeatherData
             if (todaysForecast != null && todaysTxtForecast != null)
             {
                 var culture = CultureUtils.UserCulture;
-                var resLoader = SimpleLibrary.GetInstance().ResLoader;
+                var resLoader = SharedModule.Instance.ResLoader;
 
                 var summaryStr = new StringBuilder();
                 summaryStr.Append(todaysTxtForecast.fcttext); // fcttext & fcttextMetric are the same

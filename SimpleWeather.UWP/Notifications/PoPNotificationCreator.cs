@@ -83,7 +83,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task<ToastContent> CreateToastContent(LocationData location, HourlyForecast forecast, DateTimeOffset now)
         {
-            var wim = WeatherIconsManager.GetInstance();
+            var wim = SharedModule.Instance.WeatherIconsManager;
 
             // Should be within 0-3 hours
             var duration = (forecast.date - now).TotalMinutes;

@@ -66,15 +66,15 @@ namespace SimpleWeather.Controls
                     case Units.MILES_PER_HOUR:
                     default:
                         speedVal = (int)Math.Round(forecast.wind_mph.Value);
-                        speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mph");
+                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mph");
                         break;
                     case Units.KILOMETERS_PER_HOUR:
                         speedVal = (int)Math.Round(forecast.wind_kph.Value);
-                        speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_kph");
+                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kph");
                         break;
                     case Units.METERS_PER_SECOND:
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.wind_kph.Value));
-                        speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_msec");
+                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_msec");
                         break;
                 }
 
@@ -108,11 +108,11 @@ namespace SimpleWeather.Controls
                         case Units.INCHES:
                         default:
                             precipValue = forecast.extras.qpf_rain_in.Value;
-                            precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_in");
+                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_in");
                             break;
                         case Units.MILLIMETERS:
                             precipValue = forecast.extras.qpf_rain_mm.Value;
-                            precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mm");
+                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mm");
                             break;
                     }
 
@@ -130,11 +130,11 @@ namespace SimpleWeather.Controls
                         case Units.INCHES:
                         default:
                             precipValue = forecast.extras.qpf_snow_in.Value;
-                            precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_in");
+                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_in");
                             break;
                         case Units.MILLIMETERS:
                             precipValue = forecast.extras.qpf_snow_cm.Value * 10;
-                            precipUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mm");
+                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mm");
                             break;
                     }
 
@@ -177,11 +177,11 @@ namespace SimpleWeather.Controls
                         case Units.INHG:
                         default:
                             pressureVal = forecast.extras.pressure_in.Value;
-                            pressureUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_inHg");
+                            pressureUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_inHg");
                             break;
                         case Units.MILLIBAR:
                             pressureVal = forecast.extras.pressure_mb.Value;
-                            pressureUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mBar");
+                            pressureUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mBar");
                             break;
                     }
 
@@ -206,15 +206,15 @@ namespace SimpleWeather.Controls
                         case Units.MILES_PER_HOUR:
                         default:
                             speedVal = (int)Math.Round(forecast.extras.windgust_mph.Value);
-                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_mph");
+                            speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mph");
                             break;
                         case Units.KILOMETERS_PER_HOUR:
                             speedVal = (int)Math.Round(forecast.extras.windgust_kph.Value);
-                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_kph");
+                            speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kph");
                             break;
                         case Units.METERS_PER_SECOND:
                             speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.windgust_kph.Value));
-                            speedUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_msec");
+                            speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_msec");
                             break;
                     }
 
@@ -233,11 +233,11 @@ namespace SimpleWeather.Controls
                         case Units.MILES:
                         default:
                             visibilityVal = (int)Math.Round(forecast.extras.visibility_mi.Value);
-                            visibilityUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_miles");
+                            visibilityUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_miles");
                             break;
                         case Units.KILOMETERS:
                             visibilityVal = (int)Math.Round(forecast.extras.visibility_km.Value);
-                            visibilityUnit = SimpleLibrary.GetInstance().ResLoader.GetString("/Units/unit_kilometers");
+                            visibilityUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kilometers");
                             break;
                     }
 

@@ -80,7 +80,7 @@ namespace SimpleWeather.Metno
                     };
 
                     // Get response
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
+                    var webClient = SharedModule.Instance.WebClient;
                     using (var ctsF = new CancellationTokenSource(Settings.READ_TIMEOUT))
                     using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
                     {
@@ -357,28 +357,28 @@ namespace SimpleWeather.Metno
         public override String GetWeatherCondition(String icon)
         {
             if (icon == null)
-                return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_notavailable");
+                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable");
 
             icon = GetNeutralIconName(icon);
 
             switch (icon)
             {
                 case "clearsky":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_clearsky");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clearsky");
 
                 case "fair":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_fair");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fair");
                 case "partlycloudy":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
 
                 case "cloudy":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_cloudy");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy");
 
                 case "rainshowers":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
 
                 case "rainshowersandthunder":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tstorms");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
 
                 case "sleetshowers":
                 case "lightsleetshowers":
@@ -386,34 +386,34 @@ namespace SimpleWeather.Metno
                 case "lightsleet":
                 case "heavysleet":
                 case "heavysleetshowers":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_sleet");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet");
 
                 case "snow":
                 case "snowshowers":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snow");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow");
 
                 case "lightsnowshowers":
                 case "lightsnow":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers");
 
                 case "heavysnowshowers":
                 case "heavysnow":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_heavysnow");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
 
                 case "rain":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rain");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain");
                 case "lightrain":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_lightrain");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightrain");
 
                 case "heavyrain":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_heavyrain");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavyrain");
 
                 case "rainandthunder":
                 case "lightrainandthunder":
                 case "lightrainshowersandthunder":
                 case "heavyrainshowersandthunder":
                 case "heavyrainandthunder":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_tstorms");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
 
                 case "snowandthunder":
                 case "snowshowersandthunder":
@@ -421,10 +421,10 @@ namespace SimpleWeather.Metno
                 case "heavysnowshowersandthunder":
                 case "lightsnowandthunder":
                 case "heavysnowandthunder":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
 
                 case "fog":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_fog");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog");
 
                 case "sleetshowersandthunder":
                 case "sleetandthunder":
@@ -432,11 +432,11 @@ namespace SimpleWeather.Metno
                 case "heavysleetshowersandthunder":
                 case "lightsleetandthunder":
                 case "heavysleetandthunder":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms");
 
                 case "lightrainshowers":
                 case "heavyrainshowers":
-                    return SimpleLibrary.GetInstance().ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
 
                 default:
                     return base.GetWeatherCondition(icon);
