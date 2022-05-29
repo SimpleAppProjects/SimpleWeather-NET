@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 
 namespace SimpleWeather.WeatherData
 {
@@ -186,9 +187,18 @@ namespace SimpleWeather.WeatherData
         {
             date = item.startTime.UtcDateTime;
 
-            // TODO: code -> weather condition for day + night
-            fcttext = item.values.weatherCode.ToString();
-            fcttext_metric = item.values.weatherCode.ToString();
+            var fcastStr = new StringBuilder().Apply(sb =>
+            {
+                var resLoader = SharedModule.Instance.ResLoader;
+                var provider = WeatherManager.GetProvider(WeatherAPI.TomorrowIo);
+
+                sb.AppendFormat("{0} - {1}", resLoader.GetString("label_day"), provider.GetWeatherCondition(item.values.weatherCodeDay?.ToString()));
+                sb.AppendLine();
+                sb.AppendFormat("{0} - {1}", resLoader.GetString("label_night"), provider.GetWeatherCondition(item.values.weatherCodeNight?.ToString()));
+            }).ToString();
+
+            fcttext = fcastStr;
+            fcttext_metric = fcastStr;
         }
     }
 
