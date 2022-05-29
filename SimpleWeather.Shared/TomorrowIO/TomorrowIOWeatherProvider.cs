@@ -1,23 +1,20 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Windows.Web;
 using System.Net.Sockets;
-using SimpleWeather.Extras;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Web;
 
 namespace SimpleWeather.TomorrowIO
 {
@@ -128,7 +125,7 @@ namespace SimpleWeather.TomorrowIO
                 var requestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", location_query)
-                    .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,treeIndex,grassIndex,weedIndex,epaIndex")
+                    .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex")
                     .AppendQueryParameter("timesteps", "current,1h,1d")
                     .AppendQueryParameter("units", "metric")
                     .AppendQueryParameter("timezone", "UTC")
@@ -428,123 +425,354 @@ namespace SimpleWeather.TomorrowIO
 
         public override string GetWeatherIcon(bool isNight, string icon)
         {
-            string WeatherIcon = string.Empty;
-
             if (icon == null || !int.TryParse(icon, out int conditionCode))
                 return WeatherIcons.NA;
 
-            switch (conditionCode)
+            string WeatherIcon = conditionCode switch
             {
                 /* Sunny / Clear */
-                case 1000:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
-                    break;
-
+                1000 => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
+                /*
+                 * 1001: Cloudy
+                 */
+                1001 => WeatherIcons.CLOUDY,
                 /*
                  * 1101: Partly cloudy
                  * 1100: Mostly Clear
+                 * 1103
+                 * Mixed conditions:
+                 * Condition 1: Partly Cloudy
+                 * Condition 2: Mostly Clear
                  */
-                case 1101:
-                case 1100:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
-                    break;
-
+                1100 or 1101 or 1103 => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
                 /*
                  * 1102: Mostly Cloudy
-                 * 1001: Cloudy
                  */
-                case 1102:
-                case 1001:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY;
-                    break;
-
+                1102 => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
                 /*
                  * 2000: Fog
                  * 2100: Light fog
                  */
-                case 2000:
-                case 2100:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG;
-                    break;
-
-                /* Thunderstorm  */
-                case 8000:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM;
-                    break;
-
+                2000 or 2100 => WeatherIcons.FOG,
+                /*
+                 * 3000: Light Wind
+                 */
+                3000 => isNight ? WeatherIcons.NIGHT_LIGHT_WIND : WeatherIcons.DAY_LIGHT_WIND,
+                /*
+                 * 3001: Wind
+                 */
+                3001 => isNight ? WeatherIcons.NIGHT_WINDY : WeatherIcons.DAY_WINDY,
+                /* Strong Wind */
+                3002 => WeatherIcons.STRONG_WIND,
+                /*
+                 * 4000: Drizzle
+                 * 4200: Light rain
+                 */
+                4000 or 4200 => WeatherIcons.SPRINKLE,
+                /* Rain */
+                4001 => WeatherIcons.RAIN,
+                /* Heavy rain */
+                4201 => WeatherIcons.RAIN_WIND,
                 /*
                  * 5001: Flurries
-                 * 5100: Patchy light snow
-                 * 5000: Light snow
+                 * 5100: Light snow
+                 * 5000: Snow
                  */
-                case 5001:
-                case 5100:
-                case 5000:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
-                    break;
-
+                5001 or 5100 or 5000 => WeatherIcons.SNOW,
                 /* Heavy snow */
-                case 5101:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW_WIND : WeatherIcons.DAY_SNOW_WIND;
-                    break;
-
+                5101 => WeatherIcons.SNOW_WIND,
+                /*
+                 * 6000: Freezing Drizzle
+                 * 6200: Light Freezing Drizzle
+                 * 6001: Freezing Rain
+                 * 6201: Heavy Freezing Rain
+                 */
+                6000 or 6200 or 6001 or 6201 => WeatherIcons.RAIN_MIX,
                 /*
                  * 7102: Light Ice pellets
                  * 7000: Ice pellets
                  * 7101: Heavy Ice pellets
                  */
-                case 7102:
-                case 7000:
-                case 7101:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL;
-                    break;
+                7102 or 7000 or 7101 => WeatherIcons.HAIL,
+                /* Thunderstorm  */
+                8000 => WeatherIcons.THUNDERSTORM,
+
+                /* Mixed Condition Codes */
+                /* 10000, 10001 - Clear */
+                10000 => WeatherIcons.DAY_SUNNY,
+                10001 => WeatherIcons.NIGHT_CLEAR,
 
                 /*
-                 * 4000: Drizzle
-                 * 4200: Light rain
+                 * 11000, 11001 - Mostly Clear
+                 * 11010, 11011 - Partly Cloudy
                  */
-                case 4000:
-                case 4200:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE;
-                    break;
+                11000 or 11010 => WeatherIcons.DAY_PARTLY_CLOUDY,
+                11001 or 11011 => WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY,
+
+                /* 11030: Partly Cloudy */
+                11030 => WeatherIcons.DAY_PARTLY_CLOUDY,
+
+                /* 11020, 11021 - Mostly Cloudy */
+                11020 => WeatherIcons.DAY_CLOUDY,
+                11021 => WeatherIcons.NIGHT_ALT_CLOUDY,
+
+                /* 10010, 10011: Cloudy */
+                10010 or 10011 => WeatherIcons.CLOUDY,
+
+                /* 11031: Mostly Clear */
+                11031 => WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY,
 
                 /*
-                 * 6000: Freezing drizzle
-                 * 6200: Light freezing rain
-                 * 6001: Freezing rain
-                 * 6201: Heavy freezing drizzle
+                 * 21000, 21001 -> Light Fog
+                 * 20000, 20001 -> Fog
                  */
-                case 6000:
-                case 6200:
-                case 6001:
-                case 6201:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
-                    break;
-
-                /* Rain */
-                case 4001:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN;
-                    break;
-
-                /* Heavy rain */
-                case 4201:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND;
-                    break;
+                21000 or 21001 or 20000 or 20001 => WeatherIcons.FOG,
 
                 /*
-                 * 3000: Light Wind
-                 * 3001: Wind
+                 * Full  D      Nt
+                 * 2101, 21010, 21011
+                 * 2102, 21020, 21021
+                 * 2103, 21030, 21031
+                 * 2106, 21060, 21061
+                 * 2107, 21070, 21071
+                 * 2108, 21080, 21081
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Light Fog / Fog
                  */
-                case 3000:
-                case 3001:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY_WINDY : WeatherIcons.DAY_CLOUDY_WINDY;
-                    break;
+                2101 or 2102 or 2103 or 2106 or 2107 or 2108 => isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG,
+                21010 or 21020 or 21030 or 21060 or 21070 or 21080 => WeatherIcons.DAY_FOG,
+                21011 or 21021 or 21031 or 21061 or 21071 or 21081 => WeatherIcons.NIGHT_FOG,
 
-                /* Strong Wind */
-                case 3002:
-                    WeatherIcon = WeatherIcons.STRONG_WIND;
-                    break;
-            }
+                /*
+                 * 40000, 40001: Drizzle
+                 * 42000, 42001: Light Rain
+                 */
+                40000 or 40001 or 42000 or 42001 => WeatherIcons.SPRINKLE,
+
+                /*
+                 * Full  D      Nt
+                 * 4203, 42030, 42031
+                 * 4204, 42040, 42041
+                 * 4205, 42050, 42051
+                 * 4213, 42130, 42131
+                 * 4214, 42140, 42141
+                 * 4215, 42150, 42151
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Drizzle / Light Rain
+                 */
+                4203 or 4204 or 4205 or 4213 or 4214 or 4215 => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
+                42030 or 42040 or 42050 or 42130 or 42140 or 42150 => WeatherIcons.DAY_SPRINKLE,
+                42031 or 42041 or 42051 or 42131 or 42141 or 42151 => WeatherIcons.NIGHT_ALT_SPRINKLE,
+
+                /*
+                 * 40010, 40011: Rain
+                 */
+                40010 or 40011 => WeatherIcons.RAIN,
+
+                /*
+                 * Full  D      Nt
+                 * 4209, 42090, 42091
+                 * 4208, 42080, 42081
+                 * 4210, 42100, 42101
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Rain
+                 */
+                4209 or 4208 or 4210 => isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN,
+                42090 or 42080 or 42100 => WeatherIcons.DAY_RAIN,
+                42091 or 42081 or 42101 => WeatherIcons.NIGHT_ALT_RAIN,
+
+                /*
+                 * 42010, 42011: Heavy Rain
+                 */
+                42010 or 42011 => WeatherIcons.RAIN_WIND,
+
+                /*
+                 * Full  D      Nt
+                 * 4211, 42110, 42111
+                 * 4202, 42020, 42021
+                 * 4212, 42120, 42121
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Heavy Rain
+                 */
+                4211 or 4202 or 4212 => isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND,
+                42110 or 42020 or 42120 => WeatherIcons.DAY_RAIN_WIND,
+                42111 or 42021 or 42121 => WeatherIcons.NIGHT_ALT_RAIN_WIND,
+
+                /*
+                 * 50010, 50011: Flurries
+                 * 51000, 51001: Light snow
+                 * 50000, 50001: Snow
+                 */
+                50010 or 50011 or
+                51000 or 51001 or
+                50000 or 50001 => WeatherIcons.SNOW,
+
+                /*
+                 * Full  D      Nt
+                 * 5115, 51150, 51151
+                 * 5116, 51160, 51161
+                 * 5117, 51170, 51171
+                 * 5102, 51020, 51021
+                 * 5103, 51030, 51031
+                 * 5104, 51040, 51041
+                 * 5105, 51050, 51051
+                 * 5106, 51060, 51061
+                 * 5107, 51070, 51071
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Flurries / Light Snow / Snow
+                 */
+                5115 or 5116 or 5117 or 5102 or 5103 or 5104 or 5105 or 5106 or 5107 => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
+                51150 or 51160 or 51170 or 51020 or 51030 or 51040 or 51050 or 51060 or 51070 => WeatherIcons.DAY_SNOW,
+                51151 or 51161 or 51171 or 51021 or 51031 or 51041 or 51051 or 51061 or 51071 => WeatherIcons.NIGHT_ALT_SNOW,
+
+                /*
+                 * 5122, 51220, 51221
+                 * 5110, 51100, 51101
+                 * 5108, 51080, 51081
+                 * 5114, 51140, 51141
+                 * 6204, 62040, 62041
+                 * 6206, 62060, 62061
+                 * 6212, 62120, 62121
+                 * 6220, 62200, 62201
+                 * 6222, 62220, 62221
+                 * Mixed conditions:
+                 * Condition 1: Drizzle / Rain / Light Rain
+                 * Condition 2: Light Snow / Snow / Freezing Rain / Freezing Drizzle
+                 *
+                 * 60000, 60001: Freezing Drizzle
+                 * 62000, 62001: Light Freezing Drizzle
+                 * 60010, 60011: Freezing Rain
+                 * 62010, 62011: Heavy Freezing Rain
+                 */
+                5122 or 51220 or 51221 or
+                5110 or 51100 or 51101 or
+                5108 or 51080 or 51081 or
+                5114 or 51140 or 51141 or
+                60000 or 60001 or
+                62000 or 62001 or
+                60010 or 60011 or
+                62010 or 62011 or
+                6204 or 62040 or 62041 or
+                6206 or 62060 or 62061 or
+                6212 or 62120 or 62121 or
+                6220 or 62200 or 62201 or
+                6222 or 62220 or 62221 => WeatherIcons.RAIN_MIX,
+
+                /*
+                 * Full  D      Nt
+                 * 6003, 60030, 60031
+                 * 6002, 60020, 60021
+                 * 6004, 60040, 60041
+                 * 6205, 62050, 62051
+                 * 6203, 62030, 62031
+                 * 6209, 62090, 62091
+                 * 6213, 62130, 62131
+                 * 6214, 62140, 62141
+                 * 6215, 62150, 62151
+                 * 6207, 62070, 62071
+                 * 6202, 62020, 62021
+                 * 6208, 62080, 62081
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Freezing Drizzle / Light Freezing Rain / Freezing Rain / Heavy Freezing Rain
+                 */
+                6003 or 6002 or 6004 or 6205 or 6203 or 6209 or 6213 or 6214 or 6215 or 6207 or 6202 or 6208 => isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX,
+                60030 or 60020 or 60040 or 62050 or 62030 or 62090 or 62130 or 62140 or 62150 or 62070 or 62020 or 62080 => WeatherIcons.DAY_RAIN_MIX,
+                60031 or 60021 or 60041 or 62051 or 62031 or 62091 or 62131 or 62141 or 62151 or 62071 or 62021 or 62081 => WeatherIcons.NIGHT_ALT_RAIN_MIX,
+
+                /*
+                 * 51010, 51011: Heavy snow
+                 */
+                51010 or 51011 => WeatherIcons.SNOW_WIND,
+
+                /*
+                 * Full  D      Nt
+                 * 5119, 51190, 51191
+                 * 5120, 51200, 51201
+                 * 5121, 51210, 51211
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Heavy Snow
+                 */
+                5119 or 5120 or 5121 => isNight ? WeatherIcons.NIGHT_ALT_SNOW_WIND : WeatherIcons.DAY_SNOW_WIND,
+                51190 or 51200 or 51210 => WeatherIcons.DAY_SNOW_WIND,
+                51191 or 51201 or 51211 => WeatherIcons.NIGHT_ALT_SNOW_WIND,
+
+                /*
+                 * 5112, 51120, 51121
+                 * Mixed conditions:
+                 * Condition 1: Snow
+                 * Condition 2: Ice Pellets
+                 *
+                 * 71020, 71021: Light Ice Pellets
+                 * 70000, 70001: Ice Pellets
+                 * 71010, 71011: Heavy Ice Pellets
+                 */
+                5112 or 51120 or 51121 or
+                71020 or 71021 or
+                70000 or 70001 or
+                71010 or 71011 => WeatherIcons.HAIL,
+
+                /*
+                 * Full  D      Nt
+                 * 7110, 71100, 71101
+                 * 7111, 71110, 71111
+                 * 7112, 71120, 71121
+                 * 7108, 71080, 71081
+                 * 7107, 71070, 71071
+                 * 7109, 71090, 71091
+                 * 7113, 71130, 71131
+                 * 7114, 71140, 71141
+                 * 7116, 71160, 71161
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Light Ice Pellets / Ice Pellets / Heavy Ice Pellets
+                 */
+                7110 or 7111 or 7112 or 7108 or 7107 or 7109 or 7113 or 7114 or 7116 => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
+                71100 or 71110 or 71120 or 71080 or 71070 or 71090 or 71130 or 71140 or 71160 => WeatherIcons.DAY_HAIL,
+                71101 or 71111 or 71121 or 71081 or 71071 or 71091 or 71131 or 71141 or 71161 => WeatherIcons.NIGHT_ALT_HAIL,
+
+                /*
+                 * 7105, 71050, 71051
+                 * 7115, 71150, 71151
+                 * 7117, 71170, 71171
+                 * 7106, 71060, 71061
+                 * 7103, 71030, 71031
+                 * Mixed conditions:
+                 * Condition 1: Drizzle / Rain / Light Rain / Freezing Rain
+                 * Condition 2: Ice Pellets / Heavy Ice Pellets
+                 */
+                7105 or 71050 or 71051 or
+                7115 or 71150 or 71151 or
+                7117 or 71170 or 71171 or
+                7106 or 71060 or 71061 or
+                7103 or 71030 or 71031 => WeatherIcons.RAIN_MIX,
+
+                /*
+                 * 80000, 80001: Thunderstorm
+                 */
+                80000 or 80001 => WeatherIcons.THUNDERSTORM,
+
+                /*
+                 * Full  D      Nt
+                 * 8001, 80010, 80011
+                 * 8003, 80030, 80031
+                 * 8002, 80020, 80021
+                 * Mixed conditions:
+                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                 * Condition 2: Thunderstorm
+                 */
+                8001 or 8003 or 8002 => isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM,
+                80010 or 80030 or 80020 => WeatherIcons.DAY_THUNDERSTORM,
+                80011 or 80031 or 80021 => WeatherIcons.NIGHT_ALT_THUNDERSTORM,
+
+                _ => string.Empty,
+            };
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
