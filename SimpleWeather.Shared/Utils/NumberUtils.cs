@@ -8,32 +8,32 @@ namespace SimpleWeather.Utils
 {
     public static class NumberUtils
     {
-        public static int? TryParseInt(string number)
+        public static int? TryParseInt(this string number)
         {
             return int.TryParse(number, out int result) ? result : null;
         }
 
-        public static int TryParseInt(string number, int defaultValue)
+        public static int TryParseInt(this string number, int defaultValue)
         {
             return int.TryParse(number, out int result) ? result : defaultValue;
         }
 
-        public static float? TryParseFloat(string number)
+        public static float? TryParseFloat(this string number)
         {
             return float.TryParse(number, out float result) ? result : null;
         }
 
-        public static float TryParseFloat(string number, float defaultValue)
+        public static float TryParseFloat(this string number, float defaultValue)
         {
             return float.TryParse(number, out float result) ? result : defaultValue;
         }
 
-        public static double? TryParseDouble(string number)
+        public static double? TryParseDouble(this string number)
         {
             return double.TryParse(number, out double result) ? result : null;
         }
 
-        public static double TryParseDouble(string number, double defaultValue)
+        public static double TryParseDouble(this string number, double defaultValue)
         {
             return double.TryParse(number, out double result) ? result : defaultValue;
         }

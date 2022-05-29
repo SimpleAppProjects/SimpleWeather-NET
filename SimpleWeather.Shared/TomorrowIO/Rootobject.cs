@@ -56,6 +56,9 @@ namespace SimpleWeather.TomorrowIO
         public int? grassIndex { get; set; }
         public int? weedIndex { get; set; }
         public int? epaIndex { get; set; }
+        public int? weatherCodeDay { get; set; }
+        public int? weatherCodeFullDay { get; set; }
+        public int? weatherCodeNight { get; set; }
     }
 
     /*

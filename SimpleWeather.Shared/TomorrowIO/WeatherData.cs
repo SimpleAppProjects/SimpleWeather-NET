@@ -27,6 +27,7 @@ namespace SimpleWeather.WeatherData
                 else if (timeline.timestep == "1d")
                 {
                     forecast = new List<Forecast>(timeline.intervals.Length);
+                    txt_forecast = new List<TextForecast>(timeline.intervals.Length);
 
                     foreach (var interval in timeline.intervals)
                     {
@@ -36,6 +37,7 @@ namespace SimpleWeather.WeatherData
                         }
 
                         forecast.Add(new Forecast(interval));
+                        txt_forecast.Add(new TextForecast(interval));
                     }
                 }
                 else if (timeline.timestep == "current")
@@ -118,7 +120,7 @@ namespace SimpleWeather.WeatherData
                 low_c = item.values.temperatureMin;
             }
 
-            icon = item.values.weatherCode?.ToString();
+            icon = (item.values.weatherCodeFullDay ?? item.values.weatherCode)?.ToString();
 
             // Extras
             extras = new ForecastExtras();
@@ -175,6 +177,18 @@ namespace SimpleWeather.WeatherData
                 extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
                 extras.visibility_km = item.values.visibility;
             }
+        }
+    }
+
+    public partial class TextForecast
+    {
+        public TextForecast(TomorrowIO.Interval item)
+        {
+            date = item.startTime.UtcDateTime;
+
+            // TODO: code -> weather condition for day + night
+            fcttext = item.values.weatherCode.ToString();
+            fcttext_metric = item.values.weatherCode.ToString();
         }
     }
 
