@@ -363,24 +363,35 @@ namespace SimpleWeather.TomorrowIO
             var sunrise = weather.astronomy.sunrise.TimeOfDay;
             var sunset = weather.astronomy.sunset.TimeOfDay;
 
-            weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
-            weather.condition.weather = GetWeatherCondition(weather.condition.icon);
+            weather.condition.icon.Let(it =>
+            {
+                weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, it);
+                weather.condition.weather = GetWeatherCondition(it);
+            });
 
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.AddSeconds(offset.TotalSeconds);
-                forecast.icon = GetWeatherIcon(forecast.icon);
-                forecast.condition = GetWeatherCondition(forecast.icon);
+
+                forecast.icon.Let(it =>
+                {
+                    forecast.icon = GetWeatherIcon(it);
+                    forecast.condition = GetWeatherCondition(it);
+                });
             }
 
             foreach (HourlyForecast hr_forecast in weather.hr_forecast)
             {
-                var hrf_date = hr_forecast.date.ToOffset(offset);
-                hr_forecast.date = hrf_date;
+                var hrfDate = hr_forecast.date.ToOffset(offset);
+                hr_forecast.date = hrfDate;
 
-                var hrf_localTime = hrf_date.DateTime.TimeOfDay;
-                hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
-                hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
+                var hrfLocalTime = hrfDate.DateTime.TimeOfDay;
+
+                hr_forecast.icon.Let(it =>
+                {
+                    hr_forecast.icon = GetWeatherIcon(hrfLocalTime < sunrise || hrfLocalTime > sunset, it);
+                    hr_forecast.condition = GetWeatherCondition(it);
+                });
             }
 
             if (weather.min_forecast?.Any() == true)
