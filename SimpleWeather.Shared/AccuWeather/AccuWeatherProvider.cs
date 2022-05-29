@@ -167,7 +167,7 @@ namespace SimpleWeather.AccuWeather
                     using var stream = await response.Content.ReadAsStreamAsync();
 
                     // Load weather
-                    currentRoot = new CurrentRootobject() 
+                    currentRoot = new CurrentRootobject()
                     {
                         Items = await JSONParser.DeserializerAsync<CurrentsItem[]>(stream)
                     };
@@ -284,156 +284,101 @@ namespace SimpleWeather.AccuWeather
 
         public override string GetWeatherIcon(bool isNight, string icon)
         {
-            string WeatherIcon = string.Empty;
-
             if (icon == null || !int.TryParse(icon, out int conditionCode))
                 return WeatherIcons.NA;
 
-            switch (conditionCode)
+            string WeatherIcon = conditionCode switch
             {
-                /*
-                 *  1: Sunny
-                 * 33: Clear
-                 */
-                case 1:
-                case 33:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
-                    break;
-
+                /* Sunny */
+                1 => WeatherIcons.DAY_SUNNY,
                 /*
                  *  2: Mostly Sunny
                  *  3: Partly Sunny
-                 * 34: Mostly Clear
-                 * 35: Partly Cloudy
-                 */
-                case 2:
-                case 3:
-                case 34:
-                case 35:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
-                    break;
-
-                /*
                  *  4: Intermittent Clouds
-                 *  6: Mostly Cloudy
-                 *  7: Cloudy
-                 * 36: Intermittent Clouds
-                 * 38: Mostly Cloudy
                  */
-                case 4:
-                case 6:
-                case 7:
-                case 36:
-                case 38:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY;
-                    break;
-
+                2 or 3 or 4 => WeatherIcons.DAY_PARTLY_CLOUDY,
+                /* 5: Hazy Sunshine */
+                5 => WeatherIcons.DAY_HAZE,
+                /* 6: Mostly Cloudy */
+                6 => WeatherIcons.DAY_CLOUDY,
+                /* 7: Cloudy */
+                7 => WeatherIcons.CLOUDY,
                 /* 8: Dreary (Overcast) */
-                case 8:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
-                    break;
-
-                /*
-                 *  5: Hazy Sunshine
-                 * 37: Hazy Moonlight
-                 */
-                case 5:
-                case 37:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_HAZE;
-                    break;
-
+                8 => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
                 /* 11: Fog */
-                case 11:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG;
-                    break;
-
+                11 => WeatherIcons.FOG,
+                /* 12: Showers */
+                12 => WeatherIcons.SHOWERS,
                 /*
-                 * 12: Showers
                  * 13: Mostly Cloudy w/ Showers
                  * 14: Partly Sunny w/ Showers
-                 * 39: Partly Cloudy w/ Showers
-                 * 40: Mostly Cloudy w/ Showers
                  */
-                case 12:
-                case 13:
-                case 14:
-                case 39:
-                case 40:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS;
-                    break;
-
+                13 or 14 => WeatherIcons.DAY_SHOWERS,
+                /* 15: T-Storms */
+                15 => WeatherIcons.THUNDERSTORM,
                 /*
-                 * 15: T-Storms
                  * 16: Mostly Cloudy w/ T-Storms
                  * 17: Partly Sunny w/ T-Storms
-                 * 41: Partly Cloudy w/ T-Storms
-                 * 42: Mostly Cloudy w/ T-Storms
                  */
-                case 15:
-                case 16:
-                case 17:
-                case 41:
-                case 42:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM;
-                    break;
-
+                16 or 17 => WeatherIcons.DAY_THUNDERSTORM,
                 /* 18: Rain */
-                case 18:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN;
-                    break;
-
+                18 => WeatherIcons.RAIN,
+                /* 19: Flurries */
+                19 => WeatherIcons.SNOW,
                 /*
-                 * 19: Flurries
                  * 20: Mostly Cloudy w/ Flurries
                  * 21: Partly Sunny w/ Flurries
-                 * 22: Snow
                  * 23: Mostly Cloudy w/ Snow
-                 * 43: Mostly Cloudy w/ Flurries
-                 * 44: Mostly Cloudy w/ Snow
                  */
-                case 19:
-                case 20:
-                case 21:
-                case 22:
-                case 23:
-                case 43:
-                case 44:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
-                    break;
-
+                20 or 21 or 23 => WeatherIcons.DAY_SNOW,
+                /* 22: Snow */
+                22 => WeatherIcons.SNOW,
                 /*
                  * 24: Ice
                  * 31: Cold
                  */
-                case 24:
-                case 31:
-                    WeatherIcon = WeatherIcons.SNOWFLAKE_COLD;
-                    break;
-
+                24 or 31 => WeatherIcons.SNOWFLAKE_COLD,
                 /* 25: Sleet */
-                case 25:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET;
-                    break;
-
+                25 => WeatherIcons.SLEET,
                 /*
                  * 26: Freezing Rain
                  * 29: Rain and Snow
                  */
-                case 26:
-                case 29:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
-                    break;
-
+                26 or 29 => WeatherIcons.RAIN_MIX,
                 /* 30: Hot */
-                case 30:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_HOT;
-                    break;
-
+                30 => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_HOT,
                 /* 32: Windy */
-                case 32:
-                    WeatherIcon = isNight ? WeatherIcons.WINDY : WeatherIcons.DAY_WINDY;
-                    break;
-            }
+                32 => WeatherIcons.WINDY,
+                /* 33: Clear */
+                33 => WeatherIcons.NIGHT_CLEAR,
+                /*
+                 * 34: Mostly Clear
+                 * 35: Partly Cloudy
+                 * 36: Intermittent Clouds
+                 */
+                34 or 35 or 36 => WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY,
+                /* 37: Hazy Moonlight */
+                37 => WeatherIcons.NIGHT_FOG,
+                /* 38: Mostly Cloudy */
+                38 => WeatherIcons.NIGHT_ALT_CLOUDY,
+                /*
+                 * 39: Partly Cloudy w/ Showers
+                 * 40: Mostly Cloudy w/ Showers
+                 */
+                39 or 40 => WeatherIcons.NIGHT_ALT_SHOWERS,
+                /*
+                 * 41: Partly Cloudy w/ T-Storms
+                 * 42: Mostly Cloudy w/ T-Storms
+                 */
+                41 or 42 => WeatherIcons.NIGHT_ALT_THUNDERSTORM,
+                /*
+                 * 43: Mostly Cloudy w/ Flurries
+                 * 44: Mostly Cloudy w/ Snow
+                 */
+                43 or 44 => WeatherIcons.NIGHT_ALT_SNOW,
+
+                _ => String.Empty,
+            };
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
