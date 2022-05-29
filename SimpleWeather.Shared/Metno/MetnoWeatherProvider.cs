@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
 using SimpleWeather.HttpClientExtensions;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.Metno
 {
@@ -70,14 +71,8 @@ namespace SimpleWeather.Metno
                     astronomyRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
                     astronomyRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
-                    astronomyRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                    astronomyRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;

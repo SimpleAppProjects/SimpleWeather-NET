@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
 using System.Net;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.OpenWeather
 {
@@ -132,14 +133,8 @@ namespace SimpleWeather.OpenWeather
                 using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                 {
-                    currentRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
-                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;

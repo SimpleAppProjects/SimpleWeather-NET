@@ -16,6 +16,7 @@ using System.Net.Sockets;
 using System.Net.Http.Headers;
 using System.Net;
 using System.Collections.Generic;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.WeatherBit
 {
@@ -123,14 +124,8 @@ namespace SimpleWeather.WeatherBit
 
                 using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL);
                 using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
-                currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromMinutes(30)
-                };
-                forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromHours(1)
-                };
+                currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(20));
+                forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                 var webClient = SharedModule.Instance.WebClient;
 
@@ -205,10 +200,7 @@ namespace SimpleWeather.WeatherBit
                 Uri alertsURL = new(string.Format(ALERTS_QUERY_URL, UpdateLocationQuery(location), key));
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, alertsURL);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromHours(6)
-                };
+                request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                 var webClient = SharedModule.Instance.WebClient;
 

@@ -15,6 +15,7 @@ using Windows.Web;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.HERE
 {
@@ -87,10 +88,7 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Connect to webstream
                     var webClient = SharedModule.Instance.WebClient;
@@ -234,11 +232,7 @@ namespace SimpleWeather.HERE
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    // Updates 4x per day
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(6)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Connect to webstream
                     var webClient = SharedModule.Instance.WebClient;

@@ -15,6 +15,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
 using System.Net;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.WeatherUnlocked
 {
@@ -80,14 +81,8 @@ namespace SimpleWeather.WeatherUnlocked
                     currentRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     forecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                    currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
-                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;

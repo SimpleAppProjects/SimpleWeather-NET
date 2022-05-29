@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Windows.Web;
 using System.Net.Sockets;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.TomorrowIO
 {
@@ -161,10 +162,7 @@ namespace SimpleWeather.TomorrowIO
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(20));
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                     // Get response
@@ -185,10 +183,7 @@ namespace SimpleWeather.TomorrowIO
                 {
                     using (var minutelyRequest = new HttpRequestMessage(HttpMethod.Get, minutelyRequestUri))
                     {
-                        minutelyRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                        {
-                            MaxAge = TimeSpan.FromMinutes(45)
-                        };
+                        minutelyRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
                         minutelyRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
@@ -211,10 +206,7 @@ namespace SimpleWeather.TomorrowIO
                 {
                     using (var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsRequestUri))
                     {
-                        alertsRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                        {
-                            MaxAge = TimeSpan.FromHours(6)
-                        };
+                        alertsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
                         alertsRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         // Get response
@@ -292,10 +284,7 @@ namespace SimpleWeather.TomorrowIO
                     .BuildUri();
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromHours(1)
-                };
+                request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
                 request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 // Get response

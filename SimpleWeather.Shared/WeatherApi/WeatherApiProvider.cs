@@ -16,6 +16,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
 using System.Net;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.WeatherApi
 {
@@ -120,10 +121,7 @@ namespace SimpleWeather.WeatherApi
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(20));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;
@@ -194,10 +192,7 @@ namespace SimpleWeather.WeatherApi
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, alertsURL))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(6)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;

@@ -15,6 +15,7 @@ using Windows.Web;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.MeteoFrance
 {
@@ -82,14 +83,8 @@ namespace SimpleWeather.MeteoFrance
                 using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                 {
-                    currentRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
-                    forecastRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(1)
-                    };
+                    currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;
@@ -118,10 +113,7 @@ namespace SimpleWeather.MeteoFrance
 
                             using (var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsURL))
                             {
-                                alertsRequest.Headers.CacheControl = new CacheControlHeaderValue()
-                                {
-                                    MaxAge = TimeSpan.FromHours(12)
-                                };
+                                alertsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                                 using (var ctsA = new CancellationTokenSource(Settings.READ_TIMEOUT))
                                 using (var alertsResponse = await webClient.SendAsync(alertsRequest, ctsA.Token))

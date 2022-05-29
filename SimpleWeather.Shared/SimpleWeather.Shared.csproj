@@ -160,6 +160,7 @@
     <Compile Include="DAO\Weather.cs" />
     <Compile Include="DAO\WeatherAlert.cs" />
     <Compile Include="Extras\DefaultExtrasServiceImpl.cs" />
+    <Compile Include="Extras\HttpRequestMessageExtensions.cs" />
     <Compile Include="Extras\IExtrasService.cs" />
     <Compile Include="Firebase\FirebaseAuthHelper.cs" />
     <Compile Include="Firebase\FirebaseDatabaseHelper.cs" />

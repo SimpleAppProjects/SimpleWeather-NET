@@ -19,6 +19,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net.Http.Headers;
 using SimpleWeather.HttpClientExtensions;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.NWS
 {
@@ -85,14 +86,8 @@ namespace SimpleWeather.NWS
                     hrForecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
                     hrForecastRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    observationRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
-                    hrForecastRequest.Headers.CacheControl = new CacheControlHeaderValue() 
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    observationRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                    hrForecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;

@@ -17,6 +17,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Net;
 using System.Net.Http.Headers;
+using SimpleWeather.Extras;
 
 namespace SimpleWeather.AccuWeather
 {
@@ -153,10 +154,7 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestCurrentUri))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;
@@ -177,10 +175,7 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, request5dayUri))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(3));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;
@@ -198,10 +193,7 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestHourlyUri))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromHours(3)
-                    };
+                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(3));
 
                     // Get response
                     var webClient = SharedModule.Instance.WebClient;
