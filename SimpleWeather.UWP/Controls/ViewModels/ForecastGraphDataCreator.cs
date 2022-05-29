@@ -17,7 +17,8 @@ namespace SimpleWeather.UWP.Controls
 {
     public enum ForecastGraphType
     {
-        //Temperature,
+        Temperature,
+        Minutely,
         Precipitation,
         Wind,
         Humidity,
@@ -82,21 +83,66 @@ namespace SimpleWeather.UWP.Controls
                 AddEntryData(forecast, series, graphType);
             }
 
+            if (graphType == ForecastGraphType.Rain || graphType == ForecastGraphType.Snow)
+            {
+                var unit = Settings.PrecipitationUnit;
+
+                // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
+                // Snow will often accumulate at a rate of 0.5in (12.7mm) an hour
+                switch (unit)
+                {
+                    case Units.INCHES:
+                    default:
+                        if (graphType == ForecastGraphType.Snow)
+                        {
+                            series.SetSeriesMinMax(0f, Math.Max(series.YMax, 0.5f));
+                        }
+                        else
+                        {
+                            series.SetSeriesMinMax(0f, Math.Max(series.YMax, 0.3f));
+                        }
+                        break;
+                    case Units.MILLIMETERS:
+                        if (graphType == ForecastGraphType.Snow)
+                        {
+                            series.SetSeriesMinMax(0f, Math.Max(series.YMax, 12.7f));
+                        }
+                        else
+                        {
+                            series.SetSeriesMinMax(0f, Math.Max(series.YMax, 7.6f));
+                        }
+                        break;
+                }
+            }
+
             this.GraphData = CreateGraphData(ImmutableList.Create(series), graphType);
             this.GraphType = graphType;
         }
 
         public void SetMinutelyForecastData(IEnumerable<MinutelyForecast> forecasts)
         {
-            LineDataSeries series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count()), ForecastGraphType.Precipitation);
+            LineDataSeries series = CreateSeriesData(new List<LineGraphEntry>(forecasts.Count()), ForecastGraphType.Minutely);
 
             foreach (var forecast in forecasts)
             {
                 AddMinutelyEntryData(forecast, series);
             }
 
-            this.GraphData = CreateGraphData(ImmutableList.Create(series), ForecastGraphType.Precipitation);
-            this.GraphType = ForecastGraphType.Precipitation;
+            // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
+            var unit = Settings.PrecipitationUnit;
+            switch (unit)
+            {
+                case Units.INCHES:
+                default:
+                    series.SetSeriesMinMax(0f, Math.Max(series.YMax, 0.3f));
+                    break;
+                case Units.MILLIMETERS:
+                    series.SetSeriesMinMax(0f, Math.Max(series.YMax, 7.6f));
+                    break;
+            }
+
+            this.GraphData = CreateGraphData(ImmutableList.Create(series), ForecastGraphType.Minutely);
+            this.GraphType = ForecastGraphType.Minutely;
         }
 
         private void AddEntryData<T>(T forecast, LineDataSeries series, ForecastGraphType graphType) where T : BaseForecast
@@ -108,17 +154,14 @@ namespace SimpleWeather.UWP.Controls
 
             switch (graphType)
             {
-                /*
                 case ForecastGraphType.Temperature:
                     if (forecast.high_f.HasValue && forecast.high_c.HasValue)
                     {
                         int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
                         var hiTemp = string.Format(culture, "{0}°", value);
-                        yData.Add(new YEntryData(value, hiTemp));
-                        xData.Add(new XLabelData(date));
+                        series.AddEntry(new LineGraphEntry(date, new YEntryData(value, hiTemp)));
                     }
                     break;
-                */
                 default:
                 case ForecastGraphType.Precipitation:
                     if (forecast.extras?.pop.HasValue == true && forecast.extras.pop >= 0)
@@ -263,12 +306,10 @@ namespace SimpleWeather.UWP.Controls
 
             switch (graphType)
             {
-                /*
                 case ForecastGraphType.Temperature:
                     series = new LineDataSeries(entryData);
                     series.SetSeriesColors(Colors.OrangeRed);
                     break;
-                */
                 default:
                 case ForecastGraphType.Precipitation:
                     series = new LineDataSeries(entryData);
@@ -279,6 +320,7 @@ namespace SimpleWeather.UWP.Controls
                     series = new LineDataSeries(entryData);
                     series.SetSeriesColors(Colors.SeaGreen);
                     break;
+                case ForecastGraphType.Minutely:
                 case ForecastGraphType.Rain:
                     series = new LineDataSeries(entryData);
                     series.SetSeriesColors(Colors.DeepSkyBlue);
@@ -384,12 +426,11 @@ namespace SimpleWeather.UWP.Controls
 
             switch (graphType)
             {
-                /*
                 case ForecastGraphType.Temperature:
                     graphLabel = App.ResLoader.GetString("label_temperature");
                     break;
-                */
                 default:
+                case ForecastGraphType.Minutely:
                 case ForecastGraphType.Precipitation:
                     graphLabel = App.ResLoader.GetString("label_precipitation");
                     break;

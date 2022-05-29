@@ -259,10 +259,48 @@ namespace SimpleWeather.UWP.Controls
                 }
                 if (rainData?.GraphData?.DataCount > 0)
                 {
+                    rainData?.GraphData?.ForEach(it =>
+                    {
+                        if (it is LineDataSeries series)
+                        {
+                            // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
+                            switch (Settings.PrecipitationUnit)
+                            {
+                                default:
+                                case Units.INCHES:
+                                    series.SetSeriesMinMax(0f, MathF.Max(series.YMax, 0.3f));
+                                    break;
+                                case Units.MILLIMETERS:
+                                    series.SetSeriesMinMax(0f, MathF.Max(series.YMax, 7.6f));
+                                    break;
+                            }
+                        }
+
+                    });
+                    rainData?.GraphData?.NotifyDataChanged();
                     data.Add(rainData.GraphData);
                 }
                 if (snowData?.GraphData?.DataCount > 0)
                 {
+                    snowData?.GraphData?.ForEach(it =>
+                    {
+                        if (it is LineDataSeries series)
+                        {
+                            // Snow will often accumulate at a rate of 0.5in (12.7mm) an hour
+                            switch (Settings.PrecipitationUnit)
+                            {
+                                default:
+                                case Units.INCHES:
+                                    series.SetSeriesMinMax(0f, MathF.Max(series.YMax, 0.5f));
+                                    break;
+                                case Units.MILLIMETERS:
+                                    series.SetSeriesMinMax(0f, MathF.Max(series.YMax, 12.7f));
+                                    break;
+                            }
+                        }
+
+                    });
+                    snowData?.GraphData?.NotifyDataChanged();
                     data.Add(snowData.GraphData);
                 }
             }

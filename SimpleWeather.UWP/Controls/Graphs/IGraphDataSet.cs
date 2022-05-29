@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
-    interface IGraphDataSet : IGraphDataBase
+    interface IGraphDataSet : IGraphDataBase, IEnumerable
     {
         void AddEntry(object? entry);
         bool RemoveEntry(object? entry);
@@ -15,7 +17,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
         void NotifyDataSetChanged();
     }
 
-    interface IGraphDataSet<T> : IGraphDataSet where T : GraphEntry
+    interface IGraphDataSet<T> : IGraphDataSet, IEnumerable<T> where T : GraphEntry
     {
         void AddEntry(T entry);
         bool RemoveEntry(T entry);

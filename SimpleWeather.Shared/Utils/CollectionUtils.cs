@@ -31,5 +31,13 @@ namespace SimpleWeather.Utils
                 action(item);
             }
         }
+
+        public static void ForEach(this IEnumerable e, Action<object> action)
+        {
+            foreach (object item in e)
+            {
+                action(item);
+            }
+        }
     }
 }
