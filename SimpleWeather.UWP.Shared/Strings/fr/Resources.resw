@@ -694,4 +694,14 @@ Fuzzy</comment>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
+  <data name="precipitation_minutely_starting_text_format" xml:space="preserve">
+    <value>La pluie va commencer dans environ %1$s</value>
+    <comment>Example: Rain will start in about 20 minutes
+(%1$s) - Time in minutes or hours</comment>
+  </data>
+  <data name="precipitation_minutely_stopping_text_format" xml:space="preserve">
+    <value>La pluie s&apos;arrêtera dans environ %1$s</value>
+    <comment>Example: Rain will stop in about 20 minutes
+(%1$s) - Time in minutes or hours</comment>
+  </data>
 </root>

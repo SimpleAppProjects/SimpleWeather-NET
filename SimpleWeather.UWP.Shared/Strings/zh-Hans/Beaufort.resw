@@ -119,7 +119,8 @@
   </resheader>
   <data name="beaufort_0" xml:space="preserve">
     <value>无风</value>
-    <comment>Fuzzy</comment>
+    <comment>Standard from https://www.renrendoc.com/paper/102496606.html :)
+Fuzzy</comment>
   </data>
   <data name="beaufort_1" xml:space="preserve">
     <value>软风</value>
@@ -146,8 +147,7 @@
     <comment>Fuzzy</comment>
   </data>
   <data name="beaufort_7" xml:space="preserve">
-    <value>劲风</value>
-    <comment>Fuzzy</comment>
+    <value>疾风</value>
   </data>
   <data name="beaufort_8" xml:space="preserve">
     <value>大风</value>

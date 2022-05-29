@@ -138,15 +138,15 @@ Fuzzy</comment>
     <value>雷暴</value>
   </data>
   <data name="weather_rainandsnow" xml:space="preserve">
-    <value>雨和雪</value>
+    <value>雨夹雪</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_rainandsleet" xml:space="preserve">
-    <value>雨和雨夹雪</value>
+    <value>雨夹冻雹</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_snowandsleet" xml:space="preserve">
-    <value>雪和雨夹雪</value>
+    <value>雪夹冻雹</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_freezingrain" xml:space="preserve">
@@ -179,7 +179,7 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_foggy" xml:space="preserve">
-    <value>有雾的</value>
+    <value>雾茫茫的</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_haze" xml:space="preserve">
@@ -187,11 +187,11 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_smoky" xml:space="preserve">
-    <value>烟雾缭绕</value>
+    <value>严重雾霾</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_windy" xml:space="preserve">
-    <value>风大</value>
+    <value>多风</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_cold" xml:space="preserve">
@@ -201,11 +201,11 @@ Fuzzy</comment>
     <value>多云</value>
   </data>
   <data name="weather_mostlycloudy" xml:space="preserve">
-    <value>多云</value>
+    <value>大部多云</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_partlycloudy" xml:space="preserve">
-    <value>部分多云</value>
+    <value>少部多云</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_clear" xml:space="preserve">
@@ -225,11 +225,11 @@ Fuzzy</comment>
     <value>热</value>
   </data>
   <data name="weather_isotstorms" xml:space="preserve">
-    <value>孤立的雷暴</value>
+    <value>局部雷暴</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_scatteredtstorms" xml:space="preserve">
-    <value>分散的雷暴</value>
+    <value>零星雷暴</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="weather_scatteredshowers" xml:space="preserve">
@@ -282,5 +282,16 @@ Fuzzy</comment>
   <data name="weather_heavyrain" xml:space="preserve">
     <value>大雨</value>
     <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>主要为晴</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>轻微的雾</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>细雨</value>
   </data>
 </root>

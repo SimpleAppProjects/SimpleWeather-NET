@@ -251,4 +251,14 @@
   <data name="weather_heavyrain" xml:space="preserve">
     <value>Silný dážď</value>
   </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>Väčšinou jasno</value>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>Mierna hmla</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>Mrholenie</value>
+  </data>
 </root>

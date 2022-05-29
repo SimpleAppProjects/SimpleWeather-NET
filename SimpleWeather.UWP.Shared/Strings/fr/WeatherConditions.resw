@@ -251,4 +251,15 @@
   <data name="weather_heavyrain" xml:space="preserve">
     <value>Forte pluie</value>
   </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>Belles éclaircies</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>Léger brouillard</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>Bruine</value>
+  </data>
 </root>

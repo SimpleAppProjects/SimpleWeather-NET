@@ -395,23 +395,23 @@
     <value>Wystąpił nieznany błąd</value>
   </data>
   <data name="pref_title_refreshinterval" xml:space="preserve">
-    <value>Częstotliwość odświeżania</value>
+    <value>Interwał odświeżania</value>
     <comment>Refresh Intervals</comment>
   </data>
   <data name="refresh_60min" xml:space="preserve">
-    <value>Co godzinę</value>
+    <value>1 godz.</value>
   </data>
   <data name="refresh_2hrs" xml:space="preserve">
-    <value>Co 2 godziny</value>
+    <value>2 godz.</value>
   </data>
   <data name="refresh_3hrs" xml:space="preserve">
-    <value>Co 3 godziny</value>
+    <value>3 godz.</value>
   </data>
   <data name="refresh_6hrs" xml:space="preserve">
-    <value>Co 4 godziny</value>
+    <value>6 godz.</value>
   </data>
   <data name="refresh_12hrs" xml:space="preserve">
-    <value>Co 12 godzin</value>
+    <value>12 godz.</value>
   </data>
   <data name="update_prefix" xml:space="preserve">
     <value>Zaktualizowano</value>
@@ -614,7 +614,7 @@
     <value>WeatherUnlocked</value>
   </data>
   <data name="refresh_30min" xml:space="preserve">
-    <value>30 minut</value>
+    <value>30 min.</value>
   </data>
   <data name="not_channel_name_dailynotification" xml:space="preserve">
     <value>Codzienne powiadomienie</value>
@@ -696,5 +696,11 @@ Fuzzy</comment>
   </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
+  </data>
+  <data name="precipitation_minutely_starting_text_format" xml:space="preserve">
+    <value>Deszcz zacznie padać za około %1$s</value>
+  </data>
+  <data name="precipitation_minutely_stopping_text_format" xml:space="preserve">
+    <value>Deszcz przestanie padać za około %1$s</value>
   </data>
 </root>

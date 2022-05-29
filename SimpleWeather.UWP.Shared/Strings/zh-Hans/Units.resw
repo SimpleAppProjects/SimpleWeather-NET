@@ -158,7 +158,7 @@
     <comment>Meters per second</comment>
   </data>
   <data name="unit_fahrenheit" xml:space="preserve">
-    <value>华氏</value>
+    <value>华氏度</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="unit_celsius" xml:space="preserve">

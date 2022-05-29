@@ -251,4 +251,13 @@
   <data name="weather_heavyrain" xml:space="preserve">
     <value>Zware Buien</value>
   </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>Voornamelijk helder</value>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>Lichte Mist</value>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>Motregen</value>
+  </data>
 </root>

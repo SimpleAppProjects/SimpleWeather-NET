@@ -269,4 +269,14 @@ Fuzzy</comment>
   <data name="weather_heavyrain" xml:space="preserve">
     <value>Starker Regen</value>
   </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>Überwiegend klar</value>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>Leichter Nebel</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>Nieselregen</value>
+  </data>
 </root>

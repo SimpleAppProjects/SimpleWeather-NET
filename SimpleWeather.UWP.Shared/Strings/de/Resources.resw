@@ -716,4 +716,12 @@ Fuzzy</comment>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
+  <data name="precipitation_minutely_starting_text_format" xml:space="preserve">
+    <value>Regen wird in etwa %1$s einsetzen</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="precipitation_minutely_stopping_text_format" xml:space="preserve">
+    <value>Der Regen wird in etwa %1$s aufhören</value>
+    <comment>Fuzzy</comment>
+  </data>
 </root>

@@ -128,19 +128,19 @@
     <value>Huragan</value>
   </data>
   <data name="weather_severetstorms" xml:space="preserve">
-    <value>Silne burze</value>
+    <value>Gwałtowne burze z piorunami</value>
   </data>
   <data name="weather_tstorms" xml:space="preserve">
-    <value>Burze</value>
+    <value>Burze z piorunami</value>
   </data>
   <data name="weather_rainandsnow" xml:space="preserve">
-    <value>Deszcz ze śniegiem</value>
+    <value>Deszcz i śnieg</value>
   </data>
   <data name="weather_rainandsleet" xml:space="preserve">
-    <value>Deszcz oraz deszcz ze śniegiem</value>
+    <value>Deszcz i deszcz ze śniegiem</value>
   </data>
   <data name="weather_snowandsleet" xml:space="preserve">
-    <value>Śnieg oraz deszcz ze śniegiem</value>
+    <value>Śnieg i deszcz ze śniegiem</value>
   </data>
   <data name="weather_freezingrain" xml:space="preserve">
     <value>Marznący deszcz</value>
@@ -155,7 +155,7 @@
     <value>Zamieć śnieżna</value>
   </data>
   <data name="weather_snow" xml:space="preserve">
-    <value>Śnieg</value>
+    <value>Opady śniegu</value>
   </data>
   <data name="weather_hail" xml:space="preserve">
     <value>Grad</value>
@@ -185,7 +185,7 @@
     <value>Pochmurno</value>
   </data>
   <data name="weather_mostlycloudy" xml:space="preserve">
-    <value>Przeważnie pochmurno</value>
+    <value>Przewaga chmur</value>
   </data>
   <data name="weather_partlycloudy" xml:space="preserve">
     <value>Częściowe zachmurzenie</value>
@@ -206,10 +206,10 @@
     <value>Gorąco</value>
   </data>
   <data name="weather_isotstorms" xml:space="preserve">
-    <value>Lokalne burze</value>
+    <value>Lokalne burze z piorunami</value>
   </data>
   <data name="weather_scatteredtstorms" xml:space="preserve">
-    <value>Rozproszone burze</value>
+    <value>Rozproszone burze z piorunami</value>
   </data>
   <data name="weather_scatteredshowers" xml:space="preserve">
     <value>Rozproszone przelotne opady</value>
@@ -240,15 +240,24 @@
     <value>Zachmurzenie całkowite</value>
   </data>
   <data name="weather_sleet_tstorms" xml:space="preserve">
-    <value>Deszcz ze śniegiem i burza</value>
+    <value>Deszcz ze śniegiem z piorunami</value>
   </data>
   <data name="weather_snow_tstorms" xml:space="preserve">
-    <value>Śnieg i burza</value>
+    <value>Burza śnieżna z piorunami</value>
   </data>
   <data name="weather_clearsky" xml:space="preserve">
     <value>Czyste niebo</value>
   </data>
   <data name="weather_heavyrain" xml:space="preserve">
     <value>Silny deszcz</value>
+  </data>
+  <data name="weather_mostlyclear" xml:space="preserve">
+    <value>Przeważnie bezchmurnie</value>
+  </data>
+  <data name="weather_lightfog" xml:space="preserve">
+    <value>Lekka mgła</value>
+  </data>
+  <data name="weather_drizzle" xml:space="preserve">
+    <value>Mżawka</value>
   </data>
 </root>

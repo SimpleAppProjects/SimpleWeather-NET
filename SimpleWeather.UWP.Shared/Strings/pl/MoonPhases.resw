@@ -121,24 +121,24 @@
     <value>Nów</value>
   </data>
   <data name="moonphase_waxcrescent" xml:space="preserve">
-    <value>Przybywa (&lt;50%)</value>
+    <value>Sierp przybywający</value>
   </data>
   <data name="moonphase_firstqtr" xml:space="preserve">
     <value>Pierwsza kwadra</value>
   </data>
   <data name="moonphase_waxgibbous" xml:space="preserve">
-    <value>Przybywa (&gt;50%)</value>
+    <value>Przybywający księżyc garbaty</value>
   </data>
   <data name="moonphase_full" xml:space="preserve">
     <value>Pełnia</value>
   </data>
   <data name="moonphase_wangibbous" xml:space="preserve">
-    <value>Ubywa (&gt;50%)</value>
+    <value>Ubywający księżyc garbaty</value>
   </data>
   <data name="moonphase_lastqtr" xml:space="preserve">
     <value>Trzecia kwadra</value>
   </data>
   <data name="moonphase_wancrescent" xml:space="preserve">
-    <value>Ubywa (&lt;50%)</value>
+    <value>Sierp ubywający</value>
   </data>
 </root>
