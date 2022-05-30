@@ -302,183 +302,153 @@ namespace SimpleWeather.WeatherApi
 
         public override string GetWeatherIcon(bool isNight, string icon)
         {
-            string WeatherIcon = string.Empty;
-
             if (icon == null || !int.TryParse(icon, out int conditionCode))
                 return WeatherIcons.NA;
 
-            switch (conditionCode)
+            string WeatherIcon = conditionCode switch
             {
                 /* Sunny / Clear */
-                case 1000:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
-                    break;
+                1000 => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
 
                 /* Partly cloudy */
-                case 1003:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
-                    break;
-
-                /* Overcast */
-                case 1009:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
-                    break;
+                1003 => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
 
                 /* Cloudy */
-                case 1006:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY;
-                    break;
+                1006 => WeatherIcons.CLOUDY,
+
+                /* Overcast */
+                1009 => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
 
                 /*
                  * 1030: Mist
                  * 1135: Fog
                  * 1147: Freezing fog
                  */
-                case 1030:
-                case 1135:
-                case 1147:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG;
-                    break;
+                1030 or 1135 or 1147 => WeatherIcons.FOG,
 
                 /*
                  * 1063: Patchy rain possible
                  * 1186: Moderate rain at times
-                 * 1189: Moderate rain
                  */
-                case 1063:
-                case 1186:
-                case 1189:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN;
-                    break;
+                1063 or 1186 => isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN,
 
                 /*
                  * 1066: Patchy snow possible
                  * 1210: Patchy light snow
-                 * 1213: Light snow
-                 * 1216: Patchy moderate snow
-                 * 1219: Moderate snow
-                 * 1255: Light snow showers
-                 * 1258: Moderate or heavy snow showers
                  */
-                case 1066:
-                case 1210:
-                case 1213:
-                case 1216:
-                case 1219:
-                case 1255:
-                case 1258:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
-                    break;
+                1066 or 1210 => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
 
                 /*
                  * 1069: Patchy sleet possible
-                 * 1204: Light sleet
-                 * 1207: Moderate or heavy sleet
                  * 1249: Light sleet showers
                  * 1252: Moderate or heavy sleet showers
                  */
-                case 1069:
-                case 1204:
-                case 1207:
-                case 1249:
-                case 1252:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET;
-                    break;
+                1069 or 1249 or 1252 => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
 
                 /*
                  * 1072: Patchy freezing drizzle possible
+                 */
+                1072 => WeatherIcons.RAIN_MIX,
+
+                /* Thundery outbreaks possible */
+                1087 => isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING,
+
+                /*
+                 * 1114: Blowing snow
+                 * 1117: Blizzard
+                 * 1225: Heavy snow
+                 */
+                1114 or 1117 or 1225 => WeatherIcons.SNOW_WIND,
+
+                /*
+                 * 1213: Light snow
+                 * 1219: Moderate snow
+                 */
+                1213 or 1219 => WeatherIcons.SNOW,
+
+                /*
+                 * 1216: Patchy moderate snow
+                 * 1255: Light snow showers
+                 */
+                1216 or 1255 => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
+
+                /*
+                 * 1222: Patchy heavy snow
+                 * 1258: Moderate or heavy snow showers
+                 */
+                1222 or 1258 => isNight ? WeatherIcons.NIGHT_ALT_SNOW_WIND : WeatherIcons.DAY_SNOW_WIND,
+
+                /*
+                 * 1150: Patchy light drizzle
+                 * 1153: Light drizzle
+                 * 1183: Light rain
+                 */
+                1150 or 1153 or 1183 => WeatherIcons.SPRINKLE,
+
+                /*
                  * 1168: Freezing drizzle
                  * 1171: Heavy freezing drizzle
                  * 1198: Light freezing rain
                  * 1201: Moderate or heavy freezing rain
                  */
-                case 1072:
-                case 1168:
-                case 1171:
-                case 1198:
-                case 1201:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
-                    break;
-
-                /* Thundery outbreaks possible */
-                case 1087:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING;
-                    break;
+                1168 or 1171 or 1198 or 1201 => WeatherIcons.RAIN_MIX,
 
                 /*
-                 * 1114: Blowing snow
-                 * 1117: Blizzard
-                 * 1222: Patchy heavy snow
-                 * 1225: Heavy snow
-                 */
-                case 1114:
-                case 1117:
-                case 1222:
-                case 1225:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW_WIND : WeatherIcons.DAY_SNOW_WIND;
-                    break;
-
-                /*
-                 * 1150: Patchy light drizzle
-                 * 1153: Light drizzle
                  * 1180: Patchy light rain
-                 * 1183: Light rain
                  */
-                case 1150:
-                case 1153:
-                case 1180:
-                case 1183:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE;
-                    break;
+                1180 => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
+
+                /*
+                 * 1189: Moderate rain
+                 */
+                1189 => WeatherIcons.RAIN,
 
                 /*
                  * 1192: Heavy rain at times
-                 * 1195: Heavy rain
                  * 1243: Moderate or heavy rain shower
                  * 1246: Torrential rain shower
                  */
-                case 1192:
-                case 1195:
-                case 1243:
-                case 1246:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND;
-                    break;
+                1192 or 1243 or 1246 => isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND,
+
+                /*
+                 * 1195: Heavy rain
+                 */
+                1195 => WeatherIcons.RAIN_WIND,
+
+                /*
+                 * 1204: Light sleet
+                 * 1207: Moderate or heavy sleet
+                 */
+                1204 or 1207 => WeatherIcons.SLEET,
 
                 /*
                  * 1237: Ice pellets
+                 */
+                1237 => WeatherIcons.HAIL,
+
+                /* 1240: Light rain shower */
+                1240 => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
+
+                /*
                  * 1261: Light showers of ice pellets
                  * 1264: Moderate or heavy showers of ice pellets
                  */
-                case 1237:
-                case 1261:
-                case 1264:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL;
-                    break;
-
-                /* Light rain shower */
-                case 1240:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS;
-                    break;
+                1261 or 1264 => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
 
                 /* Patchy light rain with thunder */
-                case 1273:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_STORM_SHOWERS : WeatherIcons.DAY_STORM_SHOWERS;
-                    break;
+                1273 => isNight ? WeatherIcons.NIGHT_ALT_STORM_SHOWERS : WeatherIcons.DAY_STORM_SHOWERS,
 
                 /* Moderate or heavy rain with thunder */
-                case 1276:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM;
-                    break;
+                1276 => WeatherIcons.THUNDERSTORM,
 
                 /*
                  * 1279: Patchy light snow with thunder
                  * 1282: Moderate or heavy snow with thunder
                  */
-                case 1279:
-                case 1282:
-                    WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM;
-                    break;
-            }
+                1279 or 1282 => isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM,
+
+                _ => string.Empty,
+            };
 
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
