@@ -113,6 +113,11 @@ namespace SimpleWeather.WeatherApi
 
             var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.WeatherApi] : GetAPIKey();
 
+            if (String.IsNullOrWhiteSpace(key))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
             try
             {
                 this.CheckRateLimit();

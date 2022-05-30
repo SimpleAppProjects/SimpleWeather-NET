@@ -114,6 +114,11 @@ namespace SimpleWeather.TomorrowIO
 
             var key = Settings.UsePersonalKey ? Settings.APIKeys[WeatherData.WeatherAPI.TomorrowIo] : GetAPIKey();
 
+            if (String.IsNullOrWhiteSpace(key))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
             try
             {
                 this.CheckRateLimit();

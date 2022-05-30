@@ -73,6 +73,11 @@ namespace SimpleWeather.MeteoFrance
 
             string key = GetAPIKey();
 
+            if (String.IsNullOrWhiteSpace(key))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
             try
             {
                 this.CheckRateLimit();
