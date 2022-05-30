@@ -85,7 +85,7 @@ namespace SimpleWeather.WeatherData
             }
             condition = forecast.description.ToPascalCase();
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(string.Format(CultureInfo.InvariantCulture, "{0}_{1}", forecast.daylight, forecast.iconName));
+                   .GetWeatherIcon(Equals(forecast.daylight, "N") || forecast.iconName.StartsWith("night_"), forecast.iconName);
 
             // Extras
             extras = new ForecastExtras();
@@ -151,7 +151,7 @@ namespace SimpleWeather.WeatherData
             condition = hr_forecast.description.ToPascalCase();
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(string.Format(CultureInfo.InvariantCulture, "{0}_{1}", hr_forecast.daylight, hr_forecast.iconName));
+                   .GetWeatherIcon(Equals(hr_forecast.daylight, "N") || hr_forecast.iconName.StartsWith("night_"), hr_forecast.iconName);
 
             if (int.TryParse(hr_forecast.windDirection, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windDeg))
                 wind_degrees = windDeg;
@@ -265,7 +265,7 @@ namespace SimpleWeather.WeatherData
             }
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(string.Format("{0}_{1}", observation.daylight, observation.iconName));
+                   .GetWeatherIcon(Equals(observation.daylight, "N") || observation.iconName.StartsWith("night_"), observation.iconName);
 
             if (todaysForecast?.extras?.uv_index.HasValue == true)
                 uv = new UV(todaysForecast.extras.uv_index.Value);
