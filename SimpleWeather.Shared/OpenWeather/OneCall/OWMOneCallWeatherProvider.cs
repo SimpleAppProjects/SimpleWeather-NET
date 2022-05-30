@@ -383,10 +383,10 @@ namespace SimpleWeather.OpenWeather.OneCall
 
         public override string GetWeatherIcon(bool isNight, string icon)
         {
-            string WeatherIcon = string.Empty;
-
             if (icon == null)
                 return WeatherIcons.NA;
+
+            string WeatherIcon = string.Empty;
 
             switch (icon.Substring(0, 3))
             {
@@ -486,7 +486,7 @@ namespace SimpleWeather.OpenWeather.OneCall
                 // haze
                 case "721":
                     if (isNight)
-                        WeatherIcon = WeatherIcons.WINDY;
+                        WeatherIcon = WeatherIcons.NIGHT_FOG;
                     else
                         WeatherIcon = WeatherIcons.DAY_HAZE;
                     break;
@@ -591,9 +591,6 @@ namespace SimpleWeather.OpenWeather.OneCall
                 // strong wind
                 case "957":
                     WeatherIcon = WeatherIcons.STRONG_WIND;
-                    break;
-
-                default:
                     break;
             }
 
