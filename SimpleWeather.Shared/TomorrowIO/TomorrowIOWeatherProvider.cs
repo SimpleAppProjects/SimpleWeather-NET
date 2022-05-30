@@ -130,7 +130,7 @@ namespace SimpleWeather.TomorrowIO
                 var requestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", location_query)
-                    .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex")
+                    .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
                     .AppendQueryParameter("timesteps", "current,1h,1d")
                     .AppendQueryParameter("units", "metric")
                     .AppendQueryParameter("timezone", "UTC")

@@ -59,6 +59,12 @@ namespace SimpleWeather.TomorrowIO
         public int? weatherCodeDay { get; set; }
         public int? weatherCodeFullDay { get; set; }
         public int? weatherCodeNight { get; set; }
+        public double? particulateMatter25 { get; set; }
+        public double? pollutantCO { get; set; }
+        public double? pollutantNO2 { get; set; }
+        public double? pollutantSO2 { get; set; }
+        public double? pollutantO3 { get; set; }
+        public double? particulateMatter10 { get; set; }
     }
 
     /*

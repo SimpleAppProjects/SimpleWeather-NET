@@ -29,6 +29,7 @@ namespace SimpleWeather.WeatherData
                 {
                     forecast = new List<Forecast>(timeline.intervals.Length);
                     txt_forecast = new List<TextForecast>(timeline.intervals.Length);
+                    aqi_forecast = new List<AirQuality>(timeline.intervals.Length);
 
                     foreach (var interval in timeline.intervals)
                     {
@@ -39,6 +40,11 @@ namespace SimpleWeather.WeatherData
 
                         forecast.Add(new Forecast(interval));
                         txt_forecast.Add(new TextForecast(interval));
+
+                        if (interval.values.epaIndex.HasValue)
+                        {
+                            aqi_forecast.Add(new AirQuality(interval));
+                        }
                     }
                 }
                 else if (timeline.timestep == "current")
@@ -65,7 +71,7 @@ namespace SimpleWeather.WeatherData
                 }
             }
 
-            if ((!condition.high_f.HasValue || !condition.high_c.HasValue) && forecast.Count > 0)
+            if ((!condition.high_f.HasValue || !condition.high_c.HasValue || condition.high_f == condition.low_f) && forecast.Count > 0)
             {
                 condition.high_f = forecast[0].high_f;
                 condition.high_c = forecast[0].high_c;
@@ -335,7 +341,73 @@ namespace SimpleWeather.WeatherData
 
             airQuality = new AirQuality()
             {
-                index = item.values.epaIndex
+                index = item.values.epaIndex,
+                pm25 = item.values.particulateMatter25.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQIPM2_5(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
+                pm10 = item.values.particulateMatter10.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQIPM10(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
+                o3 = item.values.pollutantO3.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQIO3(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
+                no2 = item.values.pollutantNO2.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQINO2(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
+                co = item.values.pollutantCO.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQICO(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
+                so2 = item.values.pollutantSO2.Let(it =>
+                {
+                    try
+                    {
+                        return AirQualityUtils.AQISO2(it.Value);
+                    }
+                    catch
+                    {
+                        return new int?();
+                    }
+                }),
             };
 
             pollen = new Pollen()
@@ -458,6 +530,81 @@ namespace SimpleWeather.WeatherData
                 qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
                 qpf_rain_mm = item.values.precipitationIntensity.Value;
             }
+        }
+    }
+
+    public partial class AirQuality
+    {
+        public AirQuality(TomorrowIO.Interval item)
+        {
+            date = item.startTime.ToUniversalTime().Date;
+            pm25 = item.values.particulateMatter25.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQIPM2_5(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            pm10 = item.values.particulateMatter10.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQIPM10(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            o3 = item.values.pollutantO3.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQIO3(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            no2 = item.values.pollutantNO2.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQINO2(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            co = item.values.pollutantCO.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQICO(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            so2 = item.values.pollutantSO2.Let(it =>
+            {
+                try
+                {
+                    return AirQualityUtils.AQISO2(it.Value);
+                }
+                catch
+                {
+                    return new int?();
+                }
+            });
+            index = item.values.epaIndex ?? this.GetIndexFromData();
         }
     }
 }
