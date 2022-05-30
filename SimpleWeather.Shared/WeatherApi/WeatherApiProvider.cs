@@ -317,7 +317,7 @@ namespace SimpleWeather.WeatherApi
                 1006 => WeatherIcons.CLOUDY,
 
                 /* Overcast */
-                1009 => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
+                1009 => WeatherIcons.OVERCAST,
 
                 /*
                  * 1030: Mist

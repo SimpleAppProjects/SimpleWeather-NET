@@ -419,7 +419,7 @@ namespace SimpleWeather.OpenWeather
                 // haze
                 case "721":
                     if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_FOG;
+                        WeatherIcon = WeatherIcons.NIGHT_HAZE;
                     else
                         WeatherIcon = WeatherIcons.DAY_HAZE;
                     break;
@@ -503,7 +503,7 @@ namespace SimpleWeather.OpenWeather
                 // hot
                 case "904":
                     if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                        WeatherIcon = WeatherIcons.NIGHT_HOT;
                     else
                         WeatherIcon = WeatherIcons.DAY_HOT;
                     break;

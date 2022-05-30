@@ -447,14 +447,14 @@ namespace SimpleWeather.NWS
             else if (icon.Contains("hot"))
             {
                 if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_CLEAR;
+                    WeatherIcon = WeatherIcons.NIGHT_HOT;
                 else
                     WeatherIcon = WeatherIcons.DAY_HOT;
             }
-            else if (icon.Contains("haze"))
+            else if (icon.Contains("haze") || icon.Equals("hz.png") || icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
             {
                 if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_FOG;
+                    WeatherIcon = WeatherIcons.NIGHT_HAZE;
                 else
                     WeatherIcon = WeatherIcons.DAY_HAZE;
             }
@@ -540,7 +540,7 @@ namespace SimpleWeather.NWS
             else if (icon.Contains("wind_skc") || icon.Contains("wind_few") || icon.Contains("wind"))
             {
                 if (isNight)
-                    WeatherIcon = WeatherIcons.WINDY;
+                    WeatherIcon = WeatherIcons.NIGHT_WINDY;
                 else
                     WeatherIcon = WeatherIcons.DAY_WINDY;
             }
@@ -626,13 +626,13 @@ namespace SimpleWeather.NWS
             {
                 return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
             }
-            else if (icon.Contains("tsra"))
-            {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
-            }
             else if (icon.Contains("hurricane") || icon.Contains("hur_warn") || icon.Contains("hur_watch"))
             {
                 return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hurricane");
+            }
+            else if (icon.Contains("tsra"))
+            {
+                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
             }
             else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") || icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") || icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
             {

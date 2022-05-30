@@ -26,6 +26,7 @@ namespace SimpleWeather.Utils
             switch (icon)
             {
                 // Rain
+                case WeatherIcons.DAY_HAIL:
                 case WeatherIcons.DAY_RAIN:
                 case WeatherIcons.DAY_RAIN_MIX:
                 case WeatherIcons.DAY_RAIN_WIND:
@@ -63,6 +64,7 @@ namespace SimpleWeather.Utils
                 case WeatherIcons.DAY_STORM_SHOWERS:
                 case WeatherIcons.DAY_SLEET_STORM:
                 case WeatherIcons.STORM_SHOWERS:
+                case WeatherIcons.SLEET_STORM:
                 case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
                 case WeatherIcons.NIGHT_ALT_SLEET_STORM:
                 case WeatherIcons.HAIL:
@@ -81,7 +83,9 @@ namespace SimpleWeather.Utils
                 case WeatherIcons.DAY_FOG:
                 case WeatherIcons.DAY_HAZE:
                 case WeatherIcons.FOG:
+                case WeatherIcons.HAZE:
                 case WeatherIcons.NIGHT_FOG:
+                case WeatherIcons.NIGHT_HAZE:
                 case WeatherIcons.SMOG:
                 case WeatherIcons.SMOKE:
                     backgroundCode = WeatherBackground.FOG;
@@ -90,12 +94,13 @@ namespace SimpleWeather.Utils
                 // Snow / Snow Showers/Storm
                 case WeatherIcons.DAY_SNOW:
                 case WeatherIcons.DAY_SNOW_THUNDERSTORM:
+                case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW:
                 case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                case WeatherIcons.SNOW:
-                case WeatherIcons.SNOW_WIND:
-                case WeatherIcons.DAY_SNOW_WIND:
                 case WeatherIcons.NIGHT_ALT_SNOW_WIND:
+                case WeatherIcons.SNOW:
+                case WeatherIcons.SNOW_THUNDERSTORM:
+                case WeatherIcons.SNOW_WIND:
                     backgroundCode = WeatherBackground.SNOW;
                     break;
 
@@ -113,6 +118,9 @@ namespace SimpleWeather.Utils
                 case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
                 case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
+                case WeatherIcons.DAY_SUNNY_OVERCAST:
+                case WeatherIcons.NIGHT_OVERCAST:
+                case WeatherIcons.OVERCAST:
                     if (wm.IsNight(weather))
                         backgroundCode = WeatherBackground.MOSTLYCLOUDY_NIGHT;
                     else
@@ -120,7 +128,7 @@ namespace SimpleWeather.Utils
                     break;
 
                 // Partly Cloudy
-                case WeatherIcons.DAY_SUNNY_OVERCAST:
+                case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
                     if (wm.IsNight(weather))
                         backgroundCode = WeatherBackground.PARTLYCLOUDY_NIGHT;
@@ -133,7 +141,14 @@ namespace SimpleWeather.Utils
                 case WeatherIcons.NIGHT_CLEAR:
                 case WeatherIcons.SNOWFLAKE_COLD:
                 case WeatherIcons.DAY_HOT:
+                case WeatherIcons.NIGHT_HOT:
+                case WeatherIcons.HOT:
+                case WeatherIcons.DAY_WINDY:
+                case WeatherIcons.NIGHT_WINDY:
                 case WeatherIcons.WINDY:
+                case WeatherIcons.DAY_LIGHT_WIND:
+                case WeatherIcons.NIGHT_LIGHT_WIND:
+                case WeatherIcons.LIGHT_WIND:
                 case WeatherIcons.STRONG_WIND:
                 default:
                     // Set background based using sunset/rise times

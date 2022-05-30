@@ -253,38 +253,28 @@ namespace SimpleWeather.WeatherUnlocked
                 => WeatherIcons.CLOUDY,
 
                 3 /* Overcast skies */
-                => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
+                => WeatherIcons.OVERCAST,
 
                 10 or // Mist
                 45 or // Fog
-                49 /* Freezing fog */
+                49 // Freezing fog
                 => WeatherIcons.FOG,
 
                 21 or // Patchy rain possible
                 50 or // Patchy light drizzle
-                51 or // Light drizzle
-                60 or // Patchy light rain
-                61 /* Light rain */
-                => WeatherIcons.SPRINKLE,
+                60 // Patchy light rain
+                => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
 
                 22 or // Patchy snow possible
-                70 or // Patchy snow possible
-                71 or // Light snow
-                72 or // Patchy moderate snow
-                73 /* Moderate snow */
-                => WeatherIcons.SNOW,
+                70 or // Patchy light snow
+                72 // Patchy moderate snow
+                => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
 
-                23 or // Patchy sleet possible
-                68 or // Light sleet
-                69 /* Moderate or heavy sleet */
-                => WeatherIcons.SLEET,
+                23 // Patchy sleet possible
+                => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
 
-                24 or // Patchy freezing drizzle possible
-                56 or // Freezing drizzle
-                57 or // Heavy freezing drizzle
-                66 or // Light freezing rain
-                67 /* Moderate or heavy freezing rain */
-                => WeatherIcons.RAIN_MIX,
+                24 // Patchy freezing drizzle possible
+                => isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX,
 
                 29 /* Thundery outbreaks possible */
                 => isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING,
@@ -292,41 +282,66 @@ namespace SimpleWeather.WeatherUnlocked
                 38 or // Blowing snow
                 39 or // Blizzard
                 74 or // Patchy heavy snow
-                75 /* Heavy snow */  => WeatherIcons.SNOW_WIND,
+                75 // Heavy snow
+                => WeatherIcons.SNOW_WIND,
+
+                51 or // Light drizzle
+                61 // Light rain
+                => WeatherIcons.SPRINKLE,
+
+                56 or // Freezing drizzle
+                57 or // Heavy freezing drizzle
+                66 or // Light freezing rain
+                67 // Moderate or heavy freezing rain
+                => WeatherIcons.RAIN_MIX,
 
                 62 or // Moderate rain at times
                 63 /* Moderate rain */
                 => WeatherIcons.RAIN,
 
                 64 or // Heavy rain at times
-                65 /* Heavy rain */ => WeatherIcons.RAIN_WIND,
+                65 // Heavy rain
+                => WeatherIcons.RAIN_WIND,
 
-                79 /* Ice pellets*/  => WeatherIcons.HAIL,
+                68 or // Light sleet
+                69 // Moderate or heavy sleet
+                => WeatherIcons.SLEET,
+
+                71 or // Light snow
+                73 // Moderate snow
+                => WeatherIcons.SNOW,
+
+                79 // Ice pellets
+                => WeatherIcons.HAIL,
 
                 80 or // Light rain shower
                 81 or // Moderate or heavy rain shower
-                82 /* Torrential rain shower */
+                82 // Torrential rain shower
                 => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
 
                 83 or // Light sleet showers
-                84 /* Moderate or heavy sleet showers*/
+                84 // Moderate or heavy sleet showers
                 => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
 
                 85 or // Light snow showers
-                86 /* Moderate or heavy snow showers */
+                86 // Moderate or heavy snow showers
                 => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
 
                 87 or // Light showers of ice pellets
                 88 /* Moderate or heavy showers of ice pellets */
                 => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
 
-                91 or // Patchy light rain with thunder
-                92 /* Moderate or heavy rain with thunder */
+                91 // Patchy light rain with thunder
                 => isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM,
 
-                93 or // Patchy light snow with thunder
-                94 /* Moderate or heavy snow with thunder */
+                92 /* Moderate or heavy rain with thunder */
+                => WeatherIcons.THUNDERSTORM,
+
+                93 // Patchy light snow with thunder
                 => isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM,
+
+                94 /* Moderate or heavy snow with thunder */
+                => WeatherIcons.SNOW_THUNDERSTORM,
 
                 _ => WeatherIcons.NA,
             };

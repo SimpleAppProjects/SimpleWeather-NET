@@ -304,7 +304,7 @@ namespace SimpleWeather.AccuWeather
                 /* 7: Cloudy */
                 7 => WeatherIcons.CLOUDY,
                 /* 8: Dreary (Overcast) */
-                8 => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
+                8 => WeatherIcons.OVERCAST,
                 /* 11: Fog */
                 11 => WeatherIcons.FOG,
                 /* 12: Showers */
@@ -346,7 +346,7 @@ namespace SimpleWeather.AccuWeather
                  */
                 26 or 29 => WeatherIcons.RAIN_MIX,
                 /* 30: Hot */
-                30 => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_HOT,
+                30 => isNight ? WeatherIcons.NIGHT_HOT : WeatherIcons.DAY_HOT,
                 /* 32: Windy */
                 32 => WeatherIcons.WINDY,
                 /* 33: Clear */
@@ -358,7 +358,7 @@ namespace SimpleWeather.AccuWeather
                  */
                 34 or 35 or 36 => WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY,
                 /* 37: Hazy Moonlight */
-                37 => WeatherIcons.NIGHT_FOG,
+                37 => WeatherIcons.NIGHT_HAZE,
                 /* 38: Mostly Cloudy */
                 38 => WeatherIcons.NIGHT_ALT_CLOUDY,
                 /*

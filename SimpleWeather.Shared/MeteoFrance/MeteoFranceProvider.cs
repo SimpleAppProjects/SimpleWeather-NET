@@ -326,7 +326,7 @@ namespace SimpleWeather.MeteoFrance
                 WeatherIcon = WeatherIcons.CLOUDY;
             } else if (icon.StartsWith("p4")) {
                 // Haze
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_HAZE;
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_HAZE : WeatherIcons.DAY_HAZE;
             } else if (icon.StartsWith("p5")) {
                 // Fog
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG;

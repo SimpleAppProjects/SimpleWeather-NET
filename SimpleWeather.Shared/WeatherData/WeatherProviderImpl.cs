@@ -232,133 +232,166 @@ namespace SimpleWeather.WeatherData
         /// <returns>A localized weather condition string (if available); returns NULL if provider already supports localized data</returns>
         public virtual string GetWeatherCondition(String icon)
         {
-            switch (icon)
+            return icon switch
             {
-                case WeatherIcons.DAY_SUNNY:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sunny");
-                case WeatherIcons.NIGHT_CLEAR:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clear");
-                case WeatherIcons.DAY_SUNNY_OVERCAST:
-                case WeatherIcons.NIGHT_OVERCAST:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_overcast");
-                case WeatherIcons.DAY_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
-                case WeatherIcons.DAY_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY:
-                case WeatherIcons.CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
-                case WeatherIcons.DAY_CLOUDY_HIGH:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy");
-                case WeatherIcons.DAY_SPRINKLE:
-                case WeatherIcons.NIGHT_ALT_SPRINKLE:
-                case WeatherIcons.SPRINKLE:
-                case WeatherIcons.DAY_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_SHOWERS:
-                case WeatherIcons.SHOWERS:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
-                case WeatherIcons.DAY_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                case WeatherIcons.THUNDERSTORM:
-                case WeatherIcons.DAY_STORM_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
-                case WeatherIcons.DAY_SLEET:
-                case WeatherIcons.NIGHT_ALT_SLEET:
-                case WeatherIcons.SLEET:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet");
-                case WeatherIcons.DAY_SNOW:
-                case WeatherIcons.NIGHT_ALT_SNOW:
-                case WeatherIcons.SNOW:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow");
-                case WeatherIcons.DAY_SNOW_WIND:
-                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                case WeatherIcons.SNOW_WIND:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow");
-                case WeatherIcons.DAY_SNOW_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms");
-                case WeatherIcons.HAIL:
-                case WeatherIcons.DAY_HAIL:
-                case WeatherIcons.NIGHT_ALT_HAIL:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hail");
-                case WeatherIcons.DAY_RAIN:
-                case WeatherIcons.NIGHT_ALT_RAIN:
-                case WeatherIcons.RAIN:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain");
-                case WeatherIcons.DAY_FOG:
-                case WeatherIcons.NIGHT_FOG:
-                case WeatherIcons.FOG:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog");
-                case WeatherIcons.DAY_SLEET_STORM:
-                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms");
-                case WeatherIcons.SNOWFLAKE_COLD:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cold");
-                case WeatherIcons.DAY_HOT:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hot");
-                case WeatherIcons.DAY_HAZE:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_haze");
-                case WeatherIcons.SMOKE:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smoky");
-                case WeatherIcons.SANDSTORM:
-                case WeatherIcons.DUST:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_dust");
-                case WeatherIcons.TORNADO:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tornado");
-                case WeatherIcons.DAY_RAIN_MIX:
-                case WeatherIcons.NIGHT_ALT_RAIN_MIX:
-                case WeatherIcons.RAIN_MIX:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
-                case WeatherIcons.DAY_WINDY:
-                case WeatherIcons.WINDY:
-                case WeatherIcons.DAY_CLOUDY_WINDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                case WeatherIcons.DAY_CLOUDY_GUSTS:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
-                case WeatherIcons.STRONG_WIND:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_windy");
-                case WeatherIcons.HURRICANE:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
-                default:
-                    return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable");
-            }
+                WeatherIcons.DAY_SUNNY 
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sunny"),
+
+                WeatherIcons.NIGHT_CLEAR
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clear"),
+
+                WeatherIcons.DAY_SUNNY_OVERCAST or
+                WeatherIcons.NIGHT_OVERCAST or
+                WeatherIcons.OVERCAST
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_overcast"),
+
+                WeatherIcons.DAY_PARTLY_CLOUDY or
+                WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy"),
+
+                WeatherIcons.DAY_CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY or
+                WeatherIcons.CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_HIGH or
+                WeatherIcons.DAY_CLOUDY_HIGH
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy"),
+
+                WeatherIcons.DAY_SPRINKLE or
+                WeatherIcons.NIGHT_ALT_SPRINKLE or
+                WeatherIcons.SPRINKLE or
+                WeatherIcons.DAY_SHOWERS or
+                WeatherIcons.NIGHT_ALT_SHOWERS or
+                WeatherIcons.SHOWERS
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers"),
+
+                WeatherIcons.DAY_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_THUNDERSTORM or
+                WeatherIcons.THUNDERSTORM or 
+                WeatherIcons.DAY_STORM_SHOWERS or
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
+
+                WeatherIcons.DAY_SLEET or
+                WeatherIcons.NIGHT_ALT_SLEET or
+                WeatherIcons.SLEET 
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
+
+                WeatherIcons.DAY_SNOW or
+                WeatherIcons.NIGHT_ALT_SNOW or
+                WeatherIcons.SNOW
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow"),
+
+                WeatherIcons.DAY_SNOW_WIND or
+                WeatherIcons.NIGHT_ALT_SNOW_WIND or
+                WeatherIcons.SNOW_WIND
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow"),
+
+                WeatherIcons.DAY_SNOW_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or
+                WeatherIcons.SNOW_THUNDERSTORM
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms"),
+
+                WeatherIcons.HAIL or
+                WeatherIcons.DAY_HAIL or
+                WeatherIcons.NIGHT_ALT_HAIL
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hail"),
+
+                WeatherIcons.DAY_RAIN or
+                WeatherIcons.NIGHT_ALT_RAIN or
+                WeatherIcons.RAIN
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain"),
+
+                WeatherIcons.DAY_FOG or 
+                WeatherIcons.NIGHT_FOG or
+                WeatherIcons.FOG
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog"),
+
+                WeatherIcons.DAY_SLEET_STORM or
+                WeatherIcons.NIGHT_ALT_SLEET_STORM or
+                WeatherIcons.SLEET_STORM
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms"),
+
+                WeatherIcons.SNOWFLAKE_COLD
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cold"),
+
+                WeatherIcons.DAY_HOT or
+                WeatherIcons.NIGHT_HOT or
+                WeatherIcons.HOT
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hot"),
+
+                WeatherIcons.DAY_HAZE or
+                WeatherIcons.NIGHT_HAZE or
+                WeatherIcons.HAZE
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_haze"),
+
+                WeatherIcons.SMOKE
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smoky"),
+
+                WeatherIcons.SANDSTORM or
+                WeatherIcons.DUST
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_dust"),
+
+                WeatherIcons.TORNADO
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tornado"),
+
+                WeatherIcons.DAY_RAIN_MIX or
+                WeatherIcons.NIGHT_ALT_RAIN_MIX or
+                WeatherIcons.RAIN_MIX
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsnow"),
+
+                WeatherIcons.DAY_WINDY or
+                WeatherIcons.NIGHT_WINDY or
+                WeatherIcons.WINDY or
+                WeatherIcons.DAY_CLOUDY_WINDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_WINDY or
+                WeatherIcons.CLOUDY_WINDY or
+                WeatherIcons.DAY_CLOUDY_GUSTS or
+                WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
+                WeatherIcons.CLOUDY_GUSTS or
+                WeatherIcons.STRONG_WIND
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_windy"),
+
+                WeatherIcons.HURRICANE
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm"),
+
+                _ => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable"),
+            };
         }
 
         // Used for current condition
         public virtual bool IsNight(Weather weather)
         {
-            bool isNight = false;
-
-            String icon = weather.condition.icon;
-
-            switch (icon)
+            bool isNight = weather.condition.icon switch
             {
-                case WeatherIcons.NIGHT_ALT_HAIL:
-                case WeatherIcons.NIGHT_ALT_LIGHTNING:
-                case WeatherIcons.NIGHT_ALT_RAIN:
-                case WeatherIcons.NIGHT_ALT_RAIN_MIX:
-                case WeatherIcons.NIGHT_ALT_RAIN_WIND:
-                case WeatherIcons.NIGHT_ALT_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_SLEET:
-                case WeatherIcons.NIGHT_ALT_SLEET_STORM:
-                case WeatherIcons.NIGHT_ALT_SNOW:
-                case WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM:
-                case WeatherIcons.NIGHT_ALT_SNOW_WIND:
-                case WeatherIcons.NIGHT_ALT_SPRINKLE:
-                case WeatherIcons.NIGHT_ALT_STORM_SHOWERS:
-                case WeatherIcons.NIGHT_ALT_THUNDERSTORM:
-                case WeatherIcons.NIGHT_FOG:
-                case WeatherIcons.NIGHT_CLEAR:
-                case WeatherIcons.NIGHT_OVERCAST:
-                case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_WINDY:
-                case WeatherIcons.NIGHT_ALT_CLOUDY_HIGH:
-                    isNight = true;
-                    break;
-            }
+                WeatherIcons.NIGHT_CLEAR or
+                WeatherIcons.NIGHT_ALT_CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
+                WeatherIcons.NIGHT_ALT_CLOUDY_WINDY or
+                WeatherIcons.NIGHT_FOG or
+                WeatherIcons.NIGHT_ALT_HAIL or
+                WeatherIcons.NIGHT_HAZE or
+                WeatherIcons.NIGHT_ALT_LIGHTNING or
+                WeatherIcons.NIGHT_ALT_RAIN or
+                WeatherIcons.NIGHT_ALT_RAIN_MIX or
+                WeatherIcons.NIGHT_ALT_RAIN_WIND or
+                WeatherIcons.NIGHT_ALT_SHOWERS or
+                WeatherIcons.NIGHT_ALT_SLEET or
+                WeatherIcons.NIGHT_ALT_SLEET_STORM or
+                WeatherIcons.NIGHT_ALT_SNOW or
+                WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_SNOW_WIND or
+                WeatherIcons.NIGHT_ALT_SPRINKLE or
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS or
+                WeatherIcons.NIGHT_OVERCAST or
+                WeatherIcons.NIGHT_ALT_THUNDERSTORM or
+                WeatherIcons.NIGHT_WINDY or
+                WeatherIcons.NIGHT_HOT or
+                WeatherIcons.NIGHT_ALT_CLOUDY_HIGH or
+                WeatherIcons.NIGHT_LIGHT_WIND or
+                WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY => true,
+
+                _ => false
+            };
 
             return isNight;
         }

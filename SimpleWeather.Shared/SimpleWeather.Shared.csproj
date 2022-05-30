@@ -313,7 +313,6 @@
     <Compile Include="UWP\Utils\FeatureSettings.cs" />
     <Compile Include="UWP\Utils\FileUtils.cs" />
     <Compile Include="UWP\Utils\Settings.cs" />
-    <Compile Include="UWP\WeatherData\WeatherProviderImpl.cs" />
     <Compile Include="ComponentModel\IViewModel.cs" />
     <Compile Include="WeatherApi\ForecastRootobject.cs" />
     <Compile Include="WeatherApi\LocationData.cs" />
