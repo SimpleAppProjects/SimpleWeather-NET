@@ -109,7 +109,7 @@ namespace SimpleWeather.UWP.Controls
                 var now = DateTime.Now.Date;
                 var enumerable = forecasts?.WhereNot(item => item.date?.CompareTo(now) < 0);
                 AQIGraphData = CreateGraphData(enumerable);
-                AQIForecastData = enumerable?.Select(it => new AirQualityViewModel(it))?.ToList();
+                AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
             });
         }
 
