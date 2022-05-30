@@ -490,17 +490,11 @@ namespace SimpleWeather.NWS
             }
             else if (icon.Contains("fzra") || icon.Contains("rain_sleet") || icon.Contains("rain_snow") || icon.Contains("ra_sn"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN_MIX;
-                else
-                    WeatherIcon = WeatherIcons.DAY_RAIN_MIX;
+                WeatherIcon = WeatherIcons.RAIN_MIX;
             }
             else if (icon.Contains("sleet") || icon.Contains("raip"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_ALT_SLEET;
-                else
-                    WeatherIcon = WeatherIcons.DAY_SLEET;
+                WeatherIcon = WeatherIcons.SLEET;
             }
             else if (icon.Contains("minus_ra"))
             {
@@ -511,24 +505,15 @@ namespace SimpleWeather.NWS
             }
             else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") || icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN;
-                else
-                    WeatherIcon = WeatherIcons.DAY_RAIN;
+                WeatherIcon = WeatherIcons.RAIN;
             }
             else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") || icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW;
-                else
-                    WeatherIcon = WeatherIcons.DAY_SNOW;
+                WeatherIcon = WeatherIcons.SNOW;
             }
             else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") || icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_ALT_HAIL;
-                else
-                    WeatherIcon = WeatherIcons.DAY_HAIL;
+                WeatherIcon = WeatherIcons.HAIL;
             }
             else if (icon.Contains("wind_bkn") || icon.Contains("wind_ovc") || icon.Contains("wind_sct"))
             {
@@ -546,10 +531,7 @@ namespace SimpleWeather.NWS
             }
             else if (icon.Contains("ovc"))
             {
-                if (isNight)
-                    WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
-                else
-                    WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                WeatherIcon = WeatherIcons.OVERCAST;
             }
             else if (icon.Contains("sct") || icon.Contains("few"))
             {
@@ -593,6 +575,11 @@ namespace SimpleWeather.NWS
         {
             if (icon == null)
                 return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+
+            if (!icon.Contains(".png") && !icon.Contains("weather.gov"))
+            {
+                return base.GetWeatherCondition(icon);
+            }
 
             if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") || icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
             {
@@ -694,14 +681,6 @@ namespace SimpleWeather.NWS
             {
                 return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clearsky");
             }
-            else if (icon.Contains("day"))
-            {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sunny");
-            }
-            else if (icon.Contains("night"))
-            {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clearsky");
-            }
             else
             {
                 return base.GetWeatherCondition(icon);
@@ -715,41 +694,53 @@ namespace SimpleWeather.NWS
             bool isNight = base.IsNight(weather);
 
             // The following cases can be present at any time of day
-            if (WeatherIcons.SNOWFLAKE_COLD.Equals(weather.condition.icon))
+            switch (weather.condition.icon)
             {
-                if (!isNight)
-                {
-                    // Fallback to sunset/rise time just in case
-                    NodaTime.LocalTime sunrise;
-                    NodaTime.LocalTime sunset;
-                    if (weather.astronomy != null)
+                case WeatherIcons.SNOWFLAKE_COLD:
+                case WeatherIcons.SMOKE:
+                case WeatherIcons.DUST:
+                case WeatherIcons.HURRICANE:
+                case WeatherIcons.TORNADO:
+                case WeatherIcons.RAIN_MIX:
+                case WeatherIcons.SLEET:
+                case WeatherIcons.RAIN:
+                case WeatherIcons.SNOW:
+                case WeatherIcons.HAIL:
+                case WeatherIcons.OVERCAST:
+                    if (!isNight)
                     {
-                        sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                        sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                        // Fallback to sunset/rise time just in case
+                        NodaTime.LocalTime sunrise;
+                        NodaTime.LocalTime sunset;
+                        if (weather.astronomy != null)
+                        {
+                            sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                            sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                        }
+                        else
+                        {
+                            sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                            sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                        }
+
+                        NodaTime.DateTimeZone tz = null;
+
+                        if (weather.location.tz_long != null)
+                        {
+                            tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                        }
+
+                        if (tz == null)
+                            tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+
+                        var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
+                                    .InZone(tz).TimeOfDay;
+
+                        // Determine whether its night using sunset/rise times
+                        if (now < sunrise || now > sunset)
+                            isNight = true;
                     }
-                    else
-                    {
-                        sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                        sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
-                    }
-
-                    NodaTime.DateTimeZone tz = null;
-
-                    if (weather.location.tz_long != null)
-                    {
-                        tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
-                    }
-
-                    if (tz == null)
-                        tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
-
-                    var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                                .InZone(tz).TimeOfDay;
-
-                    // Determine whether its night using sunset/rise times
-                    if (now < sunrise || now > sunset)
-                        isNight = true;
-                }
+                    break;
             }
 
             return isNight;
