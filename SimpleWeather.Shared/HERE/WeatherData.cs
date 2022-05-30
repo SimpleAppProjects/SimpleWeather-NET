@@ -212,9 +212,24 @@ namespace SimpleWeather.WeatherData
         public TextForecast(HERE.Forecast forecast)
         {
             date = forecast.utcTime;
-            fcttext = String.Format(CultureInfo.InvariantCulture, "{0} - {1} {2}",
-                forecast.weekday,
-                forecast.description.ToPascalCase(), forecast.beaufortDescription.ToPascalCase());
+            fcttext = new StringBuilder(
+                String.Format(
+                    CultureInfo.InvariantCulture, "{0} - {1}",
+                    forecast.weekday,
+                    forecast.description.ToPascalCase()
+                )
+            ).Apply(sb =>
+            {
+                if (!String.IsNullOrWhiteSpace(forecast.beaufortDescription) && !Equals(forecast.beaufortDescription, "*"))
+                {
+                    sb.Append($". {forecast.beaufortDescription}");
+                }
+
+                if (!String.IsNullOrWhiteSpace(forecast.airDescription) && !Equals(forecast.airDescription, "*"))
+                {
+                    sb.Append($". {forecast.airDescription}");
+                }
+            }).ToString();
             fcttext_metric = fcttext;
         }
     }
