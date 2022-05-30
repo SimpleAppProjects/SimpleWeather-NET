@@ -29058,6 +29058,15 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("grassIndex"), 20},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weedIndex"), 21},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("epaIndex"), 22},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weatherCodeDay"), 23},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weatherCodeFullDay"), 24},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weatherCodeNight"), 25},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("particulateMatter25"), 26},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pollutantCO"), 27},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pollutantNO2"), 28},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pollutantSO2"), 29},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("pollutantO3"), 30},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("particulateMatter10"), 31},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -29085,6 +29094,15 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("grassIndex"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weedIndex"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("epaIndex"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weatherCodeDay"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weatherCodeFullDay"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weatherCodeNight"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("particulateMatter25"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pollutantCO"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pollutantNO2"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pollutantSO2"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("pollutantO3"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("particulateMatter10"),
                 
             };
         }
@@ -29144,6 +29162,24 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
             formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.weedIndex, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[22]);
             formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.epaIndex, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[23]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.weatherCodeDay, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[24]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.weatherCodeFullDay, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[25]);
+            formatterResolver.GetFormatterWithVerify<int?>().Serialize(ref writer, value.weatherCodeNight, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[26]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.particulateMatter25, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[27]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pollutantCO, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[28]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pollutantNO2, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[29]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pollutantSO2, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[30]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.pollutantO3, formatterResolver);
+            writer.WriteRaw(this.____stringByteKeys[31]);
+            formatterResolver.GetFormatterWithVerify<double?>().Serialize(ref writer, value.particulateMatter10, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -29202,6 +29238,24 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
             var __weedIndex__b__ = false;
             var __epaIndex__ = default(int?);
             var __epaIndex__b__ = false;
+            var __weatherCodeDay__ = default(int?);
+            var __weatherCodeDay__b__ = false;
+            var __weatherCodeFullDay__ = default(int?);
+            var __weatherCodeFullDay__b__ = false;
+            var __weatherCodeNight__ = default(int?);
+            var __weatherCodeNight__b__ = false;
+            var __particulateMatter25__ = default(double?);
+            var __particulateMatter25__b__ = false;
+            var __pollutantCO__ = default(double?);
+            var __pollutantCO__b__ = false;
+            var __pollutantNO2__ = default(double?);
+            var __pollutantNO2__b__ = false;
+            var __pollutantSO2__ = default(double?);
+            var __pollutantSO2__b__ = false;
+            var __pollutantO3__ = default(double?);
+            var __pollutantO3__b__ = false;
+            var __particulateMatter10__ = default(double?);
+            var __particulateMatter10__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -29309,6 +29363,42 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
                         __epaIndex__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
                         __epaIndex__b__ = true;
                         break;
+                    case 23:
+                        __weatherCodeDay__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __weatherCodeDay__b__ = true;
+                        break;
+                    case 24:
+                        __weatherCodeFullDay__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __weatherCodeFullDay__b__ = true;
+                        break;
+                    case 25:
+                        __weatherCodeNight__ = formatterResolver.GetFormatterWithVerify<int?>().Deserialize(ref reader, formatterResolver);
+                        __weatherCodeNight__b__ = true;
+                        break;
+                    case 26:
+                        __particulateMatter25__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __particulateMatter25__b__ = true;
+                        break;
+                    case 27:
+                        __pollutantCO__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __pollutantCO__b__ = true;
+                        break;
+                    case 28:
+                        __pollutantNO2__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __pollutantNO2__b__ = true;
+                        break;
+                    case 29:
+                        __pollutantSO2__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __pollutantSO2__b__ = true;
+                        break;
+                    case 30:
+                        __pollutantO3__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __pollutantO3__b__ = true;
+                        break;
+                    case 31:
+                        __particulateMatter10__ = formatterResolver.GetFormatterWithVerify<double?>().Deserialize(ref reader, formatterResolver);
+                        __particulateMatter10__b__ = true;
+                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -29342,6 +29432,15 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.TomorrowIO
             if(__grassIndex__b__) ____result.grassIndex = __grassIndex__;
             if(__weedIndex__b__) ____result.weedIndex = __weedIndex__;
             if(__epaIndex__b__) ____result.epaIndex = __epaIndex__;
+            if(__weatherCodeDay__b__) ____result.weatherCodeDay = __weatherCodeDay__;
+            if(__weatherCodeFullDay__b__) ____result.weatherCodeFullDay = __weatherCodeFullDay__;
+            if(__weatherCodeNight__b__) ____result.weatherCodeNight = __weatherCodeNight__;
+            if(__particulateMatter25__b__) ____result.particulateMatter25 = __particulateMatter25__;
+            if(__pollutantCO__b__) ____result.pollutantCO = __pollutantCO__;
+            if(__pollutantNO2__b__) ____result.pollutantNO2 = __pollutantNO2__;
+            if(__pollutantSO2__b__) ____result.pollutantSO2 = __pollutantSO2__;
+            if(__pollutantO3__b__) ____result.pollutantO3 = __pollutantO3__;
+            if(__particulateMatter10__b__) ____result.particulateMatter10 = __particulateMatter10__;
 
             return ____result;
         }
