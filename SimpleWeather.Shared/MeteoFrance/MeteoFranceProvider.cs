@@ -249,83 +249,94 @@ namespace SimpleWeather.MeteoFrance
             if (icon == null)
                 return WeatherIcons.NA;
 
-            if (icon.StartsWith("p10") || icon.StartsWith("p11"))
-            {
+            if (icon.StartsWith("p10bis")) {
+                // Sprinkle
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE;
+            } else if (icon.StartsWith("p10")) {
                 // Light rain?
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS;
-            }
-            else if (icon.StartsWith("p12") || icon.StartsWith("p13") || icon.StartsWith("p14") || icon.StartsWith("p15"))
-            {
-                // Scattered Rain / Showers / Rain
+            } else if (icon.StartsWith("p11")) {
+                // Light rain?
+                WeatherIcon = WeatherIcons.SHOWERS;
+            } else if (icon.StartsWith("p12")) {
+                // Rain
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN;
-            }
-            else if (icon.StartsWith("p16") || icon.StartsWith("p24") || icon.StartsWith("p25"))
-            {
-                // Thundershowers / T-storms
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_STORM_SHOWERS : WeatherIcons.DAY_STORM_SHOWERS;
-            }
-            else if (icon.StartsWith("p17") || icon.StartsWith("p18") || icon.StartsWith("p19") || icon.StartsWith("p20"))
-            {
+            } else if (icon.StartsWith("p13") || icon.StartsWith("p14")) {
+                // Rain
+                WeatherIcon = WeatherIcons.RAIN;
+            } else if (icon.StartsWith("p15")) {
+                // Heavy Rain
+                WeatherIcon = WeatherIcons.RAIN_WIND;
+            } else if (icon.StartsWith("p16") || icon.StartsWith("p25")) {
+                // Storm Showers
+                WeatherIcon = WeatherIcons.STORM_SHOWERS;
+            } else if (icon.StartsWith("p17") || icon.StartsWith("p21")) {
+                // Flurries?
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
+            } else if (icon.StartsWith("p18") || icon.StartsWith("p22")) {
+                // Flurries?
+                WeatherIcon = WeatherIcons.SNOW;
+            } else if (icon.StartsWith("p19")) {
                 // Sleet / Rain mix
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
-            }
-            else if (icon.StartsWith("p21") || icon.StartsWith("p22") || icon.StartsWith("p23"))
-            {
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
+            } else if (icon.StartsWith("p20")) {
+                // Sleet / Rain mix
+                WeatherIcon = WeatherIcons.RAIN_MIX;
+            } else if (icon.StartsWith("p21") || icon.StartsWith("p22") || icon.StartsWith("p23")) {
                 // Snow
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
-            }
-            else if (icon.StartsWith("p26") || icon.StartsWith("p27") || icon.StartsWith("p28") || icon.StartsWith("p29"))
-            {
+            } else if (icon.StartsWith("p23")) {
+                // Heavy Snow
+                WeatherIcon = WeatherIcons.SNOW_WIND;
+            } else if (icon.StartsWith("p24") || icon.StartsWith("p25")) {
+                // Thundershowers / T-storms
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_STORM_SHOWERS : WeatherIcons.DAY_STORM_SHOWERS;
+            } else if (icon.StartsWith("p26") || icon.StartsWith("p28")) {
                 // Thunder
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING;
-            }
-            else if (icon.StartsWith("p30"))
-            {
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING;
+            } else if (icon.StartsWith("p27") || icon.StartsWith("p29")) {
+                // Thunder
+                WeatherIcon = WeatherIcons.LIGHTNING;
+            } else if (icon.StartsWith("p30")) {
                 // Snow/Thunder
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM;
-            }
-            else if (icon.StartsWith("p32") || icon.StartsWith("p33"))
-            {
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM;
+            } else if (icon.StartsWith("p32") || icon.StartsWith("p33")) {
                 // Tornado
                 WeatherIcon = WeatherIcons.TORNADO;
-            }
-            else if (icon.StartsWith("p34"))
-            {
+            } else if (icon.StartsWith("p34")) {
                 // Hurricane
                 WeatherIcon = WeatherIcons.HURRICANE;
-            }
-            else if (icon == "p1" || icon == "p1j" || icon == "p1n" || icon.StartsWith("p1bis"))
-            {
+            } else if (icon == "p1" || icon == "p1j" || icon == "p1n") {
                 // Clear
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
-            }
-            else if (icon.StartsWith("p2"))
-            {
+            } else if (icon.StartsWith("p1bis") || icon.StartsWith("p2")) {
                 // Partly Cloudy
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
-            }
-            else if (icon.StartsWith("p3"))
-            {
+                WeatherIcon =
+                    isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY;
+            } else if (icon.StartsWith("p2")) {
                 // Mostly Cloudy
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY;
-            }
-            else if (icon.StartsWith("p4") || icon.StartsWith("p5"))
-            {
+            } else if (icon.StartsWith("p3")) {
+                // Mostly Cloudy
+                WeatherIcon = WeatherIcons.CLOUDY;
+            } else if (icon.StartsWith("p4")) {
                 // Haze
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_HAZE;
-            }
-            else if (icon.StartsWith("p6") || icon.StartsWith("p7") || icon.StartsWith("p8"))
-            {
+            } else if (icon.StartsWith("p5")) {
                 // Fog
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG;
-            }
-            else if (icon.StartsWith("p9"))
-            {
+            } else if (icon.StartsWith("p6") || icon.StartsWith("p7") || icon.StartsWith("p8")) {
+                // Fog / Heavy Fog
+                WeatherIcon = WeatherIcons.FOG;
+            } else if (icon.StartsWith("p9")) {
                 // Sprinkle
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE;
-            }
-            else
-            {
+                WeatherIcon = WeatherIcons.SPRINKLE;
+            } else {
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
             }
 
