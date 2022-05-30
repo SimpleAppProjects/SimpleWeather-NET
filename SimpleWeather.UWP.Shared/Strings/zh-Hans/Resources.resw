@@ -713,11 +713,10 @@ Fuzzy</comment>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
-  <data name="precipitation_minutely_starting_text_format" xml:space="preserve">
-    <value>大约%1$s后将开始下雨</value>
-    <comment>Fuzzy</comment>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>大约{0}后将开始下雨</value>
   </data>
-  <data name="precipitation_minutely_stopping_text_format" xml:space="preserve">
-    <value>雨将在大约%1$s后停止</value>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>雨将在大约{0}后停止</value>
   </data>
 </root>

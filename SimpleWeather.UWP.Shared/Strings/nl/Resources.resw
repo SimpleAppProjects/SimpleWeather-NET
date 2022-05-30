@@ -694,10 +694,10 @@ Fuzzy</comment>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
-  <data name="precipitation_minutely_starting_text_format" xml:space="preserve">
-    <value>De regen zal over ongeveer %1$s beginnen</value>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>De regen zal over ongeveer {0} beginnen</value>
   </data>
-  <data name="precipitation_minutely_stopping_text_format" xml:space="preserve">
-    <value>Regen zal stoppen in ongeveer %1$s</value>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Regen zal stoppen in ongeveer {0}</value>
   </data>
 </root>

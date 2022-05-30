@@ -40,70 +40,63 @@ namespace SimpleWeather.UWP.Notifications
         {
             if (!Settings.PoPChanceNotificationEnabled || !Settings.WeatherLoaded || location == null) return;
 
-            await CreateToastCollection();
-            var toastNotifier = await ToastNotificationManager.GetDefault()
-                .GetToastNotifierForToastCollectionIdAsync(TAG);
-
             var now = DateTimeOffset.UtcNow;
             var lastPostTime = Settings.LastPoPChanceNotificationTime;
 
             // We already posted today; post any chance tomorrow
             if (now.Date == lastPostTime.ToUniversalTime().Date) return;
 
+            var offsetNow = now.ToOffset(location.tz_offset);
+
             // Get the forecast for the next 12 hours
-            var nowHour = now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour);
-            var hrForecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, nowHour.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
-
-            if (hrForecasts == null || hrForecasts.Count <= 0) return;
-
-            // Find the next hour with a 60% or higher chance of precipitation
-            var hrf = hrForecasts?.FirstOrDefault(h => h?.extras?.pop >= 60);
-
-            // Proceed if within the next 3hrs
-            if (hrf == null || (hrf.date - nowHour).TotalHours > 3) return;
-
-            var toastContent = await CreateToastContent(location, hrf, nowHour);
-
-            // Set a unique ID for the notification
-            var notID = location.query;
-
-            // Create the toast notification
-            var toastNotif = new ToastNotification(toastContent.GetXml())
+            var minForecasts = (await Settings.GetWeatherForecastData(location.query))?.min_forecast?.Where(it =>
             {
-                Group = TAG,
-                Tag = notID,
-                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
-            };
+                return it.date >= offsetNow;
+            });
 
-            // And send the notification
-            toastNotifier.Show(toastNotif);
+            await CreateToastCollection();
+            var toastNotifier = await ToastNotificationManager.GetDefault()
+                .GetToastNotifierForToastCollectionIdAsync(TAG);
+
+            if (!await CreateMinutelyToastContent(toastNotifier, location, minForecasts, offsetNow))
+            {
+                // If not fallback to PoP% notification
+                var nowHour = offsetNow.Trim(TimeSpan.TicksPerHour);
+                var hrForecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, nowHour.ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture));
+
+                if (!await CreatePoPToastContent(toastNotifier, location, hrForecasts, offsetNow))
+                {
+                    return;
+                }
+            }
 
             Settings.LastPoPChanceNotificationTime = now;
         }
 
-        private static async Task<ToastContent> CreateToastContent(LocationData location, HourlyForecast forecast, DateTimeOffset now)
+        private static async Task<bool> CreatePoPToastContent(ToastNotifier toastNotifier, LocationData location, IEnumerable<HourlyForecast> hrForecasts, DateTimeOffset now)
         {
+            if (hrForecasts?.Count() <= 0) return false;
+
+            // Find the next hour with a 60% or higher chance of precipitation
+            var forecast = hrForecasts?.FirstOrDefault(h => h?.extras?.pop >= 60);
+
+            // Proceed if within the next 3hrs
+            if (forecast == null || (forecast.date - now.Trim(TimeSpan.TicksPerHour)).TotalHours > 3) return false;
+
             var wim = SharedModule.Instance.WeatherIconsManager;
 
             // Should be within 0-3 hours
-            var duration = (forecast.date - now).TotalMinutes;
-            string duraStr;
-            if (duration <= 60)
+            var duration = (int)Math.Round((forecast.date - now).TotalMinutes);
+            string duraStr = duration switch
             {
-                duraStr = string.Format(App.ResLoader.GetString("Precipitation_NextHour_Text_Format"), forecast.extras.pop);
-            }
-            else if (duration < 120)
-            {
-                duraStr = string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                    App.ResLoader.GetString("refresh_30min").Replace("30", ((int)Math.Round(duration)).ToString()));
-            }
-            else
-            {
-                duraStr = string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                    App.ResLoader.GetString("refresh_12hrs").Replace("12", ((int)Math.Round(duration / 60)).ToString()));
-            }
+                <= 60 => string.Format(App.ResLoader.GetString("Precipitation_NextHour_Text_Format"), forecast.extras.pop),
+                < 120 => string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
+                                            App.ResLoader.GetString("refresh_30min").Replace("30", duration.ToString())),
+                _ => string.Format(App.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
+                                            App.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
+            };
 
-            return new ToastContent()
+            var toastContent = new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
@@ -133,6 +126,115 @@ namespace SimpleWeather.UWP.Notifications
                     { "data", await JSONParser.SerializerAsync(location) },
                 }.ToString()
             };
+
+            // Set a unique ID for the notification
+            var notID = location.query;
+
+            // Create the toast notification
+            var toastNotif = new ToastNotification(toastContent.GetXml())
+            {
+                Group = TAG,
+                Tag = notID,
+                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
+            };
+
+            // And send the notification
+            toastNotifier.Show(toastNotif);
+
+            return true;
+        }
+
+        private static async Task<bool> CreateMinutelyToastContent(ToastNotifier toastNotifier, LocationData location, IEnumerable<MinutelyForecast> minForecasts, DateTimeOffset now)
+        {
+            if (minForecasts?.Count() <= 0) return false;
+
+            var wim = SharedModule.Instance.WeatherIconsManager;
+
+            var isRainingMinute = minForecasts.FirstOrDefault(it =>
+            {
+                return (now.Trim(TimeSpan.TicksPerMinute) - it.date.Trim(TimeSpan.TicksPerMinute)).Duration().TotalMinutes <= 5 && it.rain_mm > 0;
+            });
+
+            MinutelyForecast minute = null;
+
+            if (isRainingMinute != null)
+            {
+                // Find minute where rain stops
+                minute = minForecasts.FirstOrDefault(it =>
+                {
+                    return it.date.Trim(TimeSpan.TicksPerMinute) > isRainingMinute.date && it.rain_mm <= 0;
+                });
+            }
+            else
+            {
+                // Find minute where rain starts
+                minute = minForecasts.FirstOrDefault(it =>
+                {
+                    return it.date.Trim(TimeSpan.TicksPerMinute) > now.Trim(TimeSpan.TicksPerMinute) && it.rain_mm > 0;
+                });
+            }
+
+            if (minute == null) return false;
+
+            var formatStr = isRainingMinute switch
+            {
+                not null => App.ResLoader.GetString("Precipitation_Minutely_Stopping_Text_Format"),
+                _ => App.ResLoader.GetString("Precipitation_Minutely_Starting_Text_Format")
+            };
+
+            var duration = (int)Math.Round((minute.date - now).Duration().TotalMinutes);
+            string duraStr = duration switch
+            {
+                < 120 => string.Format(formatStr, App.ResLoader.GetString("refresh_30min").Replace("30", duration.ToString())),
+                _ => string.Format(formatStr, App.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
+            };
+
+            var toastContent = new ToastContent()
+            {
+                Visual = new ToastVisual()
+                {
+                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
+                    BindingGeneric = new ToastBindingGeneric()
+                    {
+                        Children =
+                        {
+                            new AdaptiveText()
+                            {
+                                Text = duraStr
+                            }
+                        },
+                        AppLogoOverride = new ToastGenericAppLogo()
+                        {
+                            Source = wim.GetWeatherIconURI(WeatherIcons.UMBRELLA, false)
+                        },
+                        Attribution = new ToastGenericAttributionText()
+                        {
+                            Text = location.name
+                        }
+                    }
+                },
+                Launch = new QueryString()
+                {
+                    { "action", "view-weather" },
+                    { "data", await JSONParser.SerializerAsync(location) },
+                }.ToString()
+            };
+
+            // Set a unique ID for the notification
+            var notID = location.query;
+
+            // Create the toast notification
+            var toastNotif = new ToastNotification(toastContent.GetXml())
+            {
+                Group = TAG,
+                Tag = notID,
+                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
+            };
+
+            // And send the notification
+            toastNotifier.Show(toastNotif);
+
+            return true;
         }
     }
 }
