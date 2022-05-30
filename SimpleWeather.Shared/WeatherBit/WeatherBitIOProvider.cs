@@ -327,10 +327,10 @@ namespace SimpleWeather.WeatherBit
 
         public override string GetWeatherIcon(bool isNight, string icon)
         {
-            string WeatherIcon = string.Empty;
-
             if (icon == null)
                 return WeatherIcons.NA;
+
+            string WeatherIcon = string.Empty;
 
             if (icon.StartsWith("t01") || icon.StartsWith("t02") || icon.StartsWith("t03"))
             {
@@ -350,45 +350,57 @@ namespace SimpleWeather.WeatherBit
                 // d01: 300	Light Drizzle
                 // d02: 301	Drizzle
                 // d03: 302	Heavy Drizzle
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE;
+                WeatherIcon = WeatherIcons.SPRINKLE;
             }
             else if (icon.StartsWith("r01") || icon.StartsWith("r02") || icon.StartsWith("u00"))
             {
                 // r01: 500	Light Rain
                 // r02: 501	Moderate Rain
                 // u00: 900	Unknown Precipitation
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN : WeatherIcons.DAY_RAIN;
+                WeatherIcon = WeatherIcons.RAIN;
             }
             else if (icon.StartsWith("r03"))
             {
                 // r03: 502	Heavy Rain
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_WIND : WeatherIcons.DAY_RAIN_WIND;
+                WeatherIcon = WeatherIcons.RAIN_WIND;
             }
-            else if (icon.StartsWith("f01") || icon.StartsWith("s04"))
+            else if (icon.StartsWith("f01"))
             {
                 // f01: 511	Freezing rain
-                // s04: 610	Mix snow/rain
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
+                WeatherIcon = WeatherIcons.RAIN_MIX;
             }
-            else if (icon.StartsWith("r04") || icon.StartsWith("r05") || icon.StartsWith("r06"))
+            else if (icon.StartsWith("r04") || icon.StartsWith("r06"))
             {
                 // r04: 520	Light shower rain
-                // r05: 521	Shower rain
                 // r06: 522	Heavy shower rain
+                WeatherIcon = WeatherIcons.SHOWERS;
+            }
+            else if (icon.StartsWith("r05"))
+            {
+                // r05: 521	Shower rain
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS;
             }
-            else if (icon.StartsWith("s01") || icon.StartsWith("s02") || icon.StartsWith("s03") || icon.StartsWith("s06"))
+            else if (icon.StartsWith("s01"))
             {
                 // s01: 600	Light snow | 621 Snow shower
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
+            }
+            else if (icon.StartsWith("s02") || icon.StartsWith("s03") || icon.StartsWith("s06"))
+            {
                 // s02: 601	Snow | 622 Heavy snow shower
                 // s03: 602	Heavy Snow
                 // s06: 623	Flurries
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW;
+                WeatherIcon = WeatherIcons.SNOW;
+            }
+            else if (icon.StartsWith("s04"))
+            {
+                // s04: 610	Mix snow/rain
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX;
             }
             else if (icon.StartsWith("s05"))
             {
                 // s05: 611	Sleet | 612	Heavy sleet
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET;
+                WeatherIcon = WeatherIcons.SLEET;
             }
             else if (icon.StartsWith("a01") || icon.StartsWith("a05") || icon.StartsWith("a06"))
             {
@@ -405,7 +417,7 @@ namespace SimpleWeather.WeatherBit
             else if (icon.StartsWith("a03"))
             {
                 // a03: 721	Haze
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_HAZE;
+                WeatherIcon = isNight ? WeatherIcons.NIGHT_HAZE : WeatherIcons.DAY_HAZE;
             }
             else if (icon.StartsWith("a04"))
             {
@@ -417,7 +429,7 @@ namespace SimpleWeather.WeatherBit
                 // c01: 800	Clear sky
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
             }
-            else if (icon.StartsWith("c01") || icon.StartsWith("c02"))
+            else if (icon.StartsWith("c02"))
             {
                 // c02: 801	Few clouds
                 // c03: 802	Scattered clouds
@@ -431,12 +443,7 @@ namespace SimpleWeather.WeatherBit
             else if (icon.StartsWith("c04"))
             {
                 // c04: 804	Overcast clouds
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
-            }
-            else if (icon.StartsWith("u00"))
-            {
-                // c04: 804	Overcast clouds
-                WeatherIcon = isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST;
+                WeatherIcon = WeatherIcons.OVERCAST;
             }
             else
             {
