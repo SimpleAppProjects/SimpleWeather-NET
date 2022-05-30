@@ -333,11 +333,7 @@ namespace SimpleWeather.OpenWeather
                 case "210": // light thunderstorm
                 case "230": // thunderstorm w/ light drizzle
                 case "231": // thunderstorm w/ drizzle
-                case "531": // ragged shower rain
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_STORM_SHOWERS;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_STORM_SHOWERS;
+                    WeatherIcon = WeatherIcons.STORM_SHOWERS;
                     break;
 
                 case "211": // thunderstorm
@@ -345,15 +341,23 @@ namespace SimpleWeather.OpenWeather
                 case "221": // ragged thunderstorm
                 case "202": // thunderstorm w/ heavy rain
                 case "232": // thunderstorm w/ heavy drizzle
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_THUNDERSTORM;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_THUNDERSTORM;
+                    WeatherIcon = WeatherIcons.THUNDERSTORM;
                     break;
 
                 case "300": // light intensity drizzle
                 case "301": // drizzle
+                case "310": // light intensity drizzle rain
                 case "321": // shower drizzle
+                    WeatherIcon = WeatherIcons.SPRINKLE;
+                    break;
+
+                case "302": // heavy intensity drizzle
+                case "311": // drizzle rain
+                case "312": // heavy intensity drizzle rain
+                case "314": // heavy shower rain and drizzle
+                    WeatherIcon = WeatherIcons.RAIN;
+                    break;
+
                 case "500": // light rain
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_SPRINKLE;
@@ -361,21 +365,22 @@ namespace SimpleWeather.OpenWeather
                         WeatherIcon = WeatherIcons.DAY_SPRINKLE;
                     break;
 
-                case "302": // heavy intensity drizzle
-                case "311": // drizzle rain
-                case "312": // heavy intensity drizzle rain
-                case "314": // heavy shower rain and drizzle
                 case "501": // moderate rain
-                case "502": // heavy intensity rain
-                case "503": // very heavy rain
-                case "504": // extreme rain
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN;
                     else
                         WeatherIcon = WeatherIcons.DAY_RAIN;
                     break;
 
-                case "310": // light intensity drizzle rain
+                case "502": // heavy intensity rain
+                case "503": // very heavy rain
+                case "504": // extreme rain
+                    if (isNight)
+                        WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN_WIND;
+                    else
+                        WeatherIcon = WeatherIcons.DAY_RAIN_WIND;
+                    break;
+
                 case "511": // freezing rain
                 case "611": // sleet
                 case "612": // light shower sleet
@@ -383,37 +388,26 @@ namespace SimpleWeather.OpenWeather
                 case "615": // light rain and snow
                 case "616": // rain and snow
                 case "620": // light shower snow
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_RAIN_MIX;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_RAIN_MIX;
+                    WeatherIcon = WeatherIcons.RAIN_MIX;
                     break;
 
                 case "313": // shower rain and drizzle
                 case "520": // light intensity shower rain
                 case "521": // shower rain
                 case "522": // heavy intensity shower rain
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_SHOWERS;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_SHOWERS;
+                case "531": // ragged shower rain
+                    WeatherIcon = WeatherIcons.SHOWERS;
                     break;
 
                 case "600": // light snow
                 case "601": // snow
                 case "621": // shower snow
-                case "622": // heavy shower snow
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_SNOW;
+                    WeatherIcon = WeatherIcons.SNOW;
                     break;
 
                 case "602": // heavy snow
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_ALT_SNOW_WIND;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_SNOW_WIND;
+                case "622": // heavy shower snow
+                    WeatherIcon = WeatherIcons.SNOW_WIND;
                     break;
 
                 // smoke
@@ -434,12 +428,9 @@ namespace SimpleWeather.OpenWeather
                     WeatherIcon = WeatherIcons.DUST;
                     break;
 
-                case "741": // fog
                 case "701": // mist
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_FOG;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_FOG;
+                case "741": // fog
+                    WeatherIcon = WeatherIcons.FOG;
                     break;
 
                 // Sand
@@ -452,8 +443,8 @@ namespace SimpleWeather.OpenWeather
                     WeatherIcon = WeatherIcons.VOLCANO;
                     break;
 
-                // cloudy-gusts
-                case "771": // squalls
+                // squalls
+                case "771":
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS;
                     else
@@ -489,10 +480,7 @@ namespace SimpleWeather.OpenWeather
                     break;
 
                 case "804": // overcast clouds
-                    if (isNight)
-                        WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
-                    else
-                        WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
+                    WeatherIcon = WeatherIcons.OVERCAST;
                     break;
 
                 case "901": // tropical storm
@@ -550,11 +538,21 @@ namespace SimpleWeather.OpenWeather
             switch (weather.condition.icon)
             {
                 // The following cases can be present at any time of day
+                case WeatherIcons.STORM_SHOWERS:
+                case WeatherIcons.THUNDERSTORM:
+                case WeatherIcons.SPRINKLE:
+                case WeatherIcons.RAIN:
+                case WeatherIcons.RAIN_MIX:
+                case WeatherIcons.SHOWERS:
+                case WeatherIcons.SNOW:
+                case WeatherIcons.SNOW_WIND:
                 case WeatherIcons.SMOKE:
                 case WeatherIcons.DUST:
+                case WeatherIcons.FOG:
                 case WeatherIcons.SANDSTORM:
                 case WeatherIcons.VOLCANO:
                 case WeatherIcons.TORNADO:
+                case WeatherIcons.OVERCAST:
                 case WeatherIcons.HURRICANE:
                 case WeatherIcons.SNOWFLAKE_COLD:
                 case WeatherIcons.WINDY:
