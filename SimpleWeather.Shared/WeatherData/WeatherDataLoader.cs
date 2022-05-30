@@ -536,14 +536,17 @@ namespace SimpleWeather.WeatherData
         private async Task SaveWeatherData()
         {
             // Save location query
-            weather.query = location.query;
+            await weather?.Let(async w =>
+            {
+                w.query = location.query;
 
-            await Settings.SaveWeatherData(weather).ConfigureAwait(false);
+                await Settings.SaveWeatherData(w).ConfigureAwait(false);
+            });
         }
 
         private async Task SaveWeatherAlerts()
         {
-            if (weatherAlerts != null)
+            await weatherAlerts?.Let(async alerts =>
             {
                 // Check for previously saved alerts
                 var previousAlerts = await Settings.GetWeatherAlertData(location.query).ConfigureAwait(false);
@@ -553,7 +556,7 @@ namespace SimpleWeather.WeatherData
                     // If any previous alerts were flagged before as notified
                     // make sure to set them here as such
                     // bc notified flag gets reset when retrieving weatherdata
-                    foreach (WeatherAlert alert in weatherAlerts)
+                    foreach (WeatherAlert alert in alerts)
                     {
                         if (previousAlerts.FirstOrDefault(walert => walert.Equals(alert)) is WeatherAlert prevAlert)
                         {
@@ -563,14 +566,17 @@ namespace SimpleWeather.WeatherData
                     }
                 }
 
-                await Settings.SaveWeatherAlerts(location, weatherAlerts).ConfigureAwait(false);
-            };
+                await Settings.SaveWeatherAlerts(location, alerts).ConfigureAwait(false);
+            });
         }
 
         private async Task SaveWeatherForecasts()
         {
-            await Settings.SaveWeatherForecasts(new Forecasts(weather)).ConfigureAwait(false);
-            await Settings.SaveWeatherForecasts(location, weather?.hr_forecast?.Select(f => new HourlyForecasts(weather?.query, f))).ConfigureAwait(false);
+            await weather?.Let(async w =>
+            {
+                await Settings.SaveWeatherForecasts(new Forecasts(w)).ConfigureAwait(false);
+                await Settings.SaveWeatherForecasts(location, w?.hr_forecast?.Select(f => new HourlyForecasts(w?.query, f))).ConfigureAwait(false);
+            });
         }
     }
 }
