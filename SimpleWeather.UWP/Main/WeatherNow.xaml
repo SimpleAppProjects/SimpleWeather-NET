@@ -290,8 +290,8 @@
                         </StackPanel>
                         <localcontrols:IconControl
                             x:Name="WeatherBox"
-                            Width="96"
-                            Height="96"
+                            Width="108"
+                            Height="108"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"

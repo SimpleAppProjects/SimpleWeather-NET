@@ -51,16 +51,17 @@
             Header="{helpers:StringRes Name='label_moonphase'}"
             Style="{StaticResource SectionLabelStyle}">
             <StackPanel>
-                <StackPanel
+                <local:AlignableWrapPanel
                     x:Name="MoonStack"
                     Padding="15,0"
                     HorizontalAlignment="Center"
+                    HorizontalContentAlignment="Center"
                     Orientation="Horizontal">
                     <!--  New Moon  -->
                     <local:IconControl
                         x:Name="NewMoonIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0eb;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_NEW}" />
@@ -68,7 +69,7 @@
                     <local:IconControl
                         x:Name="WaxCresIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0d2;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}" />
@@ -76,7 +77,7 @@
                     <local:IconControl
                         x:Name="FirstQtrIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0d6;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_FIRST_QUARTER}" />
@@ -84,7 +85,7 @@
                     <local:IconControl
                         x:Name="WaxGibbousIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0d9;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}" />
@@ -92,7 +93,7 @@
                     <local:IconControl
                         x:Name="FullMoonIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:Style="{ThemeResource MoonStyle}"
                         d:WeatherIcon="&#xf0dd;"
                         Style="{ThemeResource DisabledMoonStyle}"
@@ -101,7 +102,7 @@
                     <local:IconControl
                         x:Name="WanGibbousIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0e0;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}" />
@@ -109,7 +110,7 @@
                     <local:IconControl
                         x:Name="ThirdQtrIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0e4;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_THIRD_QUARTER}" />
@@ -117,11 +118,11 @@
                     <local:IconControl
                         x:Name="WanCrescentIcon"
                         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="40"
+                        Height="50"
                         d:WeatherIcon="&#xf0e7;"
                         Style="{ThemeResource DisabledMoonStyle}"
                         WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_CRESCENT_3}" />
-                </StackPanel>
+                </local:AlignableWrapPanel>
                 <TextBlock
                     Padding="10"
                     HorizontalAlignment="Center"
@@ -187,15 +188,6 @@
                         <Setter Target="MoonriseText.FontSize" Value="16" />
                         <Setter Target="MoonsetIcon.Height" Value="35" />
                         <Setter Target="MoonsetText.FontSize" Value="16" />
-
-                        <Setter Target="NewMoonIcon.Height" Value="40" />
-                        <Setter Target="WaxCresIcon.Height" Value="40" />
-                        <Setter Target="FirstQtrIcon.Height" Value="40" />
-                        <Setter Target="WaxGibbousIcon.Height" Value="40" />
-                        <Setter Target="FullMoonIcon.Height" Value="40" />
-                        <Setter Target="WanGibbousIcon.Height" Value="40" />
-                        <Setter Target="ThirdQtrIcon.Height" Value="40" />
-                        <Setter Target="WanCrescentIcon.Height" Value="40" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -203,19 +195,10 @@
                         <toolkitTriggers:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="MoonriseIcon.Height" Value="40" />
+                        <Setter Target="MoonriseIcon.Height" Value="45" />
                         <Setter Target="MoonriseText.FontSize" Value="18" />
-                        <Setter Target="MoonsetIcon.Height" Value="40" />
+                        <Setter Target="MoonsetIcon.Height" Value="45" />
                         <Setter Target="MoonsetText.FontSize" Value="18" />
-
-                        <Setter Target="NewMoonIcon.Height" Value="50" />
-                        <Setter Target="WaxCresIcon.Height" Value="50" />
-                        <Setter Target="FirstQtrIcon.Height" Value="50" />
-                        <Setter Target="WaxGibbousIcon.Height" Value="50" />
-                        <Setter Target="FullMoonIcon.Height" Value="50" />
-                        <Setter Target="WanGibbousIcon.Height" Value="50" />
-                        <Setter Target="ThirdQtrIcon.Height" Value="50" />
-                        <Setter Target="WanCrescentIcon.Height" Value="50" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
