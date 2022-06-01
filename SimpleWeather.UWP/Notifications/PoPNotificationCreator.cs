@@ -150,7 +150,7 @@ namespace SimpleWeather.UWP.Notifications
 
             var wim = SharedModule.Instance.WeatherIconsManager;
 
-            var isRainingMinute = minForecasts.FirstOrDefault(it =>
+            var isRainingMinute = minForecasts?.FirstOrDefault(it =>
             {
                 return (now.Trim(TimeSpan.TicksPerMinute) - it.date.Trim(TimeSpan.TicksPerMinute)).Duration().TotalMinutes <= 5 && it.rain_mm > 0;
             });
@@ -160,7 +160,7 @@ namespace SimpleWeather.UWP.Notifications
             if (isRainingMinute != null)
             {
                 // Find minute where rain stops
-                minute = minForecasts.FirstOrDefault(it =>
+                minute = minForecasts?.FirstOrDefault(it =>
                 {
                     return it.date.Trim(TimeSpan.TicksPerMinute) > isRainingMinute.date && it.rain_mm <= 0;
                 });
@@ -168,7 +168,7 @@ namespace SimpleWeather.UWP.Notifications
             else
             {
                 // Find minute where rain starts
-                minute = minForecasts.FirstOrDefault(it =>
+                minute = minForecasts?.FirstOrDefault(it =>
                 {
                     return it.date.Trim(TimeSpan.TicksPerMinute) > now.Trim(TimeSpan.TicksPerMinute) && it.rain_mm > 0;
                 });
