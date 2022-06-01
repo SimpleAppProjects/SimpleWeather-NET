@@ -21,7 +21,7 @@ namespace SimpleWeather.Controls
         public BaseForecastItemViewModel()
         {
             int capacity = System.Enum.GetNames(typeof(WeatherDetailsType)).Length;
-            DetailExtras = new Dictionary<WeatherDetailsType, DetailItemViewModel>(capacity);
+            DetailExtras = new DetailsMap<WeatherDetailsType, DetailItemViewModel>(capacity);
         }
     }
 }
