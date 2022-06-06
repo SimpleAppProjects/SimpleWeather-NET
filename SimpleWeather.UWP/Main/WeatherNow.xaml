@@ -10,6 +10,7 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:muxm="using:Microsoft.UI.Xaml.Media"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
@@ -33,6 +34,8 @@
                         <Setter Property="Foreground" Value="White" />
                     </Style>
                     <Color x:Key="ForegroundColor">White</Color>
+                    <Color x:Key="AcrylicStackTintColor">#2C2C2C</Color>
+                    <x:Double x:Key="AcrylicStackTintOpacity">0.85</x:Double>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Style
@@ -40,6 +43,8 @@
                         BasedOn="{StaticResource HyperlinkButtonStyle}"
                         TargetType="HyperlinkButton" />
                     <Color x:Key="ForegroundColor">Black</Color>
+                    <Color x:Key="AcrylicStackTintColor">#FCFCFC</Color>
+                    <x:Double x:Key="AcrylicStackTintOpacity">1.0</x:Double>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -368,12 +373,14 @@
                     <StackPanel
                         Grid.Row="5"
                         Padding="16,4,16,0"
-                        CornerRadius="{ThemeResource OverlayCornerRadius}">
+                        CornerRadius="8,8,0,0">
                         <StackPanel.Background>
-                            <SolidColorBrush
+                            <muxm:AcrylicBrush
                                 x:Name="StackBackgroundBrush"
-                                Opacity="0.0"
-                                Color="{ThemeResource RegionColor}" />
+                                BackgroundSource="Backdrop"
+                                FallbackColor="{ThemeResource RegionColor}"
+                                TintColor="{ThemeResource AcrylicStackTintColor}"
+                                TintOpacity="{ThemeResource AcrylicStackTintOpacity}" />
                         </StackPanel.Background>
                         <StackPanel
                             Name="ForecastPanel"

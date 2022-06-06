@@ -1082,7 +1082,7 @@ namespace SimpleWeather.UWP.Main
                 ControlShadowOpacity = 1;
                 if (StackBackgroundBrush != null)
                 {
-                    StackBackgroundBrush.Opacity = 0.85;
+                    StackBackgroundBrush.Opacity = 1.0;
                 }
                 if (CurTemp != null)
                 {
