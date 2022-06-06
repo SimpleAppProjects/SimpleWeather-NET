@@ -100,7 +100,15 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         protected override void OnCreateCanvasResources(CanvasVirtualControl canvas)
         {
+            base.OnCreateCanvasResources(canvas);
+
+            // Calculate icon height
+            IconHeight = canvas.ConvertDipsToPixels(48, CanvasDpiRounding.Floor);
+
             backgroundGridWidth = canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor);
+
+            iconBottomMargin = canvas.ConvertDipsToPixels(4, CanvasDpiRounding.Floor);
+            bottomTextTopMargin = canvas.ConvertDipsToPixels(6, CanvasDpiRounding.Floor);
         }
 
         protected IconControl CreateIconControl(string WeatherIcon)
@@ -267,7 +275,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                             CenterY = IconHeight / 2
                         };
                         Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
-                        Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
+                        Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.25 - bottomTextTopMargin);
                         IconCanvas.Children.Add(control);
                     }
                 }
@@ -286,7 +294,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                 {
                     var control = IconCanvas.Children[i];
                     Windows.UI.Xaml.Controls.Canvas.SetLeft(control, xCoordinateList[i] - IconHeight / 2);
-                    Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.5 - bottomTextTopMargin);
+                    Windows.UI.Xaml.Controls.Canvas.SetTop(control, ViewHeight - IconHeight * 1.2 - bottomTextTopMargin);
                 }
             }
         }

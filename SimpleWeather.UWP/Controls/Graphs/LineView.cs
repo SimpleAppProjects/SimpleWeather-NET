@@ -369,15 +369,10 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         protected override void OnCreateCanvasResources(CanvasVirtualControl canvas)
         {
-            // Calculate icon height
-            IconHeight = canvas.ConvertDipsToPixels(36, CanvasDpiRounding.Floor);
+            base.OnCreateCanvasResources(canvas);
 
-            iconBottomMargin = canvas.ConvertDipsToPixels(4, CanvasDpiRounding.Floor);
-            bottomTextTopMargin = canvas.ConvertDipsToPixels(6, CanvasDpiRounding.Floor);
             DOT_INNER_CIR_RADIUS = canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
             DOT_OUTER_CIR_RADIUS = canvas.ConvertDipsToPixels(5, CanvasDpiRounding.Floor);
-
-            backgroundGridWidth = canvas.ConvertDipsToPixels(45, CanvasDpiRounding.Floor);
 
             LineStrokeWidth = canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
 
