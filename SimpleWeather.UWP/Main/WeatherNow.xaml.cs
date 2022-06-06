@@ -1119,6 +1119,11 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateControlTheme();
+        }
+
         private SolidColorBrush GetTempColorBrush()
         {
             string temp = WeatherView?.CurTemp;

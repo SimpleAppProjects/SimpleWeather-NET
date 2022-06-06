@@ -373,7 +373,8 @@
                     <StackPanel
                         Grid.Row="5"
                         Padding="16,4,16,0"
-                        CornerRadius="8,8,0,0">
+                        CornerRadius="8,8,0,0"
+                        Loaded="StackPanel_Loaded">
                         <StackPanel.Background>
                             <muxm:AcrylicBrush
                                 x:Name="StackBackgroundBrush"
