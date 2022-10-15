@@ -21,19 +21,20 @@ namespace SimpleWeather.Utils
 
                 var properties = new Dictionary<string, string>
                 {
-                    { KEY_PRIORITY, loggerLevel.ToString()?.ToUpper() },
-                    { KEY_MESSAGE, message },
-                    { KEY_EXCEPTION, exception?.ToString() }
+                    { KEY_PRIORITY, loggerLevel.ToString()?.ToUpper() }
                 };
 
                 if (exception != null)
                 {
                     Crashes.TrackError(exception, properties,
-                        ErrorAttachmentLog.AttachmentWithText(exception.ToString(), "exception.txt"));
+                        ErrorAttachmentLog.AttachmentWithText(message, "message.txt"),
+                        ErrorAttachmentLog.AttachmentWithText(exception.ToString(), "exception.txt"),
+                        ErrorAttachmentLog.AttachmentWithText(exception.InnerException?.ToString(), "inner_exception.txt"));
                 }
                 else
                 {
-                    Crashes.TrackError(new Exception(message), properties);
+                    Crashes.TrackError(new Exception(message), properties,
+                        ErrorAttachmentLog.AttachmentWithText(message, "message.txt"));
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
