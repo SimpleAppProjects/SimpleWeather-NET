@@ -357,7 +357,7 @@ namespace SimpleWeather.UWP.Main
             var preNavPageType = AppFrame.CurrentSourcePageType;
 
             // Only navigate if the selected page isn't currently loaded.
-            if (!(_page is null) && !Type.Equals(preNavPageType, _page))
+            if (_page is not null && !Type.Equals(preNavPageType, _page))
             {
                 object parameter = null;
 
@@ -374,7 +374,10 @@ namespace SimpleWeather.UWP.Main
                     }
                 }
 
-                AppFrame.Navigate(_page, parameter, transitionInfo);
+                if (AppFrame != null)
+                {
+                    AppFrame.Navigate(_page, parameter, transitionInfo);
+                }
             }
         }
 
