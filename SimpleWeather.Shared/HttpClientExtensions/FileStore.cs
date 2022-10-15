@@ -1,11 +1,11 @@
-﻿using System;
+﻿using CacheCow.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
-using CacheCow.Common;
 
-// HEAD: 0216b58a05b2363db210e992f6744833295986d1
+// HEAD: 887f111a1d5b24cff5d4e3422b6922fa9660ac64
 namespace CacheCow.Client.FileCacheStore
 {
     /// <summary>
@@ -97,16 +97,12 @@ namespace CacheCow.Client.FileCacheStore
             {
                 try
                 {
-                    switch (access)
+                    return access switch
                     {
-                        case FileAccess.Read:
-                            return File.OpenRead(filePath);
-                        default:
-                        case FileAccess.ReadWrite:
-                            return File.Open(filePath, FileMode.OpenOrCreate, access);
-                        case FileAccess.Write:
-                            return File.OpenWrite(filePath);
-                    }
+                        FileAccess.Read => File.OpenRead(filePath),
+                        FileAccess.Write => File.Open(filePath, FileMode.Create, access, FileShare.None),
+                        _ => File.Open(filePath, FileMode.OpenOrCreate, access),
+                    };
                 }
                 catch (IOException e)
                 {
