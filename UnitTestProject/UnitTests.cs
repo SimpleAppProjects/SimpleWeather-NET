@@ -2,8 +2,10 @@
 using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SimpleWeather;
 using SimpleWeather.Backgrounds;
 using SimpleWeather.Controls;
+using SimpleWeather.Extras;
 using SimpleWeather.Firebase;
 using SimpleWeather.HERE;
 using SimpleWeather.HttpClientExtensions;
@@ -37,6 +39,8 @@ namespace UnitTestProject
         [TestInitialize]
         public async Task Initialize()
         {
+            InitializeDependencies();
+
             await Settings.LoadIfNeededAsync();
 
             if (Settings.UsePersonalKey)
@@ -54,6 +58,17 @@ namespace UnitTestProject
                 Settings.UsePersonalKey = true;
                 WasUsingPersonalKey = false;
             }
+        }
+
+        private void InitializeDependencies()
+        {
+            SharedModule.Instance.Initialize();
+
+            ExtrasModule.Instance.Initialize();
+
+            // Build DI Services
+            ExtrasModule.Instance.ConfigureServices(SharedModule.Instance.GetServiceCollection());
+            SharedModule.Instance.BuildServiceProvider();
         }
 
         private Task<Weather> GetWeather(WeatherProviderImpl providerImpl)
