@@ -1,9 +1,4 @@
 ﻿using SimpleWeather.Keys;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls.Maps;
 
 namespace SimpleWeather.UWP.Radar
@@ -36,7 +31,7 @@ namespace SimpleWeather.UWP.Radar
 
         public void RemoveMapControl()
         {
-            _mapControl.TileSources.Clear();
+            _mapControl?.TileSources?.Clear();
             _mapControl = null;
         }
     }
