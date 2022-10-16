@@ -268,4 +268,10 @@
     <value>Llovizna</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="weather_lightwind" xml:space="preserve">
+    <value>Viento ligero</value>
+  </data>
+  <data name="weather_smog" xml:space="preserve">
+    <value>Niebla tóxica</value>
+  </data>
 </root>

@@ -703,4 +703,17 @@ Fuzzy</comment>
   <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Deszcz przestanie padać za około {0}</value>
   </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Nazwa użytkownika</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Hasło</value>
+  </data>
 </root>

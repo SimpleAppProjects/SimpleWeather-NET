@@ -699,4 +699,17 @@
   <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Rain will stop in about {0}</value>
   </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Password</value>
+  </data>
 </root>

@@ -716,4 +716,17 @@ Fuzzy</comment>
   <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>La lluvia cesará en unos {0}</value>
   </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Nombre de usuario</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Contraseña</value>
+  </data>
 </root>

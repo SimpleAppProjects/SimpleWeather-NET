@@ -260,4 +260,10 @@
   <data name="weather_drizzle" xml:space="preserve">
     <value>Motregen</value>
   </data>
+  <data name="weather_lightwind" xml:space="preserve">
+    <value>Lichte wind</value>
+  </data>
+  <data name="weather_smog" xml:space="preserve">
+    <value>Smog</value>
+  </data>
 </root>

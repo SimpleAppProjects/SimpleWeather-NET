@@ -262,4 +262,10 @@
   <data name="weather_drizzle" xml:space="preserve">
     <value>Bruine</value>
   </data>
+  <data name="weather_lightwind" xml:space="preserve">
+    <value>Vent léger</value>
+  </data>
+  <data name="weather_smog" xml:space="preserve">
+    <value>Smog</value>
+  </data>
 </root>

@@ -249,7 +249,7 @@
     <value>Czyste niebo</value>
   </data>
   <data name="weather_heavyrain" xml:space="preserve">
-    <value>Silny deszcz</value>
+    <value>Ulewny deszcz</value>
   </data>
   <data name="weather_mostlyclear" xml:space="preserve">
     <value>Przeważnie bezchmurnie</value>
@@ -259,5 +259,11 @@
   </data>
   <data name="weather_drizzle" xml:space="preserve">
     <value>Mżawka</value>
+  </data>
+  <data name="weather_lightwind" xml:space="preserve">
+    <value>Lekki wiatr</value>
+  </data>
+  <data name="weather_smog" xml:space="preserve">
+    <value>Smog</value>
   </data>
 </root>

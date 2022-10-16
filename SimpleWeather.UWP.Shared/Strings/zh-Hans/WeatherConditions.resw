@@ -294,4 +294,10 @@ Fuzzy</comment>
   <data name="weather_drizzle" xml:space="preserve">
     <value>细雨</value>
   </data>
+  <data name="weather_lightwind" xml:space="preserve">
+    <value>轻风</value>
+  </data>
+  <data name="weather_smog" xml:space="preserve">
+    <value>雾霾</value>
+  </data>
 </root>
