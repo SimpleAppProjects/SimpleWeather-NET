@@ -24,6 +24,8 @@ namespace SimpleWeather.WeatherData
 
         public virtual int HourlyForecastInterval => 1;
 
+        public virtual AuthType AuthType => AuthType.None;
+
         public virtual long GetRetryTime() => 5000;
 
         public virtual bool IsRegionSupported(string countryCode)
@@ -234,7 +236,7 @@ namespace SimpleWeather.WeatherData
         {
             return icon switch
             {
-                WeatherIcons.DAY_SUNNY 
+                WeatherIcons.DAY_SUNNY
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sunny"),
 
                 WeatherIcons.NIGHT_CLEAR
@@ -266,14 +268,14 @@ namespace SimpleWeather.WeatherData
 
                 WeatherIcons.DAY_THUNDERSTORM or
                 WeatherIcons.NIGHT_ALT_THUNDERSTORM or
-                WeatherIcons.THUNDERSTORM or 
+                WeatherIcons.THUNDERSTORM or
                 WeatherIcons.DAY_STORM_SHOWERS or
                 WeatherIcons.NIGHT_ALT_STORM_SHOWERS
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
 
                 WeatherIcons.DAY_SLEET or
                 WeatherIcons.NIGHT_ALT_SLEET or
-                WeatherIcons.SLEET 
+                WeatherIcons.SLEET
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
 
                 WeatherIcons.DAY_SNOW or
@@ -301,7 +303,7 @@ namespace SimpleWeather.WeatherData
                 WeatherIcons.RAIN
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain"),
 
-                WeatherIcons.DAY_FOG or 
+                WeatherIcons.DAY_FOG or
                 WeatherIcons.NIGHT_FOG or
                 WeatherIcons.FOG
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog"),

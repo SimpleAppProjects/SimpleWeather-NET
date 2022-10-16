@@ -1,22 +1,19 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
-using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.Web;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
-using System.Net.Http.Headers;
-using System.Net;
-using SimpleWeather.Extras;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Web;
 
 namespace SimpleWeather.WeatherApi
 {
@@ -42,6 +39,7 @@ namespace SimpleWeather.WeatherApi
         public override bool NeedsExternalAlertData => false;
         public override bool KeyRequired => true;
         public override int HourlyForecastInterval => 1;
+        public override AuthType AuthType => AuthType.ApiKey;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override async Task<bool> IsKeyValid(string key)

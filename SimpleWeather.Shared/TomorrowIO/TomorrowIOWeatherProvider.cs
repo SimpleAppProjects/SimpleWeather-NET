@@ -39,6 +39,7 @@ namespace SimpleWeather.TomorrowIO
         public override bool NeedsExternalAlertData => false;
         public override bool KeyRequired => true;
         public override int HourlyForecastInterval => 1;
+        public override AuthType AuthType => AuthType.ApiKey;
 
         public override long GetRetryTime()
         {

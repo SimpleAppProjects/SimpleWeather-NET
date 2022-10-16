@@ -1,5 +1,5 @@
-﻿using SimpleWeather.Icons;
-using SimpleWeather.Keys;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
@@ -8,14 +8,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.Web;
 using System.Net.Http;
 using System.Net.Sockets;
-using System.Net.Http.Headers;
-using SimpleWeather.Extras;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Web;
 
 namespace SimpleWeather.HERE
 {
@@ -43,6 +40,7 @@ namespace SimpleWeather.HERE
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => false;
         public override bool NeedsExternalAlertData => false;
+        public override AuthType AuthType => AuthType.Internal; // or AppID/AppCode
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<bool> IsKeyValid(string key)
@@ -307,7 +305,7 @@ namespace SimpleWeather.HERE
             string WeatherIcon = neutralIcon switch
             {
                 "sunny" or "clear" => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
- 
+
                 "mostly_sunny" or "passing_clounds" or "passing_clouds" or "more_sun_than_clouds" or
                 "mostly_clear" or "scattered_clouds" or "partly_cloudy" or "decreasing_cloudiness" or
                 "clearing_skies" => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,

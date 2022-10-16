@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.SMC;
@@ -7,15 +8,12 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.System.UserProfile;
 using Windows.Web;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Net.Http.Headers;
-using System.Net;
-using SimpleWeather.Extras;
 
 namespace SimpleWeather.WeatherUnlocked
 {
@@ -35,6 +33,7 @@ namespace SimpleWeather.WeatherUnlocked
         public override bool KeyRequired => false;
 
         public override int HourlyForecastInterval => 3;
+        public override AuthType AuthType => AuthType.AppID_AppCode;
 
         public override long GetRetryTime() => 60000;
 
@@ -243,10 +242,10 @@ namespace SimpleWeather.WeatherUnlocked
 
             string WeatherIcon = code switch
             {
-                0 /* Sunny skies/Clear skies */ 
+                0 /* Sunny skies/Clear skies */
                 => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
 
-                1 /* Partly cloudy skies */ 
+                1 /* Partly cloudy skies */
                 => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
 
                 2 /* Cloudy skies */
@@ -278,7 +277,7 @@ namespace SimpleWeather.WeatherUnlocked
 
                 29 /* Thundery outbreaks possible */
                 => isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING,
-                
+
                 38 or // Blowing snow
                 39 or // Blizzard
                 74 or // Patchy heavy snow

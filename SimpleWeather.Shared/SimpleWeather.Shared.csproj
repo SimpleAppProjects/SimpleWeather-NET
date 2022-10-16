@@ -328,6 +328,11 @@
     <Compile Include="WeatherBit\WeatherBitIOProvider.cs" />
     <Compile Include="WeatherBit\WeatherData.cs" />
     <Compile Include="WeatherData\AirQualityData.cs" />
+    <Compile Include="WeatherData\Auth\AuthType.cs" />
+    <Compile Include="WeatherData\Auth\BasicAuthProviderKey.cs" />
+    <Compile Include="WeatherData\Auth\ProviderApiKey.cs" />
+    <Compile Include="WeatherData\Auth\ProviderAppKey.cs" />
+    <Compile Include="WeatherData\Auth\ProviderKey.cs" />
     <Compile Include="WeatherData\IAirQualityProvider.cs" />
     <Compile Include="WeatherData\IAstroDataProvider.cs" />
     <Compile Include="WeatherData\Images\ImageDataHelper.cs" />

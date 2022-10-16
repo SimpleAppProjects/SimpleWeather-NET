@@ -1,23 +1,16 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
-using SimpleWeather.SMC;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.Web;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
-using System.Net;
-using System.Net.Http.Headers;
-using SimpleWeather.Extras;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Web;
 
 namespace SimpleWeather.AccuWeather
 {
@@ -36,6 +29,7 @@ namespace SimpleWeather.AccuWeather
         public override bool SupportsWeatherLocale => true;
         public override bool KeyRequired => true;
         public override bool NeedsExternalAlertData => true;
+        public override AuthType AuthType => AuthType.ApiKey;
 
         public override long GetRetryTime()
         {

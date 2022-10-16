@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Icons;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.Icons;
 using SimpleWeather.Keys;
 using SimpleWeather.Location;
 using SimpleWeather.SMC;
@@ -8,15 +9,12 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.Web;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
-using System.Net.Http.Headers;
-using System.Net;
-using SimpleWeather.Extras;
+using System.Threading;
+using System.Threading.Tasks;
+using Windows.Web;
 
 namespace SimpleWeather.OpenWeather.OneCall
 {
@@ -43,6 +41,7 @@ namespace SimpleWeather.OpenWeather.OneCall
         public override bool KeyRequired => true;
 
         public override int HourlyForecastInterval => 1;
+        public override AuthType AuthType => AuthType.ApiKey;
 
         public override long GetRetryTime() => 43200000L; // 12 hrs
 

@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.AccuWeather;
+using SimpleWeather.Controls;
 using SimpleWeather.HERE;
 using SimpleWeather.Location;
 using SimpleWeather.MeteoFrance;
@@ -6,19 +7,17 @@ using SimpleWeather.Metno;
 using SimpleWeather.NWS;
 using SimpleWeather.OpenWeather;
 using SimpleWeather.OpenWeather.OneCall;
+using SimpleWeather.TomorrowIO;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherApi;
+using SimpleWeather.WeatherBit;
 using SimpleWeather.WeatherUnlocked;
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI;
-using SimpleWeather.TomorrowIO;
-using SimpleWeather.AccuWeather;
-using SimpleWeather.WeatherBit;
 
 namespace SimpleWeather.WeatherData
 {
@@ -204,6 +203,12 @@ namespace SimpleWeather.WeatherData
             return provider.IsKeyValid(key);
         }
 
+        public static AuthType GetAuthType(string API)
+        {
+            var provider = GetProvider(API);
+            return provider.AuthType;
+        }
+
         // Provider dependent methods
         public string WeatherAPI => WeatherProvider.WeatherAPI;
 
@@ -218,6 +223,8 @@ namespace SimpleWeather.WeatherData
         public bool NeedsExternalAlertData => WeatherProvider.NeedsExternalAlertData;
 
         public int HourlyForecastInterval => WeatherProvider.HourlyForecastInterval;
+
+        public AuthType AuthType => WeatherProvider.AuthType;
 
         public bool IsRegionSupported(string countryCode)
         {

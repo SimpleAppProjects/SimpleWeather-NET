@@ -9,24 +9,40 @@
     x:Uid="ConfirmDialog"
     d:SecondaryButtonText="Cancel"
     PrimaryButtonStyle="{ThemeResource ButtonRevealStyle}"
-    PrimaryButtonText="Ok"
+    PrimaryButtonText="{helpers:StringRes Name='ConfirmDialog.PrimaryButtonText'}"
     SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
     SecondaryButtonStyle="{ThemeResource ButtonRevealStyle}"
     SecondaryButtonText="{helpers:StringRes Name='Label_Cancel'}"
     mc:Ignorable="d">
 
     <ContentDialog.Title>
-        <TextBlock d:Text="Please enter an API Key" Text="{helpers:StringRes Name='message_enter_apikey'}" />
+        <TextBlock d:Text="Please enter a Provider Key" Text="{helpers:StringRes Name='message_enter_apikey'}" />
     </ContentDialog.Title>
 
     <StackPanel Orientation="Vertical">
         <TextBox
-            x:Name="KeyEntry"
+            x:Name="KeyEntry1"
             Margin="0,4"
             Padding="10"
             VerticalAlignment="Center"
-            d:PlaceholderText="API Key"
+            d:PlaceholderText="API ID"
+            FontSize="12" />
+        <TextBox
+            x:Name="KeyEntry2"
+            Margin="0,4"
+            Padding="10"
+            VerticalAlignment="Center"
+            d:PlaceholderText="API Code"
+            FontSize="12" />
+        <PasswordBox
+            x:Name="PasswordEntry"
+            Margin="0,4"
+            Padding="10"
+            VerticalAlignment="Center"
+            d:PlaceholderText="Password"
             FontSize="12"
-            PlaceholderText="{helpers:StringRes Name='key_hint'}" />
+            IsPasswordRevealButtonEnabled="True"
+            PlaceholderText="{helpers:StringRes Name='hint_password'}"
+            Visibility="Collapsed" />
     </StackPanel>
 </ContentDialog>
