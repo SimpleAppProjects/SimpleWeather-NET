@@ -1,22 +1,16 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
@@ -138,7 +132,7 @@ namespace SimpleWeather.UWP.Controls
 
         private ICollection<object> CreateGraphModelData(IEnumerable<MinutelyForecast> minfcasts, IList<HourlyForecast> hrfcasts)
         {
-            IReadOnlyList<ForecastGraphType> graphTypes = 
+            IReadOnlyList<ForecastGraphType> graphTypes =
                 Enum.GetValues(typeof(ForecastGraphType)).Cast<ForecastGraphType>().ToList();
             var data = new List<object>(graphTypes.Count + (minfcasts?.Any() == true ? 1 : 0));
 
@@ -167,8 +161,11 @@ namespace SimpleWeather.UWP.Controls
                     if (i == 0)
                     {
                         //tempData = new ForecastGraphViewModel();
-                        popData = new ForecastGraphDataCreator();
-
+                        if (hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.pop.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true && hrfcasts.LastOrDefault()?.extras?.pop.HasValue == true)
+                        {
+                            popData = new ForecastGraphDataCreator();
+                        }
                         if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
                             hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
                         {
@@ -197,7 +194,13 @@ namespace SimpleWeather.UWP.Controls
                     }
 
                     //tempData?.AddForecastData(hrfcast, ForecastGraphType.Temperature);
-                    popData?.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
+                    if (popData != null)
+                    {
+                        if (hrfcast.extras?.pop.HasValue == true)
+                        {
+                            popData?.AddForecastData(hrfcast, ForecastGraphType.Precipitation);
+                        }
+                    }
                     if (windData != null)
                     {
                         if (hrfcast.wind_mph.HasValue && hrfcast.wind_mph >= 0)

@@ -1,23 +1,17 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
+using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
-using SimpleWeather.UWP.Controls.Graphs;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -194,7 +188,7 @@ namespace SimpleWeather.UWP.Controls
                 if (hrfcasts != null)
                 {
                     var model = new ForecastGraphDataCreator();
-                    model.SetForecastData(hrfcasts, ForecastGraphType.Precipitation);
+                    model.SetForecastData(hrfcasts, hrfcasts.GetRecommendedGraphType());
                     HourlyPrecipitationGraphData = (LineViewData)model.GraphData;
                 }
                 else
@@ -286,6 +280,25 @@ namespace SimpleWeather.UWP.Controls
             }
 
             isDisposed = true;
+        }
+    }
+
+    internal static class ForecastsNowViewModelExtensions
+    {
+        internal static ForecastGraphType GetRecommendedGraphType(this IList<HourlyForecast> forecasts)
+        {
+            if (forecasts?.FirstOrDefault()?.extras?.pop.HasValue == true && forecasts?.LastOrDefault()?.extras?.pop.HasValue == true)
+            {
+                return ForecastGraphType.Precipitation;
+            }
+            else if (forecasts?.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true && forecasts?.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
+            {
+                return ForecastGraphType.Rain;
+            }
+            else
+            {
+                return ForecastGraphType.Wind;
+            }
         }
     }
 }
