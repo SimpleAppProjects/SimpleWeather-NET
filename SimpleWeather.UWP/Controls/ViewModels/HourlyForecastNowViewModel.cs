@@ -1,5 +1,4 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Icons;
+﻿using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -87,7 +86,32 @@ namespace SimpleWeather.UWP.Controls
             if (forecast.extras?.pop.HasValue == true && forecast.extras?.pop >= 0)
             {
                 PoPChance = forecast.extras.pop.Value + "%";
-            }                
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is HourlyForecastNowViewModel model &&
+                   Date == model.Date &&
+                   Icon == model.Icon &&
+                   Temperature == model.Temperature &&
+                   Condition == model.Condition &&
+                   PoPChance == model.PoPChance &&
+                   WindSpeed == model.WindSpeed &&
+                   WindDirection == model.WindDirection;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(
+                Date,
+                Icon,
+                Temperature,
+                Condition,
+                PoPChance,
+                WindSpeed,
+                WindDirection
+            );
         }
     }
 }
