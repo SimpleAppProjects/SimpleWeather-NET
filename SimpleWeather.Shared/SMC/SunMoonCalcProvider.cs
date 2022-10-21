@@ -30,15 +30,82 @@ namespace SimpleWeather.SMC
 
                 smc.calcSunAndMoon();
 
-                var sunrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                var sunset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                var moonrise = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
-                var moonset = DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                var sunrise = this.RunCatching(() =>
+                {
+                    return DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                }).GetOrElse(_ =>
+                {
+                    return DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                });
 
-                astroData.sunrise = sunrise.Add(location.tz_offset);
-                astroData.sunset = sunset.Add(location.tz_offset);
-                astroData.moonrise = moonrise.Add(location.tz_offset);
-                astroData.moonset = moonset.Add(location.tz_offset);
+                var sunset = this.RunCatching(() =>
+                {
+                    return DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.sun.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                }).GetOrElse(_ =>
+                {
+                    return DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                });
+
+                var moonrise = this.RunCatching(() =>
+                {
+                    return DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.rise), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                }).GetOrElse(_ =>
+                {
+                    return DateTime.MinValue;
+                });
+
+                var moonset = this.RunCatching(() =>
+                {
+                    return DateTime.ParseExact(SunMoonCalculator.getDateAsString(smc.moon.set), DATE_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                }).GetOrElse(_ =>
+                {
+                    return DateTime.MinValue;
+                });
+
+                astroData.sunrise = sunrise.Let(dt =>
+                {
+                    if (dt > DateTime.MinValue && dt.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    {
+                        return dt.Add(location.tz_offset);
+                    }
+                    else
+                    {
+                        return dt;
+                    }
+                });
+                astroData.sunset = sunset.Let(dt =>
+                {
+                    if (dt > DateTime.MinValue && dt.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    {
+                        return dt.Add(location.tz_offset);
+                    }
+                    else
+                    {
+                        return dt;
+                    }
+                });
+                astroData.moonrise = moonrise.Let(dt =>
+                {
+                    if (dt > DateTime.MinValue && dt.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    {
+                        return dt.Add(location.tz_offset);
+                    }
+                    else
+                    {
+                        return dt;
+                    }
+                });
+                astroData.moonset = moonset.Let(dt =>
+                {
+                    if (dt > DateTime.MinValue && dt.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    {
+                        return dt.Add(location.tz_offset);
+                    }
+                    else
+                    {
+                        return dt;
+                    }
+                });
 
                 var moonPhaseType = GetMoonPhase(smc.moonAge);
                 astroData.moonphase = new MoonPhase(moonPhaseType);

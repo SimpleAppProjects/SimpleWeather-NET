@@ -1,16 +1,16 @@
-﻿using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
+﻿using NodaTime;
+using SimpleWeather.Utf8JsonGen;
+using SimpleWeather.Utils;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using Utf8Json;
 using Utf8Json.Formatters;
-using NodaTime;
-using SimpleWeather.Utf8JsonGen;
 
 namespace SimpleWeather.WeatherData
 {
@@ -2203,35 +2203,71 @@ namespace SimpleWeather.WeatherData
             // {
             writer.WriteBeginObject();
 
-            // "sunrise" : ""
-            writer.WritePropertyName(nameof(sunrise));
-            writer.WriteString(sunrise.ToISO8601Format());
+            int offset = writer.CurrentOffset;
 
-            writer.WriteValueSeparator();
+            // "sunrise" : ""
+            if (sunrise != null)
+            {
+                if (offset != writer.CurrentOffset)
+                {
+                    writer.WriteValueSeparator();
+                    offset = writer.CurrentOffset;
+                }
+
+                writer.WritePropertyName(nameof(sunrise));
+                writer.WriteString(sunrise.ToISO8601Format());
+            }
 
             // "sunset" : ""
-            writer.WritePropertyName(nameof(sunset));
-            writer.WriteString(sunset.ToISO8601Format());
+            if (sunset != null)
+            {
+                if (offset != writer.CurrentOffset)
+                {
+                    writer.WriteValueSeparator();
+                    offset = writer.CurrentOffset;
+                }
 
-            writer.WriteValueSeparator();
+                writer.WritePropertyName(nameof(sunset));
+                writer.WriteString(sunset.ToISO8601Format());
+            }
 
             // "moonrise" : ""
-            writer.WritePropertyName(nameof(moonrise));
-            writer.WriteString(moonrise.ToISO8601Format());
+            if (moonrise != null)
+            {
+                if (offset != writer.CurrentOffset)
+                {
+                    writer.WriteValueSeparator();
+                    offset = writer.CurrentOffset;
+                }
 
-            writer.WriteValueSeparator();
+                writer.WritePropertyName(nameof(moonrise));
+                writer.WriteString(moonrise.ToISO8601Format());
+            }
 
             // "moonset" : ""
-            writer.WritePropertyName(nameof(moonset));
-            writer.WriteString(moonset.ToISO8601Format());
+            if (moonset != null)
+            {
+                if (offset != writer.CurrentOffset)
+                {
+                    writer.WriteValueSeparator();
+                    offset = writer.CurrentOffset;
+                }
+
+                writer.WritePropertyName(nameof(moonset));
+                writer.WriteString(moonset.ToISO8601Format());
+            }
 
             // "moonphase" : ""
             if (moonphase != null)
             {
-                writer.WriteValueSeparator();
+                if (offset != writer.CurrentOffset)
+                {
+                    writer.WriteValueSeparator();
+                    offset = writer.CurrentOffset;
+                }
 
                 writer.WritePropertyName(nameof(moonphase));
-                writer.WriteString(moonphase?.ToJson());
+                writer.WriteString(moonphase.ToJson());
             }
 
             // }

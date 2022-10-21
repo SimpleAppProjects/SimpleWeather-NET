@@ -281,12 +281,12 @@ namespace UnitTestProject
         [TestMethod]
         public async Task SimpleAstroTest()
         {
-            var date = DateTimeOffset.Now;
-            var tz_long = "America/Los_Angeles";
+            var date = DateTimeOffset.Now.AddDays(-1.5);
+            var tz_long = "America/Anchorage";
             var locationData = new LocationData()
             {
-                latitude = 47.6721646,
-                longitude = -122.1706614,
+                latitude = 71.17,
+                longitude = -156.47,
                 tz_long = tz_long
             };
             var astro = await new SunMoonCalcProvider().GetAstronomyData(locationData, date).ConfigureAwait(false);
