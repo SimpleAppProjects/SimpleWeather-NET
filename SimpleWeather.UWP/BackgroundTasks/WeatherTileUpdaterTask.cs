@@ -1,16 +1,12 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Tiles;
-using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using Windows.Devices.Geolocation;
 using Windows.UI.StartScreen;
 
 namespace SimpleWeather.UWP.BackgroundTasks
@@ -64,7 +60,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Updating primary tile...", taskName);
 
-            await WeatherTileCreator.TileUpdater(await Settings.GetHomeData());
+            var homeLocation = await Settings.GetHomeData();
+
+            if (await GetWeather(homeLocation) == null)
+            {
+                await GetWeather(homeLocation, true);
+            }
+
+            await WeatherTileCreator.TileUpdater(homeLocation);
 
             // Update secondary tiles
             IReadOnlyList<SecondaryTile> tiles = null;
@@ -103,9 +106,49 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     Logger.WriteLine(LoggerLevel.Debug, "TileID = " + tile.TileId);
 
                     if (location != null)
+                    {
+                        if (await GetWeather(location) == null)
+                        {
+                            await GetWeather(location, true);
+                        }
+
                         await WeatherTileCreator.TileUpdater(location);
+                    }
                 }
             }
+        }
+
+        private static async Task<Weather> GetWeather(LocationData location, bool forceRefresh = false)
+        {
+            Logger.WriteLine(LoggerLevel.Debug, $"{taskName}: Getting weather data for ({location})...");
+
+            Weather weather = null;
+
+            try
+            {
+                weather = await new WeatherDataLoader(location)
+                    .LoadWeatherData(new WeatherRequest.Builder().Let(req =>
+                    {
+                        if (forceRefresh)
+                        {
+                            req.ForceRefresh(false)
+                            .LoadAlerts()
+                            .LoadForecasts();
+                        }
+                        else
+                        {
+                            req.ForceLoadSavedData();
+                        }
+
+                        return req;
+                    }).Build());
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex, $"{taskName}: GetWeather error");
+            }
+
+            return weather;
         }
 
         public static async Task RequestAppTrigger()
