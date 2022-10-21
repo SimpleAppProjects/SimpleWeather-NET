@@ -1,10 +1,7 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 
 namespace SimpleWeather.WeatherData
@@ -83,7 +80,17 @@ namespace SimpleWeather.WeatherData
                 low_f = lowF;
                 low_c = ConversionMethods.FtoC(lowF);
             }
-            condition = forecast.description.ToPascalCase();
+            condition = new StringBuilder(forecast.description.ToPascalCase()).Apply(sb =>
+            {
+                if (!String.IsNullOrWhiteSpace(forecast.airDescription) && !Equals(forecast.airDescription, "*"))
+                {
+                    if (!sb.ToString().EndsWith('.'))
+                    {
+                        sb.Append('.');
+                    }
+                    sb.Append($" {forecast.airDescription}");
+                }
+            }).ToString();
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(Equals(forecast.daylight, "N") || forecast.iconName.StartsWith("night_"), forecast.iconName);
 
@@ -148,7 +155,17 @@ namespace SimpleWeather.WeatherData
                 high_f = highF;
                 high_c = ConversionMethods.FtoC(highF);
             }
-            condition = hr_forecast.description.ToPascalCase();
+            condition = new StringBuilder(hr_forecast.description.ToPascalCase()).Apply(sb =>
+            {
+                if (!String.IsNullOrWhiteSpace(hr_forecast.airDescription) && !Equals(hr_forecast.airDescription, "*"))
+                {
+                    if (!sb.ToString().EndsWith('.'))
+                    {
+                        sb.Append('.');
+                    }
+                    sb.Append($" {hr_forecast.airDescription}");
+                }
+            }).ToString();
 
             icon = WeatherManager.GetProvider(WeatherAPI.Here)
                    .GetWeatherIcon(Equals(hr_forecast.daylight, "N") || hr_forecast.iconName.StartsWith("night_"), hr_forecast.iconName);
@@ -222,12 +239,20 @@ namespace SimpleWeather.WeatherData
             {
                 if (!String.IsNullOrWhiteSpace(forecast.beaufortDescription) && !Equals(forecast.beaufortDescription, "*"))
                 {
-                    sb.Append($". {forecast.beaufortDescription}");
+                    if (!sb.ToString().EndsWith('.'))
+                    {
+                        sb.Append('.');
+                    }
+                    sb.Append($" {forecast.beaufortDescription}");
                 }
 
                 if (!String.IsNullOrWhiteSpace(forecast.airDescription) && !Equals(forecast.airDescription, "*"))
                 {
-                    sb.Append($". {forecast.airDescription}");
+                    if (!sb.ToString().EndsWith('.'))
+                    {
+                        sb.Append('.');
+                    }
+                    sb.Append($" {forecast.airDescription}");
                 }
             }).ToString();
             fcttext_metric = fcttext;
@@ -292,15 +317,19 @@ namespace SimpleWeather.WeatherData
                 var culture = CultureUtils.UserCulture;
                 var resLoader = SharedModule.Instance.ResLoader;
 
-                var summaryStr = new StringBuilder();
-                summaryStr.Append(todaysTxtForecast.fcttext); // fcttext & fcttextMetric are the same
-
-                if (todaysForecast?.extras?.pop.HasValue == true)
+                // fcttext & fcttextMetric are the same
+                var summaryStr = new StringBuilder(todaysTxtForecast.fcttext).Apply(sb =>
                 {
-                    summaryStr.AppendFormat(" {0}: {1}%",
-                        resLoader.GetString("label_chance"),
-                        todaysForecast.extras.pop.Value);
-                }
+                    if (todaysForecast?.extras?.pop.HasValue == true)
+                    {
+                        if (!sb.ToString().EndsWith('.'))
+                        {
+                            sb.Append('.');
+                        }
+                        sb.AppendFormat(" {0}: {1}%", resLoader.GetString("label_chance"), todaysForecast.extras.pop.Value);
+                    }
+                });
+
 
                 summary = summaryStr.ToString();
             }
