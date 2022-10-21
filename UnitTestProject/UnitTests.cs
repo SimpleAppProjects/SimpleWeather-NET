@@ -18,7 +18,6 @@ using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherApi;
 using SimpleWeather.WeatherData;
-using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -292,13 +291,13 @@ namespace UnitTestProject
             };
             var astro = await new SunMoonCalcProvider().GetAstronomyData(locationData, date).ConfigureAwait(false);
 
-            Console.WriteLine("SMC");
-            Console.WriteLine(String.Format(
+            Debug.WriteLine("SMC");
+            Debug.WriteLine(String.Format(
                 "Sunrise: {0}; Sunset: {1}; Moonrise: {2}; Moonset: {3}",
                 astro.sunrise, astro.sunset, astro.moonrise, astro.moonset));
             if (astro.moonphase != null)
             {
-                Console.WriteLine(String.Format("Moonphase: {0}", astro.moonphase.phase));
+                Debug.WriteLine(String.Format("Moonphase: {0}", astro.moonphase.phase));
             }
 
             Assert.IsTrue(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue && astro.moonrise != DateTime.MinValue && astro.moonset != DateTime.MinValue);

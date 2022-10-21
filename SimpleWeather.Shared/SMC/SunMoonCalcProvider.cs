@@ -2,9 +2,7 @@
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.SMC
@@ -28,7 +26,7 @@ namespace SimpleWeather.SMC
 
                 var smc = new SunMoonCalculator(utc.Year, utc.Month, utc.Day,
                     utc.Hour, utc.Minute, utc.Second,
-                    location.longitude * SunMoonCalculator.DEG_TO_RAD, location.latitude * SunMoonCalculator.DEG_TO_RAD, 0);
+                    location.longitude * SunMoonCalculator.DEG_TO_RAD, location.latitude * SunMoonCalculator.DEG_TO_RAD);
 
                 smc.calcSunAndMoon();
 
@@ -45,9 +43,9 @@ namespace SimpleWeather.SMC
                 var moonPhaseType = GetMoonPhase(smc.moonAge);
                 astroData.moonphase = new MoonPhase(moonPhaseType);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, ex);
             }
 
             return astroData;
