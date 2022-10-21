@@ -6,13 +6,10 @@ using SimpleWeather.UWP.WeatherAlerts;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Devices.Geolocation;
-using Windows.UI.StartScreen;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
@@ -76,6 +73,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                         await WeatherTileUpdaterTask.UpdateTiles();
 
+                        if (Settings.PoPChanceNotificationEnabled)
+                        {
+                            await PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
+                        }
+
                         if (weather != null)
                         {
                             // Post alerts if setting is on
@@ -84,18 +86,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
                                 await WeatherAlertHandler.PostAlerts(await Settings.GetHomeData(), weather.weather_alerts);
                             }
 
-                            if (Settings.PoPChanceNotificationEnabled)
-                            {
-                                await PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
-                            }
-
                             // Set update time
                             Settings.UpdateTime = DateTime.Now;
 
                             if (locationChanged)
                             {
                                 SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE,
-                                    new Dictionary<string, object> 
+                                    new Dictionary<string, object>
                                     {
                                         { CommonActions.EXTRA_FORCEUPDATE, false }
                                     });
