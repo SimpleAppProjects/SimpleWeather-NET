@@ -1,13 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml.Controls;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Preferences;
-using SimpleWeather.UWP.Shared.Helpers;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +15,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using muxc = Microsoft.UI.Xaml.Controls;
@@ -32,14 +26,14 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Shell : Page, ISnackbarManager, IBannerManager
+    public sealed partial class Shell : Page, IViewModelProvider, ISnackbarManager, IBannerManager
     {
         public Frame AppFrame { get { return FrameContent; } }
         public static Shell Instance { get; private set; }
         private SnackbarManager SnackMgr { get; set; }
         private BannerManager BannerMgr { get; set; }
 
-        private UISettings UISettings;
+        private readonly UISettings UISettings;
 
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
@@ -51,47 +45,13 @@ namespace SimpleWeather.UWP.Main
             ("SettingsPage", typeof(SettingsPage)),
         };
 
-        /// <summary>
-        /// Gets the <see cref="IServiceProvider"/> instance to resolve application services.
-        /// </summary>
-        public IServiceProvider Services { get; }
+        private readonly string DefaultKey = $"{typeof(Shell).FullName}.DefaultKey";
 
-        private const string DefaultKey = "SimpleWeather.UWP.Main.Shell.DefaultKey";
-
-        private readonly Dictionary<string, IViewModel> ViewModelStore = new Dictionary<string, IViewModel>();
-
-        /// <summary>
-        /// Configures the services for the application.
-        /// </summary>
-        private static IServiceProvider ConfigureServices()
-        {
-            var services = new ServiceCollection();
-
-            services.AddSingleton<CoreDispatcher>(Shell.Instance.Dispatcher);
-
-            return services.BuildServiceProvider();
-        }
+        public ViewModelStore ViewModelStore { get; } = new();
 
         public T GetViewModel<T>() where T : IViewModel
         {
-            return GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
-        }
-
-        private T GetViewModel<T>(string key) where T : IViewModel
-        {
-            if (ViewModelStore.TryGetValue(key, out IViewModel viewModel) && viewModel is T)
-            {
-                return (T)viewModel;
-            }
-
-            viewModel = ActivatorUtilities.CreateInstance<T>(Services);
-            if (ViewModelStore.ContainsKey(key))
-            {
-                ViewModelStore.Remove(key, out IViewModel oldViewModel);
-                // TODO: cleanup
-            }
-            ViewModelStore.Add(key, viewModel);
-            return (T)viewModel;
+            return this.GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
         }
 
         public PageHeader PageHeader
@@ -106,7 +66,6 @@ namespace SimpleWeather.UWP.Main
         {
             Instance = this;
             this.InitializeComponent();
-            Services = ConfigureServices();
             AnalyticsLogger.LogEvent("Shell");
 
             InitSnackManager();
@@ -271,7 +230,7 @@ namespace SimpleWeather.UWP.Main
             }
 
             // Setup background task
-            Task.Run(async () => 
+            Task.Run(async () =>
             {
                 await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
                 await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
@@ -359,25 +318,7 @@ namespace SimpleWeather.UWP.Main
             // Only navigate if the selected page isn't currently loaded.
             if (_page is not null && !Type.Equals(preNavPageType, _page))
             {
-                object parameter = null;
-
-                if (Type.Equals(preNavPageType, typeof(WeatherNow)))
-                {
-                    var wnowPage = AppFrame.Content as WeatherNow;
-
-                    if (Type.Equals(_page, typeof(WeatherAlertPage)))
-                    {
-                        parameter = new WeatherPageArgs()
-                        {
-                            Location = wnowPage?.locationData
-                        };
-                    }
-                }
-
-                if (AppFrame != null)
-                {
-                    AppFrame.Navigate(_page, parameter, transitionInfo);
-                }
+                AppFrame?.Navigate(_page, null, transitionInfo);
             }
         }
 

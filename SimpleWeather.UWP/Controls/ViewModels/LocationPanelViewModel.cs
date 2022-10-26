@@ -1,72 +1,51 @@
-﻿using SimpleWeather.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.ComponentModel;
-using System.Globalization;
 using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
 {
-    public class LocationPanelViewModel : DependencyObject, IViewModel
+    public partial class LocationPanelViewModel : BaseViewModel
     {
-        #region DependencyProperties
-
+        [ObservableProperty]
         private string locationName;
+        [ObservableProperty]
         private string currTemp;
+        [ObservableProperty]
         private string currWeather;
-        private string weatherIcon;
+        [ObservableProperty]
         private string hiTemp;
+        [ObservableProperty]
         private string loTemp;
-        private string pop;
-        private string popIcon;
-        private int windDir;
+        [ObservableProperty]
+        private string poP;
+        [ObservableProperty]
+        private string poPIcon;
+        [ObservableProperty]
+        private string weatherIcon;
+        [ObservableProperty]
         private string windSpeed;
+        [ObservableProperty]
+        private int windDirection;
+        [ObservableProperty]
         private string windIcon;
+        [ObservableProperty]
         private bool editMode;
+        [ObservableProperty]
         private ImageDataViewModel imageData;
+        [ObservableProperty]
         private ElementTheme backgroundTheme = ElementTheme.Dark;
+        [ObservableProperty]
         private bool isLoading = true;
-        private LocationData locationData;
+        [ObservableProperty]
+        private LocationData locationData = new LocationData();
+        [ObservableProperty]
         private string weatherSource;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
-        }
-
-        #endregion DependencyProperties
-
-        #region Properties
-
-        public string LocationName { get => locationName; set { if (!Equals(locationName, value)) { locationName = value; OnPropertyChanged(nameof(LocationName)); } } }
-        public string CurrTemp { get => currTemp; set { if (!Equals(currTemp, value)) { currTemp = value; OnPropertyChanged(nameof(CurrTemp)); } } }
-        public string CurrWeather { get => currWeather; set { if (!Equals(currWeather, value)) { currWeather = value; OnPropertyChanged(nameof(CurrWeather)); } } }
-        public string HiTemp { get => hiTemp; set { if (!Equals(hiTemp, value)) { hiTemp = value; OnPropertyChanged(nameof(HiTemp)); } } }
-        public string LoTemp { get => loTemp; set { if (!Equals(loTemp, value)) { loTemp = value; OnPropertyChanged(nameof(LoTemp)); } } }
-        public string PoP { get => pop; set { if (!Equals(pop, value)) { pop = value; OnPropertyChanged(nameof(PoP)); } } }
-        public string PoPIcon { get => popIcon; set { if (!Equals(popIcon, value)) { popIcon = value; OnPropertyChanged(nameof(PoPIcon)); } } }
-        public string WeatherIcon { get => weatherIcon; set { if (!Equals(weatherIcon, value)) { weatherIcon = value; OnPropertyChanged(nameof(WeatherIcon)); } } }
-        public string WindSpeed { get => windSpeed; set { if (!Equals(windSpeed, value)) { windSpeed = value; OnPropertyChanged(nameof(WindSpeed)); } } }
-        public int WindDirection { get => windDir; set { if (!Equals(windDir, value)) { windDir = value; OnPropertyChanged(nameof(WindDirection)); } } }
-        public string WindIcon { get => windIcon; set { if (!Equals(windIcon, value)) { windIcon = value; OnPropertyChanged(nameof(WindIcon)); } } }
-        public bool EditMode { get => editMode; set { if (!Equals(editMode, value)) { editMode = value; OnPropertyChanged(nameof(EditMode)); } } }
-        public ImageDataViewModel ImageData { get => imageData; set { if (!Equals(imageData, value)) { imageData = value; OnPropertyChanged(nameof(ImageData)); } } }
-        public ElementTheme BackgroundTheme { get => backgroundTheme; set { if (!Equals(backgroundTheme, value)) { backgroundTheme = value; OnPropertyChanged(nameof(BackgroundTheme)); } } }
-        public bool IsLoading { get => isLoading; set { if (!Equals(isLoading, value)) { isLoading = value; OnPropertyChanged(nameof(IsLoading)); } } }
-        public LocationData LocationData { get => locationData; set { if (!Equals(locationData, value)) { locationData = value; OnPropertyChanged(nameof(LocationData)); } } }
-        public string WeatherSource { get => weatherSource; set { if (!Equals(weatherSource, value)) { weatherSource = value; OnPropertyChanged(nameof(WeatherSource)); } } }
 
         public int LocationType
         {
@@ -78,17 +57,9 @@ namespace SimpleWeather.Controls
             }
         }
 
-        #endregion Properties
-
-        private readonly WeatherManager wm;
+        private readonly WeatherManager wm = WeatherManager.GetInstance();
         private Weather weather;
         private string unitCode;
-
-        public LocationPanelViewModel()
-        {
-            wm = WeatherManager.GetInstance();
-            LocationData = new LocationData();
-        }
 
         public void SetWeather(Weather weather)
         {
@@ -224,7 +195,7 @@ namespace SimpleWeather.Controls
         {
             if (weather != null && ImageData == null)
             {
-                var imageData = await WeatherUtils.GetImageData(weather);
+                var imageData = await weather.GetImageData();
 
                 if (imageData != null)
                 {

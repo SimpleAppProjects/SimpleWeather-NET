@@ -1,5 +1,5 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
@@ -7,15 +7,13 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ChartsViewModel : DependencyObject, IViewModel, IDisposable
+    public partial class ChartsViewModel : BaseViewModel, IDisposable
     {
         private LocationData locationData;
         private string unitCode;
@@ -24,15 +22,8 @@ namespace SimpleWeather.UWP.Controls
         private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
-        public ICollection<object> GraphModels
-        {
-            get { return (ICollection<object>)GetValue(GraphModelsProperty); }
-            set { SetValue(GraphModelsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for GraphModels.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty GraphModelsProperty =
-            DependencyProperty.Register("GraphModels", typeof(ICollection<object>), typeof(ChartsViewModel), new PropertyMetadata(null));
+        [ObservableProperty]
+        private ICollection<object> graphModels;
 
         public ChartsViewModel()
         {
@@ -40,16 +31,6 @@ namespace SimpleWeather.UWP.Controls
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
             currentForecastsData = new ObservableItem<Forecasts>();
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
         }
 
         public void UpdateForecasts(LocationData location)
@@ -61,7 +42,7 @@ namespace SimpleWeather.UWP.Controls
                     Settings.UnregisterWeatherDBChangedEvent(ChartsViewModel_TableChanged);
 
                     // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+                    this.locationData = new LocationQuery(location).ToLocationData();
 
                     this.unitCode = Settings.UnitString;
                     this.iconProvider = Settings.IconProvider;
@@ -118,16 +99,13 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshGraphModelData(Forecasts forecasts, IList<HourlyForecast> hrfcasts)
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                GraphModels = null;
+            GraphModels = null;
 
-                if (forecasts?.min_forecast?.Count > 0 || hrfcasts?.Count > 0)
-                {
-                    var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero);
-                    GraphModels = CreateGraphModelData(forecasts?.min_forecast?.Where(m => m.date >= now)?.Take(60), hrfcasts);
-                }
-            });
+            if (forecasts?.min_forecast?.Count > 0 || hrfcasts?.Count > 0)
+            {
+                var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero);
+                GraphModels = CreateGraphModelData(forecasts?.min_forecast?.Where(m => m.date >= now)?.Take(60), hrfcasts);
+            }
         }
 
         private ICollection<object> CreateGraphModelData(IEnumerable<MinutelyForecast> minfcasts, IList<HourlyForecast> hrfcasts)

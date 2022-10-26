@@ -1,14 +1,15 @@
-﻿using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.ComponentModel;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.ViewModels;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -22,21 +23,17 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherDetailsPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage, IWeatherErrorListener
+    public sealed partial class WeatherDetailsPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationData location { get; set; }
-        public WeatherNowViewModel WeatherView { get; set; }
-        public ForecastsListViewModel ForecastsView { get; set; }
-        public bool IsHourly { get; set; }
+        private LocationData locationData { get; set; }
+        public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+        public ForecastsListViewModel ForecastsView { get; } = Ioc.Default.GetViewModel<ForecastsListViewModel>();
+        public bool IsHourly { get; private set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
-
-        public static readonly DependencyProperty ForecastsProperty =
-            DependencyProperty.Register("Forecasts", typeof(object),
-            typeof(WeatherDetailsPage), new PropertyMetadata(null));
 
         public object Forecasts
         {
@@ -46,6 +43,10 @@ namespace SimpleWeather.UWP.Main
                 SetValue(ForecastsProperty, value);
             }
         }
+
+        public static readonly DependencyProperty ForecastsProperty =
+            DependencyProperty.Register("Forecasts", typeof(object),
+            typeof(WeatherDetailsPage), new PropertyMetadata(null));
 
         public WeatherDetailsPage()
         {
@@ -57,7 +58,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("WeatherDetailsPage");
         }
 
-        public void OnWeatherError(WeatherException wEx)
+        private void OnWeatherError(WeatherException wEx)
         {
             Dispatcher.LaunchOnUIThread(() =>
             {
@@ -70,7 +71,7 @@ namespace SimpleWeather.UWP.Main
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (location?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
+                        if (locationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
                             ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
@@ -117,82 +118,64 @@ namespace SimpleWeather.UWP.Main
 
             if (e?.Parameter is DetailsPageArgs args)
             {
-                location = args.Location;
+                locationData = args.Location;
                 IsHourly = args.IsHourly;
 
-                WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-
-                if (ForecastsView == null)
-                    ForecastsView = new ForecastsListViewModel();
-
-                Task.Run(async () =>
-                {
-                    if (location == null)
-                        location = await Settings.GetHomeData();
-
-                    ForecastsView.UpdateForecasts(location);
-
-                    Dispatcher.LaunchOnUIThread(() =>
-                    {
-                        if (IsHourly)
-                        {
-                            SetBinding(ForecastsProperty, new Binding()
-                            {
-                                Mode = BindingMode.OneWay,
-                                Source = ForecastsView.HourlyForecasts
-                            });
-                        }
-                        else
-                        {
-                            SetBinding(ForecastsProperty, new Binding()
-                            {
-                                Mode = BindingMode.OneWay,
-                                Source = ForecastsView.Forecasts
-                            });
-                        }
-
-                        if (WeatherView?.IsValid == false)
-                        {
-                            Task.Run(() => new WeatherDataLoader(location)
-                                .LoadWeatherData(new WeatherRequest.Builder()
-                                    .ForceLoadSavedData()
-                                    .SetErrorListener(this)
-                                    .Build())
-                                    .ContinueWith((t2) =>
-                                    {
-                                        Dispatcher.LaunchOnUIThread(() =>
-                                        {
-                                            WeatherView.UpdateView(t2.Result);
-                                        });
-                                    }));
-                        }
-
-                        // Scroll item into view
-                        void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
-                        {
-                            ListControl.ContainerContentChanging -= contentChangedListener;
-
-                            void layoutUpdateListener(object s, object layoutEvArgs)
-                            {
-                                ListControl.LayoutUpdated -= layoutUpdateListener;
-
-                                if (args.ScrollToPosition > 0 && ListControl.Items?.Count > args.ScrollToPosition)
-                                {
-                                    ListControl.ScrollIntoView(ListControl.Items[args.ScrollToPosition], ScrollIntoViewAlignment.Leading);
-                                }
-                            };
-
-                            ListControl.LayoutUpdated += layoutUpdateListener;
-                        };
-                        ListControl.ContainerContentChanging += contentChangedListener;
-                    });
-                });
+                Initialize(args.ScrollToPosition);
             }
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        private void Initialize(int scrollToPosition = 0)
         {
-            base.OnNavigatedFrom(e);
+            if (locationData == null)
+            {
+                locationData = WNowViewModel.UiState.LocationData;
+            }
+
+            if (locationData != null)
+            {
+                ForecastsView.UpdateForecasts(locationData);
+            }
+
+            Dispatcher.LaunchOnUIThread(() =>
+            {
+                if (IsHourly)
+                {
+                    SetBinding(ForecastsProperty, new Binding()
+                    {
+                        Mode = BindingMode.OneWay,
+                        Source = ForecastsView.HourlyForecasts
+                    });
+                }
+                else
+                {
+                    SetBinding(ForecastsProperty, new Binding()
+                    {
+                        Mode = BindingMode.OneWay,
+                        Source = ForecastsView.Forecasts
+                    });
+                }
+
+                // Scroll item into view
+                void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)
+                {
+                    ListControl.ContainerContentChanging -= contentChangedListener;
+
+                    void layoutUpdateListener(object s, object layoutEvArgs)
+                    {
+                        ListControl.LayoutUpdated -= layoutUpdateListener;
+
+                        if (scrollToPosition > 0 && ListControl.Items?.Count > scrollToPosition)
+                        {
+                            ListControl.ScrollIntoView(ListControl.Items[scrollToPosition], ScrollIntoViewAlignment.Leading);
+                        }
+                    };
+
+                    ListControl.LayoutUpdated += layoutUpdateListener;
+                };
+
+                ListControl.ContainerContentChanging += contentChangedListener;
+            });
         }
 
         private void ListControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)

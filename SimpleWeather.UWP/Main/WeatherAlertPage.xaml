@@ -22,7 +22,7 @@
                 <TextBlock
                     Padding="16"
                     FontSize="16"
-                    Text="{x:Bind WeatherView.Location, FallbackValue='New York, NY', Mode=OneWay}" />
+                    Text="{x:Bind WNowViewModel.Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </Viewbox>
             <Rectangle Height="1" Fill="{ThemeResource NavigationViewContentGridBorderBrush}" />
         </StackPanel>

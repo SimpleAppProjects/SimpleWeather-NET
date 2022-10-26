@@ -1,15 +1,10 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using SimpleWeather.WeatherData;
 
-namespace SimpleWeather.Controls
+namespace SimpleWeather.Location
 {
-    public partial class LocationQueryViewModel
+    public partial class LocationQuery
     {
-        public LocationQueryViewModel(AccuWeather.GeopositionRootobject result, string weatherAPI)
+        public LocationQuery(AccuWeather.GeopositionRootobject result, string weatherAPI)
         {
             SetLocation(result, weatherAPI);
         }
@@ -19,7 +14,7 @@ namespace SimpleWeather.Controls
             LocationName = $"{result.LocalizedName}, {result.AdministrativeArea.LocalizedName}";
             LocationCountry = result.Country.ID;
 
-            LocationQuery = result.Key;
+            Location_Query = result.Key;
 
             LocationLat = (double)result.GeoPosition.Latitude;
             LocationLong = (double)result.GeoPosition.Longitude;
@@ -30,11 +25,11 @@ namespace SimpleWeather.Controls
             WeatherSource = WeatherAPI.AccuWeather;
         }
 
-        public static LocationQueryViewModel CreateLocationModel(AccuWeather.GeopositionRootobject result, LocationQueryViewModel oldModel)
+        public static LocationQuery CreateLocationModel(AccuWeather.GeopositionRootobject result, LocationQuery oldModel)
         {
             var newModel = oldModel.Clone();
 
-            newModel.LocationQuery = result.Key;
+            newModel.Location_Query = result.Key;
             newModel.LocationTZLong = oldModel.LocationTZLong ?? result.TimeZone?.Name;
             newModel.LocationCountry = oldModel.LocationCountry ?? result.Country?.ID;
             newModel.LocationSource = WeatherAPI.AccuWeather;

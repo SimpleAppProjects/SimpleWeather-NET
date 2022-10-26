@@ -1,5 +1,5 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
@@ -11,11 +11,10 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastsNowViewModel : DependencyObject, IViewModel, IDisposable
+    public partial class ForecastsNowViewModel : BaseViewModel, IDisposable
     {
         private LocationData locationData;
         private string unitCode;
@@ -24,55 +23,20 @@ namespace SimpleWeather.UWP.Controls
         private ObservableItem<Forecasts> currentForecastsData;
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
-        public RangeBarGraphData ForecastGraphData
-        {
-            get { return (RangeBarGraphData)GetValue(ForecastGraphDataProperty); }
-            set { SetValue(ForecastGraphDataProperty, value); }
-        }
+        [ObservableProperty]
+        private RangeBarGraphData forecastGraphData;
 
-        // Using a DependencyProperty as the backing store for ForecastGraphData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ForecastGraphDataProperty =
-            DependencyProperty.Register("ForecastGraphData", typeof(RangeBarGraphData), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+        [ObservableProperty]
+        private List<HourlyForecastNowViewModel> hourlyForecastData;
 
-        public List<HourlyForecastNowViewModel> HourlyForecastData
-        {
-            get { return (List<HourlyForecastNowViewModel>)GetValue(HourlyForecastDataProperty); }
-            set { SetValue(HourlyForecastDataProperty, value); }
-        }
+        [ObservableProperty]
+        private LineViewData hourlyPrecipitationGraphData;
 
-        // Using a DependencyProperty as the backing store for HourlyForecastData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HourlyForecastDataProperty =
-            DependencyProperty.Register("HourlyForecastData", typeof(List<HourlyForecastNowViewModel>), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
+        [ObservableProperty]
+        private LineViewData minutelyPrecipitationGraphData;
 
-        public LineViewData HourlyPrecipitationGraphData
-        {
-            get { return (LineViewData)GetValue(HourlyPrecipitationGraphDataProperty); }
-            set { SetValue(HourlyPrecipitationGraphDataProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for PrecipitationGraphData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HourlyPrecipitationGraphDataProperty =
-            DependencyProperty.Register("HourlyPrecipitationGraphData", typeof(LineViewData), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
-
-        public LineViewData MinutelyPrecipitationGraphData
-        {
-            get { return (LineViewData)GetValue(MinutelyPrecipitationGraphDataProperty); }
-            set { SetValue(MinutelyPrecipitationGraphDataProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for MinutelyPrecipitationGraphData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty MinutelyPrecipitationGraphDataProperty =
-            DependencyProperty.Register("MinutelyPrecipitationGraphData", typeof(LineViewData), typeof(ForecastsNowViewModel), new PropertyMetadata(null));
-
-        public bool IsPrecipitationDataPresent
-        {
-            get { return (bool)GetValue(IsPrecipitationDataPresentProperty); }
-            private set { SetValue(IsPrecipitationDataPresentProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for IsPrecipitationDataPresent.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsPrecipitationDataPresentProperty =
-            DependencyProperty.Register("IsPrecipitationDataPresent", typeof(bool), typeof(ForecastsNowViewModel), new PropertyMetadata(false));
+        [ObservableProperty]
+        private bool isPrecipitationDataPresent;
 
         public ForecastsNowViewModel()
         {
@@ -80,27 +44,15 @@ namespace SimpleWeather.UWP.Controls
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
             currentHrForecastsData.ItemValueChanged += CurrentHrForecastsData_ItemValueChanged;
-
-            RegisterPropertyChangedCallback(HourlyPrecipitationGraphDataProperty, ForecastsNowViewModel_OnDependencyPropertyChanged);
-            RegisterPropertyChangedCallback(MinutelyPrecipitationGraphDataProperty, ForecastsNowViewModel_OnDependencyPropertyChanged);
+            this.PropertyChanged += ForecastsNowViewModel_PropertyChanged;
         }
 
-        private void ForecastsNowViewModel_OnDependencyPropertyChanged(DependencyObject sender, DependencyProperty dp)
+        private void ForecastsNowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (dp == HourlyPrecipitationGraphDataProperty || dp == MinutelyPrecipitationGraphDataProperty)
+            if (e.PropertyName == nameof(HourlyPrecipitationGraphData) || e.PropertyName == nameof(MinutelyPrecipitationGraphData))
             {
                 IsPrecipitationDataPresent = HourlyPrecipitationGraphData?.DataSets?.FirstOrDefault()?.EntryData?.Count > 0 || MinutelyPrecipitationGraphData?.DataSets?.FirstOrDefault()?.EntryData?.Count > 0;
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
         }
 
         public void UpdateForecasts(LocationData location)
@@ -112,7 +64,7 @@ namespace SimpleWeather.UWP.Controls
                     Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
 
                     // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+                    this.locationData = new LocationQuery(location).ToLocationData();
 
                     this.unitCode = Settings.UnitString;
                     this.iconProvider = Settings.IconProvider;
@@ -163,12 +115,9 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshForecasts(Forecasts fcasts)
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                // At most 10 forecasts
-                ForecastGraphData = CreateGraphData(fcasts?.forecast?.Take(10));
-                RefreshMinutelyForecasts(fcasts?.min_forecast);
-            });
+            // At most 10 forecasts
+            ForecastGraphData = CreateGraphData(fcasts?.forecast?.Take(10));
+            RefreshMinutelyForecasts(fcasts?.min_forecast);
         }
 
         private void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -181,43 +130,37 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshHourlyForecasts(IList<HourlyForecast> hrfcasts)
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                HourlyForecastData = hrfcasts?.Select(hrf => new HourlyForecastNowViewModel(hrf)).ToList();
+            HourlyForecastData = hrfcasts?.Select(hrf => new HourlyForecastNowViewModel(hrf)).ToList();
 
-                if (hrfcasts != null)
-                {
-                    var model = new ForecastGraphDataCreator();
-                    model.SetForecastData(hrfcasts, hrfcasts.GetRecommendedGraphType());
-                    HourlyPrecipitationGraphData = (LineViewData)model.GraphData;
-                }
-                else
-                {
-                    HourlyPrecipitationGraphData = null;
-                }
-            });
+            if (hrfcasts != null)
+            {
+                var model = new ForecastGraphDataCreator();
+                model.SetForecastData(hrfcasts, hrfcasts.GetRecommendedGraphType());
+                HourlyPrecipitationGraphData = (LineViewData)model.GraphData;
+            }
+            else
+            {
+                HourlyPrecipitationGraphData = null;
+            }
         }
 
         private void RefreshMinutelyForecasts(IList<MinutelyForecast> minfcasts)
         {
-            Dispatcher.LaunchOnUIThread(() =>
+            var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+            var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).AddHours(-(hrInterval * 0.5)).Trim(TimeSpan.TicksPerHour);
+
+            var minfcastsFiltered = minfcasts?.Where(m => m.date >= now)?.Take(60);
+
+            if (minfcastsFiltered?.Any() == true)
             {
-                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-                var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).AddHours(-(hrInterval * 0.5)).Trim(TimeSpan.TicksPerHour);
-
-                var minfcastsFiltered = minfcasts?.Where(m => m.date >= now)?.Take(60);
-
-                if (minfcastsFiltered?.Any() == true)
-                {
-                    var model = new ForecastGraphDataCreator();
-                    model.SetMinutelyForecastData(minfcastsFiltered);
-                    MinutelyPrecipitationGraphData = (LineViewData)model.GraphData;
-                }
-                else
-                {
-                    MinutelyPrecipitationGraphData = null;
-                }
-            });
+                var model = new ForecastGraphDataCreator();
+                model.SetMinutelyForecastData(minfcastsFiltered);
+                MinutelyPrecipitationGraphData = (LineViewData)model.GraphData;
+            }
+            else
+            {
+                MinutelyPrecipitationGraphData = null;
+            }
         }
 
         private RangeBarGraphData CreateGraphData(IEnumerable<Forecast> forecastData)

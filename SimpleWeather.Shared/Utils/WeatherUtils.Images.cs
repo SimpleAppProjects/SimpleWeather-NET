@@ -1,14 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SimpleWeather.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using SimpleWeather.WeatherData.Images.Model;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
@@ -16,7 +13,7 @@ namespace SimpleWeather.Utils
 {
     public static partial class WeatherUtils
     {
-        public static async Task<ImageDataViewModel> GetImageData(Weather weather)
+        public static async Task<ImageDataViewModel> GetImageData(this Weather weather)
         {
             String icon = weather.condition.icon;
             String backgroundCode = null;

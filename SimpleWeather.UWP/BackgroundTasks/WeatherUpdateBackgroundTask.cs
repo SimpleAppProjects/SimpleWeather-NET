@@ -1,4 +1,4 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Notifications;
 using SimpleWeather.UWP.Tiles;
@@ -328,15 +328,16 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             if (Settings.FollowGPS)
             {
-                Geoposition newGeoPos = null;
+                Location.Location location = null;
                 Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
 
                 try
                 {
                     cts.Token.ThrowIfCancellationRequested();
                     geolocal.AllowFallbackToConsentlessPositions();
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
+                    var newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
                         .AsTask(cts.Token).ConfigureAwait(false);
+                    location = newGeoPos.ToLocation();
                 }
                 catch (OperationCanceledException)
                 {
@@ -348,7 +349,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 }
 
                 // Access to location granted
-                if (newGeoPos != null)
+                if (location != null)
                 {
                     var lastGPSLocData = await Settings.GetLastGPSLocData();
 
@@ -356,23 +357,22 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                     // Check previous location difference
                     if (lastGPSLocData?.IsValid() == true
-                        && Math.Abs(ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                        newGeoPos.Coordinate.Point.Position.Latitude, newGeoPos.Coordinate.Point.Position.Longitude)) < geolocal.MovementThreshold)
+                        && Math.Abs(ConversionMethods.CalculateGeopositionDistance(lastGPSLocData.ToLocation(), location)) < geolocal.MovementThreshold)
                     {
                         return false;
                     }
 
-                    LocationQueryViewModel view = null;
+                    LocationQuery view = null;
 
                     await Task.Run(async () =>
                     {
                         try
                         {
-                            view = await wm.GetLocation(newGeoPos);
+                            view = await wm.GetLocation(location);
 
-                            if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                            if (String.IsNullOrWhiteSpace(view.Location_Query))
                             {
-                                view = new LocationQueryViewModel();
+                                view = new LocationQuery();
                             }
                             else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                             {
@@ -383,11 +383,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         }
                         catch (WeatherException)
                         {
-                            view = new LocationQueryViewModel();
+                            view = new LocationQuery();
                         }
                     }, cts.Token).ConfigureAwait(false);
 
-                    if (String.IsNullOrWhiteSpace(view.LocationQuery))
+                    if (String.IsNullOrWhiteSpace(view.Location_Query))
                     {
                         // Stop since there is no valid query
                         return false;
@@ -396,7 +396,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                     if (cts.IsCancellationRequested) return locationChanged;
 
                     // Save location as last known
-                    lastGPSLocData = new Location.LocationData(view, newGeoPos);
+                    lastGPSLocData = view.ToLocationData(location);
                     Settings.SaveLastGPSLocData(lastGPSLocData);
 
                     locationChanged = true;

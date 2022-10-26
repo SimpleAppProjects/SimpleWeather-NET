@@ -1,59 +1,30 @@
-﻿using Microsoft.Toolkit.Collections;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
-using SimpleWeather.Controls;
 using SimpleWeather.ComponentModel;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class ForecastsListViewModel : DependencyObject, IViewModel, IDisposable
+    public partial class ForecastsListViewModel : BaseViewModel, IDisposable
     {
         private LocationData locationData;
         private string unitCode;
 
-        public IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> Forecasts
-        {
-            get { return (IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>)GetValue(ForecastsProperty); }
-            set { SetValue(ForecastsProperty, value); }
-        }
+        [ObservableProperty]
+        private IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> forecasts;
 
-        // Using a DependencyProperty as the backing store for Forecasts.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ForecastsProperty =
-            DependencyProperty.Register("Forecasts", typeof(IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
-
-        public IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> HourlyForecasts
-        {
-            get { return (IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>)GetValue(HourlyForecastsProperty); }
-            set { SetValue(HourlyForecastsProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for HourlyForecasts.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HourlyForecastsProperty =
-            DependencyProperty.Register("HourlyForecasts", typeof(IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>), typeof(ForecastsListViewModel), new PropertyMetadata(null));
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
-        }
+        [ObservableProperty]
+        private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
 
         public void UpdateForecasts(LocationData location)
         {
@@ -62,7 +33,7 @@ namespace SimpleWeather.UWP.Controls
                 Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
 
                 // Clone location data
-                this.locationData = new LocationData(new LocationQueryViewModel(location));
+                this.locationData = new LocationQuery(location).ToLocationData();
 
                 this.unitCode = Settings.UnitString;
 
@@ -100,48 +71,36 @@ namespace SimpleWeather.UWP.Controls
 
         private void ResetForecasts()
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
-            });
+            Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
         }
 
         public void RefreshForecasts()
         {
-            Dispatcher.LaunchOnUIThread(() =>
+            if (Forecasts == null)
             {
-                if (Forecasts == null)
-                {
-                    Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
-                }
-                else
-                {
-                    Forecasts.RefreshAsync();
-                }
-            });
+                Forecasts = new IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel>(new ForecastSource(locationData), 7);
+            }
+            else
+            {
+                Forecasts.RefreshAsync();
+            }
         }
 
         private void ResetHourlyForecasts()
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
-            });
+            HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
         }
 
         public void RefreshHourlyForecasts()
         {
-            Dispatcher.LaunchOnUIThread(() =>
+            if (HourlyForecasts == null)
             {
-                if (HourlyForecasts == null)
-                {
-                    HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
-                }
-                else
-                {
-                    HourlyForecasts.RefreshAsync();
-                }
-            });
+                HourlyForecasts = new IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel>(new HourlyForecastSource(locationData), 24);
+            }
+            else
+            {
+                HourlyForecasts.RefreshAsync();
+            }
         }
 
         private bool isDisposed;

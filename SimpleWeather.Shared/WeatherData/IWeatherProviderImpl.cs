@@ -24,9 +24,9 @@ namespace SimpleWeather.WeatherData
         AuthType AuthType { get; }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query);
+        Task<ObservableCollection<LocationQuery>> GetLocations(string ac_query);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate);
+        Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<Weather> GetWeather(string location_query, string country_code);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

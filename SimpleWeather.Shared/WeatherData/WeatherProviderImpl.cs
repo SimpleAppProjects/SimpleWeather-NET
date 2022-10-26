@@ -36,13 +36,13 @@ namespace SimpleWeather.WeatherData
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query)
+        public Task<ObservableCollection<LocationQuery>> GetLocations(String ac_query)
         {
             return LocationProvider.GetLocations(ac_query, WeatherAPI);
         }
         // GeopositionQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate)
+        public Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate)
         {
             return LocationProvider.GetLocation(coordinate, WeatherAPI);
         }

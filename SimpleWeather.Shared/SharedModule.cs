@@ -1,5 +1,6 @@
 ﻿using CacheCow.Client;
 using CacheCow.Client.FileCacheStore;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleWeather.Extras;
 using SimpleWeather.HttpClientExtensions;
@@ -8,16 +9,9 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.ApplicationModel.Resources;
-using Windows.Foundation;
 using static SimpleWeather.CommonActionChangedEventArgs;
 
 namespace SimpleWeather
@@ -51,11 +45,11 @@ namespace SimpleWeather
 
         public WeatherIconsManager WeatherIconsManager => wimLazy.Value;
 
-        public IServiceProvider Services { get; private set; }
+        public IServiceProvider Services => Ioc.Default;
 
         public void RequestAction(string Action, IDictionary<string, object> Bundle = null)
         {
-            OnCommonActionChanged?.Invoke(null, 
+            OnCommonActionChanged?.Invoke(null,
                 new CommonActionChangedEventArgs(Action, Bundle));
         }
 
@@ -84,10 +78,7 @@ namespace SimpleWeather
 
         public void BuildServiceProvider()
         {
-            if (Services == null)
-            {
-                Services = ServiceCollection.BuildServiceProvider();
-            }
+            Ioc.Default.ConfigureServices(ServiceCollection.BuildServiceProvider());
         }
 
         public void Initialize()

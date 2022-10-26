@@ -1,16 +1,10 @@
-﻿using NodaTime;
-using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
+﻿using SimpleWeather.Utils;
 
 namespace SimpleWeather.Location
 {
     public partial class LocationData
     {
-        public static LocationData BuildGPSLocation()
+        public static LocationData BuildEmptyGPSLocation()
         {
             string weatherSource = null;
 
@@ -19,10 +13,7 @@ namespace SimpleWeather.Location
                 weatherSource = Settings.API;
             }
 
-            return new LocationData(Controls.LocationQueryViewModel.BuildEmptyModel(weatherSource))
-            {
-                locationType = LocationType.GPS
-            };
+            return LocationQuery.BuildEmptyModel(weatherSource).ToLocationData(new Location());
         }
 
         public LocationData()
@@ -41,34 +32,6 @@ namespace SimpleWeather.Location
             longitude = weather.location.longitude.GetValueOrDefault();
             tz_long = weather.location.tz_long;
             weatherSource = weather.source;
-        }
-
-        public LocationData(Controls.LocationQueryViewModel query_vm)
-        {
-            query = query_vm.LocationQuery;
-            name = query_vm.LocationName;
-            latitude = query_vm.LocationLat;
-            longitude = query_vm.LocationLong;
-            tz_long = query_vm.LocationTZLong;
-            weatherSource = query_vm.WeatherSource;
-            locationSource = query_vm.LocationSource;
-        }
-
-        public LocationData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
-        {
-            SetData(query_vm, geoPos);
-        }
-
-        public void SetData(Controls.LocationQueryViewModel query_vm, Windows.Devices.Geolocation.Geoposition geoPos)
-        {
-            query = query_vm.LocationQuery;
-            name = query_vm.LocationName;
-            latitude = geoPos.Coordinate.Point.Position.Latitude;
-            longitude = geoPos.Coordinate.Point.Position.Longitude;
-            tz_long = query_vm.LocationTZLong;
-            locationType = LocationType.GPS;
-            weatherSource = query_vm.WeatherSource;
-            locationSource = query_vm.LocationSource;
         }
     }
 }

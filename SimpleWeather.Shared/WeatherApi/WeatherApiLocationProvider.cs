@@ -32,9 +32,9 @@ namespace SimpleWeather.WeatherApi
         public override bool NeedsLocationFromName => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
+        public override async Task<ObservableCollection<LocationQuery>> GetLocations(string location_query, string weatherAPI)
         {
-            ObservableCollection<LocationQueryViewModel> locations = null;
+            ObservableCollection<LocationQuery> locations = null;
 
             var culture = CultureUtils.UserCulture;
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -69,13 +69,13 @@ namespace SimpleWeather.WeatherApi
                         Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
-                        var locationSet = new HashSet<LocationQueryViewModel>();
+                        var locationSet = new HashSet<LocationQuery>();
                         LocationItem[] root = await JSONParser.DeserializerAsync<LocationItem[]>(contentStream);
 
                         foreach (LocationItem result in root)
                         {
                             // Filter: only store city results
-                            bool added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
+                            bool added = locationSet.Add(new LocationQuery(result, weatherAPI));
 
                             // Limit amount of results
                             if (added)
@@ -86,7 +86,7 @@ namespace SimpleWeather.WeatherApi
                             }
                         }
 
-                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+                        locations = new ObservableCollection<LocationQuery>(locationSet);
                     }
                 }
             }
@@ -108,27 +108,27 @@ namespace SimpleWeather.WeatherApi
                 throw wEx;
 
             if (locations == null || locations.Count == 0)
-                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                locations = new ObservableCollection<LocationQuery>() { new LocationQuery() };
 
             return locations;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
+        public override Task<LocationQuery> GetLocationFromID(LocationQuery model)
         {
-            return Task.FromResult<LocationQueryViewModel>(null);
+            return Task.FromResult<LocationQuery>(null);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        public override Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
             return base.GetLocationFromName(model);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override async Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -202,9 +202,9 @@ namespace SimpleWeather.WeatherApi
                 throw wEx;
 
             if (result != null)
-                location = new LocationQueryViewModel(result, weatherAPI);
+                location = new LocationQuery(result, weatherAPI);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }

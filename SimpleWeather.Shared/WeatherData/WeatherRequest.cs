@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 
 namespace SimpleWeather.WeatherData
@@ -16,7 +14,6 @@ namespace SimpleWeather.WeatherData
         internal bool LoadForecasts { get; set; }
         internal bool ForceLoadSavedData { get; set; }
         internal bool ShouldSaveData { get; set; } = true;
-        internal IWeatherErrorListener ErrorListener { get; set; }
         internal CancellationToken CancelToken { get; set; }
 
         /// <summary>
@@ -71,12 +68,6 @@ namespace SimpleWeather.WeatherData
                 request.ForceRefresh = true;
                 request.ForceLoadSavedData = false;
                 request.ShouldSaveData = false;
-                return this;
-            }
-
-            public Builder SetErrorListener(IWeatherErrorListener listener)
-            {
-                request.ErrorListener = listener;
                 return this;
             }
 

@@ -1,15 +1,10 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Keys;
+﻿using SimpleWeather.Keys;
+using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Web;
@@ -34,9 +29,9 @@ namespace SimpleWeather.AccuWeather
         }
 
         /// <exception cref="WeatherException">Ignore. Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
+        public override async Task<LocationQuery> GetLocationFromID(LocationQuery model)
         {
-            LocationQueryViewModel location;
+            LocationQuery location;
 
             var culture = CultureUtils.UserCulture;
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -64,7 +59,7 @@ namespace SimpleWeather.AccuWeather
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(14)
                     };
@@ -104,17 +99,17 @@ namespace SimpleWeather.AccuWeather
                 throw wEx;
 
             if (result != null)
-                location = new LocationQueryViewModel(result, model.WeatherSource);
+                location = new LocationQuery(result, model.WeatherSource);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override async Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
@@ -181,9 +176,9 @@ namespace SimpleWeather.AccuWeather
                 throw wEx;
 
             if (result != null)
-                location = new LocationQueryViewModel(result, weatherAPI);
+                location = new LocationQuery(result, weatherAPI);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }

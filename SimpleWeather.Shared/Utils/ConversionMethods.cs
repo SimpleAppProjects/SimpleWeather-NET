@@ -136,7 +136,7 @@ namespace SimpleWeather.Utils
             return (R * c) * 1000;
         }
 
-        public static double CalculateGeopositionDistance(Windows.Devices.Geolocation.Geoposition position1, Windows.Devices.Geolocation.Geoposition position2)
+        public static double CalculateGeopositionDistance(Location.Location position1, Location.Location position2)
         {
             if (position1 is null)
             {
@@ -148,10 +148,10 @@ namespace SimpleWeather.Utils
                 throw new ArgumentNullException(nameof(position2));
             }
 
-            double lat1 = position1.Coordinate.Point.Position.Latitude;
-            double lon1 = position1.Coordinate.Point.Position.Longitude;
-            double lat2 = position2.Coordinate.Point.Position.Latitude;
-            double lon2 = position2.Coordinate.Point.Position.Longitude;
+            double lat1 = position1.Latitude;
+            double lon1 = position1.Longitude;
+            double lat2 = position2.Latitude;
+            double lon2 = position2.Longitude;
 
             /* Returns value in meters */
             return Math.Abs(CalculateHaversine(lat1, lon1, lat2, lon2));

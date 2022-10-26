@@ -1,25 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SimpleWeather.Utils;
 
 namespace SimpleWeather.WeatherData
 {
-    public sealed class WeatherResult
+    public interface WeatherResult
     {
-        public bool IsSavedData { get; private set; } = false;
-        public Weather Weather { get; private set; } = null;
+        Weather Data { get; }
 
-        private WeatherResult()
+        public sealed class Success : WeatherResult
         {
+            public Weather Data { get; }
+            public bool IsSavedData { get; }
+
+            public Success(Weather data, bool isSavedData = false)
+            {
+                Data = data;
+                IsSavedData = isSavedData;
+            }
         }
 
-        internal static WeatherResult Create(Weather weather, bool freshFromProvider)
+        public sealed class WeatherWithError : WeatherResult
         {
-            return new WeatherResult()
+            public Weather Data { get; }
+            public bool IsSavedData { get; }
+            public WeatherException Exception { get; }
+
+            public WeatherWithError(Weather data, WeatherException exception, bool isSavedData = true)
             {
-                IsSavedData = !freshFromProvider,
-                Weather = weather
-            };
+                Data = data;
+                IsSavedData = isSavedData;
+                Exception = exception;
+            }
+        }
+
+        public sealed class NoWeather : WeatherResult
+        {
+            public Weather Data { get; }
+            public bool IsSavedData { get; }
+
+            public NoWeather(Weather data = null, bool isSavedData = false)
+            {
+                Data = data;
+                IsSavedData = isSavedData;
+            }
+        }
+
+        public sealed class Error : WeatherResult
+        {
+            public Weather Data { get; }
+            public WeatherException Exception { get; }
+
+            public Error(WeatherException exception, Weather data = null)
+            {
+                Data = data;
+                Exception = exception;
+            }
+        }
+    }
+
+    public static class WeatherResultExtensions
+    {
+#nullable enable
+        public static WeatherResult ToWeatherResult(this Weather? weather, bool isSavedData = false)
+#nullable disable
+        {
+            if (weather == null)
+            {
+                return new WeatherResult.NoWeather(isSavedData: isSavedData);
+            }
+            else
+            {
+                return new WeatherResult.Success(weather, isSavedData);
+            }
         }
     }
 }

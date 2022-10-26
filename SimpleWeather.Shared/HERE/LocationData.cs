@@ -1,16 +1,12 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
-namespace SimpleWeather.Controls
+namespace SimpleWeather.Location
 {
-    public partial class LocationQueryViewModel
+    public partial class LocationQuery
     {
         /* HERE Autocomplete */
-        public LocationQueryViewModel(HERE.Suggestion location, String weatherAPI)
+        public LocationQuery(HERE.Suggestion location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }
@@ -71,7 +67,7 @@ namespace SimpleWeather.Controls
             }
 
             LocationCountry = location.countryCode;
-            LocationQuery = location.locationId;
+            Location_Query = location.locationId;
 
             LocationLat = -1;
             LocationLong = -1;
@@ -83,7 +79,7 @@ namespace SimpleWeather.Controls
         }
 
         /* HERE Geocoder */
-        public LocationQueryViewModel(HERE.Result location, String weatherAPI)
+        public LocationQuery(HERE.Result location, String weatherAPI)
         {
             SetLocation(location, weatherAPI);
         }

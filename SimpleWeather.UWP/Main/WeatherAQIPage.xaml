@@ -28,7 +28,7 @@
                     Padding="16"
                     d:Text="New York, NY"
                     FontSize="16"
-                    Text="{x:Bind WeatherView.Location, Mode=OneWay}" />
+                    Text="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay}" />
             </Viewbox>
             <Rectangle Height="1" Fill="{ThemeResource NavigationViewContentGridBorderBrush}" />
         </StackPanel>
@@ -49,7 +49,7 @@
                             </StackPanel>
                         </DataTemplate>
                     </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                    <localControls:AQIForecastControl x:Name="AQIndexControl" DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}" />
+                    <localControls:AQIForecastControl x:Name="AQIndexControl" DataContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}" />
                 </toolkitControls:HeaderedContentControl>
                 <ItemsControl
                     x:Name="AQIContainer"

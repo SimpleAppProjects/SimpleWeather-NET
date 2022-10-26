@@ -1,16 +1,13 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
 
-namespace SimpleWeather.Controls
+namespace SimpleWeather.Location
 {
-    public partial class LocationQueryViewModel
+    public partial class LocationQuery
     {
         /* WeatherAPI AutoComplete Query */
-        public LocationQueryViewModel(WeatherApi.LocationItem result, String weatherAPI)
+        public LocationQuery(WeatherApi.LocationItem result, String weatherAPI)
         {
             SetLocation(result, weatherAPI);
         }
@@ -36,7 +33,7 @@ namespace SimpleWeather.Controls
 
             LocationName = name;
             LocationCountry = result.country;
-            LocationQuery = result.id.ToInvariantString();
+            Location_Query = result.id.ToInvariantString();
 
             LocationLat = result.lat;
             LocationLong = result.lon;

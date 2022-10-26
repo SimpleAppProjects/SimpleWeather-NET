@@ -36,9 +36,9 @@ namespace SimpleWeather.Bing
         public override long GetRetryTime() => 5000;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
+        public override async Task<ObservableCollection<LocationQuery>> GetLocations(string location_query, string weatherAPI)
         {
-            ObservableCollection<LocationQueryViewModel> locations = null;
+            ObservableCollection<LocationQuery> locations = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -72,7 +72,7 @@ namespace SimpleWeather.Bing
                         Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
-                        var locationSet = new HashSet<LocationQueryViewModel>();
+                        var locationSet = new HashSet<LocationQuery>();
                         AC_Rootobject root = await JSONParser.DeserializerAsync<AC_Rootobject>(contentStream);
 
                         foreach (Value result in root.resourceSets[0].resources[0].value)
@@ -80,7 +80,7 @@ namespace SimpleWeather.Bing
                             // Filter: only store city results
                             bool added = false;
                             if (!String.IsNullOrWhiteSpace(result.address.locality))
-                                added = locationSet.Add(new LocationQueryViewModel(result.address, weatherAPI));
+                                added = locationSet.Add(new LocationQuery(result.address, weatherAPI));
                             else
                                 continue;
 
@@ -93,7 +93,7 @@ namespace SimpleWeather.Bing
                             }
                         }
 
-                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+                        locations = new ObservableCollection<LocationQuery>(locationSet);
                     }
                 }
             }
@@ -114,15 +114,15 @@ namespace SimpleWeather.Bing
                 throw wEx;
 
             if (locations == null || locations.Count == 0)
-                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                locations = new ObservableCollection<LocationQuery>() { new LocationQuery() };
 
             return locations;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override async Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -187,22 +187,22 @@ namespace SimpleWeather.Bing
                 throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result, weatherAPI);
+                location = new LocationQuery(result, weatherAPI);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }
 
-        public override Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
+        public override Task<LocationQuery> GetLocationFromID(LocationQuery model)
         {
-            return Task.FromResult<LocationQueryViewModel>(null);
+            return Task.FromResult<LocationQuery>(null);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        public override async Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -226,7 +226,7 @@ namespace SimpleWeather.Bing
                 {
                     // Geocode the specified address, using the specified reference point
                     // as a query hint. Return no more than a single result.
-                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.LocationQuery, hintPoint, 1).AsTask(cts.Token);
+                    MapLocationFinderResult mapResult = await MapLocationFinder.FindLocationsAsync(model.Location_Query, hintPoint, 1).AsTask(cts.Token);
 
                     switch (mapResult.Status)
                     {
@@ -268,9 +268,9 @@ namespace SimpleWeather.Bing
                 throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result, model.WeatherSource);
+                location = new LocationQuery(result, model.WeatherSource);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }

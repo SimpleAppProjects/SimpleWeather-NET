@@ -247,19 +247,19 @@ namespace SimpleWeather.WeatherData
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query)
+        public Task<ObservableCollection<LocationQuery>> GetLocations(string ac_query)
         {
             return WeatherProvider.GetLocations(ac_query);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQueryViewModel> GetLocation(Windows.Devices.Geolocation.Geoposition geoPos)
+        public Task<LocationQuery> GetLocation(SimpleWeather.Location.Location location)
         {
-            return GetLocation(new WeatherUtils.Coordinate(geoPos));
+            return GetLocation(new WeatherUtils.Coordinate(location));
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord)
+        public Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coord)
         {
             return WeatherProvider.GetLocation(coord);
         }

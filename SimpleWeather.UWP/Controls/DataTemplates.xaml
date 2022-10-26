@@ -5,9 +5,10 @@
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Controls"
-    xmlns:localControls="using:SimpleWeather.UWP.Controls">
+    xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:location="using:SimpleWeather.Location">
 
-    <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="controls:LocationQueryViewModel">
+    <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="location:LocationQuery">
         <Grid MinHeight="65" Padding="0,5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

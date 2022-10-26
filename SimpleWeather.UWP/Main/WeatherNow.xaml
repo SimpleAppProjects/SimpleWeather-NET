@@ -17,7 +17,7 @@
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     d:Background="{ThemeResource RegionBrush}"
-    DataContext="{x:Bind WeatherView, Mode=OneWay}"
+    DataContext="{x:Bind WNowViewModel, Mode=OneWay}"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -51,7 +51,7 @@
     </Page.Resources>
 
     <Grid x:Name="MainGrid" d:Background="LightGray">
-        <Grid Visibility="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+        <Grid Visibility="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
             <ParallaxView
                 x:Name="BackgroundOverlay"
                 x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
@@ -65,7 +65,7 @@
                     ImageOpened="BackgroundOverlay_ImageOpened"
                     Stretch="UniformToFill">
                     <Image.Source>
-                        <BitmapImage UriSource="{x:Bind WeatherView.ImageData.ImageUri, Mode=OneWay}" />
+                        <BitmapImage UriSource="{x:Bind WNowViewModel.ImageData.ImageUri, Mode=OneWay}" />
                     </Image.Source>
                 </Image>
             </ParallaxView>
@@ -84,10 +84,10 @@
             </Grid>
             <ScrollViewer
                 x:Name="MainViewer"
-                x:Load="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                x:Load="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                 SizeChanged="MainGrid_SizeChanged"
                 VerticalScrollMode="Auto"
-                Visibility="{x:Bind WeatherView.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                Visibility="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!--  Row 0  -->
@@ -142,7 +142,7 @@
                                 Foreground="{ThemeResource ForegroundColor}"
                                 MaxLines="2"
                                 RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                                Text="{x:Bind WeatherView.Location, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay}"
                                 TextAlignment="Center"
                                 TextTrimming="CharacterEllipsis"
                                 TextWrapping="WrapWholeWords" />
@@ -162,7 +162,7 @@
                             FontWeight="Medium"
                             Foreground="{ThemeResource ForegroundColor}"
                             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                            Text="{x:Bind WeatherView.UpdateDate, Mode=OneWay}" />
+                            Text="{x:Bind WNowViewModel.Weather.UpdateDate, Mode=OneWay}" />
                     </toolkitControls:DropShadowPanel>
                     <Button
                         x:Name="AlertButton"
@@ -238,7 +238,7 @@
                                 FontSize="84"
                                 FontWeight="Light"
                                 Foreground="{ThemeResource ForegroundColor}"
-                                Text="{x:Bind WeatherView.CurTemp, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.CurTemp, Mode=OneWay}"
                                 TextLineBounds="Tight" />
                         </toolkitControls:DropShadowPanel>
                         <StackPanel
@@ -251,7 +251,7 @@
                             RelativePanel.AlignTopWith="CurTempPanel"
                             RelativePanel.AlignVerticalCenterWith="CurTempPanel"
                             RelativePanel.RightOf="CurTempPanel"
-                            Visibility="{x:Bind WeatherView.ShowHiLo, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
+                            Visibility="{x:Bind WNowViewModel.Weather.ShowHiLo, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
                                 <toolkitControls:DropShadowPanel
                                     HorizontalAlignment="Center"
@@ -264,7 +264,7 @@
                                         d:Text="70°"
                                         FontSize="24"
                                         Foreground="{ThemeResource ForegroundColor}"
-                                        Text="{x:Bind WeatherView.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                        Text="{x:Bind WNowViewModel.Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
@@ -283,7 +283,7 @@
                                         d:Text="60°"
                                         FontSize="24"
                                         Foreground="{ThemeResource ForegroundColor}"
-                                        Text="{x:Bind WeatherView.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                        Text="{x:Bind WNowViewModel.Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
@@ -303,7 +303,7 @@
                             RelativePanel.Above="SummaryPanel"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignTopWithPanel="True"
-                            WeatherIcon="{x:Bind WeatherView.WeatherIcon, Mode=OneWay}" />
+                            WeatherIcon="{x:Bind WNowViewModel.Weather.WeatherIcon, Mode=OneWay}" />
                         <toolkitControls:DropShadowPanel
                             x:Name="CurConditionPanel"
                             HorizontalAlignment="Center"
@@ -318,7 +318,7 @@
                                 d:Text="Sunny"
                                 FontSize="24"
                                 Foreground="{ThemeResource ForegroundColor}"
-                                Text="{x:Bind WeatherView.CurCondition, Mode=OneWay}" />
+                                Text="{x:Bind WNowViewModel.Weather.CurCondition, Mode=OneWay}" />
                         </toolkitControls:DropShadowPanel>
                         <toolkitControls:DropShadowPanel
                             x:Name="SummaryPanel"
@@ -331,7 +331,7 @@
                             RelativePanel.Above="Attribution"
                             RelativePanel.AlignLeftWithPanel="True"
                             ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                            Visibility="{x:Bind WeatherView.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                            Visibility="{x:Bind WNowViewModel.Weather.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                             <TextBlock
                                 x:Name="SummaryText"
                                 Padding="5"
@@ -339,7 +339,7 @@
                                 FontSize="12"
                                 FontWeight="Normal"
                                 Foreground="{ThemeResource ForegroundColor}"
-                                Text="{x:Bind WeatherView.WeatherSummary, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.WeatherSummary, Mode=OneWay}"
                                 TextWrapping="Wrap" />
                         </toolkitControls:DropShadowPanel>
                         <HyperlinkButton
@@ -349,7 +349,7 @@
                             x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                             FontSize="11"
                             FontWeight="Medium"
-                            NavigateUri="{x:Bind WeatherView.ImageData.OriginalLink, Mode=OneWay}"
+                            NavigateUri="{x:Bind WNowViewModel.ImageData.OriginalLink, Mode=OneWay}"
                             RelativePanel.Above="BottomSpacer"
                             RelativePanel.AlignRightWithPanel="True"
                             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
@@ -358,9 +358,9 @@
                                 <toolkitControls:DropShadowPanel
                                     BlurRadius="15.0"
                                     ShadowOpacity="1"
-                                    Visibility="{x:Bind WeatherView.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                                    Visibility="{x:Bind WNowViewModel.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                                     <TextBlock>
-                                        <Span><Run d:Text="Photo by" Text="{helpers:StringRes Name='attrib_prefix'}" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WeatherView.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WeatherView.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
+                                        <Span><Run d:Text="Photo by" Text="{helpers:StringRes Name='attrib_prefix'}" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WNowViewModel.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WNowViewModel.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
                                     </TextBlock>
                                 </toolkitControls:DropShadowPanel>
                             </HyperlinkButton.Content>
@@ -480,8 +480,8 @@
                                         HorizontalAlignment="Center"
                                         HorizontalContentAlignment="Center"
                                         x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=OneWay}"
-                                        ItemsSource="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}"
-                                        Visibility="{x:Bind WeatherView.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
+                                        ItemsSource="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}"
+                                        Visibility="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate x:DataType="controls:DetailItemViewModel">
                                                 <localcontrols:DetailItem HorizontalAlignment="Center" />
@@ -500,29 +500,29 @@
                                         <localcontrols:UVControl
                                             x:Name="UVContrl"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
-                                            DataContext="{x:Bind WeatherView.UVIndex, Mode=OneWay}"
-                                            Visibility="{x:Bind WeatherView.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                            DataContext="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay}"
+                                            Visibility="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:BeaufortControl
                                             x:Name="BeaufControl"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
-                                            DataContext="{x:Bind WeatherView.Beaufort, Mode=OneWay}"
-                                            Visibility="{x:Bind WeatherView.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                            DataContext="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay}"
+                                            Visibility="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:AQIControl
                                             x:Name="AQIndexControl"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
-                                            DataContext="{x:Bind WeatherView.AirQuality, Mode=OneWay}"
+                                            DataContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}"
                                             Tapped="AQIndexControl_Tapped"
-                                            Visibility="{x:Bind WeatherView.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                            Visibility="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:PollenCountControl
                                             x:Name="PollenControl"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=OneWay}"
-                                            DataContext="{x:Bind WeatherView.Pollen, Mode=OneWay}"
-                                            Visibility="{x:Bind WeatherView.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                            DataContext="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay}"
+                                            Visibility="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                         <localcontrols:MoonPhaseControl
                                             x:Name="MoonControl"
                                             x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
-                                            DataContext="{x:Bind WeatherView.MoonPhase, Mode=OneWay}"
-                                            Visibility="{x:Bind WeatherView.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                                            DataContext="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay}"
+                                            Visibility="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                                     </localcontrols:ExtendingWrapPanel>
                                 </StackPanel>
                             </toolkitControls:HeaderedContentControl>
@@ -532,14 +532,14 @@
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
-                            Visibility="{x:Bind WeatherView.SunPhase, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                            Visibility="{x:Bind WNowViewModel.Weather.SunPhase, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
                                 d:Header="Sunrise / Sunset"
                                 Header="{helpers:StringRes Name='label_sunriseset'}"
                                 Style="{ThemeResource SectionLabelStyle}">
-                                <localcontrols:SunPhaseView x:Name="SunPhaseView" />
+                                <localcontrols:SunPhaseView x:Name="SunPhaseView" DataContext="{x:Bind WNowViewModel.Weather.SunPhase, Mode=OneWay}" />
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
                         <StackPanel
@@ -573,7 +573,7 @@
                             Padding="10"
                             HorizontalAlignment="Center"
                             FontSize="14"
-                            Text="{x:Bind WeatherView.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}" />
+                            Text="{x:Bind WNowViewModel.Weather.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}" />
                     </StackPanel>
                 </Grid>
             </ScrollViewer>

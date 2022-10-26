@@ -1,14 +1,11 @@
 ﻿using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
@@ -17,7 +14,6 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,7 +21,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.UWP.Main
@@ -33,7 +28,7 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, ICommandBarPage, ISnackbarPage, IDisposable, IWeatherErrorListener
+    public sealed partial class LocationsPage : Page, ICommandBarPage, ISnackbarPage, IDisposable
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
@@ -102,7 +97,7 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        public void OnWeatherError(WeatherException wEx)
+        private void OnWeatherError(WeatherException wEx)
         {
             if (cts?.IsCancellationRequested == true)
                 return;
@@ -367,18 +362,30 @@ namespace SimpleWeather.UWP.Main
                             PanelAdapter.Add(panel);
                         });
 
-                        _ = Task.Run(() => new WeatherDataLoader(location)
-                                    .LoadWeatherData(new WeatherRequest.Builder()
-                                        .ForceRefresh(false)
-                                        .SetErrorListener(this)
-                                        .Build())
-                                    .ContinueWith((t) =>
-                                    {
-                                        if (t.IsCompletedSuccessfully)
-                                        {
-                                            OnWeatherLoaded(location, t.Result);
-                                        }
-                                    }));
+                        _ = Task.Run(async () =>
+                        {
+                            var result = await new WeatherDataLoader(location)
+                                .LoadWeatherResult(
+                                    new WeatherRequest.Builder()
+                                    .ForceRefresh(false)
+                                    .Build());
+
+                            switch (result)
+                            {
+                                case WeatherResult.Error wrErr:
+                                    OnWeatherError(wrErr.Exception);
+                                    break;
+                                case WeatherResult.WeatherWithError wrErr:
+                                    OnWeatherError(wrErr.Exception);
+                                    break;
+                                case WeatherResult.NoWeather:
+                                    break;
+                                case WeatherResult.Success:
+                                    break;
+                            };
+
+                            OnWeatherLoaded(location, result.Data);
+                        });
                     }
                 }
                 else
@@ -499,18 +506,30 @@ namespace SimpleWeather.UWP.Main
 
                         foreach (var view in dataset)
                         {
-                            _ = Task.Run(() => new WeatherDataLoader(view.LocationData)
-                                .LoadWeatherData(new WeatherRequest.Builder()
+                            _ = Task.Run(async () =>
+                            {
+                                var result = await new WeatherDataLoader(view.LocationData)
+                                    .LoadWeatherResult(
+                                        new WeatherRequest.Builder()
                                         .ForceRefresh(false)
-                                        .SetErrorListener(this)
-                                        .Build())
-                                        .ContinueWith((t) =>
-                                        {
-                                            if (t.IsCompletedSuccessfully)
-                                            {
-                                                OnWeatherLoaded(view.LocationData, t.Result);
-                                            }
-                                        }));
+                                        .Build());
+
+                                switch (result)
+                                {
+                                    case WeatherResult.Error wrErr:
+                                        OnWeatherError(wrErr.Exception);
+                                        break;
+                                    case WeatherResult.WeatherWithError wrErr:
+                                        OnWeatherError(wrErr.Exception);
+                                        break;
+                                    case WeatherResult.NoWeather:
+                                        break;
+                                    case WeatherResult.Success:
+                                        break;
+                                };
+
+                                OnWeatherLoaded(view.LocationData, result.Data);
+                            });
                         }
                     }
                     else
@@ -550,7 +569,7 @@ namespace SimpleWeather.UWP.Main
 
             if (Settings.FollowGPS)
             {
-                Geoposition newGeoPos = null;
+                Location.Location location = null;
                 var geoStatus = GeolocationAccessStatus.Unspecified;
 
                 try
@@ -566,7 +585,8 @@ namespace SimpleWeather.UWP.Main
                 {
                     // Fallback to coarse (less accurate) location
                     geolocal.AllowFallbackToConsentlessPositions();
-                    newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                    var newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                    location = newGeoPos.ToLocation();
                 }
                 catch (Exception ex)
                 {
@@ -577,23 +597,23 @@ namespace SimpleWeather.UWP.Main
                     return null;
 
                 // Access to location granted
-                if (newGeoPos != null)
+                if (location != null)
                 {
                     var view = await Task.Run(async () =>
                     {
-                        LocationQueryViewModel locView = null;
+                        LocationQuery locView = null;
 
                         if (cts?.IsCancellationRequested == true)
                             return null;
 
                         try
                         {
-                            locView = await wm.GetLocation(newGeoPos);
+                            locView = await wm.GetLocation(location);
 
                             if (cts?.IsCancellationRequested == true)
                                 return null;
 
-                            if (String.IsNullOrWhiteSpace(locView?.LocationQuery))
+                            if (String.IsNullOrWhiteSpace(locView?.Location_Query))
                                 return null;
 
                             if (String.IsNullOrWhiteSpace(locView.LocationTZLong) && locView.LocationLat != 0 && locView.LocationLong != 0)
@@ -611,7 +631,7 @@ namespace SimpleWeather.UWP.Main
                         return locView;
                     });
 
-                    if (String.IsNullOrWhiteSpace(view?.LocationQuery))
+                    if (String.IsNullOrWhiteSpace(view?.Location_Query))
                     {
                         // Stop since there is no valid query
                         await Dispatcher.RunOnUIThread(() =>
@@ -622,7 +642,7 @@ namespace SimpleWeather.UWP.Main
                     }
 
                     // Save location as last known
-                    locationData = new LocationData(view, newGeoPos);
+                    locationData = view.ToLocationData(location);
                 }
             }
 

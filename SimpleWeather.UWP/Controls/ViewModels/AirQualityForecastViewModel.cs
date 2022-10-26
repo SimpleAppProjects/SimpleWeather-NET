@@ -1,66 +1,34 @@
-﻿using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleWeather.ComponentModel;
+using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using SQLite;
-using SQLiteNetExtensions.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
-    public class AirQualityForecastViewModel : DependencyObject, IViewModel, IDisposable
+    public partial class AirQualityForecastViewModel : BaseViewModel, IDisposable
     {
         private LocationData locationData;
 
         private ObservableItem<Forecasts> currentForecastsData;
 
-        public ICollection<BarGraphData> AQIGraphData
-        {
-            get { return (ICollection<BarGraphData>)GetValue(AQIGraphDataProperty); }
-            set { SetValue(AQIGraphDataProperty, value); }
-        }
+        [ObservableProperty]
+        private ICollection<BarGraphData> aQIGraphData;
 
-        // Using a DependencyProperty as the backing store for AQIGraphData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AQIGraphDataProperty =
-            DependencyProperty.Register("AQIGraphData", typeof(ICollection<BarGraphData>), typeof(AirQualityForecastViewModel), new PropertyMetadata(null));
-
-        public ICollection<AirQualityViewModel> AQIForecastData
-        {
-            get { return (ICollection<AirQualityViewModel>)GetValue(AQIForecastDataProperty); }
-            set { SetValue(AQIForecastDataProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for AQIForecastData.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty AQIForecastDataProperty =
-            DependencyProperty.Register("AQIForecastData", typeof(ICollection<AirQualityViewModel>), typeof(AirQualityForecastViewModel), new PropertyMetadata(null));
+        [ObservableProperty]
+        private ICollection<AirQualityViewModel> aQIForecastData;
 
         public AirQualityForecastViewModel()
         {
             currentForecastsData = new ObservableItem<Forecasts>();
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        // Create the OnPropertyChanged method to raise the event
-        protected void OnPropertyChanged(string name)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-            });
         }
 
         public void UpdateForecasts(LocationData location)
@@ -72,7 +40,7 @@ namespace SimpleWeather.UWP.Controls
                     Settings.UnregisterWeatherDBChangedEvent(AirQualityForecastViewModel_TableChanged);
 
                     // Clone location data
-                    this.locationData = new LocationData(new LocationQueryViewModel(location));
+                    this.locationData = new LocationQuery(location).ToLocationData();
 
                     currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
 
@@ -104,13 +72,10 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshAQIData(IList<AirQuality> forecasts)
         {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                var now = DateTime.Now.Date;
-                var enumerable = forecasts?.WhereNot(item => item.date?.CompareTo(now) < 0);
-                AQIGraphData = CreateGraphData(enumerable);
-                AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
-            });
+            var now = DateTime.Now.Date;
+            var enumerable = forecasts?.WhereNot(item => item.date?.CompareTo(now) < 0);
+            AQIGraphData = CreateGraphData(enumerable);
+            AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
         }
 
         private ICollection<BarGraphData> CreateGraphData(IEnumerable<AirQuality> enumerable)

@@ -3,22 +3,15 @@ using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
-using SimpleWeather.Icons;
+using SimpleWeather.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
@@ -87,6 +80,12 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty BottomTextColorProperty =
             DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.White));
 
+        public SunPhaseViewModel ViewModel
+        {
+            get => DataContext as SunPhaseViewModel;
+            set => DataContext = value;
+        }
+
         public SunPhaseView()
         {
             this.DefaultStyleKey = typeof(SunPhaseView);
@@ -109,6 +108,7 @@ namespace SimpleWeather.UWP.Controls
 
             RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
             RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
+            this.DataContextChanged += SunPhaseView_DataContextChanged;
         }
 
         protected override void OnApplyTemplate()
@@ -119,6 +119,14 @@ namespace SimpleWeather.UWP.Controls
 
             Canvas.CreateResources += Canvas_CreateResources;
             Canvas.RegionsInvalidated += Canvas_RegionsInvalidated;
+        }
+
+        private void SunPhaseView_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (args.NewValue is SunPhaseViewModel viewModel)
+            {
+                SetSunriseSetTimes(viewModel.SunriseTime, viewModel.SunsetTime, viewModel.TZOffset);
+            }
         }
 
         private void SunPhaseView_Loaded(object sender, RoutedEventArgs e)

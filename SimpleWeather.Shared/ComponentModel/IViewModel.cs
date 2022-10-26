@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.ComponentModel
 {
     public interface IViewModel : INotifyPropertyChanged
     {
+        void OnCleared();
+    }
 
+    public abstract class BaseViewModel : ObservableObject, IViewModel
+    {
+        public void OnCleared()
+        {
+        }
     }
 }

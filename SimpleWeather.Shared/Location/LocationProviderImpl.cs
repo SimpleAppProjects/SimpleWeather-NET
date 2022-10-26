@@ -28,18 +28,18 @@ namespace SimpleWeather.Location
         // Methods
         // AutoCompleteQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public abstract Task<ObservableCollection<LocationQueryViewModel>> GetLocations(String ac_query, String weatherAPI);
+        public abstract Task<ObservableCollection<LocationQuery>> GetLocations(String ac_query, String weatherAPI);
         // GeopositionQuery
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public abstract Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate, String weatherAPI);
+        public abstract Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate, String weatherAPI);
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public abstract Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model);
+        public abstract Task<LocationQuery> GetLocationFromID(LocationQuery model);
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public virtual async Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        public virtual async Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -103,9 +103,9 @@ namespace SimpleWeather.Location
                 throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.DisplayName))
-                location = new LocationQueryViewModel(result, model.WeatherSource);
+                location = new LocationQuery(result, model.WeatherSource);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             location.LocationSource = LocationAPI;
 
@@ -120,7 +120,7 @@ namespace SimpleWeather.Location
         // Utils Methods
         public virtual async Task UpdateLocationData(LocationData location, String weatherAPI)
         {
-            LocationQueryViewModel qview = null;
+            LocationQuery qview = null;
             try
             {
                 qview = await GetLocation(new WeatherUtils.Coordinate(location), weatherAPI);
@@ -130,7 +130,7 @@ namespace SimpleWeather.Location
                 Logger.WriteLine(LoggerLevel.Error, wEx, "LocationProviderImpl: UpdateLocationData: WeatherException!");
             }
 
-            if (qview != null && !String.IsNullOrWhiteSpace(qview.LocationQuery))
+            if (qview != null && !String.IsNullOrWhiteSpace(qview.Location_Query))
             {
                 location.name = qview.LocationName;
                 location.latitude = qview.LocationLat;

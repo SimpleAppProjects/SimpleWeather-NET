@@ -3,7 +3,6 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QueryStringDotNET;
-using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
@@ -14,13 +13,10 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Preferences;
 using SimpleWeather.UWP.Setup;
-using SimpleWeather.UWP.Tiles;
-using SimpleWeather.UWP.Utils;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
@@ -33,7 +29,6 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
@@ -317,7 +312,7 @@ namespace SimpleWeather.UWP
                         break;
 
                     case "check-updates":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete) 
+                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
                         {
                             // App loaded for first time
                             if (RootFrame.Content == null)
@@ -364,7 +359,7 @@ namespace SimpleWeather.UWP
                             // App loaded for first time
                             if (RootFrame.Content == null)
                             {
-                                RootFrame.Navigate(typeof(Shell), new WeatherNowArgs() 
+                                RootFrame.Navigate(typeof(Shell), new WeatherNowArgs()
                                 {
                                     Location = locData
                                 });
@@ -669,7 +664,7 @@ namespace SimpleWeather.UWP
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
             Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
-            
+
             // Log inner exceptions
             foreach (Exception inner in e.Exception.InnerExceptions)
             {

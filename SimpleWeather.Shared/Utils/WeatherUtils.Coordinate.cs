@@ -31,15 +31,15 @@ namespace SimpleWeather.Utils
                 _long = longitude;
             }
 
-            public Coordinate(Windows.Devices.Geolocation.Geoposition geoPos)
+            public Coordinate(Location.Location location)
             {
-                if (geoPos is null)
+                if (location is null)
                 {
-                    throw new ArgumentNullException(nameof(geoPos));
+                    throw new ArgumentNullException(nameof(location));
                 }
 
-                lat = geoPos.Coordinate.Point.Position.Latitude;
-                _long = geoPos.Coordinate.Point.Position.Longitude;
+                lat = location.Latitude;
+                _long = location.Longitude;
             }
 
             public Coordinate(LocationData location)

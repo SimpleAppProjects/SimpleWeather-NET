@@ -270,7 +270,7 @@ namespace SimpleWeather.Utils
                 finally
                 {
                     if (lastGPSLocData?.tz_long == null || !lastGPSLocData.IsValid())
-                        lastGPSLocData = LocationData.BuildGPSLocation();
+                        lastGPSLocData = LocationData.BuildEmptyGPSLocation();
                 }
             }
         }

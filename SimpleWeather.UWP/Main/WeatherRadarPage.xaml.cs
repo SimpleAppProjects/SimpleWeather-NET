@@ -1,14 +1,10 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
-using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Radar;
-using SimpleWeather.WeatherData;
+using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -26,7 +22,7 @@ namespace SimpleWeather.UWP.Main
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private RadarViewProvider radarViewProvider;
-        private WeatherNowViewModel WeatherView;
+        private WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
 
         public WeatherRadarPage()
         {
@@ -58,8 +54,10 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
 
-            WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-            radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
+            WNowViewModel.Weather?.Let(it =>
+            {
+                radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
+            });
         }
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
@@ -76,18 +74,18 @@ namespace SimpleWeather.UWP.Main
                 radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
             }
             radarViewProvider.EnableInteractions(true);
-            if (WeatherView.LocationCoord != null)
+            WNowViewModel.Weather?.Let(it =>
             {
-                radarViewProvider.UpdateCoordinates(WeatherView.LocationCoord, true);
-            }
+                radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
+            });
         }
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            if (WeatherView.LocationCoord != null)
+            WNowViewModel.Weather?.Let(it =>
             {
-                radarViewProvider?.UpdateCoordinates(WeatherView.LocationCoord, true);
-            }
+                radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
+            });
         }
     }
 }

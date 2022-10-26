@@ -254,7 +254,7 @@ namespace SimpleWeather.AccuWeather
             // TODO: make a task?
             var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(weather.location.latitude.Value, weather.location.longitude.Value), WeatherAPI).Result;
 
-            return locationModel.LocationQuery;
+            return locationModel.Location_Query;
         }
 
         /// <exception cref="WeatherException">Ignore.</exception>
@@ -263,7 +263,7 @@ namespace SimpleWeather.AccuWeather
             // TODO: make a task?
             var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(location.latitude, location.longitude), WeatherAPI).Result;
 
-            return locationModel.LocationQuery;
+            return locationModel.Location_Query;
         }
 
         public override string LocaleToLangCode(string iso, string name)

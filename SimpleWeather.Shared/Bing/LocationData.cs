@@ -1,16 +1,13 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Text;
 
-namespace SimpleWeather.Controls
+namespace SimpleWeather.Location
 {
-    public partial class LocationQueryViewModel
+    public partial class LocationQuery
     {
         /* Bing AutoComplete */
-        public LocationQueryViewModel(Bing.Address address, String weatherAPI)
+        public LocationQuery(Bing.Address address, String weatherAPI)
         {
             SetLocation(address, weatherAPI);
         }
@@ -67,7 +64,7 @@ namespace SimpleWeather.Controls
             sb.Append(address.adminDistrict).Append(", ");
             sb.Append(address.countryRegion);
 
-            LocationQuery = sb.ToString();
+            Location_Query = sb.ToString();
 
             LocationLat = -1;
             LocationLong = -1;
@@ -79,7 +76,7 @@ namespace SimpleWeather.Controls
         }
 
         /* Bing Geocoder */
-        public LocationQueryViewModel(Windows.Services.Maps.MapLocation result, String weatherAPI)
+        public LocationQuery(Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             SetLocation(result, weatherAPI);
         }

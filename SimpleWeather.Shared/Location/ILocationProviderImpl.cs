@@ -15,13 +15,13 @@ namespace SimpleWeather.Location
         bool NeedsLocationFromGeocoder { get; }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string ac_query, string weatherAPI);
+        Task<ObservableCollection<LocationQuery>> GetLocations(string ac_query, string weatherAPI);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coordinate, string weatherAPI);
+        Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate, string weatherAPI);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model);
+        Task<LocationQuery> GetLocationFromID(LocationQuery model);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model);
+        Task<LocationQuery> GetLocationFromName(LocationQuery model);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<bool> IsKeyValid(string key);
         string GetAPIKey();

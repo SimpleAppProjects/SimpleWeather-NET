@@ -1,5 +1,4 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
@@ -12,7 +11,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -28,7 +26,7 @@ namespace SimpleWeather.UWP.Main
 
         private CancellationTokenSource cts = new CancellationTokenSource();
         private WeatherManager wm;
-        public ObservableCollection<LocationQueryViewModel> LocationQuerys { get; private set; }
+        public ObservableCollection<LocationQuery> LocationQuerys { get; private set; }
 
         public LocationSearchPage()
         {
@@ -36,7 +34,7 @@ namespace SimpleWeather.UWP.Main
 
             wm = WeatherManager.GetInstance();
 
-            LocationQuerys = new ObservableCollection<LocationQueryViewModel>();
+            LocationQuerys = new ObservableCollection<LocationQuery>();
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("label_nav_locations");
@@ -154,7 +152,7 @@ namespace SimpleWeather.UWP.Main
                                 ShowSnackbar(Snackbar.MakeError(ex.Message, SnackbarDuration.Short));
                             }
 
-                            LocationQuerys = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                            LocationQuerys = new ObservableCollection<LocationQuery>() { new LocationQuery() };
                             RefreshSuggestionList(sender);
                             timer?.Stop();
                             LocationSearchBox.IsLoading = false;
@@ -177,9 +175,9 @@ namespace SimpleWeather.UWP.Main
 
         private void Location_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-            if (args.SelectedItem is LocationQueryViewModel theChosenOne)
+            if (args.SelectedItem is LocationQuery theChosenOne)
             {
-                if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                if (!String.IsNullOrEmpty(theChosenOne.Location_Query))
                 {
                     sender.Text = theChosenOne.LocationName;
                     sender.IsSuggestionListOpen = false;
@@ -207,27 +205,27 @@ namespace SimpleWeather.UWP.Main
             cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var ctsToken = cts.Token;
 
-            var theChosenOne = args.ChosenSuggestion as LocationQueryViewModel;
+            var theChosenOne = args.ChosenSuggestion as LocationQuery;
             // Use args.QueryText to determine what to do.
             var queryText = args.QueryText;
 
             Task.Run(async () =>
             {
-                LocationQueryViewModel query_vm = null;
+                LocationQuery query_vm = null;
 
                 if (theChosenOne != null)
                 {
-                    if (!String.IsNullOrEmpty(theChosenOne.LocationQuery))
+                    if (!String.IsNullOrEmpty(theChosenOne.Location_Query))
                         query_vm = theChosenOne;
                     else
-                        query_vm = new LocationQueryViewModel();
+                        query_vm = new LocationQuery();
                 }
                 else if (!String.IsNullOrEmpty(queryText))
                 {
                     // Use args.QueryText to determine what to do.
                     query_vm = await Task.Run(async () =>
                     {
-                        ObservableCollection<LocationQueryViewModel> results;
+                        ObservableCollection<LocationQuery> results;
                         results = await Task.Run(async () =>
                         {
                             return await wm.GetLocations(queryText);
@@ -235,13 +233,13 @@ namespace SimpleWeather.UWP.Main
 
                         var result = results.FirstOrDefault();
 
-                        if (result != null && !String.IsNullOrWhiteSpace(result.LocationQuery))
+                        if (result != null && !String.IsNullOrWhiteSpace(result.Location_Query))
                         {
                             return result;
                         }
                         else
                         {
-                            return new LocationQueryViewModel();
+                            return new LocationQuery();
                         }
                     }, ctsToken).ConfigureAwait(false);
                 }
@@ -251,7 +249,7 @@ namespace SimpleWeather.UWP.Main
                     throw new TaskCanceledException();
                 }
 
-                if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
+                if (String.IsNullOrWhiteSpace(query_vm?.Location_Query))
                 {
                     // Stop since there is no valid query
                     throw new TaskCanceledException();
@@ -288,7 +286,7 @@ namespace SimpleWeather.UWP.Main
                     }, ctsToken).ConfigureAwait(false);
                 }
 
-                if (String.IsNullOrWhiteSpace(query_vm?.LocationQuery))
+                if (String.IsNullOrWhiteSpace(query_vm?.Location_Query))
                 {
                     // Stop since there is no valid query
                     throw new CustomException(App.ResLoader.GetString("error_retrieve_location"));
@@ -319,14 +317,14 @@ namespace SimpleWeather.UWP.Main
 
                 // Check if location already exists
                 var locData = await Settings.GetLocationData();
-                if (locData.Any(l => l.query == query_vm.LocationQuery))
+                if (locData.Any(l => l.query == query_vm.Location_Query))
                 {
                     return true;
                 }
 
                 ctsToken.ThrowIfCancellationRequested();
 
-                var location = new LocationData(query_vm);
+                var location = query_vm.ToLocationData();
                 if (!location.IsValid())
                 {
                     throw new CustomException(App.ResLoader.GetString("werror_noweather"));

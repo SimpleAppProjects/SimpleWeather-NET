@@ -1,11 +1,6 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Controls
 {
@@ -17,27 +12,30 @@ namespace SimpleWeather.Controls
         public string Sunrise { get; }
         public string Sunset { get; }
 
-        public SunPhaseViewModel(Astronomy astronomy)
+        public TimeSpan TZOffset { get; }
+
+        public SunPhaseViewModel(Astronomy astronomy, TimeSpan offset)
         {
             SunriseTime = astronomy.sunrise;
             SunsetTime = astronomy.sunset;
 
             Sunrise = astronomy.sunrise.ToString("t", CultureInfo.InvariantCulture);
             Sunset = astronomy.sunset.ToString("t", CultureInfo.InvariantCulture);
+
+            TZOffset = offset;
         }
 
         public override bool Equals(object obj)
         {
             return obj is SunPhaseViewModel model &&
-                   SunriseTime == model.SunriseTime &&
-                   SunsetTime == model.SunsetTime &&
                    Sunrise == model.Sunrise &&
-                   Sunset == model.Sunset;
+                   Sunset == model.Sunset &&
+                   TZOffset.Equals(model.TZOffset);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(SunriseTime, SunsetTime, Sunrise, Sunset);
+            return HashCode.Combine(Sunrise, Sunset, TZOffset);
         }
     }
 }

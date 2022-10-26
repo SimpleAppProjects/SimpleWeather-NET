@@ -78,7 +78,7 @@ namespace SimpleWeather.Utils
                             var qview = await prov.GetLocation(
                                 new WeatherUtils.Coordinate(String.Format("{0},{1}", weather.location.latitude, weather.location.longitude)));
 
-                            LocationData loc = new LocationData(qview);
+                            LocationData loc = qview.ToLocationData();
                             data.Add(loc);
                         }
 

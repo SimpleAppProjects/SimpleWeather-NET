@@ -3,9 +3,10 @@ using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
-using SimpleWeather.WeatherData;
+using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -18,16 +19,14 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherAlertPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage, IWeatherErrorListener
+    public sealed partial class WeatherAlertPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationData location { get; set; }
-        public WeatherNowViewModel WeatherView { get; set; }
-        public WeatherAlertsViewModel AlertsView { get; set; }
-
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        private LocationData locationData { get; set; }
+        public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
+        public WeatherAlertsViewModel AlertsView { get; } = Shell.Instance.GetViewModel<WeatherAlertsViewModel>();
 
         public WeatherAlertPage()
         {
@@ -37,37 +36,6 @@ namespace SimpleWeather.UWP.Main
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("title_fragment_alerts");
             AnalyticsLogger.LogEvent("WeatherAlertPage");
-        }
-
-        public void OnWeatherError(WeatherException wEx)
-        {
-            Dispatcher.LaunchOnUIThread(() =>
-            {
-                switch (wEx.ErrorStatus)
-                {
-                    case WeatherUtils.ErrorStatus.NetworkError:
-                    case WeatherUtils.ErrorStatus.NoWeather:
-                        // Show error message and prompt to refresh
-                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        break;
-
-                    case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (location?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
-                        {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
-                        }
-                        else
-                        {
-                            ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        }
-                        break;
-
-                    default:
-                        // Show error message
-                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        break;
-                }
-            });
         }
 
         public Task<bool> OnBackRequested()
@@ -91,42 +59,48 @@ namespace SimpleWeather.UWP.Main
         /// </summary>
         /// <param name="e"></param>
         /// <exception cref="WeatherException">Ignore.</exception>
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             if (e?.Parameter is WeatherPageArgs args)
             {
-                location = args.Location;
+                locationData = args.Location;
             }
-
-            if (location == null)
-                location = await Settings.GetHomeData().ConfigureAwait(true);
-
-            WeatherView = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-            AlertsView = Shell.Instance.GetViewModel<WeatherAlertsViewModel>();
-
-            if (WeatherView?.IsValid != true)
+            else
             {
-                _ = Task.Run(() => new WeatherDataLoader(location)
-                    .LoadWeatherData(new WeatherRequest.Builder()
-                        .ForceLoadSavedData()
-                        .SetErrorListener(this)
-                        .Build())
-                        .ContinueWith((t) =>
-                        {
-                            if (t.IsCompletedSuccessfully)
-                            {
-                                Dispatcher.LaunchOnUIThread(() =>
-                                {
-                                    WeatherView.UpdateView(t.Result);
-                                    AlertsView?.UpdateAlerts(location);
-                                });
-                            }
-                        }));
+                WNowViewModel.PropertyChanged += WNowViewModel_PropertyChanged;
             }
 
-            AlertsView?.UpdateAlerts(location);
+            Initialize();
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            WNowViewModel.PropertyChanged -= WNowViewModel_PropertyChanged;
+        }
+
+        private void WNowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(WNowViewModel.UiState))
+            {
+                locationData = WNowViewModel.UiState.LocationData;
+                Initialize();
+            }
+        }
+
+        private void Initialize()
+        {
+            if (locationData == null)
+            {
+                locationData = WNowViewModel.UiState.LocationData;
+            }
+
+            if (locationData != null)
+            {
+                AlertsView.UpdateAlerts(locationData);
+            }
         }
 
         private void StackControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)

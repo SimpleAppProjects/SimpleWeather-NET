@@ -92,7 +92,7 @@ namespace UnitTestProject
                 if (!string.IsNullOrWhiteSpace(tzId))
                     location.LocationTZLong = tzId;
             }
-            var locData = new LocationData(location);
+            var locData = location.ToLocationData();
             return await providerImpl.GetWeather(locData);
         }
 
@@ -157,7 +157,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.Here);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -166,7 +166,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MetNo);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -175,7 +175,7 @@ namespace UnitTestProject
         {
             var location = await WeatherManager.GetProvider(WeatherAPI.NWS)
                 .GetLocation(new WeatherUtils.Coordinate(47.6721646, -122.1706614)).ConfigureAwait(false);
-            var locData = new LocationData(location);
+            var locData = location.ToLocationData();
             var alerts = await new NWSAlertProvider().GetAlerts(locData).ConfigureAwait(false);
             Assert.IsNotNull(alerts);
         }
@@ -186,7 +186,7 @@ namespace UnitTestProject
             var provider = WeatherManager.GetProvider(WeatherAPI.NWS);
             var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.IsTrue(weather?.forecast?.Count > 0 && weather?.hr_forecast?.Count > 0);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -195,7 +195,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -209,7 +209,7 @@ namespace UnitTestProject
             Settings.APIKeys[WeatherAPI.OpenWeatherMap] = provider.GetAPIKey();
 
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
 
             Settings.APIKeys[WeatherAPI.OpenWeatherMap] = null;
@@ -221,7 +221,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherUnlocked);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -322,7 +322,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.MeteoFrance);
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.85, 2.34)).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -331,7 +331,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherApi);
             var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -340,7 +340,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.TomorrowIo);
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -349,7 +349,7 @@ namespace UnitTestProject
         {
             var provider = WeatherManager.GetProvider(WeatherAPI.WeatherBitIo);
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
-            Assert.IsTrue(weather?.IsValid() == true && new WeatherNowViewModel(weather).IsValid);
+            Assert.IsTrue(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.IsTrue(await SerializerTest(weather).ConfigureAwait(false));
         }
 
@@ -363,7 +363,7 @@ namespace UnitTestProject
         {
             var provider = new TomorrowIOWeatherProvider();
             var location = await provider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
-            var locData = new LocationData(location);
+            var locData = location.ToLocationData();
             Assert.IsNotNull(locData);
             var pollenData = await provider.GetPollenData(locData);
             Assert.IsNotNull(pollenData);
