@@ -26,6 +26,7 @@ using Windows.UI.Core;
 using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
@@ -38,10 +39,11 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IBannerPage, IDisposable
+    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IBannerManager, IBannerPage, IDisposable
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
+        private BannerManager BannerMgr { get; set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
         private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
@@ -110,6 +112,18 @@ namespace SimpleWeather.UWP.Main
                     Tag = "refresh"
                 }
             };
+
+            if (GetRefreshBtn() is AppBarButton btn)
+            {
+                btn.SetBinding(AppBarButton.IsEnabledProperty, new Binding()
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = LoadingRing,
+                    Path = new("IsActive"),
+                    Converter = App.Current.Resources["inverseBoolConverter"] as IValueConverter,
+                });
+            }
+
             GetRefreshBtn().Tapped += RefreshButton_Click;
             GetPinBtn().Tapped += PinButton_Click;
 
@@ -125,14 +139,34 @@ namespace SimpleWeather.UWP.Main
             Shell.Instance?.ShowSnackbar(snackbar);
         }
 
+        public void InitBannerManager()
+        {
+            if (BannerMgr == null)
+            {
+                BannerMgr = new BannerManager(MainGrid);
+            }
+        }
+
         public void ShowBanner(Banner banner)
         {
-            Shell.Instance?.ShowBanner(banner);
+            Dispatcher.RunOnUIThread(() =>
+            {
+                BannerMgr?.Show(banner);
+            });
         }
 
         public void DismissBanner()
         {
-            Shell.Instance?.DismissBanner();
+            Dispatcher.RunOnUIThread(() =>
+            {
+                BannerMgr?.Dismiss();
+            });
+        }
+
+        public void UnloadBannerManager()
+        {
+            DismissBanner();
+            BannerMgr = null;
         }
 
         private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
@@ -538,15 +572,6 @@ namespace SimpleWeather.UWP.Main
             else
             {
                 WNowViewModel.RefreshWeather();
-            }
-        }
-
-        private void ShowProgressRing(bool show)
-        {
-            LoadingRing.IsActive = show;
-            if (GetRefreshBtn() is AppBarButton btn)
-            {
-                btn.IsEnabled = !show;
             }
         }
 

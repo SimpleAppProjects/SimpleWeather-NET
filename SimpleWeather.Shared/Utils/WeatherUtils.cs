@@ -1,9 +1,6 @@
 ﻿using SimpleWeather.WeatherData;
 using System;
-using System.Globalization;
-using Windows.System.UserProfile;
 using Windows.UI;
-using static SimpleWeather.WeatherData.Beaufort;
 
 namespace SimpleWeather.Utils
 {

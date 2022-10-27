@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Controls;
+using SimpleWeather.Utils;
 using System;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -19,36 +20,27 @@ namespace SimpleWeather.UWP.Helpers
         public static readonly DependencyProperty FallbackColorProperty =
             DependencyProperty.Register("FallbackColor", typeof(Color), typeof(TempToColorTempConverter), new PropertyMetadata(Colors.White));
 
-        public bool UseFallback
-        {
-            get { return (bool)GetValue(UseFallbackProperty); }
-            set { SetValue(UseFallbackProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for UseFallback.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty UseFallbackProperty =
-            DependencyProperty.Register("UseFallback", typeof(bool), typeof(TempToColorTempConverter), new PropertyMetadata(true));
-
         public object Convert(object value, Type targetType, object p_, string l_)
         {
-            string temp = value?.ToString();
-            string temp_str = temp?.RemoveNonDigitChars();
-
-            if (float.TryParse(temp_str, out float temp_f))
+            if (value is WeatherUiModel weather)
             {
-                var tempUnit = Settings.TemperatureUnit;
+                string temp = weather.CurTemp?.ToString();
+                string temp_str = temp?.RemoveNonDigitChars();
 
-                if (Equals(tempUnit, Units.CELSIUS) || temp.EndsWith(Units.CELSIUS))
+                if (float.TryParse(temp_str, out float temp_f))
                 {
-                    temp_f = ConversionMethods.CtoF(temp_f);
-                }
+                    var tempUnit = weather.TempUnit;
 
-                return WeatherUtils.GetColorFromTempF(temp_f, UseFallback ? FallbackColor : Colors.White);
+                    if (Equals(tempUnit, Units.CELSIUS) || temp.EndsWith(Units.CELSIUS))
+                    {
+                        temp_f = ConversionMethods.CtoF(temp_f);
+                    }
+
+                    return new SolidColorBrush(WeatherUtils.GetColorFromTempF(temp_f, FallbackColor));
+                }
             }
-            else
-            {
-                return UseFallback ? FallbackColor : Colors.White;
-            }
+
+            return new SolidColorBrush(FallbackColor);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

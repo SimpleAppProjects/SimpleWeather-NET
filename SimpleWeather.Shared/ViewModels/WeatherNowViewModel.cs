@@ -13,11 +13,11 @@ namespace SimpleWeather.ViewModels
 {
     public class WeatherNowViewModel : BaseViewModel
     {
-        private readonly WeatherDataLoader weatherDataLoader = new WeatherDataLoader();
+        private readonly WeatherDataLoader weatherDataLoader = new();
         private readonly WeatherManager wm = WeatherManager.GetInstance();
         private readonly ResourceLoader ResLoader = SharedModule.Instance.ResLoader;
 
-        private readonly LocationProvider locationProvider = new LocationProvider();
+        private readonly LocationProvider locationProvider = new();
 
         private WeatherNowState uistate = new() { IsLoading = true, NoLocationAvailable = true };
         public WeatherNowState UiState

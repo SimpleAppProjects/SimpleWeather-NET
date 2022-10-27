@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Uwp;
 using System.ComponentModel;
+using Windows.System;
 
 namespace SimpleWeather.ComponentModel
 {
@@ -10,6 +12,16 @@ namespace SimpleWeather.ComponentModel
 
     public abstract class BaseViewModel : ObservableObject, IViewModel
     {
+        protected DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            DispatcherQueue.EnqueueAsync(() =>
+            {
+                base.OnPropertyChanged(e);
+            });
+        }
+
         public void OnCleared()
         {
         }

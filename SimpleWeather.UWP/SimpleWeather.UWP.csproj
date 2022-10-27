@@ -275,6 +275,7 @@
     <Compile Include="Controls\BeaufortControl.xaml.cs">
       <DependentUpon>BeaufortControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DataBinding\WeatherNowBinding.cs" />
     <Compile Include="Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Helpers\BindingExtensions.cs" />
     <Compile Include="Helpers\DetailsItemGridFilterConverter.cs" />

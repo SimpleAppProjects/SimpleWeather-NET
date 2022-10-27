@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Uwp;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -84,8 +85,11 @@ namespace SimpleWeather.Controls
                 }
             }
 
-            Alerts.NotifyCollectionChanged();
-            OnPropertyChanged(nameof(Alerts));
+            DispatcherQueue.EnqueueAsync(() =>
+            {
+                Alerts.NotifyCollectionChanged();
+                OnPropertyChanged(nameof(Alerts));
+            });
         }
 
         private bool isDisposed;

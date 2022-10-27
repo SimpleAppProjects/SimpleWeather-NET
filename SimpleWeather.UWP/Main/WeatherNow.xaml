@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:databinding="using:SimpleWeather.UWP.DataBinding"
     xmlns:graphs="using:SimpleWeather.UWP.Controls.Graphs"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Main"
@@ -25,6 +26,7 @@
             <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
             <helpers:DetailsItemGridFilterConverter x:Key="detailsFilter" />
             <helpers:GraphDataVisibilityConverter x:Key="graphDataConv" />
+            <helpers:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Style
@@ -51,9 +53,14 @@
     </Page.Resources>
 
     <Grid x:Name="MainGrid" d:Background="LightGray">
-        <Grid Visibility="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="BannerRow" Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <ParallaxView
                 x:Name="BackgroundOverlay"
+                Grid.RowSpan="2"
                 x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                 Source="{x:Bind MainViewer}"
                 VerticalShift="100"
@@ -71,6 +78,7 @@
             </ParallaxView>
             <Grid
                 x:Name="GradientOverlay"
+                Grid.RowSpan="2"
                 x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                 Visibility="Collapsed">
                 <Grid.Background>
@@ -84,10 +92,11 @@
             </Grid>
             <ScrollViewer
                 x:Name="MainViewer"
+                Grid.Row="1"
                 x:Load="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                 SizeChanged="MainGrid_SizeChanged"
                 VerticalScrollMode="Auto"
-                Visibility="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                Visibility="{x:Bind databinding:WeatherNowBinding.IsViewVisible(WNowViewModel.UiState.IsLoading, WNowViewModel.UiState.NoLocationAvailable, WNowViewModel.Weather.Location), Mode=OneWay}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!--  Row 0  -->
@@ -119,7 +128,7 @@
                             Margin="16,0"
                             VerticalAlignment="Center"
                             d:Visibility="Visible"
-                            Visibility="Collapsed">
+                            Visibility="{x:Bind WNowViewModel.UiState.IsGPSLocation, Mode=OneWay}">
                             <BitmapIcon
                                 Width="24"
                                 Height="24"
@@ -237,7 +246,7 @@
                                 d:Text="70°F"
                                 FontSize="84"
                                 FontWeight="Light"
-                                Foreground="{ThemeResource ForegroundColor}"
+                                Foreground="{x:Bind WNowViewModel.Weather, Converter={StaticResource tempToColorTempConverter}, Mode=OneWay}"
                                 Text="{x:Bind WNowViewModel.Weather.CurTemp, Mode=OneWay}"
                                 TextLineBounds="Tight" />
                         </toolkitControls:DropShadowPanel>
@@ -585,7 +594,7 @@
             Height="36"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            IsActive="True"
+            IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState.IsLoading, WNowViewModel.UiState.NoLocationAvailable, WNowViewModel.Weather.Location), Mode=OneWay}"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
     </Grid>
 </Page>
