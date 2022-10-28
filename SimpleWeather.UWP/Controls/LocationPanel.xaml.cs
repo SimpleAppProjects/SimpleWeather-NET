@@ -1,9 +1,6 @@
 ﻿using SimpleWeather.Controls;
-using SimpleWeather.Icons;
-using SimpleWeather.Utils;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -11,9 +8,9 @@ namespace SimpleWeather.UWP.Controls
 {
     public sealed partial class LocationPanel : UserControl
     {
-        public LocationPanelViewModel ViewModel
+        public LocationPanelUiModel ViewModel
         {
-            get { return this.DataContext as LocationPanelViewModel; }
+            get { return this.DataContext as LocationPanelUiModel; }
         }
 
         private double ControlShadowOpacity
@@ -36,8 +33,6 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty ControlThemeProperty =
             DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(LocationPanel), new PropertyMetadata(ElementTheme.Default));
 
-        private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
-
         public LocationPanel()
         {
             this.InitializeComponent();
@@ -45,14 +40,6 @@ namespace SimpleWeather.UWP.Controls
             {
                 UpdateControlTheme();
                 //this.Bindings.Update(); // Update control theme updates bindings
-                if (ViewModel?.LocationType == (int)Location.LocationType.GPS)
-                {
-                    GPSIcon.Visibility = Visibility.Visible;
-                }
-                else
-                {
-                    GPSIcon.Visibility = Visibility.Collapsed;
-                }
             };
         }
 

@@ -712,4 +712,7 @@
   <data name="hint_password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>NO DATA</value>
+  </data>
 </root>

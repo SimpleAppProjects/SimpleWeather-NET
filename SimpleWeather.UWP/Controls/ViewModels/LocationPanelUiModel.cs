@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -10,42 +9,126 @@ using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
 {
-    public partial class LocationPanelViewModel : BaseViewModel
+    public class LocationPanelUiModel : BaseViewModel
     {
-        [ObservableProperty]
+        #region Backing Properties
         private string locationName;
-        [ObservableProperty]
         private string currTemp;
-        [ObservableProperty]
         private string currWeather;
-        [ObservableProperty]
         private string hiTemp;
-        [ObservableProperty]
         private string loTemp;
-        [ObservableProperty]
+        private bool isShowHiLo = false;
         private string poP;
-        [ObservableProperty]
         private string poPIcon;
-        [ObservableProperty]
         private string weatherIcon;
-        [ObservableProperty]
         private string windSpeed;
-        [ObservableProperty]
         private int windDirection;
-        [ObservableProperty]
         private string windIcon;
-        [ObservableProperty]
         private bool editMode;
-        [ObservableProperty]
         private ImageDataViewModel imageData;
-        [ObservableProperty]
         private ElementTheme backgroundTheme = ElementTheme.Dark;
-        [ObservableProperty]
         private bool isLoading = true;
-        [ObservableProperty]
-        private LocationData locationData = new LocationData();
-        [ObservableProperty]
+        private LocationData locationData = new();
         private string weatherSource;
+        private bool isWeatherValid = false;
+        #endregion
+
+        #region Properties
+        public string LocationName
+        {
+            get => locationName;
+            private set => SetProperty(ref locationName, value);
+        }
+        public string CurrTemp
+        {
+            get => currTemp;
+            private set => SetProperty(ref currTemp, value);
+        }
+        public string CurrWeather
+        {
+            get => currWeather;
+            private set => SetProperty(ref currWeather, value);
+        }
+        public string HiTemp
+        {
+            get => hiTemp;
+            private set => SetProperty(ref hiTemp, value);
+        }
+        public string LoTemp
+        {
+            get => loTemp;
+            private set => SetProperty(ref loTemp, value);
+        }
+        public bool IsShowHiLo
+        {
+            get => isShowHiLo;
+            private set => SetProperty(ref isShowHiLo, value);
+        }
+        public string PoP
+        {
+            get => poP;
+            private set => SetProperty(ref poP, value);
+        }
+        public string PoPIcon
+        {
+            get => poPIcon;
+            private set => SetProperty(ref poPIcon, value);
+        }
+        public string WeatherIcon
+        {
+            get => weatherIcon;
+            private set => SetProperty(ref weatherIcon, value);
+        }
+        public string WindSpeed
+        {
+            get => windSpeed;
+            private set => SetProperty(ref windSpeed, value);
+        }
+        public int WindDirection
+        {
+            get => windDirection;
+            private set => SetProperty(ref windDirection, value);
+        }
+        public string WindIcon
+        {
+            get => windIcon;
+            private set => SetProperty(ref windIcon, value);
+        }
+        public bool EditMode
+        {
+            get => editMode;
+            set => SetProperty(ref editMode, value);
+        }
+        public ImageDataViewModel ImageData
+        {
+            get => imageData;
+            private set => SetProperty(ref imageData, value);
+        }
+        public ElementTheme BackgroundTheme
+        {
+            get => backgroundTheme;
+            private set => SetProperty(ref backgroundTheme, value);
+        }
+        public bool IsLoading
+        {
+            get => isLoading;
+            set => SetProperty(ref isLoading, value);
+        }
+        public LocationData LocationData
+        {
+            get => locationData;
+            set => SetProperty(ref locationData, value);
+        }
+        public string WeatherSource
+        {
+            get => weatherSource;
+            private set => SetProperty(ref weatherSource, value);
+        }
+        public bool IsWeatherValid
+        {
+            get => isWeatherValid;
+            private set => SetProperty(ref isWeatherValid, value);
+        }
 
         public int LocationType
         {
@@ -57,13 +140,13 @@ namespace SimpleWeather.Controls
             }
         }
 
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
         private Weather weather;
         private string unitCode;
+        #endregion
 
-        public void SetWeather(Weather weather)
+        public void SetWeather(LocationData locationData, Weather weather)
         {
-            if ((bool)weather?.IsValid())
+            if (weather?.IsValid() == true)
             {
                 if (!Equals(this.weather, weather))
                 {
@@ -97,10 +180,7 @@ namespace SimpleWeather.Controls
                     WeatherIcon = weather.condition.icon;
                     WeatherSource = weather.source;
 
-                    if (LocationData?.query == null)
-                    {
-                        LocationData = new LocationData(weather);
-                    }
+                    this.LocationData = locationData;
 
                     IsLoading = false;
 
@@ -111,6 +191,16 @@ namespace SimpleWeather.Controls
                 {
                     RefreshView();
                 }
+
+                IsWeatherValid = true;
+            }
+            else
+            {
+                this.LocationData = locationData;
+                LocationName = locationData.name;
+                WeatherSource = locationData.weatherSource;
+
+                IsWeatherValid = false;
             }
         }
 

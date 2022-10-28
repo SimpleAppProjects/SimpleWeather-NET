@@ -9,13 +9,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Main
 {
@@ -30,9 +28,9 @@ namespace SimpleWeather.UWP.Main
         internal bool HasGPSPanel { get; private set; }
         internal bool HasSearchPanel { get; private set; }
 
-        internal IEnumerable<LocationPanelViewModel> GetDataset()
+        internal IEnumerable<LocationPanelUiModel> GetDataset()
         {
-            var list = new List<LocationPanelViewModel>();
+            var list = new List<LocationPanelUiModel>();
             foreach (var grp in LocationPanelGroups)
             {
                 list.AddRange(grp.LocationPanels);
@@ -40,7 +38,7 @@ namespace SimpleWeather.UWP.Main
             return list;
         }
 
-        internal Collection<LocationPanelViewModel> GetDataset(LocationType locationType)
+        internal Collection<LocationPanelUiModel> GetDataset(LocationType locationType)
         {
             return LocationPanelGroups.Single(grp => grp.LocationType == locationType)?.LocationPanels;
         }
@@ -107,7 +105,7 @@ namespace SimpleWeather.UWP.Main
         {
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
-                var newItems = e.NewItems.Cast<LocationPanelViewModel>();
+                var newItems = e.NewItems.Cast<LocationPanelUiModel>();
 
                 if (!HasGPSPanel && GetDataset(LocationType.GPS)?.Count > 0)
                     HasGPSPanel = true;
@@ -116,9 +114,9 @@ namespace SimpleWeather.UWP.Main
             }
             else if (e.Action == NotifyCollectionChangedAction.Remove)
             {
-                var items = e.NewItems?.Cast<LocationPanelViewModel>();
+                var items = e.NewItems?.Cast<LocationPanelUiModel>();
                 if (items == null)
-                    items = e.OldItems?.Cast<LocationPanelViewModel>();
+                    items = e.OldItems?.Cast<LocationPanelUiModel>();
 
                 if (HasGPSPanel && GetDataset(LocationType.GPS)?.Count == 0)
                     HasGPSPanel = false;
@@ -127,7 +125,7 @@ namespace SimpleWeather.UWP.Main
             ListChanged?.Invoke(sender, e);
         }
 
-        internal LocationPanelViewModel GetGPSPanel()
+        internal LocationPanelUiModel GetGPSPanel()
         {
             if (HasGPSPanel)
                 return LocationPanelGroups
@@ -136,7 +134,7 @@ namespace SimpleWeather.UWP.Main
             return null;
         }
 
-        internal LocationPanelViewModel GetFirstFavPanel()
+        internal LocationPanelUiModel GetFirstFavPanel()
         {
             return LocationPanelGroups
                 .Single(grp => grp.LocationType == LocationType.Search)
@@ -153,21 +151,32 @@ namespace SimpleWeather.UWP.Main
             return panel.LocationData;
         }
 
-        internal void Add(LocationPanelViewModel item)
+        internal void Add(LocationPanelUiModel item)
         {
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Add(item);
         }
 
-        internal void Add(int index, LocationPanelViewModel item)
+        internal void Add(int index, LocationPanelUiModel item)
         {
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Insert(index, item);
         }
 
-        internal bool Remove(LocationPanelViewModel item)
+        internal void AddAll(IEnumerable<LocationPanelUiModel> items)
+        {
+            items?.ForEach(item => Add(item));
+        }
+
+        internal void ReplaceAll(IEnumerable<LocationPanelUiModel> items)
+        {
+            RemoveAll();
+            AddAll(items);
+        }
+
+        internal bool Remove(LocationPanelUiModel item)
         {
             return (bool)LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
@@ -190,7 +199,7 @@ namespace SimpleWeather.UWP.Main
             HasSearchPanel = false;
         }
 
-        internal void DeletePanel(LocationPanelViewModel view)
+        internal void DeletePanel(LocationPanelUiModel view)
         {
             LocationData data = view.LocationData;
 
@@ -211,7 +220,7 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        internal Task RemovePanel(LocationPanelViewModel panel)
+        internal Task RemovePanel(LocationPanelUiModel panel)
         {
             return ParentListView?.Dispatcher?.RunOnUIThread(() =>
             {
@@ -262,17 +271,17 @@ namespace SimpleWeather.UWP.Main
             });
         }
 
-        internal Task BatchRemovePanels(IEnumerable<LocationPanelViewModel> panelsToDelete)
+        internal Task BatchRemovePanels(IEnumerable<LocationPanelUiModel> panelsToDelete)
         {
             return ParentListView?.Dispatcher?.RunOnUIThread(() =>
             {
                 if (!panelsToDelete.Any()) return;
 
-                var panelPairs = new List<KeyValuePair<int, LocationPanelViewModel>>(panelsToDelete.Count());
-                foreach (LocationPanelViewModel panel in panelsToDelete)
+                var panelPairs = new List<KeyValuePair<int, LocationPanelUiModel>>(panelsToDelete.Count());
+                foreach (LocationPanelUiModel panel in panelsToDelete)
                 {
                     int dataPosition = GetDataset((LocationType)panel.LocationType).IndexOf(panel);
-                    panelPairs.Add(new KeyValuePair<int, LocationPanelViewModel>(dataPosition, panel));
+                    panelPairs.Add(new KeyValuePair<int, LocationPanelUiModel>(dataPosition, panel));
                 }
 
                 // Create actions
@@ -335,10 +344,10 @@ namespace SimpleWeather.UWP.Main
         public LocationPanelGroup(LocationType locationType)
         {
             this.LocationType = locationType;
-            this.LocationPanels = new ObservableCollection<LocationPanelViewModel>();
+            this.LocationPanels = new ObservableCollection<LocationPanelUiModel>();
         }
 
         public LocationType LocationType { get; set; }
-        public ObservableCollection<LocationPanelViewModel> LocationPanels { get; private set; }
+        public ObservableCollection<LocationPanelUiModel> LocationPanels { get; private set; }
     }
 }

@@ -8,6 +8,7 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
+    xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
     SizeChanged="StackControl_SizeChanged"
     mc:Ignorable="d">
@@ -79,6 +80,7 @@
             IsItemClickEnabled="True"
             IsSwipeEnabled="False"
             ItemClick="LocationsPanel_ItemClick"
+            ItemsSource="{x:Bind PanelAdapter.ViewSource, Mode=OneWay}"
             SelectionMode="None">
             <GridView.GroupStyle>
                 <GroupStyle HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}" HidesIfEmpty="True">
@@ -106,7 +108,7 @@
                 </ui:SwipeItems>
             </GridView.Resources>
             <GridView.ItemTemplate>
-                <DataTemplate x:DataType="controls:LocationPanelViewModel">
+                <DataTemplate x:DataType="controls:LocationPanelUiModel">
                     <ui:SwipeControl
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"

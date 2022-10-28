@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Helpers
@@ -37,6 +33,16 @@ namespace SimpleWeather.UWP.Helpers
         public static bool IsNotNull(object obj)
         {
             return obj != null;
+        }
+
+        public static bool AreBothTrue(bool value1, bool value2)
+        {
+            return value1 && value2;
+        }
+
+        public static Visibility IsVisible(bool value1, bool value2)
+        {
+            return BoolToVisibility(AreBothTrue(value1, value2));
         }
     }
 }

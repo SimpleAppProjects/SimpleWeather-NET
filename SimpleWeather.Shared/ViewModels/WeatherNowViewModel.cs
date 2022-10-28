@@ -1,4 +1,5 @@
-﻿using SimpleWeather.ComponentModel;
+﻿using Microsoft.Toolkit.Uwp;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -77,7 +78,7 @@ namespace SimpleWeather.ViewModels
         {
             UiState = UiState with { IsLoading = true };
 
-            Task.Run(async () =>
+            DispatcherQueue.EnqueueAsync(async () =>
             {
                 var locData = locationData ?? await Settings.GetHomeData();
 
@@ -103,7 +104,9 @@ namespace SimpleWeather.ViewModels
 
         public void RefreshWeather(bool forceRefresh = false)
         {
-            Task.Run(async () =>
+            UiState = UiState with { IsLoading = true };
+
+            DispatcherQueue.EnqueueAsync(async () =>
             {
                 if (Settings.FollowGPS)
                 {
@@ -186,9 +189,9 @@ namespace SimpleWeather.ViewModels
 
                         Alerts = result.Data.weather_alerts;
 
-                        Task.Run(async () =>
+                        DispatcherQueue.EnqueueAsync(async () =>
                         {
-                            ImageData = await weatherData.GetImageData();
+                            ImageData = await Task.Run(weatherData.GetImageData);
                         });
                     }
                     break;
@@ -220,9 +223,9 @@ namespace SimpleWeather.ViewModels
 
                         Alerts = result.Data.weather_alerts;
 
-                        Task.Run(async () =>
+                        DispatcherQueue.EnqueueAsync(async () =>
                         {
-                            ImageData = await weatherData.GetImageData();
+                            ImageData = await Task.Run(weatherData.GetImageData);
                         });
                     }
                     break;
@@ -274,19 +277,22 @@ namespace SimpleWeather.ViewModels
 
             if (locationData?.IsValid() != true)
             {
-                Task.Run(async () =>
+                DispatcherQueue.EnqueueAsync(async () =>
                 {
-                    Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(locationData));
-                    Logger.WriteLine(LoggerLevel.Warn, "Home: {0}", JSONParser.Serializer(await Settings.GetHomeData()));
+                    await Task.Run(async () =>
+                    {
+                        Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(locationData));
+                        Logger.WriteLine(LoggerLevel.Warn, "Home: {0}", JSONParser.Serializer(await Settings.GetHomeData()));
 
-                    Logger.WriteLine(LoggerLevel.Warn, new InvalidOperationException("Invalid location data"));
+                        Logger.WriteLine(LoggerLevel.Warn, new InvalidOperationException("Invalid location data"));
+                    });
+
+                    UiState = UiState with
+                    {
+                        NoLocationAvailable = true,
+                        IsLoading = false
+                    };
                 });
-
-                UiState = UiState with
-                {
-                    NoLocationAvailable = true,
-                    IsLoading = false
-                };
             }
         }
 

@@ -12,7 +12,7 @@ namespace SimpleWeather.Location
     {
         private const string TAG = nameof(LocationProvider);
 
-        private async Task<bool> CheckPermissions()
+        public async Task<bool> CheckPermissions()
         {
             var geoStatus = GeolocationAccessStatus.Unspecified;
 

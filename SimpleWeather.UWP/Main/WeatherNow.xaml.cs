@@ -445,6 +445,11 @@ namespace SimpleWeather.UWP.Main
             {
                 switch (error)
                 {
+                    case ErrorMessage.Resource err:
+                        {
+                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
+                        }
+                        break;
                     case ErrorMessage.String err:
                         {
                             ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
