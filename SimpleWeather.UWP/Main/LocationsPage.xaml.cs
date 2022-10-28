@@ -38,7 +38,6 @@ namespace SimpleWeather.UWP.Main
         private LocationPanelAdapter PanelAdapter { get; set; }
 
         public bool EditMode { get; set; } = false;
-        private bool DataChanged = false;
         private bool HomeChanged = false;
         private CancellationTokenSource cts;
 
@@ -256,10 +255,6 @@ namespace SimpleWeather.UWP.Main
             bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
             bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
 
-            // Flag that data has changed
-            if (EditMode && dataMoved)
-                DataChanged = true;
-
             if (EditMode && e.NewStartingIndex == App.HomeIdx)
                 HomeChanged = true;
 
@@ -375,7 +370,6 @@ namespace SimpleWeather.UWP.Main
                     });
             }
 
-            DataChanged = false;
             HomeChanged = false;
         }
 
