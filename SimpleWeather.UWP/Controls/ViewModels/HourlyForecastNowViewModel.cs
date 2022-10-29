@@ -10,6 +10,7 @@ namespace SimpleWeather.UWP.Controls
     public class HourlyForecastNowViewModel
     {
         public string Date { get; set; }
+        public string ShortDate { get; set; }
         public string Icon { get; set; }
         public string Temperature { get; set; }
         public string Condition { get; set; }
@@ -26,10 +27,12 @@ namespace SimpleWeather.UWP.Controls
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
             {
                 Date = forecast.date.ToString("ddd HH:00", culture);
+                ShortDate = forecast.date.ToString("HH:00", culture);
             }
             else
             {
                 Date = forecast.date.ToString("ddd h tt", culture);
+                ShortDate = forecast.date.ToString("h tt", culture);
             }
 
             Icon = forecast.icon;
@@ -93,6 +96,7 @@ namespace SimpleWeather.UWP.Controls
         {
             return obj is HourlyForecastNowViewModel model &&
                    Date == model.Date &&
+                   ShortDate == model.ShortDate &&
                    Icon == model.Icon &&
                    Temperature == model.Temperature &&
                    Condition == model.Condition &&
@@ -105,6 +109,7 @@ namespace SimpleWeather.UWP.Controls
         {
             return HashCode.Combine(
                 Date,
+                ShortDate,
                 Icon,
                 Temperature,
                 Condition,

@@ -60,12 +60,12 @@
             x:Name="DateBlock"
             Padding="10,5"
             HorizontalAlignment="Center"
-            d:Text="Thu 4 pm"
+            d:Text="4 PM"
             FontSize="14"
             FontWeight="Medium"
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding Date, Mode=OneWay}" />
+            Text="{Binding ShortDate, Mode=OneWay}" />
         <Border Style="{ThemeResource Divider}" Visibility="Collapsed" />
         <local:IconControl
             Height="50"

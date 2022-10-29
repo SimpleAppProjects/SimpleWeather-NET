@@ -1,17 +1,11 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Icons;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -405,11 +399,11 @@ namespace SimpleWeather.UWP.Controls
             {
                 if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
                 {
-                    date = hrfcast.date.ToString("ddd HH:00", culture);
+                    date = hrfcast.date.ToString("HH:00", culture);
                 }
                 else
                 {
-                    date = hrfcast.date.ToString("ddd h tt", culture);
+                    date = hrfcast.date.ToString("h tt", culture);
                 }
             }
             else
