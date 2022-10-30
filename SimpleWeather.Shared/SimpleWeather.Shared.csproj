@@ -219,6 +219,7 @@
     <Compile Include="Metno\MetnoWeatherProvider.cs" />
     <Compile Include="Metno\Weather.cs" />
     <Compile Include="Metno\WeatherData.cs" />
+    <Compile Include="Migrations\VersionMigrations.cs" />
     <Compile Include="NWS\Alert.cs" />
     <Compile Include="NWS\Forecast.cs" />
     <Compile Include="NWS\HourlyForecastResponse.cs" />
@@ -270,7 +271,7 @@
     <Compile Include="Utils\ConversionMethods.cs" />
     <Compile Include="Utils\CultureUtils.cs" />
     <Compile Include="Utils\CustomException.cs" />
-    <Compile Include="Utils\DataMigration.cs" />
+    <Compile Include="Migrations\DataMigrations.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\DBMigrations\Migration.0_1.cs" />
     <Compile Include="Utils\DBMigrations\Migration.3_4.cs" />

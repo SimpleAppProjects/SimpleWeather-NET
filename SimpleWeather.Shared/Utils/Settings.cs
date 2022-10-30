@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.Migrations;
 using SimpleWeather.SQLiteNet;
 using SimpleWeather.WeatherData;
 using SQLite;

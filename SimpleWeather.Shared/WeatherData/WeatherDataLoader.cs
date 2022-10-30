@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Location;
+using SimpleWeather.TZDB;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -147,6 +148,21 @@ namespace SimpleWeather.WeatherData
             try
             {
                 request.ThrowIfCancellationRequested();
+
+                // Is the timezone valid? If not try to fetch a valid zone id
+                if (!wm.IsRegionSupported(location.country_code) && (Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
+                {
+                    if (location.latitude != 0 && location.longitude != 0)
+                    {
+                        var tzId = await TZDBCache.GetTimeZone(location.latitude, location.longitude);
+                        if (!Equals("unknown", tzId))
+                        {
+                            location.tz_long = tzId;
+                            // Update DB here or somewhere else
+                            await Settings.UpdateLocation(location);
+                        }
+                    }
+                }
 
                 if (!wm.IsRegionSupported(location.country_code))
                 {

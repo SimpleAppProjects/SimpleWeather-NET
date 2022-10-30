@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleWeather.Extras;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
+using SimpleWeather.Migrations;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData.Images;
 using System;
