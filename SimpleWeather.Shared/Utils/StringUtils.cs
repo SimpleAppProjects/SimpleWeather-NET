@@ -186,6 +186,45 @@ namespace SimpleWeather.Utils
             }
         }
 
+        public static string EscapeUnicode(this string @string)
+        {
+            // https://stackoverflow.com/a/48706264
+            return Native2Ascii(@string);
+        }
+
+        /// <summary>
+        /// Encode a String like äöü to \u00e4\u00f6\u00fc
+        /// </summary>
+        /// <param name="string">Input string</param>
+        /// <returns></returns>
+        private static string Native2Ascii(string @string)
+        {
+            var sb = new StringBuilder();
+            foreach (var ch in @string)
+            {
+                sb.Append(Native2Ascii(ch));
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Encode a Character like ä to \u00e4
+        /// </summary>
+        /// <param name="ch">Input character</param>
+        /// <returns></returns>
+        private static string Native2Ascii(char ch)
+        {
+            if (ch > '\u007f')
+            {
+                var hex = ((int)ch).ToString("X4", CultureInfo.InvariantCulture);
+                return $"\\u{hex}";
+            }
+            else
+            {
+                return ch.ToString();
+            }
+        }
+
         public static string ReplaceFirst(this string text, string search, string replace)
         {
             int pos = text.IndexOf(search);
