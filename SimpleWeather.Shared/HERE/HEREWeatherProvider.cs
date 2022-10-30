@@ -455,8 +455,11 @@ namespace SimpleWeather.HERE
                     else
                         WeatherIcon = WeatherIcons.DAY_SUNNY;
                 else
+                {
                     // Not Available
+                    this.LogMissingIcon(icon);
                     WeatherIcon = WeatherIcons.NA;
+                }
             }
 
             return WeatherIcon;

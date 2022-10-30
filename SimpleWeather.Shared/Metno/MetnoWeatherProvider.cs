@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using SimpleWeather.Extras;
+using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -6,16 +7,12 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
-using Windows.ApplicationModel;
 using Windows.Web;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Net.Http.Headers;
-using SimpleWeather.HttpClientExtensions;
-using SimpleWeather.Extras;
 
 namespace SimpleWeather.Metno
 {
@@ -305,6 +302,7 @@ namespace SimpleWeather.Metno
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
+                this.LogMissingIcon(icon);
                 WeatherIcon = WeatherIcons.NA;
             }
 
@@ -357,10 +355,10 @@ namespace SimpleWeather.Metno
 
                 "snow" or "snowshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow"),
 
-                _ => base.GetWeatherCondition(neutralIcon),
+                _ => base.GetWeatherCondition(icon),
             };
         }
-        
+
         // Met.no conditions can be for any time of day
         // So use sunrise/set data as fallback
         public override bool IsNight(Weather weather)
@@ -384,7 +382,7 @@ namespace SimpleWeather.Metno
                 }
 
                 NodaTime.DateTimeZone tz = null;
-                
+
                 if (weather.location.tz_long != null)
                 {
                     tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);

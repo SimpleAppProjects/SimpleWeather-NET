@@ -794,6 +794,7 @@ namespace SimpleWeather.TomorrowIO
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
+                this.LogMissingIcon(icon);
                 WeatherIcon = WeatherIcons.NA;
             }
 

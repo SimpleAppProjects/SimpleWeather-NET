@@ -396,12 +396,14 @@ namespace SimpleWeather.MeteoFrance
             }
             else
             {
+                this.LogMissingIcon(icon);
                 WeatherIcon = isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY;
             }
 
             if (string.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
+                this.LogMissingIcon(icon);
                 WeatherIcon = WeatherIcons.NA;
             }
 

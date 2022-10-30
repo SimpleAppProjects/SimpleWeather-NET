@@ -345,10 +345,10 @@ namespace SimpleWeather.WeatherUnlocked
                 _ => WeatherIcons.NA,
             };
 
-            if (String.IsNullOrWhiteSpace(WeatherIcon))
+            if (Equals(WeatherIcon, WeatherIcons.NA))
             {
                 // Not Available
-                WeatherIcon = WeatherIcons.NA;
+                this.LogMissingIcon(icon);
             }
 
             return WeatherIcon;

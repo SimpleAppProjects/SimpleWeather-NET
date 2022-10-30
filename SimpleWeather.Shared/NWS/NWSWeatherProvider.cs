@@ -555,6 +555,7 @@ namespace SimpleWeather.NWS
             }
             else
             {
+                this.LogMissingIcon(icon);
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_CLEAR;
                 else
@@ -564,6 +565,7 @@ namespace SimpleWeather.NWS
             if (String.IsNullOrWhiteSpace(WeatherIcon))
             {
                 // Not Available
+                this.LogMissingIcon(icon);
                 WeatherIcon = WeatherIcons.NA;
             }
 

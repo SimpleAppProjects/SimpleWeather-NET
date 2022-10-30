@@ -303,6 +303,7 @@
     <Compile Include="Utils\Units.cs" />
     <Compile Include="Utils\UriBuilder.cs" />
     <Compile Include="Utils\WeatherException.cs" />
+    <Compile Include="Utils\WeatherProviderExtras.cs" />
     <Compile Include="Utils\WeatherUtils.Alerts.cs" />
     <Compile Include="Utils\WeatherUtils.Beaufort.cs" />
     <Compile Include="Utils\WeatherUtils.Coordinate.cs" />
