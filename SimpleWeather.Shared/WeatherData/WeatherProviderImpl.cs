@@ -270,7 +270,11 @@ namespace SimpleWeather.WeatherData
                 WeatherIcons.NIGHT_ALT_THUNDERSTORM or
                 WeatherIcons.THUNDERSTORM or
                 WeatherIcons.DAY_STORM_SHOWERS or
-                WeatherIcons.NIGHT_ALT_STORM_SHOWERS
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS or
+                WeatherIcons.STORM_SHOWERS or
+                WeatherIcons.DAY_LIGHTNING or
+                WeatherIcons.NIGHT_ALT_LIGHTNING or
+                WeatherIcons.LIGHTNING
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
 
                 WeatherIcons.DAY_SLEET or
@@ -355,6 +359,19 @@ namespace SimpleWeather.WeatherData
 
                 WeatherIcons.HURRICANE
                 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm"),
+
+                WeatherIcons.DAY_RAIN_WIND or
+                WeatherIcons.NIGHT_ALT_RAIN_WIND or
+                WeatherIcons.RAIN_WIND
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavyrain"),
+
+                WeatherIcons.DAY_LIGHT_WIND or
+                WeatherIcons.NIGHT_LIGHT_WIND or
+                WeatherIcons.LIGHT_WIND
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightwind"),
+
+                WeatherIcons.SMOG
+                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smog"),
 
                 _ => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable"),
             };
