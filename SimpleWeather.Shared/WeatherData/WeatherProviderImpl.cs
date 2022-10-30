@@ -141,13 +141,14 @@ namespace SimpleWeather.WeatherData
                             var uviData = aqicnData.uvi_forecast[i];
                             var date = DateTime.ParseExact(uviData.day, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                            if (i == 0 && weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
+                            if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
                             {
                                 if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
                                 {
                                     var obsLocalTime = weather.condition.observation_time.DateTime.TimeOfDay;
-                                    // if before sunrise or after sunset, uv min
-                                    if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay || obsLocalTime > weather.astronomy.sunset.TimeOfDay)
+                                    // if before sunrise, after sunset, or +/- 2hrs before/after sunrise/sunset, uv min
+                                    if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay || obsLocalTime > weather.astronomy.sunset.TimeOfDay ||
+                                        Math.Abs((weather.astronomy.sunrise.TimeOfDay - obsLocalTime).TotalHours) <= 2 || Math.Abs((weather.astronomy.sunset.TimeOfDay - obsLocalTime).TotalHours) <= 2)
                                     {
                                         weather.condition.uv = new UV(uviData.min);
                                     }
