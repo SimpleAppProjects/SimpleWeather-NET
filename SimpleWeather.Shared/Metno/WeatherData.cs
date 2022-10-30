@@ -1,11 +1,8 @@
 ﻿using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 
 namespace SimpleWeather.WeatherData
 {
@@ -250,17 +247,17 @@ namespace SimpleWeather.WeatherData
                 windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed_of_gust.Value));
             }
 
-            if (time.data.next_12_hours != null)
+            if (time.data.next_1_hours != null)
             {
-                icon = time.data.next_12_hours.summary.symbol_code;
+                icon = time.data.next_1_hours.summary.symbol_code;
             }
             else if (time.data.next_6_hours != null)
             {
                 icon = time.data.next_6_hours.summary.symbol_code;
             }
-            else if (time.data.next_1_hours != null)
+            else if (time.data.next_12_hours != null)
             {
-                icon = time.data.next_1_hours.summary.symbol_code;
+                icon = time.data.next_12_hours.summary.symbol_code;
             }
 
             beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(time.data.instant.details.wind_speed.Value));
