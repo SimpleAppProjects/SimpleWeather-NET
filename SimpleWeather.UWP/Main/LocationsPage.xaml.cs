@@ -144,11 +144,11 @@ namespace SimpleWeather.UWP.Main
             }
         }
 
-        private void LocationsViewModel_WeatherUpdated(object sender, WeatherUpdatedEventArgs e)
+        private async void LocationsViewModel_WeatherUpdated(object sender, WeatherUpdatedEventArgs e)
         {
             if (e.Location != null)
             {
-                Task.Run(e.Location.UpdateBackground, cts.Token);
+                await Task.Run(e.Location.UpdateBackground, cts.Token);
             }
         }
 

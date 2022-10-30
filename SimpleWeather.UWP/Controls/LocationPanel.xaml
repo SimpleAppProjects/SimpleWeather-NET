@@ -158,7 +158,7 @@
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Orientation="Vertical">
-            <Grid HorizontalAlignment="Right" Visibility="{x:Bind helpers:BindingExtensions.IsVisible(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
+            <Grid HorizontalAlignment="Right" Visibility="{x:Bind helpers:BindingExtensions.IsVisibleIfBothTrue(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
@@ -184,7 +184,7 @@
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
             </Grid>
-            <Grid HorizontalAlignment="Right" Visibility="{x:Bind helpers:BindingExtensions.IsVisible(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
+            <Grid HorizontalAlignment="Right" Visibility="{x:Bind helpers:BindingExtensions.IsVisibleIfBothTrue(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
@@ -286,7 +286,7 @@
             d:Text="NO DATA"
             Style="{ThemeResource TitleTextBlockStyle}"
             Text="{helpers:StringRes Name='label_nodata'}"
-            Visibility="{x:Bind ViewModel.IsWeatherValid, Converter={StaticResource booleanToVisibilityConverter}, ConverterParameter='True'}" />
+            Visibility="{x:Bind helpers:BindingExtensions.IsVisibleIfBothFalse(ViewModel.IsWeatherValid, ViewModel.IsLoading), Mode=OneWay}" />
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">

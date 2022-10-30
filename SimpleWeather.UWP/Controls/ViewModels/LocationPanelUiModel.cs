@@ -4,6 +4,7 @@ using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 
@@ -104,11 +105,6 @@ namespace SimpleWeather.Controls
             get => imageData;
             private set => SetProperty(ref imageData, value);
         }
-        public ElementTheme BackgroundTheme
-        {
-            get => backgroundTheme;
-            private set => SetProperty(ref backgroundTheme, value);
-        }
         public bool IsLoading
         {
             get => isLoading;
@@ -153,7 +149,6 @@ namespace SimpleWeather.Controls
                     this.weather = weather;
 
                     ImageData = null;
-                    BackgroundTheme = ElementTheme.Dark;
 
                     LocationName = weather.location.name;
 
@@ -283,22 +278,23 @@ namespace SimpleWeather.Controls
 
         public async Task UpdateBackground()
         {
-            if (weather != null && ImageData == null)
+            if (ImageData == null)
             {
-                var imageData = await weather.GetImageData();
-
-                if (imageData != null)
-                {
-                    ImageData = imageData;
-                    BackgroundTheme = ColorUtils.IsSuperLight(imageData.Color) ?
-                        ElementTheme.Light : ElementTheme.Dark;
-                }
-                else
-                {
-                    ImageData = null;
-                    BackgroundTheme = ElementTheme.Dark;
-                }
+                ImageData = await weather?.GetImageData();
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is LocationPanelUiModel model &&
+                   EqualityComparer<ImageDataViewModel>.Default.Equals(imageData, model.imageData) &&
+                   EqualityComparer<LocationData>.Default.Equals(locationData, model.locationData) &&
+                   EqualityComparer<Weather>.Default.Equals(weather, model.weather);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(imageData, locationData, weather);
         }
     }
 }

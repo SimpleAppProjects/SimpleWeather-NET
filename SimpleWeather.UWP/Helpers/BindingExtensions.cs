@@ -40,9 +40,19 @@ namespace SimpleWeather.UWP.Helpers
             return value1 && value2;
         }
 
-        public static Visibility IsVisible(bool value1, bool value2)
+        public static bool AreBothFalse(bool value1, bool value2)
+        {
+            return !value1 && !value2;
+        }
+
+        public static Visibility IsVisibleIfBothTrue(bool value1, bool value2)
         {
             return BoolToVisibility(AreBothTrue(value1, value2));
+        }
+
+        public static Visibility IsVisibleIfBothFalse(bool value1, bool value2)
+        {
+            return BoolToVisibility(AreBothFalse(value1, value2));
         }
     }
 }

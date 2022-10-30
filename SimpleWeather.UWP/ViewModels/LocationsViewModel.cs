@@ -108,7 +108,7 @@ namespace SimpleWeather.UWP.ViewModels
 
         private void RefreshLocationWeather(IEnumerable<LocationData> locations)
         {
-            var locationMap = locations.ToDictionary(_ => _, locData => new LocationPanelUiModel() { LocationData = locData });
+            var locationMap = locations.ToDictionary(_ => _, locData => new LocationPanelUiModel() { LocationData = locData, IsLoading = true });
 
             UiState = UiState with { Locations = locationMap.Values, IsLoading = false };
 
@@ -142,7 +142,11 @@ namespace SimpleWeather.UWP.ViewModels
                                     UiState = state with { ErrorMessages = errorMessages };
                                 }
 
-                                entry.Value.SetWeather(entry.Key, null);
+                                entry.Value.Apply(value =>
+                                {
+                                    value.SetWeather(entry.Key, null);
+                                    value.IsLoading = false;
+                                });
 
                                 DispatcherQueue.TryEnqueue(() =>
                                 {
@@ -167,7 +171,11 @@ namespace SimpleWeather.UWP.ViewModels
                                     UiState = state with { ErrorMessages = errorMessages };
                                 }
 
-                                entry.Value.SetWeather(entry.Key, null);
+                                entry.Value.Apply(value =>
+                                {
+                                    value.SetWeather(entry.Key, null);
+                                    value.IsLoading = false;
+                                });
 
                                 DispatcherQueue.TryEnqueue(() =>
                                 {
@@ -177,7 +185,11 @@ namespace SimpleWeather.UWP.ViewModels
                             break;
                         case WeatherResult.Success:
                             {
-                                entry.Value.SetWeather(entry.Key, result.Data);
+                                entry.Value.Apply(value =>
+                                {
+                                    value.SetWeather(entry.Key, result.Data);
+                                    value.IsLoading = false;
+                                });
 
                                 DispatcherQueue.TryEnqueue(() =>
                                 {
@@ -202,7 +214,11 @@ namespace SimpleWeather.UWP.ViewModels
                                     UiState = state with { ErrorMessages = errorMessages };
                                 }
 
-                                entry.Value.SetWeather(entry.Key, result.Data);
+                                entry.Value.Apply(value =>
+                                {
+                                    value.SetWeather(entry.Key, result.Data);
+                                    value.IsLoading = false;
+                                });
 
                                 DispatcherQueue.TryEnqueue(() =>
                                 {
