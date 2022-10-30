@@ -294,6 +294,7 @@
     <Compile Include="Helpers\IFramePage.cs" />
     <Compile Include="Helpers\ScrollViewerHelper.cs" />
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
+    <Compile Include="Helpers\Win2DExtensions.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Main\Args.cs" />
     <Compile Include="Main\WeatherAQIPage.xaml.cs">

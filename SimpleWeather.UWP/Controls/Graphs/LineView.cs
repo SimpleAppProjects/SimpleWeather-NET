@@ -1,25 +1,16 @@
 ﻿using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
-using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
-using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Utils;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 namespace SimpleWeather.UWP.Controls.Graphs
 {
@@ -41,6 +32,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
         private float DOT_INNER_CIR_RADIUS;
         private float DOT_OUTER_CIR_RADIUS;
+        private float LINE_CORNER_RADIUS;
         private const int MIN_VERTICAL_GRID_NUM = 4;
 
         public Color BackgroundLineColor
@@ -252,7 +244,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     foreach (LineGraphEntry entry in series.EntryData)
                     {
                         verticalGridNum = Math.Max(verticalGridNum,
-                            Math.Max(MIN_VERTICAL_GRID_NUM, (int) Math.Ceiling(entry.YEntryData.Y) + 1));
+                            Math.Max(MIN_VERTICAL_GRID_NUM, (int)Math.Ceiling(entry.YEntryData.Y) + 1));
                     }
                 }
             }
@@ -373,6 +365,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             DOT_INNER_CIR_RADIUS = canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
             DOT_OUTER_CIR_RADIUS = canvas.ConvertDipsToPixels(5, CanvasDpiRounding.Floor);
+            LINE_CORNER_RADIUS = canvas.ConvertDipsToPixels(16, CanvasDpiRounding.Floor);
 
             LineStrokeWidth = canvas.ConvertDipsToPixels(2, CanvasDpiRounding.Floor);
 
@@ -435,6 +428,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     var series = Data.GetDataSetByIndex(k);
                     ICollection<TextEntry> textEntries = new LinkedList<TextEntry>();
 
+                    var LinePath = new CanvasPathBuilder(drawingSession);
                     var BackgroundPath = new CanvasPathBuilder(drawingSession);
 
                     float firstX = -1;
@@ -444,8 +438,11 @@ namespace SimpleWeather.UWP.Controls.Graphs
                     var lineColor = series.GetColor(k);
                     var backgroundColor = ColorUtils.SetAlphaComponent(series.GetColor(k), 0x99);
 
+                    LinePath.BeginFigure((float)region.Left - LINE_CORNER_RADIUS, graphHeight);
                     if (DrawGraphBackground)
-                        BackgroundPath.BeginFigure((float)region.Left, graphHeight);
+                    {
+                        BackgroundPath.BeginFigure((float)region.Left - LINE_CORNER_RADIUS, graphHeight);
+                    }
 
                     for (int i = 0; i < drawDotLists[k].Count - 1; i++)
                     {
@@ -458,18 +455,6 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         float startY = dot.Y;
                         float endX = nextDot.X;
                         float endY = nextDot.Y;
-
-                        drawingRect.Set(region.Left, dot.Y, dot.X, dot.Y);
-                        if (firstX == -1 && drawingRect.Intersects(region))
-                        {
-                            drawingSession.DrawLine((float)region.Left, dot.Y, dot.X, dot.Y, lineColor, LineStrokeWidth);
-                        }
-
-                        drawingRect.Set(dot.X, dot.Y, nextDot.X, nextDot.Y);
-                        if (drawingRect.Intersects(region))
-                        {
-                            drawingSession.DrawLine(dot.X, dot.Y, nextDot.X, nextDot.Y, lineColor, LineStrokeWidth);
-                        }
 
                         if (DrawDataLabels)
                         {
@@ -493,13 +478,29 @@ namespace SimpleWeather.UWP.Controls.Graphs
                         if (firstX == -1)
                         {
                             firstX = (float)region.Left;
+
+                            LinePath.AddLine(firstX - LINE_CORNER_RADIUS, startY);
                             if (DrawGraphBackground)
-                                BackgroundPath.AddLine(firstX, startY);
+                            {
+                                BackgroundPath.AddCurvedLine(firstX - LINE_CORNER_RADIUS, graphHeight, firstX - LINE_CORNER_RADIUS, startY, LINE_CORNER_RADIUS);
+                            }
                         }
 
-                        if (DrawGraphBackground)
+                        if (currentDot == null)
                         {
-                            BackgroundPath.AddLine(startX, startY);
+                            LinePath.AddCurvedLine(firstX - LINE_CORNER_RADIUS, startY, startX, startY, LINE_CORNER_RADIUS);
+                            if (DrawGraphBackground)
+                            {
+                                BackgroundPath.AddCurvedLine(firstX - LINE_CORNER_RADIUS, startY, startX, startY, LINE_CORNER_RADIUS);
+                            }
+                        }
+                        else
+                        {
+                            LinePath.AddCurvedLine(currentDot.X, currentDot.Y, startX, startY, LINE_CORNER_RADIUS);
+                            if (DrawGraphBackground)
+                            {
+                                BackgroundPath.AddCurvedLine(currentDot.X, currentDot.Y, startX, startY, LINE_CORNER_RADIUS);
+                            }
                         }
 
                         currentDot = dot;
@@ -526,37 +527,42 @@ namespace SimpleWeather.UWP.Controls.Graphs
                                 }
                             }
 
-                            drawingRect.Set(nextDot.X, nextDot.Y, region.Right, nextDot.Y);
-                            if (drawingRect.Intersects(region))
-                            {
-                                drawingSession.DrawLine(nextDot.X, nextDot.Y, (float)region.Right, nextDot.Y, lineColor, LineStrokeWidth);
-                            }
-
                             currentDot = nextDot;
 
+                            LinePath.AddCurvedLine(startX, startY, endX, endY, LINE_CORNER_RADIUS);
                             if (drawingRect.Intersects(region))
                             {
-                                BackgroundPath.AddLine(endX, endY);
+                                BackgroundPath.AddCurvedLine(startX, startY, endX, endY, LINE_CORNER_RADIUS);
                             }
                         }
                     }
+
+                    if (currentDot != null)
+                    {
+                        LinePath.AddCurvedLine(currentDot.X, currentDot.Y, (float)region.Right + LINE_CORNER_RADIUS, currentDot.Y, LINE_CORNER_RADIUS);
+                    }
+
+                    LinePath.EndFigure(CanvasFigureLoop.Open);
+                    using var line = CanvasGeometry.CreatePath(LinePath);
+                    drawingSession.DrawGeometry(line, lineColor, LineStrokeWidth);
 
                     if (DrawGraphBackground)
                     {
                         if (currentDot != null)
                         {
-                            BackgroundPath.AddLine((float)region.Right, currentDot.Y);
+                            BackgroundPath.AddCurvedLine(currentDot.X, currentDot.Y, (float)region.Right + LINE_CORNER_RADIUS, currentDot.Y, LINE_CORNER_RADIUS);
                         }
                         if (firstX != -1)
                         {
-                            BackgroundPath.AddLine((float)region.Right, graphHeight);
+                            BackgroundPath.AddLine((float)region.Right + LINE_CORNER_RADIUS, graphHeight);
                         }
 
                         BackgroundPath.EndFigure(CanvasFigureLoop.Closed);
-                        var line = CanvasGeometry.CreatePath(BackgroundPath);
-                        drawingSession.FillGeometry(line, backgroundColor);
-                        line.Dispose();
+                        using var background = CanvasGeometry.CreatePath(BackgroundPath);
+                        drawingSession.FillGeometry(background, backgroundColor);
                     }
+
+                    LinePath?.Dispose();
                     BackgroundPath?.Dispose();
 
                     if (DrawDataLabels)
