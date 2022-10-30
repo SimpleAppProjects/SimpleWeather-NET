@@ -256,7 +256,7 @@ namespace SimpleWeather.ViewModels
 
         public void UpdateLocation(LocationData locationData)
         {
-            UiState = UiState with { LocationData = locationData };
+            UiState = UiState with { LocationData = locationData, NoLocationAvailable = false };
 
             if (locationData?.IsValid() == true)
             {
@@ -265,17 +265,15 @@ namespace SimpleWeather.ViewModels
             }
             else
             {
-                CheckInvalidLocation();
+                CheckInvalidLocation(locationData);
 
                 UiState = UiState with { IsLoading = false };
             }
         }
 
-        private void CheckInvalidLocation()
+        private void CheckInvalidLocation(LocationData locationData)
         {
-            var locationData = GetLocationData();
-
-            if (locationData?.IsValid() != true)
+            if (locationData == null || !locationData.IsValid())
             {
                 DispatcherQueue.EnqueueAsync(async () =>
                 {
