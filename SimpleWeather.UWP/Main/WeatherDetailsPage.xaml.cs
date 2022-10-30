@@ -123,6 +123,26 @@ namespace SimpleWeather.UWP.Main
 
                 Initialize(args.ScrollToPosition);
             }
+            else
+            {
+                WNowViewModel.PropertyChanged += WNowViewModel_PropertyChanged;
+                Initialize();
+            }
+        }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            WNowViewModel.PropertyChanged -= WNowViewModel_PropertyChanged;
+        }
+
+        private void WNowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(WNowViewModel.UiState))
+            {
+                locationData = WNowViewModel.UiState.LocationData;
+                Initialize();
+            }
         }
 
         private void Initialize(int scrollToPosition = 0)
