@@ -206,8 +206,8 @@ namespace SimpleWeather.Metno
             if (icon == null) return WeatherIcons.NA;
 
             //var isNeutral = icon.Split("_").Length == 1;
-            var isDay = icon.EndsWith("day");
-            isNight = icon.EndsWith("night");
+            var isDay = icon.EndsWith("day") && !isNight;
+            isNight = icon.EndsWith("night") && isNight;
             //var isPolarTwilight = icon.EndsWith("polartwilight");
 
             icon = GetNeutralIconName(icon);
