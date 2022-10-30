@@ -1,4 +1,4 @@
-﻿using SimpleWeather.Location;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
@@ -20,11 +20,11 @@ namespace SimpleWeather.UWP.Setup
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SetupPage : Page
+    public sealed partial class SetupPage : Page, ISetupNavigator, IViewModelProvider
     {
         public Frame AppFrame { get { return FrameContent; } }
-        public static SetupPage Instance { get; set; }
-        public LocationData Location { get; set; }
+        public static ISetupNavigator Instance { get; private set; }
+        private SetupViewModel ViewModel { get; }
 
         private UISettings UISettings;
 
@@ -35,11 +35,21 @@ namespace SimpleWeather.UWP.Setup
             typeof(SetupSettingsPage)
         };
 
+        private readonly string DefaultKey = $"{typeof(SetupPage).FullName}.DefaultKey";
+
+        public ViewModelStore ViewModelStore { get; } = new();
+
+        public T GetViewModel<T>() where T : IViewModel
+        {
+            return this.GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
+        }
+
         public SetupPage()
         {
             this.InitializeComponent();
 
             Instance = this;
+            ViewModel = GetViewModel<SetupViewModel>();
 
             UISettings = new UISettings();
             UpdateAppTheme();
@@ -88,15 +98,20 @@ namespace SimpleWeather.UWP.Setup
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (AppFrame.SourcePageType != Pages[0] && AppFrame.CanGoBack)
-            {
-                AppFrame.GoBack();
-            }
+            Back();
         }
 
         private void NextBtn_Click(object sender, RoutedEventArgs e)
         {
             Next();
+        }
+
+        public void Back()
+        {
+            if (AppFrame.SourcePageType != Pages[0] && AppFrame.CanGoBack)
+            {
+                AppFrame.GoBack();
+            }
         }
 
         public void Next()
@@ -168,7 +183,7 @@ namespace SimpleWeather.UWP.Setup
             }
 
             Settings.OnBoardComplete = true;
-            this.Frame.Navigate(typeof(Shell), Location);
+            this.Frame.Navigate(typeof(Shell), ViewModel.LocationData);
         }
 
         private void UpdateAppTheme()

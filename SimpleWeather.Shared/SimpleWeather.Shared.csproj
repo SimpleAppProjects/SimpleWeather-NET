@@ -324,6 +324,7 @@
     <Compile Include="UWP\Utils\Settings.cs" />
     <Compile Include="ComponentModel\IViewModel.cs" />
     <Compile Include="ViewModels\ErrorMessage.cs" />
+    <Compile Include="ViewModels\LocationSearchViewModel.cs" />
     <Compile Include="ViewModels\WeatherNowViewModel.cs" />
     <Compile Include="ViewModels\WeatherNowViewModelExtras.cs" />
     <Compile Include="WeatherApi\ForecastRootobject.cs" />

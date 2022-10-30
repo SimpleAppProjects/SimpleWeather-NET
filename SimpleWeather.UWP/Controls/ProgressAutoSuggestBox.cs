@@ -1,13 +1,8 @@
 ﻿using SimpleWeather.UWP.Helpers;
-using SimpleWeather.WeatherData;
-using System;
-using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
-using muxc = Microsoft.UI.Xaml.Controls;
-using mtuconv = Microsoft.Toolkit.Uwp.UI.Converters;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -87,6 +82,16 @@ namespace SimpleWeather.UWP.Controls
         // Using a DependencyProperty as the backing store for ItemTemplate.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ItemTemplateProperty =
             DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(ProgressAutoSuggestBox), new PropertyMetadata(null));
+
+        public bool IsSuggestionListOpen
+        {
+            get { return (bool)GetValue(IsSuggestionListOpenProperty); }
+            set { SetValue(IsSuggestionListOpenProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IsSuggestionListOpen.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsSuggestionListOpenProperty =
+            DependencyProperty.Register("IsSuggestionListOpen", typeof(bool), typeof(ProgressAutoSuggestBox), new PropertyMetadata(false));
         #endregion
 
         #region Header Properties

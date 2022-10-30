@@ -283,6 +283,7 @@
     <Compile Include="Helpers\GraphDataVisibilityConverter.cs" />
     <Compile Include="Helpers\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
+    <Compile Include="Helpers\LocationPermissionExtensions.cs" />
     <Compile Include="Helpers\RectHelperExtensions.cs" />
     <Compile Include="Helpers\StringRes.cs" />
     <Compile Include="Helpers\TempToColorTempConverter.cs" />
@@ -336,6 +337,8 @@
     <Compile Include="Radar\RadarViewProvider.cs" />
     <Compile Include="Radar\RainViewer\RainViewerViewProvider.cs" />
     <Compile Include="Radar\RainViewer\WeatherMapsResponse.cs" />
+    <Compile Include="Setup\ISetupNavigator.cs" />
+    <Compile Include="Setup\SetupViewModel.cs" />
     <Compile Include="Tiles\SecondaryTileUtils.cs" />
     <Compile Include="Helpers\IPageVerification.cs" />
     <Compile Include="Main\LocationSearchPage.xaml.cs">

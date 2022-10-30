@@ -379,6 +379,8 @@
                     x:Name="LocationSearchBox"
                     MaxWidth="1080"
                     Background="#F0FFFFFF"
+                    Footer="{x:Bind LocationSearchViewModel.Footer, Mode=OneWay}"
+                    IsSuggestionListOpen="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionBooleanConverter}, Mode=OneWay}"
                     PlaceholderText="{helpers:StringRes Name='setup_location_prompt'}"
                     QuerySubmitted="Location_QuerySubmitted"
                     RelativePanel.AlignLeftWithPanel="True"

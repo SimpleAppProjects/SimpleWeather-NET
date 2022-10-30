@@ -29,7 +29,7 @@ namespace SimpleWeather.Location
                 }
                 else
                 {
-                    return LocationRegion + ", " + LocationCountry;
+                    return $"{LocationRegion}, {LocationCountry}";
                 }
             }
         }

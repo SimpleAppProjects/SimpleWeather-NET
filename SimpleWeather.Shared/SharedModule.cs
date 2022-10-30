@@ -69,6 +69,7 @@ namespace SimpleWeather
         {
             serviceCollection.AddSingleton<IExtrasService, DefaultExtrasServiceImpl>();
             serviceCollection.AddSingleton<ImageDataHelperImpl, ImageDataHelperDefault>();
+            serviceCollection.AddSingleton<ResourceLoader>(ResLoader);
         }
 
         public IServiceCollection GetServiceCollection()

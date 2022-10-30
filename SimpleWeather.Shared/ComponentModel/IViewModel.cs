@@ -22,7 +22,7 @@ namespace SimpleWeather.ComponentModel
             });
         }
 
-        public void OnCleared()
+        public virtual void OnCleared()
         {
         }
     }

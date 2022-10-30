@@ -69,6 +69,7 @@
                             <AutoSuggestBox
                                 x:Name="SuggestBox"
                                 Background="{TemplateBinding Background}"
+                                IsSuggestionListOpen="{TemplateBinding IsSuggestionListOpen}"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
                                 Style="{ThemeResource DefaultAutoSuggestBoxStyle}"
