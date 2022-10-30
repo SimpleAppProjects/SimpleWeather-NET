@@ -1,8 +1,6 @@
 ﻿using SimpleWeather.Utils;
 using SQLite;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.TZDB
@@ -68,7 +66,7 @@ namespace SimpleWeather.TZDB
                 }
             }
 
-            return "UTC";
+            return "unknown";
         }
     }
 }
