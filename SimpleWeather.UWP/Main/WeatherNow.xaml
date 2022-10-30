@@ -429,7 +429,7 @@
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
                         <StackPanel
-                            x:Name="PrecipitationPanel"
+                            x:Name="ChartsPanel"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
@@ -444,8 +444,8 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBlock
                                                 Grid.Column="0"
-                                                d:Text="Precipitation"
-                                                Text="{helpers:StringRes Name='label_precipitation'}" />
+                                                d:Text="Charts"
+                                                Text="{helpers:StringRes Name='pref_title_feature_charts'}" />
                                             <FontIcon
                                                 Grid.Column="1"
                                                 Margin="5,0,0,0"
