@@ -1,8 +1,6 @@
 ﻿using SimpleWeather.Location;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -44,7 +42,7 @@ namespace SimpleWeather.Utils
                             await response.CreateException());
                     case (int)System.Net.HttpStatusCode.NotFound:
                         throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
-                            await response .CreateException());
+                            await response.CreateException());
                     case 429:
                         await ThrowIfRateLimited(apiID, response, retryTimeInMs);
                         break;
@@ -161,7 +159,7 @@ namespace SimpleWeather.Utils
             await ThrowIfRateLimited(apiID, response, @api.GetRetryTime());
         }
 
-        private static async Task<Exception> CreateException(this System.Net.Http.HttpResponseMessage response)
+        public static async Task<Exception> CreateException(this System.Net.Http.HttpResponseMessage response)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
             var responseCode = (int)response.StatusCode;

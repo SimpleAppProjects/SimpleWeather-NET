@@ -84,7 +84,7 @@ namespace SimpleWeather.HERE
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
-                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError, new Exception($"Invalid bearer token: {token}"));
 
                     request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
@@ -107,7 +107,7 @@ namespace SimpleWeather.HERE
                             switch (root.Type)
                             {
                                 case "Invalid Request":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, await response.CreateException());
                                     break;
 
                                 case "Unauthorized":
@@ -228,7 +228,7 @@ namespace SimpleWeather.HERE
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
-                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
+                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError, new Exception($"Invalid bearer token: {token}"));
 
                     request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 

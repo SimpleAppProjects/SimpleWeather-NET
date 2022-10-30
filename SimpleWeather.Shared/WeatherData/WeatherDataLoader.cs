@@ -316,14 +316,14 @@ namespace SimpleWeather.WeatherData
                                     {
                                         if (weather.location?.latitude.GetValueOrDefault(0f) != 0f || weather.location?.longitude.GetValueOrDefault(0f) != 0f)
                                         {
-                                            throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                            throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new Exception($"Invalid location data: {weather.location}"));
                                         }
 
                                         location.query = wm.UpdateLocationQuery(weather);
                                     }
                                     else
                                     {
-                                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new Exception($"Invalid location state: location ({location}), weather ({weather})"));
                                     }
 
                                     location.weatherSource = Settings.API;

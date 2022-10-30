@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SimpleWeather.Extras;
+using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.NWS.Hourly;
@@ -11,15 +13,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Web;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Net.Http.Headers;
-using SimpleWeather.HttpClientExtensions;
-using SimpleWeather.Extras;
 
 namespace SimpleWeather.NWS
 {
@@ -67,7 +66,7 @@ namespace SimpleWeather.NWS
             // NWS only supports locations in U.S.
             if (!LocationUtils.IsUS(country_code))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({country_code})"));
             }
 
             try

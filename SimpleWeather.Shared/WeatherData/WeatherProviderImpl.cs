@@ -1,5 +1,4 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Icons;
+﻿using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using System;
@@ -53,7 +52,7 @@ namespace SimpleWeather.WeatherData
         public virtual async Task<Weather> GetWeather(LocationData location)
         {
             if (location == null || location.query == null)
-                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown);
+                throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new ArgumentNullException("location?.query"));
 
             var weather = await GetWeather(location.query, location.country_code);
 

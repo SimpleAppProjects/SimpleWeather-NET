@@ -63,7 +63,7 @@ namespace SimpleWeather.MeteoFrance
             // MeteoFrance only supports locations in France
             if (!LocationUtils.IsFrance(country_code))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({country_code})"));
             }
 
             var culture = CultureUtils.UserCulture;

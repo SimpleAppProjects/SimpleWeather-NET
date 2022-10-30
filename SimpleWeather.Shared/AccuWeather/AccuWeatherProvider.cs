@@ -80,7 +80,12 @@ namespace SimpleWeather.AccuWeather
             catch (Exception ex)
             {
                 isValid = false;
-                if (ex is WeatherException)
+
+                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
+                }
+                else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
                 }
