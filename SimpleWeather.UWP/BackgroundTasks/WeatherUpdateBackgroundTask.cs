@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using Windows.Devices.Geolocation;
 
 namespace SimpleWeather.UWP.BackgroundTasks
 {
@@ -50,7 +49,18 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                             try
                             {
-                                locationChanged = await UpdateLocation();
+                                var result = await UpdateLocation();
+
+                                switch (result)
+                                {
+                                    case LocationResult.Changed ret:
+                                        locationChanged = true;
+                                        Settings.SaveLastGPSLocData(ret.Data);
+                                        break;
+                                    default:
+                                        // no-op
+                                        break;
+                                }
                             }
                             catch (Exception e)
                             {
@@ -322,88 +332,17 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
         }
 
-        private async Task<bool> UpdateLocation()
+        private async Task<LocationResult> UpdateLocation()
         {
-            bool locationChanged = false;
+            var locationProvider = new LocationProvider();
 
             if (Settings.FollowGPS)
             {
-                Location.Location location = null;
-                Geolocator geolocal = new Geolocator() { DesiredAccuracyInMeters = 5000, ReportInterval = 900000, MovementThreshold = 1600 };
-
-                try
-                {
-                    cts.Token.ThrowIfCancellationRequested();
-                    geolocal.AllowFallbackToConsentlessPositions();
-                    var newGeoPos = await geolocal.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10))
-                        .AsTask(cts.Token).ConfigureAwait(false);
-                    location = newGeoPos.ToLocation();
-                }
-                catch (OperationCanceledException)
-                {
-                    return locationChanged;
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: error requesting location permission", taskName);
-                }
-
-                // Access to location granted
-                if (location != null)
-                {
-                    var lastGPSLocData = await Settings.GetLastGPSLocData();
-
-                    if (cts.IsCancellationRequested) return locationChanged;
-
-                    // Check previous location difference
-                    if (lastGPSLocData?.IsValid() == true
-                        && Math.Abs(ConversionMethods.CalculateGeopositionDistance(lastGPSLocData.ToLocation(), location)) < geolocal.MovementThreshold)
-                    {
-                        return false;
-                    }
-
-                    LocationQuery view = null;
-
-                    await Task.Run(async () =>
-                    {
-                        try
-                        {
-                            view = await wm.GetLocation(location);
-
-                            if (String.IsNullOrWhiteSpace(view.Location_Query))
-                            {
-                                view = new LocationQuery();
-                            }
-                            else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
-                            {
-                                String tzId = await TZDB.TZDBCache.GetTimeZone(view.LocationLat, view.LocationLong);
-                                if (!Equals("unknown", tzId))
-                                    view.LocationTZLong = tzId;
-                            }
-                        }
-                        catch (WeatherException)
-                        {
-                            view = new LocationQuery();
-                        }
-                    }, cts.Token).ConfigureAwait(false);
-
-                    if (String.IsNullOrWhiteSpace(view.Location_Query))
-                    {
-                        // Stop since there is no valid query
-                        return false;
-                    }
-
-                    if (cts.IsCancellationRequested) return locationChanged;
-
-                    // Save location as last known
-                    lastGPSLocData = view.ToLocationData(location);
-                    Settings.SaveLastGPSLocData(lastGPSLocData);
-
-                    locationChanged = true;
-                }
+                var lastLocation = await Settings.GetLastGPSLocData();
+                return await locationProvider.GetLatestLocationData(lastLocation);
             }
 
-            return locationChanged;
+            return new LocationResult.NotChanged(null);
         }
 
         public void Dispose()
