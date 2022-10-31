@@ -710,6 +710,11 @@ Fuzzy</comment>
     <value>当前时间</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>没有数据</value>
+    <comment>Forecast Graphs
+Fuzzy</comment>
+  </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>

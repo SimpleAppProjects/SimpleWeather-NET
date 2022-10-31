@@ -692,6 +692,10 @@ Fuzzy</comment>
   <data name="time_current" xml:space="preserve">
     <value>Aktuálne</value>
   </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>ŽIADNE ÚDAJE</value>
+    <comment>Forecast Graphs</comment>
+  </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
