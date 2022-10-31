@@ -80,7 +80,7 @@
             IsItemClickEnabled="True"
             IsSwipeEnabled="False"
             ItemClick="LocationsPanel_ItemClick"
-            ItemsSource="{x:Bind PanelAdapter.ViewSource, Mode=OneWay}"
+            ItemsSource="{x:Bind PanelAdapter.ViewSource.View, Mode=OneWay}"
             SelectionMode="None">
             <GridView.GroupStyle>
                 <GroupStyle HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}" HidesIfEmpty="True">

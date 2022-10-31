@@ -89,7 +89,7 @@ namespace SimpleWeather.UWP.Main
         private void LocationsPage_Resuming(object sender, object e)
         {
             AnalyticsLogger.LogEvent("LocationsPage: LocationsPage_Resuming");
-            //LocationsViewModel.RefreshLocations();
+            LocationsViewModel.RefreshLocations();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -119,7 +119,7 @@ namespace SimpleWeather.UWP.Main
 
             LocationsViewModel.PropertyChanged += LocationsViewModel_PropertyChanged;
             LocationsViewModel.WeatherUpdated += LocationsViewModel_WeatherUpdated;
-            LocationsViewModel.LoadLocations();
+            LocationsViewModel.RefreshLocations();
         }
 
         private void LocationsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

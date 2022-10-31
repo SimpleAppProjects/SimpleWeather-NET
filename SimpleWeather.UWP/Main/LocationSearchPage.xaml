@@ -27,6 +27,7 @@
             Header="{helpers:StringRes Name='label_fab_add_location'}"
             IsLoading="{x:Bind LocationSearchViewModel.IsLoading, Mode=OneWay}"
             IsSuggestionListOpen="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionBooleanConverter}, Mode=OneWay}"
+            ItemsSource="{x:Bind LocationSearchViewModel.Locations, Mode=OneWay}"
             PlaceholderText="{helpers:StringRes Name='location_search_hint'}"
             QuerySubmitted="Location_QuerySubmitted"
             Style="{ThemeResource LocationQuerySearchBoxStyle}"

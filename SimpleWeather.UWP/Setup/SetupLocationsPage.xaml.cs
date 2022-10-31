@@ -64,6 +64,7 @@ namespace SimpleWeather.UWP.Setup
             InitSnackManager();
 
             LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
+            LocationSearchViewModel.Initialize();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

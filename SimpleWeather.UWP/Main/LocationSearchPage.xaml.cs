@@ -64,6 +64,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("LocationSearchPage: OnNavigatedTo");
 
             LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
+            LocationSearchViewModel.Initialize();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)

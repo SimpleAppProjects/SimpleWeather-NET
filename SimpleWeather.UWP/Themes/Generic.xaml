@@ -71,6 +71,7 @@
                                 Background="{TemplateBinding Background}"
                                 IsSuggestionListOpen="{TemplateBinding IsSuggestionListOpen}"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
+                                ItemsSource="{TemplateBinding ItemsSource}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
                                 Style="{ThemeResource DefaultAutoSuggestBoxStyle}"
                                 TextBoxStyle="{TemplateBinding TextBoxStyle}"

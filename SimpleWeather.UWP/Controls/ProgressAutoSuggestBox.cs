@@ -92,6 +92,16 @@ namespace SimpleWeather.UWP.Controls
         // Using a DependencyProperty as the backing store for IsSuggestionListOpen.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsSuggestionListOpenProperty =
             DependencyProperty.Register("IsSuggestionListOpen", typeof(bool), typeof(ProgressAutoSuggestBox), new PropertyMetadata(false));
+
+        public object ItemsSource
+        {
+            get { return (object)GetValue(ItemsSourceProperty); }
+            set { SetValue(ItemsSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemsSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemsSourceProperty =
+            DependencyProperty.Register("ItemsSource", typeof(object), typeof(ProgressAutoSuggestBox), new PropertyMetadata(null));
         #endregion
 
         #region Header Properties
