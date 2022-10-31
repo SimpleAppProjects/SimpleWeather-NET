@@ -1,6 +1,5 @@
 ﻿using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
-using SimpleWeather.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
@@ -78,7 +76,7 @@ namespace SimpleWeather.UWP.Notifications
             if (hrForecasts?.Count() <= 0) return false;
 
             // Find the next hour with a 60% or higher chance of precipitation
-            var forecast = hrForecasts?.FirstOrDefault(h => h?.extras?.pop >= 60);
+            var forecast = hrForecasts?.FirstOrDefault(h => h?.extras?.pop >= Settings.PoPChanceMinimumPercentage);
 
             // Proceed if within the next 3hrs
             if (forecast == null || (forecast.date - now.Trim(TimeSpan.TicksPerHour)).TotalHours > 3) return false;

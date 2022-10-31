@@ -3,12 +3,10 @@ using SimpleWeather.Icons;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.WeatherData;
 using SQLite;
-using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
 
@@ -469,6 +467,28 @@ namespace SimpleWeather.Utils
         private static void SetLastPoPChanceNotificationTime(DateTimeOffset value)
         {
             localSettings.Values[KEY_LASTCHANCENOTIFICATIONTIME] = value.ToISO8601Format();
+        }
+
+        private static int GetPoPChanceMinimumPercentage()
+        {
+            if (localSettings.Values.TryGetValue(KEY_POPCHANCEPCT, out object value))
+            {
+                return (int)value;
+            }
+
+            return 60;
+        }
+
+        private static void SetPoPChanceMinimumPercentage([Range(40, 90)] int value)
+        {
+            if (value >= 40 && value <= 90)
+            {
+                localSettings.Values[KEY_POPCHANCEPCT] = value;
+            }
+            else
+            {
+                localSettings.Values[KEY_POPCHANCEPCT] = 60;
+            }
         }
     }
 }

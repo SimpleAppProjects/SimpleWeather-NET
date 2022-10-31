@@ -5,6 +5,8 @@
         public string Display { get; set; }
         public string Value { get; set; }
 
+        public ComboBoxItem() { }
+
         public ComboBoxItem(string Display, string Value)
         {
             this.Display = Display;

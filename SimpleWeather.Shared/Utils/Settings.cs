@@ -41,6 +41,7 @@ namespace SimpleWeather.Utils
         public static TimeSpan DailyNotificationTime { get { return GetDailyNotificationTime(); } set { SetDailyNotificationTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DAILYNOTIFICATIONTIME, NewValue = value }); } }
         public static bool PoPChanceNotificationEnabled { get { return IsPoPChanceNotificationEnabled(); } set { SetPoPChanceNotificationEnabled(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_POPCHANCENOTIFICATION, NewValue = value }); } }
         public static DateTimeOffset LastPoPChanceNotificationTime { get { return GetLastPoPChanceNotificationTime(); } set { SetLastPoPChanceNotificationTime(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_LASTCHANCENOTIFICATIONTIME, NewValue = value }); } }
+        public static int PoPChanceMinimumPercentage { get { return GetPoPChanceMinimumPercentage(); } set { SetPoPChanceMinimumPercentage(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_POPCHANCEPCT, NewValue = value }); } }
 
         // Units
         public static string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_TEMPUNIT, NewValue = value }); } }
@@ -102,6 +103,7 @@ namespace SimpleWeather.Utils
         public const string KEY_DAILYNOTIFICATION = "key_dailynotification";
         public const string KEY_DAILYNOTIFICATIONTIME = "key_dailynotificationtime";
         public const string KEY_POPCHANCENOTIFICATION = "key_popchancenotification";
+        public const string KEY_POPCHANCEPCT = "key_popchancepct";
         public const string KEY_LASTCHANCENOTIFICATIONTIME = "key_lastchancenotificationtime";
 
         // 8am

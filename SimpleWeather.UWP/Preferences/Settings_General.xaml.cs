@@ -10,13 +10,11 @@ using SimpleWeather.UWP.Tiles;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
 using Windows.UI;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -86,6 +84,7 @@ namespace SimpleWeather.UWP.Preferences
             DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
             DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
             PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
+            PoPChancePct.SelectionChanged += PoPChancePct_SelectionChanged;
 
             AnalyticsLogger.LogEvent("Settings_General");
         }
@@ -231,6 +230,10 @@ namespace SimpleWeather.UWP.Preferences
             // Daily Notification
             DailyNotifSwitch.IsOn = Settings.DailyNotificationEnabled;
             DailyNotifTimePicker.SelectedTime = Settings.DailyNotificationTime;
+
+            // Precipitation
+            PoPChanceNotifSwitch.IsOn = Settings.PoPChanceNotificationEnabled;
+            PoPChancePct.SelectedValue = Settings.PoPChanceMinimumPercentage.ToInvariantString();
 
             // Radar
             RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders();
@@ -790,9 +793,23 @@ namespace SimpleWeather.UWP.Preferences
                 if (sw.IsOn && !ExtrasService.IsEnabled())
                 {
                     // show premium popup
+                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 }
-                Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                else
+                {
+                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                }
+            }
+        }
+
+        private void PoPChancePct_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            string pctStr = box.SelectedValue.ToString();
+            if (int.TryParse(pctStr, out int pct))
+            {
+                Settings.PoPChanceMinimumPercentage = pct;
             }
         }
     }

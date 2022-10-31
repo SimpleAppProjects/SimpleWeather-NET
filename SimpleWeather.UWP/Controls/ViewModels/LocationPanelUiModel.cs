@@ -6,7 +6,6 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 
 namespace SimpleWeather.Controls
 {
@@ -27,7 +26,6 @@ namespace SimpleWeather.Controls
         private string windIcon;
         private bool editMode;
         private ImageDataViewModel imageData;
-        private ElementTheme backgroundTheme = ElementTheme.Dark;
         private bool isLoading = true;
         private LocationData locationData = new();
         private string weatherSource;
