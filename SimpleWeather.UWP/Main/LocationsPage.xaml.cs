@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
@@ -11,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
@@ -29,28 +27,22 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationsPage : Page, ICommandBarPage, ISnackbarPage, IDisposable
+    public sealed partial class LocationsPage : ViewModelPage, ICommandBarPage, ISnackbarPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationsViewModel LocationsViewModel { get; } = Ioc.Default.GetViewModel<LocationsViewModel>();
+        private LocationsViewModel LocationsViewModel { get; set; }
         private LocationPanelAdapter PanelAdapter { get; set; }
 
         public bool EditMode { get; set; } = false;
         private bool HomeChanged = false;
-        private CancellationTokenSource cts;
 
         private AppBarButton EditButton;
 
         public void ShowSnackbar(Snackbar snackbar)
         {
             Shell.Instance?.ShowSnackbar(snackbar);
-        }
-
-        public void Dispose()
-        {
-            cts?.Dispose();
         }
 
         public LocationsPage()
@@ -81,8 +73,6 @@ namespace SimpleWeather.UWP.Main
             EditButton.Tapped += AppBarButton_Click;
             EditButton.Visibility = PanelAdapter.FavoritesCount > 1 ? Visibility.Visible : Visibility.Collapsed;
 
-            cts = new CancellationTokenSource();
-
             AnalyticsLogger.LogEvent("LocationsPage");
         }
 
@@ -97,7 +87,7 @@ namespace SimpleWeather.UWP.Main
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("LocationsPage: OnNavigatedTo");
 
-            cts = new CancellationTokenSource();
+            LocationsViewModel = this.GetViewModel<LocationsViewModel>();
 
             if (e.NavigationMode == NavigationMode.Back || e.NavigationMode == NavigationMode.New)
             {
@@ -148,7 +138,8 @@ namespace SimpleWeather.UWP.Main
         {
             if (e.Location != null)
             {
-                await Task.Run(e.Location.UpdateBackground, cts.Token);
+                var cToken = GetCancellationToken();
+                await Task.Run(e.Location.UpdateBackground, cToken);
             }
         }
 
@@ -162,8 +153,6 @@ namespace SimpleWeather.UWP.Main
             // Cancel edit mode if moving away
             if (EditMode)
                 ToggleEditMode();
-
-            cts?.Cancel();
         }
 
         private void OnErrorMessage(ErrorMessage error)

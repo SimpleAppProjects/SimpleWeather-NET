@@ -1,4 +1,4 @@
-﻿<Page
+﻿<viewModels:ViewModelPage
     x:Class="SimpleWeather.UWP.Main.WeatherChartsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,6 +9,7 @@
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
@@ -98,4 +99,4 @@
             </ItemsControl.ItemContainerStyle>
         </ListView>
     </Grid>
-</Page>
+</viewModels:ViewModelPage>

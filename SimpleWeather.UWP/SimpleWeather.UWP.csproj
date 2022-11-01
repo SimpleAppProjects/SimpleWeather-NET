@@ -239,6 +239,7 @@
     <Compile Include="Controls\PollenCountControl.xaml.cs">
       <DependentUpon>PollenCountControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScopePage.cs" />
     <Compile Include="Controls\Snackbar\ISnackbarPage.cs" />
     <Compile Include="Controls\SunPhaseView.cs" />
     <Compile Include="Controls\ViewModels\AirQualityForecastViewModel.cs" />
@@ -375,6 +376,7 @@
     <Compile Include="Utils\FeatureSettings.cs" />
     <Compile Include="Utils\FeatureSettings.SettingsChangedEvent.cs" />
     <Compile Include="ViewModels\LocationsViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelPage.cs" />
     <Compile Include="WeatherAlerts\WeatherAlertHandler.cs" />
     <Compile Include="BackgroundTasks\WeatherUpdateBackgroundTask.cs" />
     <Compile Include="Controls\KeyEntryDialog.xaml.cs">

@@ -1,9 +1,9 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.ViewModels;
 using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -21,12 +21,12 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class LocationSearchPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
+    public sealed partial class LocationSearchPage : ViewModelPage, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationSearchViewModel LocationSearchViewModel { get; } = Ioc.Default.GetViewModel<LocationSearchViewModel>();
+        private LocationSearchViewModel LocationSearchViewModel { get; set; }
 
         public LocationSearchPage()
         {
@@ -62,6 +62,8 @@ namespace SimpleWeather.UWP.Main
         {
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("LocationSearchPage: OnNavigatedTo");
+
+            LocationSearchViewModel = this.GetViewModel<LocationSearchViewModel>();
 
             LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
             LocationSearchViewModel.Initialize();

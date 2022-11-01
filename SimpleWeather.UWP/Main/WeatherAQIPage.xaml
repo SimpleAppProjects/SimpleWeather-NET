@@ -1,4 +1,4 @@
-﻿<Page
+﻿<viewModels:ViewModelPage
     x:Class="SimpleWeather.UWP.Main.WeatherAQIPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,6 +10,7 @@
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
 
@@ -130,4 +131,4 @@
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
     </Grid>
-</Page>
+</viewModels:ViewModelPage>

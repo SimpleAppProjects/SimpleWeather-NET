@@ -1,10 +1,10 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.ViewModels;
 using SimpleWeather.ViewModels;
 using SimpleWeather.WeatherData;
 using System;
@@ -23,14 +23,14 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherDetailsPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
+    public sealed partial class WeatherDetailsPage : ViewModelPage, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private LocationData locationData { get; set; }
         public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-        public ForecastsListViewModel ForecastsView { get; } = Ioc.Default.GetViewModel<ForecastsListViewModel>();
+        public ForecastsListViewModel ForecastsView { get; private set; }
         public bool IsHourly { get; private set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
@@ -115,6 +115,8 @@ namespace SimpleWeather.UWP.Main
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            ForecastsView = this.GetViewModel<ForecastsListViewModel>();
 
             if (e?.Parameter is DetailsPageArgs args)
             {

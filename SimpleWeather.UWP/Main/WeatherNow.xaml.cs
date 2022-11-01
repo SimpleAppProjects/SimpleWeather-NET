@@ -1,5 +1,4 @@
 ﻿using SimpleWeather.Controls;
-using SimpleWeather.Icons;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
@@ -17,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
@@ -39,14 +37,13 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherNow : Page, ICommandBarPage, ISnackbarPage, IBannerManager, IBannerPage, IDisposable
+    public sealed partial class WeatherNow : ScopePage, ICommandBarPage, ISnackbarPage, IBannerManager, IBannerPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
         private BannerManager BannerMgr { get; set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
-        private readonly WeatherIconsManager wim = SharedModule.Instance.WeatherIconsManager;
 
         private RadarViewProvider radarViewProvider;
 
@@ -55,8 +52,6 @@ namespace SimpleWeather.UWP.Main
         private WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
         private ForecastsNowViewModel ForecastView { get; } = Shell.Instance.GetViewModel<ForecastsNowViewModel>();
         private WeatherAlertsViewModel AlertsView { get; } = Shell.Instance.GetViewModel<WeatherAlertsViewModel>();
-
-        private CancellationTokenSource cts;
 
         public double ControlShadowOpacity
         {
@@ -82,17 +77,11 @@ namespace SimpleWeather.UWP.Main
         private bool UpdateTheme = false;
         private bool ClearGraphIconCache = false;
 
-        public void Dispose()
-        {
-            cts?.Dispose();
-        }
-
         public WeatherNow()
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Required;
             Application.Current.Resuming += WeatherNow_Resuming;
-            cts = new CancellationTokenSource();
 
             // CommandBar
             CommandBarLabel = App.ResLoader.GetString("label_nav_weathernow");
@@ -379,7 +368,6 @@ namespace SimpleWeather.UWP.Main
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
-            cts?.Cancel();
             radarViewProvider?.OnDestroyView();
             base.OnNavigatingFrom(e);
         }
@@ -400,9 +388,6 @@ namespace SimpleWeather.UWP.Main
             base.OnNavigatedTo(e);
 
             AnalyticsLogger.LogEvent("WeatherNow: OnNavigatedTo");
-
-            cts?.Cancel();
-            cts = new CancellationTokenSource();
 
             WNowViewModel.PropertyChanged += WeatherView_PropertyChanged;
 
@@ -772,6 +757,8 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
+            var cToken = GetCancellationToken();
+
             AsyncTask.Run(async () =>
             {
                 await Dispatcher.RunOnUIThread(() =>
@@ -786,7 +773,7 @@ namespace SimpleWeather.UWP.Main
                         radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
                     });
                 }, CoreDispatcherPriority.Low);
-            }, 1000, cts.Token);
+            }, 1000, cToken);
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)

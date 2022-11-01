@@ -1,11 +1,11 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.ComponentModel;
+﻿using SimpleWeather.ComponentModel;
 using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.ViewModels;
 using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -21,14 +21,14 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherAQIPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
+    public sealed partial class WeatherAQIPage : ViewModelPage, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private LocationData locationData { get; set; }
         public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-        public AirQualityForecastViewModel AQIView { get; } = Ioc.Default.GetViewModel<AirQualityForecastViewModel>();
+        public AirQualityForecastViewModel AQIView { get; private set; }
 
         public WeatherAQIPage()
         {
@@ -66,6 +66,8 @@ namespace SimpleWeather.UWP.Main
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            AQIView = this.GetViewModel<AirQualityForecastViewModel>();
 
             if (e?.Parameter is WeatherPageArgs args)
             {

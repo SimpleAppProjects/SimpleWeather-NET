@@ -1,12 +1,10 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.ComponentModel;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
+using SimpleWeather.UWP.ViewModels;
 using SimpleWeather.ViewModels;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,16 +19,14 @@ namespace SimpleWeather.UWP.Main
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class WeatherChartsPage : Page, ICommandBarPage, ISnackbarPage, IBackRequestedPage
+    public sealed partial class WeatherChartsPage : ViewModelPage, ICommandBarPage, ISnackbarPage, IBackRequestedPage
     {
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
         private LocationData locationData { get; set; }
         public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
-        public ChartsViewModel ChartsView { get; } = Ioc.Default.GetViewModel<ChartsViewModel>();
-
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        public ChartsViewModel ChartsView { get; private set; }
 
         public WeatherChartsPage()
         {
@@ -68,6 +64,8 @@ namespace SimpleWeather.UWP.Main
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            ChartsView = this.GetViewModel<ChartsViewModel>();
 
             if (e?.Parameter is WeatherPageArgs args)
             {

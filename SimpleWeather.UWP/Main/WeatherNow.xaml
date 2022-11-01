@@ -1,4 +1,4 @@
-﻿<Page
+﻿<localcontrols:ScopePage
     x:Class="SimpleWeather.UWP.Main.WeatherNow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -16,6 +16,7 @@
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
+    xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     d:Background="{ThemeResource RegionBrush}"
     DataContext="{x:Bind WNowViewModel, Mode=OneWay}"
@@ -597,4 +598,4 @@
             IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState.IsLoading, WNowViewModel.UiState.NoLocationAvailable, WNowViewModel.Weather.Location), Mode=OneWay}"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
     </Grid>
-</Page>
+</localcontrols:ScopePage>
