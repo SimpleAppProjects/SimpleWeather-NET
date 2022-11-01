@@ -97,7 +97,7 @@
                 x:Load="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                 SizeChanged="MainGrid_SizeChanged"
                 VerticalScrollMode="Auto"
-                Visibility="{x:Bind databinding:WeatherNowBinding.IsViewVisible(WNowViewModel.UiState.IsLoading, WNowViewModel.UiState.NoLocationAvailable, WNowViewModel.Weather.Location), Mode=OneWay}">
+                Visibility="{x:Bind databinding:WeatherNowBinding.IsViewVisible(WNowViewModel.UiState), Mode=OneWay}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!--  Row 0  -->
@@ -231,6 +231,7 @@
                         MinHeight="108"
                         MaxWidth="1280"
                         Padding="16,0"
+                        x:Load="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                         RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         SizeChanged="ConditionPanel_SizeChanged">
                         <toolkitControls:DropShadowPanel
@@ -595,7 +596,7 @@
             Height="36"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
-            IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState.IsLoading, WNowViewModel.UiState.NoLocationAvailable, WNowViewModel.Weather.Location), Mode=OneWay}"
+            IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState), Mode=OneWay}"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
     </Grid>
 </localcontrols:ScopePage>
