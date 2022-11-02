@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -195,7 +193,9 @@ namespace SimpleWeather.UWP.Controls
 
                         var finalRect = arrangeRect.ToRect(Orientation);
                         child.Arrange(finalRect);
-                        System.Diagnostics.Debug.WriteLine("ExtendingWrapPanel: RowItem: {0}", finalRect);
+#if DEBUG
+                        Debug.WriteLine("ExtendingWrapPanel: RowItem: {0}", finalRect);
+#endif
                     }
                 }
             }
@@ -220,7 +220,9 @@ namespace SimpleWeather.UWP.Controls
             var spacingMeasure = new UvMeasure(Orientation, HorizontalSpacing, VerticalSpacing);
             var position = new UvMeasure(Orientation, Padding.Left, Padding.Top);
 
-            System.Diagnostics.Debug.WriteLine("ExtendingWrapPanel: Parent Measure: {0}", parentMeasure);
+#if DEBUG
+            Debug.WriteLine("ExtendingWrapPanel: Parent Measure: {0}", parentMeasure);
+#endif
 
             var currentRow = new Row(new List<UvRect>(), default);
             var finalMeasure = new UvMeasure(Orientation, width: 0.0, height: 0.0);
