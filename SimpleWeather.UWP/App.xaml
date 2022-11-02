@@ -5,6 +5,7 @@
     xmlns:BelowWindows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:Windows10version1809="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 7)"
     xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:converters="using:SimpleWeather.UWP.Converters"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mtuc="using:Microsoft.Toolkit.Uwp.UI.Controls"
@@ -309,10 +310,10 @@
                     <!--  App Colors End  -->
                     <!--  Converters Start  -->
                     <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />
-                    <helpers:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
-                    <helpers:ColorToSolidColorBrushConverter x:Key="solidColorBrush2ColorConverter" IsInverse="True" />
-                    <helpers:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
-                    <helpers:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
+                    <converters:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
+                    <converters:ColorToSolidColorBrushConverter x:Key="solidColorBrush2ColorConverter" IsInverse="True" />
+                    <converters:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
+                    <converters:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
                     <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
                     <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
                     <toolkitConverters:EmptyCollectionToObjectConverter

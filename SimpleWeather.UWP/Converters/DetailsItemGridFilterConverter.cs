@@ -2,13 +2,10 @@
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml.Data;
 using FeatureSettings = SimpleWeather.UWP.Utils.FeatureSettings;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Converters
 {
     public class DetailsItemGridFilterConverter : IValueConverter
     {

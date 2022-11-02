@@ -6,7 +6,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Converters
 {
     public class TempToColorTempConverter : DependencyObject, IValueConverter
     {

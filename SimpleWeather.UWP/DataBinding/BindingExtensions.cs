@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.DataBinding
 {
     public static class BindingExtensions
     {

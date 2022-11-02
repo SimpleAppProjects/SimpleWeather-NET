@@ -1,13 +1,9 @@
 ﻿using SimpleWeather.UWP.Controls.Graphs;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.UWP.Converters
 {
     public class GraphDataVisibilityConverter : IValueConverter
     {

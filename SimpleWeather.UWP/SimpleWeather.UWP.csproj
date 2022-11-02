@@ -279,18 +279,18 @@
     </Compile>
     <Compile Include="DataBinding\WeatherNowBinding.cs" />
     <Compile Include="Helpers\BackgroundTaskHelper.cs" />
-    <Compile Include="Helpers\BindingExtensions.cs" />
-    <Compile Include="Helpers\DetailsItemGridFilterConverter.cs" />
-    <Compile Include="Helpers\GraphDataVisibilityConverter.cs" />
-    <Compile Include="Helpers\IconForegroundConverter.cs" />
+    <Compile Include="DataBinding\BindingExtensions.cs" />
+    <Compile Include="Converters\DetailsItemGridFilterConverter.cs" />
+    <Compile Include="Converters\GraphDataVisibilityConverter.cs" />
+    <Compile Include="Converters\IconForegroundConverter.cs" />
     <Compile Include="Helpers\ObjectContainer.cs" />
     <Compile Include="Helpers\LocationPermissionExtensions.cs" />
     <Compile Include="Helpers\RectHelperExtensions.cs" />
     <Compile Include="Helpers\StringRes.cs" />
-    <Compile Include="Helpers\TempToColorTempConverter.cs" />
-    <Compile Include="Helpers\LocationTypeConverter.cs" />
-    <Compile Include="Helpers\BooleanToGridLengthConverter.cs" />
-    <Compile Include="Helpers\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="Converters\TempToColorTempConverter.cs" />
+    <Compile Include="Converters\LocationTypeConverter.cs" />
+    <Compile Include="Converters\BooleanToGridLengthConverter.cs" />
+    <Compile Include="Converters\ColorToSolidColorBrushConverter.cs" />
     <Compile Include="Helpers\IBackRequestedPage.cs" />
     <Compile Include="Helpers\ICommandBarPage.cs" />
     <Compile Include="Helpers\IFramePage.cs" />
