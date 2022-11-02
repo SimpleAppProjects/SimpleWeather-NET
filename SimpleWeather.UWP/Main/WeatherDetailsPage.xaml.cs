@@ -1,5 +1,4 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Controls;
 using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
@@ -10,10 +9,8 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -34,19 +31,6 @@ namespace SimpleWeather.UWP.Main
         public bool IsHourly { get; private set; }
 
         private readonly WeatherManager wm = WeatherManager.GetInstance();
-
-        public object Forecasts
-        {
-            get { return GetValue(ForecastsProperty); }
-            set
-            {
-                SetValue(ForecastsProperty, value);
-            }
-        }
-
-        public static readonly DependencyProperty ForecastsProperty =
-            DependencyProperty.Register("Forecasts", typeof(object),
-            typeof(WeatherDetailsPage), new PropertyMetadata(null));
 
         public WeatherDetailsPage()
         {
@@ -161,22 +145,7 @@ namespace SimpleWeather.UWP.Main
 
             Dispatcher.LaunchOnUIThread(() =>
             {
-                if (IsHourly)
-                {
-                    SetBinding(ForecastsProperty, new Binding()
-                    {
-                        Mode = BindingMode.OneWay,
-                        Source = ForecastsView.HourlyForecasts
-                    });
-                }
-                else
-                {
-                    SetBinding(ForecastsProperty, new Binding()
-                    {
-                        Mode = BindingMode.OneWay,
-                        Source = ForecastsView.Forecasts
-                    });
-                }
+                ForecastsView.SelectForecast(IsHourly);
 
                 // Scroll item into view
                 void contentChangedListener(ListViewBase sender, ContainerContentChangingEventArgs cccEvArgs)

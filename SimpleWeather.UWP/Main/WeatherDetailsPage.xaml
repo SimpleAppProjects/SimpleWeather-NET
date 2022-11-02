@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:SimpleWeather.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:databinding="using:SimpleWeather.UWP.DataBinding"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:local="using:SimpleWeather.UWP.Main"
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
@@ -12,7 +13,7 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
-    DataContext="{x:Bind Forecasts, Mode=OneWay}"
+    DataContext="{x:Bind ForecastsView.SelectedForecasts, Mode=OneWay}"
     mc:Ignorable="d">
 
     <Page.Resources>
@@ -100,7 +101,7 @@
             DataFetchSize="24"
             IsItemClickEnabled="False"
             IsSwipeEnabled="False"
-            ItemsSource="{x:Bind Forecasts, Mode=OneWay}"
+            ItemsSource="{x:Bind ForecastsView.SelectedForecasts, Mode=OneWay}"
             SelectionMode="None"
             ShowsScrollingPlaceholders="True">
             <ItemsControl.ItemTemplate>

@@ -26,6 +26,14 @@ namespace SimpleWeather.UWP.Controls
         [ObservableProperty]
         private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
 
+        [ObservableProperty]
+        private object selectedForecasts;
+
+        public void SelectForecast(bool isHourly)
+        {
+            selectedForecasts = isHourly ? HourlyForecasts : Forecasts;
+        }
+
         public void UpdateForecasts(LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
