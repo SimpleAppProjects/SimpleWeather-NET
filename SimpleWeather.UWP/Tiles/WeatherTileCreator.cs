@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using KeyedSemaphores;
+using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Location;
@@ -1032,23 +1033,36 @@ namespace SimpleWeather.UWP.Tiles
             if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
             {
                 // Update primary tile and lockscreen info (if exists)
-                var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
-                // Lock instance to avoid rare concurrency issue
-                // (when BGTask is running and tile is updated via WeatherNowPage)
-                lock (appTileUpdater)
+                using (await KeyedSemaphore.LockAsync("appTileUpdater"))
                 {
-                    UpdateContent(appTileUpdater, location, weather, imageData).Wait();
+                    var appTileUpdater = TileUpdateManager.CreateTileUpdaterForApplication();
+                    try
+                    {
+                        await UpdateContent(appTileUpdater, location, weather, imageData);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, e);
+                    }
                 }
 
                 // Update secondary tile if exists
                 var query = location.locationType == LocationType.GPS ? Constants.KEY_GPS : location.query;
                 if (SecondaryTileUtils.Exists(query))
                 {
-                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(query));
-                    lock (tileUpdater)
+                    var tileId = SecondaryTileUtils.GetTileId(query);
+                    using (await KeyedSemaphore.LockAsync(tileId))
                     {
-                        UpdateContent(tileUpdater, location, weather, imageData).Wait();
+                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tileId);
+
+                        try
+                        {
+                            await UpdateContent(tileUpdater, location, weather, imageData);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e);
+                        }
                     }
                 }
             }
@@ -1057,13 +1071,19 @@ namespace SimpleWeather.UWP.Tiles
                 // Update secondary tile
                 if (SecondaryTileUtils.Exists(location.query))
                 {
-                    var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(
-                            SecondaryTileUtils.GetTileId(location.query));
-                    // Lock instance to avoid rare concurrency issue
-                    // (when BGTask is running and tile is updated via WeatherNowPage)
-                    lock (tileUpdater)
+                    var tileId = SecondaryTileUtils.GetTileId(location.query);
+                    using (await KeyedSemaphore.LockAsync(tileId))
                     {
-                        UpdateContent(tileUpdater, location, weather, imageData).Wait();
+                        var tileUpdater = TileUpdateManager.CreateTileUpdaterForSecondaryTile(tileId);
+
+                        try
+                        {
+                            await UpdateContent(tileUpdater, location, weather, imageData);
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e);
+                        }
                     }
                 }
             }
