@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SimpleWeather.Preferences
 {
@@ -26,5 +27,9 @@ namespace SimpleWeather.Preferences
         bool ContainsKey(string key);
 
         void Remove(string key);
+
+        void Clear();
+
+        IDictionary<string, object> GetAllSettings();
     }
 }

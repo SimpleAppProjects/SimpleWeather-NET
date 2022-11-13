@@ -12,7 +12,7 @@ using Windows.Foundation.Metadata;
 
 namespace SimpleWeather.Preferences
 {
-    public partial class SettingsManager : BaseSettingsManager
+    public sealed partial class SettingsManager : ISettingsService
     {
         // Settings Members
         public bool WeatherLoaded { get => IsWeatherLoaded(); set => SetWeatherLoaded(value); }
@@ -748,35 +748,36 @@ namespace SimpleWeather.Preferences
         [Deprecated("Replace with SettingsManager.IsKeyVerified(String)", DeprecationType.Remove, 5530)]
         private bool IsKeyVerified()
         {
-            if (!WUSharedContainsKey(KEY_APIKEY_VERIFIED))
+            if (!WUSharedSettings.ContainsKey(KEY_APIKEY_VERIFIED))
             {
                 return false;
             }
             else
             {
-                return GetWUSharedValue(KEY_APIKEY_VERIFIED, false);
+                return WUSharedSettings.GetValue(KEY_APIKEY_VERIFIED, false);
             }
         }
 
         [Deprecated("Replace with SettingsManager.SetKeyVerified(String, Boolean)", DeprecationType.Remove, 5530)]
         private void SetKeyVerified(bool value)
         {
-            SetWUSharedValue(KEY_APIKEY_VERIFIED, value);
+            WUSharedSettings.SetValue(KEY_APIKEY_VERIFIED, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_APIKEY_VERIFIED, NewValue = value });
 
-            if (!value) WUSharedRemove(KEY_APIKEY_VERIFIED);
+            if (!value) WUSharedSettings.Remove(KEY_APIKEY_VERIFIED);
         }
 
         private bool IsKeyVerified(string provider)
         {
             var key = $"{KEY_APIKEY_VERIFIED}_{provider}";
 
-            if (!WUSharedContainsKey(key))
+            if (!WUSharedSettings.ContainsKey(key))
             {
                 return false;
             }
             else
             {
-                return GetWUSharedValue(key, false);
+                return WUSharedSettings.GetValue(key, false);
             }
         }
 
@@ -784,16 +785,17 @@ namespace SimpleWeather.Preferences
         {
             var key = $"{KEY_APIKEY_VERIFIED}_{provider}";
 
-            SetWUSharedValue(key, value);
+            WUSharedSettings.SetValue(key, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = key, NewValue = value });
 
-            if (!value) WUSharedRemove(key);
+            if (!value) WUSharedSettings.Remove(key);
         }
 
         private bool IsPersonalKey()
         {
             if (!ContainsKey(KEY_USEPERSONALKEY))
             {
-                return GetWUSharedValue(KEY_USEPERSONALKEY, false);
+                return WUSharedSettings.GetValue(KEY_USEPERSONALKEY, false);
             }
             else
             {
@@ -808,12 +810,13 @@ namespace SimpleWeather.Preferences
 
         private int GetVersionCode()
         {
-            return GetVersionValue(KEY_CURRENTVERSION, 0);
+            return VersionSettings.GetValue(KEY_CURRENTVERSION, 0);
         }
 
         private void SetVersionCode(int value)
         {
-            SetVersionValue(KEY_CURRENTVERSION, value);
+            VersionSettings.SetValue(KEY_CURRENTVERSION, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_CURRENTVERSION, NewValue = value });
         }
 
         private bool IsOnBoardingComplete()
@@ -830,17 +833,19 @@ namespace SimpleWeather.Preferences
 
         private void SetOnBoardingComplete(bool value)
         {
-            SetVersionValue(KEY_ONBOARDINGCOMPLETE, value);
+            VersionSettings.SetValue(KEY_ONBOARDINGCOMPLETE, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ONBOARDINGCOMPLETE, NewValue = value });
         }
 
         private bool IsDevSettingsEnabled()
         {
-            return GetDevSettingsValue<bool>(KEY_DEVSETTINGSENABLED, false);
+            return DevSettings.GetValue(KEY_DEVSETTINGSENABLED, false);
         }
 
         private void SetDevSettingsEnabled(bool value)
         {
-            SetDevSettingsValue(KEY_DEVSETTINGSENABLED, value);
+            DevSettings.SetValue(KEY_DEVSETTINGSENABLED, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DEVSETTINGSENABLED, NewValue = value });
         }
 
         public IDictionary<string, object> GetDevSettingsPreferenceMap()

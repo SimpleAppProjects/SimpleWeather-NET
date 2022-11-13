@@ -165,9 +165,10 @@
     <Compile Include="LocationData\LocationData.cs" />
     <Compile Include="LocationData\LocationDataExtras.cs" />
     <Compile Include="LocationData\LocationExtras.cs" />
-    <Compile Include="Preferences\BaseSettingsManager.UWP.cs" />
-    <Compile Include="Preferences\BaseSettingsManager.cs" />
+    <Compile Include="Preferences\SettingsManager.Shared.cs" />
     <Compile Include="Preferences\ISettingsService.cs" />
+    <Compile Include="Preferences\SettingsContainer.cs" />
+    <Compile Include="Preferences\SettingsContainer.UWP.cs" />
     <Compile Include="Preferences\SettingsManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteConfig\IRemoteConfigService.cs" />
