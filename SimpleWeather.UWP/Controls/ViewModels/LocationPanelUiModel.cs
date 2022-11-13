@@ -1,13 +1,17 @@
-﻿using SimpleWeather.ComponentModel;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Controls;
+using SimpleWeather.Common.Images;
+using SimpleWeather.ComponentModel;
 using SimpleWeather.Icons;
-using SimpleWeather.Location;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.Controls
+namespace SimpleWeather.UWP.Controls
 {
     public class LocationPanelUiModel : BaseViewModel
     {
@@ -27,7 +31,7 @@ namespace SimpleWeather.Controls
         private bool editMode;
         private ImageDataViewModel imageData;
         private bool isLoading = true;
-        private LocationData locationData = new();
+        private LocationData.LocationData locationData = new();
         private string weatherSource;
         private bool isWeatherValid = false;
         #endregion
@@ -108,7 +112,7 @@ namespace SimpleWeather.Controls
             get => isLoading;
             set => SetProperty(ref isLoading, value);
         }
-        public LocationData LocationData
+        public LocationData.LocationData LocationData
         {
             get => locationData;
             set => SetProperty(ref locationData, value);
@@ -130,7 +134,7 @@ namespace SimpleWeather.Controls
             {
                 if (LocationData != null)
                     return (int)LocationData.locationType;
-                return (int)Location.LocationType.Search;
+                return (int)SimpleWeather.LocationData.LocationType.Search;
             }
         }
 
@@ -138,7 +142,9 @@ namespace SimpleWeather.Controls
         private string unitCode;
         #endregion
 
-        public void SetWeather(LocationData locationData, Weather weather)
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+        public void SetWeather(LocationData.LocationData locationData, Weather weather)
         {
             if (weather?.IsValid() == true)
             {
@@ -173,14 +179,14 @@ namespace SimpleWeather.Controls
                     WeatherIcon = weather.condition.icon;
                     WeatherSource = weather.source;
 
-                    this.LocationData = locationData;
+                    LocationData = locationData;
 
                     IsLoading = false;
 
                     // Refresh locale/unit dependent values
                     RefreshView();
                 }
-                else if (!Equals(unitCode, Settings.UnitString))
+                else if (!Equals(unitCode, SettingsManager.UnitString))
                 {
                     RefreshView();
                 }
@@ -189,7 +195,7 @@ namespace SimpleWeather.Controls
             }
             else
             {
-                this.LocationData = locationData;
+                LocationData = locationData;
                 LocationName = locationData.name;
                 WeatherSource = locationData.weatherSource;
 
@@ -199,18 +205,18 @@ namespace SimpleWeather.Controls
 
         private void RefreshView()
         {
-            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
-            var provider = WeatherManager.GetProvider(weather.source);
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(weather.source);
 
-            unitCode = Settings.TemperatureUnit;
+            unitCode = SettingsManager.TemperatureUnit;
 
             if (weather.condition.temp_f.HasValue && weather.condition.temp_f != weather.condition.temp_c)
             {
                 var temp = isFahrenheit ? Math.Round(weather.condition.temp_f.Value) : Math.Round(weather.condition.temp_c.Value);
                 var unitTemp = isFahrenheit ? Units.FAHRENHEIT : Units.CELSIUS;
 
-                CurrTemp = String.Format(culture, "{0}°{1}", temp, unitTemp);
+                CurrTemp = string.Format(culture, "{0}°{1}", temp, unitTemp);
             }
             else
             {
@@ -222,7 +228,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.high_f.HasValue && weather.condition.high_f != weather.condition.high_c)
             {
                 var temp = isFahrenheit ? Math.Round(weather.condition.high_f.Value) : Math.Round(weather.condition.high_c.Value);
-                HiTemp = String.Format(culture, "{0}°", temp);
+                HiTemp = string.Format(culture, "{0}°", temp);
             }
             else
             {
@@ -232,7 +238,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.low_f.HasValue && weather.condition.low_f != weather.condition.low_c)
             {
                 var temp = isFahrenheit ? Math.Round(weather.condition.low_f.Value) : Math.Round(weather.condition.low_c.Value);
-                LoTemp = String.Format(culture, "{0}°", temp);
+                LoTemp = string.Format(culture, "{0}°", temp);
             }
             else
             {
@@ -243,7 +249,7 @@ namespace SimpleWeather.Controls
             if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
                 weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)
             {
-                string unit = Settings.SpeedUnit;
+                string unit = SettingsManager.SpeedUnit;
                 int speedVal;
                 string speedUnit;
 
@@ -264,7 +270,7 @@ namespace SimpleWeather.Controls
                         break;
                 }
 
-                WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
+                WindSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
                 WindDirection = weather.condition.wind_degrees.Value + 180;
             }
             else
@@ -286,7 +292,7 @@ namespace SimpleWeather.Controls
         {
             return obj is LocationPanelUiModel model &&
                    EqualityComparer<ImageDataViewModel>.Default.Equals(imageData, model.imageData) &&
-                   EqualityComparer<LocationData>.Default.Equals(locationData, model.locationData) &&
+                   EqualityComparer<LocationData.LocationData>.Default.Equals(locationData, model.locationData) &&
                    EqualityComparer<Weather>.Default.Equals(weather, model.weather);
         }
 

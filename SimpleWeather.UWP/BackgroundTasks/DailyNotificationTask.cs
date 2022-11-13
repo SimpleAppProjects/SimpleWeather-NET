@@ -1,9 +1,8 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.Notifications;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
@@ -12,6 +11,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public sealed class DailyNotificationTask : IBackgroundTask
     {
         private const string taskName = nameof(DailyNotificationTask);
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -23,12 +24,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Run update logic
                 Logger.WriteLine(LoggerLevel.Debug, "{0}: running update task", taskName);
-                Settings.LoadIfNeeded();
 
-                if (Settings.WeatherLoaded && Settings.DailyNotificationEnabled)
+                await SettingsManager.LoadIfNeeded();
+
+                if (SettingsManager.WeatherLoaded && SettingsManager.DailyNotificationEnabled)
                 {
                     // Create toast notification
-                    await DailyNotificationCreator.CreateNotification(await Settings.GetHomeData());
+                    await DailyNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
 
                     // Register task for next time
                     await RegisterBackgroundTask(true);
@@ -126,7 +128,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             var now = DateTime.Now;
 
-            var notifTime = Settings.DailyNotificationTime;
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var notifTime = SettingsManager.DailyNotificationTime;
             var notifDateTime = now.Date.Add(notifTime);
 
             if (now > notifDateTime)

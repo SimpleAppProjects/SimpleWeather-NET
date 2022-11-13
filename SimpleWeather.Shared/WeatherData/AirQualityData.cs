@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace SimpleWeather.WeatherData
 {
@@ -11,6 +7,6 @@ namespace SimpleWeather.WeatherData
         public AirQuality current { get; set; }
         public List<AirQuality> aqiForecast { get; set; }
 
-        internal AirQualityData() { }
+        public AirQualityData() { }
     }
 }

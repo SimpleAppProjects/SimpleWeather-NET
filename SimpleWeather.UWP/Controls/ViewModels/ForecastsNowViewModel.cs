@@ -1,14 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Location;
+using SimpleWeather.Database;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +19,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public partial class ForecastsNowViewModel : BaseViewModel, IDisposable
     {
-        private LocationData locationData;
+        private LocationData.LocationData locationData;
         private string unitCode;
         private string iconProvider;
 
@@ -38,6 +41,9 @@ namespace SimpleWeather.UWP.Controls
         [ObservableProperty]
         private bool isPrecipitationDataPresent;
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
+
         public ForecastsNowViewModel()
         {
             currentForecastsData = new ObservableItem<Forecasts>();
@@ -55,33 +61,33 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
-        public void UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData.LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                Task.Run(async () =>
+                Task.Run((Func<Task>)(async () =>
                 {
-                    Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                    WeatherDB.Connection.GetConnection().TableChanged -= ForecastGraphViewModel_TableChanged;
 
                     // Clone location data
                     this.locationData = new LocationQuery(location).ToLocationData();
 
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
+                    this.unitCode = SettingsManager.UnitString;
+                    this.iconProvider = SettingsManager.IconProvider;
 
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+                    currentForecastsData.SetValue(await SettingsManager.GetWeatherForecastData(location.query));
 
-                    var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
+                    var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
+                    var date = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d));
+                    currentHrForecastsData.SetValue(await SettingsManager.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, date));
 
-                    Settings.RegisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
-                });
+                    WeatherDB.Connection.GetConnection().TableChanged += ForecastGraphViewModel_TableChanged;
+                }));
             }
-            else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
+            else if (!Equals(unitCode, SettingsManager.UnitString) || !Equals(iconProvider, SettingsManager.IconProvider))
             {
-                this.unitCode = Settings.UnitString;
-                this.iconProvider = Settings.IconProvider;
+                this.unitCode = SettingsManager.UnitString;
+                this.iconProvider = SettingsManager.IconProvider;
 
                 RefreshForecasts(currentForecastsData.GetValue());
                 RefreshHourlyForecasts(currentHrForecastsData.GetValue());
@@ -92,17 +98,17 @@ namespace SimpleWeather.UWP.Controls
         {
             if (locationData == null) return;
 
-            Task.Run(async () =>
+            Task.Run((Func<Task>)(async () =>
             {
                 if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
                 {
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
+                    currentForecastsData.SetValue(await SettingsManager.GetWeatherForecastData(locationData.query));
                 }
                 if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
                 {
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
+                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
                 }
-            });
+            }));
         }
 
         private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -146,7 +152,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void RefreshMinutelyForecasts(IList<MinutelyForecast> minfcasts)
         {
-            var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
+            var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
             var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).AddHours(-(hrInterval * 0.5)).Trim(TimeSpan.TicksPerHour);
 
             var minfcastsFiltered = minfcasts?.Where(m => m.date >= now)?.Take(60);
@@ -167,7 +173,7 @@ namespace SimpleWeather.UWP.Controls
         {
             if (forecastData == null) return null;
 
-            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
 
             var entryData = new List<RangeBarGraphEntry>(forecastData.Count());
@@ -219,7 +225,7 @@ namespace SimpleWeather.UWP.Controls
             if (disposing)
             {
                 // free managed resources
-                Settings.UnregisterWeatherDBChangedEvent(ForecastGraphViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged -= ForecastGraphViewModel_TableChanged;
             }
 
             isDisposed = true;

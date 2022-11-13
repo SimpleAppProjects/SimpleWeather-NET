@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
+using SimpleWeather.Preferences;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -7,6 +9,8 @@ using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Radar;
 using SimpleWeather.UWP.Tiles;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -36,37 +40,39 @@ namespace SimpleWeather.UWP.Preferences
     /// </summary>
     public sealed partial class Settings_General : Page, IBackRequestedPage, ISnackbarManager, IFrameContentPage
     {
-        private readonly WeatherManager wm;
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        private readonly IRemoteConfigService RemoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+
         private SnackbarManager SnackMgr;
 
         private readonly HashSet<String> ActionQueue;
 
-        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
+        private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_30min"), "30"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_30min"), "30"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         public Settings_General()
         {
             this.InitializeComponent();
 
-            wm = WeatherManager.GetInstance();
             ActionQueue = new HashSet<string>();
 
             RestoreSettings();
@@ -116,7 +122,7 @@ namespace SimpleWeather.UWP.Preferences
         private void RestoreSettings()
         {
             // Location
-            FollowGPS.IsOn = Settings.FollowGPS;
+            FollowGPS.IsOn = SettingsManager.FollowGPS;
 
             // Weather Providers
             if (APIComboBox.ItemsSource == null || !WeatherAPI.APIs.SequenceEqual(APIComboBox.ItemsSource as IEnumerable<SimpleWeather.Controls.ProviderEntry>))
@@ -128,7 +134,7 @@ namespace SimpleWeather.UWP.Preferences
 
             wm.UpdateAPI();
 
-            var selectedProvider = Settings.API;
+            var selectedProvider = SettingsManager.API;
             APIComboBox.SelectedValue = selectedProvider;
 
             // Refresh interval
@@ -145,14 +151,14 @@ namespace SimpleWeather.UWP.Preferences
 
             if (wm.KeyRequired)
             {
-                if (!string.IsNullOrWhiteSpace(Settings.APIKey) && !Settings.KeysVerified[selectedProvider])
-                    Settings.KeysVerified[selectedProvider] = true;
+                if (!string.IsNullOrWhiteSpace(SettingsManager.APIKey) && !SettingsManager.KeysVerified[selectedProvider])
+                    SettingsManager.KeysVerified[selectedProvider] = true;
 
-                PersonalKeySwitch.IsOn = Settings.UsePersonalKey;
+                PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey;
 
                 if (string.IsNullOrWhiteSpace(wm.GetAPIKey()))
                 {
-                    PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
+                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey = true;
                     PersonalKeySwitch.IsEnabled = false;
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
@@ -161,10 +167,10 @@ namespace SimpleWeather.UWP.Preferences
                     PersonalKeySwitch.IsEnabled = true;
                 }
 
-                if (!Settings.UsePersonalKey)
+                if (!SettingsManager.UsePersonalKey)
                 {
                     // We're using our own (verified) keys
-                    Settings.KeysVerified[selectedProvider] = true;
+                    SettingsManager.KeysVerified[selectedProvider] = true;
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
                 else
@@ -181,14 +187,14 @@ namespace SimpleWeather.UWP.Preferences
             }
             else
             {
-                Settings.KeysVerified[selectedProvider] = false;
+                SettingsManager.KeysVerified[selectedProvider] = false;
                 // Clear API KEY entry to avoid issues
-                Settings.APIKey = String.Empty;
+                SettingsManager.APIKey = String.Empty;
                 KeyPanel.Visibility = Visibility.Collapsed;
             }
 
             // Update Interval
-            switch (Settings.RefreshInterval)
+            switch (SettingsManager.RefreshInterval)
             {
                 case 30:
                     RefreshComboBox.SelectedValue = "30";
@@ -215,25 +221,25 @@ namespace SimpleWeather.UWP.Preferences
                     break;
 
                 default:
-                    RefreshComboBox.SelectedValue = Settings.DefaultInterval.ToInvariantString();
+                    RefreshComboBox.SelectedValue = SettingsManager.DefaultInterval.ToInvariantString();
                     break;
             }
 
-            KeyEntry.Text = Settings.APIKey;
+            KeyEntry.Text = SettingsManager.APIKey;
             UpdateKeyBorder();
             UpdateRegisterLink();
 
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
-            AlertSwitch.IsOn = Settings.ShowAlerts;
+            AlertSwitch.IsOn = SettingsManager.ShowAlerts;
 
             // Daily Notification
-            DailyNotifSwitch.IsOn = Settings.DailyNotificationEnabled;
-            DailyNotifTimePicker.SelectedTime = Settings.DailyNotificationTime;
+            DailyNotifSwitch.IsOn = SettingsManager.DailyNotificationEnabled;
+            DailyNotifTimePicker.SelectedTime = SettingsManager.DailyNotificationTime;
 
             // Precipitation
-            PoPChanceNotifSwitch.IsOn = Settings.PoPChanceNotificationEnabled;
-            PoPChancePct.SelectedValue = Settings.PoPChanceMinimumPercentage.ToInvariantString();
+            PoPChanceNotifSwitch.IsOn = SettingsManager.PoPChanceNotificationEnabled;
+            PoPChancePct.SelectedValue = SettingsManager.PoPChanceMinimumPercentage.ToInvariantString();
 
             // Radar
             RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders();
@@ -242,7 +248,7 @@ namespace SimpleWeather.UWP.Preferences
             RadarComboBox.SelectedValue = RadarProvider.GetRadarProvider();
 
             // Theme
-            UserThemeMode userTheme = Settings.UserTheme;
+            UserThemeMode userTheme = SettingsManager.UserTheme;
             SystemMode.IsChecked = userTheme == UserThemeMode.System;
             LightMode.IsChecked = userTheme == UserThemeMode.Light;
             DarkMode.IsChecked = userTheme == UserThemeMode.Dark;
@@ -252,11 +258,11 @@ namespace SimpleWeather.UWP.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) &&
-                WeatherManager.IsKeyRequired(provider))
+            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) &&
+                wm.IsKeyRequired(provider))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
-                ShowSnackbar(Snackbar.MakeWarning(App.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
+                ShowSnackbar(Snackbar.MakeWarning(App.Current.ResLoader.GetString("message_enter_apikey"), SnackbarDuration.Long));
                 return Task.FromResult(true);
             }
 
@@ -268,9 +274,9 @@ namespace SimpleWeather.UWP.Preferences
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("Settings_General: OnNavigatedToPage");
             InitSnackManager();
-            Application.Current.Suspending += OnSuspending;
-            App.UnregisterSettingsListener();
-            Settings.OnSettingsChanged += Settings_OnSettingsChanged;
+            App.Current.Suspending += OnSuspending;
+            App.Current.UnregisterSettingsListener();
+            SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
             RestoreSettings();
         }
 
@@ -284,7 +290,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) && WeatherManager.IsKeyRequired(provider))
+            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
             {
                 e.Cancel = true;
             }
@@ -292,8 +298,8 @@ namespace SimpleWeather.UWP.Preferences
             {
                 // Unsubscribe from event
                 Application.Current.Suspending -= OnSuspending;
-                App.RegisterSettingsListener();
-                Settings.OnSettingsChanged -= Settings_OnSettingsChanged;
+                App.Current.RegisterSettingsListener();
+                SettingsManager.OnSettingsChanged -= Settings_OnSettingsChanged;
 
                 ProcessQueue();
             }
@@ -303,21 +309,21 @@ namespace SimpleWeather.UWP.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (Settings.UsePersonalKey && String.IsNullOrWhiteSpace(Settings.APIKeys[provider]) && WeatherManager.IsKeyRequired(provider))
+            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
             {
                 // Fallback to supported weather provider
-                string API = RemoteConfig.RemoteConfig.GetDefaultWeatherProvider();
+                string API = RemoteConfigService.GetDefaultWeatherProvider();
                 APIComboBox.SelectedValue = API;
-                Settings.API = API;
+                SettingsManager.API = API;
                 wm.UpdateAPI();
 
                 // If key exists, go ahead
-                Settings.UsePersonalKey = false;
-                Settings.KeysVerified[API] = true;
+                SettingsManager.UsePersonalKey = false;
+                SettingsManager.KeysVerified[API] = true;
             }
 
-            App.UnregisterSettingsListener();
-            App.RegisterSettingsListener();
+            App.Current.UnregisterSettingsListener();
+            App.Current.RegisterSettingsListener();
 
             ProcessQueue();
         }
@@ -340,13 +346,13 @@ namespace SimpleWeather.UWP.Preferences
 
             switch (e.Key)
             {
-                case Settings.KEY_API:
+                case SettingsManager.KEY_API:
                     EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
                     break;
-                case Settings.KEY_FOLLOWGPS:
+                case SettingsManager.KEY_FOLLOWGPS:
                     EnqueueAction(CommonActions.ACTION_WEATHER_UPDATE);
                     break;
-                case Settings.KEY_REFRESHINTERVAL:
+                case SettingsManager.KEY_REFRESHINTERVAL:
                     EnqueueAction(CommonActions.ACTION_WEATHER_REREGISTERTASK);
                     break;
             }
@@ -363,8 +369,8 @@ namespace SimpleWeather.UWP.Preferences
                         // Log event
                         AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                         {
-                            { "API", Settings.API },
-                            { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                            { "API", SettingsManager.API },
+                            { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
                         });
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                         break;
@@ -383,7 +389,7 @@ namespace SimpleWeather.UWP.Preferences
         private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleSwitch sw = sender as ToggleSwitch;
-            Settings.ShowAlerts = sw.IsOn;
+            SettingsManager.ShowAlerts = sw.IsOn;
         }
 
         private async void KeyEntry_Tapped(object _, Windows.UI.Xaml.Input.TappedRoutedEventArgs __)
@@ -409,13 +415,13 @@ namespace SimpleWeather.UWP.Preferences
 
                 try
                 {
-                    if (await WeatherManager.IsKeyValid(key, provider))
+                    if (await wm.IsKeyValid(key, provider))
                     {
-                        await Dispatcher.RunOnUIThread(() =>
+                        await Dispatcher.RunOnUIThread((Action)(() =>
                         {
-                            Settings.APIKeys[provider] = key;
-                            Settings.API = provider;
-                            Settings.KeysVerified[provider] = true;
+                            SettingsManager.APIKeys[provider] = key;
+                            SettingsManager.API = provider;
+                            SettingsManager.KeysVerified[provider] = true;
 
                             KeyEntry.Text = key;
                             UpdateKeyBorder();
@@ -424,7 +430,7 @@ namespace SimpleWeather.UWP.Preferences
 
                             diag.CanClose = true;
                             diag.Hide();
-                        });
+                        }));
                     }
                     else
                     {
@@ -453,7 +459,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             var selectedProvider = APIComboBox.SelectedValue?.ToString();
 
-            if (Settings.KeysVerified[selectedProvider])
+            if (SettingsManager.KeysVerified[selectedProvider])
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Green);
             else
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.DarkGray);
@@ -476,13 +482,13 @@ namespace SimpleWeather.UWP.Preferences
                 return;
             }
 
-            var selectedWProv = WeatherManager.GetProvider(selectedProvider);
+            var selectedWProv = wm.GetWeatherProvider(selectedProvider);
 
             if (selectedWProv.KeyRequired)
             {
                 if (String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
                 {
-                    PersonalKeySwitch.IsOn = Settings.UsePersonalKey = true;
+                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey = true;
                     PersonalKeySwitch.IsEnabled = Equals(selectedProvider, WeatherAPI.OpenWeatherMap);
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
@@ -491,16 +497,16 @@ namespace SimpleWeather.UWP.Preferences
                     PersonalKeySwitch.IsEnabled = true;
                 }
 
-                if (!Settings.UsePersonalKey)
+                if (!SettingsManager.UsePersonalKey)
                 {
                     // We're using our own (verified) keys
-                    Settings.KeysVerified[selectedProvider] = true;
+                    SettingsManager.KeysVerified[selectedProvider] = true;
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
                 else
                 {
                     // User is using personal (unverified) keys
-                    Settings.KeysVerified[selectedProvider] = false;
+                    SettingsManager.KeysVerified[selectedProvider] = false;
 
                     // Show dialog to set key
                     Dispatcher.LaunchOnUIThread(async () => await ShowKeyEntryDialog());
@@ -511,26 +517,26 @@ namespace SimpleWeather.UWP.Preferences
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Visible;
 
-                if (Settings.KeysVerified[selectedProvider])
+                if (SettingsManager.KeysVerified[selectedProvider])
                 {
-                    Settings.API = selectedProvider;
+                    SettingsManager.API = selectedProvider;
                 }
             }
             else
             {
-                Settings.KeysVerified[selectedProvider] = false;
+                SettingsManager.KeysVerified[selectedProvider] = false;
 
-                Settings.API = selectedProvider;
+                SettingsManager.API = selectedProvider;
                 // Clear API KEY entry to avoid issues
-                Settings.APIKeys[selectedProvider] = KeyEntry.Text = String.Empty;
+                SettingsManager.APIKeys[selectedProvider] = KeyEntry.Text = String.Empty;
 
                 if (KeyPanel != null)
                     KeyPanel.Visibility = Visibility.Collapsed;
 
                 AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                 {
-                    { "API", Settings.API },
-                    { "API_IsInternalKey", (!Settings.UsePersonalKey).ToString() }
+                    { "API", SettingsManager.API },
+                    { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
                 });
             }
 
@@ -548,18 +554,18 @@ namespace SimpleWeather.UWP.Preferences
             AnalyticsLogger.LogEvent("Settings_General: PersonalKeySwitch_Toggled");
 
             ToggleSwitch sw = sender as ToggleSwitch;
-            Settings.UsePersonalKey = sw.IsOn;
+            SettingsManager.UsePersonalKey = sw.IsOn;
 
             if (!sw.IsOn)
             {
                 string API = APIComboBox.SelectedValue.ToString();
-                var selectedWProv = WeatherManager.GetProvider(API);
+                var selectedWProv = wm.GetWeatherProvider(API);
 
                 if (!selectedWProv.KeyRequired || !String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
                 {
                     // We're using our own (verified) keys
-                    Settings.KeysVerified[API] = true;
-                    Settings.API = API;
+                    SettingsManager.KeysVerified[API] = true;
+                    SettingsManager.API = API;
                 }
             }
 
@@ -595,11 +601,11 @@ namespace SimpleWeather.UWP.Preferences
 
             if (int.TryParse(value?.ToString(), out int interval))
             {
-                Settings.RefreshInterval = interval;
+                SettingsManager.RefreshInterval = interval;
             }
             else
             {
-                Settings.RefreshInterval = Settings.DefaultInterval;
+                SettingsManager.RefreshInterval = SettingsManager.DefaultInterval;
             }
 
             // Re-register background task
@@ -636,8 +642,8 @@ namespace SimpleWeather.UWP.Preferences
                     case GeolocationAccessStatus.Denied:
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
-                            snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                            var snackbar = Snackbar.MakeError(App.Current.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
+                            snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), async () =>
                             {
                                 await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
                             });
@@ -649,7 +655,7 @@ namespace SimpleWeather.UWP.Preferences
                     case GeolocationAccessStatus.Unspecified:
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             sw.IsOn = false;
                         });
                         break;
@@ -662,12 +668,12 @@ namespace SimpleWeather.UWP.Preferences
             // Update ids when switching GPS feature
             if (await Dispatcher.RunOnUIThread(() => sw.IsOn))
             {
-                var prevLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                var prevLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                 if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
                 {
-                    var gpsLoc = await Settings.GetLastGPSLocData();
+                    var gpsLoc = await SettingsManager.GetLastGPSLocData();
                     if (gpsLoc?.query == null)
-                        Settings.SaveLastGPSLocData(prevLoc);
+                        await SettingsManager.SaveLastGPSLocData(prevLoc);
                     else
                         SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
                 }
@@ -676,24 +682,24 @@ namespace SimpleWeather.UWP.Preferences
             {
                 if (SecondaryTileUtils.Exists(Constants.KEY_GPS))
                 {
-                    var favLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                    var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                     if (favLoc?.IsValid() == true)
                         SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
                 }
             }
 
-            await Dispatcher.RunOnUIThread(() =>
+            await Dispatcher.RunOnUIThread((Action)(() =>
             {
-                Settings.FollowGPS = sw.IsOn;
-            });
+                SettingsManager.FollowGPS = sw.IsOn;
+            }));
         }
 
         private void SystemMode_Checked(object sender, RoutedEventArgs e)
         {
             AnalyticsLogger.LogEvent("Settings_General: SystemMode_Checked");
 
-            Settings.UserTheme = UserThemeMode.System;
-            App.UpdateAppTheme();
+            SettingsManager.UserTheme = UserThemeMode.System;
+            App.Current.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 
@@ -701,8 +707,8 @@ namespace SimpleWeather.UWP.Preferences
         {
             AnalyticsLogger.LogEvent("Settings_General: DarkMode_Checked");
 
-            Settings.UserTheme = UserThemeMode.Dark;
-            App.UpdateAppTheme();
+            SettingsManager.UserTheme = UserThemeMode.Dark;
+            App.Current.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 
@@ -710,8 +716,8 @@ namespace SimpleWeather.UWP.Preferences
         {
             AnalyticsLogger.LogEvent("Settings_General: LightMode_Checked");
 
-            Settings.UserTheme = UserThemeMode.Light;
-            App.UpdateAppTheme();
+            SettingsManager.UserTheme = UserThemeMode.Light;
+            App.Current.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
         }
 
@@ -723,20 +729,20 @@ namespace SimpleWeather.UWP.Preferences
             {
                 if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
                 {
-                    var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
-                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                    var snackbar = Snackbar.MakeError(App.Current.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
+                    snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), async () =>
                     {
                         await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
                     });
                     ShowSnackbar(snackbar);
-                    Settings.DailyNotificationEnabled = sw.IsOn = false;
+                    SettingsManager.DailyNotificationEnabled = sw.IsOn = false;
                     return;
                 }
             }
 
             if (sw.IsOn && ExtrasService.IsEnabled())
             {
-                Settings.DailyNotificationEnabled = true;
+                SettingsManager.DailyNotificationEnabled = true;
                 // Register task
                 _ = Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
             }
@@ -747,7 +753,7 @@ namespace SimpleWeather.UWP.Preferences
                     // show premium popup
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 }
-                Settings.DailyNotificationEnabled = sw.IsOn = false;
+                SettingsManager.DailyNotificationEnabled = sw.IsOn = false;
                 // Unregister task
                 _ = Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
             }
@@ -755,8 +761,8 @@ namespace SimpleWeather.UWP.Preferences
 
         private void DailyNotifTimePicker_SelectedTimeChanged(TimePicker sender, TimePickerSelectedValueChangedEventArgs args)
         {
-            Settings.DailyNotificationTime = args.NewTime ?? Settings.DEFAULT_DAILYNOTIFICATION_TIME;
-            if (Settings.DailyNotificationEnabled)
+            SettingsManager.DailyNotificationTime = args.NewTime ?? SettingsManager.DEFAULT_DAILYNOTIFICATION_TIME;
+            if (SettingsManager.DailyNotificationEnabled)
             {
                 Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
             }
@@ -770,20 +776,20 @@ namespace SimpleWeather.UWP.Preferences
             {
                 if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
                 {
-                    var snackbar = Snackbar.MakeError(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
-                    snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                    var snackbar = Snackbar.MakeError(App.Current.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long);
+                    snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), async () =>
                     {
                         await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
                     });
                     ShowSnackbar(snackbar);
-                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                    SettingsManager.PoPChanceNotificationEnabled = sw.IsOn = false;
                     return;
                 }
             }
 
             if (sw.IsOn && ExtrasService.IsEnabled())
             {
-                Settings.PoPChanceNotificationEnabled = true;
+                SettingsManager.PoPChanceNotificationEnabled = true;
                 // Re-register background task if needed
                 _ = Task.Run(async () => await WeatherTileUpdaterTask.RegisterBackgroundTask(false));
                 _ = Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false));
@@ -793,12 +799,12 @@ namespace SimpleWeather.UWP.Preferences
                 if (sw.IsOn && !ExtrasService.IsEnabled())
                 {
                     // show premium popup
-                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                    SettingsManager.PoPChanceNotificationEnabled = sw.IsOn = false;
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 }
                 else
                 {
-                    Settings.PoPChanceNotificationEnabled = sw.IsOn = false;
+                    SettingsManager.PoPChanceNotificationEnabled = sw.IsOn = false;
                 }
             }
         }
@@ -809,7 +815,7 @@ namespace SimpleWeather.UWP.Preferences
             string pctStr = box.SelectedValue.ToString();
             if (int.TryParse(pctStr, out int pct))
             {
-                Settings.PoPChanceMinimumPercentage = pct;
+                SettingsManager.PoPChanceMinimumPercentage = pct;
             }
         }
     }

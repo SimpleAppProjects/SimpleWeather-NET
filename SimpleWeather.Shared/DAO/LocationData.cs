@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using Utf8Json;
 
-namespace SimpleWeather.Location
+namespace SimpleWeather.LocationData
 {
     public enum LocationType
     {

@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <LangVersion>9.0</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{05EE68EB-2F0B-4AFB-A9CD-14D8DF05BA43}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SimpleWeather.Weather_API</RootNamespace>
+    <AssemblyName>SimpleWeather.Weather_API</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.22621.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <PlatformTarget>ARM</PlatformTarget>
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="AccuWeather\AccuWeatherLocationProvider.cs" />
+    <Compile Include="AccuWeather\AccuWeatherProvider.cs" />
+    <Compile Include="AccuWeather\CurrentRootobject.cs" />
+    <Compile Include="AccuWeather\DailyForecastRootobject.cs" />
+    <Compile Include="AccuWeather\GeopositionRootobject.cs" />
+    <Compile Include="AccuWeather\HourlyForecastRootobject.cs" />
+    <Compile Include="AccuWeather\LocationData.cs" />
+    <Compile Include="AccuWeather\WeatherData.cs" />
+    <Compile Include="AQICN\AQICNData.cs" />
+    <Compile Include="AQICN\AQICNProvider.cs" />
+    <Compile Include="AQICN\Rootobject.cs" />
+    <Compile Include="Bing\AutoCompleteQuery.cs" />
+    <Compile Include="Bing\BingMapsLocationProvider.cs" />
+    <Compile Include="Bing\LocationData.cs" />
+    <Compile Include="HERE\Alerts.cs" />
+    <Compile Include="HERE\AutoCompleteQuery.cs" />
+    <Compile Include="HERE\GeopositionQuery.cs" />
+    <Compile Include="HERE\HERELocationProvider.cs" />
+    <Compile Include="HERE\HEREOAuthService.cs" />
+    <Compile Include="HERE\HEREOAuthServiceImpl.cs" />
+    <Compile Include="HERE\HEREWeatherProvider.cs" />
+    <Compile Include="HERE\LocationData.cs" />
+    <Compile Include="HERE\NWSAlerts.cs" />
+    <Compile Include="HERE\Weather.cs" />
+    <Compile Include="HERE\WeatherAlerts.cs" />
+    <Compile Include="HERE\WeatherData.cs" />
+    <Compile Include="Keys\Keys.cs" />
+    <Compile Include="LocationData\IWeatherLocationProviderFactory.cs" />
+    <Compile Include="LocationData\WeatherLocationProviderFactoryImpl.cs" />
+    <Compile Include="LocationData\WeatherLocationProviderImpl.cs" />
+    <Compile Include="MeteoFrance\AlertsRootobject.cs" />
+    <Compile Include="MeteoFrance\CurrentsRootobject.cs" />
+    <Compile Include="MeteoFrance\ForecastRootobject.cs" />
+    <Compile Include="MeteoFrance\MeteoFranceProvider.cs" />
+    <Compile Include="MeteoFrance\WeatherAlerts.cs" />
+    <Compile Include="MeteoFrance\WeatherData.cs" />
+    <Compile Include="Metno\Astrodata.cs" />
+    <Compile Include="Metno\MetnoWeatherProvider.cs" />
+    <Compile Include="Metno\Weather.cs" />
+    <Compile Include="Metno\WeatherData.cs" />
+    <Compile Include="NWS\Alert.cs" />
+    <Compile Include="NWS\Forecast.cs" />
+    <Compile Include="NWS\HourlyForecastResponse.cs" />
+    <Compile Include="NWS\NWSAlertProvider.cs" />
+    <Compile Include="NWS\NWSWeatherProvider.cs" />
+    <Compile Include="NWS\PeriodsItem.cs" />
+    <Compile Include="NWS\SolCalcAstroProvider.cs" />
+    <Compile Include="NWS\WeatherAlerts.cs" />
+    <Compile Include="NWS\WeatherData.cs" />
+    <Compile Include="OpenWeather\OneCall\AirPollutionResponse.cs" />
+    <Compile Include="OpenWeather\OneCall\OneCallResponse.cs" />
+    <Compile Include="OpenWeather\OneCall\OWMOneCallWeatherProvider.cs" />
+    <Compile Include="OpenWeather\OneCall\WeatherAlerts.cs" />
+    <Compile Include="OpenWeather\OneCall\WeatherData.cs" />
+    <Compile Include="OpenWeather\OpenWeatherMapProvider.cs" />
+    <Compile Include="OpenWeather\Weather.cs" />
+    <Compile Include="OpenWeather\WeatherData.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SMC\SunMoonCalcProvider.cs" />
+    <Compile Include="SMC\SunMoonCalculator.cs" />
+    <Compile Include="TomorrowIO\AlertRootobject.cs" />
+    <Compile Include="TomorrowIO\Rootobject.cs" />
+    <Compile Include="TomorrowIO\TomorrowIOWeatherProvider.cs" />
+    <Compile Include="TomorrowIO\WeatherAlerts.cs" />
+    <Compile Include="TomorrowIO\WeatherData.cs" />
+    <Compile Include="TZDB\ITZDBService.cs" />
+    <Compile Include="TZDB\ITimeZoneProvider.cs" />
+    <Compile Include="TZDB\TimeZoneData.cs" />
+    <Compile Include="TZDB\TimeZoneProvider.cs" />
+    <Compile Include="TZDB\TZDBServiceImpl.cs" />
+    <Compile Include="Utf8JsonGen\Utf8JsonGenerated.cs" />
+    <Compile Include="Utils\APIRequestUtils.cs" />
+    <Compile Include="Utils\APIRequestUtils.UWP.cs" />
+    <Compile Include="Utils\IRateLimitedRequest.cs" />
+    <Compile Include="Utils\WeatherProviderExtras.cs" />
+    <Compile Include="WeatherApi\ForecastRootobject.cs" />
+    <Compile Include="WeatherApi\LocationData.cs" />
+    <Compile Include="WeatherApi\LocationItem.cs" />
+    <Compile Include="WeatherApi\WeatherAlerts.cs" />
+    <Compile Include="WeatherApi\WeatherApiLocationProvider.cs" />
+    <Compile Include="WeatherApi\WeatherApiProvider.cs" />
+    <Compile Include="WeatherApi\WeatherData.cs" />
+    <Compile Include="WeatherBit\AlertRootobject.cs" />
+    <Compile Include="WeatherBit\CurrentRootobject.cs" />
+    <Compile Include="WeatherBit\ForecastRootobject.cs" />
+    <Compile Include="WeatherBit\WeatherAlerts.cs" />
+    <Compile Include="WeatherBit\WeatherBitIOProvider.cs" />
+    <Compile Include="WeatherBit\WeatherData.cs" />
+    <Compile Include="WeatherData\IWeatherProviderFactory.cs" />
+    <Compile Include="WeatherData\WeatherProviderManager.cs" />
+    <Compile Include="WeatherData\WeatherProviderFactoryImpl.cs" />
+    <Compile Include="WeatherData\WeatherProviderImpl.cs" />
+    <Compile Include="WeatherModule.cs" />
+    <Compile Include="WeatherUnlocked\Current.cs" />
+    <Compile Include="WeatherUnlocked\Forecast.cs" />
+    <Compile Include="WeatherUnlocked\WeatherData.cs" />
+    <Compile Include="WeatherUnlocked\WeatherUnlockedProvider.cs" />
+    <EmbeddedResource Include="Properties\SimpleWeather.Weather_API.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm">
+      <Version>8.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.14</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj">
+      <Project>{0cc840eb-6362-44e7-95fe-22602abddc8b}</Project>
+      <Name>SimpleWeather.Extras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
+      <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
+      <Name>SimpleWeather.Shared</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

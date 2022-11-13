@@ -169,6 +169,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppState.cs" />
     <Compile Include="BackgroundTasks\AppUpdaterTask.cs" />
     <Compile Include="BackgroundTasks\RemoteConfigUpdateTask.cs" />
     <Compile Include="BackgroundTasks\DailyNotificationTask.cs" />
@@ -297,6 +298,7 @@
     <Compile Include="Helpers\ScrollViewerHelper.cs" />
     <Compile Include="Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="Helpers\Win2DExtensions.cs" />
+    <Compile Include="IApplication.cs" />
     <Compile Include="Main\LocationPanelAdapter.cs" />
     <Compile Include="Main\Args.cs" />
     <Compile Include="Main\WeatherAQIPage.xaml.cs">
@@ -701,6 +703,10 @@
       <Project>{0caa3b62-12e0-4418-8e32-95aeeca0af97}</Project>
       <Name>SimpleWeather.Backgrounds</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj">
+      <Project>{b119868b-ea58-45c8-89b2-0693d3395d31}</Project>
+      <Name>SimpleWeather.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj">
       <Project>{0cc840eb-6362-44e7-95fe-22602abddc8b}</Project>
       <Name>SimpleWeather.Extras</Name>
@@ -708,6 +714,14 @@
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
       <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
       <Name>SimpleWeather.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj">
+      <Project>{05ee68eb-2f0b-4afb-a9cd-14d8df05ba43}</Project>
+      <Name>SimpleWeather.Weather-API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj">
+      <Project>{82e985dd-96f7-4069-87f6-46d5afe3ce6f}</Project>
+      <Name>SimpleWeather.WeatherIcons</Name>
     </ProjectReference>
     <ProjectReference Include="..\Timber\Timber.csproj">
       <Project>{479286ce-e244-4d81-a8f4-a5982af86af9}</Project>
@@ -722,7 +736,8 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather.Shared\Keys" "AmbeeKey.cs,AccuWeatherKey.cs,TomorrowIOKey.cs"
+    <PreBuildEvent>"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather.Shared\Keys"
+"$(SolutionDir)KeyCheck.exe" "$(SolutionDir)SimpleWeather.Weather-API\Keys"
 
 if errorlevel 1 goto Error
 

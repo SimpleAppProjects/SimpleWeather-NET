@@ -1,5 +1,5 @@
-﻿using SimpleWeather.Location;
-using SimpleWeather.ViewModels;
+﻿using SimpleWeather.Common.ViewModels;
+using SimpleWeather.LocationData;
 using Windows.UI.Xaml;
 
 namespace SimpleWeather.UWP.DataBinding

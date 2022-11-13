@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using System;
 using System.Collections.Generic;
@@ -21,6 +23,8 @@ namespace SimpleWeather.UWP.Preferences
         public string CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
         {
@@ -38,7 +42,7 @@ namespace SimpleWeather.UWP.Preferences
             this.InitializeComponent();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("title_activity_settings");
+            CommandBarLabel = App.Current.ResLoader.GetString("title_activity_settings");
             AnalyticsLogger.LogEvent("SettingsPage");
 
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))
@@ -52,9 +56,9 @@ namespace SimpleWeather.UWP.Preferences
                 });
             }
 
-            DevSettingsEnabler.OnDevSettingsChanged += DevSettingsEnabler_OnDevSettingsChanged;
+            SettingsManager.OnSettingsChanged += SettingsPage_OnSettingsChanged;
 
-            if (DevSettingsEnabler.DevSettingsEnabled)
+            if (SettingsManager.DevSettingsEnabled)
             {
                 _pages.Add(("DevSettings", typeof(DevSettingsPage)));
                 SettingsNavView.MenuItems.Add(new muxc.NavigationViewItem()
@@ -65,21 +69,24 @@ namespace SimpleWeather.UWP.Preferences
             }
         }
 
-        private void DevSettingsEnabler_OnDevSettingsChanged(object sender, DevSettingsEventArgs e)
+        private void SettingsPage_OnSettingsChanged(SettingsChangedEventArgs e)
         {
-            if (e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page == null)
+            if (Equals(e.Key, SettingsManager.KEY_DEVSETTINGSENABLED))
             {
-                _pages.Add(("DevSettings", typeof(DevSettingsPage)));
-                SettingsNavView.MenuItems.Add(new muxc.NavigationViewItem()
+                if ((bool)e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page == null)
                 {
-                    Content = "Developer Settings",
-                    Tag = "DevSettings"
-                });
-            }
-            else if (!e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page != null)
-            {
-                _pages.Remove(("DevSettings", typeof(DevSettingsPage)));
-                SettingsNavView.MenuItems.Remove(SettingsNavView.MenuItems.First(i => i is muxc.NavigationViewItem navItem && Equals(navItem.Tag, "DevSettings")));
+                    _pages.Add(("DevSettings", typeof(DevSettingsPage)));
+                    SettingsNavView.MenuItems.Add(new muxc.NavigationViewItem()
+                    {
+                        Content = "Developer Settings",
+                        Tag = "DevSettings"
+                    });
+                }
+                else if (!(bool)e.NewValue && _pages.FirstOrDefault(p => p.Tag.Equals("DevSettings")).Page != null)
+                {
+                    _pages.Remove(("DevSettings", typeof(DevSettingsPage)));
+                    SettingsNavView.MenuItems.Remove(SettingsNavView.MenuItems.First(i => i is muxc.NavigationViewItem navItem && Equals(navItem.Tag, "DevSettings")));
+                }
             }
         }
 

@@ -1,6 +1,10 @@
-﻿using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.WeatherData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Tiles;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -14,12 +18,14 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public sealed class WeatherTileUpdaterTask : IBackgroundTask
     {
         private const string taskName = nameof(WeatherTileUpdaterTask);
-        private readonly WeatherManager wm;
+        private readonly WeatherProviderManager wm;
         private static ApplicationTrigger AppTrigger;
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public WeatherTileUpdaterTask()
         {
-            wm = WeatherManager.GetInstance();
+            wm = WeatherModule.Instance.WeatherManager;
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
@@ -34,13 +40,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 {
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: Run...", taskName);
 
-                    if (Settings.WeatherLoaded)
+                    if (SettingsManager.WeatherLoaded)
                     {
                         await UpdateTiles();
 
-                        if (Settings.PoPChanceNotificationEnabled)
+                        if (SettingsManager.PoPChanceNotificationEnabled)
                         {
-                            await Notifications.PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
+                            await Notifications.PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                         }
                     }
 
@@ -60,7 +66,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Updating primary tile...", taskName);
 
-            var homeLocation = await Settings.GetHomeData();
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            var homeLocation = await SettingsManager.GetHomeData();
 
             if (await GetWeather(homeLocation) == null)
             {
@@ -83,13 +91,13 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             if (tiles?.Count > 0)
             {
-                var locations = await Settings.GetLocationData();
+                var locations = await SettingsManager.GetLocationData();
 
                 foreach (SecondaryTile tile in tiles)
                 {
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: Updating secondary tile...", taskName);
 
-                    Location.LocationData location = null;
+                    LocationData.LocationData location = null;
                     var tileQuery = SecondaryTileUtils.GetQueryFromId(tile.TileId);
 
                     if (tileQuery == Constants.KEY_GPS)
@@ -118,7 +126,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
         }
 
-        private static async Task<Weather> GetWeather(LocationData location, bool forceRefresh = false)
+        private static async Task<Weather> GetWeather(LocationData.LocationData location, bool forceRefresh = false)
         {
             Logger.WriteLine(LoggerLevel.Debug, $"{taskName}: Getting weather data for ({location})...");
 

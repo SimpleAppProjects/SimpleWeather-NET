@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,6 +22,8 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty APIProperty =
             DependencyProperty.Register("API", typeof(string), typeof(DevKeyEntry), new PropertyMetadata(null, (s, e) => (s as DevKeyEntry)?.UpdateKeyEntry()));
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public DevKeyEntry()
         {
             this.InitializeComponent();
@@ -27,7 +31,7 @@ namespace SimpleWeather.UWP.Controls
 
         public void UpdateKeyEntry()
         {
-            KeyEntryTextBlock.Text = Settings.APIKeys[API] ?? App.ResLoader.GetString("key_hint");
+            KeyEntryTextBlock.Text = SettingsManager.APIKeys[API] ?? App.Current.ResLoader.GetString("key_hint");
         }
 
         private async void TextBlock_Tapped(object sender, TappedRoutedEventArgs e)
@@ -43,7 +47,7 @@ namespace SimpleWeather.UWP.Controls
 
                 string key = diag.Key;
                 KeyEntryTextBlock.Text = key ?? string.Empty;
-                Settings.APIKeys[API] = key;
+                SettingsManager.APIKeys[API] = key;
 
                 diag.CanClose = true;
                 diag.Hide();

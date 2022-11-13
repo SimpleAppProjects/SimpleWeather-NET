@@ -1,7 +1,10 @@
-﻿using SimpleWeather.ComponentModel;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.ComponentModel;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
+using SimpleWeather.UWP.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,29 +23,21 @@ namespace SimpleWeather.UWP.Setup
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SetupPage : Page, ISetupNavigator, IViewModelProvider
+    public sealed partial class SetupPage : ViewModelPage, ISetupNavigator, IViewModelProvider
     {
         public Frame AppFrame { get { return FrameContent; } }
         public static ISetupNavigator Instance { get; private set; }
         private SetupViewModel ViewModel { get; }
 
-        private UISettings UISettings;
+        private readonly UISettings UISettings;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
-        private List<Type> Pages = new List<Type>()
+        private readonly List<Type> Pages = new List<Type>()
         {
             typeof(SetupWelcomePage),
             typeof(SetupLocationsPage),
             typeof(SetupSettingsPage)
         };
-
-        private readonly string DefaultKey = $"{typeof(SetupPage).FullName}.DefaultKey";
-
-        public ViewModelStore ViewModelStore { get; } = new();
-
-        public T GetViewModel<T>() where T : IViewModel
-        {
-            return this.GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
-        }
 
         public SetupPage()
         {
@@ -71,7 +66,7 @@ namespace SimpleWeather.UWP.Setup
             BottomNavBar.NextButtonClicked += NextBtn_Click;
 
             // Setup Pages & Indicator
-            if (Settings.WeatherLoaded)
+            if (SettingsManager.WeatherLoaded)
             {
                 Pages.Remove(typeof(SetupLocationsPage));
             }
@@ -166,23 +161,23 @@ namespace SimpleWeather.UWP.Setup
         private void OnCompleted()
         {
             // Retrieve setiings
-            if (CoreApplication.Properties.TryGetValue(Settings.KEY_USEALERTS, out object alertsValue))
+            if (CoreApplication.Properties.TryGetValue(SettingsManager.KEY_USEALERTS, out object alertsValue))
             {
-                Settings.ShowAlerts = (bool)alertsValue;
-                CoreApplication.Properties.Remove(Settings.KEY_USEALERTS);
+                SettingsManager.ShowAlerts = (bool)alertsValue;
+                CoreApplication.Properties.Remove(SettingsManager.KEY_USEALERTS);
             }
-            if (CoreApplication.Properties.TryGetValue(Settings.KEY_REFRESHINTERVAL, out object refreshValue))
+            if (CoreApplication.Properties.TryGetValue(SettingsManager.KEY_REFRESHINTERVAL, out object refreshValue))
             {
-                Settings.RefreshInterval = (int)refreshValue;
-                CoreApplication.Properties.Remove(Settings.KEY_REFRESHINTERVAL);
+                SettingsManager.RefreshInterval = (int)refreshValue;
+                CoreApplication.Properties.Remove(SettingsManager.KEY_REFRESHINTERVAL);
             }
-            if (CoreApplication.Properties.TryGetValue(Settings.KEY_TEMPUNIT, out object tempValue))
+            if (CoreApplication.Properties.TryGetValue(SettingsManager.KEY_TEMPUNIT, out object tempValue))
             {
-                Settings.SetDefaultUnits((string)tempValue);
-                CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
+                SettingsManager.SetDefaultUnits((string)tempValue);
+                CoreApplication.Properties.Remove(SettingsManager.KEY_TEMPUNIT);
             }
 
-            Settings.OnBoardComplete = true;
+            SettingsManager.OnBoardComplete = true;
             this.Frame.Navigate(typeof(Shell), ViewModel.LocationData);
         }
 

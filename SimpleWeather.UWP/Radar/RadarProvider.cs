@@ -1,16 +1,16 @@
-﻿using Microsoft.Toolkit.Parsers.Core;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Parsers.Core;
 using SimpleWeather.Controls;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Radar.NullSchool;
 using SimpleWeather.UWP.Radar.OpenWeather;
 using SimpleWeather.UWP.Radar.RainViewer;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Storage;
 using static SimpleWeather.UWP.Radar.RadarProviderChangedEventArgs;
 
@@ -49,8 +49,10 @@ namespace SimpleWeather.UWP.Radar
 
         public static IEnumerable<ProviderEntry> GetRadarProviders()
         {
-            var owm = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
-            if (Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null)
+            var owm = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap);
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            if (SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null)
             {
                 return RadarAPIProviders.Where(p => p.Value != WeatherAPI.OpenWeatherMap);
             }
@@ -60,8 +62,9 @@ namespace SimpleWeather.UWP.Radar
             }
         }
 
-        public static RadarProviders RadarAPIProvider {
-            get 
+        public static RadarProviders RadarAPIProvider
+        {
+            get
             {
                 var value = GetRadarProvider();
                 return Enum.GetValues(typeof(RadarProviders)).Cast<RadarProviders>().FirstOrDefault(@enum => Equals(value, @enum.GetStringValue()));
@@ -98,9 +101,11 @@ namespace SimpleWeather.UWP.Radar
 
             if (provider == WeatherAPI.OpenWeatherMap)
             {
-                var owm = WeatherManager.GetProvider(WeatherAPI.OpenWeatherMap);
+                var owm = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap);
+                var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
                 // Fallback to default since API KEY is unavailable
-                if ((Settings.API != owm.WeatherAPI && owm.GetAPIKey() == null) || Settings.APIKeys[WeatherAPI.OpenWeatherMap] == null)
+                if ((SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] == null)
                 {
                     return EARTHWINDMAP;
                 }

@@ -1,20 +1,9 @@
-﻿using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using SimpleWeather.Preferences;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -39,6 +28,8 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty UseMonochromeProperty =
             DependencyProperty.Register("UseMonochrome", typeof(bool), typeof(UVControl), new PropertyMetadata(false));
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public UVControl()
         {
             this.InitializeComponent();
@@ -46,7 +37,7 @@ namespace SimpleWeather.UWP.Controls
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
-                UVIcon.ShowAsMonochrome = wim.ShouldUseMonochrome(UVIcon.IconProvider ?? Settings.IconProvider);
+                UVIcon.ShowAsMonochrome = wim.ShouldUseMonochrome(UVIcon.IconProvider ?? SettingsManager.IconProvider);
             };
         }
     }

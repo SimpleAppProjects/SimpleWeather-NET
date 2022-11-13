@@ -136,7 +136,7 @@ namespace SimpleWeather.Utils
             return (R * c) * 1000;
         }
 
-        public static double CalculateGeopositionDistance(Location.Location position1, Location.Location position2)
+        public static double CalculateGeopositionDistance(LocationData.Location position1, LocationData.Location position2)
         {
             if (position1 is null)
             {

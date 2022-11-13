@@ -1,5 +1,8 @@
-﻿using SimpleWeather.Icons;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Icons;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 
@@ -20,9 +23,10 @@ namespace SimpleWeather.UWP.Controls
 
         public HourlyForecastNowViewModel(HourlyForecast forecast)
         {
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
             var culture = CultureUtils.UserCulture;
-            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
-            var wm = WeatherManager.GetInstance();
+            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
+            var wm = WeatherModule.Instance.WeatherManager;
 
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
             {
@@ -60,7 +64,7 @@ namespace SimpleWeather.UWP.Controls
             if (forecast.wind_mph.HasValue && forecast.wind_mph >= 0 &&
                 forecast.wind_degrees.HasValue && forecast.wind_degrees >= 0)
             {
-                string unit = Settings.SpeedUnit;
+                string unit = SettingsManager.SpeedUnit;
                 int speedVal;
                 string speedUnit;
 

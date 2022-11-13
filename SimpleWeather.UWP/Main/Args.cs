@@ -1,16 +1,10 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace SimpleWeather.UWP.Main
 {
     internal class WeatherPageArgs
     {
-        public LocationData Location { get; set; }
+        public LocationData.LocationData Location { get; set; }
     }
 
     internal class DetailsPageArgs : WeatherPageArgs

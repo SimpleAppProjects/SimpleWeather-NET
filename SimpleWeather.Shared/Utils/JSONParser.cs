@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Utf8Json;
 
@@ -14,7 +13,7 @@ namespace SimpleWeather.Utils
     {
         // CompositeResolver is singleton helper for use custom resolver.
         // Ofcourse you can also make custom resolver.
-        public readonly static IJsonFormatterResolver Resolver = 
+        public readonly static IJsonFormatterResolver Resolver =
             new SimpleWeather.Utf8JsonGen.Utf8JsonResolver();
         private static Newtonsoft.Json.JsonSerializerSettings DefaultSettings;
 
@@ -182,7 +181,7 @@ namespace SimpleWeather.Utils
             if (DefaultSettings == null)
             {
                 DefaultSettings = new Newtonsoft.Json.JsonSerializerSettings
-                { 
+                {
                     TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None,
                     ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
                 };

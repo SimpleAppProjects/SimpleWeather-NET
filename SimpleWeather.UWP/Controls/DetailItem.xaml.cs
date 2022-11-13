@@ -1,11 +1,9 @@
-﻿using SimpleWeather.Controls;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Utils;
-using System;
-using Windows.UI;
+using SimpleWeather.Preferences;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -19,6 +17,7 @@ namespace SimpleWeather.UWP.Controls
         }
 
         private readonly WeatherIconsManager wim;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public bool UseMonochrome
         {
@@ -37,7 +36,7 @@ namespace SimpleWeather.UWP.Controls
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
-                IconCtrl.ShowAsMonochrome = wim.ShouldUseMonochrome(IconCtrl.IconProvider ?? Settings.IconProvider);
+                IconCtrl.ShowAsMonochrome = wim.ShouldUseMonochrome(IconCtrl.IconProvider ?? SettingsManager.IconProvider);
             };
         }
     }

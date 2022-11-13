@@ -1,26 +1,19 @@
-﻿using SimpleWeather.Icons;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Icons;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using muxc = Microsoft.UI.Xaml.Controls;
-using lottie = Microsoft.Toolkit.Uwp.UI.Lottie;
 using System.Threading.Tasks;
 using Windows.Storage;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using lottie = Microsoft.Toolkit.Uwp.UI.Lottie;
+using muxc = Microsoft.UI.Xaml.Controls;
 
 namespace SimpleWeather.UWP.Controls
 {
@@ -92,6 +85,8 @@ namespace SimpleWeather.UWP.Controls
         public static readonly DependencyProperty ForceBitmapIconProperty =
             DependencyProperty.Register("ForceBitmapIcon", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public IconControl()
         {
             this.DefaultStyleKey = typeof(IconControl);
@@ -112,7 +107,7 @@ namespace SimpleWeather.UWP.Controls
 
             UIElement iconElement;
 
-            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? Settings.IconProvider);
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? SettingsManager.IconProvider);
             if (ForceBitmapIcon)
             {
                 iconElement = CreateBitmapIcon(wip);

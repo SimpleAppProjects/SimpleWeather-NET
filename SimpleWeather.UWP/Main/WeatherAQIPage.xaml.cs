@@ -1,12 +1,10 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Common.Controls;
+using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.ViewModels;
-using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -26,7 +24,7 @@ namespace SimpleWeather.UWP.Main
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationData locationData { get; set; }
+        private LocationData.LocationData locationData { get; set; }
         public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
         public AirQualityForecastViewModel AQIView { get; private set; }
 
@@ -36,7 +34,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_airquality");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_airquality");
             AnalyticsLogger.LogEvent("WeatherAQIPage");
         }
 

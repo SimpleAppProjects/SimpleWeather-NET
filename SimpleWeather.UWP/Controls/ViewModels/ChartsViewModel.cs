@@ -1,13 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Location;
+using SimpleWeather.Database;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +17,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public partial class ChartsViewModel : BaseViewModel, IDisposable
     {
-        private LocationData locationData;
+        private LocationData.LocationData locationData;
         private string unitCode;
         private string iconProvider;
 
@@ -25,6 +27,9 @@ namespace SimpleWeather.UWP.Controls
         [ObservableProperty]
         private ICollection<object> graphModels;
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
+
         public ChartsViewModel()
         {
             currentHrForecastsData = new ObservableItem<IList<HourlyForecast>>();
@@ -33,32 +38,32 @@ namespace SimpleWeather.UWP.Controls
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
         }
 
-        public void UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData.LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                Task.Run(async () =>
+                Task.Run((Func<Task>)(async () =>
                 {
-                    Settings.UnregisterWeatherDBChangedEvent(ChartsViewModel_TableChanged);
+                    WeatherDB.Connection.GetConnection().TableChanged -= ChartsViewModel_TableChanged;
 
                     // Clone location data
                     this.locationData = new LocationQuery(location).ToLocationData();
 
-                    this.unitCode = Settings.UnitString;
-                    this.iconProvider = Settings.IconProvider;
+                    this.unitCode = SettingsManager.UnitString;
+                    this.iconProvider = SettingsManager.IconProvider;
 
-                    var dateBlob = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, dateBlob));
+                    var date = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour);
+                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, date));
 
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+                    currentForecastsData.SetValue(await WeatherDB.GetForecastData(location.query));
 
-                    Settings.RegisterWeatherDBChangedEvent(ChartsViewModel_TableChanged);
-                });
+                    WeatherDB.Connection.GetConnection().TableChanged += ChartsViewModel_TableChanged;
+                }));
             }
-            else if (!Equals(unitCode, Settings.UnitString) || !Equals(iconProvider, Settings.IconProvider))
+            else if (!Equals(unitCode, SettingsManager.UnitString) || !Equals(iconProvider, SettingsManager.IconProvider))
             {
-                this.unitCode = Settings.UnitString;
-                this.iconProvider = Settings.IconProvider;
+                this.unitCode = SettingsManager.UnitString;
+                this.iconProvider = SettingsManager.IconProvider;
 
                 RefreshGraphModelData(currentForecastsData?.GetValue(), currentHrForecastsData?.GetValue());
             }
@@ -68,17 +73,18 @@ namespace SimpleWeather.UWP.Controls
         {
             if (locationData == null) return;
 
-            Task.Run(async () =>
+            Task.Run((Func<Task>)(async () =>
             {
-                if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
+                if (e?.Table?.TableName == HourlyForecasts.TABLE_NAME)
                 {
-                    currentHrForecastsData.SetValue(await Settings.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
+                    var date = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour);
+                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData.query, 0, 12, date));
                 }
-                else if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
+                else if (e?.Table?.TableName == Forecasts.TABLE_NAME)
                 {
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
+                    currentForecastsData.SetValue(await WeatherDB.GetForecastData(locationData.query));
                 }
-            });
+            }));
         }
 
         private void CurrentHrForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -245,7 +251,7 @@ namespace SimpleWeather.UWP.Controls
                         if (it is LineDataSeries series)
                         {
                             // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
-                            switch (Settings.PrecipitationUnit)
+                            switch (SettingsManager.PrecipitationUnit)
                             {
                                 default:
                                 case Units.INCHES:
@@ -268,7 +274,7 @@ namespace SimpleWeather.UWP.Controls
                         if (it is LineDataSeries series)
                         {
                             // Snow will often accumulate at a rate of 0.5in (12.7mm) an hour
-                            switch (Settings.PrecipitationUnit)
+                            switch (SettingsManager.PrecipitationUnit)
                             {
                                 default:
                                 case Units.INCHES:
@@ -305,7 +311,7 @@ namespace SimpleWeather.UWP.Controls
             if (disposing)
             {
                 // free managed resources
-                Settings.UnregisterWeatherDBChangedEvent(ChartsViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged -= ChartsViewModel_TableChanged;
             }
 
             isDisposed = true;

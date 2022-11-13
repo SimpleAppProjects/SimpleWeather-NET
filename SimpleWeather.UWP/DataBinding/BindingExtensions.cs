@@ -22,12 +22,12 @@ namespace SimpleWeather.UWP.DataBinding
 
         public static string GetString(string resource)
         {
-            return App.ResLoader.GetString(resource);
+            return App.Current.ResLoader.GetString(resource);
         }
 
         public static string GetStringForUri(Uri uri)
         {
-            return App.ResLoader.GetStringForUri(uri);
+            return App.Current.ResLoader.GetStringForUri(uri);
         }
 
         public static bool IsNotNull(object obj)

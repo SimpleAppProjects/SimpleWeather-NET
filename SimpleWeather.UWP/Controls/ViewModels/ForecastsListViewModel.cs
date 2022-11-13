@@ -1,14 +1,17 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Collections;
 using Microsoft.Toolkit.Uwp;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
-using SimpleWeather.Location;
+using SimpleWeather.Database;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,7 +20,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public partial class ForecastsListViewModel : BaseViewModel, IDisposable
     {
-        private LocationData locationData;
+        private LocationData.LocationData locationData;
         private string unitCode;
 
         [ObservableProperty]
@@ -29,31 +32,34 @@ namespace SimpleWeather.UWP.Controls
         [ObservableProperty]
         private object selectedForecasts;
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
+
         public void SelectForecast(bool isHourly)
         {
             selectedForecasts = isHourly ? HourlyForecasts : Forecasts;
         }
 
-        public void UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData.LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
-                Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged -= ForecastsViewModel_TableChanged;
 
                 // Clone location data
                 this.locationData = new LocationQuery(location).ToLocationData();
 
-                this.unitCode = Settings.UnitString;
+                this.unitCode = SettingsManager.UnitString;
 
                 // Update forecasts from database
                 ResetForecasts();
                 ResetHourlyForecasts();
 
-                Settings.RegisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged += ForecastsViewModel_TableChanged;
             }
-            else if (!Equals(unitCode, Settings.UnitString))
+            else if (!Equals(unitCode, SettingsManager.UnitString))
             {
-                this.unitCode = Settings.UnitString;
+                this.unitCode = SettingsManager.UnitString;
 
                 RefreshForecasts();
                 RefreshHourlyForecasts();
@@ -127,7 +133,7 @@ namespace SimpleWeather.UWP.Controls
             if (disposing)
             {
                 // free managed resources
-                Settings.UnregisterWeatherDBChangedEvent(ForecastsViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged -= ForecastsViewModel_TableChanged;
             }
 
             isDisposed = true;
@@ -136,9 +142,11 @@ namespace SimpleWeather.UWP.Controls
 
     public class ForecastSource : IIncrementalSource<ForecastItemViewModel>
     {
-        private LocationData locationData;
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
 
-        public ForecastSource(LocationData location) : base()
+        private LocationData.LocationData locationData;
+
+        public ForecastSource(LocationData.LocationData location) : base()
         {
             this.locationData = location;
         }
@@ -153,7 +161,7 @@ namespace SimpleWeather.UWP.Controls
                 Forecasts fcasts = null;
                 try
                 {
-                    fcasts = await Settings.GetWeatherForecastData(locationData.query);
+                    fcasts = await WeatherDB.GetForecastData(locationData.query);
                 }
                 catch (Exception)
                 {
@@ -198,23 +206,25 @@ namespace SimpleWeather.UWP.Controls
 
     public class HourlyForecastSource : IIncrementalSource<HourlyForecastItemViewModel>
     {
-        private LocationData locationData;
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
 
-        public HourlyForecastSource(LocationData location) : base()
+        private LocationData.LocationData locationData;
+
+        public HourlyForecastSource(LocationData.LocationData location) : base()
         {
             this.locationData = location;
         }
 
         public Task<IEnumerable<HourlyForecastItemViewModel>> GetPagedItemsAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
         {
-            return Task.Run(async () =>
+            return Task.Run((Func<Task<IEnumerable<HourlyForecastItemViewModel>>>)(async () =>
             {
                 if (locationData?.query == null)
                     return new List<HourlyForecastItemViewModel>(0);
 
-                var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-                var dateBlob = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d)).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-                var result = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData.query, pageIndex, pageSize, dateBlob);
+                var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
+                var date = DateTimeOffset.Now.ToOffset(locationData.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d));
+                var result = await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(locationData.query, pageIndex, pageSize, date);
 
                 var models = new List<HourlyForecastItemViewModel>();
 
@@ -229,7 +239,7 @@ namespace SimpleWeather.UWP.Controls
                 }
 
                 return models.AsEnumerable();
-            });
+            }));
         }
     }
 }

@@ -1,18 +1,13 @@
-﻿using SimpleWeather.Keys;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Utils;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Devices.Geolocation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
-using static SimpleWeather.Utils.APIRequestUtils;
 
 namespace SimpleWeather.UWP.Radar.RainViewer
 {

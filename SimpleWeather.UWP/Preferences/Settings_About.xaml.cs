@@ -84,14 +84,14 @@ namespace SimpleWeather.UWP.Preferences
                 if (updates?.Count > 0)
                 {
                     // Updates are available
-                    InstallButton.Content = App.ResLoader.GetString("prompt_update_available");
+                    InstallButton.Content = App.Current.ResLoader.GetString("prompt_update_available");
                     InstallButton.IsHitTestVisible = true;
                     InstallButton.Click += InstallButton_Click;
                 }
                 else
                 {
                     // No updates available
-                    InstallButton.Content = App.ResLoader.GetString("NoUpdateAvailablePrompt");
+                    InstallButton.Content = App.Current.ResLoader.GetString("NoUpdateAvailablePrompt");
                     InstallButton.IsHitTestVisible = false;
                     InstallButton.Click -= InstallButton_Click;
                 }
@@ -130,11 +130,11 @@ namespace SimpleWeather.UWP.Preferences
 
                     if (progress.PackageDownloadProgress >= 0.8)
                     {
-                        InstallButton.Content = App.ResLoader.GetString("InstallingPrompt");
+                        InstallButton.Content = App.Current.ResLoader.GetString("InstallingPrompt");
                     }
                     else
                     {
-                        InstallButton.Content = App.ResLoader.GetString("DownloadingPrompt");
+                        InstallButton.Content = App.Current.ResLoader.GetString("DownloadingPrompt");
                     }
                 }).ConfigureAwait(true);
             };
@@ -154,7 +154,7 @@ namespace SimpleWeather.UWP.Preferences
                 case StorePackageUpdateState.ErrorWiFiRecommended:
                 case StorePackageUpdateState.ErrorWiFiRequired:
                 case StorePackageUpdateState.OtherError:
-                    InstallButton.Content = App.ResLoader.GetString("InstallErrorPrompt");
+                    InstallButton.Content = App.Current.ResLoader.GetString("InstallErrorPrompt");
                     UpdateProgressBar.ShowError = true;
                     CheckUpdateButton.IsEnabled = true;
                     return;

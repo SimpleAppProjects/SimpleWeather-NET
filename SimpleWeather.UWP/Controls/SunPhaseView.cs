@@ -3,7 +3,7 @@ using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
-using SimpleWeather.Controls;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using System;

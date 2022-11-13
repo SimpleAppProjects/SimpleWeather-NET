@@ -1,5 +1,10 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Controls;
+using SimpleWeather.Common.Location;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.Common.ViewModels;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -10,8 +15,8 @@ using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.Utils;
 using SimpleWeather.UWP.WeatherAlerts;
-using SimpleWeather.ViewModels;
-using SimpleWeather.WeatherData;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,7 +48,8 @@ namespace SimpleWeather.UWP.Main
         public List<ICommandBarElement> PrimaryCommands { get; set; }
         private BannerManager BannerMgr { get; set; }
 
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         private RadarViewProvider radarViewProvider;
 
@@ -84,20 +90,20 @@ namespace SimpleWeather.UWP.Main
             Application.Current.Resuming += WeatherNow_Resuming;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_nav_weathernow");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_nav_weathernow");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Pin),
-                    Label = App.ResLoader.GetString("Label_Pin/Text"),
+                    Label = App.Current.ResLoader.GetString("Label_Pin/Text"),
                     Tag = "pin",
                     Visibility = Visibility.Collapsed
                 },
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Refresh),
-                    Label = App.ResLoader.GetString("action_refresh"),
+                    Label = App.Current.ResLoader.GetString("action_refresh"),
                     Tag = "refresh"
                 }
             };
@@ -119,7 +125,7 @@ namespace SimpleWeather.UWP.Main
             AnalyticsLogger.LogEvent("WeatherNow");
 
             Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
-            Settings.OnSettingsChanged += Settings_OnSettingsChanged;
+            SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
             RadarProvider.RadarProviderChanged += RadarProvider_RadarProviderChanged;
         }
 
@@ -160,13 +166,13 @@ namespace SimpleWeather.UWP.Main
 
         private void Settings_OnSettingsChanged(SettingsChangedEventArgs e)
         {
-            if (e.Key == Settings.KEY_ICONSSOURCE)
+            if (e.Key == SettingsManager.KEY_ICONSSOURCE)
             {
                 // When page is loaded again from cache, clear icon cache
                 ClearGraphIconCache = true;
                 UpdateBindings = true;
             }
-            else if (e.Key == Settings.KEY_USERTHEME)
+            else if (e.Key == SettingsManager.KEY_USERTHEME)
             {
                 UpdateBindings = true;
                 // Update theme
@@ -202,12 +208,12 @@ namespace SimpleWeather.UWP.Main
                     {
                         await Dispatcher.RunOnUIThread(() =>
                         {
-                            var banner = Banner.MakeError(App.ResLoader.GetString("prompt_location_not_set"));
+                            var banner = Banner.MakeError(App.Current.ResLoader.GetString("prompt_location_not_set"));
                             banner.Icon = new muxc.SymbolIconSource()
                             {
                                 Symbol = Symbol.Map
                             };
-                            banner.SetAction(App.ResLoader.GetString("label_fab_add_location"), () =>
+                            banner.SetAction(App.Current.ResLoader.GetString("label_fab_add_location"), () =>
                             {
                                 Frame.Navigate(typeof(LocationsPage));
                             });
@@ -226,11 +232,11 @@ namespace SimpleWeather.UWP.Main
                         ForecastView.UpdateForecasts(locationData);
                         AlertsView.UpdateAlerts(locationData);
 
-                        Task.Run(async () =>
+                        Task.Run((Func<Task>)(async () =>
                         {
                             // Update home tile if it hasn't been already
-                            bool isHome = Equals(locationData, await Settings.GetHomeData());
-                            if (isHome && (TimeSpan.FromTicks(DateTime.Now.Ticks - Settings.UpdateTime.Ticks).TotalMinutes > Settings.RefreshInterval))
+                            bool isHome = Equals(locationData, await SettingsManager.GetHomeData());
+                            if (isHome && (TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks)).TotalMinutes > SettingsManager.RefreshInterval))
                             {
                                 await WeatherUpdateBackgroundTask.RequestAppTrigger();
                             }
@@ -238,7 +244,7 @@ namespace SimpleWeather.UWP.Main
                             {
                                 await WeatherTileCreator.TileUpdater(locationData);
                             }
-                        });
+                        }));
                     });
                     break;
 
@@ -432,7 +438,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     case ErrorMessage.Resource err:
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
                         }
                         break;
                     case ErrorMessage.String err:
@@ -459,7 +465,7 @@ namespace SimpleWeather.UWP.Main
                 case WeatherUtils.ErrorStatus.NoWeather:
                     // Show error message and prompt to refresh
                     Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                    snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
+                    snackbar.SetAction(App.Current.ResLoader.GetString("action_retry"), () =>
                     {
                         WNowViewModel.RefreshWeather(false);
                     });
@@ -485,14 +491,14 @@ namespace SimpleWeather.UWP.Main
             // Check if we're loading from tile
             if (args?.TileId != null && SecondaryTileUtils.GetQueryFromId(args.TileId) is string locQuery)
             {
-                locationData = await Settings.GetLocation(locQuery).ConfigureAwait(true);
+                locationData = await SettingsManager.GetLocation(locQuery).ConfigureAwait(true);
                 locationChanged = true;
             }
 
             // Check if current location still exists (is valid)
             if (locationData?.locationType == LocationType.Search)
             {
-                if (await Settings.GetLocation(locationData?.query).ConfigureAwait(true) == null)
+                if (await SettingsManager.GetLocation(locationData?.query).ConfigureAwait(true) == null)
                 {
                     locationData = null;
                     locationChanged = true;
@@ -504,7 +510,7 @@ namespace SimpleWeather.UWP.Main
             {
                 // Check if home location changed
                 // For ex. due to GPS setting change
-                LocationData homeData = await Settings.GetHomeData().ConfigureAwait(true);
+                var homeData = await SettingsManager.GetHomeData().ConfigureAwait(true);
                 if (!Equals(locationData, homeData))
                 {
                     locationData = homeData;
@@ -540,7 +546,7 @@ namespace SimpleWeather.UWP.Main
 
             await result.Data?.Let(async locationData =>
             {
-                if (locationData.locationType == LocationType.GPS && Settings.FollowGPS)
+                if (locationData.locationType == LocationType.GPS && SettingsManager.FollowGPS)
                 {
                     var geoStatus = GeolocationAccessStatus.Unspecified;
 
@@ -628,12 +634,12 @@ namespace SimpleWeather.UWP.Main
                 if (isPinned)
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.UnPin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Unpin/Text");
+                    pinBtn.Label = App.Current.ResLoader.GetString("Label_Unpin/Text");
                 }
                 else
                 {
                     pinBtn.Icon = new SymbolIcon(Symbol.Pin);
-                    pinBtn.Label = App.ResLoader.GetString("Label_Pin/Text");
+                    pinBtn.Label = App.Current.ResLoader.GetString("Label_Pin/Text");
                 }
             }
         }
@@ -670,8 +676,8 @@ namespace SimpleWeather.UWP.Main
                 {
                     if (!await BackgroundTaskHelper.IsBackgroundAccessEnabled().ConfigureAwait(true))
                     {
-                        var snackbar = Snackbar.Make(App.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long, SnackbarInfoType.Error);
-                        snackbar.SetAction(App.ResLoader.GetString("action_settings"), async () =>
+                        var snackbar = Snackbar.Make(App.Current.ResLoader.GetString("Msg_BGAccessDeniedSettings"), SnackbarDuration.Long, SnackbarInfoType.Error);
+                        snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), async () =>
                         {
                             await Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:appsfeatures-app"));
                         });
@@ -831,10 +837,10 @@ namespace SimpleWeather.UWP.Main
                 {
                     GradientOverlay.Visibility = Visibility.Collapsed;
                 }
-                switch (Settings.UserTheme)
+                switch (SettingsManager.UserTheme)
                 {
                     case UserThemeMode.System:
-                        ControlTheme = App.IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
+                        ControlTheme = App.Current.IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
                         break;
                     case UserThemeMode.Light:
                         ControlTheme = ElementTheme.Light;
@@ -867,7 +873,7 @@ namespace SimpleWeather.UWP.Main
 
             if (float.TryParse(temp_str, out float temp_f))
             {
-                var tempUnit = Settings.TemperatureUnit;
+                var tempUnit = SettingsManager.TemperatureUnit;
 
                 if (Equals(tempUnit, Units.CELSIUS) || temp.EndsWith(Units.CELSIUS))
                 {

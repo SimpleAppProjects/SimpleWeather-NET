@@ -1,18 +1,18 @@
-﻿using SimpleWeather.Utils;
-using System;
+﻿using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Icons
 {
     public sealed partial class WeatherIconsManager : IWeatherIconsProvider
     {
         private IWeatherIconsProvider _IconsProvider;
-        private OrderedDictionary<string, WeatherIconProvider> _IconProviders = new();
+        private readonly OrderedDictionary<string, WeatherIconProvider> _IconProviders = new();
         public IReadOnlyDictionary<string, WeatherIconProvider> DefaultIcons;
+
+        private readonly SettingsManager SettingsManager = DI.Utils.SettingsManager;
 
         internal WeatherIconsManager()
         {
@@ -30,7 +30,7 @@ namespace SimpleWeather.Icons
 
         public void UpdateIconProvider()
         {
-            var iconsSource = Settings.IconProvider;
+            var iconsSource = SettingsManager.IconProvider;
             _IconsProvider = GetIconProvider(iconsSource);
         }
 
@@ -94,7 +94,7 @@ namespace SimpleWeather.Icons
             get { return _IconsProvider.IsFontIcon; }
         }
 
-        public bool ShouldUseMonochrome() => ShouldUseMonochrome(Settings.IconProvider);
+        public bool ShouldUseMonochrome() => ShouldUseMonochrome(SettingsManager.IconProvider);
 
         public bool ShouldUseMonochrome(string wip)
         {

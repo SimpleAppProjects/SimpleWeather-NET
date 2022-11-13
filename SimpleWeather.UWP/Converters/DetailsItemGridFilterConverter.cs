@@ -1,4 +1,4 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.Common.Controls;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;

@@ -1,11 +1,17 @@
-﻿using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Location;
+using SimpleWeather.Common.WeatherData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Notifications;
 using SimpleWeather.UWP.Tiles;
 using SimpleWeather.UWP.WeatherAlerts;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
@@ -15,14 +21,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
     {
         private const string taskName = nameof(WeatherUpdateBackgroundTask);
-        private CancellationTokenSource cts;
-        private readonly WeatherManager wm;
+        private readonly CancellationTokenSource cts;
         private static ApplicationTrigger AppTrigger = null;
+
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public WeatherUpdateBackgroundTask()
         {
             cts = new CancellationTokenSource();
-            wm = WeatherManager.GetInstance();
         }
 
         public async void Run(IBackgroundTaskInstance taskInstance)
@@ -39,11 +46,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 {
                     Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Run...");
 
-                    if (Settings.WeatherLoaded)
+                    if (SettingsManager.WeatherLoaded)
                     {
                         var locationChanged = false;
 
-                        if (Settings.FollowGPS)
+                        if (SettingsManager.FollowGPS)
                         {
                             Logger.WriteLine(LoggerLevel.Debug, "WeatherUpdateBackgroundTask: Updating location...");
 
@@ -55,7 +62,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                                 {
                                     case LocationResult.Changed ret:
                                         locationChanged = true;
-                                        Settings.SaveLastGPSLocData(ret.Data);
+                                        await SettingsManager.SaveLastGPSLocData(ret.Data);
                                         break;
                                     default:
                                         // no-op
@@ -83,21 +90,21 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                         await WeatherTileUpdaterTask.UpdateTiles();
 
-                        if (Settings.PoPChanceNotificationEnabled)
+                        if (SettingsManager.PoPChanceNotificationEnabled)
                         {
-                            await PoPNotificationCreator.CreateNotification(await Settings.GetHomeData());
+                            await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                         }
 
                         if (weather != null)
                         {
                             // Post alerts if setting is on
-                            if (Settings.ShowAlerts && wm.SupportsAlerts)
+                            if (SettingsManager.ShowAlerts && wm.SupportsAlerts)
                             {
-                                await WeatherAlertHandler.PostAlerts(await Settings.GetHomeData(), weather.weather_alerts);
+                                await WeatherAlertHandler.PostAlerts(await SettingsManager.GetHomeData(), weather.weather_alerts);
                             }
 
                             // Set update time
-                            Settings.UpdateTime = DateTime.Now;
+                            SettingsManager.UpdateTime = DateTime.Now;
 
                             if (locationChanged)
                             {
@@ -214,9 +221,11 @@ namespace SimpleWeather.UWP.BackgroundTasks
             if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
+                var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
                 // Register a task for each trigger
                 var tb1 = new BackgroundTaskBuilder() { Name = taskName };
-                tb1.SetTrigger(new TimeTrigger((uint)Settings.RefreshInterval, false));
+                tb1.SetTrigger(new TimeTrigger((uint)SettingsManager.RefreshInterval, false));
                 tb1.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 var tb2 = new BackgroundTaskBuilder() { Name = taskName };
                 tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
@@ -278,7 +287,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 cts.Token.ThrowIfCancellationRequested();
 
-                weather = await new WeatherDataLoader(await Settings.GetHomeData())
+                weather = await new WeatherDataLoader(await SettingsManager.GetHomeData())
                         .LoadWeatherData(new WeatherRequest.Builder()
                             .ForceRefresh(false)
                             .LoadAlerts()
@@ -303,7 +312,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
         /// <exception cref="WeatherException">Ignore.</exception>
         private async Task PreloadWeather()
         {
-            var locations = await Settings.GetFavorites() ?? new System.Collections.ObjectModel.Collection<Location.LocationData>();
+            var locations = await SettingsManager.GetFavorites() ?? new Collection<LocationData.LocationData>();
 
             try
             {
@@ -336,9 +345,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
         {
             var locationProvider = new LocationProvider();
 
-            if (Settings.FollowGPS)
+            if (SettingsManager.FollowGPS)
             {
-                var lastLocation = await Settings.GetLastGPSLocData();
+                var lastLocation = await SettingsManager.GetLastGPSLocData();
                 return await locationProvider.GetLatestLocationData(lastLocation);
             }
 

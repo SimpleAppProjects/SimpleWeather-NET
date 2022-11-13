@@ -1,4 +1,6 @@
-﻿using SimpleWeather.ComponentModel;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.ComponentModel;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Controls;
@@ -35,6 +37,7 @@ namespace SimpleWeather.UWP.Main
         private BannerManager BannerMgr { get; set; }
 
         private readonly UISettings UISettings;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         // List of ValueTuple holding the Navigation Tag and the relative Navigation Page
         private readonly List<(string Tag, Type Page)> _pages = new List<(string Tag, Type Page)>
@@ -71,7 +74,7 @@ namespace SimpleWeather.UWP.Main
 
             UISettings = new UISettings();
             UISettings.ColorValuesChanged += UISettings_ColorValuesChanged;
-            App.UpdateAppTheme();
+            App.Current.UpdateAppTheme();
             UpdateAppTheme();
 
             Window.Current.SetTitleBar(AppTitleBar);
@@ -159,9 +162,9 @@ namespace SimpleWeather.UWP.Main
                 if (AppFrame == null)
                     return;
 
-                if (Settings.UserTheme == UserThemeMode.System)
+                if (SettingsManager.UserTheme == UserThemeMode.System)
                 {
-                    var isDarkTheme = App.IsSystemDarkTheme;
+                    var isDarkTheme = App.Current.IsSystemDarkTheme;
 
                     AnalyticsLogger.LogEvent("Shell: UISettings_ColorValuesChanged",
                         new Dictionary<string, string>()
@@ -181,10 +184,10 @@ namespace SimpleWeather.UWP.Main
 
             bool isDarkTheme = false;
 
-            switch (Settings.UserTheme)
+            switch (SettingsManager.UserTheme)
             {
                 case UserThemeMode.System:
-                    isDarkTheme = App.IsSystemDarkTheme;
+                    isDarkTheme = App.Current.IsSystemDarkTheme;
                     break;
 
                 case UserThemeMode.Light:
@@ -403,7 +406,7 @@ namespace SimpleWeather.UWP.Main
                 }
                 else
                 {
-                    header.Title = App.ResLoader.GetString("app_name");
+                    header.Title = App.Current.ResLoader.GetString("app_name");
                     header.Commands = null;
                 }
             }

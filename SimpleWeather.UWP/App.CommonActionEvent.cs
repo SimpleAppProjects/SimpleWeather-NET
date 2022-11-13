@@ -1,17 +1,16 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
 using SimpleWeather.UWP.Tiles;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP
 {
     public sealed partial class App
     {
-        public async void App_OnCommonActionChanged(object sender, CommonActionChangedEventArgs e)
+        private async void App_OnCommonActionChanged(object sender, CommonActionChangedEventArgs e)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             if (e.Action == CommonActions.ACTION_WEATHER_UPDATETILELOCATION)
@@ -36,7 +35,7 @@ namespace SimpleWeather.UWP
             {
                 await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
             }
-            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH || 
+            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH ||
                 e.Action == CommonActions.ACTION_WEATHER_REREGISTERTASK)
             {
                 await Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
@@ -44,14 +43,14 @@ namespace SimpleWeather.UWP
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEGPS)
             {
                 // Update tile ids when switching GPS feature
-                if (Settings.FollowGPS)
+                if (SettingsManager.FollowGPS)
                 {
-                    var prevLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                    var prevLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                     if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
                     {
-                        var gpsLoc = await Settings.GetLastGPSLocData();
+                        var gpsLoc = await SettingsManager.GetLastGPSLocData();
                         if (gpsLoc?.query == null)
-                            Settings.SaveLastGPSLocData(prevLoc);
+                            await SettingsManager.SaveLastGPSLocData(prevLoc);
                         else
                             SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
                     }
@@ -60,14 +59,14 @@ namespace SimpleWeather.UWP
                 {
                     if (SecondaryTileUtils.Exists(Constants.KEY_GPS))
                     {
-                        var favLoc = (await Settings.GetFavorites()).FirstOrDefault();
+                        var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                         if (favLoc?.IsValid() == true)
                             SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
                     }
                 }
 
                 // Reset notification time for new location
-                Settings.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
+                SettingsManager.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE)
             {
@@ -78,11 +77,11 @@ namespace SimpleWeather.UWP
                 }
 
                 // Reset notification time for new location
-                Settings.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
+                SettingsManager.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION)
             {
-                if (Settings.DailyNotificationEnabled)
+                if (SettingsManager.DailyNotificationEnabled)
                 {
                     Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(false));
                 }

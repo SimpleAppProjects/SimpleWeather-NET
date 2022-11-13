@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
@@ -34,6 +36,8 @@ namespace SimpleWeather.UWP.Controls
                 return GraphData?.IsEmpty ?? true;
             }
         }
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public void AddForecastData<T>(T forecast, ForecastGraphType graphType) where T : BaseForecast
         {
@@ -79,7 +83,7 @@ namespace SimpleWeather.UWP.Controls
 
             if (graphType == ForecastGraphType.Rain || graphType == ForecastGraphType.Snow)
             {
-                var unit = Settings.PrecipitationUnit;
+                var unit = SettingsManager.PrecipitationUnit;
 
                 // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
                 // Snow will often accumulate at a rate of 0.5in (12.7mm) an hour
@@ -123,7 +127,7 @@ namespace SimpleWeather.UWP.Controls
             }
 
             // Heavy rain — rate is >= 7.6 mm (0.30 in) per hr
-            var unit = Settings.PrecipitationUnit;
+            var unit = SettingsManager.PrecipitationUnit;
             switch (unit)
             {
                 case Units.INCHES:
@@ -141,7 +145,7 @@ namespace SimpleWeather.UWP.Controls
 
         private void AddEntryData<T>(T forecast, LineDataSeries series, ForecastGraphType graphType) where T : BaseForecast
         {
-            var isFahrenheit = Units.FAHRENHEIT.Equals(Settings.TemperatureUnit);
+            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
             var culture = CultureUtils.UserCulture;
 
             string date = GetDateFromForecast(forecast);
@@ -170,7 +174,7 @@ namespace SimpleWeather.UWP.Controls
                 case ForecastGraphType.Wind:
                     if (forecast.extras?.wind_mph.HasValue == true && forecast.extras.wind_mph >= 0)
                     {
-                        string unit = Settings.SpeedUnit;
+                        string unit = SettingsManager.SpeedUnit;
                         int speedVal;
                         string speedUnit;
 
@@ -199,7 +203,7 @@ namespace SimpleWeather.UWP.Controls
                 case ForecastGraphType.Rain:
                     if (forecast.extras?.qpf_rain_in.HasValue == true && forecast.extras?.qpf_rain_mm.HasValue == true)
                     {
-                        string unit = Settings.PrecipitationUnit;
+                        string unit = SettingsManager.PrecipitationUnit;
                         float precipValue;
                         string precipUnit;
 
@@ -222,7 +226,7 @@ namespace SimpleWeather.UWP.Controls
                 case ForecastGraphType.Snow:
                     if (forecast.extras?.qpf_snow_in.HasValue == true && forecast.extras?.qpf_snow_cm.HasValue == true)
                     {
-                        string unit = Settings.PrecipitationUnit;
+                        string unit = SettingsManager.PrecipitationUnit;
                         float precipValue;
                         string precipUnit;
 
@@ -273,7 +277,7 @@ namespace SimpleWeather.UWP.Controls
                     date = forecast.date.ToString("h:mm tt", culture);
                 }
 
-                string unit = Settings.PrecipitationUnit;
+                string unit = SettingsManager.PrecipitationUnit;
                 float precipValue;
                 string precipUnit;
 
@@ -416,32 +420,34 @@ namespace SimpleWeather.UWP.Controls
 
         private string GetLabelForGraphType(ForecastGraphType graphType)
         {
+            var ResLoader = App.Current.ResLoader;
+
             string graphLabel;
 
             switch (graphType)
             {
                 case ForecastGraphType.Temperature:
-                    graphLabel = App.ResLoader.GetString("label_temperature");
+                    graphLabel = ResLoader.GetString("label_temperature");
                     break;
                 default:
                 case ForecastGraphType.Minutely:
                 case ForecastGraphType.Precipitation:
-                    graphLabel = App.ResLoader.GetString("label_precipitation");
+                    graphLabel = ResLoader.GetString("label_precipitation");
                     break;
                 case ForecastGraphType.Wind:
-                    graphLabel = App.ResLoader.GetString("label_wind");
+                    graphLabel = ResLoader.GetString("label_wind");
                     break;
                 case ForecastGraphType.Rain:
-                    graphLabel = App.ResLoader.GetString("label_qpf_rain");
+                    graphLabel = ResLoader.GetString("label_qpf_rain");
                     break;
                 case ForecastGraphType.Snow:
-                    graphLabel = App.ResLoader.GetString("label_qpf_snow");
+                    graphLabel = ResLoader.GetString("label_qpf_snow");
                     break;
                 case ForecastGraphType.UVIndex:
-                    graphLabel = App.ResLoader.GetString("label_uv");
+                    graphLabel = ResLoader.GetString("label_uv");
                     break;
                 case ForecastGraphType.Humidity:
-                    graphLabel = App.ResLoader.GetString("label_humidity");
+                    graphLabel = ResLoader.GetString("label_humidity");
                     break;
             }
 

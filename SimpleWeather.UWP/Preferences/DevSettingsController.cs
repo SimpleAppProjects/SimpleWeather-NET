@@ -1,11 +1,7 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Main;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Preferences
 {
@@ -15,9 +11,11 @@ namespace SimpleWeather.UWP.Preferences
 
         private int DevHitCountDown = 0;
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public void OnStart()
         {
-            DevHitCountDown = DevSettingsEnabler.DevSettingsEnabled ? -1 : TAPS_TO_BE_A_DEVELOPER;
+            DevHitCountDown = SettingsManager.DevSettingsEnabled ? -1 : TAPS_TO_BE_A_DEVELOPER;
         }
 
         public void OnClick()
@@ -47,7 +45,7 @@ namespace SimpleWeather.UWP.Preferences
         private void EnableDevSettings()
         {
             DevHitCountDown = 0;
-            DevSettingsEnabler.DevSettingsEnabled = true;
+            SettingsManager.DevSettingsEnabled = true;
         }
     }
 }

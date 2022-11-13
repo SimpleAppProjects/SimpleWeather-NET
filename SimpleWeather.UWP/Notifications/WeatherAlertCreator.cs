@@ -1,8 +1,7 @@
 ﻿using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
-using SimpleWeather.Controls;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Location;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -18,7 +17,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task CreateToastCollection()
         {
-            string displayName = App.ResLoader.GetString("label_nav_alerts");
+            string displayName = App.Current.ResLoader.GetString("label_nav_alerts");
             var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/ic_error.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
@@ -33,7 +32,7 @@ namespace SimpleWeather.UWP.Notifications
                 .SaveToastCollectionAsync(toastCollection);
         }
 
-        public static async Task CreateAlerts(LocationData location, IEnumerable<WeatherAlert> alerts)
+        public static async Task CreateAlerts(LocationData.LocationData location, IEnumerable<WeatherAlert> alerts)
         {
             await CreateToastCollection().ConfigureAwait(true);
             var toastNotifier = await ToastNotificationManager.GetDefault()

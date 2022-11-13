@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
-using SimpleWeather.Location;
+using SimpleWeather.Database;
+using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
@@ -15,7 +16,7 @@ namespace SimpleWeather.UWP.Controls
 {
     public partial class AirQualityForecastViewModel : BaseViewModel, IDisposable
     {
-        private LocationData locationData;
+        private LocationData.LocationData locationData;
 
         private ObservableItem<Forecasts> currentForecastsData;
 
@@ -25,26 +26,28 @@ namespace SimpleWeather.UWP.Controls
         [ObservableProperty]
         private ICollection<AirQualityViewModel> aQIForecastData;
 
+        private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
+
         public AirQualityForecastViewModel()
         {
             currentForecastsData = new ObservableItem<Forecasts>();
             currentForecastsData.ItemValueChanged += CurrentForecastsData_ItemValueChanged;
         }
 
-        public void UpdateForecasts(LocationData location)
+        public void UpdateForecasts(LocationData.LocationData location)
         {
             if (this.locationData == null || !Equals(this.locationData?.query, location?.query))
             {
                 Task.Run(async () =>
                 {
-                    Settings.UnregisterWeatherDBChangedEvent(AirQualityForecastViewModel_TableChanged);
+                    WeatherDB.Connection.GetConnection().TableChanged -= AirQualityForecastViewModel_TableChanged;
 
                     // Clone location data
                     this.locationData = new LocationQuery(location).ToLocationData();
 
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(location.query));
+                    currentForecastsData.SetValue(await WeatherDB.GetForecastData(location.query));
 
-                    Settings.RegisterWeatherDBChangedEvent(AirQualityForecastViewModel_TableChanged);
+                    WeatherDB.Connection.GetConnection().TableChanged += AirQualityForecastViewModel_TableChanged;
                 });
             }
         }
@@ -53,13 +56,13 @@ namespace SimpleWeather.UWP.Controls
         {
             if (locationData == null) return;
 
-            Task.Run(async () =>
+            Task.Run((Func<Task>)(async () =>
             {
-                if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
+                if (e?.Table?.TableName == Forecasts.TABLE_NAME)
                 {
-                    currentForecastsData.SetValue(await Settings.GetWeatherForecastData(locationData.query));
+                    currentForecastsData.SetValue(await WeatherDB.GetForecastData(locationData.query));
                 }
-            });
+            }));
         }
 
         private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -97,7 +100,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         aqiIndexData = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("label_airquality")
+                            GraphLabel = App.Current.ResLoader.GetString("label_airquality")
                         };
                     }
 
@@ -123,7 +126,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         pm25Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_pm25")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_pm25")
                         };
                     }
 
@@ -149,7 +152,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         pm10Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_pm10")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_pm10")
                         };
                     }
 
@@ -175,7 +178,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         o3Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_o3")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_o3")
                         };
                     }
 
@@ -201,7 +204,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         coData = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_co")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_co")
                         };
                     }
 
@@ -227,7 +230,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         no2Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_no2")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_no2")
                         };
                     }
 
@@ -253,7 +256,7 @@ namespace SimpleWeather.UWP.Controls
                     {
                         so2Data = new()
                         {
-                            GraphLabel = App.ResLoader.GetString("/AQIndex/units_so2")
+                            GraphLabel = App.Current.ResLoader.GetString("/AQIndex/units_so2")
                         };
                     }
 
@@ -329,7 +332,7 @@ namespace SimpleWeather.UWP.Controls
             if (disposing)
             {
                 // free managed resources
-                Settings.UnregisterWeatherDBChangedEvent(AirQualityForecastViewModel_TableChanged);
+                WeatherDB.Connection.GetConnection().TableChanged -= AirQualityForecastViewModel_TableChanged;
             }
 
             isDisposed = true;

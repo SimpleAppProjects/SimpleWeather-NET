@@ -1,11 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
-using SimpleWeather.WeatherData;
-using System;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using System.Collections.Generic;
-using System.Linq;
 using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,33 +19,32 @@ namespace SimpleWeather.UWP.Setup
     /// </summary>
     public sealed partial class SetupSettingsPage : Page, IPageVerification
     {
-        private readonly WeatherManager wm;
-        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+        private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
         {
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_30min"), "30"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.ResLoader.GetString("refresh_12hrs"), "720"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_30min"), "30"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
         };
 
         public SetupSettingsPage()
         {
             this.InitializeComponent();
 
-            wm = WeatherManager.GetInstance();
             RestoreSettings();
             AnalyticsLogger.LogEvent("SetupSettingsPage");
         }
@@ -69,7 +68,7 @@ namespace SimpleWeather.UWP.Setup
             }
             RefreshComboBox.DisplayMemberPath = "Display";
             RefreshComboBox.SelectedValuePath = "Value";
-            RefreshComboBox.SelectedValue = Settings.DefaultInterval.ToInvariantString();
+            RefreshComboBox.SelectedValue = SettingsManager.DefaultInterval.ToInvariantString();
 
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
@@ -84,9 +83,9 @@ namespace SimpleWeather.UWP.Setup
         private void AlertSwitch_Toggled(object sender, RoutedEventArgs e)
         {
             ToggleSwitch sw = sender as ToggleSwitch;
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_USEALERTS))
-                CoreApplication.Properties.Remove(Settings.KEY_USEALERTS);
-            CoreApplication.Properties.Add(Settings.KEY_USEALERTS, sw.IsOn);
+            if (CoreApplication.Properties.ContainsKey(SettingsManager.KEY_USEALERTS))
+                CoreApplication.Properties.Remove(SettingsManager.KEY_USEALERTS);
+            CoreApplication.Properties.Add(SettingsManager.KEY_USEALERTS, sw.IsOn);
         }
 
         private void RefreshComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -96,26 +95,26 @@ namespace SimpleWeather.UWP.Setup
 
             if (!int.TryParse(value?.ToString(), out int interval))
             {
-                interval = Settings.DefaultInterval;
+                interval = SettingsManager.DefaultInterval;
             }
 
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_REFRESHINTERVAL))
-                CoreApplication.Properties.Remove(Settings.KEY_REFRESHINTERVAL);
-            CoreApplication.Properties.Add(Settings.KEY_REFRESHINTERVAL, interval);
+            if (CoreApplication.Properties.ContainsKey(SettingsManager.KEY_REFRESHINTERVAL))
+                CoreApplication.Properties.Remove(SettingsManager.KEY_REFRESHINTERVAL);
+            CoreApplication.Properties.Add(SettingsManager.KEY_REFRESHINTERVAL, interval);
         }
 
         private void Fahrenheit_Checked(object sender, RoutedEventArgs e)
         {
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_TEMPUNIT))
-                CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
-            CoreApplication.Properties.Add(Settings.KEY_TEMPUNIT, Units.FAHRENHEIT);
+            if (CoreApplication.Properties.ContainsKey(SettingsManager.KEY_TEMPUNIT))
+                CoreApplication.Properties.Remove(SettingsManager.KEY_TEMPUNIT);
+            CoreApplication.Properties.Add(SettingsManager.KEY_TEMPUNIT, Units.FAHRENHEIT);
         }
 
         private void Celsius_Checked(object sender, RoutedEventArgs e)
         {
-            if (CoreApplication.Properties.ContainsKey(Settings.KEY_TEMPUNIT))
-                CoreApplication.Properties.Remove(Settings.KEY_TEMPUNIT);
-            CoreApplication.Properties.Add(Settings.KEY_TEMPUNIT, Units.CELSIUS);
+            if (CoreApplication.Properties.ContainsKey(SettingsManager.KEY_TEMPUNIT))
+                CoreApplication.Properties.Remove(SettingsManager.KEY_TEMPUNIT);
+            CoreApplication.Properties.Add(SettingsManager.KEY_TEMPUNIT, Units.CELSIUS);
         }
 
         public bool CanContinue()

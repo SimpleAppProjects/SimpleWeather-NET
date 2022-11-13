@@ -157,13 +157,17 @@
       <Version>2.2.10</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk">
-      <Version>17.3.2</Version>
+      <Version>17.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj">
       <Project>{0CAA3B62-12E0-4418-8E32-95AEECA0AF97}</Project>
       <Name>SimpleWeather.Backgrounds</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj">
+      <Project>{b119868b-ea58-45c8-89b2-0693d3395d31}</Project>
+      <Name>SimpleWeather.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj">
       <Project>{0cc840eb-6362-44e7-95fe-22602abddc8b}</Project>
@@ -172,6 +176,10 @@
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
       <Project>{a92be3f1-3252-4650-a17e-498b223bd039}</Project>
       <Name>SimpleWeather.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj">
+      <Project>{05ee68eb-2f0b-4afb-a9cd-14d8df05ba43}</Project>
+      <Name>SimpleWeather.Weather-API</Name>
     </ProjectReference>
     <ProjectReference Include="..\Timber\Timber.csproj">
       <Project>{479286ce-e244-4d81-a8f4-a5982af86af9}</Project>

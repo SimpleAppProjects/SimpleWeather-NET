@@ -1,21 +1,10 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.Utils;
+using SimpleWeather.Preferences;
 using SimpleWeather.UWP.BackgroundTasks;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -27,7 +16,8 @@ namespace SimpleWeather.UWP.Preferences
     /// </summary>
     public sealed partial class Settings_Icons : Page
     {
-        private readonly IExtrasService ExtrasService = App.Services.GetService<IExtrasService>();
+        private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public Settings_Icons()
         {
@@ -44,7 +34,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             IconRadioContainer.Children.Clear();
 
-            var currentProvider = Settings.IconProvider;
+            var currentProvider = SettingsManager.IconProvider;
 
             var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
 
@@ -93,7 +83,7 @@ namespace SimpleWeather.UWP.Preferences
                 Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 return false;
             }
-            Settings.IconProvider = key;
+            SettingsManager.IconProvider = key;
             SharedModule.Instance.WeatherIconsManager.UpdateIconProvider();
             return true;
         }

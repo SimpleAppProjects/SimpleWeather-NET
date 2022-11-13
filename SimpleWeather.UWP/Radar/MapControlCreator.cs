@@ -1,4 +1,4 @@
-﻿using SimpleWeather.Keys;
+﻿using SimpleWeather.Weather_API.Keys;
 using Windows.UI.Xaml.Controls.Maps;
 
 namespace SimpleWeather.UWP.Radar

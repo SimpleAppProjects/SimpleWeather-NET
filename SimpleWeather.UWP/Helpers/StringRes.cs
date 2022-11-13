@@ -21,9 +21,9 @@ namespace SimpleWeather.UWP.Helpers
 
         private ResourceLoader GetResourceLoader()
         {
-            if (App.ResLoader != null)
+            if (App.Current.ResLoader != null)
             {
-                return App.ResLoader;
+                return App.Current.ResLoader;
             }
 
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)

@@ -1,4 +1,4 @@
-﻿using SimpleWeather.Location;
+﻿using SimpleWeather.LocationData;
 using System;
 using Windows.UI.Xaml.Data;
 
@@ -13,9 +13,9 @@ namespace SimpleWeather.UWP.Converters
             switch (type)
             {
                 case LocationType.GPS:
-                    return App.ResLoader.GetString("label_currentlocation");
+                    return App.Current.ResLoader.GetString("label_currentlocation");
                 case LocationType.Search:
-                    return App.ResLoader.GetString("label_favoritelocations");
+                    return App.Current.ResLoader.GetString("label_favoritelocations");
             }
 
             return null;

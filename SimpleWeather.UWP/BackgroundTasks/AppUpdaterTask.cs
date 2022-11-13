@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Metadata;
@@ -93,7 +92,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         // packages silently if your app has been idle for a certain period of time). The
                         // IsNowAGoodTimeToRestartApp method is not implemented in this example, you should
                         // implement it as needed for your own app.
-                        if (App.IsInBackground)
+                        if (App.Current.AppState == AppState.Background)
                         {
                             await InstallUpdate(storePackageUpdates);
                         }
@@ -177,7 +176,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
                         {
                             new AdaptiveText()
                             {
-                                Text = App.ResLoader.GetString("prompt_update_available")
+                                Text = App.Current.ResLoader.GetString("prompt_update_available")
                             }
                         }
                     }

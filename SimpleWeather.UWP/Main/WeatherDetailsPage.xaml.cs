@@ -1,11 +1,11 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using SimpleWeather.Common.Controls;
+using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.ViewModels;
-using SimpleWeather.ViewModels;
-using SimpleWeather.WeatherData;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,12 +25,12 @@ namespace SimpleWeather.UWP.Main
         public String CommandBarLabel { get; set; }
         public List<ICommandBarElement> PrimaryCommands { get; set; }
 
-        private LocationData locationData { get; set; }
+        private LocationData.LocationData locationData { get; set; }
         public WeatherNowViewModel WNowViewModel { get; } = Shell.Instance.GetViewModel<WeatherNowViewModel>();
         public ForecastsListViewModel ForecastsView { get; private set; }
         public bool IsHourly { get; private set; }
 
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
 
         public WeatherDetailsPage()
         {
@@ -38,7 +38,7 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_forecast");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_forecast");
             AnalyticsLogger.LogEvent("WeatherDetailsPage");
         }
 
@@ -57,7 +57,7 @@ namespace SimpleWeather.UWP.Main
                     case WeatherUtils.ErrorStatus.QueryNotFound:
                         if (locationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
                         }
                         else
                         {

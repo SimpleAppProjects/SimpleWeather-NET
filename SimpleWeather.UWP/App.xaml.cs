@@ -1,19 +1,20 @@
-﻿using Microsoft.AppCenter;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.QueryStringDotNET;
+using SimpleWeather.Common;
 using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
-using SimpleWeather.Keys;
-using SimpleWeather.Location;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.BackgroundTasks;
-using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Main;
 using SimpleWeather.UWP.Preferences;
 using SimpleWeather.UWP.Setup;
-using SimpleWeather.WeatherData;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
@@ -37,18 +38,17 @@ namespace SimpleWeather.UWP
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public sealed partial class App : Application
+    public sealed partial class App : Application, IApplication
     {
-        public const int HomeIdx = 0;
+        public ResourceLoader ResLoader { get; private set; }
+        private readonly UISettings UISettings;
+        private readonly SettingsManager SettingsManager;
 
-        public static ResourceLoader ResLoader { get; private set; }
-        private UISettings UISettings;
-
-        public static bool IsInBackground { get; private set; } = true;
-        public static Frame RootFrame { get; set; }
+        public AppState AppState { get; private set; } = AppState.Closed;
+        private static Frame RootFrame { get; set; }
         private static bool Initialized { get; set; } = false;
 
-        public static bool IsSystemDarkTheme
+        public bool IsSystemDarkTheme
         {
             get
             {
@@ -56,7 +56,7 @@ namespace SimpleWeather.UWP
             }
         }
 
-        public static ElementTheme CurrentTheme
+        public ElementTheme CurrentTheme
         {
             get
             {
@@ -71,8 +71,10 @@ namespace SimpleWeather.UWP
             }
         }
 
-        public static IServiceProvider Services => SharedModule.Instance.Services;
         private IExtrasService ExtrasService { get; set; }
+
+        public static new App Current => (App)Application.Current;
+        //public static IApplication Instance { get; private set; }
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -84,6 +86,7 @@ namespace SimpleWeather.UWP
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             CoreApplication.EnablePrelaunch(true);
             this.InitializeComponent();
+            //Instance = this;
             this.Suspending += OnSuspending;
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
@@ -106,6 +109,7 @@ namespace SimpleWeather.UWP
             InitializeDependencies();
 
             UISettings = new UISettings();
+            SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
             RegisterSettingsListener();
         }
@@ -117,17 +121,24 @@ namespace SimpleWeather.UWP
 
             // Set UTF8Json Resolver
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-                JSONParser.Resolver, UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
-                );
+                JSONParser.Resolver,
+                Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+                UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
+            );
 
+            CommonModule.Instance.Initialize();
             ExtrasModule.Instance.Initialize();
 
             // Build DI Services
-            ConfigureServices(SharedModule.Instance.GetServiceCollection());
-            ExtrasModule.Instance.ConfigureServices(SharedModule.Instance.GetServiceCollection());
+            SharedModule.Instance.GetServiceCollection().Apply(collection =>
+            {
+                ConfigureServices(collection);
+                WeatherModule.Instance.ConfigureServices(collection);
+                ExtrasModule.Instance.ConfigureServices(collection);
+            });
             SharedModule.Instance.BuildServiceProvider();
 
-            ExtrasService = Services.GetService<IExtrasService>();
+            ExtrasService = Ioc.Default.GetService<IExtrasService>();
         }
 
         private void ConfigureServices(IServiceCollection serviceCollection)
@@ -220,7 +231,7 @@ namespace SimpleWeather.UWP
             // in background mode and still has a view with content
             // then the view can be released to save memory and
             // can be recreated again later when leaving the background.
-            if (IsInBackground && Window.Current?.Content != null)
+            if (AppState == AppState.Background && Window.Current?.Content != null)
             {
                 // Some apps may wish to use this helper to explicitly disconnect
                 // child references.
@@ -260,7 +271,7 @@ namespace SimpleWeather.UWP
                 switch (args["action"])
                 {
                     case "view-alerts":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
                             string data = null;
 
@@ -277,10 +288,10 @@ namespace SimpleWeather.UWP
 
                             if (Shell.Instance != null)
                             {
-                                LocationData locData = null;
+                                LocationData.LocationData locData = null;
                                 if (!string.IsNullOrWhiteSpace(data))
                                 {
-                                    locData = await JSONParser.DeserializerAsync<LocationData>(data);
+                                    locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
                                 }
 
                                 // If we're already on WeatherNow navigate to Alert page
@@ -303,7 +314,7 @@ namespace SimpleWeather.UWP
                                     Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
                                     {
                                         Location = locData,
-                                        IsHome = Object.Equals(locData, await Settings.GetHomeData())
+                                        IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
                                     }, null));
                                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
@@ -312,7 +323,7 @@ namespace SimpleWeather.UWP
                         break;
 
                     case "check-updates":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
                             // App loaded for first time
                             if (RootFrame.Content == null)
@@ -341,7 +352,7 @@ namespace SimpleWeather.UWP
                         break;
 
                     case "view-weather":
-                        if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
                             string data = null;
 
@@ -350,10 +361,10 @@ namespace SimpleWeather.UWP
                                 data = args["data"];
                             }
 
-                            LocationData locData = null;
+                            LocationData.LocationData locData = null;
                             if (!string.IsNullOrWhiteSpace(data))
                             {
-                                locData = await JSONParser.DeserializerAsync<LocationData>(data);
+                                locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
                             }
 
                             // App loaded for first time
@@ -478,7 +489,7 @@ namespace SimpleWeather.UWP
 
             if (!e.PrelaunchActivated)
             {
-                if (Settings.WeatherLoaded && Settings.OnBoardComplete && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
+                if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
                 {
                     if (RootFrame.Content == null)
                     {
@@ -518,7 +529,7 @@ namespace SimpleWeather.UWP
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    if (Settings.WeatherLoaded && Settings.OnBoardComplete)
+                    if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         RootFrame.Navigate(typeof(Shell), e.Arguments);
                     else
                         RootFrame.Navigate(typeof(SetupPage), e.Arguments);
@@ -542,14 +553,14 @@ namespace SimpleWeather.UWP
 
         private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
         {
-            IsInBackground = false;
+            AppState = AppState.Foreground;
             UpdateColorValues();
             UISettings.ColorValuesChanged += DefaultTheme_ColorValuesChanged;
         }
 
         private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
         {
-            IsInBackground = true;
+            AppState = AppState.Background;
             UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
         }
 
@@ -596,9 +607,9 @@ namespace SimpleWeather.UWP
             }
 
             // Load data if needed
-            _ = Task.Run(Settings.LoadIfNeededAsync);
+            _ = Task.Run(SettingsManager.LoadIfNeeded);
 
-            RemoteConfig.RemoteConfig.UpdateWeatherProvider();
+            DI.Utils.RemoteConfigService.UpdateWeatherProvider();
 
             ExtrasService.CheckPremiumStatus();
 
@@ -613,9 +624,9 @@ namespace SimpleWeather.UWP
                 ResLoader = ResourceLoader.GetForViewIndependentUse();
 
             // Load data if needed
-            _ = Task.Run(Settings.LoadIfNeededAsync);
+            _ = Task.Run(SettingsManager.LoadIfNeeded);
 
-            RemoteConfig.RemoteConfig.UpdateWeatherProvider();
+            DI.Utils.RemoteConfigService.UpdateWeatherProvider();
 
             ExtrasService.CheckPremiumStatus();
 
@@ -699,13 +710,13 @@ namespace SimpleWeather.UWP
             }
         }
 
-        public static void UpdateAppTheme()
+        public void UpdateAppTheme()
         {
             if (Window.Current?.Content is FrameworkElement window)
             {
                 var isDarkTheme = false;
 
-                switch (Settings.UserTheme)
+                switch (SettingsManager.UserTheme)
                 {
                     case UserThemeMode.System:
                         window.RequestedTheme = IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
@@ -735,46 +746,46 @@ namespace SimpleWeather.UWP
             }
         }
 
-        private static void App_OnSettingsChanged(SettingsChangedEventArgs e)
+        private void App_OnSettingsChanged(SettingsChangedEventArgs e)
         {
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var isWeatherLoaded = localSettings.Values[Settings.KEY_WEATHERLOADED] as bool? ?? false;
+            var isWeatherLoaded = localSettings.Values[SettingsManager.KEY_WEATHERLOADED] as bool? ?? false;
 
             switch (e.Key)
             {
-                case Settings.KEY_API:
-                    WeatherManager.GetInstance().UpdateAPI();
+                case SettingsManager.KEY_API:
+                    WeatherModule.Instance.WeatherManager.UpdateAPI();
                     if (isWeatherLoaded)
                     {
                         SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
                     }
                     break;
-                case Settings.KEY_USEPERSONALKEY:
-                    WeatherManager.GetInstance().UpdateAPI();
+                case SettingsManager.KEY_USEPERSONALKEY:
+                    WeatherModule.Instance.WeatherManager.UpdateAPI();
                     break;
-                case Settings.KEY_FOLLOWGPS:
+                case SettingsManager.KEY_FOLLOWGPS:
                     SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                     break;
-                case Settings.KEY_REFRESHINTERVAL:
+                case SettingsManager.KEY_REFRESHINTERVAL:
                     SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                     break;
-                case Settings.KEY_ICONSSOURCE:
+                case SettingsManager.KEY_ICONSSOURCE:
                     SharedModule.Instance.WeatherIconsManager.UpdateIconProvider();
                     break;
-                case Settings.KEY_DAILYNOTIFICATION:
+                case SettingsManager.KEY_DAILYNOTIFICATION:
                     SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION);
                     break;
             }
         }
 
-        public static void RegisterSettingsListener()
+        public void RegisterSettingsListener()
         {
-            Settings.OnSettingsChanged += App_OnSettingsChanged;
+            SettingsManager.OnSettingsChanged += App_OnSettingsChanged;
         }
 
-        public static void UnregisterSettingsListener()
+        public void UnregisterSettingsListener()
         {
-            Settings.OnSettingsChanged -= App_OnSettingsChanged;
+            SettingsManager.OnSettingsChanged -= App_OnSettingsChanged;
         }
     }
 }

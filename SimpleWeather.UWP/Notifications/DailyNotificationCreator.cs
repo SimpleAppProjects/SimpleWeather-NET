@@ -1,12 +1,12 @@
-﻿using Microsoft.QueryStringDotNET;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.QueryStringDotNET;
 using Microsoft.Toolkit.Uwp.Notifications;
-using SimpleWeather.Controls;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Location;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +20,7 @@ namespace SimpleWeather.UWP.Notifications
 
         private static async Task CreateToastCollection()
         {
-            string displayName = App.ResLoader.GetString("not_channel_name_dailynotification");
+            string displayName = App.Current.ResLoader.GetString("not_channel_name_dailynotification");
             var icon = new Uri("ms-appx:///SimpleWeather.Shared/Assets/WeatherIcons/png/dark/wi-day-cloudy.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
@@ -35,9 +35,11 @@ namespace SimpleWeather.UWP.Notifications
                 .SaveToastCollectionAsync(toastCollection);
         }
 
-        public static async Task CreateNotification(LocationData location)
+        public static async Task CreateNotification(LocationData.LocationData location)
         {
-            if (!Settings.DailyNotificationEnabled || location == null) return;
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            if (!SettingsManager.DailyNotificationEnabled || location == null) return;
 
             await CreateToastCollection();
             var toastNotifier = await ToastNotificationManager.GetDefault()
@@ -46,7 +48,7 @@ namespace SimpleWeather.UWP.Notifications
             var now = DateTimeOffset.Now;
 
             // Get forecast
-            var forecasts = await Settings.GetWeatherForecastData(location.query);
+            var forecasts = await SettingsManager.GetWeatherForecastData(location.query);
 
             if (forecasts == null) return;
 
@@ -71,7 +73,7 @@ namespace SimpleWeather.UWP.Notifications
             toastNotifier.Show(toastNotif);
         }
 
-        private static async Task<ToastContent> CreateToastContent(LocationData location, Forecast forecast)
+        private static async Task<ToastContent> CreateToastContent(LocationData.LocationData location, Forecast forecast)
         {
             var wim = SharedModule.Instance.WeatherIconsManager;
 

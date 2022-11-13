@@ -1,5 +1,6 @@
-﻿using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
@@ -141,7 +142,7 @@ namespace SimpleWeather.UWP.Main
                 .LocationPanels.FirstOrDefault();
         }
 
-        internal LocationData GetPanelData(int position)
+        internal LocationData.LocationData GetPanelData(int position)
         {
             if (position >= ItemCount || ItemCount == 0)
                 return null;
@@ -201,14 +202,15 @@ namespace SimpleWeather.UWP.Main
 
         internal void DeletePanel(LocationPanelUiModel view)
         {
-            LocationData data = view.LocationData;
+            var data = view.LocationData;
 
             Task.Run(async () =>
             {
                 if (view != null)
                 {
                     // Remove location from list
-                    await Settings.DeleteLocation(data.query);
+                    var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+                    await SettingsManager.DeleteLocation(data.query);
 
                     // Remove secondary tile if it exists
                     if (SecondaryTileUtils.Exists(data.query))
@@ -249,13 +251,13 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr.Show(Snackbar.MakeWarning(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr.Show(Snackbar.MakeWarning(App.Current.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.ResLoader.GetString("undo"), () =>
+                Snackbar snackbar = Snackbar.Make(App.Current.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.Current.ResLoader.GetString("undo"), () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();
@@ -313,13 +315,13 @@ namespace SimpleWeather.UWP.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr?.Show(Snackbar.MakeWarning(App.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr?.Show(Snackbar.MakeWarning(App.Current.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.ResLoader.GetString("undo"), () =>
+                Snackbar snackbar = Snackbar.Make(App.Current.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
+                snackbar.SetAction(App.Current.ResLoader.GetString("undo"), () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();

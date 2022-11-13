@@ -1,7 +1,7 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Common.ViewModels;
+using SimpleWeather.Utils;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.Radar;
-using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +30,13 @@ namespace SimpleWeather.UWP.Main
             NavigationCacheMode = NavigationCacheMode.Disabled;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_radar");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_radar");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Refresh),
-                    Label = App.ResLoader.GetString("action_refresh"),
+                    Label = App.Current.ResLoader.GetString("action_refresh"),
                     Tag = "refresh"
                 }
             };

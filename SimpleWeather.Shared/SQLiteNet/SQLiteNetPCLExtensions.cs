@@ -4,7 +4,6 @@ using SQLiteNetExtensionsAsync.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.SQLiteNet
@@ -93,6 +92,20 @@ namespace SimpleWeather.SQLiteNet
             for (int i = 0; i < items.Count; i += sliceSize)
                 list.Add(items.GetRange(i, Math.Min(sliceSize, items.Count - i)));
             return list;
+        }
+
+        public static Task<T> FindWithQueryWithChildrenAsync<T>(this SQLiteAsyncConnection conn, string query, params object[] args) where T : new()
+        {
+            return Task.Run(() =>
+            {
+                var connectionWithLock = SqliteAsyncConnectionWrapper.Lock(conn);
+                using (connectionWithLock.Lock())
+                {
+                    var item = connectionWithLock.FindWithQuery<T>(query, args);
+                    connectionWithLock.GetChildren(item);
+                    return item;
+                }
+            });
         }
     }
 }

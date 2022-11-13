@@ -1,11 +1,11 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
-using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.ViewModels;
-using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -35,6 +35,8 @@ namespace SimpleWeather.UWP.Main
         private LocationsViewModel LocationsViewModel { get; set; }
         private LocationPanelAdapter PanelAdapter { get; set; }
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public bool EditMode { get; set; } = false;
         private bool HomeChanged = false;
 
@@ -60,13 +62,13 @@ namespace SimpleWeather.UWP.Main
             PanelAdapter.ListChanged += LocationPanels_CollectionChanged;
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_nav_locations");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_nav_locations");
             PrimaryCommands = new List<ICommandBarElement>()
             {
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Edit),
-                    Label = App.ResLoader.GetString("action_editmode"),
+                    Label = App.Current.ResLoader.GetString("action_editmode"),
                 }
             };
             EditButton = PrimaryCommands[0] as AppBarButton;
@@ -163,7 +165,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     case ErrorMessage.Resource err:
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
                         }
                         break;
                     case ErrorMessage.String err:
@@ -190,7 +192,7 @@ namespace SimpleWeather.UWP.Main
                 case WeatherUtils.ErrorStatus.NoWeather:
                     // Show error message and prompt to refresh
                     Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                    snackbar.SetAction(App.ResLoader.GetString("action_retry"), () =>
+                    snackbar.SetAction(App.Current.ResLoader.GetString("action_retry"), () =>
                     {
                         LocationsViewModel.RefreshLocations();
                     });
@@ -242,9 +244,9 @@ namespace SimpleWeather.UWP.Main
         {
             bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
             bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
-            bool limitReached = PanelAdapter.ItemCount >= Settings.MAX_LOCATIONS;
+            bool limitReached = PanelAdapter.ItemCount >= SettingsManager.MAX_LOCATIONS;
 
-            if (EditMode && e.NewStartingIndex == App.HomeIdx)
+            if (EditMode && e.NewStartingIndex == 0)
                 HomeChanged = true;
 
             // Cancel edit Mode
@@ -265,7 +267,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     this.Frame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
                     {
-                        IsHome = Equals(panel.LocationData, await Settings.GetHomeData()),
+                        IsHome = Equals(panel.LocationData, await SettingsManager.GetHomeData()),
                         Location = panel.LocationData
                     });
                     // Remove all from backstack except home
@@ -296,7 +298,7 @@ namespace SimpleWeather.UWP.Main
             EditMode = !EditMode;
 
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
-            EditButton.Label = EditMode ? App.ResLoader.GetString("Label_Done") : App.ResLoader.GetString("action_editmode");
+            EditButton.Label = EditMode ? App.Current.ResLoader.GetString("Label_Done") : App.Current.ResLoader.GetString("action_editmode");
             LocationsPanel.IsItemClickEnabled = !EditMode;
             // Enable selection mode for non-Mobile (non-Touch devices)
             if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -309,7 +311,7 @@ namespace SimpleWeather.UWP.Main
                         new AppBarButton()
                         {
                             Icon = new SymbolIcon(Symbol.Delete),
-                            Label = App.ResLoader.GetString("delete"),
+                            Label = App.Current.ResLoader.GetString("delete"),
                         }
                     );
                     var deleteBtn = PrimaryCommands[0] as AppBarButton;

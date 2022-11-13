@@ -1,6 +1,7 @@
-﻿using SimpleWeather.Location;
-using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
 using SimpleWeather.UWP.Notifications;
+using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -11,9 +12,9 @@ namespace SimpleWeather.UWP.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {
-        public static async Task PostAlerts(LocationData location, ICollection<WeatherAlert> alerts)
+        public static async Task PostAlerts(LocationData.LocationData location, ICollection<WeatherAlert> alerts)
         {
-            var wm = WeatherManager.GetInstance();
+            var wm = WeatherModule.Instance.WeatherManager;
 
             // Post weather alert notifications
             if (wm.SupportsAlerts && alerts != null && alerts.Any())
@@ -43,7 +44,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
             }
         }
 
-        public static async Task SetasNotified(LocationData location, ICollection<WeatherAlert> alerts)
+        public static async Task SetasNotified(LocationData.LocationData location, ICollection<WeatherAlert> alerts)
         {
             if (alerts != null)
             {
@@ -59,7 +60,8 @@ namespace SimpleWeather.UWP.WeatherAlerts
                 }
 
                 // Save alert data
-                await Settings.SaveWeatherAlerts(location, alerts);
+                var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+                await SettingsManager.SaveWeatherAlerts(location, alerts);
             }
         }
     }

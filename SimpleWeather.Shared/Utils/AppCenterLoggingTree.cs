@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP && !UNIT_TEST
+﻿#if !UNIT_TEST
 using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;

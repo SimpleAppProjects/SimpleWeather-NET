@@ -1,5 +1,4 @@
-﻿using SimpleWeather.Location;
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
@@ -31,7 +30,7 @@ namespace SimpleWeather.Utils
                 _long = longitude;
             }
 
-            public Coordinate(Location.Location location)
+            public Coordinate(LocationData.Location location)
             {
                 if (location is null)
                 {
@@ -42,7 +41,7 @@ namespace SimpleWeather.Utils
                 _long = location.Longitude;
             }
 
-            public Coordinate(LocationData location)
+            public Coordinate(LocationData.LocationData location)
             {
                 if (location is null)
                 {

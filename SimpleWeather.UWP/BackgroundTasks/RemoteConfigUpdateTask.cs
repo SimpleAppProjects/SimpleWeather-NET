@@ -1,10 +1,7 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.UWP.Utils;
-using SimpleWeather.WeatherData.Images;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.RemoteConfig;
+using SimpleWeather.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
@@ -25,17 +22,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
                 // Update config
                 try
                 {
-                    var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
-                    var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
-                    if (uwpConfig?.Count > 0)
-                    {
-                        foreach (var prop in uwpConfig)
-                        {
-                            RemoteConfig.RemoteConfig.SetConfigString(prop.Key, prop.Object.ToString());
-                        }
-                    }
-
-                    RemoteConfig.RemoteConfig.UpdateWeatherProvider();
+                    var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+                    await remoteConfigService.CheckConfig();
                 }
                 catch (Exception ex)
                 {

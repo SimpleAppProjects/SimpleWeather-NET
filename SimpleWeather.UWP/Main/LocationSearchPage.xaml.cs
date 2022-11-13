@@ -1,10 +1,12 @@
-﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.Location;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.Common.ViewModels;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
 using SimpleWeather.UWP.ViewModels;
-using SimpleWeather.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,12 +30,14 @@ namespace SimpleWeather.UWP.Main
 
         private LocationSearchViewModel LocationSearchViewModel { get; set; }
 
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
         public LocationSearchPage()
         {
             this.InitializeComponent();
 
             // CommandBar
-            CommandBarLabel = App.ResLoader.GetString("label_nav_locations");
+            CommandBarLabel = App.Current.ResLoader.GetString("label_nav_locations");
             AnalyticsLogger.LogEvent("LocationSearchPage");
         }
 
@@ -107,18 +111,18 @@ namespace SimpleWeather.UWP.Main
                                 break;
                             case LocationSearchResult.Success result:
                                 {
-                                    Dispatcher.RunOnUIThread(async () =>
+                                    Dispatcher.RunOnUIThread((Func<Task>)(async () =>
                                     {
                                         if (result.Data?.IsValid() == true)
                                         {
-                                            await Settings.AddLocation(result.Data);
+                                            await SettingsManager.AddLocation(result.Data);
                                         }
 
                                         if (Frame.CanGoBack)
                                             Frame.GoBack();
                                         else
                                             Frame.Navigate(typeof(LocationsPage));
-                                    });
+                                    }));
                                 }
                                 break;
                             case LocationSearchResult.Failed:
@@ -138,7 +142,7 @@ namespace SimpleWeather.UWP.Main
                 {
                     case ErrorMessage.Resource err:
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
                         }
                         break;
                     case ErrorMessage.String err:

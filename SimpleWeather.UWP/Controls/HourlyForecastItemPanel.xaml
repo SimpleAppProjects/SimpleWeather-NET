@@ -2,7 +2,7 @@
     x:Class="SimpleWeather.UWP.Controls.HourlyForecastItemPanel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="using:SimpleWeather.Controls"
+    xmlns:controls="using:SimpleWeather.Common.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"

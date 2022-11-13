@@ -1,15 +1,17 @@
-﻿using KeyedSemaphores;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using KeyedSemaphores;
 using Microsoft.Toolkit.Uwp.Notifications;
-using SimpleWeather.Controls;
+using SimpleWeather.Common.Controls;
+using SimpleWeather.Common.ViewModels;
+using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Icons;
-using SimpleWeather.Location;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Shared.Helpers;
-using SimpleWeather.ViewModels;
-using SimpleWeather.WeatherData;
+using SimpleWeather.Weather_API;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
@@ -250,17 +252,17 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -563,17 +565,17 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
@@ -742,17 +744,17 @@ namespace SimpleWeather.UWP.Tiles
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
+                            Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                             //HintStyle = AdaptiveTextStyle.Caption
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
+                            Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         },
                         new AdaptiveText()
                         {
-                            Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
+                            Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
                             HintStyle = AdaptiveTextStyle.CaptionSubtle
                         }
                     }
@@ -793,17 +795,17 @@ namespace SimpleWeather.UWP.Tiles
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_temp"), weather.CurTemp.RemoveNonDigitChars() + "°"),
                                     //HintStyle = AdaptiveTextStyle.Caption
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_feelslike"), weather.WeatherDetailsMap[WeatherDetailsType.FeelsLike]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 },
                                 new AdaptiveText()
                                 {
-                                    Text = string.Format("{0}: {1}", App.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
+                                    Text = string.Format("{0}: {1}", App.Current.ResLoader.GetString("label_wind"), weather.WeatherDetailsMap[WeatherDetailsType.WindSpeed]?.Value ?? WeatherIcons.EM_DASH),
                                     HintStyle = AdaptiveTextStyle.CaptionSubtle
                                 }
                             }
@@ -826,7 +828,7 @@ namespace SimpleWeather.UWP.Tiles
             return content;
         }
 
-        private static async Task UpdateContent(TileUpdater tileUpdater, LocationData location, WeatherUiModel weather, ImageDataViewModel imageData)
+        private static async Task UpdateContent(TileUpdater tileUpdater, LocationData.LocationData location, WeatherUiModel weather, ImageDataViewModel imageData)
         {
             var forecasts = await GetForecasts(location);
             var hrforecasts = await GetHourlyForecasts(location);
@@ -961,9 +963,10 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        private static async Task<List<ForecastItemViewModel>> GetForecasts(LocationData location)
+        private static async Task<List<ForecastItemViewModel>> GetForecasts(LocationData.LocationData location)
         {
-            var forecasts = await Settings.GetWeatherForecastData(location.query);
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var forecasts = await SettingsManager.GetWeatherForecastData(location.query);
             var result = new List<ForecastItemViewModel>(LARGE_FORECAST_LENGTH);
 
             if (forecasts?.forecast?.Count > 0)
@@ -977,12 +980,13 @@ namespace SimpleWeather.UWP.Tiles
             return result;
         }
 
-        private static async Task<List<HourlyForecastItemViewModel>> GetHourlyForecasts(LocationData location)
+        private static async Task<List<HourlyForecastItemViewModel>> GetHourlyForecasts(LocationData.LocationData location)
         {
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
             var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
-            var hrInterval = WeatherManager.GetInstance().HourlyForecastInterval;
-            var dateBlob = now.AddHours(-(long)(hrInterval * 0.5d)).Trim(TimeSpan.TicksPerHour).ToString("yyyy-MM-dd HH:mm:ss zzzz", CultureInfo.InvariantCulture);
-            var forecasts = await Settings.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, LARGE_FORECAST_LENGTH, dateBlob);
+            var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
+            var date = now.AddHours(-(long)(hrInterval * 0.5d)).Trim(TimeSpan.TicksPerHour);
+            var forecasts = await SettingsManager.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, LARGE_FORECAST_LENGTH, date);
             var result = new List<HourlyForecastItemViewModel>(LARGE_FORECAST_LENGTH);
 
             if (forecasts?.Count > 0)
@@ -1000,7 +1004,7 @@ namespace SimpleWeather.UWP.Tiles
             return result;
         }
 
-        public static async Task TileUpdater(LocationData location)
+        public static async Task TileUpdater(LocationData.LocationData location)
         {
             // Check if Tile service is available
             if (!DeviceTypeHelper.IsTileSupported())
@@ -1025,12 +1029,13 @@ namespace SimpleWeather.UWP.Tiles
             }
         }
 
-        private static async Task TileUpdater(LocationData location, WeatherUiModel weather)
+        private static async Task TileUpdater(LocationData.LocationData location, WeatherUiModel weather)
         {
             var imageData = await weather.GetImageData();
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
             // And send the notification to the tile
-            if (location.locationType == LocationType.GPS || Equals(await Settings.GetHomeData(), location))
+            if (location.locationType == LocationType.GPS || Equals(await SettingsManager.GetHomeData(), location))
             {
                 // Update primary tile and lockscreen info (if exists)
                 using (await KeyedSemaphore.LockAsync("appTileUpdater"))

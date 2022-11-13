@@ -1,10 +1,12 @@
-﻿using Microsoft.Toolkit.Uwp;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Uwp;
+using SimpleWeather.Common.Location;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.Common.WeatherData;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Controls;
-using SimpleWeather.Location;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.ViewModels;
-using SimpleWeather.WeatherData;
+using SimpleWeather.UWP.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +18,7 @@ namespace SimpleWeather.UWP.ViewModels
 {
     public class LocationsViewModel : BaseViewModel
     {
-        private readonly WeatherManager wm = WeatherManager.GetInstance();
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly LocationProvider locationProvider = new();
 
         private readonly bool[] ErrorCounter = new bool[Enum.GetValues(typeof(WeatherUtils.ErrorStatus)).Length];
@@ -62,11 +64,11 @@ namespace SimpleWeather.UWP.ViewModels
         {
             UiState = UiState with { IsLoading = true };
 
-            DispatcherQueue.EnqueueAsync(async () =>
+            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
             {
-                var locations = (await Settings.GetFavorites()).ToList();
+                var locations = (await SettingsManager.GetFavorites()).ToList();
 
-                if (Settings.FollowGPS)
+                if (SettingsManager.FollowGPS)
                 {
                     (await GetGPSData())?.Let(loc =>
                     {
@@ -75,16 +77,16 @@ namespace SimpleWeather.UWP.ViewModels
                 }
 
                 RefreshLocationWeather(locations);
-            });
+            }));
         }
 
         public void RefreshLocations()
         {
-            DispatcherQueue.EnqueueAsync(async () =>
+            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
             {
-                var locations = (await Settings.GetFavorites()).ToList();
+                var locations = (await SettingsManager.GetFavorites()).ToList();
 
-                if (Settings.FollowGPS)
+                if (SettingsManager.FollowGPS)
                 {
                     (await GetGPSData())?.Let(loc =>
                     {
@@ -94,7 +96,7 @@ namespace SimpleWeather.UWP.ViewModels
 
                 var currentLocations = UiState.Locations;
 
-                var reload = locations.Count != currentLocations.Count() || (locations.Count > 0 && locations.First().weatherSource != Settings.API);
+                var reload = locations.Count != currentLocations.Count() || (locations.Count > 0 && locations.First().weatherSource != SettingsManager.API);
 
                 if (reload)
                 {
@@ -103,10 +105,10 @@ namespace SimpleWeather.UWP.ViewModels
                 }
 
                 RefreshLocationWeather(locations);
-            });
+            }));
         }
 
-        private void RefreshLocationWeather(IEnumerable<LocationData> locations)
+        private void RefreshLocationWeather(IEnumerable<LocationData.LocationData> locations)
         {
             var locationMap = locations.ToDictionary(_ => _, locData => new LocationPanelUiModel() { LocationData = locData, IsLoading = true });
 
@@ -231,11 +233,11 @@ namespace SimpleWeather.UWP.ViewModels
             });
         }
 
-        private async Task<LocationData> GetGPSData()
+        private async Task<LocationData.LocationData> GetGPSData()
         {
-            if (Settings.FollowGPS)
+            if (SettingsManager.FollowGPS)
             {
-                var locData = await Settings.GetLastGPSLocData();
+                var locData = await SettingsManager.GetLastGPSLocData();
 
                 if (locData?.IsValid() == true)
                 {
@@ -250,7 +252,7 @@ namespace SimpleWeather.UWP.ViewModels
                         case LocationResult.Changed:
                             {
                                 // update location to system
-                                Settings.SaveLastGPSLocData(result.Data);
+                                await SettingsManager.SaveLastGPSLocData(result.Data);
                                 SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
                             }
                             break;
@@ -274,7 +276,7 @@ namespace SimpleWeather.UWP.ViewModels
 
         private async Task<LocationResult> UpdateLocation()
         {
-            if (Settings.FollowGPS)
+            if (SettingsManager.FollowGPS)
             {
                 if (!await locationProvider.CheckPermissions())
                 {

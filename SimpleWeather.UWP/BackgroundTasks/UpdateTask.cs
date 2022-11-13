@@ -1,8 +1,7 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
@@ -11,6 +10,8 @@ namespace SimpleWeather.UWP.BackgroundTasks
     public sealed class UpdateTask : IBackgroundTask
     {
         private const string taskName = nameof(UpdateTask);
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -22,9 +23,10 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Run update logic
                 Logger.WriteLine(LoggerLevel.Debug, "{0}: running update task", taskName);
-                Settings.LoadIfNeeded();
 
-                if (Settings.WeatherLoaded)
+                await SettingsManager.LoadIfNeeded();
+
+                if (SettingsManager.WeatherLoaded)
                 {
                     // Check if WidgetTask is registered
                     // If not register

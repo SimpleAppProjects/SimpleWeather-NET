@@ -1,11 +1,8 @@
-﻿using SimpleWeather.Controls;
+﻿using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

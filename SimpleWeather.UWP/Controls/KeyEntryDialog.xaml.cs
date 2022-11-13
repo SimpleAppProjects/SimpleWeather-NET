@@ -1,5 +1,8 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData.Auth;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,6 +20,9 @@ namespace SimpleWeather.UWP.Controls
         private ProviderKey ProviderKey { get; set; }
 
         public bool CanClose { get; set; }
+
+        private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public KeyEntryDialog(string APIProvider)
         {
@@ -48,8 +54,8 @@ namespace SimpleWeather.UWP.Controls
 
         private void UpdateAuthType()
         {
-            AuthType = WeatherManager.GetAuthType(APIProvider);
-            var key = Settings.APIKeys[APIProvider];
+            AuthType = wm.GetAuthType(APIProvider);
+            var key = SettingsManager.APIKeys[APIProvider];
             ProviderKey = AuthType switch
             {
                 AuthType.AppID_AppCode => new ProviderAppKey().Apply((it) =>
@@ -72,40 +78,40 @@ namespace SimpleWeather.UWP.Controls
                     {
                         var credentials = ProviderKey as ProviderAppKey;
 
-                        KeyEntry1.PlaceholderText = App.ResLoader.GetString("hint_appid");
+                        KeyEntry1.PlaceholderText = App.Current.ResLoader.GetString("hint_appid");
                         KeyEntry1.Text = credentials?.AppID ?? string.Empty;
-                        KeyEntry1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        KeyEntry1.Visibility = Visibility.Visible;
 
-                        KeyEntry2.PlaceholderText = App.ResLoader.GetString("hint_appcode");
+                        KeyEntry2.PlaceholderText = App.Current.ResLoader.GetString("hint_appcode");
                         KeyEntry2.Text = credentials?.AppCode ?? string.Empty;
-                        KeyEntry2.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        KeyEntry2.Visibility = Visibility.Visible;
 
-                        PasswordEntry.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        PasswordEntry.Visibility = Visibility.Collapsed;
                     }
                     break;
                 case AuthType.Basic:
                     {
                         var credentials = ProviderKey as BasicAuthProviderKey;
 
-                        KeyEntry1.PlaceholderText = App.ResLoader.GetString("hint_username");
+                        KeyEntry1.PlaceholderText = App.Current.ResLoader.GetString("hint_username");
                         KeyEntry1.Text = credentials?.UserName ?? string.Empty;
-                        KeyEntry1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        KeyEntry1.Visibility = Visibility.Visible;
 
-                        KeyEntry2.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        KeyEntry2.Visibility = Visibility.Collapsed;
 
                         PasswordEntry.Password = credentials?.Password ?? string.Empty;
-                        PasswordEntry.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        PasswordEntry.Visibility = Visibility.Visible;
                     }
                     break;
                 default:
                     {
-                        KeyEntry1.PlaceholderText = App.ResLoader.GetString("key_hint");
+                        KeyEntry1.PlaceholderText = App.Current.ResLoader.GetString("key_hint");
                         KeyEntry1.Text = key ?? string.Empty;
-                        KeyEntry1.Visibility = Windows.UI.Xaml.Visibility.Visible;
+                        KeyEntry1.Visibility = Visibility.Visible;
 
-                        KeyEntry2.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        KeyEntry2.Visibility = Visibility.Collapsed;
 
-                        PasswordEntry.Visibility = Windows.UI.Xaml.Visibility.Collapsed;
+                        PasswordEntry.Visibility = Visibility.Collapsed;
                     }
                     break;
             }

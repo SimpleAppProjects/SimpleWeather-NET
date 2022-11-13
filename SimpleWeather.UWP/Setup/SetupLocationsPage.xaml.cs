@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Location;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.UWP.Controls;
 using SimpleWeather.UWP.Helpers;
-using SimpleWeather.ViewModels;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -23,6 +25,8 @@ namespace SimpleWeather.UWP.Setup
     {
         private LocationSearchViewModel LocationSearchViewModel { get; } = Ioc.Default.GetViewModel<LocationSearchViewModel>();
         private SetupViewModel ViewModel { get; } = SetupPage.Instance.GetViewModel<SetupViewModel>();
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public SetupLocationsPage()
         {
@@ -134,24 +138,24 @@ namespace SimpleWeather.UWP.Setup
             }
         }
 
-        private async Task OnLocationReceived(LocationData location)
+        private async Task OnLocationReceived(LocationData.LocationData location)
         {
-            await Settings.DeleteLocations();
+            await SettingsManager.DeleteLocations();
 
             if (location.locationType == LocationType.GPS)
             {
-                Settings.SaveLastGPSLocData(location);
-                await Settings.AddLocation(new LocationQuery(location).ToLocationData());
-                Settings.FollowGPS = true;
+                await SettingsManager.SaveLastGPSLocData(location);
+                await SettingsManager.AddLocation(new LocationQuery(location).ToLocationData());
+                SettingsManager.FollowGPS = true;
             }
             else
             {
-                Settings.SaveLastGPSLocData(null);
-                await Settings.AddLocation(location);
-                Settings.FollowGPS = false;
+                await SettingsManager.SaveLastGPSLocData(null);
+                await SettingsManager.AddLocation(location);
+                SettingsManager.FollowGPS = false;
             }
 
-            Settings.WeatherLoaded = true;
+            SettingsManager.WeatherLoaded = true;
 
             // Setup complete
             ViewModel.LocationData = location;
@@ -166,7 +170,7 @@ namespace SimpleWeather.UWP.Setup
                 {
                     case ErrorMessage.Resource err:
                         {
-                            ShowSnackbar(Snackbar.MakeError(App.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
+                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString(err.ResourceId), SnackbarDuration.Short));
                         }
                         break;
                     case ErrorMessage.String err:
