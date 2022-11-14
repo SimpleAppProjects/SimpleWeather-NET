@@ -20,6 +20,7 @@
     xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
     xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
     d:Background="{ThemeResource RegionBrush}"
+    x:DefaultBindMode="OneWay"
     DataContext="{x:Bind WNowViewModel, Mode=OneWay}"
     mc:Ignorable="d">
 
@@ -591,7 +592,7 @@
             </ScrollViewer>
         </Grid>
         <muxc:ProgressRing
-            x:Name="LoadingRing"
+            x:Name="ContentRing"
             Grid.RowSpan="2"
             Width="36"
             Height="36"
@@ -599,5 +600,15 @@
             VerticalAlignment="Center"
             IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState), Mode=OneWay}"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
+        <muxc:ProgressRing
+            x:Name="LoadingRing"
+            Grid.RowSpan="2"
+            Width="36"
+            Height="36"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsActive="{x:Bind WNowViewModel.UiState.IsLoading, Mode=OneWay}"
+            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+            Visibility="{x:Bind databinding:WeatherNowBinding.IsViewVisible(WNowViewModel.UiState), Mode=OneWay}" />
     </Grid>
 </localcontrols:ScopePage>
