@@ -37,10 +37,10 @@ namespace UnitTestProject
     [TestClass]
     public class UnitTests
     {
-        private bool WasUsingPersonalKey = false;
+        private static bool WasUsingPersonalKey = false;
 
-        [TestInitialize]
-        public async Task Initialize()
+        [ClassInitialize]
+        public static async Task Initialize(TestContext _)
         {
             InitializeDependencies();
 
@@ -53,8 +53,8 @@ namespace UnitTestProject
             }
         }
 
-        [TestCleanup]
-        public void Destroy()
+        [ClassCleanup]
+        public static void Destroy()
         {
             if (WasUsingPersonalKey)
             {
@@ -63,7 +63,7 @@ namespace UnitTestProject
             }
         }
 
-        private void InitializeDependencies()
+        private static void InitializeDependencies()
         {
             SharedModule.Instance.Initialize();
 
