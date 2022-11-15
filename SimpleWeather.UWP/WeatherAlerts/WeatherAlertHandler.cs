@@ -23,7 +23,7 @@ namespace SimpleWeather.UWP.WeatherAlerts
 #if DEBUG
                 if (true)
 #else
-                if (App.IsInBackground)
+                if (App.Current.AppState == AppState.Background)
 #endif
                 {
                     // Check if any of these alerts have been posted before
