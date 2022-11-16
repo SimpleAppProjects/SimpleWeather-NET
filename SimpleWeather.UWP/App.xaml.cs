@@ -126,17 +126,18 @@ namespace SimpleWeather.UWP
                 UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
             );
 
-            CommonModule.Instance.Initialize();
-            ExtrasModule.Instance.Initialize();
-
             // Build DI Services
             SharedModule.Instance.GetServiceCollection().Apply(collection =>
             {
-                ConfigureServices(collection);
                 WeatherModule.Instance.ConfigureServices(collection);
                 ExtrasModule.Instance.ConfigureServices(collection);
+                ConfigureServices(collection);
             });
             SharedModule.Instance.BuildServiceProvider();
+
+            // Initialize post-DI setup; Migrations require rely on DI
+            CommonModule.Instance.Initialize();
+            ExtrasModule.Instance.Initialize();
 
             ExtrasService = Ioc.Default.GetService<IExtrasService>();
         }

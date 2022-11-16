@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Preferences;
+﻿using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -34,7 +33,7 @@ namespace SimpleWeather.RemoteConfig
 
         public bool UpdateWeatherProvider()
         {
-            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var SettingsManager = DI.Utils.SettingsManager;
             string API = SettingsManager.API;
 
             var config = GetConfig(API);

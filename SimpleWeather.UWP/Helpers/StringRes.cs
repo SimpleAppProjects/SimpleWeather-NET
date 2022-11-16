@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
+﻿using Windows.ApplicationModel.Resources;
 using Windows.UI.Xaml.Markup;
 
 namespace SimpleWeather.UWP.Helpers
@@ -21,10 +15,14 @@ namespace SimpleWeather.UWP.Helpers
 
         private ResourceLoader GetResourceLoader()
         {
-            if (App.Current.ResLoader != null)
+            try
             {
-                return App.Current.ResLoader;
+                if (App.Current.ResLoader != null)
+                {
+                    return App.Current.ResLoader;
+                }
             }
+            catch { }
 
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
             {

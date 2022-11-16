@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Controls;
+﻿using SimpleWeather.Controls;
 using SimpleWeather.Preferences;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +37,7 @@ namespace SimpleWeather.WeatherData
         {
             get
             {
-                var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+                var SettingsManager = DI.Utils.SettingsManager;
                 return SettingsManager.DevSettingsEnabled ? DefaultAPIs.Concat(TestingAPIs).ToList() : DefaultAPIs;
             }
         }
