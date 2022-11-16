@@ -107,11 +107,11 @@ namespace SimpleWeather.Common.ViewModels
         {
             if (e.PropertyName == nameof(UiState))
             {
+                IsLoading = UiState?.IsLoading ?? false;
                 ErrorMessages = UiState?.ErrorMessages;
                 CurrentLocation = UiState?.CurrentLocation;
                 SelectedSearchLocation = UiState?.SelectedSearchLocation;
                 Locations = UiState?.Locations;
-                IsLoading = UiState?.IsLoading ?? false;
             }
         }
 

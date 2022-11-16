@@ -84,11 +84,6 @@ namespace SimpleWeather.UWP.Setup
         {
             switch (e.PropertyName)
             {
-                case nameof(LocationSearchViewModel.IsLoading):
-                    {
-                        EnableControls(!LocationSearchViewModel.IsLoading);
-                    }
-                    break;
                 case nameof(LocationSearchViewModel.SelectedSearchLocation):
                     {
                         switch (LocationSearchViewModel.SelectedSearchLocation)
@@ -265,13 +260,6 @@ namespace SimpleWeather.UWP.Setup
             {
                 LocationSearchViewModel.OnLocationSelected(theChosenOne);
             }
-        }
-
-        private void EnableControls(bool Enable)
-        {
-            LocationSearchBox.IsEnabled = Enable;
-            GPSButton.IsEnabled = Enable;
-            LoadingRing.IsActive = !Enable;
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)

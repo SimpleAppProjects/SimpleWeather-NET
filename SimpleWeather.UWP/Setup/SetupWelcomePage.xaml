@@ -15,8 +15,8 @@
         <RelativePanel HorizontalAlignment="Center" VerticalAlignment="Center">
             <Viewbox
                 x:Name="AppLogo"
-                Height="125"
-                Margin="0,25,0,0"
+                Height="175"
+                Margin="0,25,0,-10"
                 RelativePanel.Above="Spacer"
                 RelativePanel.AlignHorizontalCenterWithPanel="True">
                 <Image Source="../Assets/AppLogo.png" Stretch="None" />

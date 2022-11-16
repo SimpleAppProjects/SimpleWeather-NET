@@ -13,6 +13,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:Background="{ThemeResource SimpleBlueDarkBrush}"
+    x:DefaultBindMode="OneWay"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -381,6 +382,7 @@
                     Background="#F0FFFFFF"
                     Footer="{x:Bind LocationSearchViewModel.Footer, Mode=OneWay}"
                     IsSuggestionListOpen="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionBooleanConverter}, Mode=OneWay}"
+                    ItemsSource="{x:Bind LocationSearchViewModel.Locations, Mode=OneWay}"
                     PlaceholderText="{helpers:StringRes Name='setup_location_prompt'}"
                     QuerySubmitted="Location_QuerySubmitted"
                     RelativePanel.AlignLeftWithPanel="True"
@@ -396,6 +398,7 @@
                     Margin="10"
                     HorizontalAlignment="Center"
                     Click="GPS_Click"
+                    IsEnabled="{x:Bind LocationSearchViewModel.IsLoading, Converter={StaticResource inverseBoolConverter}}"
                     RelativePanel.AlignHorizontalCenterWithPanel="True"
                     RelativePanel.Below="LocationSearchBox">
                     <Button.Resources>
@@ -437,7 +440,7 @@
                     Margin="10"
                     HorizontalAlignment="Center"
                     Foreground="White"
-                    IsActive="False"
+                    IsActive="{x:Bind LocationSearchViewModel.IsLoading}"
                     IsIndeterminate="True"
                     RelativePanel.AlignHorizontalCenterWithPanel="True"
                     RelativePanel.Below="GPSButton" />
