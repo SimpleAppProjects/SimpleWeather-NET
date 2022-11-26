@@ -186,7 +186,7 @@ namespace SimpleWeather.Common.Images
                     }
                 }
 
-#if WINDOWS_UWP && !UNIT_TEST
+#if !UNIT_TEST
                 if (!FeatureSettings.IsUpdateAvailable)
                 {
 #endif
@@ -199,7 +199,7 @@ namespace SimpleWeather.Common.Images
                         if (imageData?.IsValid() == true)
                             return new ImageDataViewModel(imageData);
                     }
-#if WINDOWS_UWP && !UNIT_TEST
+#if !UNIT_TEST
                 }
                 else
                 {

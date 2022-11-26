@@ -11,13 +11,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-#if WINDOWS_UWP
-using Windows.Web;
-#endif
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.HERE
@@ -139,7 +137,7 @@ namespace SimpleWeather.Weather_API.HERE
             catch (Exception ex)
             {
                 weather = null;
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }

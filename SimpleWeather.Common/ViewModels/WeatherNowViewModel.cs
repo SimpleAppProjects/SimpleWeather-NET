@@ -255,7 +255,7 @@ namespace SimpleWeather.Common.ViewModels
         {
             var locationData = GetLocationData();
 
-            if (SettingsManager.FollowGPS && locationData?.locationType == LocationType.GPS)
+            if (SettingsManager.FollowGPS && (locationData == null || locationData.locationType == LocationType.GPS))
             {
                 return await locationProvider.GetLatestLocationData();
             }

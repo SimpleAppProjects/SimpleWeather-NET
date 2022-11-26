@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Timers;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace SimpleWeather.Utils
 {
@@ -49,11 +48,7 @@ namespace SimpleWeather.Utils
         {
             try
             {
-#if WINDOWS_UWP
                 var directory = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "logs");
-#else
-                var directory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-#endif
 
                 var today = DateTimeOffset.Now;
                 var culture = System.Globalization.CultureInfo.InvariantCulture;

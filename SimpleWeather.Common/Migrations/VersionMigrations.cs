@@ -95,6 +95,7 @@ namespace SimpleWeather.Common.Migrations
                     }
 
                     // DevSettings -> Settings.SetAPIKey
+#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
                     var devSettingsMap = SettingsMgr.GetDevSettingsPreferenceMap();
                     devSettingsMap.ForEach((kvp) =>
                     {
@@ -105,6 +106,7 @@ namespace SimpleWeather.Common.Migrations
                         }
                     });
                     SettingsMgr.ClearDevSettingsPreferences();
+#endif
                 }
                 AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                     {
@@ -137,7 +139,7 @@ namespace SimpleWeather.Common.Migrations
                     }
                 }
             }
-#if WINDOWS_UWP && !UNIT_TEST
+#if !UNIT_TEST
             if (SettingsMgr.VersionCode < CurrentVersionCode)
             {
                 FeatureSettings.IsUpdateAvailable = false;

@@ -46,12 +46,16 @@ namespace SimpleWeather.Common.Location
                 var geolocator = new Geolocator()
                 {
                     DesiredAccuracyInMeters = 5000,
+#if !HAS_UNO
                     ReportInterval = 900000,
                     MovementThreshold = 1600,
+#endif
                     DesiredAccuracy = PositionAccuracy.Default,
                 };
 
+#if !HAS_UNO
                 geolocator.AllowFallbackToConsentlessPositions();
+#endif
                 var geoposition = await geolocator.GetGeopositionAsync()
                     .AsTask(new CancellationTokenSource(10000).Token);
                 return geoposition.ToLocation();
@@ -75,12 +79,16 @@ namespace SimpleWeather.Common.Location
                 var geolocator = new Geolocator()
                 {
                     DesiredAccuracyInMeters = 5000,
+#if !HAS_UNO
                     ReportInterval = 900000,
                     MovementThreshold = 1600,
+#endif
                     DesiredAccuracy = PositionAccuracy.Default,
                 };
 
+#if !HAS_UNO
                 geolocator.AllowFallbackToConsentlessPositions();
+#endif
                 var geoposition = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
 
                 Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Location update received...");

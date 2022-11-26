@@ -12,7 +12,11 @@ namespace SimpleWeather.Weather_API.MeteoFrance
 
             if (alertRoot?.color_max > 1 && alertRoot?.phenomenons_items != null)
             {
-                weatherAlerts = new HashSet<WeatherAlert>(alertRoot.phenomenons_items.Length);
+                weatherAlerts = new HashSet<WeatherAlert>(
+#if !NETSTANDARD2_0
+                    alertRoot.phenomenons_items.Length
+#endif
+                    );
 
                 foreach (var phenom in alertRoot.phenomenons_items)
                 {

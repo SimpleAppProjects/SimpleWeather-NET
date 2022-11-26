@@ -43,19 +43,23 @@ namespace SimpleWeather.Preferences
             LocalSettings.Clear();
         }
 
+#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
         public IDictionary<string, object> GetAllSettings()
         {
             return LocalSettings.GetAllSettings();
         }
+#endif
 
         private void ClearDevSettings()
         {
             DevSettings.Clear();
         }
 
+#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
         private IDictionary<string, object> GetAllDevSettings()
         {
             return DevSettings.GetAllSettings();
         }
+#endif
     }
 }

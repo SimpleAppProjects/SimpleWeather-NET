@@ -243,21 +243,23 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# SimpleWeather
 API_KEY.txt
-/SimpleWeather.UWP/Package.StoreAssociation.xml
-/SimpleWeather.UWP/Package.StoreAssociation.xml
-/SimpleWeather.UWP/_scale-400.appx
-/SimpleWeather.UWP/_scale-150.appx
-/SimpleWeather.UWP/_scale-125.appx
-/SimpleWeather.UWP/_scale-100.appx
-/SimpleWeather.UWP/_pkginfo.txt
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/Package.StoreAssociation.xml
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/Package.StoreAssociation.xml
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-400.appx
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-150.appx
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-125.appx
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-100.appx
+/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_pkginfo.txt
 /Components
 /MigrationBackup
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs.bak
-/SimpleWeather.Weather_API/Keys/Keys.cs
-/SimpleWeather.Weather_API/Keys/Keys.cs.bak
-/SimpleWeather.Weather_API/Keys/Keys.7z
+/SimpleWeather.Weather-API/Keys/Keys.cs
+/SimpleWeather.Weather-API/Keys/Keys.cs.bak
+/SimpleWeather.Weather-API/Keys/Keys.7z
 /Utf8Json.UniversalCodeGenerator
 /*.bat*
 /TranslationImport

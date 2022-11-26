@@ -848,11 +848,13 @@ namespace SimpleWeather.Preferences
             OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DEVSETTINGSENABLED, NewValue = value });
         }
 
+#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
         public IDictionary<string, object> GetDevSettingsPreferenceMap()
         {
             return GetAllDevSettings().WhereNot(kvp => Equals(kvp.Key, KEY_DEVSETTINGSENABLED))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
+#endif
 
         public void ClearDevSettingsPreferences(bool? enable = null)
         {

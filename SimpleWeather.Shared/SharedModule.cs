@@ -12,9 +12,8 @@ using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-#if WINDOWS_UWP
 using Windows.ApplicationModel.Resources;
-#endif
+using Windows.System;
 using static SimpleWeather.CommonActionChangedEventArgs;
 
 namespace SimpleWeather
@@ -33,9 +32,7 @@ namespace SimpleWeather
 
         private SharedModule()
         {
-#if WINDOWS_UWP
             ResourceLoader = GetResourceLoader();
-#endif
 
             ConfigureServices(ServiceCollection);
         }
@@ -47,9 +44,7 @@ namespace SimpleWeather
 
         public static SharedModule Instance => lazy.Value;
 
-#if WINDOWS_UWP
         public ResourceLoader ResLoader => ResourceLoader;
-#endif
 
         public HttpClient WebClient => httpClientLazy.Value;
 
@@ -57,13 +52,14 @@ namespace SimpleWeather
 
         public IServiceProvider Services => Ioc.Default;
 
+        public readonly DispatcherQueue DispatcherQueue = DispatcherQueue.GetForCurrentThread();
+
         public void RequestAction(string Action, IDictionary<string, object> Bundle = null)
         {
             OnCommonActionChanged?.Invoke(null,
                 new CommonActionChangedEventArgs(Action, Bundle));
         }
 
-#if WINDOWS_UWP
         private ResourceLoader GetResourceLoader()
         {
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
@@ -75,16 +71,13 @@ namespace SimpleWeather
                 return ResourceLoader.GetForViewIndependentUse();
             }
         }
-#endif
 
         private void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IExtrasService, DefaultExtrasServiceImpl>();
             serviceCollection.AddSingleton<ImageDataHelperImpl, ImageDataHelperDefault>();
             serviceCollection.AddSingleton<IRemoteConfigService>(DI.Utils.RemoteConfigService);
-#if WINDOWS_UWP
             serviceCollection.AddSingleton(ResLoader);
-#endif
             serviceCollection.AddSingleton<SettingsManager>(DI.Utils.SettingsManager);
         }
 
@@ -101,9 +94,7 @@ namespace SimpleWeather
         private readonly Lazy<HttpClient> httpClientLazy = new(() =>
         {
             var CacheRoot = System.IO.Path.Combine(
-#if WINDOWS_UWP
                 Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path,
-#endif
                 "CacheCow");
 
             return ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRoot) { MinExpiry = TimeSpan.FromDays(7) }), handler: new CacheFilter());

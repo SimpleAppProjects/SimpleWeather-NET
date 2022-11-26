@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SimpleWeather.Utils
@@ -48,11 +43,11 @@ namespace SimpleWeather.Utils
         public UriBuilderEx AppendPath(string path)
         {
             // Path returns '/' if empty
-            if (BaseUriBuilder.Path == "/" || BaseUriBuilder.Path.EndsWith('/'))
+            if (BaseUriBuilder.Path == "/" || BaseUriBuilder.Path.EndsWith("/"))
             {
-                BaseUriBuilder.Path += HttpUtility.UrlEncode(path); 
+                BaseUriBuilder.Path += HttpUtility.UrlEncode(path);
             }
-            else if (path.StartsWith('/'))
+            else if (path.StartsWith("/"))
             {
                 BaseUriBuilder.Path += HttpUtility.UrlEncode(path);
             }

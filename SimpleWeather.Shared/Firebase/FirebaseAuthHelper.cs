@@ -1,10 +1,8 @@
 ﻿using Firebase.Auth;
 using Newtonsoft.Json;
+using SimpleWeather.Preferences;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.Storage;
 
 namespace SimpleWeather.Firebase
 {
@@ -14,8 +12,7 @@ namespace SimpleWeather.Firebase
         private const String KEY_AUTHTOKEN = "auth_token";
 
         // Shared Settings
-        private static ApplicationDataContainer FirebaseContainer = ApplicationData.Current.LocalSettings.
-            CreateContainer(FirebaseContainerKey, ApplicationDataCreateDisposition.Always);
+        private readonly static SettingsContainer FirebaseContainer = new SettingsContainer(FirebaseContainerKey);
 
         public static async Task<FirebaseAuthLink> GetAuthLink()
         {
@@ -45,9 +42,9 @@ namespace SimpleWeather.Firebase
 
         private static async Task<FirebaseAuth> GetTokenFromStorage()
         {
-            if (FirebaseContainer.Values.ContainsKey(KEY_AUTHTOKEN))
+            if (FirebaseContainer.ContainsKey(KEY_AUTHTOKEN))
             {
-                var tokenJSON = FirebaseContainer.Values[KEY_AUTHTOKEN]?.ToString();
+                var tokenJSON = FirebaseContainer.GetValue<string>(KEY_AUTHTOKEN);
                 if (tokenJSON != null)
                 {
                     try
@@ -63,7 +60,7 @@ namespace SimpleWeather.Firebase
 
         private static void StoreToken(FirebaseAuth authToken)
         {
-            FirebaseContainer.Values[KEY_AUTHTOKEN] = JsonConvert.SerializeObject(authToken);
+            FirebaseContainer.SetValue(KEY_AUTHTOKEN, JsonConvert.SerializeObject(authToken));
         }
     }
 }

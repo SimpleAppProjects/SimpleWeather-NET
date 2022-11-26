@@ -13,7 +13,11 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
             if (alertRoot?.data?.events?.Length > 0)
             {
-                weatherAlerts = new HashSet<WeatherAlert>(alertRoot.data.events.Length);
+                weatherAlerts = new HashSet<WeatherAlert>(
+#if !NETSTANDARD2_0
+                    alertRoot.data.events.Length
+#endif
+                    );
 
                 foreach (var @event in alertRoot.data.events)
                 {

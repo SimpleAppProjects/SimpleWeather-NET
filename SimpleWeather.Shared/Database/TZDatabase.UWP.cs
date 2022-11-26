@@ -1,5 +1,4 @@
-﻿#if WINDOWS_UWP
-using System.IO;
+﻿using System.IO;
 using Windows.Storage;
 
 namespace SimpleWeather.Database
@@ -13,4 +12,3 @@ namespace SimpleWeather.Database
         }
     }
 }
-#endif

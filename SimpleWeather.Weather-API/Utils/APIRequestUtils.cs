@@ -216,6 +216,21 @@ namespace SimpleWeather.Weather_API.Utils
             CheckRateLimit(providerImpl.LocationAPI);
         }
 
+        public static void SetRateLimit(this IRateLimitedRequest @api, string apiID)
+        {
+            SetNextRetryTime(apiID, api.GetRetryTime());
+        }
+
+        public static void SetRateLimit(this WeatherLocationProviderImpl providerImpl)
+        {
+            SetNextRetryTime(providerImpl.LocationAPI, providerImpl.GetRetryTime());
+        }
+
+        public static void SetRateLimit(this WeatherProviderImpl providerImpl)
+        {
+            SetNextRetryTime(providerImpl.WeatherAPI, providerImpl.GetRetryTime());
+        }
+
         private const string KEY_NEXTRETRYTIME = "key_nextretrytime";
 
         private static string GetRetryTimePrefKey(string apiID)

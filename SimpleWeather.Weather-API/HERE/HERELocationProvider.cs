@@ -1,26 +1,23 @@
-﻿#if false
-using SimpleWeather.Controls;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Location;
+﻿#if true
+using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Windows.System.UserProfile;
-using Windows.Web;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
-using static SimpleWeather.Utils.APIRequestUtils;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Weather_API.HERE
 {
-    public class HERELocationProvider : LocationProviderImpl
+    public partial class HERELocationProvider : WeatherLocationProviderImpl
     {
         private const string AUTOCOMPLETE_QUERY_URL = "https://autocomplete.geocoder.ls.hereapi.com/6.2/suggest.json?query={0}&language={1}&maxresults=10";
         private const string GEOLOCATION_QUERY_URL = "https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?" +
@@ -39,9 +36,9 @@ namespace SimpleWeather.Weather_API.HERE
         public override bool NeedsLocationFromID => true;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<ObservableCollection<LocationQueryViewModel>> GetLocations(string location_query, string weatherAPI)
+        public override async Task<ObservableCollection<LocationQuery>> GetLocations(string location_query, string weatherAPI)
         {
-            ObservableCollection<LocationQueryViewModel> locations = null;
+            ObservableCollection<LocationQuery> locations = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -60,20 +57,20 @@ namespace SimpleWeather.Weather_API.HERE
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
                     // Add headers to request
-                    var token = await HEREOAuthUtils.GetBearerToken();
+                    var token = await Auth.HEREOAuthService.GetBearerToken();
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(1)
                     };
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    var webClient = SharedModule.Instance.WebClient;
+                    using (var cts = new CancellationTokenSource(Preferences.SettingsManager.READ_TIMEOUT))
                     using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
@@ -82,7 +79,7 @@ namespace SimpleWeather.Weather_API.HERE
                         Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load data
-                        var locationSet = new HashSet<LocationQueryViewModel>();
+                        var locationSet = new HashSet<LocationQuery>();
                         AC_Rootobject root = JSONParser.Deserializer<AC_Rootobject>(contentStream);
 
                         foreach (Suggestion result in root.suggestions)
@@ -92,7 +89,7 @@ namespace SimpleWeather.Weather_API.HERE
                             if ("city".Equals(result.matchLevel)
                                     || "district".Equals(result.matchLevel)
                                     || "postalCode".Equals(result.matchLevel))
-                                added = locationSet.Add(new LocationQueryViewModel(result, weatherAPI));
+                                added = locationSet.Add(this.CreateLocationModel(result, weatherAPI));
                             else
                                 continue;
 
@@ -105,13 +102,13 @@ namespace SimpleWeather.Weather_API.HERE
                             }
                         }
 
-                        locations = new ObservableCollection<LocationQueryViewModel>(locationSet);
+                        locations = new ObservableCollection<LocationQuery>(locationSet);
                     }
                 }
             }
             catch (Exception ex)
             {
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
@@ -126,15 +123,15 @@ namespace SimpleWeather.Weather_API.HERE
                 throw wEx;
 
             if (locations == null || locations.Count == 0)
-                locations = new ObservableCollection<LocationQueryViewModel>() { new LocationQueryViewModel() };
+                locations = new ObservableCollection<LocationQuery>() { new LocationQuery() };
 
             return locations;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
+        public override async Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coord, string weatherAPI)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -154,20 +151,20 @@ namespace SimpleWeather.Weather_API.HERE
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
                     // Add headers to request
-                    var token = await HEREOAuthUtils.GetBearerToken();
+                    var token = await Auth.HEREOAuthService.GetBearerToken();
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(1)
                     };
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    var webClient = SharedModule.Instance.WebClient;
+                    using (var cts = new CancellationTokenSource(Preferences.SettingsManager.READ_TIMEOUT))
                     using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
@@ -187,7 +184,7 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 result = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
@@ -203,17 +200,17 @@ namespace SimpleWeather.Weather_API.HERE
                 throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result, weatherAPI);
+                location = this.CreateLocationModel(result, weatherAPI);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<LocationQueryViewModel> GetLocationFromID(LocationQueryViewModel model)
+        public override async Task<LocationQuery> GetLocationFromID(LocationQuery model)
         {
-            LocationQueryViewModel location = null;
+            LocationQuery location = null;
 
             var culture = CultureUtils.UserCulture;
 
@@ -226,25 +223,25 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 this.CheckRateLimit();
 
-                Uri queryURL = new Uri(String.Format(GEOCODER_QUERY_API, model.LocationQuery, locale));
+                Uri queryURL = new Uri(String.Format(GEOCODER_QUERY_API, model.Location_Query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
                 {
                     // Add headers to request
-                    var token = await HEREOAuthUtils.GetBearerToken();
+                    var token = await Auth.HEREOAuthService.GetBearerToken();
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
                         throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError);
 
-                    request.Headers.CacheControl = new CacheControlHeaderValue() 
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
                         MaxAge = TimeSpan.FromDays(1)
                     };
 
                     // Connect to webstream
-                    var webClient = SimpleLibrary.GetInstance().WebClient;
-                    using (var cts = new CancellationTokenSource(Settings.READ_TIMEOUT))
+                    var webClient = SharedModule.Instance.WebClient;
+                    using (var cts = new CancellationTokenSource(Preferences.SettingsManager.READ_TIMEOUT))
                     using (var response = await webClient.SendAsync(request, cts.Token))
                     {
                         await this.CheckForErrors(response);
@@ -264,7 +261,7 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 result = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
@@ -280,16 +277,16 @@ namespace SimpleWeather.Weather_API.HERE
                 throw wEx;
 
             if (result != null && !String.IsNullOrWhiteSpace(result.location.locationId))
-                location = new LocationQueryViewModel(result, model.WeatherSource);
+                location = this.CreateLocationModel(result, model.WeatherSource);
             else
-                location = new LocationQueryViewModel();
+                location = new LocationQuery();
 
             return location;
         }
 
-        public override Task<LocationQueryViewModel> GetLocationFromName(LocationQueryViewModel model)
+        public override Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
-            return Task.FromResult<LocationQueryViewModel>(null);
+            return Task.FromResult<LocationQuery>(null);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

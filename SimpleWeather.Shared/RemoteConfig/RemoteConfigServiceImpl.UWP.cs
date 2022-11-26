@@ -1,14 +1,12 @@
-﻿#if WINDOWS_UWP
+﻿using SimpleWeather.Preferences;
 using System;
-using Windows.Storage;
 
 namespace SimpleWeather.RemoteConfig
 {
     public sealed partial class RemoteConfigServiceImpl
     {
         // Shared Settings
-        private readonly ApplicationDataContainer RemoteConfigContainer = ApplicationData.Current.LocalSettings
-            .CreateContainer("firebase_remoteconfig", ApplicationDataCreateDisposition.Always);
+        private readonly SettingsContainer RemoteConfigContainer = new SettingsContainer("firebase_remoteconfig");
 
         private String GetConfigString(String weatherAPI, bool useFallback = false)
         {
@@ -17,13 +15,12 @@ namespace SimpleWeather.RemoteConfig
                 return SharedModule.Instance.ResLoader.GetString("/Config/" + weatherAPI);
             }
 
-            return RemoteConfigContainer.Values[weatherAPI]?.ToString() ?? SharedModule.Instance.ResLoader.GetString("/Config/" + weatherAPI);
+            return RemoteConfigContainer.GetValue<string>(weatherAPI) ?? SharedModule.Instance.ResLoader.GetString("/Config/" + weatherAPI);
         }
 
         public void SetConfigString(String key, String value)
         {
-            RemoteConfigContainer.Values[key] = value;
+            RemoteConfigContainer.SetValue(key, value);
         }
     }
 }
-#endif

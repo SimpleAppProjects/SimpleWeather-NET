@@ -14,7 +14,11 @@ namespace SimpleWeather.Weather_API.WeatherBit
         {
             if (alerts?.Any() != true) return null;
 
-            var weatherAlerts = new HashSet<WeatherAlert>(alerts.Count);
+            var weatherAlerts = new HashSet<WeatherAlert>(
+#if !NETSTANDARD2_0
+                alerts.Count
+#endif
+                );
 
             foreach (var alert in alerts)
             {

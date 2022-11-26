@@ -70,7 +70,7 @@ namespace SimpleWeather.LocationData
             return vm;
         }
 
-        private static readonly Lazy<LocationQuery> _empty = new Lazy<LocationQuery>(new LocationQuery());
+        private static readonly Lazy<LocationQuery> _empty = new Lazy<LocationQuery>(() => new LocationQuery());
         public static LocationQuery Empty => _empty.Value;
 
         private void UpdateLocationQuery()

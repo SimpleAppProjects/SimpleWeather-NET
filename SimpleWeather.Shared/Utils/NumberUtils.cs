@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
@@ -41,7 +38,11 @@ namespace SimpleWeather.Utils
         /* Number extensions */
         public static int RoundToInt(this float @num)
         {
+#if NETSTANDARD2_0
+            return (int)Math.Round(num);
+#else
             return (int)MathF.Round(num);
+#endif
         }
 
         public static float Times(this float @num, float value)

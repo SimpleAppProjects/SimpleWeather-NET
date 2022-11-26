@@ -121,7 +121,11 @@ namespace SimpleWeather.Utils
 
         public static float CalculateDewpointC(float temp_c, int humidity)
         {
+#if NETSTANDARD2_0
+            return 243.04f * ((float)Math.Log(humidity / 100f) + ((17.625f * temp_c) / (243.04f + temp_c))) / (17.625f - (float)Math.Log(humidity / 100f) - ((17.625f * temp_c) / (243.04f + temp_c)));
+#else
             return 243.04f * (MathF.Log(humidity / 100f) + ((17.625f * temp_c) / (243.04f + temp_c))) / (17.625f - MathF.Log(humidity / 100f) - ((17.625f * temp_c) / (243.04f + temp_c)));
+#endif
         }
 
         public static Color GetColorFromTempF(float temp_f)

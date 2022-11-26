@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -49,7 +48,7 @@ namespace SimpleWeather.Utils
 
         public static Task WriteFile(String data, String filePath)
         {
-            return Task.Run(async () => 
+            return Task.Run(async () =>
             {
                 // Wait for file to be free
                 while (IsFileLocked(filePath))
@@ -122,7 +121,7 @@ namespace SimpleWeather.Utils
             return false;
         }
 
-#if !WINDOWS_UWP
+#if false
         public static Task<bool> DeleteDirectory(String path)
         {
             if (Directory.Exists(path))

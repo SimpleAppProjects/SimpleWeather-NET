@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace SimpleWeather.Utils
 {
-    public static class StringUtils
+    public static partial class StringUtils
     {
         public static String ToUpperCase(this String @string)
         {

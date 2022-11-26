@@ -7,12 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-// NOTE: Using .NET HttpClient; UWP HttpClient doesn't work for some reason
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Storage;
 using static SimpleWeather.Weather_API.Utils.APIRequestUtils;
 
 namespace SimpleWeather.Weather_API.HERE
@@ -97,12 +95,11 @@ namespace SimpleWeather.Weather_API.HERE
         private async Task<String> GetTokenFromStorage()
         {
             // Shared Settings
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            var HERESettingsContainer = localSettings.CreateContainer(WeatherAPI.Here, ApplicationDataCreateDisposition.Always);
+            var HERESettingsContainer = new SettingsContainer(WeatherAPI.Here);
 
-            if (HERESettingsContainer.Values.ContainsKey(KEY_TOKEN))
+            if (HERESettingsContainer.ContainsKey(KEY_TOKEN))
             {
-                var tokenJSON = HERESettingsContainer.Values[KEY_TOKEN]?.ToString();
+                var tokenJSON = HERESettingsContainer.GetValue<string>(KEY_TOKEN);
                 if (tokenJSON != null)
                 {
                     var token = await JSONParser.DeserializerAsync<Token>(tokenJSON);
@@ -121,26 +118,12 @@ namespace SimpleWeather.Weather_API.HERE
         private void StoreToken(Token token)
         {
             // Shared Settings
-            ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
-            var HERESettingsContainer = localSettings.CreateContainer(WeatherAPI.Here, ApplicationDataCreateDisposition.Always);
+            var HERESettingsContainer = new SettingsContainer(WeatherAPI.Here);
 
             Task.Run(() =>
             {
-                HERESettingsContainer.Values[KEY_TOKEN] = JSONParser.Serializer(token);
+                HERESettingsContainer.SetValue(KEY_TOKEN, JSONParser.Serializer(token));
             });
         }
-    }
-
-    public class TokenRootobject
-    {
-        public string access_token { get; set; }
-        public string token_type { get; set; }
-        public int expires_in { get; set; }
-    }
-
-    internal class Token
-    {
-        public String access_token { get; set; }
-        public DateTime expiration_date { get; set; }
     }
 }

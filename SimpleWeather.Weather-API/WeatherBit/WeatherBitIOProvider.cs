@@ -15,9 +15,6 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-#if WINDOWS_UWP
-using Windows.Web;
-#endif
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherBit
@@ -164,7 +161,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
@@ -228,7 +225,11 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
                 if (root.alerts?.Length > 0)
                 {
-                    alerts = new HashSet<WeatherAlert>(root.alerts.Length);
+                    alerts = new HashSet<WeatherAlert>(
+#if !NETSTANDARD2_0
+                        root.alerts.Length
+#endif
+                        );
 
                     var tzOffset = DateTimeUtils.TzidToOffset(root.timezone);
 

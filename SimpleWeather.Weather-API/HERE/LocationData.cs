@@ -1,4 +1,4 @@
-﻿#if false
+﻿#if true
 using SimpleWeather.LocationData;
 using SimpleWeather.WeatherData;
 using System;

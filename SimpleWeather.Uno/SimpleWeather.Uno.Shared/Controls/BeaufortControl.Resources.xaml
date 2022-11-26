@@ -1,0 +1,19 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:SimpleWeather.UWP.Converters"
+    xmlns:helpers="using:SimpleWeather.UWP.Helpers">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            <Color x:Key="BeaufortPaintColor">DodgerBlue</Color>
+            <x:Boolean x:Key="IsLightValue">false</x:Boolean>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <Color x:Key="BeaufortPaintColor">Purple</Color>
+            <x:Boolean x:Key="IsLightValue">true</x:Boolean>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    <helpers:ObjectContainer x:Name="IsLight" Value="{ThemeResource IsLightValue}" />
+    <SolidColorBrush x:Name="BeaufortPaintColorBrush" Color="{ThemeResource BeaufortPaintColor}" />
+    <converters:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource BeaufortPaintColor}" />
+</ResourceDictionary>

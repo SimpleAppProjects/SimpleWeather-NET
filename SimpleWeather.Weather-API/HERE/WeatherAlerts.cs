@@ -26,7 +26,11 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
 
-                weatherAlerts = new HashSet<WeatherAlert>(numOfAlerts);
+                weatherAlerts = new HashSet<WeatherAlert>(
+#if !NETSTANDARD2_0
+                    numOfAlerts
+#endif
+                    );
 
                 if (root.nwsAlerts.watch != null)
                 {

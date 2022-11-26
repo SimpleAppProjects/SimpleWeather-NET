@@ -15,9 +15,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-#if WINDOWS_UWP
 using Windows.UI;
-#endif
 using LocData = SimpleWeather.LocationData.LocationData;
 
 namespace SimpleWeather.Weather_API.WeatherData
@@ -171,7 +169,13 @@ namespace SimpleWeather.Weather_API.WeatherData
                                     else
                                     {
                                         var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
-                                        var solarNoon = weather.astronomy.sunrise + totalSunlightTime / 2;
+                                        var solarNoon = weather.astronomy.sunrise + (
+#if !NETSTANDARD2_0
+                                            totalSunlightTime / 2
+#else
+                                            totalSunlightTime.Divide(2)
+#endif
+                                            );
 
                                         // If +/- 2hrs within solar noon, UV max
                                         if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
@@ -431,7 +435,6 @@ namespace SimpleWeather.Weather_API.WeatherData
             return isNight;
         }
 
-#if WINDOWS_UWP
         public virtual Color GetWeatherBackgroundColor(Weather weather)
         {
             byte[] argb = null;
@@ -580,6 +583,5 @@ namespace SimpleWeather.Weather_API.WeatherData
 
             return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]);
         }
-#endif
     }
 }

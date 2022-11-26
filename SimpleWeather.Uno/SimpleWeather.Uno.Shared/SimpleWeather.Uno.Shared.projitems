@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6279c845-92f8-4333-ab99-3d213163593c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>SimpleWeather.UWP</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.CommonActionEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)AppState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CompilerServices\IsExternalInit.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AlignableWrapPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AQIControl.xaml.cs">
+      <DependentUpon>AQIControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AQIForecastControl.xaml.cs">
+      <DependentUpon>AQIForecastControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\Banner.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\BannerContent.xaml.cs">
+      <DependentUpon>BannerContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\BannerManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\IBannerManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\IBannerPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BeaufortControl.xaml.cs">
+      <DependentUpon>BeaufortControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\BottomStepperNavigationBar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\DataTemplates.xaml.cs">
+      <DependentUpon>DataTemplates.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\DetailItem.xaml.cs">
+      <DependentUpon>DetailItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\DevKeyEntry.xaml.cs">
+      <DependentUpon>DevKeyEntry.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ExtendingWrapPanel\ExtendingWrapPanel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ExtendingWrapPanel\ExtendingWrapPanel.Data.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\IGraph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\IGraphData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\IGraphDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\LineDataSeries.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\LineGraphEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\LineViewData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\RangeBarGraphData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\RangeBarGraphDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\RangeBarGraphEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\YEntryData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BarGraphPanel.xaml.cs">
+      <DependentUpon>BarGraphPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BarGraphView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphViewControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ForecastGraphPanel.xaml.cs">
+      <DependentUpon>ForecastGraphPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ItemSizeChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\LineView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\RangeBarGraphPanel.xaml.cs">
+      <DependentUpon>RangeBarGraphPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\RangeBarGraphView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItem.xaml.cs">
+      <DependentUpon>HourlyForecastItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemPanel.xaml.cs">
+      <DependentUpon>HourlyForecastItemPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\IconControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\KeyEntryDialog.xaml.cs">
+      <DependentUpon>KeyEntryDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\LocationPanel.xaml.cs">
+      <DependentUpon>LocationPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\MoonPhaseControl.xaml.cs">
+      <DependentUpon>MoonPhaseControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\PageHeader.xaml.cs">
+      <DependentUpon>PageHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\PollenCountControl.xaml.cs">
+      <DependentUpon>PollenCountControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ProgressAutoSuggestBox.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ScopePage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\ISnackbarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\ISnackbarPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\Snackbar.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarContent.xaml.cs">
+      <DependentUpon>SnackbarContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SunPhaseView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UVControl.xaml.cs">
+      <DependentUpon>UVControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\AirQualityForecastViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\ChartsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\ForecastGraphDataCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\ForecastsListViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\ForecastsNowViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\GraphTemperature.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\HourlyForecastNowViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModels\LocationPanelUiModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertPanel.xaml.cs">
+      <DependentUpon>WeatherAlertPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\WeatherDetailPanel.xaml.cs">
+      <DependentUpon>WeatherDetailPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToGridLengthConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ColorToSolidColorBrushConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\DetailsItemGridFilterConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\GraphDataVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\IconForegroundConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\LocationTypeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\TempToColorTempConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataBinding\BindingExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DataBinding\WeatherNowBinding.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\BackgroundTaskHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceFamilyTrigger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\DeviceTypeHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IBackRequestedPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ICommandBarPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IFramePage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IPageVerification.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\LocationPermissionExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\RectHelperExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ScrollViewerHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StorageFileHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringRes.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\VisualTreeHelperExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IApplication.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main\Args.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main\LocationPanelAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml.cs">
+      <DependentUpon>LocationSearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\LocationsPage.xaml.cs">
+      <DependentUpon>LocationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherAlertPage.xaml.cs">
+      <DependentUpon>WeatherAlertPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherAQIPage.xaml.cs">
+      <DependentUpon>WeatherAQIPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherChartsPage.xaml.cs">
+      <DependentUpon>WeatherChartsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherDetailsPage.xaml.cs">
+      <DependentUpon>WeatherDetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherNow.xaml.cs">
+      <DependentUpon>WeatherNow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherRadarPage.xaml.cs">
+      <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\DailyNotificationCreator.Common.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\DailyNotificationCreator.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\PoPNotificationCreator.Common.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\PoPNotificationCreator.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\WeatherAlertCreator.Common.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Notifications\WeatherAlertCreator.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\DevSettingsController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\DevSettingsPage.xaml.cs">
+      <DependentUpon>DevSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\IconRadioPreference.xaml.cs">
+      <DependentUpon>IconRadioPreference.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\SettingsPage.xaml.cs">
+      <DependentUpon>SettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_About.xaml.cs">
+      <DependentUpon>Settings_About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_Credits.xaml.cs">
+      <DependentUpon>Settings_Credits.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_Features.xaml.cs">
+      <DependentUpon>Settings_Features.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_General.xaml.cs">
+      <DependentUpon>Settings_General.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_Icons.xaml.cs">
+      <DependentUpon>Settings_Icons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_OSSLibs.xaml.cs">
+      <DependentUpon>Settings_OSSLibs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Preferences\Settings_Units.xaml.cs">
+      <DependentUpon>Settings_Units.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\OpenWeather\OWMRadarViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProviderChangedEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarToolbar.xaml.cs">
+      <DependentUpon>RadarToolbar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\WeatherMapsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\ISetupNavigator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.xaml.cs">
+      <DependentUpon>SetupLocationsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupPage.xaml.cs">
+      <DependentUpon>SetupPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupSettingsPage.xaml.cs">
+      <DependentUpon>SetupSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupWelcomePage.xaml.cs">
+      <DependentUpon>SetupWelcomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Tiles\SecondaryTileUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Tiles\WeatherTileCreator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\SkiaSharpExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LocationsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelPage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WeatherAlerts\WeatherAlertHandler.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AppLogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\BadgeLogo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FullSun.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\LogoStroke.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\outline_near_me_black_24dp.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SolarStroke.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplashScreen.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square310x310Logo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-lightunplated_targetsize-16.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-lightunplated_targetsize-24.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-lightunplated_targetsize-256.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-lightunplated_targetsize-32.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-lightunplated_targetsize-48.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-unplated_targetsize-16.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-unplated_targetsize-256.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-unplated_targetsize-32.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.altform-unplated_targetsize-48.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-16.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-24.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-256.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-32.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square44x44Logo.targetsize-48.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Wide310x150Logo.scale-400.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\de\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Config.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\es\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\fr\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\nl\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\pl\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\sk\WindDirection.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\AQIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Beaufort.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\MoonPhases.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Resources.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\Units.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\UVIndex.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\WeatherConditions.resw" />
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\zh-Hans\WindDirection.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\AQIControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\AQIForecastControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\Banner\BannerContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\BeaufortControl.Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\BeaufortControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\DataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\DetailItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\DevKeyEntry.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BarGraphPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ForecastGraphPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\RangeBarGraphPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\HourlyForecastItemPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\KeyEntryDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\LocationPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\MoonPhaseControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\PageHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\PollenCountControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UVControl.Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\UVControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\WeatherAlertPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\WeatherDetailPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\LocationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherAlertPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherAQIPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherChartsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherDetailsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherNow.Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherNow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Main\WeatherRadarPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\DevSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\IconRadioPreference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_About.Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_Credits.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_Features.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_General.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_Icons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_OSSLibs.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Preferences\Settings_Units.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Radar\RadarToolbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupSettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupWelcomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Styles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Themes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,7 +11,7 @@ namespace SimpleWeather.HttpClientExtensions
         private const string CACHE_CONTROL_HEADER = "Cache-Control";
         private const string CACHE_CONTROL_NO_CACHE = "no-cache";
 
-        public CacheFilter() : 
+        public CacheFilter() :
             base(new HttpClientHandler()
             {
                 AllowAutoRedirect = true,
@@ -26,7 +22,7 @@ namespace SimpleWeather.HttpClientExtensions
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return AsyncInfo.Run(async (cancellationToken) =>
+            return Task.Run(async () =>
             {
                 HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
 
@@ -61,7 +57,7 @@ namespace SimpleWeather.HttpClientExtensions
                 }
 
                 return response;
-            }).AsTask();
+            });
         }
     }
 }

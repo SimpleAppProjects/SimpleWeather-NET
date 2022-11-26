@@ -36,7 +36,7 @@ namespace SimpleWeather.Utils
 
         public static string UriEncode(this String s)
         {
-            return Uri.EscapeDataString(s).Replace("\\+", "%20", StringComparison.InvariantCulture);
+            return Uri.EscapeDataString(s).Replace("\\+", "%20");
         }
     }
 

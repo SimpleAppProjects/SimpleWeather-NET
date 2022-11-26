@@ -4,10 +4,11 @@ using SimpleWeather.Extras;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
-using SimpleWeather.Weather_API.NWS.Hourly;
 using SimpleWeather.Preferences;
-using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.NWS.Hourly;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
@@ -15,15 +16,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using SimpleWeather.Weather_API.Utils;
-#if WINDOWS_UWP
-using Windows.Web;
-#endif
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.NWS
@@ -130,7 +128,7 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 weather = null;
 
-                if (WebError.GetStatus(ex.HResult) > WebErrorStatus.Unknown || ex is HttpRequestException || ex is SocketException)
+                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
