@@ -11,18 +11,16 @@
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
   </PropertyGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('uap'))">
-  </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <PackageReference Include="Uno.UI" Version="4.6.19" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BingMapsRESTToolkit.Standard" Version="1.1.6" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
+    <ProjectReference Include="..\BingMapsRESTToolkit\Source\BingMapsRESTToolkit.Standard\BingMapsRESTToolkit.Standard.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <Content Include="Assets\**" />

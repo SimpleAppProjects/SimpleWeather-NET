@@ -9,9 +9,9 @@ namespace SimpleWeather.Weather_API.Bing
     public static class BingMapsLocationProviderExtensions
     {
         /* Bing AutoComplete */
-        public static LocationQuery CreateLocationModel(this WeatherLocationProviderImpl _, AutoSuggestPlaceResource place, string weatherAPI)
+        public static LocationQuery CreateLocationModel(this WeatherLocationProviderImpl _, AutosuggestEntityResource place, string weatherAPI)
         {
-            if (place?.EntityAddress == null)
+            if (place?.Address == null)
                 return null;
 
             var model = new LocationQuery();
@@ -22,45 +22,45 @@ namespace SimpleWeather.Weather_API.Bing
             if (!String.IsNullOrEmpty(place.Name))
                 town = place.Name;
             else
-                town = place.EntityAddress.Locality;
+                town = place.Address.Locality;
 
             // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(place.EntityAddress.AdminDistrict))
-                region = place.EntityAddress.AdminDistrict;
+            if (!String.IsNullOrEmpty(place.Address.AdminDistrict))
+                region = place.Address.AdminDistrict;
             else
-                region = place.EntityAddress.AdminDistrict2;
+                region = place.Address.AdminDistrict2;
 
             if (String.IsNullOrEmpty(region) || Equals(town, region))
             {
-                region = place.EntityAddress.CountryRegion;
+                region = place.Address.CountryRegion;
             }
 
-            if (!Equals(region, place.EntityAddress.CountryRegion))
+            if (!Equals(region, place.Address.CountryRegion))
             {
-                if (!String.IsNullOrEmpty(place.EntityAddress.AdminDistrict2) &&
-                    !(place.EntityAddress.AdminDistrict2.Equals(region) || place.EntityAddress.AdminDistrict2.Equals(town)))
-                    model.LocationName = string.Format("{0}, {1}, {2}", town, place.EntityAddress.AdminDistrict2, region);
+                if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
+                    !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
+                    model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
                 else
                     model.LocationName = string.Format("{0}, {1}", town, region);
             }
-            else if (!String.IsNullOrEmpty(place.EntityAddress.AdminDistrict2) &&
-                !(place.EntityAddress.AdminDistrict2.Equals(region) || place.EntityAddress.AdminDistrict2.Equals(town)))
+            else if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
+                !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
             {
-                model.LocationName = string.Format("{0}, {1}, {2}", town, place.EntityAddress.AdminDistrict2, region);
+                model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
             }
             else
             {
                 model.LocationName = string.Format("{0}, {1}", town, region);
             }
 
-            model.LocationCountry = place.EntityAddress.CountryRegionIso2;
+            model.LocationCountry = place.Address.CountryRegionIso2;
 
             StringBuilder sb = new StringBuilder();
-            sb.Append(place.EntityAddress.Locality).Append(", ");
-            if (!String.IsNullOrWhiteSpace(place.EntityAddress.AdminDistrict2))
-                sb.Append(place.EntityAddress.AdminDistrict2).Append(", ");
-            sb.Append(place.EntityAddress.AdminDistrict).Append(", ");
-            sb.Append(place.EntityAddress.CountryRegion);
+            sb.Append(place.Address.Locality).Append(", ");
+            if (!String.IsNullOrWhiteSpace(place.Address.AdminDistrict2))
+                sb.Append(place.Address.AdminDistrict2).Append(", ");
+            sb.Append(place.Address.AdminDistrict).Append(", ");
+            sb.Append(place.Address.CountryRegion);
 
             model.Location_Query = sb.ToString();
 

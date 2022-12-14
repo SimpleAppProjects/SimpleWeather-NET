@@ -60,7 +60,7 @@ namespace SimpleWeather.Weather_API.Bing
                     },
                     MaxResults = 10,
                     Query = location_query,
-                    UserLocation = new Coordinate(0, 0),
+                    UserLocation = new Coordinate(),
                 };
 
                 var response = await request.Execute();
@@ -93,14 +93,14 @@ namespace SimpleWeather.Weather_API.Bing
 
                 // Load data
                 var locationSet = new HashSet<LocationQuery>();
-                var results = response.ResourceSets[0].Resources[0] as AutosuggestResource;
+                var results = response.ResourceSets[0].Resources[0] as Autosuggest;
 
                 foreach (var result in results.Value)
                 {
                     // Filter: only store city results
                     bool added = false;
-                    if (!string.IsNullOrWhiteSpace(result.EntityAddress.Locality) || Equals(result.Type, "Place"))
-                        added = locationSet.Add(this.CreateLocationModel(result as AutoSuggestPlaceResource, weatherAPI));
+                    if (!string.IsNullOrWhiteSpace(result.Address.Locality) || Equals(result.Type, "Place"))
+                        added = locationSet.Add(this.CreateLocationModel(result, weatherAPI));
                     else
                         continue;
 
