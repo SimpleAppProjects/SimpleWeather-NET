@@ -14436,9 +14436,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.name);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            formatterResolver.GetFormatterWithVerify<DateTime>().Serialize(ref writer, value.validFromTimeLocal, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.validFromTimeLocal, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            formatterResolver.GetFormatterWithVerify<DateTime>().Serialize(ref writer, value.validUntilTimeLocal, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.validUntilTimeLocal, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteString(value.country);
             writer.WriteRaw(this.____stringByteKeys[8]);
@@ -14469,9 +14469,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __message__b__ = false;
             var __name__ = default(string);
             var __name__b__ = false;
-            var __validFromTimeLocal__ = default(DateTime);
+            var __validFromTimeLocal__ = default(global::System.DateTime);
             var __validFromTimeLocal__b__ = false;
-            var __validUntilTimeLocal__ = default(DateTime);
+            var __validUntilTimeLocal__ = default(global::System.DateTime);
             var __validUntilTimeLocal__b__ = false;
             var __country__ = default(string);
             var __country__b__ = false;
@@ -14517,11 +14517,11 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __name__b__ = true;
                         break;
                     case 5:
-                        __validFromTimeLocal__ = formatterResolver.GetFormatterWithVerify<DateTime>().Deserialize(ref reader, formatterResolver);
+                        __validFromTimeLocal__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __validFromTimeLocal__b__ = true;
                         break;
                     case 6:
-                        __validUntilTimeLocal__ = formatterResolver.GetFormatterWithVerify<DateTime>().Deserialize(ref reader, formatterResolver);
+                        __validUntilTimeLocal__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __validUntilTimeLocal__b__ = true;
                         break;
                     case 7:
@@ -14626,9 +14626,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.name);
             writer.WriteRaw(this.____stringByteKeys[5]);
-            formatterResolver.GetFormatterWithVerify<DateTime>().Serialize(ref writer, value.validFromTimeLocal, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.validFromTimeLocal, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            formatterResolver.GetFormatterWithVerify<DateTime>().Serialize(ref writer, value.validUntilTimeLocal, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.validUntilTimeLocal, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteString(value.country);
             writer.WriteRaw(this.____stringByteKeys[8]);
@@ -14659,9 +14659,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __message__b__ = false;
             var __name__ = default(string);
             var __name__b__ = false;
-            var __validFromTimeLocal__ = default(DateTime);
+            var __validFromTimeLocal__ = default(global::System.DateTime);
             var __validFromTimeLocal__b__ = false;
-            var __validUntilTimeLocal__ = default(DateTime);
+            var __validUntilTimeLocal__ = default(global::System.DateTime);
             var __validUntilTimeLocal__b__ = false;
             var __country__ = default(string);
             var __country__b__ = false;
@@ -14707,11 +14707,11 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __name__b__ = true;
                         break;
                     case 5:
-                        __validFromTimeLocal__ = formatterResolver.GetFormatterWithVerify<DateTime>().Deserialize(ref reader, formatterResolver);
+                        __validFromTimeLocal__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __validFromTimeLocal__b__ = true;
                         break;
                     case 6:
-                        __validUntilTimeLocal__ = formatterResolver.GetFormatterWithVerify<DateTime>().Deserialize(ref reader, formatterResolver);
+                        __validUntilTimeLocal__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __validUntilTimeLocal__b__ = true;
                         break;
                     case 7:
@@ -14983,7 +14983,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteString(value.access_token);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<DateTime>().Serialize(ref writer, value.expiration_date, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.expiration_date, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -14998,7 +14998,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
 
             var __access_token__ = default(string);
             var __access_token__b__ = false;
-            var __expiration_date__ = default(DateTime);
+            var __expiration_date__ = default(global::System.DateTime);
             var __expiration_date__b__ = false;
 
             var ____count = 0;
@@ -15020,7 +15020,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __access_token__b__ = true;
                         break;
                     case 1:
-                        __expiration_date__ = formatterResolver.GetFormatterWithVerify<DateTime>().Deserialize(ref reader, formatterResolver);
+                        __expiration_date__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
                         __expiration_date__b__ = true;
                         break;
                     default:
@@ -15226,7 +15226,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[38]);
             writer.WriteSingle(value.elevation);
             writer.WriteRaw(this.____stringByteKeys[39]);
-            formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -15317,7 +15317,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __distance__b__ = false;
             var __elevation__ = default(float);
             var __elevation__b__ = false;
-            var __utcTime__ = default(DateTimeOffset);
+            var __utcTime__ = default(global::System.DateTimeOffset);
             var __utcTime__b__ = false;
 
             var ____count = 0;
@@ -15491,7 +15491,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __elevation__b__ = true;
                         break;
                     case 39:
-                        __utcTime__ = formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __utcTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __utcTime__b__ = true;
                         break;
                     default:
@@ -15936,7 +15936,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[29]);
             writer.WriteString(value.weekday);
             writer.WriteRaw(this.____stringByteKeys[30]);
-            formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -16009,7 +16009,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __dayOfWeek__b__ = false;
             var __weekday__ = default(string);
             var __weekday__b__ = false;
-            var __utcTime__ = default(DateTimeOffset);
+            var __utcTime__ = default(global::System.DateTimeOffset);
             var __utcTime__b__ = false;
 
             var ____count = 0;
@@ -16147,7 +16147,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __weekday__b__ = true;
                         break;
                     case 30:
-                        __utcTime__ = formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __utcTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __utcTime__b__ = true;
                         break;
                     default:
@@ -16587,7 +16587,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[29]);
             writer.WriteString(value.weekday);
             writer.WriteRaw(this.____stringByteKeys[30]);
-            formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[31]);
             writer.WriteString(value.localTime);
             writer.WriteRaw(this.____stringByteKeys[32]);
@@ -16664,7 +16664,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __dayOfWeek__b__ = false;
             var __weekday__ = default(string);
             var __weekday__b__ = false;
-            var __utcTime__ = default(DateTimeOffset);
+            var __utcTime__ = default(global::System.DateTimeOffset);
             var __utcTime__b__ = false;
             var __localTime__ = default(string);
             var __localTime__b__ = false;
@@ -16806,7 +16806,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __weekday__b__ = true;
                         break;
                     case 30:
-                        __utcTime__ = formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __utcTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __utcTime__b__ = true;
                         break;
                     case 31:
@@ -17172,7 +17172,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[9]);
             writer.WriteSingle(value.longitude);
             writer.WriteRaw(this.____stringByteKeys[10]);
-            formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.utcTime, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -17205,7 +17205,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __latitude__b__ = false;
             var __longitude__ = default(float);
             var __longitude__b__ = false;
-            var __utcTime__ = default(DateTimeOffset);
+            var __utcTime__ = default(global::System.DateTimeOffset);
             var __utcTime__b__ = false;
 
             var ____count = 0;
@@ -17263,7 +17263,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __longitude__b__ = true;
                         break;
                     case 10:
-                        __utcTime__ = formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __utcTime__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __utcTime__b__ = true;
                         break;
                     default:
@@ -17498,7 +17498,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[5]);
             formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Weather_API.HERE.Astronomy>().Serialize(ref writer, value.astronomy, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[6]);
-            formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Serialize(ref writer, value.feedCreation, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.feedCreation, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[7]);
             writer.WriteBoolean(value.metric);
             writer.WriteRaw(this.____stringByteKeys[8]);
@@ -17529,7 +17529,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __nwsAlerts__b__ = false;
             var __astronomy__ = default(global::SimpleWeather.Weather_API.HERE.Astronomy);
             var __astronomy__b__ = false;
-            var __feedCreation__ = default(DateTimeOffset);
+            var __feedCreation__ = default(global::System.DateTimeOffset);
             var __feedCreation__b__ = false;
             var __metric__ = default(bool);
             var __metric__b__ = false;
@@ -17577,7 +17577,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __astronomy__b__ = true;
                         break;
                     case 6:
-                        __feedCreation__ = formatterResolver.GetFormatterWithVerify<DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __feedCreation__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __feedCreation__b__ = true;
                         break;
                     case 7:
@@ -20608,7 +20608,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteString(value.elevation);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.desc);
             
@@ -20625,7 +20625,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
 
             var __elevation__ = default(string);
             var __elevation__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -20649,7 +20649,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __elevation__b__ = true;
                         break;
                     case 1:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 2:
@@ -20710,7 +20710,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteString(value.elevation);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.desc);
             
@@ -20727,7 +20727,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
 
             var __elevation__ = default(string);
             var __elevation__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -20751,7 +20751,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __elevation__b__ = true;
                         break;
                     case 1:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 2:
@@ -20812,7 +20812,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteString(value.desc);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.elevation);
             
@@ -20829,7 +20829,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
 
             var __desc__ = default(string);
             var __desc__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __elevation__ = default(string);
             var __elevation__b__ = false;
@@ -20853,7 +20853,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __desc__b__ = true;
                         break;
                     case 1:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 2:
@@ -20916,7 +20916,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             writer.WriteRaw(this.____stringByteKeys[2]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             
             writer.WriteEndObject();
         }
@@ -20933,7 +20933,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __value__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
 
             var ____count = 0;
@@ -20959,7 +20959,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __desc__b__ = true;
                         break;
                     case 2:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     default:
@@ -21026,7 +21026,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.phase);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.range);
             writer.WriteRaw(this.____stringByteKeys[5]);
@@ -21049,7 +21049,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __azimuth__b__ = false;
             var __phase__ = default(string);
             var __phase__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __range__ = default(string);
             var __range__b__ = false;
@@ -21083,7 +21083,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __phase__b__ = true;
                         break;
                     case 3:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 4:
@@ -21147,7 +21147,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -21162,7 +21162,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             }
             
 
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -21182,7 +21182,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 switch (key)
                 {
                     case 0:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 1:
@@ -21244,7 +21244,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[0]);
             writer.WriteString(value.elevation);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.azimuth);
             writer.WriteRaw(this.____stringByteKeys[3]);
@@ -21263,7 +21263,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
 
             var __elevation__ = default(string);
             var __elevation__b__ = false;
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __azimuth__ = default(string);
             var __azimuth__b__ = false;
@@ -21289,7 +21289,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __elevation__b__ = true;
                         break;
                     case 1:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 2:
@@ -21351,7 +21351,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -21366,7 +21366,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             }
             
 
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -21386,7 +21386,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 switch (key)
                 {
                     case 0:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 1:
@@ -21444,7 +21444,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.elevation);
             writer.WriteRaw(this.____stringByteKeys[2]);
@@ -21461,7 +21461,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             }
             
 
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __elevation__ = default(string);
             var __elevation__b__ = false;
@@ -21483,7 +21483,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 switch (key)
                 {
                     case 0:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 1:
@@ -21544,7 +21544,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -21559,7 +21559,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             }
             
 
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -21579,7 +21579,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 switch (key)
                 {
                     case 0:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 1:
@@ -21635,7 +21635,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Serialize(ref writer, value.time, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.time, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
             writer.WriteString(value.desc);
             
@@ -21650,7 +21650,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             }
             
 
-            var __time__ = default(global::System.DateTime);
+            var __time__ = default(global::System.DateTimeOffset);
             var __time__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -21670,7 +21670,7 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 switch (key)
                 {
                     case 0:
-                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTime>().Deserialize(ref reader, formatterResolver);
+                        __time__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
                         __time__b__ = true;
                         break;
                     case 1:

@@ -308,20 +308,20 @@ namespace SimpleWeather.Weather_API.Metno
             {
                 if (time.sunrise != null)
                 {
-                    astronomy.sunrise = time.sunrise.time.ToUniversalTime();
+                    astronomy.sunrise = time.sunrise.time.UtcDateTime;
                 }
                 if (time.sunset != null)
                 {
-                    astronomy.sunset = time.sunset.time.ToUniversalTime();
+                    astronomy.sunset = time.sunset.time.UtcDateTime;
                 }
 
                 if (time.moonrise != null)
                 {
-                    astronomy.moonrise = time.moonrise.time.ToUniversalTime();
+                    astronomy.moonrise = time.moonrise.time.UtcDateTime;
                 }
                 if (time.moonset != null)
                 {
-                    astronomy.moonset = time.moonset.time.ToUniversalTime();
+                    astronomy.moonset = time.moonset.time.UtcDateTime;
                 }
 
                 if (time.moonphase != null)

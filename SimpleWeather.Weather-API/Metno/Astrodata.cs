@@ -40,21 +40,21 @@ namespace SimpleWeather.Weather_API.Metno
     public class Low_Moon
     {
         public string elevation { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 
     public class High_Moon
     {
         public string elevation { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 
     public class Solarnoon
     {
         public string desc { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string elevation { get; set; }
     }
 
@@ -62,7 +62,7 @@ namespace SimpleWeather.Weather_API.Metno
     {
         public string value { get; set; }
         public string desc { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
     }
 
     public class Moonposition
@@ -70,47 +70,47 @@ namespace SimpleWeather.Weather_API.Metno
         public string desc { get; set; }
         public string azimuth { get; set; }
         public string phase { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string range { get; set; }
         public string elevation { get; set; }
     }
 
     public class Sunrise
     {
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 
     public class Moonshadow
     {
         public string elevation { get; set; }
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string azimuth { get; set; }
         public string desc { get; set; }
     }
 
     public class Moonrise
     {
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 
     public class Solarmidnight
     {
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string elevation { get; set; }
         public string desc { get; set; }
     }
 
     public class Sunset
     {
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 
     public class Moonset
     {
-        public DateTime time { get; set; }
+        public DateTimeOffset time { get; set; }
         public string desc { get; set; }
     }
 }
