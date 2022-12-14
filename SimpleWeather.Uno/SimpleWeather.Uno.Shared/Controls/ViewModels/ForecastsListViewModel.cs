@@ -96,7 +96,7 @@ namespace SimpleWeather.UWP.Controls
             }
             else
             {
-                Forecasts.RefreshAsync();
+                DispatcherQueue.EnqueueAsync(Forecasts.RefreshAsync);
             }
         }
 
@@ -113,7 +113,7 @@ namespace SimpleWeather.UWP.Controls
             }
             else
             {
-                HourlyForecasts.RefreshAsync();
+                DispatcherQueue.EnqueueAsync(HourlyForecasts.RefreshAsync);
             }
         }
 
