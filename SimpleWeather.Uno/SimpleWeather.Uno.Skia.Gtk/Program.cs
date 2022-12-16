@@ -1,11 +1,11 @@
-using GLib;
+﻿using GLib;
 using SimpleWeather.UWP;
 using System;
 using Uno.UI.Runtime.Skia;
 
 namespace SimpleWeather.Uno.Skia.Gtk
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {

@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD
+﻿#if WINDOWS_UWP
 using System.Collections.Generic;
 using Windows.Storage;
 
@@ -6,16 +6,18 @@ namespace SimpleWeather.Preferences
 {
     public partial class SettingsContainer
     {
-        private readonly ApplicationDataContainer container;
+        private ApplicationDataContainer container;
 
-        public SettingsContainer()
+        private partial void Init()
         {
-            container = ApplicationData.Current.LocalSettings;
-        }
-
-        public SettingsContainer(string name)
-        {
-            container = ApplicationData.Current.LocalSettings.CreateContainer(name, ApplicationDataCreateDisposition.Always);
+            if (string.IsNullOrWhiteSpace(SharedName))
+            {
+                container = ApplicationData.Current.LocalSettings;
+            }
+            else
+            {
+                container = ApplicationData.Current.LocalSettings.CreateContainer(SharedName, ApplicationDataCreateDisposition.Always);
+            }
         }
 
         public partial T? GetValue<T>(string key, T defaultValue = default)

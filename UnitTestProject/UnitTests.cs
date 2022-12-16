@@ -1,7 +1,6 @@
-﻿using CacheCow.Client;
+using CacheCow.Client;
 using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SimpleWeather;
 using SimpleWeather.Backgrounds;
 using SimpleWeather.Common;
@@ -21,14 +20,8 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.Storage;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
 

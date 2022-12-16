@@ -308,7 +308,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-150.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Square71x71Logo.scale-400.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-125.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\StoreLogo.scale-150.png" />
@@ -584,7 +583,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\MaterialColorsOverride.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

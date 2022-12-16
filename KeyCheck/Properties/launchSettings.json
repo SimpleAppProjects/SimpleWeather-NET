@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "KeyCheck": {
+      "commandName": "Project",
+      "commandLineArgs": "\"D:\\Visual Studio 2019\\Projects\\SimpleWeather-Windows\\SimpleWeather.Shared\\Keys\"",
+      "workingDirectory": "D:\\Visual Studio 2019\\Projects\\SimpleWeather-Windows"
+    }
+  }
+}

@@ -1,9 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
-    <TargetFrameworks>uap10.0.19041;netstandard2.0;net6.0-ios;net6.0-maccatalyst;net6.0-android</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net7.0-ios;net7.0-macos;net7.0-maccatalyst;net7.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
-    <UseMauiEssentials>true</UseMauiEssentials>
     <RootNamespace>SimpleWeather</RootNamespace>
     <AssemblyName>SimpleWeather.Shared</AssemblyName>
   </PropertyGroup>
@@ -20,65 +20,36 @@
     <PackageReference Include="Uno.UI" Version="4.6.19" />
     <PackageReference Include="Uno.UI.Lottie" Version="4.6.19" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="CacheCow.Client">
-      <Version>2.11.3</Version>
-    </PackageReference>
-    <PackageReference Include="CommunityToolkit.Mvvm">
-      <Version>8.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="FirebaseAuthentication.net">
-      <Version>3.7.2</Version>
-    </PackageReference>
-    <PackageReference Include="FirebaseDatabase.net">
-      <Version>4.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Analytics">
-      <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.AppCenter.Crashes">
-      <Version>5.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.HashCode">
-      <Version>1.1.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>7.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="Newtonsoft.Json">
-      <Version>13.0.2</Version>
-    </PackageReference>
-    <PackageReference Include="NodaTime">
-      <Version>3.1.5</Version>
-    </PackageReference>
-    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-    <PackageReference Include="Svg.Skia" Version="0.5.18" />
-    <PackageReference Include="sqlite-net-pcl">
-      <Version>1.8.116</Version>
-    </PackageReference>
-    <PackageReference Include="SQLiteNetExtensions.Async">
-      <Version>2.1.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Http">
-      <Version>4.3.4</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.Json">
-      <Version>7.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="ZCS.Utf8Json">
-      <Version>1.4.4</Version>
-    </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Timber\Timber.csproj" />
-  </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <Content Include="Assets\**" />
+    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0'">
-    <Compile Remove="netstandard2.0\**" />
+  <ItemGroup>
+    <PackageReference Include="CacheCow.Client" Version="2.11.3" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
+    <PackageReference Include="FirebaseDatabase.net" Version="4.1.0" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.1" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="NodaTime" Version="3.1.6" />
+    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+    <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+    <PackageReference Include="Svg.Skia" Version="0.5.18" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.Json" Version="7.0.1" />
+    <PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Timber\Timber.csproj" />
   </ItemGroup>
 </Project>

@@ -7,9 +7,8 @@ using Windows.UI.Xaml.Media;
 namespace SimpleWeather.Uno.Droid
 {
     [global::Android.App.ApplicationAttribute(
-        Label = "@string/app_name",
-        Icon = "@mipmap/ic_launcher",
-        RoundIcon = "@mipmap/ic_launcher_round",
+        Label = "@string/ApplicationName",
+        Icon = "@mipmap/icon",
         LargeHeap = true,
         HardwareAccelerated = true,
         Theme = "@style/AppTheme"

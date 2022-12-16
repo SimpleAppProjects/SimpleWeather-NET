@@ -12,6 +12,9 @@ namespace KeyCheck
     {
         private static void Main(string[] args)
         {
+            // Set default exit code as success
+            Environment.ExitCode = 0;
+
             if (args == null || args.Length == 0)
             {
                 Console.WriteLine("Missing arguments!!");
@@ -74,8 +77,7 @@ namespace KeyCheck
                 }
             }
 
-            if (Environment.ExitCode != 0)
-                Environment.Exit(Environment.ExitCode);
+            Environment.Exit(Environment.ExitCode);
         }
     }
 }

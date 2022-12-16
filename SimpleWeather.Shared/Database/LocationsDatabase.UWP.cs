@@ -1,5 +1,5 @@
-﻿using System.IO;
-using Windows.Storage;
+﻿using SimpleWeather.Helpers;
+using System.IO;
 
 namespace SimpleWeather.Database
 {
@@ -7,8 +7,8 @@ namespace SimpleWeather.Database
     {
         private static string GetDatabasePath()
         {
-            var appDataFolder = ApplicationData.Current.LocalFolder;
-            return Path.Combine(appDataFolder.Path, DatabaseFileName);
+            var appDataFolderPath = ApplicationDataHelper.GetLocalFolderPath();
+            return Path.Combine(appDataFolderPath, DatabaseFileName);
         }
     }
 }

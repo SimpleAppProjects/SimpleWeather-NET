@@ -30,7 +30,7 @@ namespace SimpleWeather.Preferences
 
         void Clear();
 
-#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
+#if WINDOWS_UWP || __ANDROID__
         IDictionary<string, object> GetAllSettings();
 #endif
     }

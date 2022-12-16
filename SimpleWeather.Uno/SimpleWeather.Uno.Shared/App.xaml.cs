@@ -1,7 +1,9 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+#if !__MACCATALYST__ && !HAS_UNO_SKIA_GTK
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+#endif
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SimpleWeather.Common;
@@ -23,19 +25,24 @@ using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation.Metadata;
 using Windows.System;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+#if !__MACCATALYST__
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
+#endif
 using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 #if WINDOWS_UWP
 using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.UWP.BackgroundTasks;
+using System.Diagnostics;
+#endif
+#if HAS_UNO
+using Uno.UI;
 #endif
 
 namespace SimpleWeather.UWP
@@ -95,6 +102,9 @@ namespace SimpleWeather.UWP
             CoreApplication.EnablePrelaunch(true);
 #endif
             InitializeLogging();
+#if HAS_UNO
+            FeatureConfiguration.UIElement.UseLegacyClipping = false;
+#endif
             this.InitializeComponent();
             //Instance = this;
 #if HAS_UNO || NETFX_CORE
@@ -103,6 +113,7 @@ namespace SimpleWeather.UWP
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
 
+#if WINDOWS_UWP
             // During the transition from foreground to background the
             // memory limit allowed for the application changes. The application
             // has a short time to respond by bringing its memory usage
@@ -113,9 +124,12 @@ namespace SimpleWeather.UWP
             // under a memory target to maintain priority to keep running.
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
+#endif
 
+#if !__MACCATALYST__ && !HAS_UNO_SKIA_GTK
             AppCenter.LogLevel = AppCenterLogLevel.Verbose;
             AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+#endif
 
             // Initialize depencies for library
             InitializeDependencies();
@@ -159,6 +173,7 @@ namespace SimpleWeather.UWP
             serviceCollection.AddSingleton<ImageDataHelperImpl, Backgrounds.ImageDataHelperRes>();
         }
 
+#if WINDOWS_UWP
         /// <summary>
         /// Handle system notifications that the app has increased its
         /// memory usage level compared to its current target.
@@ -208,14 +223,12 @@ namespace SimpleWeather.UWP
         /// <param name="e"></param>
         private void MemoryManager_AppMemoryUsageLimitChanging(object sender, AppMemoryUsageLimitChangingEventArgs e)
         {
-#if WINDOWS_UWP
             // If app memory usage is over the limit, reduce usage within 2 seconds
             // so that the system does not suspend the app
             if (MemoryManager.AppMemoryUsage >= e.NewLimit)
             {
                 ReduceMemoryUsage(e.NewLimit);
             }
-#endif
         }
 
         /// <summary>
@@ -262,6 +275,7 @@ namespace SimpleWeather.UWP
             // Run the GC to collect released resources.
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Default, false);
         }
+#endif
 
         protected override async void OnActivated(IActivatedEventArgs e)
         {
@@ -419,13 +433,13 @@ namespace SimpleWeather.UWP
             UpdateAppTheme();
         }
 
+#if WINDOWS_UWP
         /// <summary>
         /// Event fired when a Background Task is activated (in Single Process Model)
         /// </summary>
         /// <param name="args">Arguments that describe the BackgroundTask activated</param>
         protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
         {
-#if WINDOWS_UWP
             base.OnBackgroundActivated(args);
             await Initialize(args);
 
@@ -476,8 +490,8 @@ namespace SimpleWeather.UWP
                     Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
                     break;
             }
-#endif
         }
+#endif
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -768,6 +782,7 @@ namespace SimpleWeather.UWP
                         break;
                 }
 
+#if WINDOWS_UWP
                 var titleBar = ApplicationView.GetForCurrentView().TitleBar;
                 if (isDarkTheme)
                 {
@@ -777,13 +792,18 @@ namespace SimpleWeather.UWP
                 {
                     titleBar.ButtonForegroundColor = Colors.Black;
                 }
+#endif
             }
         }
 
         private void App_OnSettingsChanged(SettingsChangedEventArgs e)
         {
+#if WINDOWS_UWP
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             var isWeatherLoaded = localSettings.Values[SettingsManager.KEY_WEATHERLOADED] as bool? ?? false;
+#else
+            var isWeatherLoaded = SettingsManager.WeatherLoaded;
+#endif
 
             switch (e.Key)
             {

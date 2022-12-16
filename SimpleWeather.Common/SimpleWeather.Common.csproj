@@ -1,6 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
-    <TargetFrameworks>uap10.0.19041;netstandard2.0;net6.0-ios;net6.0-maccatalyst;net6.0-android</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net7.0-ios;net7.0-macos;net7.0-maccatalyst;net7.0-android</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
   </PropertyGroup>
@@ -13,14 +14,18 @@
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <PackageReference Include="Uno.UI" Version="4.6.19" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
-    <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
-  </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <Content Include="Assets\**" />
+    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <Compile Update="**\*.xaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
+    <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
   </ItemGroup>
 </Project>

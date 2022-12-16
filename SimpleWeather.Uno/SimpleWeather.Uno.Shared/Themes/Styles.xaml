@@ -10,16 +10,6 @@
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters">
-    <!--  App Colors Start  -->
-    <Color x:Key="SimpleBlue">#0070c0</Color>
-    <Color x:Key="SimpleBlueDark">#00468f</Color>
-    <Color x:Key="SimpleBlueLight">#599ef3</Color>
-    <Color x:Key="SimpleBlueMedium">#007dd6</Color>
-    <SolidColorBrush x:Key="SimpleBlueBrush" Color="{StaticResource SimpleBlue}" />
-    <SolidColorBrush x:Key="SimpleBlueDarkBrush" Color="{StaticResource SimpleBlueDark}" />
-    <SolidColorBrush x:Key="SimpleBlueLightBrush" Color="{StaticResource SimpleBlueLight}" />
-    <SolidColorBrush x:Key="SimpleBlueMediumBrush" Color="{StaticResource SimpleBlueMedium}" />
-    <!--  App Colors End  -->
     <!--  Converters Start  -->
     <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />
     <converters:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />

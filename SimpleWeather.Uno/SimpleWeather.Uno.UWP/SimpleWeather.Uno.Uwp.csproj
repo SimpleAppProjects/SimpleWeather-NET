@@ -60,6 +60,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+    <PackageReference Include="Uno.Material">
+      <Version>2.4.1</Version>
+    </PackageReference>
     <PackageReference Include="Win2D.uwp">
       <Version>1.26.0</Version>
     </PackageReference>
@@ -185,13 +188,34 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
-    <ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
-    <ProjectReference Include="..\..\Timber\Timber.csproj" />
+    <ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj">
+      <Project>{0CAA3B62-12E0-4418-8E32-95AEECA0AF97}</Project>
+      <Name>SimpleWeather.Backgrounds</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj">
+      <Project>{B119868B-EA58-45C8-89B2-0693D3395D31}</Project>
+      <Name>SimpleWeather.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleWeather.Extras\SimpleWeather.Extras.csproj">
+      <Project>{0CC840EB-6362-44E7-95FE-22602ABDDC8B}</Project>
+      <Name>SimpleWeather.Extras</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleWeather.Shared\SimpleWeather.Shared.csproj">
+      <Project>{A92BE3F1-3252-4650-A17E-498B223BD039}</Project>
+      <Name>SimpleWeather.Shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj">
+      <Project>{05EE68EB-2F0B-4AFB-A9CD-14D8DF05BA43}</Project>
+      <Name>SimpleWeather.Weather-API</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj">
+      <Project>{82E985DD-96F7-4069-87F6-46D5AFE3CE6F}</Project>
+      <Name>SimpleWeather.WeatherIcons</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Timber\Timber.csproj">
+      <Project>{479286CE-E244-4D81-A8F4-A5982AF86AF9}</Project>
+      <Name>Timber</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BackgroundTasks\AppUpdaterTask.cs" />
@@ -207,7 +231,6 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="ColorData.json" />
-    <None Include="SimpleWeather.UWP.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AppLogo.png" />
@@ -287,7 +310,7 @@
     </SDKReference>
   </ItemGroup>
   <Import Project="..\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems" Label="Shared" />
-  <Import Project="..\..\SimpleWeather.UWP.Extras\SimpleWeather.UWP.Extras.projitems" Label="Shared" />
+  <Import Project="..\..\SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems" Label="Shared" />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

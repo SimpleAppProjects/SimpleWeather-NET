@@ -13,7 +13,7 @@ namespace SimpleWeather.UWP.Controls
     [TemplatePart(Name = nameof(BackBtn), Type = typeof(Button))]
     [TemplatePart(Name = nameof(BackBtnLabel), Type = typeof(TextBlock))]
     [TemplatePart(Name = nameof(BackBtnIconPresenter), Type = typeof(ContentPresenter))]
-    [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(ListBox))]
+    [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(ListView))]
     [TemplatePart(Name = nameof(NextBtn), Type = typeof(Button))]
     [TemplatePart(Name = nameof(NextBtnLabel), Type = typeof(TextBlock))]
     [TemplatePart(Name = nameof(NextBtnIconPresenter), Type = typeof(ContentPresenter))]
@@ -23,7 +23,7 @@ namespace SimpleWeather.UWP.Controls
         private Button BackBtn;
         private TextBlock BackBtnLabel;
         private ContentPresenter BackBtnIconPresenter;
-        private ListBox IndicatorBox;
+        private ListView IndicatorBox;
         private Button NextBtn;
         private TextBlock NextBtnLabel;
         private ContentPresenter NextBtnIconPresenter;
@@ -158,7 +158,7 @@ namespace SimpleWeather.UWP.Controls
             BackBtn = GetTemplateChild(nameof(BackBtn)) as Button;
             BackBtnLabel = GetTemplateChild(nameof(BackBtnLabel)) as TextBlock;
             BackBtnIconPresenter = GetTemplateChild(nameof(BackBtnIconPresenter)) as ContentPresenter;
-            IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListBox;
+            IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListView;
             NextBtn = GetTemplateChild(nameof(NextBtn)) as Button;
             NextBtnLabel = GetTemplateChild(nameof(NextBtnLabel)) as TextBlock;
             NextBtnIconPresenter = GetTemplateChild(nameof(NextBtnIconPresenter)) as ContentPresenter;

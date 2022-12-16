@@ -4,6 +4,8 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Migrations
@@ -14,9 +16,13 @@ namespace SimpleWeather.Common.Migrations
         {
             var SettingsMgr = DI.Utils.SettingsManager;
 
+#if NETSTANDARD2_0
+            var version = Regex.Match(Assembly.GetEntryAssembly().FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString().Replace(".", "");
+#else
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
             var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
                 PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build); // Exclude revision number used by Xbox & others
+#endif
             var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
 
             if (SettingsMgr.WeatherLoaded && SettingsMgr.VersionCode < CurrentVersionCode)
@@ -95,7 +101,7 @@ namespace SimpleWeather.Common.Migrations
                     }
 
                     // DevSettings -> Settings.SetAPIKey
-#if WINDOWS_UWP || NETFX_CORE || NETSTANDARD || __ANDROID__
+#if WINDOWS_UWP || __ANDROID__
                     var devSettingsMap = SettingsMgr.GetDevSettingsPreferenceMap();
                     devSettingsMap.ForEach((kvp) =>
                     {

@@ -244,6 +244,9 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
+# MacOS
+.DS_Store
+
 # SimpleWeather
 API_KEY.txt
 /SimpleWeather.Uno/SimpleWeather.Uno.UWP/Package.StoreAssociation.xml
@@ -262,10 +265,11 @@ API_KEY.txt
 /SimpleWeather.Weather-API/Keys/Keys.7z
 /Utf8Json.UniversalCodeGenerator
 /*.bat*
+/*.sh*
 /TranslationImport
 listingData-*.csv
 /SimpleWeather.Shared.Extras
-/SimpleWeather.UWP.Extras
+/SimpleWeather.Uno.Extras
 /SimpleWeather.Backgrounds
 /SimpleWeather.Extras
 /SimpleWeather.WeatherIcons

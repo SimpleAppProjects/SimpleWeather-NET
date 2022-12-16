@@ -1,12 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+
   <PropertyGroup>
-    <TargetFrameworks>uap10.0.19041;netstandard2.0</TargetFrameworks>
-    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
     <AssemblyName>TimberLog</AssemblyName>
     <RootNamespace>Timber.Log</RootNamespace>
   </PropertyGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('uap'))">
-  </ItemGroup>
+
 </Project>

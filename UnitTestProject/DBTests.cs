@@ -1,17 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace UnitTestProject
@@ -39,10 +30,12 @@ namespace UnitTestProject
                 _lock.Dispose();
             }
 
+            /*
             App.Current.UnhandledException += (s, e) =>
             {
                 System.Diagnostics.Debug.WriteLine(e.Exception);
             };
+            */
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
             {

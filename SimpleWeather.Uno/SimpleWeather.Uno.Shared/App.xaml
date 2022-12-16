@@ -12,13 +12,23 @@
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters">
     <Application.Resources>
-        <muxc:XamlControlsResources>
+        <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <!--  Load WinUI resources  -->
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+
+                <!--  Load Uno.Material resources  -->
+                <MaterialColors xmlns="using:Uno.Material" OverrideSource="ms-appx:///Themes/MaterialColorsOverride.xaml" />
+                <MaterialFonts xmlns="using:Uno.Material" />
+                <MaterialResources xmlns="using:Uno.Material" />
+
+                <!--  Load custom resources  -->
                 <localControls:DataTemplates />
+                <ResourceDictionary Source="ms-appx:///Themes/Colors.xaml" />
                 <ResourceDictionary Source="ms-appx:///Themes/Generic.xaml" />
-                <ResourceDictionary Source="ms-appx:///Themes/Themes.xaml" />
                 <ResourceDictionary Source="ms-appx:///Themes/Styles.xaml" />
+                <ResourceDictionary Source="ms-appx:///Themes/Themes.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        </muxc:XamlControlsResources>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

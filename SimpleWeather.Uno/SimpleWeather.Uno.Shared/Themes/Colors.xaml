@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--  App Colors Start  -->
+    <Color x:Key="SimpleBlue">#0070c0</Color>
+    <Color x:Key="SimpleBlueDark">#00468f</Color>
+    <Color x:Key="SimpleBlueLight">#599ef3</Color>
+    <Color x:Key="SimpleBlueMedium">#007dd6</Color>
+    <SolidColorBrush x:Key="SimpleBlueBrush" Color="{StaticResource SimpleBlue}" />
+    <SolidColorBrush x:Key="SimpleBlueDarkBrush" Color="{StaticResource SimpleBlueDark}" />
+    <SolidColorBrush x:Key="SimpleBlueLightBrush" Color="{StaticResource SimpleBlueLight}" />
+    <SolidColorBrush x:Key="SimpleBlueMediumBrush" Color="{StaticResource SimpleBlueMedium}" />
+    <!--  App Colors End  -->
+</ResourceDictionary>
