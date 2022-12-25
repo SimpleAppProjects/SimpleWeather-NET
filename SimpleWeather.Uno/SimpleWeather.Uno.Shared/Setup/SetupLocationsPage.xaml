@@ -12,11 +12,13 @@
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:Background="{ThemeResource SimpleBlueDarkBrush}"
     x:DefaultBindMode="OneWay"
     Background="Transparent"
     NavigationCacheMode="Enabled"
-    mc:Ignorable="d">
+    mc:Ignorable="d not_win">
 
     <Page.Resources>
         <Style
@@ -432,7 +434,20 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <muxc:ProgressRing
+                <win:ProgressRing
+                    xmlns="using:Microsoft.UI.Xaml.Controls"
+                    Name="LoadingRing"
+                    Grid.Row="2"
+                    Width="35"
+                    Height="35"
+                    Margin="10"
+                    HorizontalAlignment="Center"
+                    Foreground="White"
+                    IsActive="{x:Bind LocationSearchViewModel.IsLoading}"
+                    IsIndeterminate="True"
+                    RelativePanel.AlignHorizontalCenterWithPanel="True"
+                    RelativePanel.Below="GPSButton" />
+                <not_win:ProgressRing
                     Name="LoadingRing"
                     Grid.Row="2"
                     Width="35"

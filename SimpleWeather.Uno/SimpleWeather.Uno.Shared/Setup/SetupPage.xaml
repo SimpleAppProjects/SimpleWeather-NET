@@ -9,9 +9,11 @@
     xmlns:localcontrols="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:not_win="http://uno.ui/not_win"
     xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Background="{ThemeResource AppColorBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d not_win">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -23,6 +25,8 @@
             x:Name="AppTitleBar"
             Grid.Row="0"
             VerticalAlignment="Top"
+            not_win:Load="false"
+            win:Visibility="Visible"
             Background="Transparent"
             Canvas.ZIndex="1"
             IsHitTestVisible="True"

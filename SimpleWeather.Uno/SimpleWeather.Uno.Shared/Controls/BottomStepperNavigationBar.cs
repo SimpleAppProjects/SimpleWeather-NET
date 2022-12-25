@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
@@ -13,7 +16,11 @@ namespace SimpleWeather.UWP.Controls
     [TemplatePart(Name = nameof(BackBtn), Type = typeof(Button))]
     [TemplatePart(Name = nameof(BackBtnLabel), Type = typeof(TextBlock))]
     [TemplatePart(Name = nameof(BackBtnIconPresenter), Type = typeof(ContentPresenter))]
-    [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(ListView))]
+#if WINDOWS_UWP
+    [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(ListBox))]
+#else
+    [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(StackPanel))]
+#endif
     [TemplatePart(Name = nameof(NextBtn), Type = typeof(Button))]
     [TemplatePart(Name = nameof(NextBtnLabel), Type = typeof(TextBlock))]
     [TemplatePart(Name = nameof(NextBtnIconPresenter), Type = typeof(ContentPresenter))]
@@ -23,7 +30,11 @@ namespace SimpleWeather.UWP.Controls
         private Button BackBtn;
         private TextBlock BackBtnLabel;
         private ContentPresenter BackBtnIconPresenter;
-        private ListView IndicatorBox;
+#if WINDOWS_UWP
+        private ListBox IndicatorBox;
+#else
+        private StackPanel IndicatorBox;
+#endif
         private Button NextBtn;
         private TextBlock NextBtnLabel;
         private ContentPresenter NextBtnIconPresenter;
@@ -158,7 +169,11 @@ namespace SimpleWeather.UWP.Controls
             BackBtn = GetTemplateChild(nameof(BackBtn)) as Button;
             BackBtnLabel = GetTemplateChild(nameof(BackBtnLabel)) as TextBlock;
             BackBtnIconPresenter = GetTemplateChild(nameof(BackBtnIconPresenter)) as ContentPresenter;
+#if WINDOWS_UWP
             IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListView;
+#else
+            IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as StackPanel;
+#endif
             NextBtn = GetTemplateChild(nameof(NextBtn)) as Button;
             NextBtnLabel = GetTemplateChild(nameof(NextBtnLabel)) as TextBlock;
             NextBtnIconPresenter = GetTemplateChild(nameof(NextBtnIconPresenter)) as ContentPresenter;
@@ -230,20 +245,52 @@ namespace SimpleWeather.UWP.Controls
                 NextBtnLabel.ClearValue(TextBlock.TextProperty);
         }
 
-        private void SetItemCount(int value, bool useTransitions = false)
+        private void SetItemCount(int count, bool useTransitions = false)
         {
             if (IndicatorBox != null)
             {
-                IndicatorBox.ItemsSource = value > 0 ? Enumerable.Repeat(string.Empty, value) : new List<string>(0);
+#if WINDOWS_UWP
+                IndicatorBox.ItemsSource = count > 0 ? Enumerable.Repeat(string.Empty, count) : new List<string>(0);
+#else
+                IndicatorBox.Children.Clear();
+                for (int i = 0; i < count; i++)
+                {
+                    var dot = new Ellipse()
+                    {
+                        Width = 8,
+                        Height = 8,
+                        Fill = new SolidColorBrush(Colors.White),
+                        Stroke = new SolidColorBrush(Colors.White),
+                        Opacity = 1,
+                        Margin = new Thickness(4)
+                    };
+                    IndicatorBox.Children.Add(dot);
+                }
+#endif
             }
             SetSelectedItem(0, useTransitions);
         }
 
-        private void SetSelectedItem(int value, bool useTransitions = false)
+        private void SetSelectedItem(int idx, bool useTransitions = false)
         {
             if (IndicatorBox != null)
             {
-                IndicatorBox.SelectedIndex = value;
+#if WINDOWS_UWP
+                IndicatorBox.SelectedIndex = idx;
+#else
+                for (int i = 0; i < ItemCnt; i++)
+                {
+                    var dot = IndicatorBox.Children[i];
+                    if (i == SelectedIdx)
+                    {
+                        dot.Opacity = 1;
+                    }
+                    else
+                    {
+                        dot.Opacity = 0.25;
+                    }
+                }
+#endif
             }
             UpdateButtonsState();
         }
