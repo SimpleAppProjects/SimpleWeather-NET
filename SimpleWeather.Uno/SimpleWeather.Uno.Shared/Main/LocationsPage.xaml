@@ -146,7 +146,7 @@
                         <Viewbox Grid.Column="0">
                             <TextBlock
                                 Padding="2.5"
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                 Text="&#xE710;" />
                         </Viewbox>
                         <TextBlock

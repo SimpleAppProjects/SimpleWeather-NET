@@ -13,7 +13,8 @@ namespace EditManifest
         private enum OSVersion
         {
             Unknown = -1,
-            UWP
+            UWP,
+            MaciOS
         }
 
         private static void Main(string[] args)
@@ -43,6 +44,10 @@ namespace EditManifest
                 {
                     OSVersion = OSVersion.UWP;
                 }
+                else if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    OSVersion = OSVersion.MaciOS;
+                }
 
                 if (OSVersion == OSVersion.Unknown)
                 {
@@ -66,13 +71,24 @@ namespace EditManifest
                         var line = sReader.ReadLine();
                         if (OSVersion == OSVersion.UWP)
                         {
-                            if ("Debug".Equals(ConfigMode))
+                            if (ConfigMode?.StartsWith("Debug") == true)
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeatherDebug\"");
                             }
                             else
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeatherDebug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
+                            }
+                        }
+                        else if (OSVersion == OSVersion.MaciOS)
+                        {
+                            if (ConfigMode?.StartsWith("Debug") == true)
+                            {
+                                line = line.Replace("<string>com.thewizrd.simpleweather</string>", "<string>com.thewizrd.simpleweather.debug</string>");
+                            }
+                            else
+                            {
+                                line = line.Replace("<string>com.thewizrd.simpleweather.debug</string>", "<string>com.thewizrd.simpleweather</string>");
                             }
                         }
 

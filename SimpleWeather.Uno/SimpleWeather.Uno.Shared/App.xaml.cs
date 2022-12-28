@@ -102,9 +102,6 @@ namespace SimpleWeather.UWP
             CoreApplication.EnablePrelaunch(true);
 #endif
             InitializeLogging();
-#if HAS_UNO
-            FeatureConfiguration.UIElement.UseLegacyClipping = false;
-#endif
             this.InitializeComponent();
             //Instance = this;
 #if HAS_UNO || NETFX_CORE

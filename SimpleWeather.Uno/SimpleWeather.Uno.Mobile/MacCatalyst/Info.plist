@@ -1,13 +1,13 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-  <dict>
+<dict>
 	<key>CFBundleName</key>
-	<string>SimpleWeather.Uno</string>
+	<string>SimpleWeather</string>
 	<key>CFBundleDisplayName</key>
-	<string>SimpleWeather.Uno</string>
+	<string>SimpleWeather</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.changeme</string>
+	<string>com.thewizrd.simpleweather.debug</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
@@ -22,22 +22,17 @@
 	<string>LaunchScreen</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-	  <string>UIInterfaceOrientationPortrait</string>
-	  <string>UIInterfaceOrientationLandscapeLeft</string>
-	  <string>UIInterfaceOrientationLandscapeRight</string>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Media.xcassets/AppIcon.appiconset</string>
 	<key>UIAppFonts</key>
 	<array>
-	  <string>Fonts/uno-fluentui-assets.ttf</string>
+		<string>Fonts/uno-fluentui-assets.ttf</string>
 	</array>
-
-	<!--
-	Adjust this to your application's encryption usage.
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
-	-->
-
-  </dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>User can optionally request location access to retrieve the weather data for their current location</string>
+</dict>
 </plist>

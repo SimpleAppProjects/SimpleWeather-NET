@@ -53,7 +53,8 @@
             CompleteButtonLabel="{helpers:StringRes Name='Label_Done'}"
             NextButtonLabel="{helpers:StringRes Name='label_next'}"
             RequestedTheme="Dark"
-            StartButtonLabel="{helpers:StringRes Name='label_getstarted'}">
+            StartButtonLabel="{helpers:StringRes Name='label_getstarted'}"
+            not_win:Foreground="White">
             <localcontrols:BottomStepperNavigationBar.BackButtonIcon>
                 <FontIcon Glyph="&#xE76B;" />
             </localcontrols:BottomStepperNavigationBar.BackButtonIcon>

@@ -129,7 +129,7 @@ namespace SimpleWeather.Common.ViewModels
             UiState = UiState with { IsLoading = true };
 
             RefreshToken();
-            Task.Run((Func<Task>)(async () =>
+            Task.Run(async () =>
             {
                 var result = await locationProvider.GetLatestLocationData();
                 LocationData.LocationData currentLocation = null;
@@ -180,7 +180,7 @@ namespace SimpleWeather.Common.ViewModels
                 }
 
                 UiState = UiState with { IsLoading = false };
-            }), cts.Token);
+            }, cts.Token);
         }
 
         public void FetchLocations(string queryString)
@@ -225,7 +225,7 @@ namespace SimpleWeather.Common.ViewModels
             UiState = UiState with { IsLoading = true };
 
             RefreshToken();
-            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
+            DispatcherQueue.EnqueueAsync(async () =>
             {
                 if (string.IsNullOrWhiteSpace(locQuery.Location_Query))
                 {
@@ -325,7 +325,7 @@ namespace SimpleWeather.Common.ViewModels
                     SelectedSearchLocation = result,
                     IsLoading = false
                 };
-            }));
+            });
         }
 
         private void PostErrorMessage(ErrorMessage error)

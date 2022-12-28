@@ -23,7 +23,7 @@
                 Grid.Column="0"
                 Width="50"
                 Margin="-8,0,0,0"
-                FontFamily="Segoe MDL2 Assets"
+                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                 Foreground="{ThemeResource AppAccentColorBrush}"
                 Glyph="&#xE7B7;"
                 Visibility="{x:Bind databinding:BindingExtensions.BoolToVisibility(IsEmpty, x:True), FallbackValue=Collapsed, Mode=OneWay}" />

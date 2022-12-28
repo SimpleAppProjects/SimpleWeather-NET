@@ -21,7 +21,7 @@
                     <StackPanel Orientation="Horizontal">
                         <FontIcon
                             Margin="8,0"
-                            FontFamily="Segoe MDL2 Assets"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
                             Glyph="&#xE939;" />
                         <TextBlock
                             Padding="0,0,8,0"
@@ -62,7 +62,7 @@
                     <StackPanel Orientation="Horizontal">
                         <FontIcon
                             Margin="8,0"
-                            FontFamily="Segoe MDL2 Assets"
+                            FontFamily="{ThemeResource SymbolThemeFontFamily}"
                             Glyph="&#xF2B7;" />
                         <TextBlock
                             Padding="0,0,8,0"

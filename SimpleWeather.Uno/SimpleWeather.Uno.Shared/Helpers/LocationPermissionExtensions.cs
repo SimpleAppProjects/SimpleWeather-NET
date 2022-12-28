@@ -4,13 +4,17 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Controls;
+#if !(WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA)
+using Microsoft.Maui.ApplicationModel;
+#endif
 
 namespace SimpleWeather.UWP.Helpers
 {
     public static class LocationPermissionExtensions
     {
-        public static async Task<bool> LocationPermissionEnabled(this Page page)
+        public static async Task<bool> LocationPermissionEnabled(this Page _)
         {
+#if WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA
             var geoStatus = GeolocationAccessStatus.Unspecified;
 
             try
@@ -23,17 +27,20 @@ namespace SimpleWeather.UWP.Helpers
             }
 
             return geoStatus == GeolocationAccessStatus.Allowed;
+#else
+            return await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+#endif
         }
 
 #if WINDOWS_UWP
         public static IAsyncOperation<bool>
-#else 
+#else
         public static Task<bool>
 #endif
-        LaunchLocationSettings(this Page page)
+        LaunchLocationSettings(this Page _)
 
         {
-            return Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
+            return Windows.System.Launcher.LaunchUriAsync(new Uri("ms-settings:privacy-location"));
         }
     }
 }

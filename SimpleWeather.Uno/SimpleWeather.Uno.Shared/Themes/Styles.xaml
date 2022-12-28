@@ -9,7 +9,11 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
-    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters">
+    xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    mc:Ignorable="d not_win">
     <!--  Converters Start  -->
     <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />
     <converters:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
@@ -143,7 +147,7 @@
                                 Margin="5,0,0,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
+                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                 FontSize="12"
                                 Glyph="&#xE76C;" />
                         </Grid>
@@ -278,6 +282,7 @@
         <Setter Property="VerticalAlignment" Value="Top" />
         <Setter Property="Margin" Value="10" />
         <Setter Property="Padding" Value="10" />
+        <Setter Property="MaxWidth" Value="1080" />
         <Setter Property="HeaderTemplate">
             <Setter.Value>
                 <DataTemplate>

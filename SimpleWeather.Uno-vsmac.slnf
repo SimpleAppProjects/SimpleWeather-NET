@@ -12,7 +12,7 @@
       "SimpleWeather.Weather-API\\SimpleWeather.Weather-API.csproj",
       "SimpleWeather.Common\\SimpleWeather.Common.csproj",
       "SimpleWeather.Uno\\SimpleWeather.Uno.Mobile\\SimpleWeather.Uno.Mobile.csproj",
-      "SimpleWeather.Uno\\SimpleWeather.Uno.Skia.Gtk\\SimpleWeather.Uno.Skia.Gtk.shproj",
+      "SimpleWeather.Uno\\SimpleWeather.Uno.Skia.Gtk\\SimpleWeather.Uno.Skia.Gtk.csproj",
       "SimpleWeather.Uno\\SimpleWeather.Uno.Shared\\SimpleWeather.Uno.Shared.shproj",
       "SimpleWeather.Uno.Extras\\SimpleWeather.Uno.Extras.shproj",
       "BingMapsRESTToolkit\\Source\\BingMapsRESTToolkit.Standard\\BingMapsRESTToolkit.Standard.csproj",

@@ -1,31 +1,33 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net7.0-ios;net7.0-macos;net7.0-maccatalyst;net7.0-android</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
-    <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
-    <GenerateLibraryLayout>true</GenerateLibraryLayout>
-  </PropertyGroup>
-  <PropertyGroup Condition="$(TargetFramework.StartsWith('uap'))">
-    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
-  </PropertyGroup>
-  <ItemGroup Condition="$(TargetFramework.StartsWith('uap'))">
-  </ItemGroup>
-  <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
-    <PackageReference Include="Uno.UI" Version="4.6.19" />
-  </ItemGroup>
-  <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
-    <Content Include="Assets\**" />
-    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
-    <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
-  </ItemGroup>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;net7.0-ios;net7.0-maccatalyst;net7.0-android</TargetFrameworks>
+		<TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		<UseMauiEssentials>true</UseMauiEssentials>
+	</PropertyGroup>
+	<PropertyGroup Condition="$(TargetFramework.StartsWith('uap'))">
+		<TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+	</PropertyGroup>
+	<ItemGroup Condition="$(TargetFramework.StartsWith('uap'))">
+	</ItemGroup>
+	<ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
+		<PackageReference Include="Uno.UI" Version="4.6.39" />
+	</ItemGroup>
+	<ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
+		<Content Include="Assets\**" />
+		<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+		<Compile Update="**\*.xaml.cs">
+			<DependentUpon>%(Filename)</DependentUpon>
+		</Compile>
+	</ItemGroup>
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
+		<ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
+	</ItemGroup>
 </Project>
