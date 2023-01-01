@@ -170,7 +170,7 @@ namespace SimpleWeather.UWP.Controls
             BackBtnLabel = GetTemplateChild(nameof(BackBtnLabel)) as TextBlock;
             BackBtnIconPresenter = GetTemplateChild(nameof(BackBtnIconPresenter)) as ContentPresenter;
 #if WINDOWS_UWP
-            IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListView;
+            IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListBox;
 #else
             IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as StackPanel;
 #endif

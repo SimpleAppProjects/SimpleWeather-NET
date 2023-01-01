@@ -40,6 +40,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.UWP.BackgroundTasks;
 using System.Diagnostics;
+using Windows.UI;
 #endif
 #if HAS_UNO
 using Uno.UI;

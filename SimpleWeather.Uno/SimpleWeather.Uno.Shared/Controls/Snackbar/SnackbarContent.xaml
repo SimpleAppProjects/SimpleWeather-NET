@@ -6,6 +6,8 @@
     xmlns:local="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    d:DataContext="{d:DesignInstance Type=local:Snackbar,
+                                     IsDesignTimeCreatable=False}"
     d:DesignWidth="400"
     mc:Ignorable="d">
 

@@ -100,19 +100,17 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <win:ProgressRing
-                    xmlns="using:Microsoft.UI.Xaml.Controls"
-                    Name="LoadingRing"
-                    Grid.Row="2"
-                    Width="35"
-                    Height="35"
-                    Margin="10"
-                    HorizontalAlignment="Center"
-                    Foreground="White"
-                    IsActive="{x:Bind LocationSearchViewModel.IsLoading}"
-                    IsIndeterminate="True"
-                    RelativePanel.AlignHorizontalCenterWithPanel="True"
-                    RelativePanel.Below="GPSButton" />
+                <win:Border RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="GPSButton">
+                    <muxc:ProgressRing
+                        Name="LoadingRing"
+                        Width="35"
+                        Height="35"
+                        Margin="10"
+                        HorizontalAlignment="Center"
+                        Foreground="White"
+                        IsActive="{x:Bind LocationSearchViewModel.IsLoading}"
+                        IsIndeterminate="True" />
+                </win:Border>
                 <not_win:ProgressRing
                     Name="LoadingRing"
                     Grid.Row="2"
