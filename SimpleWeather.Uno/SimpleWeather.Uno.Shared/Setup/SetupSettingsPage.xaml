@@ -8,10 +8,10 @@
     xmlns:local="using:SimpleWeather.UWP.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    d:Background="{ThemeResource SimpleBlueDarkBrush}"
-    NavigationCacheMode="Enabled"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:Background="{ThemeResource SimpleBlueDarkBrush}"
+    NavigationCacheMode="Enabled"
     mc:Ignorable="d not_win">
 
     <ScrollViewer x:Name="Scroller">
@@ -21,7 +21,10 @@
                 Margin="0,32,0,0"
                 HorizontalAlignment="Center"
                 RequestedTheme="Dark">
-                <FontIcon win:Glyph="&#xF8B0;" not_win:Glyph="&#xE713;" not_win:FontSize="96" />
+                <FontIcon
+                    not_win:FontSize="96"
+                    not_win:Glyph="&#xE713;"
+                    win:Glyph="&#xF8B0;" />
             </Viewbox>
             <TextBlock
                 Padding="8"
@@ -38,7 +41,10 @@
                 CornerRadius="{ThemeResource OverlayCornerRadius}"
                 Orientation="Vertical">
                 <StackPanel.Background>
-                    <SolidColorBrush Opacity="0.85" not_win:Color="{ThemeResource SurfaceColor}" win:Color="{ThemeResource RegionColor}" />
+                    <SolidColorBrush
+                        not_win:Color="{ThemeResource SurfaceColor}"
+                        win:Color="{ThemeResource RegionColor}"
+                        Opacity="0.85" />
                 </StackPanel.Background>
                 <TextBlock
                     x:Uid="Pref_SummaryUnits"
@@ -61,8 +67,7 @@
                 <ComboBox
                     x:Name="RefreshComboBox"
                     MinWidth="260"
-                    Margin="0,10"
-                    Style="{ThemeResource DefaultComboBoxStyle}">
+                    Margin="0,10">
                     <ComboBox.Header>
                         <TextBlock d:Text="Update Frequency" Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
                     </ComboBox.Header>
@@ -72,7 +77,7 @@
                     d:Text="Show notifications for weather alerts:"
                     Text="{helpers:StringRes Name='pref_summary_alerts'}" />
                 <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ToggleSwitch x:Name="AlertSwitch" Style="{ThemeResource MaterialToggleSwitchStyle}" />
+                    <ToggleSwitch x:Name="AlertSwitch" />
                 </StackPanel>
             </StackPanel>
         </StackPanel>

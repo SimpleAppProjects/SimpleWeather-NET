@@ -44,6 +44,7 @@ using Windows.UI;
 #endif
 #if HAS_UNO
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 #endif
 
 namespace SimpleWeather.UWP
@@ -101,6 +102,18 @@ namespace SimpleWeather.UWP
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
 #if WINDOWS_UWP
             CoreApplication.EnablePrelaunch(true);
+#endif
+#if HAS_UNO
+            FeatureConfiguration.Control.UseDeferredOnApplyTemplate = true;
+            // FeatureConfiguration.Font.SymbolsFont = "";
+            // FeatureConfiguration.ListViewBase.DefaultCacheLength = null; // default UWP = 4.0
+            FeatureConfiguration.Page.IsPoolingEnabled = true;
+            // FeatureConfiguration.Style.UseUWPDefaultStyles = false;
+            FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
+            FeatureConfiguration.ScrollViewer.DefaultUpdatesMode = ScrollViewerUpdatesMode.Synchronous;
+#if ANDROID
+            FeatureConfiguration.Popup.UseNativePopup = true;
+#endif
 #endif
             InitializeLogging();
             this.InitializeComponent();
@@ -874,28 +887,28 @@ namespace SimpleWeather.UWP
                 builder.AddFilter("Microsoft", LogLevel.Warning);
 
                 // Generic Xaml events
-                // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
+                builder.AddFilter("Windows.UI.Xaml", LogLevel.Information);
                 // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
                 // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+                builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Information);
+                builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Information); // Default: Trace
 
                 // Layouter specific messages
-                // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+                builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Information);
+                builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Information);
+                builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Information);
 
-                // builder.AddFilter("Windows.Storage", LogLevel.Debug );
+                builder.AddFilter("Windows.Storage", LogLevel.Debug);
 
                 // Binding related messages
-                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+                builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug);
+                builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug);
 
                 // Binder memory references tracking
                 // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
 
                 // RemoteControl and HotReload related
-                // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+                builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
 
                 // Debug JS interop
                 // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );

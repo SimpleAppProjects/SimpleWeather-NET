@@ -114,6 +114,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SunPhaseView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Uno\UnoProgressRing.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UVControl.xaml.cs">
       <DependentUpon>UVControl.xaml</DependentUpon>
     </Compile>

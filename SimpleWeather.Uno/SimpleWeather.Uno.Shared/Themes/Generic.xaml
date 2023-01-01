@@ -70,15 +70,15 @@
                         <StackPanel Orientation="Vertical">
                             <AutoSuggestBox
                                 x:Name="SuggestBox"
+                                MaxWidth="{TemplateBinding MaxWidth}"
+                                win:TextBoxStyle="{TemplateBinding TextBoxStyle}"
                                 Background="{TemplateBinding Background}"
                                 Foreground="{TemplateBinding Foreground}"
                                 IsSuggestionListOpen="{TemplateBinding IsSuggestionListOpen}"
                                 ItemTemplate="{TemplateBinding ItemTemplate}"
                                 ItemsSource="{TemplateBinding ItemsSource}"
                                 PlaceholderText="{TemplateBinding PlaceholderText}"
-                                MaxWidth="{TemplateBinding MaxWidth}"
                                 Style="{ThemeResource DefaultAutoSuggestBoxStyle}"
-                                win:TextBoxStyle="{TemplateBinding TextBoxStyle}"
                                 UpdateTextOnSelect="False" />
                             <muxc:ProgressBar
                                 x:Name="ProgressBarControl"
@@ -180,9 +180,9 @@
                             <Button
                                 x:Name="BackBtn"
                                 Grid.Column="0"
-                                win:Margin="8,0,0,0"
                                 Padding="{ThemeResource BottomStepperButtonPadding}"
                                 HorizontalAlignment="Left"
+                                win:Margin="8,0,0,0"
                                 Background="Transparent"
                                 BorderBrush="Transparent"
                                 Foreground="{TemplateBinding Foreground}">
@@ -197,10 +197,10 @@
                                         <TextBlock
                                             x:Name="BackBtnLabel"
                                             Margin="8,0,0,0"
+                                            win:TextLineBounds="Tight"
                                             FontSize="{TemplateBinding FontSize}"
                                             Foreground="{TemplateBinding Foreground}"
-                                            Text="{TemplateBinding BackButtonLabel}"
-                                            win:TextLineBounds="Tight" />
+                                            Text="{TemplateBinding BackButtonLabel}" />
                                     </StackPanel>
                                 </Button.Content>
                             </Button>
@@ -229,9 +229,9 @@
                             <Button
                                 x:Name="NextBtn"
                                 Grid.Column="2"
-                                win:Margin="0,0,8,0"
                                 Padding="{ThemeResource BottomStepperButtonPadding}"
                                 HorizontalAlignment="Right"
+                                win:Margin="0,0,8,0"
                                 Background="Transparent"
                                 BorderBrush="Transparent"
                                 Foreground="{TemplateBinding Foreground}">
@@ -240,10 +240,10 @@
                                         <TextBlock
                                             x:Name="NextBtnLabel"
                                             Margin="0,0,8,0"
+                                            win:TextLineBounds="Tight"
                                             FontSize="{TemplateBinding FontSize}"
                                             Foreground="{TemplateBinding Foreground}"
-                                            Text="{TemplateBinding NextButtonLabel}"
-                                            win:TextLineBounds="Tight" />
+                                            Text="{TemplateBinding NextButtonLabel}" />
                                         <Viewbox Width="{ThemeResource BottomStepperIconSize}" Height="{ThemeResource BottomStepperIconSize}">
                                             <ContentPresenter
                                                 x:Name="NextBtnIconPresenter"
@@ -355,36 +355,38 @@
         <Setter Property="Height" Value="225" />
     </Style>
 
-    <!-- Uno Overrides -->
-    <!-- NOTE: Exception occurs if this style is not present (setName?) -->
+    <!--  Uno Overrides  -->
+    <!--  NOTE: Exception occurs if this style is not present (setName?)  -->
     <not_win:Style TargetType="mtuc:HeaderedContentControl">
-        <Setter Property="HorizontalContentAlignment" Value="Left"/>
-        <Setter Property="VerticalContentAlignment" Value="Top"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Top" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="mtuc:HeaderedContentControl">
                     <Grid>
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <ContentPresenter x:Name="HeaderPresenter"
-                                          x:DeferLoadStrategy="Lazy"
-                                          Content="{TemplateBinding Header}"
-                                          ContentTemplate="{TemplateBinding HeaderTemplate}"
-                                          Grid.ColumnSpan="2"/>
-                        <ContentPresenter x:Name="ContentPresenter"
-                                          Grid.ColumnSpan="2"
-                                          Grid.Row="1"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          not_win:Content="{TemplateBinding Content}"
-                                          not_win:ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+                        <ContentPresenter
+                            x:Name="HeaderPresenter"
+                            Grid.ColumnSpan="2"
+                            x:DeferLoadStrategy="Lazy"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <ContentPresenter
+                            x:Name="ContentPresenter"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            not_win:Content="{TemplateBinding Content}"
+                            not_win:ContentTemplate="{TemplateBinding ContentTemplate}"
+                            not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="OrientationStates">
                                 <VisualState x:Name="Vertical" />
@@ -404,12 +406,12 @@
         </Setter>
     </not_win:Style>
 
-    <not_win:Style TargetType="TextBox" x:Key="AutoSuggestBoxTextBoxStyle">
+    <not_win:Style x:Key="AutoSuggestBoxTextBoxStyle" TargetType="TextBox">
         <Setter Property="MinWidth" Value="{ThemeResource TextControlThemeMinWidth}" />
         <Setter Property="MinHeight" Value="{ThemeResource TextControlThemeMinHeight}" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-        <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
+        <!--  Uno workaround: Workaround for LinearGradientBrush not supported on all targets  -->
         <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
         <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
@@ -430,13 +432,24 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <Grid x:Name="ButtonLayoutGrid"
-                                                BorderBrush="{ThemeResource TextControlButtonBorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                Background="{ThemeResource TextControlButtonBackground}"
+                                            <Grid
+                                                x:Name="ButtonLayoutGrid"
                                                 Margin="{StaticResource AutoSuggestBoxDeleteButtonMargin}"
+                                                contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
                                                 contract7Present:CornerRadius="{ThemeResource ControlCornerRadius}"
-                                                contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
+                                                Background="{ThemeResource TextControlButtonBackground}"
+                                                BorderBrush="{ThemeResource TextControlButtonBorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}">
+                                                <TextBlock
+                                                    x:Name="GlyphElement"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    AutomationProperties.AccessibilityView="Raw"
+                                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                    FontSize="{ThemeResource AutoSuggestBoxIconFontSize}"
+                                                    FontStyle="Normal"
+                                                    Foreground="{ThemeResource TextControlButtonForeground}"
+                                                    Text="&#xE10A;" />
                                                 <VisualStateManager.VisualStateGroups>
                                                     <VisualStateGroup x:Name="CommonStates">
                                                         <VisualState x:Name="Normal" />
@@ -471,7 +484,8 @@
 
                                                         <VisualState x:Name="Disabled">
                                                             <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetName="ButtonLayoutGrid"
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetName="ButtonLayoutGrid"
                                                                     Storyboard.TargetProperty="Opacity"
                                                                     To="0"
                                                                     Duration="0" />
@@ -479,15 +493,6 @@
                                                         </VisualState>
                                                     </VisualStateGroup>
                                                 </VisualStateManager.VisualStateGroups>
-                                                <TextBlock x:Name="GlyphElement"
-                                                    Foreground="{ThemeResource TextControlButtonForeground}"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Center"
-                                                    FontStyle="Normal"
-                                                    FontSize="{ThemeResource AutoSuggestBoxIconFontSize}"
-                                                    Text="&#xE10A;"
-                                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                                    AutomationProperties.AccessibilityView="Raw" />
                                             </Grid>
                                         </ControlTemplate>
                                     </Setter.Value>
@@ -497,23 +502,24 @@
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="Button">
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                Background="{ThemeResource TextControlButtonBackground}"
-                                                contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                                BorderBrush="{ThemeResource TextControlButtonBorderBrush}"
-                                                BorderThickness="{TemplateBinding BorderThickness}"
-                                                Content="{TemplateBinding Content}"
-                                                contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                                                contract7NotPresent:CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}"
-                                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                ContentTransitions="{TemplateBinding ContentTransitions}"
-                                                FontSize="{ThemeResource AutoSuggestBoxIconFontSize}"
+                                            <ContentPresenter
+                                                x:Name="ContentPresenter"
                                                 Margin="{ThemeResource AutoSuggestBoxInnerButtonMargin}"
                                                 Padding="{TemplateBinding Padding}"
                                                 HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                                contract7NotPresent:CornerRadius="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}"
+                                                contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                                contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                                                muxc:AnimatedIcon.State="Normal"
                                                 AutomationProperties.AccessibilityView="Raw"
-                                                muxc:AnimatedIcon.State="Normal">
+                                                Background="{ThemeResource TextControlButtonBackground}"
+                                                BorderBrush="{ThemeResource TextControlButtonBorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                Content="{TemplateBinding Content}"
+                                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                                FontSize="{ThemeResource AutoSuggestBoxIconFontSize}">
                                                 <VisualStateManager.VisualStateGroups>
                                                     <VisualStateGroup x:Name="CommonStates">
                                                         <VisualState x:Name="Normal" />
@@ -531,7 +537,7 @@
                                                                 </ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
                                                             <VisualState.Setters>
-                                                                <Setter Target="ContentPresenter.(muxc:AnimatedIcon.State)" Value="PointerOver"/>
+                                                                <Setter Target="ContentPresenter.(muxc:AnimatedIcon.State)" Value="PointerOver" />
                                                             </VisualState.Setters>
                                                         </VisualState>
 
@@ -548,13 +554,14 @@
                                                                 </ObjectAnimationUsingKeyFrames>
                                                             </Storyboard>
                                                             <VisualState.Setters>
-                                                                <Setter Target="ContentPresenter.(muxc:AnimatedIcon.State)" Value="Pressed"/>
+                                                                <Setter Target="ContentPresenter.(muxc:AnimatedIcon.State)" Value="Pressed" />
                                                             </VisualState.Setters>
                                                         </VisualState>
 
                                                         <VisualState x:Name="Disabled">
                                                             <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetName="ContentPresenter"
+                                                                <DoubleAnimation
+                                                                    Storyboard.TargetName="ContentPresenter"
                                                                     Storyboard.TargetProperty="Opacity"
                                                                     To="0"
                                                                     Duration="0" />
@@ -568,6 +575,115 @@
                                 </Setter>
                             </Style>
                         </Grid.Resources>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="{ThemeResource AutoSuggestBoxRightButtonMargin}" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Border
+                            x:Name="BorderElement"
+                            Grid.Row="1"
+                            Grid.RowSpan="1"
+                            Grid.ColumnSpan="4"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                        <ContentPresenter
+                            x:Name="HeaderContentPresenter"
+                            Grid.Row="0"
+                            Grid.ColumnSpan="4"
+                            Margin="{ThemeResource AutoSuggestBoxTopHeaderMargin}"
+                            x:DeferLoadStrategy="Lazy"
+                            Content="{TemplateBinding Header}"
+                            ContentTemplate="{TemplateBinding HeaderTemplate}"
+                            FontWeight="Normal"
+                            Foreground="{ThemeResource TextControlHeaderForeground}"
+                            TextWrapping="Wrap"
+                            Visibility="Collapsed" />
+                        <!--  Uno specific: Simulates bottom border linear gradient shadow  -->
+                        <Border
+                            x:Name="BottomBorderElement"
+                            Grid.Row="1"
+                            Grid.RowSpan="1"
+                            Grid.ColumnSpan="4"
+                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}"
+                            BorderThickness="0,0,0,1" />
+                        <ScrollViewer
+                            x:Name="ContentElement"
+                            Grid.Row="1"
+                            Margin="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
+                            IsTabStop="False"
+                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
+                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+                            ZoomMode="Disabled" />
+                        <ContentControl
+                            x:Name="PlaceholderTextContentPresenter"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="4"
+                            Margin="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            Content="{TemplateBinding PlaceholderText}"
+                            Foreground="{ThemeResource TextControlPlaceholderForeground}"
+                            IsHitTestVisible="False"
+                            IsTabStop="False" />
+                        <Button
+                            x:Name="DeleteButton"
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Width="32"
+                            Padding="{ThemeResource HelperButtonThemePadding}"
+                            VerticalAlignment="Stretch"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            FontSize="{TemplateBinding FontSize}"
+                            IsTabStop="False"
+                            Style="{StaticResource DeleteButtonStyle}"
+                            Visibility="Collapsed" />
+                        <Button
+                            x:Name="QueryButton"
+                            Grid.Row="1"
+                            Grid.Column="2"
+                            Width="32"
+                            Height="28"
+                            Margin="2,0,0,0"
+                            Padding="{ThemeResource HelperButtonThemePadding}"
+                            VerticalAlignment="Stretch"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
+                            AutomationProperties.AccessibilityView="Raw"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            FontSize="{TemplateBinding FontSize}"
+                            IsTabStop="False"
+                            Style="{StaticResource QueryButtonStyle}" />
+                        <contract7Present:ContentPresenter
+                            x:Name="DescriptionPresenter"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="4"
+                            x:Load="False"
+                            AutomationProperties.AccessibilityView="Raw"
+                            Content="{TemplateBinding Description}"
+                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}" />
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CommonStates">
@@ -585,7 +701,7 @@
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushDisabled}" />
                                         </ObjectAnimationUsingKeyFrames>
 
-                                        <!-- Uno specific - simulates bottom border gradient -->
+                                        <!--  Uno specific - simulates bottom border gradient  -->
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="Visibility">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="Collapsed" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -603,10 +719,10 @@
                                 <VisualState x:Name="PointerOver">
 
                                     <Storyboard>
-                                        <!-- Uno specific: avoid applying LinearGradientBrush -->
+                                        <!--  Uno specific: avoid applying LinearGradientBrush  -->
                                         <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
-                                        </ObjectAnimationUsingKeyFrames>-->                                    
+                                        </ObjectAnimationUsingKeyFrames>-->
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushPointerOver}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -630,8 +746,8 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="Background">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBackgroundFocused}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        
-                                        <!-- Uno specific: Simulates focused bottom border -->
+
+                                        <!--  Uno specific: Simulates focused bottom border  -->
                                         <!--<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderBrushFocused}" />
                                         </ObjectAnimationUsingKeyFrames>-->
@@ -641,7 +757,7 @@
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BottomBorderElement" Storyboard.TargetProperty="BorderBrush">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource UnoTextControlBorderOverlayBrushFocused}" />
                                         </ObjectAnimationUsingKeyFrames>
-                                        
+
                                         <ObjectAnimationUsingKeyFrames Storyboard.TargetName="BorderElement" Storyboard.TargetProperty="BorderThickness">
                                             <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlBorderThemeThicknessFocused}" />
                                         </ObjectAnimationUsingKeyFrames>
@@ -673,108 +789,6 @@
                             </VisualStateGroup>
 
                         </VisualStateManager.VisualStateGroups>
-
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="{ThemeResource AutoSuggestBoxRightButtonMargin}" />
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Border x:Name="BorderElement"
-                            Grid.Row="1"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Grid.ColumnSpan="4"
-                            Grid.RowSpan="1"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" />
-                        <ContentPresenter x:Name="HeaderContentPresenter"
-                            x:DeferLoadStrategy="Lazy"
-                            Visibility="Collapsed"
-                            Grid.Row="0"
-                            Foreground="{ThemeResource TextControlHeaderForeground}"
-                            Margin="{ThemeResource AutoSuggestBoxTopHeaderMargin}"
-                            Grid.ColumnSpan="4"
-                            Content="{TemplateBinding Header}"
-                            ContentTemplate="{TemplateBinding HeaderTemplate}"
-                            FontWeight="Normal"
-                            TextWrapping="Wrap" />
-                        <!-- Uno specific: Simulates bottom border linear gradient shadow -->
-                        <Border x:Name="BottomBorderElement"
-                            Grid.Row="1"
-                            Grid.ColumnSpan="4"
-                            Grid.RowSpan="1"
-                            BorderThickness="0,0,0,1"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                            contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}"
-                            BorderBrush="{ThemeResource UnoTextControlElevationBorderOverlayBrush}" />                            
-                        <ScrollViewer x:Name="ContentElement"
-                            Grid.Row="1"
-                            HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                            HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                            VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                            VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                            IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                            IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                            IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            Margin="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}"
-                            IsTabStop="False"
-                            AutomationProperties.AccessibilityView="Raw"
-                            ZoomMode="Disabled" />
-                        <ContentControl x:Name="PlaceholderTextContentPresenter"
-                            Grid.Row="1"
-                            Foreground="{ThemeResource TextControlPlaceholderForeground}"
-                            Margin="{TemplateBinding BorderThickness}"
-                            Padding="{TemplateBinding Padding}"
-                            IsTabStop="False"
-                            Grid.ColumnSpan="4"
-                            Content="{TemplateBinding PlaceholderText}"
-                            IsHitTestVisible="False" />
-                        <Button x:Name="DeleteButton"
-                            Grid.Row="1"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                            Style="{StaticResource DeleteButtonStyle}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Padding="{ThemeResource HelperButtonThemePadding}"
-                            IsTabStop="False"
-                            Grid.Column="1"
-                            Visibility="Collapsed"
-                            FontSize="{TemplateBinding FontSize}"
-                            Width="32"
-                            AutomationProperties.AccessibilityView="Raw"
-                            VerticalAlignment="Stretch" />
-                        <Button x:Name="QueryButton"
-                            Grid.Row="1"
-                            Grid.Column="2"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                            Style="{StaticResource QueryButtonStyle}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Margin="2,0,0,0"
-                            Padding="{ThemeResource HelperButtonThemePadding}"
-                            IsTabStop="False"
-                            FontSize="{TemplateBinding FontSize}"
-                            Width="32"
-                            Height="28"
-                            VerticalAlignment="Stretch"
-                            AutomationProperties.AccessibilityView="Raw"/>
-                        <contract7Present:ContentPresenter x:Name="DescriptionPresenter"
-                            Grid.Row="2"
-                            Grid.ColumnSpan="4"
-                            Content="{TemplateBinding Description}"
-                            x:Load="False"
-                            Foreground="{ThemeResource SystemControlDescriptionTextForegroundBrush}"
-                            AutomationProperties.AccessibilityView="Raw" />
-
                     </Grid>
 
                 </ControlTemplate>
@@ -784,12 +798,12 @@
 
     <not_win:Style x:Key="DefaultAutoSuggestBoxStyle" TargetType="AutoSuggestBox">
         <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="VerticalContentAlignment" Value="Stretch"/>
-        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
-        <!-- Uno workaround: Workaround for LinearGradientBrush not supported on all targets-->
+        <!--  Uno workaround: Workaround for LinearGradientBrush not supported on all targets  -->
         <Setter Property="BorderBrush" Value="{ThemeResource ControlStrokeColorDefaultBrush}" />
         <Setter Property="BorderThickness" Value="{ThemeResource TextControlBorderThemeThickness}" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -797,20 +811,11 @@
         <Setter Property="TextBoxStyle" Value="{StaticResource AutoSuggestBoxTextBoxStyle}" />
         <contract6Present:Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
         <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-        <Setter Property="primitives:AutoSuggestBoxHelper.KeepInteriorCornersSquare" Value="true"/>
+        <Setter Property="primitives:AutoSuggestBoxHelper.KeepInteriorCornersSquare" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="AutoSuggestBox">
                     <Grid x:Name="LayoutRoot">
-
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="Orientation">
-                                <VisualState x:Name="Landscape" />
-                                <VisualState x:Name="Portrait" />
-                            </VisualStateGroup>
-
-                        </VisualStateManager.VisualStateGroups>
-
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -819,49 +824,51 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
 
-                        <TextBox x:Name="TextBox"
-                            Style="{TemplateBinding TextBoxStyle}"
-                            PlaceholderText="{TemplateBinding PlaceholderText}"
-                            Header="{TemplateBinding Header}"
+                        <TextBox
+                            x:Name="TextBox"
                             Width="{TemplateBinding Width}"
+                            Margin="0"
+                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
                             contract7Present:Description="{TemplateBinding Description}"
-                            Foreground="{TemplateBinding Foreground}"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            FontSize="{TemplateBinding FontSize}"
-                            FontFamily="{TemplateBinding FontFamily}"
-                            FontWeight="{TemplateBinding FontWeight}"
-                            FontStretch="{TemplateBinding FontStretch}"
-                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            ScrollViewer.BringIntoViewOnFocusChange="False"
                             Canvas.ZIndex="0"
-                            Margin="0"
                             DesiredCandidateWindowAlignment="BottomEdge"
-                            UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}"
-                            contract7Present:CornerRadius="{TemplateBinding CornerRadius}"/>
+                            FontFamily="{TemplateBinding FontFamily}"
+                            FontSize="{TemplateBinding FontSize}"
+                            FontStretch="{TemplateBinding FontStretch}"
+                            FontWeight="{TemplateBinding FontWeight}"
+                            Foreground="{TemplateBinding Foreground}"
+                            Header="{TemplateBinding Header}"
+                            PlaceholderText="{TemplateBinding PlaceholderText}"
+                            ScrollViewer.BringIntoViewOnFocusChange="False"
+                            Style="{TemplateBinding TextBoxStyle}"
+                            UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}" />
 
                         <Popup x:Name="SuggestionsPopup">
-                            <Border x:Name="SuggestionsContainer"
-                                    Padding="{ThemeResource AutoSuggestListMargin}"
-                                    BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}"
-                                    BorderBrush="{ThemeResource AutoSuggestBoxSuggestionsListBorderBrush}"
-                                    Background="{ThemeResource AutoSuggestBoxSuggestionsListBackground}"
-                                    CornerRadius="{ThemeResource OverlayCornerRadius}"
-                                    MaxWidth="{TemplateBinding MaxWidth}">
+                            <Border
+                                x:Name="SuggestionsContainer"
+                                MaxWidth="{TemplateBinding MaxWidth}"
+                                Padding="{ThemeResource AutoSuggestListMargin}"
+                                Background="{ThemeResource AutoSuggestBoxSuggestionsListBackground}"
+                                BorderBrush="{ThemeResource AutoSuggestBoxSuggestionsListBorderBrush}"
+                                BorderThickness="{ThemeResource AutoSuggestListBorderThemeThickness}"
+                                CornerRadius="{ThemeResource OverlayCornerRadius}">
                                 <Border.RenderTransform>
                                     <contract7NotPresent:TranslateTransform x:Name="UpwardTransform" />
                                 </Border.RenderTransform>
                                 <ListView
                                     x:Name="SuggestionsList"
+                                    MaxHeight="{ThemeResource AutoSuggestListMaxHeight}"
+                                    Margin="{ThemeResource AutoSuggestListPadding}"
                                     DisplayMemberPath="{TemplateBinding DisplayMemberPath}"
                                     IsItemClickEnabled="True"
-                                    ItemTemplate="{TemplateBinding ItemTemplate}"
-                                    ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
                                     ItemContainerStyle="{TemplateBinding ItemContainerStyle}"
-                                    MaxHeight="{ThemeResource AutoSuggestListMaxHeight}"
-                                    Margin="{ThemeResource AutoSuggestListPadding}">
+                                    ItemTemplate="{TemplateBinding ItemTemplate}"
+                                    ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}">
                                     <ListView.ItemContainerTransitions>
                                         <contract7NotPresent:TransitionCollection />
                                     </ListView.ItemContainerTransitions>
@@ -869,6 +876,13 @@
                             </Border>
                         </Popup>
 
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="Orientation">
+                                <VisualState x:Name="Landscape" />
+                                <VisualState x:Name="Portrait" />
+                            </VisualStateGroup>
+
+                        </VisualStateManager.VisualStateGroups>
                     </Grid>
 
                 </ControlTemplate>

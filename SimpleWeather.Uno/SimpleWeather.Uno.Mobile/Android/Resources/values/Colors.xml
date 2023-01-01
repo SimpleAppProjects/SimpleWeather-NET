@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <color name="MaterialPrimaryColor">#0060A8</color>
+  <!-- SurfaceColor -->
+  <color name="MaterialSurfaceVariantColor">#DFE2EB</color>
+</resources>
