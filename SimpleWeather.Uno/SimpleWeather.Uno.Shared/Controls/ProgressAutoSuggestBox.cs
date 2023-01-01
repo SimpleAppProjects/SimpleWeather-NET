@@ -188,7 +188,8 @@ namespace SimpleWeather.UWP.Controls
                     {
                         Mode = BindingMode.OneWay,
                         UpdateSourceTrigger = UpdateSourceTrigger.Default,
-                        Source = Footer
+                        Source = this,
+                        Path = new PropertyPath("Footer")
                     });
                     SuggestionsList.SetBinding(ListViewBase.FooterTemplateProperty, new Binding()
                     {

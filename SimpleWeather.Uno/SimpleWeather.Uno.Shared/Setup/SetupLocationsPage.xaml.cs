@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using NodaTime.Calendars;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -255,11 +257,17 @@ namespace SimpleWeather.UWP.Setup
         /// <param name="args">Event args</param>
         private void Location_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            var theChosenOne = args.ChosenSuggestion as LocationQuery;
-            if (theChosenOne != LocationQuery.Empty)
+            if (args.ChosenSuggestion is LocationQuery theChosenOne && theChosenOne != LocationQuery.Empty)
             {
                 LocationSearchViewModel.OnLocationSelected(theChosenOne);
             }
+        }
+
+        private void LocationSearchBox_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+#if __IOS__ || __ANDROID__
+            // Navigate to separate search page
+#endif
         }
 
         private async void GPS_Click(object sender, RoutedEventArgs e)
@@ -269,7 +277,11 @@ namespace SimpleWeather.UWP.Setup
 
         private async Task FetchGeoLocation()
         {
-            await this.LocationPermissionEnabled();
+            if (!await this.LocationPermissionEnabled())
+            {
+                ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_location_denied"), SnackbarDuration.Short));
+                return;
+            }
 
             LocationSearchViewModel.FetchGeoLocation();
         }

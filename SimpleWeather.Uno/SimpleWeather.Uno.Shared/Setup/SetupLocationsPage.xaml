@@ -56,7 +56,8 @@
                     Style="{ThemeResource LocationQuerySearchBoxStyle}"
                     SuggestionChosen="Location_SuggestionChosen"
                     win:TextBoxStyle="{StaticResource ProgressAutoSuggestBoxTextBoxOverAccentStyle}"
-                    TextChanged="Location_TextChanged">
+                    TextChanged="Location_TextChanged"
+                    Tapped="LocationSearchBox_Tapped">
                 </localControls:ProgressAutoSuggestBox>
                 <Button
                     Name="GPSButton"

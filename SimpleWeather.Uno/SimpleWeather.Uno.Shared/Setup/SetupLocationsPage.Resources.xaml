@@ -744,5 +744,5 @@
         </Setter>
     </not_win:Style>
 
-    <SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="#20FFFFFF" />
+    <not_win:SolidColorBrush x:Key="ListViewItemBackgroundPressed" Color="#20FFFFFF" />
 </ResourceDictionary>

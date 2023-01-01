@@ -356,6 +356,7 @@
     </Style>
 
     <!-- Uno Overrides -->
+    <!-- NOTE: Exception occurs if this style is not present (setName?) -->
     <not_win:Style TargetType="mtuc:HeaderedContentControl">
         <Setter Property="HorizontalContentAlignment" Value="Left"/>
         <Setter Property="VerticalContentAlignment" Value="Top"/>

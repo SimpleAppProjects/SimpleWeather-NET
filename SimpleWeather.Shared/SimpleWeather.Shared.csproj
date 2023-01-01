@@ -17,8 +17,8 @@
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp" Version="7.1.11" />
-    <PackageReference Include="Uno.UI" Version="4.6.39" />
-    <PackageReference Include="Uno.UI.Lottie" Version="4.6.39" />
+    <PackageReference Include="Uno.UI" Version="4.7.0-dev.770" />
+    <PackageReference Include="Uno.UI.Lottie" Version="4.7.0-dev.770" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <Content Include="Assets\**" />

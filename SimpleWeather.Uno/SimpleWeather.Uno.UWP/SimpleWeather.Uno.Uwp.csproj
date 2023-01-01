@@ -61,8 +61,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
     <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
     <PackageReference Include="Uno.Material">
-      <Version>2.4.1</Version>
+      <Version>2.5.0-dev.6</Version>
     </PackageReference>
+    <PackageReference Include="Uno.Toolkit.UI" Version="2.5.0-dev.8" />
     <PackageReference Include="Win2D.uwp">
       <Version>1.26.0</Version>
     </PackageReference>

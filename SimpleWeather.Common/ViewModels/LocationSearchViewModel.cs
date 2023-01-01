@@ -12,6 +12,7 @@ using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -21,6 +22,7 @@ using Windows.ApplicationModel.Resources;
 
 namespace SimpleWeather.Common.ViewModels
 {
+    [Bindable(BindableSupport.Default)]
     public class LocationSearchViewModel : BaseViewModel, IDisposable
     {
         private readonly WeatherProviderManager wm;
@@ -208,7 +210,7 @@ namespace SimpleWeather.Common.ViewModels
                             PostErrorMessage(new ErrorMessage.WeatherError(wEx));
                         }
 
-                        UiState = UiState with { Locations = new List<LocationQuery>(0) };
+                        UiState = UiState with { Locations = ImmutableList.Create(new LocationQuery()) };
                     }
                 }
                 else

@@ -19,7 +19,10 @@ namespace SimpleWeather.Utf8JsonGen
                 Utf8Json.Resolvers.AttributeFormatterResolver.Instance,
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
                 SimpleWeather.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
-                SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance
+                SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance,
+#if !WINDOWS_UWP
+                Utf8Json.Resolvers.DynamicGenericResolver.Instance,
+#endif
         };
 
         public IJsonFormatter<T> GetFormatter<T>()
@@ -57,7 +60,10 @@ namespace SimpleWeather.Utf8JsonGen
                 // set StandardResolver or your use resolver chain
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
                 SimpleWeather.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
-                SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance
+                SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance,
+#if !WINDOWS_UWP
+                Utf8Json.Resolvers.DynamicGenericResolver.Instance,
+#endif
         };
 
         public IJsonFormatter<T> GetFormatter<T>()

@@ -22,6 +22,10 @@
                 <MaterialFonts xmlns="using:Uno.Material" />
                 <MaterialResources xmlns="using:Uno.Material" />
 
+ 				<!-- Load Uno.Toolkit.UI resources -->
+ 				<ToolkitResources xmlns="using:Uno.Toolkit.UI" />
+ 				<MaterialToolkitResources xmlns="using:Uno.Toolkit.UI.Material" />
+
                 <!--  Load custom resources  -->
                 <localControls:DataTemplates />
                 <ResourceDictionary Source="ms-appx:///Themes/Colors.xaml" />

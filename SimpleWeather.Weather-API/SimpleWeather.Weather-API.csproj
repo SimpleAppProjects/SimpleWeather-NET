@@ -13,7 +13,7 @@
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
   </PropertyGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
-    <PackageReference Include="Uno.UI" Version="4.6.39" />
+    <PackageReference Include="Uno.UI" Version="4.7.0-dev.770" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
     <Content Include="Assets\**" />

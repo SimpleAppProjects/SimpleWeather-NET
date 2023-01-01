@@ -28,7 +28,14 @@ namespace SimpleWeather.UWP.Helpers
 
             return geoStatus == GeolocationAccessStatus.Allowed;
 #else
-            return await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+            if (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() != PermissionStatus.Granted)
+            {
+                return await Permissions.RequestAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+            }
+            else
+            {
+                return true;
+            }
 #endif
         }
 

@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -55,7 +56,7 @@ namespace SimpleWeather.UWP.Controls
      * Wrapper for the Snackbar/InAppNotification/Infobar
      * Snackbar is managed by SnackbarManager
      */
-
+    [Bindable]
     public sealed partial class Snackbar : DependencyObject
     {
         private Snackbar()
