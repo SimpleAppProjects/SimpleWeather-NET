@@ -22,6 +22,7 @@
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI" Version="7.1.11" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Core" Version="7.1.11" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Layout" Version="7.1.11" />
+    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Media" Version="7.1.11" />
     <PackageReference Include="Uno.UI.Skia.Gtk" Version="4.7.0-dev.770" />
     <PackageReference Include="Uno.UI.RemoteControl" Version="4.7.0-dev.770" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.770" />

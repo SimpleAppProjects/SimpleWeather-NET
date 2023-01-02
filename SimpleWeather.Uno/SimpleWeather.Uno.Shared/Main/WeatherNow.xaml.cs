@@ -26,7 +26,6 @@ using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.StartScreen;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,6 +34,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.UI.Core;
 #if WINDOWS_UWP
 using SimpleWeather.UWP.BackgroundTasks;
 #endif
@@ -640,9 +640,9 @@ namespace SimpleWeather.UWP.Main
                     pinBtn.Visibility = Visibility.Collapsed;
                 }
             }
-    }
+        }
 
-    private void SetPinButton(bool isPinned)
+        private void SetPinButton(bool isPinned)
         {
             var pinBtn = GetPinBtn();
 
@@ -781,6 +781,7 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
+#if WINDOWS_UWP
             var cToken = GetCancellationToken();
 
             AsyncTask.Run(async () =>
@@ -798,6 +799,7 @@ namespace SimpleWeather.UWP.Main
                     });
                 }, CoreDispatcherPriority.Low);
             }, 1000, cToken);
+#endif
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
@@ -808,11 +810,13 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
         {
+#if WINDOWS_UWP
             if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
             {
                 radarViewProvider?.OnDestroyView();
                 radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
             }
+#endif
         }
 
         private void BackgroundOverlay_ImageOpened(object sender, RoutedEventArgs e)

@@ -1,5 +1,4 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -21,9 +20,6 @@ namespace SimpleWeather.UWP.Controls
         public bool IsIndeterminate { get; set; } // Does nothing
 #endif
 
-        public UnoProgressRing()
-        {
-            this.DefaultStyleKey = typeof(UnoProgressRing);
-        }
+        public UnoProgressRing() : base() { }
     }
 }

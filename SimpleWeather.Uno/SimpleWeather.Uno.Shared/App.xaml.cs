@@ -104,6 +104,7 @@ namespace SimpleWeather.UWP
             CoreApplication.EnablePrelaunch(true);
 #endif
 #if HAS_UNO
+            FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = true;
             FeatureConfiguration.Control.UseDeferredOnApplyTemplate = true;
             // FeatureConfiguration.Font.SymbolsFont = "";
             // FeatureConfiguration.ListViewBase.DefaultCacheLength = null; // default UWP = 4.0

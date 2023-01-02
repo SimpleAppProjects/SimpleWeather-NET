@@ -163,7 +163,7 @@
         <Setter Property="BorderBrush" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
     </Style>
     <x:Double x:Key="ArrowButtonCornerRadiusSize">20</x:Double>
-    <Style
+    <win:Style
         x:Key="ArrowButton"
         BasedOn="{StaticResource ButtonRevealStyle}"
         TargetType="Button">
@@ -248,7 +248,91 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
+    </win:Style>
+    <not_win:Style
+        x:Key="ArrowButton"
+        BasedOn="{StaticResource ButtonRevealStyle}"
+        TargetType="Button">
+        <Setter Property="Background" Value="{ThemeResource SystemControlTransparentRevealBackgroundBrush}" />
+        <Setter Property="Padding" Value="8,4,8,4" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid
+                        x:Name="RootGrid"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{ThemeResource ArrowButtonCornerRadiusSize}">
+                        <Viewbox x:Name="ContentViewbox">
+                            <ContentPresenter
+                                x:Name="ContentPresenter"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}" />
+                        </Viewbox>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal">
+                                    <Storyboard>
+                                        <PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="PointerOver">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPointerOver}" />
+                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPointerOver}" />
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPointerOver}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource ButtonRevealBackgroundPressed}" />
+                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource ButtonRevealBorderBrushPressed}" />
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundPressed}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Disabled">
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Background" Value="{ThemeResource SystemControlTransparentBrush}" />
+                                        <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource SystemControlTransparentBrush}" />
+                                        <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource ButtonForegroundDisabled}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                            <VisualStateGroup x:Name="WidthStates">
+                                <VisualState x:Name="Large">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="1007" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Width" Value="40" />
+                                        <Setter Target="RootGrid.Height" Value="40" />
+                                        <Setter Target="ContentViewbox.Margin" Value="5" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                                <VisualState x:Name="Mobile">
+                                    <VisualState.StateTriggers>
+                                        <AdaptiveTrigger MinWindowWidth="0" />
+                                    </VisualState.StateTriggers>
+                                    <VisualState.Setters>
+                                        <Setter Target="RootGrid.Width" Value="30" />
+                                        <Setter Target="RootGrid.Height" Value="30" />
+                                        <Setter Target="ContentViewbox.Margin" Value="0" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </not_win:Style>
     <Style
         x:Key="LeftArrowButton"
         BasedOn="{StaticResource ArrowButton}"

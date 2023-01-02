@@ -613,7 +613,4 @@
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.Resources.xaml" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="$(MSBuildThisFileDirectory)Assets\SolarStroke.svg" />
-  </ItemGroup>
 </Project>

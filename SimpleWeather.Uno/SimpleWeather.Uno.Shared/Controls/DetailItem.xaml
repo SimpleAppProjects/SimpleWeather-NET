@@ -6,11 +6,15 @@
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
     xmlns:utils="using:SimpleWeather.Utils"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Name="Control"
     d:DesignHeight="175"
     d:DesignWidth="175"
-    mc:Ignorable="d">
+    not_win:Height="150"
+    not_win:Width="150"
+    mc:Ignorable="d not_win">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -48,6 +52,7 @@
                 Padding="8"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                not_win:FontSize="13"
                 Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" />
             <localControls:IconControl
                 x:Name="IconCtrl"
@@ -72,6 +77,7 @@
                 <TextBlock
                     Name="DetailValue"
                     Padding="8"
+                    not_win:FontSize="15"
                     Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
                     TextWrapping="WrapWholeWords" />
             </Viewbox>

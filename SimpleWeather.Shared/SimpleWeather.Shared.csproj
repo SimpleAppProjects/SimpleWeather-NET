@@ -20,12 +20,15 @@
     <PackageReference Include="Uno.UI" Version="4.7.0-dev.770" />
     <PackageReference Include="Uno.UI.Lottie" Version="4.7.0-dev.770" />
   </ItemGroup>
-  <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
+  <ItemGroup>
     <Content Include="Assets\**" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(TargetFramework.StartsWith('uap'))">
+    <!--<Content Include="Assets\**" />
     <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
     <Compile Update="**\*.xaml.cs">
       <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
+    </Compile>-->
   </ItemGroup>
   <ItemGroup>
     <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
