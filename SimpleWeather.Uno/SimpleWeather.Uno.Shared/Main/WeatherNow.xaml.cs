@@ -97,7 +97,7 @@ namespace SimpleWeather.UWP.Main
             CommandBarLabel = App.Current.ResLoader.GetString("label_nav_weathernow");
             PrimaryCommands = new List<ICommandBarElement>()
             {
-                #if WINDOWS_UWP
+#if WINDOWS_UWP
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Pin),

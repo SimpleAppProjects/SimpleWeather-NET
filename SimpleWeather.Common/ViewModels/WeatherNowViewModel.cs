@@ -17,6 +17,7 @@ using Windows.ApplicationModel.Resources;
 
 namespace SimpleWeather.Common.ViewModels
 {
+    [Bindable(true)]
     public class WeatherNowViewModel : BaseViewModel
     {
         private readonly SettingsManager SettingsManager;

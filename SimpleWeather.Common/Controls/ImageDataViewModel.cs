@@ -2,10 +2,12 @@
 using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Windows.UI;
 
 namespace SimpleWeather.Common.Controls
 {
+    [Bindable(true)]
     public class ImageDataViewModel
     {
         public string ArtistName { get; protected internal set; }

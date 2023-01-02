@@ -872,6 +872,7 @@ namespace SimpleWeather.UWP
                 builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #elif __IOS__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
+                builder.AddConsole();
 #elif NETFX_CORE
                 builder.AddDebug();
 #else

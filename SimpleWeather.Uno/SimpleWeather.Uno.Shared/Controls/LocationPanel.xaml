@@ -79,7 +79,7 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
-        <muxc:ProgressRing
+        <local:UnoProgressRing
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
             Width="36"

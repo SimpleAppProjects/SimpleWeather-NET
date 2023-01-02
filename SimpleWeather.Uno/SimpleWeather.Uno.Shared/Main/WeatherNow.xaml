@@ -581,7 +581,7 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <muxc:ProgressRing
+        <localcontrols:UnoProgressRing
             x:Name="ContentRing"
             Grid.RowSpan="2"
             Width="36"
@@ -590,7 +590,7 @@
             VerticalAlignment="Center"
             IsActive="{x:Bind databinding:WeatherNowBinding.IsLoadingRingActive(WNowViewModel.UiState), Mode=OneWay}"
             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}" />
-        <muxc:ProgressRing
+        <localcontrols:UnoProgressRing
             x:Name="LoadingRing"
             Grid.RowSpan="2"
             Width="36"

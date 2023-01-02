@@ -128,7 +128,7 @@
                         </StackPanel>
                     </Button.Content>
                 </Button>
-                <muxc:ProgressRing
+                <localControls:UnoProgressRing
                     Name="LoadingRing"
                     Width="35"
                     Height="35"
