@@ -2,10 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:SimpleWeather.UWP.Converters">
-    <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
-    <converters:DetailsItemGridFilterConverter x:Key="detailsFilter" />
-    <converters:GraphDataVisibilityConverter x:Key="graphDataConv" />
-    <converters:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <Style
@@ -28,4 +24,8 @@
             <x:Double x:Key="AcrylicStackTintOpacity">1.0</x:Double>
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
+    <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
+    <converters:DetailsItemGridFilterConverter x:Key="detailsFilter" />
+    <converters:GraphDataVisibilityConverter x:Key="graphDataConv" />
+    <converters:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
 </ResourceDictionary>

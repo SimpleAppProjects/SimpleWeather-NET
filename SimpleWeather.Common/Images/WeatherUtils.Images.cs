@@ -228,13 +228,24 @@ namespace SimpleWeather.Common.Images
                         {
                             var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
 
-                            while (FileUtils.IsFileLocked(file))
+#if WINDOWS_UWP
+                            if (file.IsAvailable)
+#else
+                            if (File.Exists(file.Path))
+#endif
                             {
-                                await Task.Delay(250);
+                                while (FileUtils.IsFileLocked(file))
+                                {
+                                    await Task.Delay(250);
+                                }
+                                var fs = await file.OpenStreamForReadAsync();
+                                var bs = new BufferedStream(fs);
+                                stream = bs;
                             }
-                            var fs = await file.OpenStreamForReadAsync();
-                            var bs = new BufferedStream(fs);
-                            stream = bs;
+                            else
+                            {
+                                return false;
+                            }
                         }
                         catch (Exception e)
                         {

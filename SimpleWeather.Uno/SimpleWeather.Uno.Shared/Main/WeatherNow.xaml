@@ -13,16 +13,17 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
+    xmlns:not_win="http://uno.ui/not_win"
     xmlns:toolkitControls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:toolkitConverters="using:Microsoft.Toolkit.Uwp.UI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.UWP.Utils"
     xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
-    xmlns:win2d="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:Background="{ThemeResource RegionBrush}"
     x:DefaultBindMode="OneWay"
     DataContext="{x:Bind WNowViewModel, Mode=OneWay}"
-    mc:Ignorable="d">
+    mc:Ignorable="d not_win">
 
     <Page.Resources>
         <ResourceDictionary Source="ms-appx:///Main/WeatherNow.Resources.xaml" />
@@ -34,7 +35,7 @@
                 <RowDefinition x:Name="BannerRow" Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <ParallaxView
+            <win:ParallaxView
                 x:Name="BackgroundOverlay"
                 Grid.RowSpan="2"
                 x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
@@ -51,7 +52,23 @@
                         <BitmapImage UriSource="{x:Bind WNowViewModel.ImageData.ImageUri, Mode=OneWay}" />
                     </Image.Source>
                 </Image>
-            </ParallaxView>
+            </win:ParallaxView>
+            <not_win:Border
+                x:Name="BackgroundOverlay"
+                Grid.RowSpan="2"
+                x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
+                <Image
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    ImageFailed="BackgroundOverlay_ImageFailed"
+                    ImageOpened="BackgroundOverlay_ImageOpened"
+                    Stretch="UniformToFill">
+                    <Image.Source>
+                        <BitmapImage UriSource="{x:Bind WNowViewModel.ImageData.ImageUri, Mode=OneWay}" />
+                    </Image.Source>
+                </Image>
+            </not_win:Border>
             <Grid
                 x:Name="GradientOverlay"
                 Grid.RowSpan="2"

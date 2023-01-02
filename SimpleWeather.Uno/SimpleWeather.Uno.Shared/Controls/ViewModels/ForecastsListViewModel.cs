@@ -12,12 +12,14 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public partial class ForecastsListViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;

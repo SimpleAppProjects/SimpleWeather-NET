@@ -9,10 +9,12 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public class LocationPanelUiModel : BaseViewModel
     {
         #region Backing Properties

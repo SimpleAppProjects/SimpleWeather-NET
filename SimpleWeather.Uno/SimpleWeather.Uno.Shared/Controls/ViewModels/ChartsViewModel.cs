@@ -10,6 +10,7 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 #if NETSTANDARD2_0
@@ -20,6 +21,7 @@ using MathF = System.MathF;
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public partial class ChartsViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;

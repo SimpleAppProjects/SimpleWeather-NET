@@ -33,6 +33,7 @@
 
                 <!--  Load custom resources  -->
                 <localControls:DataTemplates />
+                <ResourceDictionary Source="ms-appx:///Themes/Fonts.xaml" />
                 <ResourceDictionary Source="ms-appx:///Themes/Colors.xaml" />
                 <ResourceDictionary Source="ms-appx:///Themes/MaterialColorsOverride.xaml" />
                 <ResourceDictionary Source="ms-appx:///Themes/Generic.xaml" />

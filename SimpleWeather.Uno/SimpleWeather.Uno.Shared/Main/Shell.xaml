@@ -11,15 +11,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.UWP.Helpers"
     xmlns:localControls="using:SimpleWeather.UWP.Controls"
+    xmlns:matIcons="using:SimpleWeather.UWP.MaterialIcons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
+    xmlns:mtui="using:Microsoft.Toolkit.Uwp.UI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
+    xmlns:not_win="http://uno.ui/not_win"
     xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:sharedHelpers="using:SimpleWeather.UWP.Shared.Helpers"
     xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
-    mc:Ignorable="d">
+    mc:Ignorable="d not_win">
 
     <Page.Resources>
         <ResourceDictionary>
@@ -64,6 +68,7 @@
         <Rectangle
             x:Name="XboxContentSafeRect"
             Width="48"
+            not_win:Load="false"
             Canvas.ZIndex="0"
             Fill="{ThemeResource NavigationViewDefaultPaneBackground}"
             Visibility="Collapsed" />
@@ -73,6 +78,7 @@
             Grid.Column="1"
             Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
             VerticalAlignment="Top"
+            not_win:Load="false"
             Background="Transparent"
             Canvas.ZIndex="1"
             IsHitTestVisible="True">
@@ -109,11 +115,12 @@
                     Content="{helpers:StringRes Name='label_nav_weathernow'}"
                     Tag="WeatherNow">
                     <muxc:NavigationViewItem.Icon>
-                        <BitmapIcon
+                        <win:BitmapIcon
                             Margin="-12"
                             Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
                             ShowAsMonochrome="True"
                             UriSource="/Assets/SolarStroke.png" />
+                        <not_win:FontIcon FontFamily="{ThemeResource MaterialIconsFontFamily}" Glyph="&#xe518;" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem
@@ -129,7 +136,11 @@
                     Content="{helpers:StringRes Name='label_radar'}"
                     Tag="WeatherRadarPage">
                     <muxc:NavigationViewItem.Icon>
-                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEB44;" />
+                        <win:FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEB44;" />
+                        <not_win:FontIcon
+                            FontFamily="{ThemeResource MaterialIconsFontFamily}"
+                            FontSize="96"
+                            Glyph="&#xf04e;" />
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
                 <muxc:NavigationViewItem

@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ios="http://uno.ui/ios"
+    xmlns:macos="http://uno.ui/macos"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:skia="http://uno.ui/skia"
+    xmlns:wasm="http://uno.ui/wasm"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:xamarin="http://uno.ui/xamarin"
+    mc:Ignorable="d xamarin ios android macos wasm skia">
+    <ios:FontFamily x:Key="MaterialIconsFontFamily">Material Icons</ios:FontFamily>
+    <macos:FontFamily x:Key="MaterialIconsFontFamily">Material Icons</macos:FontFamily>
+    <wasm:FontFamily x:Key="MaterialIconsFontFamily">Material Icons</wasm:FontFamily>
+    <skia:FontFamily x:Key="MaterialIconsFontFamily">ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</skia:FontFamily>
+    <android:FontFamily x:Key="MaterialIconsFontFamily">ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</android:FontFamily>
+    <win:FontFamily x:Key="MaterialIconsFontFamily">ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</win:FontFamily>
+</ResourceDictionary>

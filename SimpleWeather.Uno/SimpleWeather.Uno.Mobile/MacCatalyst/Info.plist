@@ -31,6 +31,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Fonts/uno-fluentui-assets.ttf</string>
+		<string>Fonts/MaterialIcons-Regular.ttf</string>
 	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>User can optionally request location access to retrieve the weather data for their current location</string>

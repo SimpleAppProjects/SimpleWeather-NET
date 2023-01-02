@@ -28,7 +28,12 @@ namespace SimpleWeather.WeatherData.Images.Model
         public bool IsValid()
         {
             return ImageUrl != null &&
-                (File.Exists(ImageUrl) || Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute)) &&
+                ((
+#if !WINDOWS_UWP
+                ImageUrl?.StartsWith("ms-appx") != true &&
+#endif
+                File.Exists(ImageUrl)) ||
+                Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute)) &&
                 !String.IsNullOrWhiteSpace(HexColor);
         }
 

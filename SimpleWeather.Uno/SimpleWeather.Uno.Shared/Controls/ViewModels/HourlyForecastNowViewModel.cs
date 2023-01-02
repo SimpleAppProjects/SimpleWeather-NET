@@ -5,11 +5,13 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
+using System.ComponentModel;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public class HourlyForecastNowViewModel
     {
         public string Date { get; set; }

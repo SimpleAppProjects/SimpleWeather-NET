@@ -6,10 +6,12 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace SimpleWeather.Common.Controls
 {
+    [Bindable(true)]
     public class WeatherUiModel
     {
         public string Location { get; internal set; }

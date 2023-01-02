@@ -833,7 +833,7 @@ namespace SimpleWeather.Preferences
 
         private void SetOnBoardingComplete(bool value)
         {
-            VersionSettings.SetValue(KEY_ONBOARDINGCOMPLETE, value);
+            SetValue(KEY_ONBOARDINGCOMPLETE, value);
             OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_ONBOARDINGCOMPLETE, NewValue = value });
         }
 

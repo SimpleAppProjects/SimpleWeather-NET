@@ -26,9 +26,9 @@
 	<string>NSApplication</string>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/AppIcons.appiconset</string>
-	<key>ATSApplicationFontsPath</key>
-	<string>Fonts/uno-fluentui-assets.ttf</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>User can optionally request location access to retrieve the weather data for their current location</string>
+	<key>ATSApplicationFontsPath</key>
+	<string>Fonts</string>
 </dict>
 </plist>

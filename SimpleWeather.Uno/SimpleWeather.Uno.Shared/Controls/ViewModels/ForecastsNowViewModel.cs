@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public partial class ForecastsNowViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;

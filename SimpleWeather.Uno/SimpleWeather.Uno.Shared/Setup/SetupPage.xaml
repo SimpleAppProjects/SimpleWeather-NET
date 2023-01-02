@@ -48,13 +48,13 @@
             Grid.Row="2"
             d:ItemCount="5"
             d:SelectedIndex="1"
+            not_win:Foreground="White"
             BackButtonLabel="{helpers:StringRes Name='label_back'}"
             CompleteButtonIcon="Accept"
             CompleteButtonLabel="{helpers:StringRes Name='Label_Done'}"
             NextButtonLabel="{helpers:StringRes Name='label_next'}"
             RequestedTheme="Dark"
-            StartButtonLabel="{helpers:StringRes Name='label_getstarted'}"
-            not_win:Foreground="White">
+            StartButtonLabel="{helpers:StringRes Name='label_getstarted'}">
             <localcontrols:BottomStepperNavigationBar.BackButtonIcon>
                 <FontIcon Glyph="&#xE76B;" />
             </localcontrols:BottomStepperNavigationBar.BackButtonIcon>

@@ -81,8 +81,8 @@ namespace SimpleWeather.UWP.Main
 
 #if WINDOWS_UWP
             Window.Current.SetTitleBar(AppTitleBar);
-#endif
             CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += (s, e) => UpdateAppTitle(s);
+#endif
 
             // remove the solid-colored backgrounds behind the caption controls and system back button if we are in left mode
             // This is done when the app is loaded since before that the actual theme that is used is not "determined" yet
@@ -424,15 +424,19 @@ namespace SimpleWeather.UWP.Main
 
         private void OnPaneDisplayModeChanged(DependencyObject sender, DependencyProperty dp)
         {
+#if WINDOWS_UWP
             var navigationView = sender as muxc.NavigationView;
             AppTitleBar.Visibility = navigationView.PaneDisplayMode == muxc.NavigationViewPaneDisplayMode.Top ? Visibility.Collapsed : Visibility.Visible;
+#endif
         }
 
         void UpdateAppTitle(CoreApplicationViewTitleBar coreTitleBar)
         {
+#if WINDOWS_UWP
             //ensure the custom title bar does not overlap window caption controls
             Thickness currMargin = AppTitleBar.Margin;
             AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
+#endif
         }
 
         private void NavView_PaneOpening(muxc.NavigationView sender, object args)
@@ -447,6 +451,7 @@ namespace SimpleWeather.UWP.Main
 
         private void NavView_DisplayModeChanged(muxc.NavigationView sender, muxc.NavigationViewDisplayModeChangedEventArgs args)
         {
+#if WINDOWS_UWP
             Thickness currMargin = AppTitleBar.Margin;
             if (sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
             {
@@ -459,6 +464,7 @@ namespace SimpleWeather.UWP.Main
             }
 
             UpdateAppTitleMargin(sender);
+#endif
             UpdateHeaderMargin(sender);
         }
 

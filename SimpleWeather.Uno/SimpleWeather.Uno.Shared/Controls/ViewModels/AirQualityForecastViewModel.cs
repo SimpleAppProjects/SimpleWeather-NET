@@ -9,11 +9,13 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.UWP.Controls
 {
+    [Bindable(true)]
     public partial class AirQualityForecastViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;

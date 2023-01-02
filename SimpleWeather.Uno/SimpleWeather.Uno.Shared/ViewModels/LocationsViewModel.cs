@@ -16,6 +16,7 @@ using static SimpleWeather.Utils.WeatherUtils;
 
 namespace SimpleWeather.UWP.ViewModels
 {
+    [Bindable(true)]
     public class LocationsViewModel : BaseViewModel
     {
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();

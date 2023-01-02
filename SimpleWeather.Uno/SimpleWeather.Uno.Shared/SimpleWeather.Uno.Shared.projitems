@@ -185,6 +185,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Main\WeatherRadarPage.xaml.cs">
       <DependentUpon>WeatherRadarPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MaterialIcons\Glyph.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MaterialIcons\MaterialIcon.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MaterialIcons\MaterialIconExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notifications\DailyNotificationCreator.Common.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notifications\DailyNotificationCreator.Windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Notifications\PoPNotificationCreator.Common.cs" />
@@ -588,6 +591,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Themes\Fonts.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Themes\Generic.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -605,5 +612,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.Resources.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\SolarStroke.svg" />
   </ItemGroup>
 </Project>

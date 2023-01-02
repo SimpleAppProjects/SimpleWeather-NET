@@ -9,9 +9,10 @@
     xmlns:local="using:SimpleWeather.UWP.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:skia="http://uno.ui/skia"
     d:Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
-    mc:Ignorable="d">
+    mc:Ignorable="d skia">
 
     <Grid>
         <ScrollViewer
@@ -27,14 +28,19 @@
                     Text="General Settings" />
                 <TextBlock
                     d:Text="Follow current location via GPS"
+                    skia:Visibility="Collapsed"
                     Style="{StaticResource PrefTitleStyle}"
                     Text="{helpers:StringRes Name='pref_summary_currentlocation'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
+                <StackPanel
+                    Padding="10,5"
+                    skia:Visibility="Collapsed"
+                    Orientation="Horizontal">
                     <ToggleSwitch x:Name="FollowGPS" />
                 </StackPanel>
                 <Rectangle
                     Height="1"
                     Margin="0,7.5"
+                    skia:Visibility="Collapsed"
                     Fill="LightGray" />
                 <ComboBox
                     x:Name="RefreshComboBox"
