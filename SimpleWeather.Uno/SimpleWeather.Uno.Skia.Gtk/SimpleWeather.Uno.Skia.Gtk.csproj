@@ -1,44 +1,49 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
-    <OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
-    <TargetFramework>net7.0</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup Condition="exists('..\SimpleWeather.Uno.Uwp')">
-    <EmbeddedResource Include="..\SimpleWeather.Uno.Uwp\Package.appxmanifest" LogicalName="Package.appxmanifest" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Include="..\SimpleWeather.Uno.Shared\**\*.xaml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="KeyedSemaphores" Version="3.1.0" />
-    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-    <PackageReference Include="SkiaSharp.Views.Uno" Version="2.88.3" />
-    <PackageReference Include="Uno.Material" Version="2.5.0-dev.6" />
-    <PackageReference Include="Uno.Toolkit.UI.Material" Version="2.5.0-dev.8" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI" Version="7.1.11" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Core" Version="7.1.11" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Layout" Version="7.1.11" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Media" Version="7.1.11" />
-    <PackageReference Include="Uno.UI.Skia.Gtk" Version="4.7.0-dev.770" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="4.7.0-dev.770" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.770" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-    <PackageReference Include="Uno.UI.Lottie" Version="4.7.0-dev.770" />
-    <PackageReference Include="Uno.UI.Svg" Version="4.7.0-dev.770" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
-    <ProjectReference Include="..\..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
-    <ProjectReference Include="..\..\Timber\Timber.csproj" />
-  </ItemGroup>
-  <Import Project="..\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems" Label="Shared" />
-  <Import Project="..\..\SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems" Label="Shared" />
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
+		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup Condition="exists('..\SimpleWeather.Uno.Uwp')">
+		<EmbeddedResource Include="..\SimpleWeather.Uno.Uwp\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Assets\**" />
+	</ItemGroup>
+	<ItemGroup>
+		<UpToDateCheckInput Include="..\SimpleWeather.Uno.Shared\**\*.xaml" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
+		<PackageReference Include="SkiaSharp.Views.Uno" Version="2.88.3" />
+		<PackageReference Include="Uno.Material" Version="2.5.0-dev.6" />
+		<PackageReference Include="Uno.Toolkit.UI.Material" Version="2.5.0-dev.8" />
+		<PackageReference Include="Uno.UI.Skia.Gtk" Version="4.7.0-dev.770" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="4.7.0-dev.770" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.770" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+		<PackageReference Include="Uno.UI.Lottie" Version="4.7.0-dev.770" />
+		<PackageReference Include="Uno.UI.Svg" Version="4.7.0-dev.770" />
+		<!-- UWP Toolkit -->
+		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI" Version="7.1.11" />
+		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Core" Version="7.1.11" />
+		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Layout" Version="7.1.11" />
+		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Media" Version="7.1.11" />
+		<!-- Common -->
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+		<PackageReference Include="KeyedSemaphores" Version="3.1.0" />
+		<PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
+		<ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
+		<ProjectReference Include="..\..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
+		<ProjectReference Include="..\..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
+		<ProjectReference Include="..\..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
+		<ProjectReference Include="..\..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
+		<ProjectReference Include="..\..\Timber\Timber.csproj" />
+	</ItemGroup>
+	<Import Project="..\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems" Label="Shared" />
+	<Import Project="..\..\SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems" Label="Shared" />
 </Project>
