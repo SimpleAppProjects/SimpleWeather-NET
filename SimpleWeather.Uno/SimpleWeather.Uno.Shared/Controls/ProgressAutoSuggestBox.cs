@@ -1,10 +1,10 @@
-﻿using SimpleWeather.UWP.Helpers;
+﻿using SimpleWeather.Uno.Helpers;
 using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [TemplatePart(Name = nameof(SuggestBox), Type = typeof(AutoSuggestBox))]
     public sealed partial class ProgressAutoSuggestBox : Control

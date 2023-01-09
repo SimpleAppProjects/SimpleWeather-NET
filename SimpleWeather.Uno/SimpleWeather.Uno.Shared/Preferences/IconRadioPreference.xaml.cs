@@ -1,13 +1,11 @@
-﻿using SimpleWeather.Icons;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Icons;
 using System;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     public sealed partial class IconRadioPreference : UserControl
     {
@@ -65,7 +63,7 @@ namespace SimpleWeather.UWP.Preferences
             }
         }
 
-        private void UserControl_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void UserControl_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             RadioButtonChecked?.Invoke(this, e);
         }

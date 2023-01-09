@@ -4,12 +4,12 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData.Auth;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public sealed partial class KeyEntryDialog : ContentDialog
     {

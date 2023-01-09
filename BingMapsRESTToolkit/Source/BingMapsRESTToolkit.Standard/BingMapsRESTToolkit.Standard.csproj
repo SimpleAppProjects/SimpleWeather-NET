@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">uap10.0.19041;$(TargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">net7.0-windows10.0.19041.0;$(TargetFrameworks)</TargetFrameworks>
     <Version>1.1.5</Version>
     <Authors>Microsoft</Authors>
     <Company>Microsoft</Company>

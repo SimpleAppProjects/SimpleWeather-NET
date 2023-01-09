@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
 #if !__MACCATALYST__ && !HAS_UNO_SKIA_GTK
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
@@ -10,44 +11,39 @@ using SimpleWeather.Common;
 using SimpleWeather.Extras;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Main;
-using SimpleWeather.UWP.Preferences;
-using SimpleWeather.UWP.Setup;
+using SimpleWeather.Uno.Main;
+using SimpleWeather.Uno.Preferences;
+using SimpleWeather.Uno.Setup;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Resources;
-using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using Windows.ApplicationModel.Resources;
 #if !__MACCATALYST__
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 #endif
-using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
-#if WINDOWS_UWP
-using Microsoft.Toolkit.Uwp.Notifications;
+using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
+#if WINDOWS
+using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Extras.BackgroundTasks;
-using SimpleWeather.UWP.BackgroundTasks;
+using SimpleWeather.Uno.BackgroundTasks;
 using System.Diagnostics;
-using Windows.UI;
 #endif
 #if HAS_UNO
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
 #endif
 
-namespace SimpleWeather.UWP
+namespace SimpleWeather.Uno
 {
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
@@ -56,7 +52,7 @@ namespace SimpleWeather.UWP
     {
         private Window _window;
 
-        public ResourceLoader ResLoader { get; private set; }
+        public ResourceLoader ResLoader => SharedModule.Instance.ResLoader;
         private readonly UISettings UISettings;
         private readonly SettingsManager SettingsManager;
 
@@ -100,8 +96,8 @@ namespace SimpleWeather.UWP
         {
             this.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
-#if WINDOWS_UWP
-            CoreApplication.EnablePrelaunch(true);
+#if WINDOWS
+            Windows.ApplicationModel.Core.CoreApplication.EnablePrelaunch(true);
 #endif
 #if HAS_UNO
             FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = true;
@@ -121,11 +117,11 @@ namespace SimpleWeather.UWP
             //Instance = this;
 #if HAS_UNO || NETFX_CORE
             this.Suspending += OnSuspending;
-#endif
             this.EnteredBackground += OnEnteredBackground;
             this.LeavingBackground += OnLeavingBackground;
+#endif
 
-#if WINDOWS_UWP
+#if WINDOWS
             // During the transition from foreground to background the
             // memory limit allowed for the application changes. The application
             // has a short time to respond by bringing its memory usage
@@ -161,7 +157,7 @@ namespace SimpleWeather.UWP
             Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
                 JSONParser.Resolver,
                 Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
-                UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
+                Uno.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
             );
 
             // Build DI Services
@@ -185,7 +181,7 @@ namespace SimpleWeather.UWP
             serviceCollection.AddSingleton<ImageDataHelperImpl, Backgrounds.ImageDataHelperRes>();
         }
 
-#if WINDOWS_UWP
+#if WINDOWS
         /// <summary>
         /// Handle system notifications that the app has increased its
         /// memory usage level compared to its current target.
@@ -289,33 +285,147 @@ namespace SimpleWeather.UWP
         }
 #endif
 
-        protected override async void OnActivated(IActivatedEventArgs e)
+        /// <summary>
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
+        /// </summary>
+        /// <param name="e">Details about the launch request and process.</param>
+        protected override async void OnLaunched(LaunchActivatedEventArgs args)
         {
-            base.OnActivated(e);
-            await Initialize(e);
+#if !HAS_UNO
+            // Register for toast activation. Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
+            ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
 
-            // Handle toast activation
-#if WINDOWS_UWP
-            if (e is ToastNotificationActivatedEventArgs)
+            // If we weren't launched by an app, launch our window like normal.
+            // Otherwise if launched by a toast, our OnActivated callback will be triggered
+            if (!ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
+            {
+                var activatedArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
+                var activationKind = activatedArgs.Kind;
+#endif
+            LaunchAndBringToForegroundIfNeeded(args);
+#if !HAS_UNO
+            }
+#endif
+        }
+
+        private async void LaunchAndBringToForegroundIfNeeded(Microsoft.UI.Xaml.LaunchActivatedEventArgs? args = null)
+        {
+            await Initialize(args);
+
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                // this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
+
+            Logger.WriteLine(LoggerLevel.Info, "Started logger...");
+
+            // App loaded for first time
+#if WINDOWS
+            _ = Task.Run(async () =>
+            {
+                // Register background tasks
+                await UpdateTask.RegisterBackgroundTask();
+                await AppUpdaterTask.RegisterBackgroundTask();
+                await RemoteConfigUpdateTask.RegisterBackgroundTask();
+            });
+#endif
+
+#if WINDOWS
+            var prelaunchActivated = false;
+
+            // args.UWPLaunchActivatedEventArgs throws an InvalidCastException in desktop apps.
+            prelaunchActivated = this.RunCatching(() =>
+            {
+                return args?.UWPLaunchActivatedEventArgs?.PrelaunchActivated ?? false;
+            }).GetOrDefault(prelaunchActivated);
+
+            if (!prelaunchActivated)
+#endif
+            {
+#if WINDOWS
+                // args.UWPLaunchActivatedEventArgs throws an InvalidCastException in desktop apps.
+                var tileId = this.RunCatching(() =>
+                {
+                    return args?.UWPLaunchActivatedEventArgs?.TileId;
+                }).GetOrNull();
+
+                if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete && !String.IsNullOrEmpty(tileId) && !tileId.Equals("App", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (RootFrame.Content == null)
+                    {
+                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
+                    }
+
+                    // Navigate to WeatherNow page for location
+                    if (Shell.Instance != null)
+                    {
+                        if (tileId != null)
+                        {
+                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                            {
+                                TileId = tileId
+                            });
+                            Shell.Instance.AppFrame.BackStack.Clear();
+                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                        }
+
+                        // If Shell content is empty navigate to default page
+                        if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
+                        {
+                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                            {
+                                IsHome = true
+                            });
+                            Shell.Instance.AppFrame.BackStack.Clear();
+                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+                        }
+                    }
+                }
+#endif
+
+                if (RootFrame.Content == null)
+                {
+                    UpdateAppTheme();
+
+                    // When the navigation stack isn't restored navigate to the first page,
+                    // configuring the new page by passing required information as a navigation
+                    // parameter
+                    if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
+                        RootFrame.Navigate(typeof(Shell), args.Arguments);
+                    else
+                        RootFrame.Navigate(typeof(SetupPage), args.Arguments);
+                }
+
+                // Ensure the current window is active
+                _window.Activate();
+            }
+        }
+
+#if WINDOWS
+        private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
+        {
+            // Use the dispatcher from the window if present, otherwise the app dispatcher
+            var dispatcherQueue = _window?.DispatcherQueue ?? SharedModule.Instance.DispatcherQueue;
+
+            dispatcherQueue.TryEnqueue(async () =>
             {
                 // Get the root frame
                 RootFrame = _window?.Content as Frame;
 
-                var toastActivationArgs = e as ToastNotificationActivatedEventArgs;
-
-                // Parse the query string (using QueryString.NET)
-                var args = ToastArguments.Parse(toastActivationArgs.Argument);
+                var args = ToastArguments.Parse(e.Argument);
 
                 if (!args.Contains("action"))
                     return;
 
-                // See what action is being requested
                 switch (args["action"])
                 {
                     case "view-alerts":
                         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
-                            string data = null;
+                            string? data = null;
 
                             if (args.Contains("data"))
                             {
@@ -330,7 +440,7 @@ namespace SimpleWeather.UWP
 
                             if (Shell.Instance != null)
                             {
-                                LocationData.LocationData locData = null;
+                                LocationData.LocationData? locData = null;
                                 if (!string.IsNullOrWhiteSpace(data))
                                 {
                                     locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
@@ -358,7 +468,7 @@ namespace SimpleWeather.UWP
                                         Location = locData,
                                         IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
                                     }, null));
-                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                    //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
                             }
                         }
@@ -387,7 +497,7 @@ namespace SimpleWeather.UWP
                                     {
                                         IsHome = true
                                     }, null));
-                                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+                                    //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
                             }
                         }
@@ -396,14 +506,14 @@ namespace SimpleWeather.UWP
                     case "view-weather":
                         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
-                            string data = null;
+                            string? data = null;
 
                             if (args.Contains("data"))
                             {
                                 data = args["data"];
                             }
 
-                            LocationData.LocationData locData = null;
+                            LocationData.LocationData? locData = null;
                             if (!string.IsNullOrWhiteSpace(data))
                             {
                                 locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
@@ -434,163 +544,11 @@ namespace SimpleWeather.UWP
                     default:
                         break;
                 }
-            }
-#endif
-
-            // TODO: Handle other types of activation
-
-            // Ensure the current window is active
-            _window.Activate();
-
-            UpdateAppTheme();
-        }
-
-#if WINDOWS_UWP
-        /// <summary>
-        /// Event fired when a Background Task is activated (in Single Process Model)
-        /// </summary>
-        /// <param name="args">Arguments that describe the BackgroundTask activated</param>
-        protected override async void OnBackgroundActivated(BackgroundActivatedEventArgs args)
-        {
-            base.OnBackgroundActivated(args);
-            await Initialize(args);
-
-            AnalyticsLogger.LogEvent("App: Background Activated",
-                new Dictionary<string, string>()
-                {
-                    { "Task", args?.TaskInstance?.Task?.Name }
-                });
-
-            switch (args?.TaskInstance?.Task?.Name)
-            {
-                case nameof(WeatherUpdateBackgroundTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
-                    new WeatherUpdateBackgroundTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(UpdateTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting UpdateTask");
-                    new UpdateTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(AppUpdaterTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting AppUpdaterTask");
-                    new AppUpdaterTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(RemoteConfigUpdateTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting RemoteConfigUpdateTask");
-                    new RemoteConfigUpdateTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(WeatherTileUpdaterTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherTileUpdaterTask");
-                    new WeatherTileUpdaterTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(DailyNotificationTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting DailyNotificationTask");
-                    new DailyNotificationTask().Run(args.TaskInstance);
-                    break;
-
-                case nameof(PremiumStatusTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting PremiumStatusTask");
-                    new PremiumStatusTask().Run(args.TaskInstance);
-                    break;
-
-                default:
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", args.TaskInstance.Task.Name);
-                    break;
-            }
-        }
-#endif
-
-        /// <summary>
-        /// Invoked when the application is launched normally by the end user.  Other entry points
-        /// will be used such as when the application is launched to open a specific file.
-        /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
-        protected override async void OnLaunched(LaunchActivatedEventArgs e)
-        {
-            base.OnLaunched(e);
-            await Initialize(e);
-
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                //this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
-            Logger.WriteLine(LoggerLevel.Info, "Started logger...");
-
-            // App loaded for first time
-#if WINDOWS_UWP
-            _ = Task.Run(async () =>
-            {
-                // Register background tasks
-                await UpdateTask.RegisterBackgroundTask();
-                await AppUpdaterTask.RegisterBackgroundTask();
-                await RemoteConfigUpdateTask.RegisterBackgroundTask();
             });
-#endif
-
-#if WINDOWS_UWP
-            if (!e.PrelaunchActivated)
-#endif
-            {
-#if WINDOWS_UWP
-                if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete && !String.IsNullOrEmpty(e.TileId) && !e.TileId.Equals("App", StringComparison.OrdinalIgnoreCase))
-                {
-                    if (RootFrame.Content == null)
-                    {
-                        RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                    }
-
-                    // Navigate to WeatherNow page for location
-                    if (Shell.Instance != null)
-                    {
-                        if (e.TileId != null)
-                        {
-                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
-                            {
-                                TileId = e.TileId
-                            });
-                            Shell.Instance.AppFrame.BackStack.Clear();
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                        }
-
-                        // If Shell content is empty navigate to default page
-                        if (Shell.Instance.AppFrame.CurrentSourcePageType == null)
-                        {
-                            Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
-                            {
-                                IsHome = true
-                            });
-                            Shell.Instance.AppFrame.BackStack.Clear();
-                            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-                        }
-                    }
-                }
-#endif
-
-                if (RootFrame.Content == null)
-                {
-                    UpdateAppTheme();
-
-                    // When the navigation stack isn't restored navigate to the first page,
-                    // configuring the new page by passing required information as a navigation
-                    // parameter
-                    if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
-                        RootFrame.Navigate(typeof(Shell), e.Arguments);
-                    else
-                        RootFrame.Navigate(typeof(SetupPage), e.Arguments);
-                }
-
-                // Ensure the current window is active
-                _window.Activate();
-            }
         }
+#endif
 
+#if HAS_UNO || NETFX_CORE
         protected override void OnWindowCreated(WindowCreatedEventArgs args)
         {
             base.OnWindowCreated(args);
@@ -601,27 +559,31 @@ namespace SimpleWeather.UWP
         {
             Radar.MapControlCreator.Instance?.RemoveMapControl();
         }
+#endif
 
-        private void OnLeavingBackground(object sender, LeavingBackgroundEventArgs e)
+#if HAS_UNO || NETFX_CORE
+        private void OnLeavingBackground(object sender, Windows.ApplicationModel.LeavingBackgroundEventArgs e)
         {
             AppState = AppState.Foreground;
             UpdateColorValues();
             UISettings.ColorValuesChanged += DefaultTheme_ColorValuesChanged;
         }
 
-        private void OnEnteredBackground(object sender, EnteredBackgroundEventArgs e)
+        private void OnEnteredBackground(object sender, Windows.ApplicationModel.EnteredBackgroundEventArgs e)
         {
             AppState = AppState.Background;
             UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
         }
+#endif
 
-        private async Task Initialize(IActivatedEventArgs e)
+        private async Task Initialize(Microsoft.UI.Xaml.LaunchActivatedEventArgs? e)
         {
-#if NET6_0_OR_GREATER && WINDOWS && !HAS_UNO
-            _window = new Window();
+#if WINDOWS && !HAS_UNO
+            _window = new MainWindow();
             _window.Activate();
+            MainWindow.Current = _window;
 #else
-            _window = Windows.UI.Xaml.Window.Current;
+            _window = MainWindow.Current;
 #endif
 
             RootFrame = _window?.Content as Frame;
@@ -635,10 +597,12 @@ namespace SimpleWeather.UWP
 
                 RootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+#if WINDOWS
+                if (e?.UWPLaunchActivatedEventArgs?.PreviousExecutionState == Windows.ApplicationModel.Activation.ApplicationExecutionState.Terminated)
                 {
-                    //TODO: Load state from previously suspended application
+                    // TODO: Load state from previously suspended application
                 }
+#endif
 
                 // Place the frame in the current Window
                 _window.Content = RootFrame;
@@ -648,9 +612,6 @@ namespace SimpleWeather.UWP
             {
                 UpdateAppTheme();
             }
-
-            if (ResLoader == null)
-                ResLoader = ResourceLoader.GetForCurrentView();
 
 #if WINDOWS_UWP
             // TitleBar
@@ -676,23 +637,6 @@ namespace SimpleWeather.UWP
             Initialized = true;
         }
 
-        private async Task Initialize(IBackgroundActivatedEventArgs e)
-        {
-            if (Initialized) return;
-
-            if (ResLoader == null)
-                ResLoader = ResourceLoader.GetForViewIndependentUse();
-
-            // Load data if needed
-            _ = Task.Run(SettingsManager.LoadIfNeeded);
-
-            DI.Utils.RemoteConfigService.UpdateWeatherProvider();
-
-            ExtrasService.CheckPremiumStatus();
-
-            Initialized = true;
-        }
-
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>
@@ -703,6 +647,7 @@ namespace SimpleWeather.UWP
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
+#if HAS_UNO || NETFX_CORE
         /// <summary>
         /// Invoked when application execution is being suspended.  Application state is saved
         /// without knowing whether the application will be terminated or resumed with the contents
@@ -710,13 +655,14 @@ namespace SimpleWeather.UWP
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
             Initialized = false;
         }
+#endif
 
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
@@ -753,7 +699,7 @@ namespace SimpleWeather.UWP
             try
             {
                 // NOTE: Run on UI Thread since this may be called off the main thread
-                await DispatcherExtensions.TryRunOnUIThread(() =>
+                await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
                 {
                     AnalyticsLogger.LogEvent("App: UpdateColorValues",
                         new Dictionary<string, string>()
@@ -793,24 +739,12 @@ namespace SimpleWeather.UWP
                         isDarkTheme = true;
                         break;
                 }
-
-#if WINDOWS_UWP
-                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-                if (isDarkTheme)
-                {
-                    titleBar.ButtonForegroundColor = Colors.White;
-                }
-                else
-                {
-                    titleBar.ButtonForegroundColor = Colors.Black;
-                }
-#endif
             }
         }
 
         private void App_OnSettingsChanged(SettingsChangedEventArgs e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             var isWeatherLoaded = localSettings.Values[SettingsManager.KEY_WEATHERLOADED] as bool? ?? false;
 #else
@@ -865,7 +799,7 @@ namespace SimpleWeather.UWP
             // is a concern for your application, keep this disabled. If you're running on web or 
             // desktop targets, you can use url or command line parameters to enable it.
             //
-            // For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
+            // For more performance documentation: https://platform.uno/docs/articles/Uno.WinUI-Performance.html
 
             var factory = LoggerFactory.Create(builder =>
             {
@@ -873,7 +807,6 @@ namespace SimpleWeather.UWP
                 builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #elif __IOS__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
-                builder.AddConsole();
 #elif NETFX_CORE
                 builder.AddDebug();
 #else
@@ -889,27 +822,27 @@ namespace SimpleWeather.UWP
                 builder.AddFilter("Microsoft", LogLevel.Warning);
 
                 // Generic Xaml events
-                builder.AddFilter("Windows.UI.Xaml", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Warning); // Default: Trace
+                builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Warning); // Default: Trace
 
                 // Layouter specific messages
-                builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Warning);
-                builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Warning);
+                builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Warning);
 
                 builder.AddFilter("Windows.Storage", LogLevel.Warning);
 
                 // Binding related messages
-                builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug);
+                builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug);
 
                 // Binder memory references tracking
-                // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
+                // builder.AddFilter("Uno.WinUI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
 
                 // RemoteControl and HotReload related
-                builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Warning);
+                builder.AddFilter("Uno.WinUI.RemoteControl", LogLevel.Warning);
 
                 // Debug JS interop
                 // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );

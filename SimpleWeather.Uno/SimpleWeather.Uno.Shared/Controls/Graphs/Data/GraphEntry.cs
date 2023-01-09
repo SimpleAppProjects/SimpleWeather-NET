@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public abstract class GraphEntry
     {

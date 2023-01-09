@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.UWP.Radar
+﻿namespace SimpleWeather.Uno.Radar
 {
     public sealed class RadarProviderChangedEventArgs
     {

@@ -3,4 +3,13 @@
     <LangVersion>latest</LangVersion>
   	<Version>$(VersionPrefix)5.2.7.0</Version>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
+    <_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
+  </PropertyGroup>
 </Project>

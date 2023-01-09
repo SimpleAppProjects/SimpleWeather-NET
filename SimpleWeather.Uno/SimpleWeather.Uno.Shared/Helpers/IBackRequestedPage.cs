@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     interface IBackRequestedPage
     {

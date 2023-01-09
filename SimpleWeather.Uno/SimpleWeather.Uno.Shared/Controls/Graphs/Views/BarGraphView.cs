@@ -1,16 +1,15 @@
-﻿using SimpleWeather.SkiaSharp;
-using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Utils;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.SkiaSharp;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public sealed partial class BarGraphView : BaseGraphView<BarGraphData, BarGraphDataSet, BarGraphEntry>
     {

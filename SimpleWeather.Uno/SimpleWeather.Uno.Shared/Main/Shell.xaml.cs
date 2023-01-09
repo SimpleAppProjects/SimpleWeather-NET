@@ -2,31 +2,30 @@
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Preferences;
-using SimpleWeather.UWP.ViewModels;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Preferences;
+using SimpleWeather.Uno.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Navigation;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.BackgroundTasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Navigation;
+using CommunityToolkit.WinUI;
+#if WINDOWS
+using SimpleWeather.Uno.BackgroundTasks;
 #endif
 
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -70,7 +69,6 @@ namespace SimpleWeather.UWP.Main
 
             NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
             NavView.IsPaneOpen = false;
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
 
             AppFrame.CacheSize = 1;
 
@@ -79,21 +77,13 @@ namespace SimpleWeather.UWP.Main
             App.Current.UpdateAppTheme();
             UpdateAppTheme();
 
-#if WINDOWS_UWP
-            Window.Current.SetTitleBar(AppTitleBar);
-            CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += (s, e) => UpdateAppTitle(s);
-#endif
-
             // remove the solid-colored backgrounds behind the caption controls and system back button if we are in left mode
             // This is done when the app is loaded since before that the actual theme that is used is not "determined" yet
             Loaded += delegate (object sender, RoutedEventArgs e)
             {
-#if WINDOWS_UWP
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-
-                titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
+#if WINDOWS
+                SetupAppTitleBar();
+                UpdateTitleBarTheme();
 #endif
             };
 
@@ -110,7 +100,7 @@ namespace SimpleWeather.UWP.Main
 
         public void ShowSnackbar(Snackbar snackbar)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 SnackMgr?.Show(snackbar);
             });
@@ -118,7 +108,7 @@ namespace SimpleWeather.UWP.Main
 
         public void DismissAllSnackbars()
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 SnackMgr?.DismissAll();
             });
@@ -140,7 +130,7 @@ namespace SimpleWeather.UWP.Main
 
         public void ShowBanner(Banner banner)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 BannerMgr?.Show(banner);
             });
@@ -148,7 +138,7 @@ namespace SimpleWeather.UWP.Main
 
         public void DismissBanner()
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 BannerMgr?.Dismiss();
             });
@@ -163,7 +153,7 @@ namespace SimpleWeather.UWP.Main
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
             // NOTE: Run on UI Thread since this may be called off the main thread
-            await Dispatcher?.RunOnUIThread(() =>
+            await DispatcherQueue?.EnqueueAsync(() =>
             {
                 if (AppFrame == null)
                     return;
@@ -227,11 +217,11 @@ namespace SimpleWeather.UWP.Main
             // Navigate to WeatherNow page
             if (AppFrame.Content == null && !suppressNavigate)
             {
-                AppFrame.Navigate(typeof(WeatherNow), e.Parameter, new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+                AppFrame.Navigate(typeof(WeatherNow), e.Parameter, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
             }
 
             // Setup background task
-#if WINDOWS_UWP
+#if WINDOWS
             Task.Run(async () =>
             {
                 await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
@@ -267,8 +257,8 @@ namespace SimpleWeather.UWP.Main
             var goBack = new KeyboardAccelerator { Key = Windows.System.VirtualKey.GoBack };
             goBack.Invoked += BackInvoked;
             this.KeyboardAccelerators.Add(goBack);
-#if WINDOWS_UWP
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.UIElement", "KeyboardAcceleratorPlacementMode"))
+#if WINDOWS
+            if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.UIElement", "KeyboardAcceleratorPlacementMode"))
             {
                 this.KeyboardAcceleratorPlacementMode = KeyboardAcceleratorPlacementMode.Hidden;
             }
@@ -283,7 +273,9 @@ namespace SimpleWeather.UWP.Main
             altLeft.Invoked += BackInvoked;
             this.KeyboardAccelerators.Add(altLeft);
 
+#if WINDOWS_UWP
             SystemNavigationManager.GetForCurrentView().BackRequested += Shell_BackRequested;
+#endif
 
             NavView.PaneDisplayMode = muxc.NavigationViewPaneDisplayMode.Auto;
             NavView.IsPaneOpen = false;
@@ -304,7 +296,7 @@ namespace SimpleWeather.UWP.Main
 
         private void NavView_Navigate(
             string navItemTag,
-            Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
+            Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
         {
             Type _page = null;
             if (navItemTag == "SettingsPage")
@@ -424,18 +416,9 @@ namespace SimpleWeather.UWP.Main
 
         private void OnPaneDisplayModeChanged(DependencyObject sender, DependencyProperty dp)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             var navigationView = sender as muxc.NavigationView;
             AppTitleBar.Visibility = navigationView.PaneDisplayMode == muxc.NavigationViewPaneDisplayMode.Top ? Visibility.Collapsed : Visibility.Visible;
-#endif
-        }
-
-        void UpdateAppTitle(CoreApplicationViewTitleBar coreTitleBar)
-        {
-#if WINDOWS_UWP
-            //ensure the custom title bar does not overlap window caption controls
-            Thickness currMargin = AppTitleBar.Margin;
-            AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
 #endif
         }
 
@@ -451,7 +434,7 @@ namespace SimpleWeather.UWP.Main
 
         private void NavView_DisplayModeChanged(muxc.NavigationView sender, muxc.NavigationViewDisplayModeChangedEventArgs args)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             Thickness currMargin = AppTitleBar.Margin;
             if (sender.DisplayMode == muxc.NavigationViewDisplayMode.Minimal)
             {
@@ -470,7 +453,7 @@ namespace SimpleWeather.UWP.Main
 
         private void UpdateAppTitleMargin(muxc.NavigationView sender)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             const int smallLeftIndent = 4, largeLeftIndent = 24;
 
             if (ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7))

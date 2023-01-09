@@ -1,12 +1,12 @@
 ﻿using SimpleWeather.Common.Controls;
 using SimpleWeather.Utils;
 using System;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public sealed partial class WeatherAlertPanel : UserControl
     {

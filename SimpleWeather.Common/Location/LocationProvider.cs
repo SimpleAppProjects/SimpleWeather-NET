@@ -6,11 +6,10 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.TZDB;
 using System;
-using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
-#if !(WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0)
+#if !(WINDOWS || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0)
 using Microsoft.Maui.ApplicationModel;
 #endif
 
@@ -24,7 +23,7 @@ namespace SimpleWeather.Common.Location
 
         public async Task<bool> CheckPermissions()
         {
-#if WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0
+#if WINDOWS || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0
             var geoStatus = GeolocationAccessStatus.Unspecified;
 
             try

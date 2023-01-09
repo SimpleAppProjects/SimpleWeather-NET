@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType Condition="'$(Configuration)'=='Release'">WinExe</OutputType>
 		<OutputType Condition="'$(Configuration)'=='Debug'">Exe</OutputType>
 		<TargetFramework>net7.0</TargetFramework>
 	</PropertyGroup>
-	<ItemGroup Condition="exists('..\SimpleWeather.Uno.Uwp')">
-		<EmbeddedResource Include="..\SimpleWeather.Uno.Uwp\Package.appxmanifest" LogicalName="Package.appxmanifest" />
+	<ItemGroup Condition="exists('..\SimpleWeather.Uno.Windows')">
+		<EmbeddedResource Include="..\SimpleWeather.Uno.Windows\Package.appxmanifest" LogicalName="Package.appxmanifest" />
 	</ItemGroup>
 	<ItemGroup>
 		<Content Include="Assets\**" />
@@ -15,21 +15,22 @@
 		<UpToDateCheckInput Include="..\SimpleWeather.Uno.Shared\**\*.xaml" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="Mapsui.Uno.WinUI" Version="4.0.0-beta.6" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-		<PackageReference Include="SkiaSharp.Views.Uno" Version="2.88.3" />
-		<PackageReference Include="Uno.Material" Version="2.5.0-dev.6" />
-		<PackageReference Include="Uno.Toolkit.UI.Material" Version="2.5.0-dev.8" />
-		<PackageReference Include="Uno.UI.Skia.Gtk" Version="4.7.0-dev.770" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="4.7.0-dev.770" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" />
+		<PackageReference Include="Uno.Material.WinUI" Version="2.5.0-dev.6" />
+		<PackageReference Include="Uno.Toolkit.WinUI.Material" Version="2.5.0-dev.8" />
+		<PackageReference Include="Uno.WinUI.Skia.Gtk" Version="4.7.0-dev.770" />
+		<PackageReference Include="Uno.WinUI.RemoteControl" Version="4.7.0-dev.770" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.7.0-dev.770" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="Uno.UI.Lottie" Version="4.7.0-dev.770" />
-		<PackageReference Include="Uno.UI.Svg" Version="4.7.0-dev.770" />
+		<PackageReference Include="Uno.WinUI.Lottie" Version="4.7.0-dev.770" />
+		<PackageReference Include="Uno.WinUI.Svg" Version="4.7.0-dev.770" />
 		<!-- UWP Toolkit -->
-		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI" Version="7.1.11" />
-		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Core" Version="7.1.11" />
-		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.Layout" Version="7.1.11" />
-		<PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Media" Version="7.1.11" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI" Version="7.1.100" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.Core" Version="7.1.100" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.Layout" Version="7.1.100" />
+		<PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Media" Version="7.1.100" />
 		<!-- Common -->
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
 		<PackageReference Include="KeyedSemaphores" Version="3.1.0" />

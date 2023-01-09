@@ -1,8 +1,8 @@
-﻿using SkiaSharp;
+﻿using Microsoft.UI.Dispatching;
+using SkiaSharp;
 using SkiaSharp.Skottie;
 using System;
 using System.Diagnostics;
-using Windows.System;
 
 namespace SimpleWeather.SkiaSharp
 {

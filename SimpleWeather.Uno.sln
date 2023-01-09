@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleWeather.Uno.Uwp", "SimpleWeather.Uno\SimpleWeather.Uno.UWP\SimpleWeather.Uno.Uwp.csproj", "{8FE7159F-184D-48D6-B0E0-7C49ACCE9703}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWeather.Uno.Windows", "SimpleWeather.Uno\SimpleWeather.Uno.Windows\SimpleWeather.Uno.Windows.csproj", "{8FE7159F-184D-48D6-B0E0-7C49ACCE9703}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTestProject", "UnitTestProject\UnitTestProject.csproj", "{EBFFE54A-AFC2-4EF7-B69D-FDF8F6421C5D}"
 EndProject
@@ -577,8 +577,8 @@ Global
 		SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems*{1c406ff2-4c76-4f63-88a8-6432472c484e}*SharedItemsImports = 5
 		SimpleWeather.Uno\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems*{1c406ff2-4c76-4f63-88a8-6432472c484e}*SharedItemsImports = 5
 		SimpleWeather.Uno\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
-		SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 4
-		SimpleWeather.Uno\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 4
+		SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 5
+		SimpleWeather.Uno\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 5
 		SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems*{a155a8b9-45f2-4a48-b473-3d71f43cbb5b}*SharedItemsImports = 5
 		SimpleWeather.Uno\SimpleWeather.Uno.Shared\SimpleWeather.Uno.Shared.projitems*{a155a8b9-45f2-4a48-b473-3d71f43cbb5b}*SharedItemsImports = 5
 		SimpleWeather.Uno.Extras\SimpleWeather.Uno.Extras.projitems*{dcdf58d5-d7f9-4282-9957-db7ca59442ad}*SharedItemsImports = 13

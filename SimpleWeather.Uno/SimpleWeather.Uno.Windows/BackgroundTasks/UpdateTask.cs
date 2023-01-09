@@ -1,16 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Notifications;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
-    public sealed class DailyNotificationTask : IBackgroundTask
+    public sealed class UpdateTask : IBackgroundTask
     {
-        private const string taskName = nameof(DailyNotificationTask);
+        private const string taskName = nameof(UpdateTask);
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -27,13 +26,15 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
                 await SettingsManager.LoadIfNeeded();
 
-                if (SettingsManager.WeatherLoaded && SettingsManager.DailyNotificationEnabled)
+                if (SettingsManager.WeatherLoaded)
                 {
-                    // Create toast notification
-                    await DailyNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
+                    // Check if WidgetTask is registered
+                    // If not register
+                    await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
 
-                    // Register task for next time
-                    await RegisterBackgroundTask(true);
+                    // Check if WeatherTask is registered
+                    // If not register
+                    await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
                 }
             });
 
@@ -78,8 +79,7 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Register a task for each trigger
                 var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
-                var delay = GetTaskDelayInMinutes();
-                taskBuilder.SetTrigger(new TimeTrigger(delay < 15 ? 15 : delay, true));
+                taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.ServicingComplete, false));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
                 try
@@ -122,25 +122,6 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
 
             return null;
-        }
-
-        private static uint GetTaskDelayInMinutes()
-        {
-            var now = DateTime.Now;
-
-            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
-            var notifTime = SettingsManager.DailyNotificationTime;
-            var notifDateTime = now.Date.Add(notifTime);
-
-            if (now > notifDateTime)
-            {
-                // The time past; execute tomorrow
-                notifDateTime = notifDateTime.AddDays(1);
-            }
-
-            var delay = (uint)(notifDateTime - now).TotalMinutes;
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: delay = {1}", taskName, delay);
-            return delay;
         }
     }
 }

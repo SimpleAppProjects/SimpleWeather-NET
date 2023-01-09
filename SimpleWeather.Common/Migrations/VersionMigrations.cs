@@ -73,7 +73,7 @@ namespace SimpleWeather.Common.Migrations
                             .UpdateLocationQuery(locData);
                         await SettingsMgr.SaveLastGPSLocData(locData);
 
-#if WINDOWS_UWP && !UNIT_TEST
+#if WINDOWS && !UNIT_TEST
                         // Update tile id for location
                         SharedModule.Instance.RequestAction(
                             CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
@@ -101,7 +101,7 @@ namespace SimpleWeather.Common.Migrations
                     }
 
                     // DevSettings -> Settings.SetAPIKey
-#if WINDOWS_UWP || __ANDROID__
+#if WINDOWS || __ANDROID__
                     var devSettingsMap = SettingsMgr.GetDevSettingsPreferenceMap();
                     devSettingsMap.ForEach((kvp) =>
                     {

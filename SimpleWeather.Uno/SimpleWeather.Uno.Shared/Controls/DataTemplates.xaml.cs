@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public partial class DataTemplates : ResourceDictionary
     {

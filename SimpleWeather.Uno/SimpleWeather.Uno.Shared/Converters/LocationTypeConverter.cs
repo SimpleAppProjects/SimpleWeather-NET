@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.LocationData;
 using System;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
-namespace SimpleWeather.UWP.Converters
+namespace SimpleWeather.Uno.Converters
 {
     public class LocationTypeConverter : IValueConverter
     {

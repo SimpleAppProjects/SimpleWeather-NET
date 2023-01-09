@@ -1,11 +1,11 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.StartScreen;
 
-namespace SimpleWeather.UWP.Tiles
+namespace SimpleWeather.Uno.Tiles
 {
     public static class SecondaryTileUtils
     {

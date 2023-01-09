@@ -1,4 +1,4 @@
-﻿#if !WINDOWS_UWP
+﻿#if !WINDOWS
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
-namespace SimpleWeather.UWP.Notifications
+namespace SimpleWeather.Uno.Notifications
 {
     public static class PoPNotificationCreator
     {

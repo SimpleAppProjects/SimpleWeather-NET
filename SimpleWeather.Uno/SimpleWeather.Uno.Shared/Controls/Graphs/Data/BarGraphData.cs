@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public class BarGraphData : GraphData<BarGraphDataSet, BarGraphEntry>
     {

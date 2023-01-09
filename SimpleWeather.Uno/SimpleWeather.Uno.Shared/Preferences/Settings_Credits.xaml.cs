@@ -1,12 +1,12 @@
 ﻿using SimpleWeather.Icons;
 using System;
 using System.Linq;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Documents;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -30,8 +30,8 @@ namespace SimpleWeather.UWP.Preferences
                 var textBlock = new RichTextBlock()
                 {
                     FontSize = 16,
-                    Padding = new Windows.UI.Xaml.Thickness(0, 10, 0, 10),
-                    HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left
+                    Padding = new Microsoft.UI.Xaml.Thickness(0, 10, 0, 10),
+                    HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Left
                 };
 
                 var title = new Paragraph();

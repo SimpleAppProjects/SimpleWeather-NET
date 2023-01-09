@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.ComponentModel;
-using SimpleWeather.UWP.Controls;
-using Windows.UI.Xaml.Navigation;
+using SimpleWeather.Uno.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
-namespace SimpleWeather.UWP.ViewModels
+namespace SimpleWeather.Uno.ViewModels
 {
     public abstract partial class ViewModelPage : ScopePage, IViewModelProvider
     {

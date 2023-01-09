@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SimpleWeather.UWP.Radar.RainViewer
+namespace SimpleWeather.Uno.Radar.RainViewer
 {
     public class Rootobject
     {

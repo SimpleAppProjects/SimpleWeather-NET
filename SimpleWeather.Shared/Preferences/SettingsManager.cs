@@ -848,7 +848,7 @@ namespace SimpleWeather.Preferences
             OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DEVSETTINGSENABLED, NewValue = value });
         }
 
-#if WINDOWS_UWP || __ANDROID__
+#if WINDOWS || __ANDROID__
         public IDictionary<string, object> GetDevSettingsPreferenceMap()
         {
             return GetAllDevSettings().WhereNot(kvp => Equals(kvp.Key, KEY_DEVSETTINGSENABLED))

@@ -1,23 +1,25 @@
-﻿using SimpleWeather.Common.Controls;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI;
+using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using SimpleWeather.Common.Controls;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Utils;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Immutable;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using SKPaintSurfaceEventArgs = SkiaSharp.Views.UWP.SKPaintSurfaceEventArgs;
-using SKXamlCanvas = SkiaSharp.Views.UWP.SKXamlCanvas;
+using SKPaintSurfaceEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
+using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [TemplatePart(Name = nameof(Canvas), Type = typeof(SKXamlCanvas))]
     public sealed partial class SunPhaseView : Control, IDisposable
@@ -117,7 +119,7 @@ namespace SimpleWeather.UWP.Controls
             sunrise = date;
             sunset = date;
 
-            Dispatcher.RunOnUIThread(async () =>
+            DispatcherQueue.EnqueueAsync(async () =>
             {
                 var fs = await StorageFileHelper.GetFileStreamFromApplicationUri(SunIconUri);
                 SunIcon = SKImage.FromEncodedData(fs);
@@ -336,8 +338,14 @@ namespace SimpleWeather.UWP.Controls
             var canvas = e.Surface.Canvas;
 
             // get the screen density for scaling
-            var display = DisplayInformation.GetForCurrentView();
+#if WINDOWS
+            var scale = (float)XamlRoot.RasterizationScale;
+#elif HAS_UNO
+            var display = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
             var scale = display.LogicalDpi / 96.0f;
+#else
+            var scale = 1f;
+#endif
 
             // handle the device screen density
             canvas.Scale(scale);

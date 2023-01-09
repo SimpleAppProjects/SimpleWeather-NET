@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Uwp;
+using CommunityToolkit.WinUI;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
 using SimpleWeather.LocationData;

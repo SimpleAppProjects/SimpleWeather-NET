@@ -27,7 +27,7 @@ namespace SimpleWeather.Preferences
         public partial bool ContainsKey(string key);
         public partial void Remove(string key);
         public partial void Clear();
-#if WINDOWS_UWP || __ANDROID__
+#if WINDOWS || __ANDROID__
         public partial IDictionary<string, object> GetAllSettings();
 #endif
         public int Count => GetPreferenceCount();

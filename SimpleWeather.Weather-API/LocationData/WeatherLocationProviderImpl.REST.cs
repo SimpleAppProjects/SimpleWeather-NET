@@ -1,4 +1,4 @@
-﻿#if !WINDOWS_UWP
+﻿#if !WINDOWS
 using BingMapsRESTToolkit;
 using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
@@ -48,7 +48,7 @@ namespace SimpleWeather.LocationData
                 };
 
                 var response =
-#if WINDOWS_UWP || NETSTANDARD2_0
+#if WINDOWS || NETSTANDARD2_0
                     await request.Execute().AsAsyncOperation().AsTask(cts.Token);
 #else
                     await request.Execute().WaitAsync(cts.Token);

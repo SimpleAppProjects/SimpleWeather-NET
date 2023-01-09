@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml.Navigation;
+﻿using Microsoft.UI.Xaml.Navigation;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public interface IFrameContentPage
     {

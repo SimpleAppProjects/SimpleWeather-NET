@@ -1,15 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.RemoteConfig;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Uno.Notifications;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
-    public class RemoteConfigUpdateTask : IBackgroundTask
+    public sealed class DailyNotificationTask : IBackgroundTask
     {
-        private const string taskName = nameof(RemoteConfigUpdateTask);
+        private const string taskName = nameof(DailyNotificationTask);
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -19,19 +22,23 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             await Task.Run(async () =>
             {
-                // Update config
-                try
+                // Run update logic
+                Logger.WriteLine(LoggerLevel.Debug, "{0}: running update task", taskName);
+
+                await SettingsManager.LoadIfNeeded();
+
+                if (SettingsManager.WeatherLoaded && SettingsManager.DailyNotificationEnabled)
                 {
-                    var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
-                    await remoteConfigService.CheckConfig();
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex);
+                    // Create toast notification
+                    await DailyNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
+
+                    // Register task for next time
+                    await RegisterBackgroundTask(true);
                 }
             });
 
-            deferral?.Complete();
+            // Inform the system that the task is finished.
+            deferral.Complete();
         }
 
         public static async Task RegisterBackgroundTask(bool reregister = false)
@@ -71,9 +78,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Register a task for each trigger
                 var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
-                taskBuilder.SetTrigger(new TimeTrigger(1440, false)); // Daily task
+                var delay = GetTaskDelayInMinutes();
+                taskBuilder.SetTrigger(new TimeTrigger(delay < 15 ? 15 : delay, true));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
 
                 try
                 {
@@ -115,6 +122,25 @@ namespace SimpleWeather.UWP.BackgroundTasks
             }
 
             return null;
+        }
+
+        private static uint GetTaskDelayInMinutes()
+        {
+            var now = DateTime.Now;
+
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var notifTime = SettingsManager.DailyNotificationTime;
+            var notifDateTime = now.Date.Add(notifTime);
+
+            if (now > notifDateTime)
+            {
+                // The time past; execute tomorrow
+                notifDateTime = notifDateTime.AddDays(1);
+            }
+
+            var delay = (uint)(notifDateTime - now).TotalMinutes;
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: delay = {1}", taskName, delay);
+            return delay;
         }
     }
 }

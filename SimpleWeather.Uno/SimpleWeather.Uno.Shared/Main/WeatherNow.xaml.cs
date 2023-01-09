@@ -6,16 +6,16 @@ using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Controls.Graphs;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Radar;
-using SimpleWeather.UWP.Shared.Helpers;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.Tiles;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Controls.Graphs;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Radar;
+using SimpleWeather.Uno.Shared.Helpers;
+#if WINDOWS
+using SimpleWeather.Uno.Tiles;
 #endif
-using SimpleWeather.UWP.Utils;
-using SimpleWeather.UWP.WeatherAlerts;
+using SimpleWeather.Uno.Utils;
+using SimpleWeather.Uno.WeatherAlerts;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using System;
@@ -25,23 +25,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
-using Windows.UI;
+using Microsoft.UI;
 using Windows.UI.StartScreen;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Core;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.BackgroundTasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
+using CommunityToolkit.WinUI;
+#if WINDOWS
+using SimpleWeather.Uno.BackgroundTasks;
 #endif
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -91,13 +91,15 @@ namespace SimpleWeather.UWP.Main
         {
             this.InitializeComponent();
             NavigationCacheMode = NavigationCacheMode.Required;
+#if HAS_UNO
             Application.Current.Resuming += WeatherNow_Resuming;
+#endif
 
             // CommandBar
             CommandBarLabel = App.Current.ResLoader.GetString("label_nav_weathernow");
             PrimaryCommands = new List<ICommandBarElement>()
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 new AppBarButton()
                 {
                     Icon = new SymbolIcon(Symbol.Pin),
@@ -126,7 +128,7 @@ namespace SimpleWeather.UWP.Main
             }
 
             GetRefreshBtn().Tapped += RefreshButton_Click;
-#if WINDOWS_UWP
+#if WINDOWS
             GetPinBtn().Tapped += PinButton_Click;
 #endif
 
@@ -152,7 +154,7 @@ namespace SimpleWeather.UWP.Main
 
         public void ShowBanner(Banner banner)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 BannerMgr?.Show(banner);
             });
@@ -160,7 +162,7 @@ namespace SimpleWeather.UWP.Main
 
         public void DismissBanner()
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 BannerMgr?.Dismiss();
             });
@@ -214,7 +216,7 @@ namespace SimpleWeather.UWP.Main
 
                     if (uiState.NoLocationAvailable)
                     {
-                        await Dispatcher.RunOnUIThread(() =>
+                        await DispatcherQueue.EnqueueAsync(() =>
                         {
                             var banner = Banner.MakeError(App.Current.ResLoader.GetString("prompt_location_not_set"));
                             banner.Icon = new muxc.SymbolIconSource()
@@ -240,7 +242,7 @@ namespace SimpleWeather.UWP.Main
                         ForecastView.UpdateForecasts(locationData);
                         AlertsView.UpdateAlerts(locationData);
 
-#if WINDOWS_UWP
+#if WINDOWS
                         Task.Run((Func<Task>)(async () =>
                         {
                             // Update home tile if it hasn't been already
@@ -309,7 +311,7 @@ namespace SimpleWeather.UWP.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: WeatherNow_Resuming");
 
-#if WINDOWS_UWP
+#if WINDOWS
             if (Shell.Instance.AppFrame.SourcePageType == this.GetType())
             {
                 // Check pin tile status
@@ -351,7 +353,7 @@ namespace SimpleWeather.UWP.Main
 
         private void AdjustViewLayout()
         {
-            if (Windows.UI.Xaml.Window.Current == null) return;
+            if (MainWindow.Current == null) return;
 
             if (MainViewer == null) return;
 
@@ -434,7 +436,7 @@ namespace SimpleWeather.UWP.Main
 
             var locationData = args?.Location;
 
-            Dispatcher.RunOnUIThread(async () =>
+            DispatcherQueue.EnqueueAsync(async () =>
             {
                 //WNowViewModel.Initialize(locationData);
 
@@ -444,7 +446,7 @@ namespace SimpleWeather.UWP.Main
 
         private void OnErrorMessage(ErrorMessage error)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 switch (error)
                 {
@@ -500,7 +502,7 @@ namespace SimpleWeather.UWP.Main
             var locationData = WNowViewModel.UiState?.LocationData;
             bool locationChanged = false;
 
-#if WINDOWS_UWP
+#if WINDOWS
             // Check if we're loading from tile
             if (args?.TileId != null && SecondaryTileUtils.GetQueryFromId(args.TileId) is string locQuery)
             {
@@ -597,8 +599,8 @@ namespace SimpleWeather.UWP.Main
 
             var transition = new SlideNavigationTransitionInfo();
 
-#if WINDOWS_UWP
-            if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
+#if WINDOWS
+            if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
             {
                 transition.Effect = SlideNavigationTransitionEffect.FromRight;
             }
@@ -612,7 +614,7 @@ namespace SimpleWeather.UWP.Main
             GotoAlertsPage();
         }
 
-#if WINDOWS_UWP
+#if WINDOWS
         private void CheckTiles()
         {
             // Check if Tile service is available
@@ -781,12 +783,12 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             var cToken = GetCancellationToken();
 
             AsyncTask.Run(async () =>
             {
-                await Dispatcher.RunOnUIThread(() =>
+                await DispatcherQueue.EnqueueAsync(() =>
                 {
                     if (radarViewProvider == null)
                     {
@@ -797,7 +799,7 @@ namespace SimpleWeather.UWP.Main
                     {
                         radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
                     });
-                }, CoreDispatcherPriority.Low);
+                });
             }, 1000, cToken);
 #endif
         }
@@ -810,7 +812,7 @@ namespace SimpleWeather.UWP.Main
 
         private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
             {
                 radarViewProvider?.OnDestroyView();

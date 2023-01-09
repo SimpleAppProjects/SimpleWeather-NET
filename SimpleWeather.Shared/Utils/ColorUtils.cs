@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI;
+using System;
 using System.Globalization;
 using System.Threading;
 using Windows.UI;
@@ -35,8 +36,8 @@ namespace SimpleWeather.Utils
         public static Color ValueOf(long color)
         {
             byte r = (byte)((color >> 16) & 0xff);
-            byte g = (byte)((color >>  8) & 0xff);
-            byte b = (byte)((color      ) & 0xff);
+            byte g = (byte)((color >> 8) & 0xff);
+            byte b = (byte)((color) & 0xff);
             byte a = (byte)((color >> 24) & 0xff);
 
             return Color.FromArgb(a, r, g, b);

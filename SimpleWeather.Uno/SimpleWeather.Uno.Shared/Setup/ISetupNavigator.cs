@@ -1,6 +1,6 @@
 ﻿using SimpleWeather.ComponentModel;
 
-namespace SimpleWeather.UWP.Setup
+namespace SimpleWeather.Uno.Setup
 {
     public interface ISetupNavigator : IViewModelProvider
     {

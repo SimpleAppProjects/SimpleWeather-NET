@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public abstract partial class ScopePage : Page, IDisposable
     {

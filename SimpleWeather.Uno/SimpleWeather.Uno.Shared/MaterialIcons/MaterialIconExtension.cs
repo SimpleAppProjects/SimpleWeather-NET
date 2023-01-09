@@ -1,8 +1,8 @@
-﻿using Microsoft.Toolkit.Uwp.UI;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
+﻿using CommunityToolkit.WinUI.UI;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 
-namespace SimpleWeather.UWP.MaterialIcons
+namespace SimpleWeather.Uno.MaterialIcons
 {
     [MarkupExtensionReturnType(ReturnType = typeof(FontIcon))]
     public class MaterialIconExtension : TextIconExtension

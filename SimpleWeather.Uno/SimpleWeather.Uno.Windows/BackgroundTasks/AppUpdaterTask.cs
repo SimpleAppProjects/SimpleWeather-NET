@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.Notifications;
+﻿using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using Windows.Foundation.Metadata;
 using Windows.Services.Store;
 using Windows.UI.Notifications;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Safety", "UWP001:Platform-specific", Justification = "<Pending>")]
     public sealed class AppUpdaterTask : IBackgroundTask

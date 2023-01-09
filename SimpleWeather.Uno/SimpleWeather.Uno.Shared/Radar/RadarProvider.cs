@@ -2,19 +2,21 @@
 using Microsoft.Toolkit.Parsers.Core;
 using SimpleWeather.Controls;
 using SimpleWeather.Preferences;
+#if !HAS_UNO_SKIA
+using SimpleWeather.Uno.Radar.NullSchool;
+#endif
+using SimpleWeather.Uno.Radar.OpenWeather;
+using SimpleWeather.Uno.Radar.RainViewer;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Radar.NullSchool;
-using SimpleWeather.UWP.Radar.OpenWeather;
-using SimpleWeather.UWP.Radar.RainViewer;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Storage;
-using static SimpleWeather.UWP.Radar.RadarProviderChangedEventArgs;
+using static SimpleWeather.Uno.Radar.RadarProviderChangedEventArgs;
 
-namespace SimpleWeather.UWP.Radar
+namespace SimpleWeather.Uno.Radar
 {
     public static class RadarProvider
     {
@@ -29,8 +31,10 @@ namespace SimpleWeather.UWP.Radar
 
         public enum RadarProviders
         {
+#if !HAS_UNO_SKIA
             [StringValue(EARTHWINDMAP)]
             EarthWindMap,
+#endif
             [StringValue(RAINVIEWER)]
             RainViewer,
             [StringValue(OPENWEATHERMAP)]
@@ -72,17 +76,22 @@ namespace SimpleWeather.UWP.Radar
             set { SetRadarProvider(value); }
         }
 
-        public static RadarViewProvider GetRadarViewProvider(Windows.UI.Xaml.Controls.Border radarContainer)
+        public static RadarViewProvider GetRadarViewProvider(Microsoft.UI.Xaml.Controls.Border radarContainer)
         {
             switch (RadarAPIProvider)
             {
+#if HAS_UNO_SKIA
+                default:
+#endif
                 case RadarProviders.RainViewer:
                     return new RainViewerViewProvider(radarContainer);
                 case RadarProviders.OpenWeatherMap:
                     return new OWMRadarViewProvider(radarContainer);
+#if !HAS_UNO_SKIA
                 default:
                 case RadarProviders.EarthWindMap:
                     return new EarthWindMapViewProvider(radarContainer);
+#endif
             }
         }
 

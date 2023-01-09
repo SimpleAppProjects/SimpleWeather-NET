@@ -1,17 +1,17 @@
 ﻿using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Radar;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Radar;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -67,7 +67,7 @@ namespace SimpleWeather.UWP.Main
             base.OnNavigatingFrom(e);
         }
 
-        private void RadarWebViewContainer_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        private void RadarWebViewContainer_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
         {
             if (radarViewProvider == null)
             {

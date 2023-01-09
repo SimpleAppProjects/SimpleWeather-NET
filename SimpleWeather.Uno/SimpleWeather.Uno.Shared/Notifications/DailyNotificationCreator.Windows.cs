@@ -1,6 +1,6 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Uwp.Notifications;
+using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
-namespace SimpleWeather.UWP.Notifications
+namespace SimpleWeather.Uno.Notifications
 {
     public static class DailyNotificationCreator
     {

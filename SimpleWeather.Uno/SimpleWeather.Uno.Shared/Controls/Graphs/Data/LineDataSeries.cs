@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Microsoft.UI;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public class LineDataSeries : GraphDataSet<LineGraphEntry>
     {
@@ -31,7 +31,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
             return SeriesColors[idx % SeriesColors.Count];
         }
 
-        public void SetSeriesColors (params Color[] colors)
+        public void SetSeriesColors(params Color[] colors)
         {
             SeriesColors = new List<Color>(colors);
         }

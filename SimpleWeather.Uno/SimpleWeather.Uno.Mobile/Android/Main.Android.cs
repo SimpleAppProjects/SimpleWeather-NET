@@ -1,8 +1,8 @@
 using Android.Runtime;
 using Com.Nostra13.Universalimageloader.Core;
-using SimpleWeather.UWP;
+using SimpleWeather.Uno;
 using System;
-using Windows.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media;
 
 namespace SimpleWeather.Uno.Droid
 {
@@ -13,7 +13,7 @@ namespace SimpleWeather.Uno.Droid
         HardwareAccelerated = true,
         Theme = "@style/AppTheme"
     )]
-    public class Application : Windows.UI.Xaml.NativeApplication
+    public class Application : Microsoft.UI.Xaml.NativeApplication
     {
         public Application(IntPtr javaReference, JniHandleOwnership transfer)
             : base(() => new App(), javaReference, transfer)

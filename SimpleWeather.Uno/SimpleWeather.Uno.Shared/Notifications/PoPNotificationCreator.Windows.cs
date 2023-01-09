@@ -1,6 +1,6 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Uwp.Notifications;
+using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
-namespace SimpleWeather.UWP.Notifications
+namespace SimpleWeather.Uno.Notifications
 {
     public static class PoPNotificationCreator
     {

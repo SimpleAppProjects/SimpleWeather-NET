@@ -109,7 +109,7 @@ namespace SimpleWeather.RemoteConfig
         {
             return Task.Run(async () =>
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
                 var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
                 if (uwpConfig?.Count > 0)

@@ -1,24 +1,25 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.ViewModels;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -111,7 +112,7 @@ namespace SimpleWeather.UWP.Main
                                 break;
                             case LocationSearchResult.Success result:
                                 {
-                                    Dispatcher.RunOnUIThread((Func<Task>)(async () =>
+                                    DispatcherQueue.EnqueueAsync(async () =>
                                     {
                                         if (result.Data?.IsValid() == true)
                                         {
@@ -122,7 +123,7 @@ namespace SimpleWeather.UWP.Main
                                             Frame.GoBack();
                                         else
                                             Frame.Navigate(typeof(LocationsPage));
-                                    }));
+                                    });
                                 }
                                 break;
                             case LocationSearchResult.Failed:
@@ -136,7 +137,7 @@ namespace SimpleWeather.UWP.Main
 
         private void OnErrorMessage(ErrorMessage error)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 switch (error)
                 {

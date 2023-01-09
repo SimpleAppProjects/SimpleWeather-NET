@@ -1,19 +1,19 @@
 ﻿using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

@@ -9,7 +9,7 @@ namespace SimpleWeather.Utils
         {
             get
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 var userlang = GlobalizationPreferences.Languages[0];
                 var culture = new CultureInfo(userlang);
                 return culture;

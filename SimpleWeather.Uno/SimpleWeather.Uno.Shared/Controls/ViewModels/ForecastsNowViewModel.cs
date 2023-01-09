@@ -1,13 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Uwp;
+using CommunityToolkit.WinUI;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.Uno.Controls.Graphs;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SQLite;
@@ -17,7 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [Bindable(true)]
     public partial class ForecastsNowViewModel : BaseViewModel, IDisposable

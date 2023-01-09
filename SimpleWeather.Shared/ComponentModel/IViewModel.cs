@@ -1,8 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Uwp;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Dispatching;
 using System.ComponentModel;
 using System.Threading;
-using Windows.System;
 
 namespace SimpleWeather.ComponentModel
 {

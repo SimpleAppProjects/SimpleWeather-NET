@@ -1,14 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public sealed partial class DevKeyEntry : UserControl
     {
@@ -53,7 +53,7 @@ namespace SimpleWeather.UWP.Controls
                 diag.Hide();
             };
 
-            await Dispatcher.RunOnUIThread(async () =>
+            await DispatcherQueue.EnqueueAsync(async () =>
             {
                 await keydialog.ShowAsync();
             });

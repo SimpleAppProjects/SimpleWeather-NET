@@ -4,7 +4,7 @@ using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
 using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.Uno.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
@@ -13,7 +13,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [Bindable(true)]
     public partial class AirQualityForecastViewModel : BaseViewModel, IDisposable

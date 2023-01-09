@@ -2,6 +2,7 @@
 using CacheCow.Client.FileCacheStore;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.UI.Dispatching;
 using SimpleWeather.Extras;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
@@ -13,14 +14,13 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using Windows.ApplicationModel.Resources;
-using Windows.System;
 using static SimpleWeather.CommonActionChangedEventArgs;
 
 namespace SimpleWeather
 {
     public sealed partial class SharedModule : IDisposable
     {
-        private readonly ResourceLoader ResourceLoader;
+        private readonly ResourceLoader _resourceLoader;
         private readonly ServiceCollection ServiceCollection = new();
 
         public event CommonActionChangedEventHandler OnCommonActionChanged;
@@ -32,7 +32,7 @@ namespace SimpleWeather
 
         private SharedModule()
         {
-            ResourceLoader = GetResourceLoader();
+            _resourceLoader = GetResourceLoader();
 
             ConfigureServices(ServiceCollection);
         }
@@ -44,7 +44,7 @@ namespace SimpleWeather
 
         public static SharedModule Instance => lazy.Value;
 
-        public ResourceLoader ResLoader => ResourceLoader;
+        public ResourceLoader ResLoader => _resourceLoader;
 
         public HttpClient WebClient => httpClientLazy.Value;
 
@@ -62,14 +62,7 @@ namespace SimpleWeather
 
         private ResourceLoader GetResourceLoader()
         {
-            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-            {
-                return ResourceLoader.GetForCurrentView();
-            }
-            else
-            {
-                return ResourceLoader.GetForViewIndependentUse();
-            }
+            return ResourceLoader.GetForViewIndependentUse();
         }
 
         private void ConfigureServices(IServiceCollection serviceCollection)

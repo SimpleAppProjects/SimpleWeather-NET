@@ -75,7 +75,7 @@ namespace SimpleWeather.Weather_API.Bing
             return model;
         }
 
-#if WINDOWS_UWP
+#if WINDOWS
         public static LocationQuery CreateLocationModel(this WeatherLocationProviderImpl _, Windows.Services.Maps.MapLocation result, String weatherAPI)
         {
             if (result?.Address == null)

@@ -1,12 +1,18 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Extras;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Main;
+using SimpleWeather.Uno.Radar;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Main;
-using SimpleWeather.UWP.Radar;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -16,14 +22,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.BackgroundTasks;
-using SimpleWeather.UWP.Tiles;
+#if WINDOWS
+using SimpleWeather.Uno.BackgroundTasks;
+using SimpleWeather.Uno.Tiles;
 #endif
 
 #if !DEBUG
@@ -35,7 +36,7 @@ using System.Collections.Generic;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -276,7 +277,9 @@ namespace SimpleWeather.UWP.Preferences
             base.OnNavigatedTo(e);
             AnalyticsLogger.LogEvent("Settings_General: OnNavigatedToPage");
             InitSnackManager();
+#if HAS_UNO
             App.Current.Suspending += OnSuspending;
+#endif
             App.Current.UnregisterSettingsListener();
             SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
             RestoreSettings();
@@ -299,7 +302,9 @@ namespace SimpleWeather.UWP.Preferences
             else
             {
                 // Unsubscribe from event
+#if HAS_UNO
                 Application.Current.Suspending -= OnSuspending;
+#endif
                 App.Current.RegisterSettingsListener();
                 SettingsManager.OnSettingsChanged -= Settings_OnSettingsChanged;
 
@@ -374,17 +379,17 @@ namespace SimpleWeather.UWP.Preferences
                             { "API", SettingsManager.API },
                             { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
                         });
-#if WINDOWS_UWP
+#if WINDOWS
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
                         break;
                     case CommonActions.ACTION_WEATHER_REREGISTERTASK:
-#if WINDOWS_UWP
+#if WINDOWS
                         Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
 #endif
                         break;
                     case CommonActions.ACTION_WEATHER_UPDATE:
-#if WINDOWS_UWP
+#if WINDOWS
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
                         break;
@@ -400,7 +405,7 @@ namespace SimpleWeather.UWP.Preferences
             SettingsManager.ShowAlerts = sw.IsOn;
         }
 
-        private async void KeyEntry_Tapped(object _, Windows.UI.Xaml.Input.TappedRoutedEventArgs __)
+        private async void KeyEntry_Tapped(object _, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs __)
         {
             AnalyticsLogger.LogEvent("Settings_General: KeyEntry_Tapped");
 
@@ -425,7 +430,7 @@ namespace SimpleWeather.UWP.Preferences
                 {
                     if (await wm.IsKeyValid(key, provider))
                     {
-                        await Dispatcher.RunOnUIThread((Action)(() =>
+                        await DispatcherQueue.EnqueueAsync(() =>
                         {
                             SettingsManager.APIKeys[provider] = key;
                             SettingsManager.API = provider;
@@ -438,11 +443,11 @@ namespace SimpleWeather.UWP.Preferences
 
                             diag.CanClose = true;
                             diag.Hide();
-                        }));
+                        });
                     }
                     else
                     {
-                        await Dispatcher.RunOnUIThread(() =>
+                        await DispatcherQueue.EnqueueAsync(() =>
                         {
                             diag.CanClose = false;
                         });
@@ -451,13 +456,13 @@ namespace SimpleWeather.UWP.Preferences
                 catch (WeatherException ex)
                 {
                     Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
-                    await Dispatcher.RunOnUIThread(() =>
+                    await DispatcherQueue.EnqueueAsync(() =>
                     {
                         ShowSnackbar(Snackbar.MakeWarning(ex.Message, SnackbarDuration.Short));
                     });
                 }
             };
-            await Dispatcher.RunOnUIThread(async () =>
+            await DispatcherQueue.EnqueueAsync(async () =>
             {
                 await keydialog.ShowAsync();
             });
@@ -517,7 +522,7 @@ namespace SimpleWeather.UWP.Preferences
                     SettingsManager.KeysVerified[selectedProvider] = false;
 
                     // Show dialog to set key
-                    Dispatcher.LaunchOnUIThread(async () => await ShowKeyEntryDialog());
+                    DispatcherQueue.TryEnqueue(async () => await ShowKeyEntryDialog());
 
                     KeyEntry.Visibility = Visibility.Visible;
                 }
@@ -616,7 +621,7 @@ namespace SimpleWeather.UWP.Preferences
                 SettingsManager.RefreshInterval = SettingsManager.DefaultInterval;
             }
 
-#if WINDOWS_UWP
+#if WINDOWS
             // Re-register background task
             Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask());
 #endif
@@ -650,7 +655,7 @@ namespace SimpleWeather.UWP.Preferences
                         break;
 
                     case GeolocationAccessStatus.Denied:
-                        await Dispatcher.RunOnUIThread(() =>
+                        await DispatcherQueue.EnqueueAsync(() =>
                         {
                             var snackbar = Snackbar.MakeError(App.Current.ResLoader.GetString("Msg_LocDeniedSettings"), SnackbarDuration.Long);
                             snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), async () =>
@@ -663,7 +668,7 @@ namespace SimpleWeather.UWP.Preferences
                         break;
 
                     case GeolocationAccessStatus.Unspecified:
-                        await Dispatcher.RunOnUIThread(() =>
+                        await DispatcherQueue.EnqueueAsync(() =>
                         {
                             ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_retrieve_location"), SnackbarDuration.Short));
                             sw.IsOn = false;
@@ -675,9 +680,9 @@ namespace SimpleWeather.UWP.Preferences
                 }
             }
 
-#if WINDOWS_UWP
+#if WINDOWS
             // Update ids when switching GPS feature
-            if (await Dispatcher.RunOnUIThread(() => sw.IsOn))
+            if (await DispatcherQueue.EnqueueAsync(() => sw.IsOn))
             {
                 var prevLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                 if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
@@ -702,7 +707,7 @@ namespace SimpleWeather.UWP.Preferences
             }
 #endif
 
-            await Dispatcher.RunOnUIThread((Action)(() =>
+            await DispatcherQueue.EnqueueAsync((Action)(() =>
             {
                 SettingsManager.FollowGPS = sw.IsOn;
             }));
@@ -757,7 +762,7 @@ namespace SimpleWeather.UWP.Preferences
             if (sw.IsOn && ExtrasService.IsEnabled())
             {
                 SettingsManager.DailyNotificationEnabled = true;
-#if WINDOWS_UWP
+#if WINDOWS
                 // Register task
                 _ = Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
 #endif
@@ -770,7 +775,7 @@ namespace SimpleWeather.UWP.Preferences
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
                 }
                 SettingsManager.DailyNotificationEnabled = sw.IsOn = false;
-#if WINDOWS_UWP
+#if WINDOWS
                 // Unregister task
                 _ = Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
 #endif
@@ -780,7 +785,7 @@ namespace SimpleWeather.UWP.Preferences
         private void DailyNotifTimePicker_SelectedTimeChanged(TimePicker sender, TimePickerSelectedValueChangedEventArgs args)
         {
             SettingsManager.DailyNotificationTime = args.NewTime ?? SettingsManager.DEFAULT_DAILYNOTIFICATION_TIME;
-#if WINDOWS_UWP
+#if WINDOWS
             if (SettingsManager.DailyNotificationEnabled)
             {
                 Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
@@ -810,7 +815,7 @@ namespace SimpleWeather.UWP.Preferences
             if (sw.IsOn && ExtrasService.IsEnabled())
             {
                 SettingsManager.PoPChanceNotificationEnabled = true;
-#if WINDOWS_UWP
+#if WINDOWS
                 // Re-register background task if needed
                 _ = Task.Run(async () => await WeatherTileUpdaterTask.RegisterBackgroundTask(false));
                 _ = Task.Run(async () => await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false));

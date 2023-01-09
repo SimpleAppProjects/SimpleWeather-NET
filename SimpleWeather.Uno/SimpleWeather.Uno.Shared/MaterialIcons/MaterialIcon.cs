@@ -1,13 +1,13 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 
-namespace SimpleWeather.UWP.MaterialIcons
+namespace SimpleWeather.Uno.MaterialIcons
 {
     public sealed partial class MaterialIcon : FontIcon
     {
         public const string FONT_PATH =
-#if WINDOWS_UWP || HAS_UNO_SKIA || __ANDROID__
+#if WINDOWS || HAS_UNO_SKIA || __ANDROID__
             "ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#" +
 #endif
             "Material Icons";

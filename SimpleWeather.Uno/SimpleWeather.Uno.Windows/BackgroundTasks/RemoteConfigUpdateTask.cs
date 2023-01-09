@@ -1,17 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Preferences;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
-    public sealed class UpdateTask : IBackgroundTask
+    public class RemoteConfigUpdateTask : IBackgroundTask
     {
-        private const string taskName = nameof(UpdateTask);
-
-        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        private const string taskName = nameof(RemoteConfigUpdateTask);
 
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
@@ -21,25 +19,19 @@ namespace SimpleWeather.UWP.BackgroundTasks
 
             await Task.Run(async () =>
             {
-                // Run update logic
-                Logger.WriteLine(LoggerLevel.Debug, "{0}: running update task", taskName);
-
-                await SettingsManager.LoadIfNeeded();
-
-                if (SettingsManager.WeatherLoaded)
+                // Update config
+                try
                 {
-                    // Check if WidgetTask is registered
-                    // If not register
-                    await WeatherTileUpdaterTask.RegisterBackgroundTask(false);
-
-                    // Check if WeatherTask is registered
-                    // If not register
-                    await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
+                    var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+                    await remoteConfigService.CheckConfig();
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex);
                 }
             });
 
-            // Inform the system that the task is finished.
-            deferral.Complete();
+            deferral?.Complete();
         }
 
         public static async Task RegisterBackgroundTask(bool reregister = false)
@@ -79,8 +71,9 @@ namespace SimpleWeather.UWP.BackgroundTasks
             {
                 // Register a task for each trigger
                 var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
-                taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.ServicingComplete, false));
+                taskBuilder.SetTrigger(new TimeTrigger(1440, false)); // Daily task
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
 
                 try
                 {

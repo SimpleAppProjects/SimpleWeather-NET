@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     internal class WeatherPageArgs
     {

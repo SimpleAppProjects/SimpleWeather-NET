@@ -1,9 +1,5 @@
-﻿using SimpleWeather.Icons;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.UI;
+using SimpleWeather.Icons;
 using Windows.UI;
 
 namespace SimpleWeather.Utils

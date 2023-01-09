@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.UI;
+using System;
 using Windows.UI;
 
 namespace SimpleWeather.Utils
@@ -376,9 +373,9 @@ namespace SimpleWeather.Utils
             };
         }
 
-        public static Windows.UI.Xaml.Media.SolidColorBrush GetBrushFromIndex(int? index)
+        public static Microsoft.UI.Xaml.Media.SolidColorBrush GetBrushFromIndex(int? index)
         {
-            return index.HasValue ? new Windows.UI.Xaml.Media.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
+            return index.HasValue ? new Microsoft.UI.Xaml.Media.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
         }
     }
 }

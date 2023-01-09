@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.Preferences;
 using System.Threading.Tasks;
-using static SimpleWeather.UWP.Utils.FeatureSettingsChangedEventArgs;
+using static SimpleWeather.Uno.Utils.FeatureSettingsChangedEventArgs;
 
-namespace SimpleWeather.UWP.Utils
+namespace SimpleWeather.Uno.Utils
 {
     public static class FeatureSettings
     {
@@ -189,7 +189,7 @@ namespace SimpleWeather.UWP.Utils
         private static void SetTileBackgroundImageEnabled(bool value)
         {
             featureSettings.SetValue(KEY_TILEBGIMAGE, value);
-#if WINDOWS_UWP
+#if WINDOWS
             Task.Run(BackgroundTasks.WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
         }

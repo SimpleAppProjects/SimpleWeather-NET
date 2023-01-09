@@ -1,7 +1,7 @@
-﻿using Windows.ApplicationModel.Resources;
-using Windows.UI.Xaml.Markup;
+﻿using Microsoft.UI.Xaml.Markup;
+using Windows.ApplicationModel.Resources;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     [MarkupExtensionReturnType(ReturnType = typeof(string))]
     public class StringRes : MarkupExtension
@@ -24,14 +24,7 @@ namespace SimpleWeather.UWP.Helpers
             }
             catch { }
 
-            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-            {
-                return ResourceLoader.GetForCurrentView();
-            }
-            else
-            {
-                return ResourceLoader.GetForViewIndependentUse();
-            }
+            return ResourceLoader.GetForViewIndependentUse();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿<UserControl
-    x:Class="SimpleWeather.UWP.Radar.RadarToolbar"
+    x:Class="SimpleWeather.Uno.Radar.RadarToolbar"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="using:SimpleWeather.UWP.Radar"
+    xmlns:local="using:SimpleWeather.Uno.Radar"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="300"
     d:DesignWidth="400"

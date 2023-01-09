@@ -1,30 +1,30 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Mapsui;
+using Mapsui.Extensions;
+using Mapsui.Layers;
+using Mapsui.Projections;
+using Mapsui.UI.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Utils;
-using System.Collections.Generic;
-using Windows.Devices.Geolocation;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Maps;
+using System.Linq;
 
-namespace SimpleWeather.UWP.Radar
+namespace SimpleWeather.Uno.Radar
 {
     public abstract class MapTileRadarViewProvider : RadarViewProvider
     {
         private MapControl mapControl;
         private WeatherUtils.Coordinate locationCoords;
-        private MapIcon locationMarkerIcon;
+        private MemoryLayer markerLayer;
         protected RadarToolbar RadarMapContainer { get; private set; }
-
-        protected bool IsAnimationAvailable { get; }
 
         private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
+        protected bool IsViewAlive { get; private set; }
+
         public MapTileRadarViewProvider(Border container) : base(container)
         {
-            IsAnimationAvailable = ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", 7);
         }
 
         public override void UpdateCoordinates(WeatherUtils.Coordinate coordinates, bool updateView = false)
@@ -42,51 +42,52 @@ namespace SimpleWeather.UWP.Radar
                 RadarMapContainer.MapContainerChild = mapControl;
             }
 
+            IsViewAlive = true;
+
             switch (RadarContainer.ActualTheme)
             {
                 default:
-                case Windows.UI.Xaml.ElementTheme.Default:
-                    mapControl.StyleSheet = MapStyleSheet.RoadLight();
+                case ElementTheme.Default:
+                    mapControl.Map.BackColor = Mapsui.Styles.Color.White;
                     break;
-                case Windows.UI.Xaml.ElementTheme.Light:
-                    mapControl.StyleSheet = MapStyleSheet.RoadLight();
+                case ElementTheme.Light:
+                    mapControl.Map.BackColor = Mapsui.Styles.Color.White;
                     break;
-                case Windows.UI.Xaml.ElementTheme.Dark:
-                    mapControl.StyleSheet = MapStyleSheet.RoadDark();
+                case ElementTheme.Dark:
+                    mapControl.Map.BackColor = Mapsui.Styles.Color.Black;
                     break;
             }
 
-            if (locationMarkerIcon == null)
+            if (markerLayer == null)
             {
-                locationMarkerIcon = new MapIcon()
+                markerLayer = new MemoryLayer("Point")
                 {
-                    NormalizedAnchorPoint = new Point(0.5, 1.0),
-                    ZIndex = 0,
-                    Visible = false
-                };
-
-                mapControl.Layers.Add(new MapElementsLayer()
-                {
-                    ZIndex = 1,
-                    Visible = true,
-                    MapElements = new List<MapElement>
+                    IsMapInfoLayer = true,
+                    Features = new[]
                     {
-                        locationMarkerIcon
-                    }
-                });
+                        new PointFeature(MapCameraPosition)
+                    },
+                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle()
+                };
+                mapControl.Map.Layers.Add(markerLayer);
             }
 
-            if (MapCameraPosition is Geopoint point)
+            if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
-                mapControl.Center = point;
-                locationMarkerIcon.Location = point;
+                mapControl.CallHomeIfNeeded();
+                if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
+                {
+                    markerFeature.Point.X = MapCameraPosition.X;
+                    markerFeature.Point.Y = MapCameraPosition.Y;
+                    markerLayer.DataHasChanged();
+                }
             }
-            locationMarkerIcon.Visible = InteractionsEnabled();
+            markerLayer.Opacity = InteractionsEnabled() ? 1 : 0;
 
-            mapControl.PanInteractionMode = InteractionsEnabled() ? MapPanInteractionMode.Auto : MapPanInteractionMode.Disabled;
+            mapControl.Map.PanLock = !InteractionsEnabled();
 
             RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && IsAnimationAvailable && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
+                InteractionsEnabled() && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
 
             UpdateMap(mapControl);
         }
@@ -95,51 +96,38 @@ namespace SimpleWeather.UWP.Radar
 
         public override void OnDestroyView()
         {
+            IsViewAlive = false;
             RadarContainer.Child = null;
             if (RadarMapContainer != null)
             {
                 RadarMapContainer.MapContainerChild = null;
                 RadarMapContainer = null;
             }
-            mapControl?.TileSources.Clear();
+            mapControl?.Map?.Layers.Clear();
             mapControl = null;
         }
 
         private MapControl CreateMapControl()
         {
             var mapControl = MapControlCreator.Instance.Map;
-
-            if (locationCoords != null)
-            {
-                mapControl.Center = new Geopoint(
-                    new BasicGeoposition()
-                    {
-                        Latitude = locationCoords.Latitude,
-                        Longitude = locationCoords.Longitude
-                    }
-                );
-                mapControl.ZoomLevel = 6;
-            }
-
+            mapControl.Map.Home = n => n.NavigateTo(MapCameraPosition, 6d.ToMapsuiResolution());
+            mapControl.CallHomeIfNeeded();
             return mapControl;
         }
 
-        protected Geopoint MapCameraPosition
+        protected MPoint MapCameraPosition
         {
             get
             {
                 if (locationCoords != null)
                 {
-                    return new Geopoint(
-                        new BasicGeoposition()
-                        {
-                            Latitude = locationCoords.Latitude,
-                            Longitude = locationCoords.Longitude
-                        }
-                    );
+                    return SphericalMercator.FromLonLat(
+                        lat: locationCoords.Latitude,
+                        lon: locationCoords.Longitude
+                    ).ToMPoint();
                 }
 
-                return null;
+                return SphericalMercator.FromLonLat(new MPoint());
             }
         }
     }

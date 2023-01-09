@@ -3,9 +3,9 @@ using SimpleWeather.Common.Location;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Notifications;
-using SimpleWeather.UWP.Tiles;
-using SimpleWeather.UWP.WeatherAlerts;
+using SimpleWeather.Uno.Notifications;
+using SimpleWeather.Uno.Tiles;
+using SimpleWeather.Uno.WeatherAlerts;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -16,7 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
     public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
     {

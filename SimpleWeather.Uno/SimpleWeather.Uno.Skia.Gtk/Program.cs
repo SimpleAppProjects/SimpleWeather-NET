@@ -1,5 +1,4 @@
 ﻿using GLib;
-using SimpleWeather.UWP;
 using System;
 using Uno.UI.Runtime.Skia;
 

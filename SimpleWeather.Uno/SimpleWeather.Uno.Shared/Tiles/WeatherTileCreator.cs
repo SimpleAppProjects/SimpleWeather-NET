@@ -1,22 +1,22 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI.Notifications;
 using KeyedSemaphores;
-using Microsoft.Toolkit.Uwp.Notifications;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Shared.Helpers;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Shared.Helpers;
 using SimpleWeather.Weather_API;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
-namespace SimpleWeather.UWP.Tiles
+namespace SimpleWeather.Uno.Tiles
 {
     public static class WeatherTileCreator
     {
@@ -37,7 +37,7 @@ namespace SimpleWeather.UWP.Tiles
         private static void SetContentBackground(TileBindingContentAdaptive content, ImageDataViewModel imageData)
         {
             // Background URI
-            if (UWP.Utils.FeatureSettings.TileBackgroundImage && imageData?.ImageUri != null)
+            if (Uno.Utils.FeatureSettings.TileBackgroundImage && imageData?.ImageUri != null)
             {
                 content.BackgroundImage = new TileBackgroundImage()
                 {

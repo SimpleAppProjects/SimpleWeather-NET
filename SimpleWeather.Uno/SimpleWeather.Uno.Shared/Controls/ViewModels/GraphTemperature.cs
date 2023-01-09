@@ -1,7 +1,7 @@
 ﻿using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.Uno.Controls.Graphs;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public class GraphTemperature
     {

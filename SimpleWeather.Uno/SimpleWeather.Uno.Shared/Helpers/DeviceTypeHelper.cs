@@ -1,11 +1,11 @@
-﻿using Microsoft.Toolkit.Uwp.Helpers;
+﻿using CommunityToolkit.WinUI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation.Metadata;
 using Windows.System.Profile;
 
-namespace SimpleWeather.UWP.Shared.Helpers
+namespace SimpleWeather.Uno.Shared.Helpers
 {
     public static class DeviceTypeHelper
     {

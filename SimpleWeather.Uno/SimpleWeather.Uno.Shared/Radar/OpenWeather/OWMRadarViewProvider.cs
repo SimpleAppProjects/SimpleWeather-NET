@@ -1,14 +1,18 @@
-﻿using SimpleWeather.Weather_API.Keys;
-using System;
-using System.Globalization;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Maps;
+﻿using BruTile.Cache;
+using BruTile.Predefined;
+using BruTile.Web;
+using Mapsui.Tiling.Layers;
+using Mapsui.UI.WinUI;
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Helpers;
+using SimpleWeather.Weather_API.Keys;
+using System.IO;
 
-namespace SimpleWeather.UWP.Radar.OpenWeather
+namespace SimpleWeather.Uno.Radar.OpenWeather
 {
     public class OWMRadarViewProvider : MapTileRadarViewProvider
     {
-        private MapTileSource TileSource;
+        private HttpTileSource TileSource;
 
         public OWMRadarViewProvider(Border container) : base(container)
         {
@@ -18,27 +22,26 @@ namespace SimpleWeather.UWP.Radar.OpenWeather
         {
             if (TileSource == null)
             {
-                var dataSrc = new HttpMapTileDataSource()
-                {
-                    AllowCaching = true
-                };
-                dataSrc.UriRequested += CachingHttpMapTileDataSource_UriRequested;
-                TileSource = new MapTileSource(dataSrc);
-                mapControl.TileSources.Add(TileSource);
+                TileSource = CreateTileSource();
+                mapControl.Map.Layers.Add(new TileLayer(TileSource));
             }
         }
 
-        private void CachingHttpMapTileDataSource_UriRequested(HttpMapTileDataSource sender, MapTileUriRequestedEventArgs args)
+        public override void OnDestroyView()
         {
-            // Get the custom Uri.
-            args.Request.Uri = GetTileUri(args.X, args.Y, args.ZoomLevel);
+            base.OnDestroyView();
+            TileSource = null;
         }
 
-        private Uri GetTileUri(int x, int y, int zoom)
+        private static readonly BruTile.Attribution OWMAttribution = new("OpenWeatherMap", "https://openweathermap.org/");
+
+        private static HttpTileSource CreateTileSource()
         {
-            return new Uri(string.Format(CultureInfo.InvariantCulture,
-                "https://tile.openweathermap.org/map/precipitation_new/{0}/{1}/{2}.png?appid={3}",
-                zoom, x, y, APIKeys.GetOWMKey()));
+            return new HttpTileSource(new GlobalSphericalMercator(),
+                "https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid={k}",
+                apiKey: APIKeys.GetOWMKey(), name: OWMAttribution.Text,
+                persistentCache: new FileCache(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenWeatherMap"), "tile.png"),
+                attribution: OWMAttribution, userAgent: Constants.GetUserAgentString());
         }
     }
 }

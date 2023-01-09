@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Preferences;
-using SimpleWeather.UWP.Notifications;
+using SimpleWeather.Uno.Notifications;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.WeatherAlerts
+namespace SimpleWeather.Uno.WeatherAlerts
 {
     public static class WeatherAlertHandler
     {

@@ -43,7 +43,7 @@ namespace SimpleWeather.Preferences
             LocalSettings.Clear();
         }
 
-#if WINDOWS_UWP || __ANDROID__
+#if WINDOWS || __ANDROID__
         public IDictionary<string, object> GetAllSettings()
         {
             return LocalSettings.GetAllSettings();
@@ -55,7 +55,7 @@ namespace SimpleWeather.Preferences
             DevSettings.Clear();
         }
 
-#if WINDOWS_UWP || __ANDROID__
+#if WINDOWS || __ANDROID__
         private IDictionary<string, object> GetAllDevSettings()
         {
             return DevSettings.GetAllSettings();

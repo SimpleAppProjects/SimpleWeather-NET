@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     interface IGraphDataSet : IGraphDataBase, IEnumerable
     {

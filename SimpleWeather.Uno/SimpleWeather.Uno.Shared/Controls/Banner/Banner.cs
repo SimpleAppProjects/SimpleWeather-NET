@@ -1,11 +1,11 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Dispatching;
+using Microsoft.UI.Xaml;
 using System;
 using System.Threading.Tasks;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
 using muxc = Microsoft.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public enum BannerInfoType
     {
@@ -61,9 +61,9 @@ namespace SimpleWeather.UWP.Controls
             return Banner.Make(message, BannerInfoType.Error);
         }
 
-        public static Task<Banner> MakeAsync(CoreDispatcher dispatcher, String message, BannerInfoType infoType = BannerInfoType.Informational)
+        public static Task<Banner> MakeAsync(DispatcherQueue dispatcher, String message, BannerInfoType infoType = BannerInfoType.Informational)
         {
-            return DispatcherExtensions.RunOnUIThread(dispatcher, () =>
+            return dispatcher.EnqueueAsync(() =>
             {
                 return Banner.Make(message, infoType);
             });

@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace SimpleWeather.UWP.DataBinding
+namespace SimpleWeather.Uno.DataBinding
 {
     public static class WeatherNowBinding
     {

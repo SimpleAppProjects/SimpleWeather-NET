@@ -1,12 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Uwp;
+using CommunityToolkit.WinUI;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
+using SimpleWeather.Uno.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static SimpleWeather.Utils.WeatherUtils;
 
-namespace SimpleWeather.UWP.ViewModels
+namespace SimpleWeather.Uno.ViewModels
 {
     [Bindable(true)]
     public class LocationsViewModel : BaseViewModel

@@ -1,14 +1,14 @@
 ﻿using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
+using SimpleWeather.Uno.Helpers;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public sealed partial class RangeBarGraphView : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
     {

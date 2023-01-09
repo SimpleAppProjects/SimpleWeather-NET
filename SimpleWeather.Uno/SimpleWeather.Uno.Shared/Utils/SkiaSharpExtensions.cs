@@ -1,6 +1,6 @@
 ﻿using SkiaSharp;
 
-namespace SimpleWeather.UWP.Utils
+namespace SimpleWeather.Uno.Utils
 {
     public static class SkiaSharpExtensions
     {

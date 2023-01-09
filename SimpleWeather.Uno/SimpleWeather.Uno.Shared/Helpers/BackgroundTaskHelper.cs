@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public static class BackgroundTaskHelper
     {

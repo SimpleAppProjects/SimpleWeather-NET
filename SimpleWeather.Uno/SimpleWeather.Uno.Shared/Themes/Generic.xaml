@@ -5,11 +5,11 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
-    xmlns:localControls="using:SimpleWeather.UWP.Controls"
-    xmlns:localGraphs="using:SimpleWeather.UWP.Controls.Graphs"
+    xmlns:helpers="using:SimpleWeather.Uno.Helpers"
+    xmlns:localControls="using:SimpleWeather.Uno.Controls"
+    xmlns:localGraphs="using:SimpleWeather.Uno.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mtuc="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
@@ -299,7 +299,7 @@
                             VerticalScrollMode="Disabled">
                             <Grid>
                                 <skiaSharp:SKXamlCanvas
-                                    xmlns:skiaSharp="using:SkiaSharp.Views.UWP"
+                                    xmlns:skiaSharp="using:SkiaSharp.Views.Windows"
                                     x:Name="Canvas"
                                     HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
                                     Background="Transparent"
@@ -338,7 +338,7 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}">
                         <skiaSharp:SKXamlCanvas
-                            xmlns:skiaSharp="using:SkiaSharp.Views.UWP"
+                            xmlns:skiaSharp="using:SkiaSharp.Views.Windows"
                             x:Name="Canvas"
                             Background="Transparent"
                             IgnorePixelScaling="True" />

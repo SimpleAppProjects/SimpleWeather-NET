@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
 
-namespace SimpleWeather.UWP.Shared.Helpers
+namespace SimpleWeather.Uno.Shared.Helpers
 {
     class DeviceFamilyTrigger : StateTriggerBase
     {

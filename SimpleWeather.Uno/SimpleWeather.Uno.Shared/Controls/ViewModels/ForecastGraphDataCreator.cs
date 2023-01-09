@@ -1,7 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Controls.Graphs;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Windows.UI;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     public enum ForecastGraphType
     {

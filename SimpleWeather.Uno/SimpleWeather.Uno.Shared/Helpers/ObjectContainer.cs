@@ -1,6 +1,6 @@
-﻿using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public sealed partial class ObjectContainer : DependencyObject
     {

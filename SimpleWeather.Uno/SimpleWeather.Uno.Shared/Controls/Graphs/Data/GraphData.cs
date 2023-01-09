@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public abstract class GraphData<T, E> : IGraphData<T, E> where T : GraphDataSet<E> where E : GraphEntry
     {

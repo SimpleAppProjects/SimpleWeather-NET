@@ -1,24 +1,24 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using NodaTime.Calendars;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-namespace SimpleWeather.UWP.Setup
+namespace SimpleWeather.Uno.Setup
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -161,7 +161,7 @@ namespace SimpleWeather.UWP.Setup
 
         private void OnErrorMessage(ErrorMessage error)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 switch (error)
                 {

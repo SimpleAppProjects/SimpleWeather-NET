@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.UWP.MaterialIcons
+﻿namespace SimpleWeather.Uno.MaterialIcons
 {
     public enum MaterialSymbol
     {

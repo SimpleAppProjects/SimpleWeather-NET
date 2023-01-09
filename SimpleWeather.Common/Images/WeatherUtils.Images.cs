@@ -228,7 +228,7 @@ namespace SimpleWeather.Common.Images
                         {
                             var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
 
-#if WINDOWS_UWP
+#if WINDOWS
                             if (file.IsAvailable)
 #else
                             if (File.Exists(file.Path))

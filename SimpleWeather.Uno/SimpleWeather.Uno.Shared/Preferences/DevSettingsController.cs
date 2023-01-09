@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Preferences;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Main;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Main;
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     public sealed class DevSettingsController
     {

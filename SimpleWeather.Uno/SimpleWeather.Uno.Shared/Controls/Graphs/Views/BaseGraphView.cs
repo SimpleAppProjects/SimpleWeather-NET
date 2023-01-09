@@ -1,6 +1,12 @@
-﻿using SimpleWeather.SkiaSharp;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Utils;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI;
+using Microsoft.UI.Text;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using SimpleWeather.SkiaSharp;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -8,12 +14,9 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media;
 using RectF = System.Drawing.RectangleF;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     [TemplatePart(Name = nameof(InternalScrollViewer), Type = typeof(ScrollViewer))]
     public abstract partial class BaseGraphView<T, S, E> : BaseGraphViewControl, IGraph, IDisposable
@@ -255,7 +258,7 @@ namespace SimpleWeather.UWP.Controls.Graphs
 
             // Post the event to the dispatcher to allow the method to complete first
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 OnItemWidthChanged(new ItemSizeChangedEventArgs()
                 {

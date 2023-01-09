@@ -1,28 +1,31 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.ViewModels;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
+#if WINDOWS
 using Windows.UI.Core;
-using Windows.UI.Input;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+#endif
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -55,8 +58,9 @@ namespace SimpleWeather.UWP.Main
                 NavigationCacheMode = NavigationCacheMode.Disabled;
             else
                 NavigationCacheMode = NavigationCacheMode.Required;
-
+#if HAS_UNO
             Application.Current.Resuming += LocationsPage_Resuming;
+#endif
 
             PanelAdapter = new LocationPanelAdapter(LocationsPanel);
             PanelAdapter.ListChanged += LocationPanels_CollectionChanged;
@@ -159,7 +163,7 @@ namespace SimpleWeather.UWP.Main
 
         private void OnErrorMessage(ErrorMessage error)
         {
-            Dispatcher.RunOnUIThread(() =>
+            DispatcherQueue.EnqueueAsync(() =>
             {
                 switch (error)
                 {
@@ -272,7 +276,9 @@ namespace SimpleWeather.UWP.Main
                     });
                     // Remove all from backstack except home
                     this.Frame.BackStack.Clear();
+#if WINDOWS_UWP
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+#endif
                 }
                 catch (Exception ex)
                 {

@@ -1,5 +1,7 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.UWP.Shared.Helpers;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -9,13 +11,10 @@ using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Services.Store;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -23,7 +22,7 @@ namespace SimpleWeather.UWP.Preferences
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Safety", "UWP001:Platform-specific", Justification = "Platform check is defined")]
     public sealed partial class Settings_About : Page
     {
-#if WINDOWS_UWP
+#if WINDOWS
         private StoreContext context = null;
 #endif
         private DevSettingsController devSettingsController;
@@ -37,7 +36,7 @@ namespace SimpleWeather.UWP.Preferences
             Version.Text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}.{3}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build, Package.Current.Id.Version.Revision);
 
-#if WINDOWS_UWP
+#if WINDOWS
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))
             {
                 if (context == null)
@@ -57,16 +56,16 @@ namespace SimpleWeather.UWP.Preferences
 
         private void SettingsAbout_Resuming(object sender, object e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             Task.Run(CheckForUpdates);
 #endif
         }
 
-#if WINDOWS_UWP
+#if WINDOWS
         private async Task CheckForUpdates()
         {
             // Show that we're checking for updates
-            await Dispatcher.RunOnUIThread(() =>
+            await DispatcherQueue.EnqueueAsync(() =>
             {
                 CheckUpdateButton.Visibility = Visibility.Visible;
             }).ConfigureAwait(false);
@@ -83,7 +82,7 @@ namespace SimpleWeather.UWP.Preferences
                 // Debug: store context does not exist
             }
 
-            await Dispatcher.RunOnUIThread(() =>
+            await DispatcherQueue.EnqueueAsync(() =>
             {
                 CheckUpdateButton.Visibility = Visibility.Collapsed;
 
@@ -109,7 +108,7 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void InstallButton_Click(object sender, RoutedEventArgs e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             CheckUpdateButton.IsEnabled = false;
 
             UpdateProgressBar.IsIndeterminate = true;
@@ -127,7 +126,7 @@ namespace SimpleWeather.UWP.Preferences
             // and installation process for each package in this request.
             downloadOperation.Progress = async (asyncInfo, progress) =>
             {
-                await Dispatcher.RunOnUIThread(() =>
+                await DispatcherQueue.EnqueueAsync(() =>
                 {
                     if (UpdateProgressBar.IsIndeterminate)
                     {
@@ -176,12 +175,14 @@ namespace SimpleWeather.UWP.Preferences
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+#if HAS_UNO
             Application.Current.Resuming -= SettingsAbout_Resuming;
+#endif
         }
 
         private async void ReviewButton_Click(object sender, RoutedEventArgs e)
         {
-#if WINDOWS_UWP
+#if WINDOWS
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))
             {
                 await context.RequestRateAndReviewAppAsync();
@@ -195,27 +196,19 @@ namespace SimpleWeather.UWP.Preferences
 
         private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
         {
-#if WINDOWS_UWP
-            var deviceType = DeviceTypeHelper.DeviceType;
-            if ((deviceType == DeviceTypeHelper.DeviceTypes.Desktop || deviceType == DeviceTypeHelper.DeviceTypes.Mobile) && Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.IsSupported())
-            {
-                var launcher = Microsoft.Services.Store.Engagement.StoreServicesFeedbackLauncher.GetDefault();
-                await launcher.LaunchAsync();
-            }
-            else
-#endif
-            {
-                await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto://thewizrd.dev+SimpleWeatherWindows@gmail.com"));
-            }
+            await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto://thewizrd.dev+SimpleWeatherWindows@gmail.com"));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+#if HAS_UNO
+            Application.Current.Resuming += SettingsAbout_Resuming;
+#endif
             devSettingsController.OnStart();
         }
 
-        private void Version_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void Version_Tapped(object sender, Microsoft.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             devSettingsController.OnClick();
         }

@@ -1,13 +1,14 @@
-﻿using SimpleWeather.Utils;
+﻿#if HAS_UNO
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Radar.NullSchool
+namespace SimpleWeather.Uno.Radar.NullSchool
 {
     public class EarthWindMapViewProvider : RadarViewProvider
     {
@@ -33,6 +34,7 @@ namespace SimpleWeather.UWP.Radar.NullSchool
                 RadarContainer.Child = webview = CreateWebView();
             }
 
+#if !HAS_UNO_SKIA
             webview.NavigationStarting -= RadarWebView_NavigationStarting;
             try
             {
@@ -44,10 +46,12 @@ namespace SimpleWeather.UWP.Radar.NullSchool
                 Logger.WriteLine(LoggerLevel.Error, e);
             }
             webview.NavigationStarting += RadarWebView_NavigationStarting;
+#endif
         }
 
         private async void Webview_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
         {
+#if !HAS_UNO_SKIA
             if (!InteractionsEnabled())
             {
                 var disableInteractions = new string[] { "var style = document.createElement('style'); style.innerHTML = '* { pointer-events: none !important; overscroll-behavior: none !important; overflow: hidden !important; } body { pointer-events: all !important; overscroll-behavior: none !important; overflow: hidden !important; }'; document.head.appendChild(style);" };
@@ -60,12 +64,15 @@ namespace SimpleWeather.UWP.Radar.NullSchool
                     //Logger.WriteLine(LoggerLevel.Error, e);
                 }
             }
+#endif
 
             sender.IsHitTestVisible = InteractionsEnabled();
+#if !HAS_UNO_SKIA
             sender.IsDoubleTapEnabled = InteractionsEnabled();
             sender.IsHoldingEnabled = InteractionsEnabled();
             sender.IsRightTapEnabled = InteractionsEnabled();
             sender.IsTapEnabled = InteractionsEnabled();
+#endif
         }
 
         public override void OnDestroyView()
@@ -73,6 +80,7 @@ namespace SimpleWeather.UWP.Radar.NullSchool
             // Destroy webview if we leave
             if (RadarContainer?.Child is WebView webview)
             {
+#if !HAS_UNO_SKIA
                 webview.Stop();
                 webview.NavigationStarting -= RadarWebView_NavigationStarting;
                 try
@@ -85,6 +93,7 @@ namespace SimpleWeather.UWP.Radar.NullSchool
                     Logger.WriteLine(LoggerLevel.Error, e);
                 }
                 webview.NavigationStarting += RadarWebView_NavigationStarting;
+#endif
                 RadarContainer.Child = null;
                 webview = null;
             }
@@ -97,38 +106,10 @@ namespace SimpleWeather.UWP.Radar.NullSchool
 
         private WebView CreateWebView()
         {
-            WebView webview = null;
-
-            // Windows 1803+
-            if (Windows.Foundation.Metadata.ApiInformation.IsEnumNamedValuePresent("Windows.UI.Xaml.Controls.WebViewExecutionMode", "SeparateProcess"))
-            {
-                try
-                {
-                    // NOTE: Potential managed code exception; don't know why
-                    webview = new WebView(WebViewExecutionMode.SeparateProcess);
-                }
-                catch (Exception)
-                {
-                    webview = null;
-                }
-            }
-
-            if (webview == null)
-                webview = new WebView(WebViewExecutionMode.SeparateThread);
-
-            if (Windows.Foundation.Metadata.ApiInformation.IsEventPresent("Windows.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
-            {
-                webview.SeparateProcessLost += (sender, e) =>
-                {
-                    if (RadarContainer == null) return;
-                    var newWebView = CreateWebView();
-                    RadarContainer.Child = newWebView;
-                    UpdateRadarView();
-                };
-            }
-
+            WebView webview = new WebView();
+#if !HAS_UNO_SKIA
             webview.NavigationCompleted += Webview_NavigationCompleted;
-
+#endif
             return webview;
         }
 
@@ -139,3 +120,4 @@ namespace SimpleWeather.UWP.Radar.NullSchool
         }
     }
 }
+#endif

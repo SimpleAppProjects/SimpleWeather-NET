@@ -5,7 +5,7 @@ using SimpleWeather.Database;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls.Graphs;
+using SimpleWeather.Uno.Controls.Graphs;
 using SimpleWeather.WeatherData;
 using SQLite;
 using System;
@@ -19,7 +19,7 @@ using MathF = SimpleWeather.Utils.MathF;
 using MathF = System.MathF;
 #endif
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [Bindable(true)]
     public partial class ChartsViewModel : BaseViewModel, IDisposable

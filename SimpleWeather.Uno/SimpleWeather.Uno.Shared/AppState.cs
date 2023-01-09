@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.UWP
+﻿namespace SimpleWeather.Uno
 {
     public enum AppState
     {

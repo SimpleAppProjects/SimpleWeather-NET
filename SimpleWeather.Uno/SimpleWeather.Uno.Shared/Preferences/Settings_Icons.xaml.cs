@@ -2,16 +2,16 @@
 using SimpleWeather.Extras;
 using SimpleWeather.Preferences;
 using System;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.BackgroundTasks;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+#if WINDOWS
+using SimpleWeather.Uno.BackgroundTasks;
 #endif
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -109,7 +109,7 @@ namespace SimpleWeather.UWP.Preferences
         {
             if (success)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 await WeatherUpdateBackgroundTask.RequestAppTrigger();
 #endif
                 // Refresh page

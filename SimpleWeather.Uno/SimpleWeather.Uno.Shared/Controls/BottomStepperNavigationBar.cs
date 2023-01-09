@@ -1,22 +1,22 @@
-﻿using System;
+﻿using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Shapes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Shapes;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [TemplatePart(Name = nameof(RootGrid), Type = typeof(Grid))]
     [TemplatePart(Name = nameof(BackBtn), Type = typeof(Button))]
     [TemplatePart(Name = nameof(BackBtnLabel), Type = typeof(TextBlock))]
     [TemplatePart(Name = nameof(BackBtnIconPresenter), Type = typeof(ContentPresenter))]
-#if WINDOWS_UWP
+#if WINDOWS
     [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(ListBox))]
 #else
     [TemplatePart(Name = nameof(IndicatorBox), Type = typeof(StackPanel))]
@@ -30,7 +30,7 @@ namespace SimpleWeather.UWP.Controls
         private Button BackBtn;
         private TextBlock BackBtnLabel;
         private ContentPresenter BackBtnIconPresenter;
-#if WINDOWS_UWP
+#if WINDOWS
         private ListBox IndicatorBox;
 #else
         private StackPanel IndicatorBox;
@@ -169,7 +169,7 @@ namespace SimpleWeather.UWP.Controls
             BackBtn = GetTemplateChild(nameof(BackBtn)) as Button;
             BackBtnLabel = GetTemplateChild(nameof(BackBtnLabel)) as TextBlock;
             BackBtnIconPresenter = GetTemplateChild(nameof(BackBtnIconPresenter)) as ContentPresenter;
-#if WINDOWS_UWP
+#if WINDOWS
             IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as ListBox;
 #else
             IndicatorBox = GetTemplateChild(nameof(IndicatorBox)) as StackPanel;
@@ -249,7 +249,7 @@ namespace SimpleWeather.UWP.Controls
         {
             if (IndicatorBox != null)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 IndicatorBox.ItemsSource = count > 0 ? Enumerable.Repeat(string.Empty, count) : new List<string>(0);
 #else
                 IndicatorBox.Children.Clear();
@@ -275,7 +275,7 @@ namespace SimpleWeather.UWP.Controls
         {
             if (IndicatorBox != null)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 IndicatorBox.SelectedIndex = idx;
 #else
                 for (int i = 0; i < ItemCnt; i++)

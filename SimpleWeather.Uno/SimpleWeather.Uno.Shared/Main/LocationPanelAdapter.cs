@@ -2,10 +2,10 @@
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Controls;
-using SimpleWeather.UWP.Helpers;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.Tiles;
+using SimpleWeather.Uno.Controls;
+using SimpleWeather.Uno.Helpers;
+#if WINDOWS
+using SimpleWeather.Uno.Tiles;
 #endif
 using System;
 using System.Collections.Generic;
@@ -14,11 +14,12 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.StartScreen;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using CommunityToolkit.WinUI;
 
-namespace SimpleWeather.UWP.Main
+namespace SimpleWeather.Uno.Main
 {
     internal class LocationPanelAdapter
     {
@@ -214,7 +215,7 @@ namespace SimpleWeather.UWP.Main
                     var SettingsManager = Ioc.Default.GetService<SettingsManager>();
                     await SettingsManager.DeleteLocation(data.query);
 
-#if WINDOWS_UWP
+#if WINDOWS
                     // Remove secondary tile if it exists
                     if (SecondaryTileUtils.Exists(data.query))
                     {
@@ -228,7 +229,7 @@ namespace SimpleWeather.UWP.Main
 
         internal Task RemovePanel(LocationPanelUiModel panel)
         {
-            return ParentListView?.Dispatcher?.RunOnUIThread(() =>
+            return ParentListView?.DispatcherQueue?.EnqueueAsync(() =>
             {
                 int dataPosition = GetDataset((LocationType)panel.LocationType).IndexOf(panel);
 
@@ -279,7 +280,7 @@ namespace SimpleWeather.UWP.Main
 
         internal Task BatchRemovePanels(IEnumerable<LocationPanelUiModel> panelsToDelete)
         {
-            return ParentListView?.Dispatcher?.RunOnUIThread(() =>
+            return ParentListView?.DispatcherQueue?.EnqueueAsync(() =>
             {
                 if (!panelsToDelete.Any()) return;
 

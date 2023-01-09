@@ -1,4 +1,4 @@
-﻿using SimpleWeather.UWP;
+﻿using SimpleWeather.Uno;
 using UIKit;
 
 namespace SimpleWeather.Uno

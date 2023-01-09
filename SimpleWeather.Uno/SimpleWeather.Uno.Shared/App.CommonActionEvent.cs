@@ -1,14 +1,14 @@
 ﻿using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-#if WINDOWS_UWP
-using SimpleWeather.UWP.BackgroundTasks;
-using SimpleWeather.UWP.Tiles;
+#if WINDOWS
+using SimpleWeather.Uno.BackgroundTasks;
+using SimpleWeather.Uno.Tiles;
 #endif
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP
+namespace SimpleWeather.Uno
 {
     public sealed partial class App
     {
@@ -17,7 +17,7 @@ namespace SimpleWeather.UWP
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             if (e.Action == CommonActions.ACTION_WEATHER_UPDATETILELOCATION)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 if (e.Extras?.ContainsKey(Constants.TILEKEY_OLDKEY) == true)
                 {
                     string oldKey = e.Extras?[Constants.TILEKEY_OLDKEY]?.ToString();
@@ -33,26 +33,26 @@ namespace SimpleWeather.UWP
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI ||
                 e.Action == CommonActions.ACTION_WEATHER_UPDATE)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEUNIT)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
 #endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH ||
                 e.Action == CommonActions.ACTION_WEATHER_REREGISTERTASK)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 await Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
 #endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEGPS)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 // Update tile ids when switching GPS feature
                 if (SettingsManager.FollowGPS)
                 {
@@ -89,7 +89,7 @@ namespace SimpleWeather.UWP
                 object forceUpdate = true;
                 if (e.Extras?.TryGetValue(CommonActions.EXTRA_FORCEUPDATE, out forceUpdate) != true || (bool)forceUpdate)
                 {
-#if WINDOWS_UWP
+#if WINDOWS
                     await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
                 }
@@ -99,7 +99,7 @@ namespace SimpleWeather.UWP
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION)
             {
-#if WINDOWS_UWP
+#if WINDOWS
                 if (SettingsManager.DailyNotificationEnabled)
                 {
                     Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(false));

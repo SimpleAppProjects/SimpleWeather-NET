@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Windows.ApplicationModel;
 
 namespace SimpleWeather
 {
@@ -13,5 +10,15 @@ namespace SimpleWeather
 
         public const String TILEKEY_OLDKEY = "oldKey";
         public const String TILEKEY_LOCATION = "location";
+
+        public const String TILE_CACHE_DIR = "TileCache";
+
+        public static string GetUserAgentString()
+        {
+            var version = string.Format("v{0}.{1}.{2}",
+                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+
+            return $"SimpleWeather/{version} (thewizrd.dev@gmail.com)";
+        }
     }
 }

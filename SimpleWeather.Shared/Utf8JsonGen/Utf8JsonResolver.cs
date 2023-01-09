@@ -1,9 +1,6 @@
 ﻿using SimpleWeather.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using Utf8Json;
 
 namespace SimpleWeather.Utf8JsonGen
@@ -20,9 +17,7 @@ namespace SimpleWeather.Utf8JsonGen
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
                 SimpleWeather.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
                 SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance,
-#if !WINDOWS_UWP
                 Utf8Json.Resolvers.DynamicGenericResolver.Instance,
-#endif
         };
 
         public IJsonFormatter<T> GetFormatter<T>()
@@ -61,9 +56,7 @@ namespace SimpleWeather.Utf8JsonGen
                 Utf8Json.Resolvers.BuiltinResolver.Instance,
                 SimpleWeather.Utf8JsonGen.Resolvers.EnumResolver.ByValue,
                 SimpleWeather.Utf8JsonGen.EnumerableCollectionResolver.Instance,
-#if !WINDOWS_UWP
                 Utf8Json.Resolvers.DynamicGenericResolver.Instance,
-#endif
         };
 
         public IJsonFormatter<T> GetFormatter<T>()

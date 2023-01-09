@@ -6,7 +6,7 @@
     <SharedGUID>6279c845-92f8-4333-ab99-3d213163593c</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>SimpleWeather.UWP</Import_RootNamespace>
+    <Import_RootNamespace>SimpleWeather.Uno</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
@@ -156,6 +156,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StringRes.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\VisualTreeHelperExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IApplication.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainWindow.Mica.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MainWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\Args.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationPanelAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml.cs">
@@ -164,6 +166,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Main\Shell.AppWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\Shell.xaml.cs">
       <DependentUpon>Shell.xaml</DependentUpon>
     </Compile>
@@ -227,7 +230,8 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.Windows.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.uno.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\OpenWeather\OWMRadarViewProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProviderChangedEventArgs.cs" />
@@ -241,6 +245,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.xaml.cs">
       <DependentUpon>SetupLocationsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupPage.AppWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupPage.xaml.cs">
       <DependentUpon>SetupPage.xaml</DependentUpon>
     </Compile>

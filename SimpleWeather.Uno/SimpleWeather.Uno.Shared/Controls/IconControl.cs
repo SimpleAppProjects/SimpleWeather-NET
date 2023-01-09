@@ -1,5 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -7,20 +14,12 @@ using System;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using lottie = Microsoft.Toolkit.Uwp.UI.Lottie;
-#if WINDOWS_UWP
 using muxc = Microsoft.UI.Xaml.Controls;
-#else
-using muxc = Windows.UI.Xaml.Controls;
+#if HAS_UNO
+using Microsoft.Toolkit.Uwp.UI.Lottie;
 #endif
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [TemplatePart(Name = nameof(IconBox), Type = typeof(Viewbox))]
     public sealed partial class IconControl : Control
@@ -149,7 +148,11 @@ namespace SimpleWeather.UWP.Controls
                 {
                     try
                     {
+#if HAS_UNO
                         iconElement = CreateLottiePlayer(iconUri);
+#else
+                        iconElement = CreateBitmapIcon(wip);
+#endif
                     }
                     catch (Exception e)
                     {
@@ -164,7 +167,9 @@ namespace SimpleWeather.UWP.Controls
                 iconElement = CreateBitmapIcon(wip);
             }
 
+#if HAS_UNO
             DestroyLottiePlayer();
+#endif
 
             IconBox.Child = iconElement;
         }
@@ -208,14 +213,15 @@ namespace SimpleWeather.UWP.Controls
             }
         }
 
+#if HAS_UNO
         private muxc.AnimatedVisualPlayer CreateLottiePlayer(string lottieJsonURI)
         {
             return new muxc.AnimatedVisualPlayer()
             {
                 AutoPlay = true,
-                Source = new lottie.LottieVisualSource()
+                Source = new LottieVisualSource()
                 {
-                    Options = lottie.LottieVisualOptions.All,
+                    Options = LottieVisualOptions.All,
                     UriSource = new Uri(lottieJsonURI)
                 }
             };
@@ -237,7 +243,7 @@ namespace SimpleWeather.UWP.Controls
                 player.Stop();
 
                 var src = player.Source;
-                if (src is lottie.LottieVisualSource lottieSrc)
+                if (src is LottieVisualSource lottieSrc)
                 {
                     lottieSrc.UriSource = null;
                 }
@@ -245,12 +251,13 @@ namespace SimpleWeather.UWP.Controls
                 player.Source = null;
             }
         }
+#endif
 
         private async Task<UIElement> CreateXAMLIconElement(string uri)
         {
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri));
             var xaml = await FileIO.ReadTextAsync(file);
-            return await Dispatcher.RunOnUIThread(() =>
+            return await DispatcherQueue.EnqueueAsync(() =>
             {
                 return XamlReader.Load(xaml) as UIElement;
             });

@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.UWP.Controls
+﻿namespace SimpleWeather.Uno.Controls
 {
     public interface ISnackbarManager : ISnackbarPage
     {

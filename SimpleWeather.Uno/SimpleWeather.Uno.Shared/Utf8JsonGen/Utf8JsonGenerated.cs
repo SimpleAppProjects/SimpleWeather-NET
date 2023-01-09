@@ -3,7 +3,7 @@
 #pragma warning disable 414
 #pragma warning disable 168
 
-namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
+namespace SimpleWeather.Uno.Utf8JsonGen.Resolvers
 {
     using System;
     using Utf8Json;
@@ -45,13 +45,13 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
         {
             lookup = new global::System.Collections.Generic.Dictionary<Type, int>(7)
             {
-                {typeof(global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>), 0 },
-                {typeof(global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>), 1 },
-                {typeof(global::SimpleWeather.UWP.Radar.RainViewer.RadarItem), 2 },
-                {typeof(global::SimpleWeather.UWP.Radar.RainViewer.Radar), 3 },
-                {typeof(global::SimpleWeather.UWP.Radar.RainViewer.Infrared), 4 },
-                {typeof(global::SimpleWeather.UWP.Radar.RainViewer.Satellite), 5 },
-                {typeof(global::SimpleWeather.UWP.Radar.RainViewer.Rootobject), 6 },
+                {typeof(global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>), 0 },
+                {typeof(global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>), 1 },
+                {typeof(global::SimpleWeather.Uno.Radar.RainViewer.RadarItem), 2 },
+                {typeof(global::SimpleWeather.Uno.Radar.RainViewer.Radar), 3 },
+                {typeof(global::SimpleWeather.Uno.Radar.RainViewer.Infrared), 4 },
+                {typeof(global::SimpleWeather.Uno.Radar.RainViewer.Satellite), 5 },
+                {typeof(global::SimpleWeather.Uno.Radar.RainViewer.Rootobject), 6 },
             };
         }
 
@@ -62,13 +62,13 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
 
             switch (key)
             {
-                case 0: return new global::Utf8Json.Formatters.ListFormatter<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>();
-                case 1: return new global::Utf8Json.Formatters.ListFormatter<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>();
-                case 2: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer.RadarItemFormatter();
-                case 3: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer.RadarFormatter();
-                case 4: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer.InfraredFormatter();
-                case 5: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer.SatelliteFormatter();
-                case 6: return new SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer.RootobjectFormatter();
+                case 0: return new global::Utf8Json.Formatters.ListFormatter<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>();
+                case 1: return new global::Utf8Json.Formatters.ListFormatter<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>();
+                case 2: return new SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer.RadarItemFormatter();
+                case 3: return new SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer.RadarFormatter();
+                case 4: return new SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer.InfraredFormatter();
+                case 5: return new SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer.SatelliteFormatter();
+                case 6: return new SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer.RootobjectFormatter();
                 default: return null;
             }
         }
@@ -86,13 +86,13 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Resolvers
 #pragma warning disable 219
 #pragma warning disable 168
 
-namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainViewer
+namespace SimpleWeather.Uno.Utf8JsonGen.Formatters.SimpleWeather.Uno.Radar.RainViewer
 {
     using System;
     using Utf8Json;
 
 
-    public sealed class RadarItemFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>
+    public sealed class RadarItemFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -113,7 +113,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.Radar.RainViewer.RadarItem value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.Uno.Radar.RainViewer.RadarItem value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -130,7 +130,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             writer.WriteEndObject();
         }
 
-        public global::SimpleWeather.UWP.Radar.RainViewer.RadarItem Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::SimpleWeather.Uno.Radar.RainViewer.RadarItem Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -174,7 +174,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 continue;
             }
 
-            var ____result = new global::SimpleWeather.UWP.Radar.RainViewer.RadarItem();
+            var ____result = new global::SimpleWeather.Uno.Radar.RainViewer.RadarItem();
             if(__time__b__) ____result.time = __time__;
             if(__path__b__) ____result.path = __path__;
 
@@ -183,7 +183,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
     }
 
 
-    public sealed class RadarFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.Radar.RainViewer.Radar>
+    public sealed class RadarFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.Uno.Radar.RainViewer.Radar>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -204,7 +204,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.Radar.RainViewer.Radar value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.Uno.Radar.RainViewer.Radar value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -214,14 +214,14 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>>().Serialize(ref writer, value.past, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>>().Serialize(ref writer, value.past, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[1]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>>().Serialize(ref writer, value.nowcast, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>>().Serialize(ref writer, value.nowcast, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::SimpleWeather.UWP.Radar.RainViewer.Radar Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::SimpleWeather.Uno.Radar.RainViewer.Radar Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -229,9 +229,9 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             }
             
 
-            var __past__ = default(global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>);
+            var __past__ = default(global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>);
             var __past__b__ = false;
-            var __nowcast__ = default(global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>);
+            var __nowcast__ = default(global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>);
             var __nowcast__b__ = false;
 
             var ____count = 0;
@@ -249,11 +249,11 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 switch (key)
                 {
                     case 0:
-                        __past__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>>().Deserialize(ref reader, formatterResolver);
+                        __past__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>>().Deserialize(ref reader, formatterResolver);
                         __past__b__ = true;
                         break;
                     case 1:
-                        __nowcast__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.RadarItem>>().Deserialize(ref reader, formatterResolver);
+                        __nowcast__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.RadarItem>>().Deserialize(ref reader, formatterResolver);
                         __nowcast__b__ = true;
                         break;
                     default:
@@ -265,7 +265,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 continue;
             }
 
-            var ____result = new global::SimpleWeather.UWP.Radar.RainViewer.Radar();
+            var ____result = new global::SimpleWeather.Uno.Radar.RainViewer.Radar();
             if(__past__b__) ____result.past = __past__;
             if(__nowcast__b__) ____result.nowcast = __nowcast__;
 
@@ -274,7 +274,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
     }
 
 
-    public sealed class InfraredFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>
+    public sealed class InfraredFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -295,7 +295,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.Radar.RainViewer.Infrared value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.Uno.Radar.RainViewer.Infrared value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -312,7 +312,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             writer.WriteEndObject();
         }
 
-        public global::SimpleWeather.UWP.Radar.RainViewer.Infrared Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::SimpleWeather.Uno.Radar.RainViewer.Infrared Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -356,7 +356,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 continue;
             }
 
-            var ____result = new global::SimpleWeather.UWP.Radar.RainViewer.Infrared();
+            var ____result = new global::SimpleWeather.Uno.Radar.RainViewer.Infrared();
             if(__time__b__) ____result.time = __time__;
             if(__path__b__) ____result.path = __path__;
 
@@ -365,7 +365,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
     }
 
 
-    public sealed class SatelliteFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.Radar.RainViewer.Satellite>
+    public sealed class SatelliteFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.Uno.Radar.RainViewer.Satellite>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -384,7 +384,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.Radar.RainViewer.Satellite value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.Uno.Radar.RainViewer.Satellite value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -394,12 +394,12 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             
 
             writer.WriteRaw(this.____stringByteKeys[0]);
-            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>>().Serialize(ref writer, value.infrared, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>>().Serialize(ref writer, value.infrared, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::SimpleWeather.UWP.Radar.RainViewer.Satellite Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::SimpleWeather.Uno.Radar.RainViewer.Satellite Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -407,7 +407,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             }
             
 
-            var __infrared__ = default(global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>);
+            var __infrared__ = default(global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>);
             var __infrared__b__ = false;
 
             var ____count = 0;
@@ -425,7 +425,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 switch (key)
                 {
                     case 0:
-                        __infrared__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.UWP.Radar.RainViewer.Infrared>>().Deserialize(ref reader, formatterResolver);
+                        __infrared__ = formatterResolver.GetFormatterWithVerify<global::System.Collections.Generic.List<global::SimpleWeather.Uno.Radar.RainViewer.Infrared>>().Deserialize(ref reader, formatterResolver);
                         __infrared__b__ = true;
                         break;
                     default:
@@ -437,7 +437,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 continue;
             }
 
-            var ____result = new global::SimpleWeather.UWP.Radar.RainViewer.Satellite();
+            var ____result = new global::SimpleWeather.Uno.Radar.RainViewer.Satellite();
             if(__infrared__b__) ____result.infrared = __infrared__;
 
             return ____result;
@@ -445,7 +445,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
     }
 
 
-    public sealed class RootobjectFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.UWP.Radar.RainViewer.Rootobject>
+    public sealed class RootobjectFormatter : global::Utf8Json.IJsonFormatter<global::SimpleWeather.Uno.Radar.RainViewer.Rootobject>
     {
         readonly global::Utf8Json.Internal.AutomataDictionary ____keyMapping;
         readonly byte[][] ____stringByteKeys;
@@ -472,7 +472,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             };
         }
 
-        public void Serialize(ref JsonWriter writer, global::SimpleWeather.UWP.Radar.RainViewer.Rootobject value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public void Serialize(ref JsonWriter writer, global::SimpleWeather.Uno.Radar.RainViewer.Rootobject value, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (value == null)
             {
@@ -488,14 +488,14 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             writer.WriteRaw(this.____stringByteKeys[2]);
             writer.WriteString(value.host);
             writer.WriteRaw(this.____stringByteKeys[3]);
-            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.UWP.Radar.RainViewer.Radar>().Serialize(ref writer, value.radar, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Uno.Radar.RainViewer.Radar>().Serialize(ref writer, value.radar, formatterResolver);
             writer.WriteRaw(this.____stringByteKeys[4]);
-            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.UWP.Radar.RainViewer.Satellite>().Serialize(ref writer, value.satellite, formatterResolver);
+            formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Uno.Radar.RainViewer.Satellite>().Serialize(ref writer, value.satellite, formatterResolver);
             
             writer.WriteEndObject();
         }
 
-        public global::SimpleWeather.UWP.Radar.RainViewer.Rootobject Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
+        public global::SimpleWeather.Uno.Radar.RainViewer.Rootobject Deserialize(ref JsonReader reader, global::Utf8Json.IJsonFormatterResolver formatterResolver)
         {
             if (reader.ReadIsNull())
             {
@@ -509,9 +509,9 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
             var __generated__b__ = false;
             var __host__ = default(string);
             var __host__b__ = false;
-            var __radar__ = default(global::SimpleWeather.UWP.Radar.RainViewer.Radar);
+            var __radar__ = default(global::SimpleWeather.Uno.Radar.RainViewer.Radar);
             var __radar__b__ = false;
-            var __satellite__ = default(global::SimpleWeather.UWP.Radar.RainViewer.Satellite);
+            var __satellite__ = default(global::SimpleWeather.Uno.Radar.RainViewer.Satellite);
             var __satellite__b__ = false;
 
             var ____count = 0;
@@ -541,11 +541,11 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                         __host__b__ = true;
                         break;
                     case 3:
-                        __radar__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.UWP.Radar.RainViewer.Radar>().Deserialize(ref reader, formatterResolver);
+                        __radar__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Uno.Radar.RainViewer.Radar>().Deserialize(ref reader, formatterResolver);
                         __radar__b__ = true;
                         break;
                     case 4:
-                        __satellite__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.UWP.Radar.RainViewer.Satellite>().Deserialize(ref reader, formatterResolver);
+                        __satellite__ = formatterResolver.GetFormatterWithVerify<global::SimpleWeather.Uno.Radar.RainViewer.Satellite>().Deserialize(ref reader, formatterResolver);
                         __satellite__b__ = true;
                         break;
                     default:
@@ -557,7 +557,7 @@ namespace SimpleWeather.UWP.Utf8JsonGen.Formatters.SimpleWeather.UWP.Radar.RainV
                 continue;
             }
 
-            var ____result = new global::SimpleWeather.UWP.Radar.RainViewer.Rootobject();
+            var ____result = new global::SimpleWeather.Uno.Radar.RainViewer.Rootobject();
             if(__version__b__) ____result.version = __version__;
             if(__generated__b__) ____result.generated = __generated__;
             if(__host__b__) ____result.host = __host__;

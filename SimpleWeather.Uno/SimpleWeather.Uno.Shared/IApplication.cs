@@ -1,7 +1,7 @@
-﻿using Windows.ApplicationModel.Resources;
-using Windows.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
+using Windows.ApplicationModel.Resources;
 
-namespace SimpleWeather.UWP
+namespace SimpleWeather.Uno
 {
     public interface IApplication
     {

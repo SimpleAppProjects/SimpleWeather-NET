@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using SimpleWeather.ComponentModel;
 
-namespace SimpleWeather.UWP.Setup
+namespace SimpleWeather.Uno.Setup
 {
     public partial class SetupViewModel : BaseViewModel
     {

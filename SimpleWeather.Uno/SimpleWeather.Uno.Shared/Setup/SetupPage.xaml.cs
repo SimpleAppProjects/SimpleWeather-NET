@@ -1,26 +1,23 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Preferences;
+using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Main;
+using SimpleWeather.Uno.ViewModels;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
-using SimpleWeather.UWP.Main;
-using SimpleWeather.UWP.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
-#if WINDOWS_UWP
-using Windows.UI;
-#endif
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
-namespace SimpleWeather.UWP.Setup
+namespace SimpleWeather.Uno.Setup
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -51,18 +48,12 @@ namespace SimpleWeather.UWP.Setup
             UISettings = new UISettings();
             UpdateAppTheme();
 
-#if WINDOWS_UWP
-            Window.Current.SetTitleBar(AppTitleBar);
-            CoreApplication.GetCurrentView().TitleBar.LayoutMetricsChanged += (s, e) => UpdateTitleBarLayout(s);
-            CoreApplication.GetCurrentView().TitleBar.IsVisibleChanged += (s, e) => UpdateTitleBarVisibility(s);
-#endif
-
             // remove the solid-colored backgrounds behind the caption controls and system back button if we are in left mode
             // This is done when the app is loaded since before that the actual theme that is used is not "determined" yet
             Loaded += delegate (object sender, RoutedEventArgs e)
             {
-#if WINDOWS_UWP
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
+#if WINDOWS
+                SetupAppTitleBar();
 #endif
                 UpdateAppTheme(); // TitleBar color
             };
@@ -138,7 +129,7 @@ namespace SimpleWeather.UWP.Setup
                     {
                         var transition = new SlideNavigationTransitionInfo();
 
-                        if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
+                        if (ApiInformation.IsPropertyPresent("Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo", "Effect"))
                         {
                             transition.Effect = SlideNavigationTransitionEffect.FromRight;
                         }
@@ -173,42 +164,18 @@ namespace SimpleWeather.UWP.Setup
 
         private void UpdateAppTheme()
         {
-#if WINDOWS_UWP
-            var titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            titleBar.ButtonBackgroundColor = Colors.Transparent;
-            titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
-            titleBar.ButtonForegroundColor = Colors.White;
-            titleBar.InactiveForegroundColor = Colors.WhiteSmoke;
-            titleBar.ButtonInactiveForegroundColor = Colors.WhiteSmoke;
+#if WINDOWS
+            UpdateTitleBarTheme();
 #endif
         }
 
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
             // NOTE: Run on UI Thread since this may be called off the main thread
-            await Dispatcher?.RunOnUIThread(() =>
+            await DispatcherQueue?.EnqueueAsync(() =>
             {
                 UpdateAppTheme();
             });
-        }
-
-        private void UpdateTitleBarLayout(CoreApplicationViewTitleBar coreTitleBar)
-        {
-#if WINDOWS_UWP
-            // Update title bar control size as needed to account for system size changes.
-            AppTitleBar.Height = coreTitleBar.Height;
-
-            // Ensure the custom title bar does not overlap window caption controls
-            Thickness currMargin = AppTitleBar.Margin;
-            AppTitleBar.Margin = new Thickness(currMargin.Left, currMargin.Top, coreTitleBar.SystemOverlayRightInset, currMargin.Bottom);
-#endif
-        }
-
-        private void UpdateTitleBarVisibility(CoreApplicationViewTitleBar coreTitleBar)
-        {
-#if WINDOWS_UWP
-            AppTitleBar.Visibility = coreTitleBar.IsVisible ? Visibility.Visible : Visibility.Collapsed;
-#endif
         }
     }
 }

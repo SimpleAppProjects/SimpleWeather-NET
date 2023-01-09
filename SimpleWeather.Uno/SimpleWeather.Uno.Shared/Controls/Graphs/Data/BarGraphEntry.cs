@@ -1,7 +1,7 @@
 ﻿using SimpleWeather.SkiaSharp;
 using Windows.UI;
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     public class BarGraphEntry : GraphEntry
     {

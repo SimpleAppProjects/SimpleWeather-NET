@@ -23,7 +23,7 @@ namespace SimpleWeather.Common.Migrations
 
                 await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 
-#if WINDOWS_UWP && !UNIT_TEST
+#if WINDOWS && !UNIT_TEST
                 // Update tile id for location
                 if (oldKey != null)
                 {

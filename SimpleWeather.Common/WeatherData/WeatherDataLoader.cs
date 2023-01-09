@@ -359,7 +359,7 @@ namespace SimpleWeather.Common.WeatherData
                                     else
                                     {
                                         await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
-#if WINDOWS_UWP && !UNIT_TEST
+#if WINDOWS && !UNIT_TEST
                                         // Update tile id for location
                                         SharedModule.Instance.RequestAction(
                                             CommonActions.ACTION_WEATHER_UPDATETILELOCATION,

@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Common.Collections;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Collections;
-using Microsoft.Toolkit.Uwp;
+using CommunityToolkit.WinUI;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SimpleWeather.UWP.Controls
+namespace SimpleWeather.Uno.Controls
 {
     [Bindable(true)]
     public partial class ForecastsListViewModel : BaseViewModel, IDisposable

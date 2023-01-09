@@ -1,13 +1,12 @@
-﻿using SkiaSharp;
-using SkiaSharp.Views.UWP;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using SkiaSharp;
+using SkiaSharp.Views.Windows;
 using System;
-using Windows.Graphics.Display;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
-namespace SimpleWeather.UWP.Controls.Graphs
+namespace SimpleWeather.Uno.Controls.Graphs
 {
     [TemplatePart(Name = nameof(InternalScrollViewer), Type = typeof(ScrollViewer))]
     [TemplatePart(Name = nameof(Canvas), Type = typeof(SKXamlCanvas))]
@@ -116,8 +115,14 @@ namespace SimpleWeather.UWP.Controls.Graphs
             var canvas = e.Surface.Canvas;
 
             // get the screen density for scaling
-            var display = DisplayInformation.GetForCurrentView();
+#if WINDOWS
+            var scale = (float)XamlRoot.RasterizationScale;
+#elif HAS_UNO
+            var display = Windows.Graphics.Display.DisplayInformation.GetForCurrentView();
             var scale = display.LogicalDpi / 96.0f;
+#else
+            var scale = 1f;
+#endif
 
             // handle the device screen density
             canvas.Scale(scale);

@@ -29,7 +29,7 @@ namespace SimpleWeather.WeatherData.Images.Model
         {
             return ImageUrl != null &&
                 ((
-#if !WINDOWS_UWP
+#if !WINDOWS
                 ImageUrl?.StartsWith("ms-appx") != true &&
 #endif
                 File.Exists(ImageUrl)) ||

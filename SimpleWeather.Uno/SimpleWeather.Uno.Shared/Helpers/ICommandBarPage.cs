@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using muxc = Microsoft.UI.Xaml.Controls;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public interface ICommandBarPage
     {

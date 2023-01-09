@@ -1,4 +1,4 @@
-﻿#if WINDOWS_UWP
+﻿#if WINDOWS
 using System.Collections.Generic;
 using Windows.Storage;
 

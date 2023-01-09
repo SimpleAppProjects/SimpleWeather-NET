@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Xaml.Controls;
-#if !(WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA)
+using Microsoft.UI.Xaml.Controls;
+#if !(WINDOWS || __MACOS__ || HAS_UNO_SKIA)
 using Microsoft.Maui.ApplicationModel;
 #endif
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public static class LocationPermissionExtensions
     {
         public static async Task<bool> LocationPermissionEnabled(this Page _)
         {
-#if WINDOWS_UWP || __MACOS__ || HAS_UNO_SKIA
+#if WINDOWS || __MACOS__ || HAS_UNO_SKIA
             var geoStatus = GeolocationAccessStatus.Unspecified;
 
             try
@@ -39,7 +39,7 @@ namespace SimpleWeather.UWP.Helpers
 #endif
         }
 
-#if WINDOWS_UWP
+#if WINDOWS
         public static IAsyncOperation<bool>
 #else
         public static Task<bool>

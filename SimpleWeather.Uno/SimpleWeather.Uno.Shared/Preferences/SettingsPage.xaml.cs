@@ -1,19 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Helpers;
+using SimpleWeather.Uno.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
-namespace SimpleWeather.UWP.Preferences
+namespace SimpleWeather.Uno.Preferences
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
@@ -112,14 +112,14 @@ namespace SimpleWeather.UWP.Preferences
                 _page = item.Page;
                 if (_page != null)
                 {
-                    SettingsFrame.Navigate(_page, new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+                    SettingsFrame.Navigate(_page, new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
                 }
             }
             else
             {
                 // NavView doesn't load any page by default, so load home page.
                 SettingsNavView.SelectedItem = SettingsNavView.MenuItems[0];
-                SettingsNavView_Navigate("General", new Windows.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
+                SettingsNavView_Navigate("General", new Microsoft.UI.Xaml.Media.Animation.EntranceNavigationTransitionInfo());
             }
         }
 
@@ -140,7 +140,7 @@ namespace SimpleWeather.UWP.Preferences
 
         private void SettingsNavView_Navigate(
             string navItemTag,
-            Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
+            Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
         {
             Type _page = null;
             var item = _pages.FirstOrDefault(p => p.Tag.Equals(navItemTag));

@@ -2,7 +2,7 @@
 using PointF = System.Drawing.PointF;
 using RectF = System.Drawing.RectangleF;
 
-namespace SimpleWeather.UWP.Helpers
+namespace SimpleWeather.Uno.Helpers
 {
     public static class RectHelperExtensions
     {

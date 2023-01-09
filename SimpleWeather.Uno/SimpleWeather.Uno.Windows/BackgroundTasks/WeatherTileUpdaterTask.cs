@@ -2,7 +2,7 @@
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.UWP.Tiles;
+using SimpleWeather.Uno.Tiles;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.UI.StartScreen;
 
-namespace SimpleWeather.UWP.BackgroundTasks
+namespace SimpleWeather.Uno.BackgroundTasks
 {
     public sealed class WeatherTileUpdaterTask : IBackgroundTask
     {

@@ -16,7 +16,30 @@ namespace SimpleWeather.Helpers
             bool appendPath = false;
 #if __MACOS__
             appendPath = NSProcessInfo.ProcessInfo.Environment["APP_SANDBOX_CONTAINER_ID"] != null; // Sandboxed
-#elif WINDOWS_UWP
+#elif WINDOWS
+            // appendPath = false;
+#elif __IOS__ || __SKIA__ || NETSTANDARD2_0
+            appendPath = true;
+#endif
+
+            if (appendPath)
+            {
+                appDataFolderPath = Path.Combine(appDataFolderPath, "SimpleWeather");
+            }
+
+            Directory.CreateDirectory(appDataFolderPath);
+
+            return appDataFolderPath;
+        }
+        public static string GetLocalCacheFolderPath()
+        {
+            var appDataFolder = ApplicationData.Current.LocalCacheFolder;
+            var appDataFolderPath = appDataFolder.Path;
+
+            bool appendPath = false;
+#if __MACOS__
+            appendPath = NSProcessInfo.ProcessInfo.Environment["APP_SANDBOX_CONTAINER_ID"] != null; // Sandboxed
+#elif WINDOWS
             // appendPath = false;
 #elif __IOS__ || __SKIA__ || NETSTANDARD2_0
             appendPath = true;

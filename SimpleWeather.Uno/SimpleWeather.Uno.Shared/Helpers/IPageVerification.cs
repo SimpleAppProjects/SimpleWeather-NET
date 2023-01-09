@@ -1,4 +1,4 @@
-﻿namespace SimpleWeather.UWP.Helpers
+﻿namespace SimpleWeather.Uno.Helpers
 {
     internal interface IPageVerification
     {

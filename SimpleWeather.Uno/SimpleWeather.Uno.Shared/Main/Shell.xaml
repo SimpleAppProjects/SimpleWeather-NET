@@ -1,5 +1,5 @@
 ﻿<viewModels:ViewModelPage
-    x:Class="SimpleWeather.UWP.Main.Shell"
+    x:Class="SimpleWeather.Uno.Main.Shell"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Win1809NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract, 7)"
@@ -9,20 +9,19 @@
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:helpers="using:SimpleWeather.UWP.Helpers"
-    xmlns:localControls="using:SimpleWeather.UWP.Controls"
-    xmlns:matIcons="using:SimpleWeather.UWP.MaterialIcons"
+    xmlns:helpers="using:SimpleWeather.Uno.Helpers"
+    xmlns:localControls="using:SimpleWeather.Uno.Controls"
+    xmlns:matIcons="using:SimpleWeather.Uno.MaterialIcons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:media="using:Microsoft.UI.Xaml.Media"
-    xmlns:mtui="using:Microsoft.Toolkit.Uwp.UI"
+    xmlns:mtui="using:CommunityToolkit.WinUI.UI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxcp="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
-    xmlns:sharedHelpers="using:SimpleWeather.UWP.Shared.Helpers"
-    xmlns:viewModels="using:SimpleWeather.UWP.ViewModels"
+    xmlns:sharedHelpers="using:SimpleWeather.Uno.Shared.Helpers"
+    xmlns:viewModels="using:SimpleWeather.Uno.ViewModels"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    muxc:BackdropMaterial.ApplyToRootOrPageBackground="True"
     mc:Ignorable="d not_win">
 
     <Page.Resources>
@@ -60,34 +59,30 @@
     </Page.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
-        <Rectangle
-            x:Name="XboxContentSafeRect"
-            Width="48"
-            not_win:Load="false"
-            Canvas.ZIndex="0"
-            Fill="{ThemeResource NavigationViewDefaultPaneBackground}"
-            Visibility="Collapsed" />
-
-        <Border
+        <Grid
             x:Name="AppTitleBar"
             Grid.Column="1"
             Height="{Binding ElementName=NavView, Path=CompactPaneLength}"
             VerticalAlignment="Top"
             not_win:Load="false"
-            Background="Transparent"
-            Canvas.ZIndex="1"
-            IsHitTestVisible="True">
+            win:Visibility="Visible"
+            Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="LeftPaddingColumn" Width="0" />
+                <ColumnDefinition x:Name="TitleColumn" Width="Auto" />
+                <ColumnDefinition x:Name="LeftDragColumn" Width="*" />
+                <ColumnDefinition x:Name="SearchColumn" Width="Auto" />
+                <ColumnDefinition x:Name="RightDragColumn" Width="*" />
+                <ColumnDefinition x:Name="RightPaddingColumn" Width="0" />
+            </Grid.ColumnDefinitions>
             <TextBlock
                 x:Name="AppTitle"
+                Grid.Column="1"
                 VerticalAlignment="Center"
+                d:Text="SimpleWeather"
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{helpers:StringRes Name='app_name'}" />
-        </Border>
+        </Grid>
 
         <muxc:NavigationView
             x:Name="NavView"
