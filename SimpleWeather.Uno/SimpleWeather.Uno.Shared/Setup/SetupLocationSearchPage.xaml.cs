@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
@@ -11,12 +10,11 @@ using SimpleWeather.ComponentModel;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Uno.Controls;
-using SimpleWeather.Uno.Helpers;
+using SimpleWeather.Uno.Location;
 using SimpleWeather.Utils;
 using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 namespace SimpleWeather.Uno.Setup
@@ -24,22 +22,13 @@ namespace SimpleWeather.Uno.Setup
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class SetupLocationsPage : Page, IPageVerification, ISnackbarManager
+    public sealed partial class SetupLocationSearchPage : Page, ISnackbarManager
     {
         private LocationSearchViewModel LocationSearchViewModel { get; } = Ioc.Default.GetViewModel<LocationSearchViewModel>();
-        private SetupViewModel ViewModel { get; } = SetupPage.Instance.GetViewModel<SetupViewModel>();
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
-        private bool ShowSearchBox { get; } =
-#if __IOS__ || __ANDROID__
-            false;
-#else
-            true;
-#endif
-        private bool ShowAltSearchBox => !ShowSearchBox;
-
-        public SetupLocationsPage()
+        public SetupLocationSearchPage()
         {
             this.InitializeComponent();
         }
@@ -75,7 +64,7 @@ namespace SimpleWeather.Uno.Setup
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            AnalyticsLogger.LogEvent("SetupLocationsPage: OnNavigatedTo");
+            AnalyticsLogger.LogEvent("SetupLocationSearchPage: OnNavigatedTo");
             InitSnackManager();
 
             LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
@@ -85,13 +74,18 @@ namespace SimpleWeather.Uno.Setup
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-            AnalyticsLogger.LogEvent("SetupLocationsPage: OnNavigatedFrom");
+            AnalyticsLogger.LogEvent("SetupLocationSearchPage: OnNavigatedFrom");
             UnloadSnackManager();
 
             LocationSearchViewModel.PropertyChanged -= LocationSearchViewModel_PropertyChanged;
         }
 
-        private async void LocationSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.GoBack();
+        }
+
+        private void LocationSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)
             {
@@ -103,7 +97,7 @@ namespace SimpleWeather.Uno.Setup
                                 {
                                     if (result.Data?.IsValid() == true)
                                     {
-                                        await OnLocationReceived(result.Data);
+                                        OnLocationReceived(result.Data);
                                     }
                                 }
                                 break;
@@ -111,21 +105,13 @@ namespace SimpleWeather.Uno.Setup
                                 {
                                     if (result.Data?.IsValid() == true)
                                     {
-                                        await OnLocationReceived(result.Data);
+                                        OnLocationReceived(result.Data);
                                     }
                                 }
                                 break;
                             case LocationSearchResult.Failed:
                             default:
                                 break;
-                        }
-                    }
-                    break;
-                case nameof(LocationSearchViewModel.CurrentLocation):
-                    {
-                        if (LocationSearchViewModel.CurrentLocation?.IsValid() == true)
-                        {
-                            await OnLocationReceived(LocationSearchViewModel.CurrentLocation);
                         }
                     }
                     break;
@@ -144,28 +130,10 @@ namespace SimpleWeather.Uno.Setup
             }
         }
 
-        private async Task OnLocationReceived(LocationData.LocationData location)
+        private void OnLocationReceived(LocationData.LocationData location)
         {
-            await SettingsManager.DeleteLocations();
-
-            if (location.locationType == LocationType.GPS)
-            {
-                await SettingsManager.SaveLastGPSLocData(location);
-                await SettingsManager.AddLocation(new LocationQuery(location).ToLocationData());
-                SettingsManager.FollowGPS = true;
-            }
-            else
-            {
-                await SettingsManager.SaveLastGPSLocData(null);
-                await SettingsManager.AddLocation(location);
-                SettingsManager.FollowGPS = false;
-            }
-
-            SettingsManager.WeatherLoaded = true;
-
-            // Setup complete
-            ViewModel.LocationData = location;
-            SetupPage.Instance.Next();
+            this.Frame.GoBack();
+            WeakReferenceMessenger.Default.Send(new LocationSelectedMessage(location));
         }
 
         private void OnErrorMessage(ErrorMessage error)
@@ -281,31 +249,12 @@ namespace SimpleWeather.Uno.Setup
             }
         }
 
-        private void LocationSearchBox_Tapped(object sender, TappedRoutedEventArgs e)
+        private void SearchList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // Navigate to separate search page
-            this.Frame.Navigate(typeof(SetupLocationSearchPage));
-        }
-
-        private async void GPS_Click(object sender, RoutedEventArgs e)
-        {
-            await FetchGeoLocation();
-        }
-
-        private async Task FetchGeoLocation()
-        {
-            if (!await this.LocationPermissionEnabled())
+            if (e.AddedItems?.FirstOrDefault() is LocationQuery theChosenOne && theChosenOne != LocationQuery.Empty)
             {
-                ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_location_denied"), SnackbarDuration.Short));
-                return;
+                LocationSearchViewModel.OnLocationSelected(theChosenOne);
             }
-
-            LocationSearchViewModel.FetchGeoLocation();
-        }
-
-        public bool CanContinue()
-        {
-            return ViewModel.LocationData?.IsValid() == true;
         }
     }
 }

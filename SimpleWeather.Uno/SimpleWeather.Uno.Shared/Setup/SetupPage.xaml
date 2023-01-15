@@ -12,10 +12,11 @@
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:viewModels="using:SimpleWeather.Uno.ViewModels"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    Background="{ThemeResource AppColorBrush}"
+    xmlns:utu="using:Uno.Toolkit.UI"
+    Background="{ThemeResource PrimarySurfaceColor}"
     mc:Ignorable="d not_win">
 
-    <Grid>
+    <Grid utu:SafeArea.Insets="All">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -29,8 +30,7 @@
             not_win:Load="false"
             win:Visibility="Visible"
             Background="Transparent"
-            IsHitTestVisible="False"
-            RequestedTheme="Dark">
+            IsHitTestVisible="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="LeftPaddingColumn" Width="0" />
                 <ColumnDefinition x:Name="TitleColumn" Width="Auto" />
@@ -44,6 +44,7 @@
                 Margin="22,0,0,0"
                 VerticalAlignment="Center"
                 d:Text="SimpleWeather"
+                Foreground="{ThemeResource OnPrimarySurfaceColor}"
                 Style="{StaticResource CaptionTextBlockStyle}"
                 Text="{helpers:StringRes Name='app_name'}" />
         </Grid>
@@ -56,12 +57,12 @@
             Grid.Row="2"
             d:ItemCount="5"
             d:SelectedIndex="1"
-            not_win:Foreground="White"
+            Background="{ThemeResource PrimarySurfaceColor}"
+            Foreground="{ThemeResource OnPrimarySurfaceColor}"
             BackButtonLabel="{helpers:StringRes Name='label_back'}"
             CompleteButtonIcon="Accept"
             CompleteButtonLabel="{helpers:StringRes Name='Label_Done'}"
             NextButtonLabel="{helpers:StringRes Name='label_next'}"
-            RequestedTheme="Dark"
             StartButtonLabel="{helpers:StringRes Name='label_getstarted'}">
             <localcontrols:BottomStepperNavigationBar.BackButtonIcon>
                 <FontIcon Glyph="&#xE76B;" />

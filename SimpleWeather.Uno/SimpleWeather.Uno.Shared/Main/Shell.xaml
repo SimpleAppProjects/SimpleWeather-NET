@@ -21,6 +21,7 @@
     xmlns:primitiveContract7Present="using:Microsoft.UI.Xaml.Controls.Primitives?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:sharedHelpers="using:SimpleWeather.Uno.Shared.Helpers"
     xmlns:viewModels="using:SimpleWeather.Uno.ViewModels"
+    xmlns:utu="using:Uno.Toolkit.UI"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="d not_win">
 
@@ -58,7 +59,7 @@
         </ResourceDictionary>
     </Page.Resources>
 
-    <Grid>
+    <Grid utu:SafeArea.Insets="All">
         <Grid
             x:Name="AppTitleBar"
             Grid.Column="1"

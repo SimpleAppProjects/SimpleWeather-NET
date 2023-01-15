@@ -3,6 +3,8 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 
 namespace SimpleWeather.Uno.Controls
 {
@@ -11,6 +13,8 @@ namespace SimpleWeather.Uno.Controls
     {
         private AutoSuggestBox SuggestBox;
         private ListView SuggestionsList;
+        private Border SuggestionsContainer;
+        private Popup SuggestionsPopup;
 
         public ProgressAutoSuggestBox()
         {
@@ -158,6 +162,7 @@ namespace SimpleWeather.Uno.Controls
                 SuggestBox.ApplyTemplate();
                 SuggestBox.Loaded += SuggestBox_Loaded;
                 SuggestBox.Unloaded += SuggestBox_Unloaded;
+                SuggestBox.SizeChanged += SuggestBox_SizeChanged;
                 UpdateQueryIcon();
             }
         }
@@ -173,6 +178,27 @@ namespace SimpleWeather.Uno.Controls
             BindSuggestBox(false);
         }
 
+        private void SuggestBox_SizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            if (SuggestionsList != null)
+            {
+                var window = MainWindow.Current ?? Microsoft.UI.Xaml.Window.Current;
+
+                if (window != null)
+                {
+                    var suggestedHeight = SuggestBox.GetBestPopupHeight(window);
+                    SuggestionsList.MaxHeight = suggestedHeight;
+                }
+
+#if !WINDOWS
+                if (SuggestBox.IsSuggestionListOpen)
+                {
+                    SuggestBox.IsSuggestionListOpen = false;
+                }
+#endif
+            }
+        }
+
         private void BindSuggestBox(bool bind)
         {
             if (bind)
@@ -182,6 +208,8 @@ namespace SimpleWeather.Uno.Controls
                 SuggestBox.QuerySubmitted += SuggestBox_QuerySubmitted;
 
                 SuggestionsList = VisualTreeHelperExtensions.FindChild<ListView>(SuggestBox, nameof(SuggestionsList));
+                SuggestionsContainer = VisualTreeHelper.GetParent(SuggestionsList) as Border;
+                SuggestionsPopup = VisualTreeHelper.GetParent(SuggestionsContainer) as Popup;
                 if (SuggestionsList != null)
                 {
                     SuggestionsList.SetBinding(ListViewBase.FooterProperty, new Binding()
@@ -198,6 +226,13 @@ namespace SimpleWeather.Uno.Controls
                         Source = FooterTemplate
                     });
                 }
+
+                SuggestionsContainer?.SetBinding(Border.MaxWidthProperty, new Binding()
+                {
+                    Mode = BindingMode.OneWay,
+                    UpdateSourceTrigger = UpdateSourceTrigger.Default,
+                    Source = SuggestBox.ActualWidth
+                });
             }
             else
             {
@@ -211,6 +246,9 @@ namespace SimpleWeather.Uno.Controls
                     SuggestionsList.ClearValue(ListViewBase.FooterTemplateProperty);
                     SuggestionsList = null;
                 }
+
+                SuggestionsContainer?.ClearValue(Border.MaxWidthProperty);
+                SuggestionsContainer = null;
             }
         }
 

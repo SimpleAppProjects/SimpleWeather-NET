@@ -143,16 +143,25 @@ namespace SimpleWeather.Uno.Setup
         private void AppFrame_Navigated(object sender, NavigationEventArgs e)
         {
             // Change indicators
-            BottomNavBar.SelectedIndex = Pages.IndexOf(e.SourcePageType);
+            var pageIdx = Pages.IndexOf(e.SourcePageType);
 
-            if (e.SourcePageType == Pages.Last())
+            // Update BottomNavBar for registered pages (ignore modals)
+            if (pageIdx != -1)
             {
-                BottomNavBar.ShowBackButton(false);
+                BottomNavBar.SelectedIndex = Pages.IndexOf(e.SourcePageType);
+
+                if (e.SourcePageType == Pages.Last())
+                {
+                    BottomNavBar.ShowBackButton(false);
+                }
+                else if (e.SourcePageType == typeof(SetupLocationsPage))
+                {
+                    BottomNavBar.ShowNextButton(false);
+                }
             }
-            else if (e.SourcePageType == typeof(SetupLocationsPage))
-            {
-                BottomNavBar.ShowNextButton(false);
-            }
+
+            BottomNavBar.Visibility = pageIdx != -1 ? Visibility.Visible : Visibility.Collapsed;
+            BottomNavBar.Visibility = pageIdx != -1 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void OnCompleted()

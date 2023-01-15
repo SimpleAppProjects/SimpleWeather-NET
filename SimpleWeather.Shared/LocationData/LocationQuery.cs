@@ -1,9 +1,11 @@
 ﻿using SimpleWeather.WeatherData;
 using System;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace SimpleWeather.LocationData
 {
+    [Bindable(BindableSupport.Default)]
     public partial class LocationQuery
     {
         public string LocationName { get; set; }

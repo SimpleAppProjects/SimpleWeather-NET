@@ -101,16 +101,12 @@ namespace SimpleWeather.Uno
 #endif
 #if HAS_UNO
             FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent = true;
-            FeatureConfiguration.Control.UseDeferredOnApplyTemplate = true;
-            // FeatureConfiguration.Font.SymbolsFont = "";
+            FeatureConfiguration.Control.UseDeferredOnApplyTemplate = false;
             // FeatureConfiguration.ListViewBase.DefaultCacheLength = null; // default UWP = 4.0
             FeatureConfiguration.Page.IsPoolingEnabled = true;
-            // FeatureConfiguration.Style.UseUWPDefaultStyles = false;
             FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
+            FeatureConfiguration.Style.UseUWPDefaultStyles = false;
             FeatureConfiguration.ScrollViewer.DefaultUpdatesMode = ScrollViewerUpdatesMode.Synchronous;
-#if ANDROID
-            FeatureConfiguration.Popup.UseNativePopup = true;
-#endif
 #endif
             InitializeLogging();
             this.InitializeComponent();
@@ -807,6 +803,7 @@ namespace SimpleWeather.Uno
                 builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
 #elif __IOS__
                 builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
+                builder.AddConsole();
 #elif NETFX_CORE
                 builder.AddDebug();
 #else
@@ -836,7 +833,7 @@ namespace SimpleWeather.Uno
                 builder.AddFilter("Windows.Storage", LogLevel.Warning);
 
                 // Binding related messages
-                builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug);
+                builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Trace);
 
                 // Binder memory references tracking
                 // builder.AddFilter("Uno.WinUI.DataBinding.BinderReferenceHolder", LogLevel.Debug );

@@ -10,7 +10,7 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    d:Background="{ThemeResource SimpleBlueDarkBrush}"
+    d:Background="{ThemeResource PrimarySurfaceColor}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d not_win">
 
@@ -30,8 +30,8 @@
                 Padding="8"
                 HorizontalAlignment="Center"
                 d:Text="Customize your settings below"
+                Foreground="{ThemeResource OnPrimarySurfaceColor}"
                 FontSize="{ThemeResource HubSectionHeaderThemeFontSize}"
-                RequestedTheme="Dark"
                 Text="{helpers:StringRes Name='setup_preferences_prompt'}" />
             <StackPanel
                 Width="{x:Bind databinding:BindingExtensions.Multiply(Scroller.ViewportWidth, 0.75), Mode=OneWay}"

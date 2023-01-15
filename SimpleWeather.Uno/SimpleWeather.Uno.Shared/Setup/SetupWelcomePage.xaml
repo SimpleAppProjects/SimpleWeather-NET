@@ -6,7 +6,7 @@
     xmlns:helpers="using:SimpleWeather.Uno.Helpers"
     xmlns:local="using:SimpleWeather.Uno.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:Background="{ThemeResource SimpleBlueDarkBrush}"
+    d:Background="{ThemeResource PrimarySurfaceColor}"
     Background="Transparent"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -32,7 +32,7 @@
                 d:Text="Welcome to SimpleWeather"
                 FontSize="24"
                 FontWeight="SemiBold"
-                Foreground="#FFFFFFFF"
+                Foreground="{ThemeResource OnPrimarySurfaceColor}"
                 RelativePanel.AlignHorizontalCenterWithPanel="True"
                 RelativePanel.Below="AppLogo"
                 Text="{helpers:StringRes Name='setup_welcome_prompt'}" />
@@ -41,7 +41,8 @@
                 Padding="4"
                 d:Text="Just a simple weather app"
                 FontSize="18"
-                Foreground="#B3FFFFFF"
+                Opacity="0.75"
+                Foreground="{ThemeResource OnPrimarySurfaceColor}"
                 RelativePanel.AlignHorizontalCenterWithPanel="True"
                 RelativePanel.Below="WelcomeText"
                 Text="{helpers:StringRes Name='setup_welcome_tagline_prompt'}" />

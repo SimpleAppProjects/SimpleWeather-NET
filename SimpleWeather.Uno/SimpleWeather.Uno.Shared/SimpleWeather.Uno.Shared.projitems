@@ -160,9 +160,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MainWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\Args.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationPanelAdapter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml.cs">
-      <DependentUpon>LocationSearchPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationsPage.xaml.cs">
       <DependentUpon>LocationsPage.xaml</DependentUpon>
     </Compile>
@@ -265,6 +262,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LocationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\ViewModelPage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WeatherAlerts\WeatherAlertHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\UIElementExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml.cs">
+      <DependentUpon>LocationSearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Setup\SetupLocationSearchPage.xaml.cs">
+      <DependentUpon>SetupLocationSearchPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Location\LocationSelectedMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppLogo.png" />
@@ -488,10 +493,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Main\LocationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -616,6 +617,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupLocationsPage.Resources.xaml" />
+    <Page Include="$(MSBuildThisFileDirectory)Main\LocationSearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Setup\SetupLocationSearchPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Location\" />
   </ItemGroup>
 </Project>

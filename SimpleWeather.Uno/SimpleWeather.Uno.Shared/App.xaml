@@ -12,6 +12,8 @@
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
     xmlns:not_win="http://uno.ui/not_win"
+    xmlns:android="http://uno.ui/android"
+    xmlns:ios="http://uno.ui/ios"
     xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
     xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -23,13 +25,17 @@
                 <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
                 <!--  Load Uno.Material resources  -->
-                <!--<not_win:MaterialColors xmlns="using:Uno.Material" OverrideSource="ms-appx:///Themes/MaterialColorsOverride.xaml" />
-                <not_win:MaterialFonts xmlns="using:Uno.Material" />
-                <not_win:MaterialResources xmlns="using:Uno.Material" />-->
+                <android:MaterialColors xmlns="using:Uno.Material" OverrideSource="ms-appx:///Themes/MaterialColorsOverride.xaml" />
+                <android:MaterialFonts xmlns="using:Uno.Material" />
+                <android:MaterialResources xmlns="using:Uno.Material" />
+
+                <!-- Load Uno.Cupertino resources -->
+                <ios:CupertinoColors xmlns="using:Uno.Cupertino"  />
+                <ios:CupertinoResources xmlns="using:Uno.Cupertino" />
 
                 <!--  Load Uno.Toolkit.UI resources  -->
-                <not_win:ToolkitResources xmlns="using:Uno.Toolkit.UI" />
-                <!--<not_win:MaterialToolkitResources xmlns="using:Uno.Toolkit.UI.Material" />-->
+                <ToolkitResources xmlns="using:Uno.Toolkit.UI" />
+                <android:MaterialToolkitResources xmlns="using:Uno.Toolkit.UI.Material" />
 
                 <!--  Load custom resources  -->
                 <localControls:DataTemplates />
