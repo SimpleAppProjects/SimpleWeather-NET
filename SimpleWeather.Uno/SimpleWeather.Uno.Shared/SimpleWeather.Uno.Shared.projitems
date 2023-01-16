@@ -150,6 +150,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\IPageVerification.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LocationPermissionExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ObjectContainer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\OnDeviceMarkupExtension.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\OnPlatformMarkupExtension.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\RectHelperExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ScrollViewerHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\StorageFileHelper.cs" />

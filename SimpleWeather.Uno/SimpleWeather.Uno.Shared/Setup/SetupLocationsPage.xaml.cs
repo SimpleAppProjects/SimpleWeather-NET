@@ -3,7 +3,6 @@ using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
@@ -31,13 +30,12 @@ namespace SimpleWeather.Uno.Setup
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
-        private bool ShowSearchBox { get; } =
+        public bool ShowSearchBox { get; } =
 #if __IOS__ || __ANDROID__
             false;
 #else
             true;
 #endif
-        private bool ShowAltSearchBox => !ShowSearchBox;
 
         public SetupLocationsPage()
         {

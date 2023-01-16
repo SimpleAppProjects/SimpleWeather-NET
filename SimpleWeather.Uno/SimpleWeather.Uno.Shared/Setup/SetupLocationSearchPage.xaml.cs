@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
@@ -80,7 +81,17 @@ namespace SimpleWeather.Uno.Setup
             LocationSearchViewModel.PropertyChanged -= LocationSearchViewModel_PropertyChanged;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            this.Frame.GoBack();
+        }
+
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.GoBack();
+        }
+
+        private void BackButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             this.Frame.GoBack();
         }

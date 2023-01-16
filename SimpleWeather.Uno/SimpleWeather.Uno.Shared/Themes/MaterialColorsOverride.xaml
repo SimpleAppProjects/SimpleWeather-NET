@@ -51,7 +51,7 @@
             <!--  Outline  -->
             <Color x:Key="OutlineColor">#79747E</Color>
 
-            <!-- Custom -->
+            <!--  Custom  -->
             <StaticResource x:Key="PrimarySurfaceColor" ResourceKey="PrimaryColor" />
             <StaticResource x:Key="OnPrimarySurfaceColor" ResourceKey="OnPrimaryColor" />
         </ResourceDictionary>
@@ -106,7 +106,7 @@
             <!--  Outline  -->
             <Color x:Key="OutlineColor">#938F99</Color>
 
-            <!-- Custom -->
+            <!--  Custom  -->
             <StaticResource x:Key="PrimarySurfaceColor" ResourceKey="SurfaceColor" />
             <StaticResource x:Key="OnPrimarySurfaceColor" ResourceKey="OnSurfaceColor" />
         </ResourceDictionary>

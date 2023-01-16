@@ -3,13 +3,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:android="http://uno.ui/android"
-    xmlns:ios="http://uno.ui/ios"
     xmlns:contract6Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,6)"
     xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
     xmlns:controls="using:SimpleWeather.Common.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.Uno.Helpers"
+    xmlns:ios="http://uno.ui/ios"
     xmlns:local="using:SimpleWeather.Uno.Setup"
     xmlns:localControls="using:SimpleWeather.Uno.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -77,33 +77,43 @@
                             Style="{ThemeResource LocationQuerySearchBoxStyle}"
                             SuggestionChosen="Location_SuggestionChosen"
                             TextChanged="Location_TextChanged" />
-                        <Grid
+                        <Border
                             x:Name="SearchBar"
-                            Background="{ThemeResource SurfaceColor}"
-                            CornerRadius="4"
-                            Tapped="LocationSearchBox_Tapped"
                             MaxWidth="1080"
-                            Padding="8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Padding="8" Foreground="{ThemeResource OnSurfaceColor}" Text="{helpers:StringRes Name='setup_location_prompt'}" />
-                            <SymbolIcon
-                                Grid.Column="1"
-                                Foreground="{ThemeResource OnSurfaceColor}"
-                                Symbol="Find"
-                                Margin="0,0,8,0"/>
-                        </Grid>
+                            x:Load="{x:Bind ShowSearchBox, Converter={StaticResource inverseBooleanConverter}}}"
+                            Background="{ThemeResource SurfaceColor}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Tapped="LocationSearchBox_Tapped">
+                            <Border.BorderBrush>
+                                <SolidColorBrush Opacity="0.25" Color="{ThemeResource OnSurfaceColor}" />
+                            </Border.BorderBrush>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Padding="8,0"
+                                    Foreground="{ThemeResource OnSurfaceColor}"
+                                    Text="{helpers:StringRes Name='setup_location_prompt'}" />
+                                <SymbolIcon
+                                    Grid.Column="1"
+                                    Margin="0,0,8,0"
+                                    Foreground="{ThemeResource OnSurfaceColor}"
+                                    Symbol="Find" />
+                            </Grid>
+                        </Border>
                     </Grid>
                 </not_win:Border>
                 <Button
                     Name="GPSButton"
                     Grid.Row="1"
                     HorizontalAlignment="Center"
-                    not_win:Margin="0,10"
                     not_win:Background="{ThemeResource SecondaryContainerColor}"
                     not_win:Foreground="{ThemeResource OnSecondaryContainerColor}"
+                    not_win:Margin="0,10"
                     skia:Visibility="Collapsed"
                     win:Margin="10"
                     Click="GPS_Click"

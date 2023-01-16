@@ -2,83 +2,60 @@
     x:Class="SimpleWeather.Uno.Setup.SetupLocationSearchPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:android="http://uno.ui/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.Uno.Helpers"
+    xmlns:ios="http://uno.ui/ios"
     xmlns:local="using:SimpleWeather.Uno.Setup"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:android="http://uno.ui/android"
-    xmlns:ios="http://uno.ui/ios"
-    xmlns:helpers="using:SimpleWeather.Uno.Helpers"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:skia="http://uno.ui/skia"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     x:DefaultBindMode="OneWay"
-    Background="{ThemeResource SurfaceColor}"
-    mc:Ignorable="d">
+    mc:Ignorable="d android ios skia not_win">
 
-    <Grid ios:Padding="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-        <Button
-            Grid.Row="0"
-            Grid.Column="0"
-            Width="{x:Bind SearchBox.Height}"
-            Height="{x:Bind SearchBox.Height}"
-            Foreground="{ThemeResource OnSurfaceColor}"
-            Margin="0,0,8,0"
-            Style="{ThemeResource TextBlockButtonStyle}"
-            Click="Button_Click">
-            <Button.Content>
-                <SymbolIcon Symbol="Back" />
-            </Button.Content>
-            <Button.Resources>
-                <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
-                <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent" />
-                <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
-                <SolidColorBrush x:Key="ButtonForeground" Color="{ThemeResource OnSurfaceColor}" />
-                <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{ThemeResource OnSurfaceVariantColor}" />
-                <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{ThemeResource OnSurfaceVariantColor}" />
-                <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
-                <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent" />
-                <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Transparent" />
-                <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="Transparent" />
-                <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent" />
-            </Button.Resources>
-        </Button>
-        <AutoSuggestBox
-            x:Name="SearchBox"
-            Grid.Row="0"
-            Grid.Column="1"
-            UpdateTextOnSelect="False"
-            QueryIcon="Find"
-            Foreground="{ThemeResource OnSurfaceColor}"
-            PlaceholderText="{helpers:StringRes Name='setup_location_prompt'}"
-            QuerySubmitted="Location_QuerySubmitted"
-            TextChanged="Location_TextChanged" />
-        <ProgressBar
-            x:Name="ProgressBarControl"
-            Grid.Row="0"
-            Grid.ColumnSpan="2"
-            Margin="2,-4,2,0"
-            IsIndeterminate="True"
-            Visibility="{x:Bind LocationSearchViewModel.IsLoading}" />
-        <ListView
-            x:Name="SearchList"
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
-            MaxHeight="720"
-            VerticalAlignment="Top"
-            CanDrag="False"
-            CanDragItems="False"
-            CanReorderItems="False"
-            ItemTemplate="{StaticResource LocationQueryDataTemplate}"
-            ItemsSource="{x:Bind LocationSearchViewModel.Locations}"
-            Footer="{x:Bind LocationSearchViewModel.Footer}"
-            SelectionChanged="SearchList_SelectionChanged"
-            SelectionMode="Single"
-            Visibility="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionVisibilityConverter}}"/>
+    <Grid>
+        <NavigationView
+            BackRequested="NavigationView_BackRequested"
+            Background="{ThemeResource SurfaceColor}"
+            IsBackButtonVisible="Visible"
+            IsBackEnabled="True"
+            IsSettingsVisible="False"
+            PaneDisplayMode="Top">
+            <NavigationView.PaneCustomContent>
+                <AutoSuggestBox
+                    MaxWidth="1080"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Foreground="{ThemeResource OnSurfaceColor}"
+                    PlaceholderText="{helpers:StringRes Name='setup_location_prompt'}"
+                    QueryIcon="Find"
+                    QuerySubmitted="Location_QuerySubmitted"
+                    TextChanged="Location_TextChanged"
+                    UpdateTextOnSelect="False" />
+            </NavigationView.PaneCustomContent>
+            <NavigationView.Content>
+                <Grid
+                    HorizontalAlignment="Stretch"
+                    Background="{ThemeResource BackgroundColor}"
+                    Tapped="BackButton_Tapped">
+                    <ListView
+                        x:Name="SearchList"
+                        MaxWidth="1080"
+                        MaxHeight="720"
+                        VerticalAlignment="Top"
+                        not_win:Header=" "
+                        CanDrag="False"
+                        CanDragItems="False"
+                        CanReorderItems="False"
+                        Footer="{x:Bind LocationSearchViewModel.Footer}"
+                        ItemTemplate="{StaticResource LocationQueryDataTemplate}"
+                        ItemsSource="{x:Bind LocationSearchViewModel.Locations}"
+                        SelectionChanged="SearchList_SelectionChanged"
+                        SelectionMode="Single"
+                        Visibility="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionVisibilityConverter}}" />
+                </Grid>
+            </NavigationView.Content>
+        </NavigationView>
     </Grid>
 </Page>

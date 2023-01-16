@@ -104,8 +104,8 @@ namespace SimpleWeather.Uno
             FeatureConfiguration.Control.UseDeferredOnApplyTemplate = false;
             // FeatureConfiguration.ListViewBase.DefaultCacheLength = null; // default UWP = 4.0
             FeatureConfiguration.Page.IsPoolingEnabled = true;
-            FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
-            FeatureConfiguration.Style.UseUWPDefaultStyles = false;
+            // FeatureConfiguration.Style.ConfigureNativeFrameNavigation();
+            FeatureConfiguration.Style.UseUWPDefaultStyles = true;
             FeatureConfiguration.ScrollViewer.DefaultUpdatesMode = ScrollViewerUpdatesMode.Synchronous;
 #endif
             InitializeLogging();
@@ -299,7 +299,7 @@ namespace SimpleWeather.Uno
                 var activatedArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
                 var activationKind = activatedArgs.Kind;
 #endif
-            LaunchAndBringToForegroundIfNeeded(args);
+                LaunchAndBringToForegroundIfNeeded(args);
 #if !HAS_UNO
             }
 #endif
