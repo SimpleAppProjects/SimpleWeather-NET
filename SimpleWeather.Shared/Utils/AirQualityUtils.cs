@@ -1,6 +1,4 @@
-﻿using Microsoft.UI;
-using System;
-using Windows.UI;
+﻿using System;
 
 namespace SimpleWeather.Utils
 {
@@ -360,16 +358,17 @@ namespace SimpleWeather.Utils
             return idx <= 0 ? null : idx;
         }
 
-        public static Color GetColorFromIndex(int index)
+#if WINUI
+        public static Windows.UI.Color GetColorFromIndex(int index)
         {
             return index switch
             {
-                < 51 => Colors.LimeGreen,
-                < 101 => Color.FromArgb(0xff, 0xff, 0xde, 0x33),
-                < 151 => Color.FromArgb(0xff, 0xff, 0x99, 0x33),
-                < 201 => Color.FromArgb(0xff, 0xcc, 0x00, 0x33),
-                < 301 => Color.FromArgb(0xff, 0xaa, 0x00, 0xff),    // 0xff660099
-                _ => Color.FromArgb(0xff, 0xbd, 0x00, 0x35),        // 0xff7e0023
+                < 51 => Microsoft.UI.Colors.LimeGreen,
+                < 101 => Windows.UI.Color.FromArgb(0xff, 0xff, 0xde, 0x33),
+                < 151 => Windows.UI.Color.FromArgb(0xff, 0xff, 0x99, 0x33),
+                < 201 => Windows.UI.Color.FromArgb(0xff, 0xcc, 0x00, 0x33),
+                < 301 => Windows.UI.Color.FromArgb(0xff, 0xaa, 0x00, 0xff),    // 0xff660099
+                _ => Windows.UI.Color.FromArgb(0xff, 0xbd, 0x00, 0x35),        // 0xff7e0023
             };
         }
 
@@ -377,5 +376,24 @@ namespace SimpleWeather.Utils
         {
             return index.HasValue ? new Microsoft.UI.Xaml.Media.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
         }
+#else
+        public static Microsoft.Maui.Graphics.Color GetColorFromIndex(int index)
+        {
+            return index switch
+            {
+                < 51 => Microsoft.Maui.Graphics.Colors.LimeGreen,
+                < 101 => Microsoft.Maui.Graphics.Color.FromRgb(0xff, 0xde, 0x33),
+                < 151 => Microsoft.Maui.Graphics.Color.FromRgb(0xff, 0x99, 0x33),
+                < 201 => Microsoft.Maui.Graphics.Color.FromRgb(0xcc, 0x00, 0x33),
+                < 301 => Microsoft.Maui.Graphics.Color.FromRgb(0xaa, 0x00, 0xff),    // 0xff660099
+                _ => Microsoft.Maui.Graphics.Color.FromRgb(0xbd, 0x00, 0x35),        // 0xff7e0023
+            };
+        }
+
+        public static Microsoft.Maui.Controls.SolidColorBrush GetBrushFromIndex(int? index)
+        {
+            return index.HasValue ? new Microsoft.Maui.Controls.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
+        }
+#endif
     }
 }

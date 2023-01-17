@@ -2,7 +2,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using Utf8Json;
+#if WINDOWS
 using Windows.Storage;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -70,6 +72,7 @@ namespace SimpleWeather.Utils
             return Task.Run(() => Deserializer<T>(stream));
         }
 
+#if WINDOWS
         public static T Deserializer<T>(StorageFile file)
         {
             // Wait for file to be free
@@ -152,6 +155,7 @@ namespace SimpleWeather.Utils
         {
             return Task.Run(() => Serializer(obj, file));
         }
+#endif
 
         public static string Serializer<T>(T obj)
         {

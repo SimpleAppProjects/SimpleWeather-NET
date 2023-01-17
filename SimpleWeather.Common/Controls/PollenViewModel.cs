@@ -1,9 +1,14 @@
-﻿using Microsoft.UI;
-using SimpleWeather.Icons;
+﻿using SimpleWeather.Icons;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.Controls
 {
@@ -35,21 +40,19 @@ namespace SimpleWeather.Common.Controls
 
         private (String, Color?) GetPollenCountDescription(Pollen.PollenCount? pollenCount)
         {
-            var ResLoader = SharedModule.Instance.ResLoader;
-
             switch (pollenCount)
             {
                 default:
                 case Pollen.PollenCount.Unknown:
                     return (WeatherIcons.EM_DASH, null);
                 case Pollen.PollenCount.Low:
-                    return (ResLoader.GetString("label_count_low"), Colors.LimeGreen);
+                    return (ResStrings.label_count_low, Colors.LimeGreen);
                 case Pollen.PollenCount.Moderate:
-                    return (ResLoader.GetString("label_count_moderate"), Colors.Orange);
+                    return (ResStrings.label_count_moderate, Colors.Orange);
                 case Pollen.PollenCount.High:
-                    return (ResLoader.GetString("label_count_high"), Colors.OrangeRed);
+                    return (ResStrings.label_count_high, Colors.OrangeRed);
                 case Pollen.PollenCount.VeryHigh:
-                    return (ResLoader.GetString("label_count_veryhigh"), Colors.Red);
+                    return (ResStrings.label_count_veryhigh, Colors.Red);
             }
         }
 

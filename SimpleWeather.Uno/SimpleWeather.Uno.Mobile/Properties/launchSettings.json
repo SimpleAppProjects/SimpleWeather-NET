@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "SimpleWeather.Uno.Mobile": {
-      "commandName": "Project",
-      "remoteDebugEnabled": false
-    }
-  }
-}

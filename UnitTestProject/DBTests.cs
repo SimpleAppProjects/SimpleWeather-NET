@@ -1,9 +1,9 @@
-﻿using SimpleWeather.WeatherData;
+﻿using SimpleWeather.Helpers;
+using SimpleWeather.WeatherData;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using Windows.Storage;
 
 namespace UnitTestProject
 {
@@ -11,7 +11,7 @@ namespace UnitTestProject
     public class DBTests
     {
         // App data files
-        private static StorageFolder appDataFolder = ApplicationData.Current.LocalFolder;
+        private static string LocalFolderPath = ApplicationDataHelper.GetLocalFolderPath();
         private SQLiteAsyncConnection weatherDB;
 
         [TestInitialize]
@@ -20,7 +20,7 @@ namespace UnitTestProject
             if (weatherDB == null)
             {
                 weatherDB = new SQLiteAsyncConnection(
-                    Path.Combine(appDataFolder.Path, "test-weatherdata.db"),
+                    Path.Combine(LocalFolderPath, "test-weatherdata.db"),
                     SQLiteOpenFlags.Create | SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.FullMutex
                     );
                 var conn = weatherDB.GetConnection();
@@ -29,13 +29,6 @@ namespace UnitTestProject
                 conn.EnableWriteAheadLogging();
                 _lock.Dispose();
             }
-
-            /*
-            App.Current.UnhandledException += (s, e) =>
-            {
-                System.Diagnostics.Debug.WriteLine(e.Exception);
-            };
-            */
 
             TaskScheduler.UnobservedTaskException += (s, e) =>
             {

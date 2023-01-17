@@ -5,6 +5,7 @@ using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.NWS.Hourly;
 using SimpleWeather.Weather_API.SMC;
@@ -582,7 +583,7 @@ namespace SimpleWeather.Weather_API.NWS
         public override String GetWeatherCondition(String icon)
         {
             if (icon == null)
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+                return WeatherConditions.weather_notavailable;
 
             if (!icon.Contains(".png") && !icon.Contains("weather.gov"))
             {
@@ -591,103 +592,103 @@ namespace SimpleWeather.Weather_API.NWS
 
             if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") || icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog");
+                return WeatherConditions.weather_fog;
             }
             else if (icon.Contains("blizzard"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_blizzard");
+                return WeatherConditions.weather_blizzard;
             }
             else if (icon.Contains("cold"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cold");
+                return WeatherConditions.weather_cold;
             }
             else if (icon.Contains("hot"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hot");
+                return WeatherConditions.weather_hot;
             }
             else if (icon.Contains("haze") || icon.Equals("hz.png") || icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_haze");
+                return WeatherConditions.weather_haze;
             }
             else if (icon.Contains("smoke") || icon.Equals("fu.png") || icon.Equals("nfu.png") || icon.Contains("nfu") || icon.Matches(".*([/]?)([n]?)fu([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smoky");
+                return WeatherConditions.weather_smoky;
             }
             else if (icon.Contains("dust") || icon.Equals("du.png") || icon.Equals("ndu.png") || icon.Contains("ndu") || icon.Matches(".*([/]?)([n]?)du([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_dust");
+                return WeatherConditions.weather_dust;
             }
             else if (icon.Contains("tropical_storm") || icon.Contains("ts_warn") || icon.Contains("ts_watch") || icon.Contains("ts_nowarn"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm");
+                return WeatherConditions.weather_tropicalstorm;
             }
             else if (icon.Contains("hurricane") || icon.Contains("hur_warn") || icon.Contains("hur_watch"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hurricane");
+                return WeatherConditions.weather_hurricane;
             }
             else if (icon.Contains("tsra"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms");
+                return WeatherConditions.weather_tstorms;
             }
             else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") || icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") || icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tornado");
+                return WeatherConditions.weather_tornado;
             }
             else if (icon.Contains("rain_showers") || icon.Contains("shra") || icon.Contains("shwrs"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers");
+                return WeatherConditions.weather_rainshowers;
             }
             else if (icon.Contains("rain_sleet") || icon.Contains("raip"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsleet");
+                return WeatherConditions.weather_rainandsleet;
             }
             else if (icon.Contains("rain_snow") || icon.Contains("ra_sn"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsnow");
+                return WeatherConditions.weather_rainandsnow;
             }
             else if (icon.Contains("fzra"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_freezingrain");
+                return WeatherConditions.weather_freezingrain;
             }
             else if (icon.Contains("snow_sleet"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snowandsleet");
+                return WeatherConditions.weather_snowandsleet;
             }
             else if (icon.Contains("sleet"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet");
+                return WeatherConditions.weather_sleet;
             }
             else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") || icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain");
+                return WeatherConditions.weather_rain;
             }
             else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") || icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow");
+                return WeatherConditions.weather_snow;
             }
             else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") || icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hail");
+                return WeatherConditions.weather_hail;
             }
             else if (icon.Contains("wind_bkn") || icon.Contains("wind_ovc") || icon.Contains("wind_sct") || icon.Contains("wind"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_windy");
+                return WeatherConditions.weather_windy;
             }
             else if (icon.Contains("ovc"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_overcast");
+                return WeatherConditions.weather_overcast;
             }
             else if (icon.Contains("sct") || icon.Contains("few"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy");
+                return WeatherConditions.weather_partlycloudy;
             }
             else if (icon.Contains("bkn"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy");
+                return WeatherConditions.weather_cloudy;
             }
             else if (icon.Contains("skc"))
             {
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clearsky");
+                return WeatherConditions.weather_clearsky;
             }
             else
             {

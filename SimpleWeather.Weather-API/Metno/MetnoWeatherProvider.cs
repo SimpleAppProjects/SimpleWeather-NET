@@ -3,6 +3,7 @@ using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
@@ -319,48 +320,48 @@ namespace SimpleWeather.Weather_API.Metno
         public override string GetWeatherCondition(string icon)
         {
             if (icon == null)
-                return SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable");
+                return WeatherConditions.weather_notavailable;
 
             var neutralIcon = GetNeutralIconName(icon);
 
             return neutralIcon switch
             {
-                "clearsky" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clearsky"),
+                "clearsky" => WeatherConditions.weather_clearsky,
 
-                "cloudy" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy"),
+                "cloudy" => WeatherConditions.weather_cloudy,
 
-                "fair" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fair"),
+                "fair" => WeatherConditions.weather_fair,
 
-                "fog" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog"),
+                "fog" => WeatherConditions.weather_fog,
 
-                "heavyrain" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavyrain"),
+                "heavyrain" => WeatherConditions.weather_heavyrain,
 
                 "heavyrainandthunder" or "heavyrainshowersandthunder" or "lightrainandthunder" or
-                "lightrainshowersandthunder" or "rainandthunder" or "rainshowersandthunder" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
+                "lightrainshowersandthunder" or "rainandthunder" or "rainshowersandthunder" => WeatherConditions.weather_tstorms,
 
-                "heavyrainshowers" or "lightrainshowers" or "rainshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers"),
+                "heavyrainshowers" or "lightrainshowers" or "rainshowers" => WeatherConditions.weather_rainshowers,
 
-                "heavysleet" or "heavysleetshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
+                "heavysleet" or "heavysleetshowers" => WeatherConditions.weather_sleet,
 
                 "heavysleetandthunder" or "heavysleetshowersandthunder" or "lightsleetandthunder" or
-                "lightssleetshowersandthunder" or "sleetandthunder" or "sleetshowersandthunder" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms"),
+                "lightssleetshowersandthunder" or "sleetandthunder" or "sleetshowersandthunder" => WeatherConditions.weather_sleet_tstorms,
 
-                "heavysnow" or "heavysnowshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow"),
+                "heavysnow" or "heavysnowshowers" => WeatherConditions.weather_heavysnow,
 
                 "heavysnowandthunder" or "heavysnowshowersandthunder" or "lightsnowandthunder" or
-                "lightssnowshowersandthunder" or "snowandthunder" or "snowshowersandthunder" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms"),
+                "lightssnowshowersandthunder" or "snowandthunder" or "snowshowersandthunder" => WeatherConditions.weather_snow_tstorms,
 
-                "lightrain" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightrain"),
+                "lightrain" => WeatherConditions.weather_lightrain,
 
-                "lightsleet" or "lightsleetshowers" or "sleet" or "sleetshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
+                "lightsleet" or "lightsleetshowers" or "sleet" or "sleetshowers" => WeatherConditions.weather_sleet,
 
-                "lightsnow" or "lightsnowshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers"),
+                "lightsnow" or "lightsnowshowers" => WeatherConditions.weather_lightsnowshowers,
 
-                "partlycloudy" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy"),
+                "partlycloudy" => WeatherConditions.weather_partlycloudy,
 
-                "rain" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain"),
+                "rain" => WeatherConditions.weather_rain,
 
-                "snow" or "snowshowers" => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow"),
+                "snow" or "snowshowers" => WeatherConditions.weather_snow,
 
                 _ => base.GetWeatherCondition(icon),
             };

@@ -1,13 +1,17 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net7.0-ios;net7.0-maccatalyst;net7.0-android</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">net7.0-windows10.0.19041.0;$(TargetFrameworks)</TargetFrameworks>
+    <TargetFrameworks>net7.0;net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+    <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+    <!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <UseMaui Condition="!$(TargetFramework.Contains('windows'))">true</UseMaui>
     <RootNamespace>SimpleWeather</RootNamespace>
     <AssemblyName>SimpleWeather.Shared</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition="$(TargetFramework.Contains('windows'))">
+    <DefineConstants>$(DefineConstants);WINUI</DefineConstants>
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
   </PropertyGroup>
@@ -18,23 +22,22 @@
 
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
   </ItemGroup>
-  <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="Uno.CommunityToolkit.WinUI" Version="7.1.100" />
-    <PackageReference Include="Uno.WinUI" Version="4.7.0-dev.918" />
-    <PackageReference Include="Uno.WinUI.Lottie" Version="4.7.0-dev.918" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\**" />
+  <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+    <!-- Images -->
+    <Content Include="Resources\Images\**" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <!--<Content Include="Assets\**" />
-    <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
-    <Compile Update="**\*.xaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>-->
-  </ItemGroup>
-  <ItemGroup>
-    <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
+    <!-- Images -->
+    <MauiImage Include="Resources\Images\Backgrounds\**" Resize="false" />
+    <MauiImage Include="Resources\Images\Providers\**" Resize="false" />
+    <MauiAsset Include="Resources\Images\WeatherIcons\png\dark\*" Resize="false" LogicalName="%(Filename)_dark.png" />
+    <MauiAsset Include="Resources\Images\WeatherIcons\png\light\*" Resize="false" LogicalName="%(Filename)_light.png" />
+    <MauiAsset Include="Resources\Images\WeatherIcons\svg\dark\*" Resize="false" LogicalName="%(Filename)_dark.svg" />
+    <MauiAsset Include="Resources\Images\WeatherIcons\svg\light\*" Resize="false" LogicalName="%(Filename)_light.svg" />
+    <!-- Custom Fonts -->
+    <MauiFont Include="Resources\Fonts\**" />
+    <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+    <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CacheCow.Client" Version="2.11.3" />
@@ -57,5 +60,92 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Timber\Timber.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="3.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Strings\AQIndex.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AQIndex.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\Beaufort.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Beaufort.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\Config.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Config.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\MoonPhases.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MoonPhases.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\Units.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Units.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\UVIndex.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UVIndex.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\WeatherConditions.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WeatherConditions.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\Strings\WindDirection.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>WindDirection.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Strings\AQIndex.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\Beaufort.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Beaufort.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\Config.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Config.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\MoonPhases.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MoonPhases.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\Units.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Units.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\UVIndex.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>UVIndex.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\WeatherConditions.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WeatherConditions.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\WindDirection.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>WindDirection.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

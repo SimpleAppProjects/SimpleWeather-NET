@@ -9,7 +9,9 @@ using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+#if WINUI
 using Windows.Storage;
+#endif
 
 namespace SimpleWeather.Common.Images
 {
@@ -221,18 +223,18 @@ namespace SimpleWeather.Common.Images
                 if (uri.Scheme == "file" || uri.Scheme == "ms-appx")
                 {
                     Stream stream;
+#if !WINUI
+                    stream = null;
+#endif
 
                     if (uri.Scheme == "ms-appx")
                     {
+#if WINUI
                         try
                         {
                             var file = await StorageFile.GetFileFromApplicationUriAsync(uri);
 
-#if WINDOWS
                             if (file.IsAvailable)
-#else
-                            if (File.Exists(file.Path))
-#endif
                             {
                                 while (FileUtils.IsFileLocked(file))
                                 {
@@ -253,6 +255,7 @@ namespace SimpleWeather.Common.Images
                             // Assume we're ok
                             return true;
                         }
+#endif
                     }
                     else
                     {

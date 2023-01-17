@@ -1,8 +1,12 @@
-﻿#if __MACOS__
+﻿#if __MACOS__ || MACCATALYST || IOS
 using Foundation;
 #endif
 using System.IO;
+#if WINUI
 using Windows.Storage;
+#else
+using Microsoft.Maui.Storage;
+#endif
 
 namespace SimpleWeather.Helpers
 {
@@ -10,8 +14,12 @@ namespace SimpleWeather.Helpers
     {
         public static string GetLocalFolderPath()
         {
+#if WINUI
             var appDataFolder = ApplicationData.Current.LocalFolder;
             var appDataFolderPath = appDataFolder.Path;
+#else
+            var appDataFolderPath = FileSystem.Current.AppDataDirectory;
+#endif
 
             bool appendPath = false;
 #if __MACOS__
@@ -33,8 +41,12 @@ namespace SimpleWeather.Helpers
         }
         public static string GetLocalCacheFolderPath()
         {
+#if WINUI
             var appDataFolder = ApplicationData.Current.LocalCacheFolder;
             var appDataFolderPath = appDataFolder.Path;
+#else
+            var appDataFolderPath = FileSystem.Current.CacheDirectory;
+#endif
 
             bool appendPath = false;
 #if __MACOS__

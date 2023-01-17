@@ -1,4 +1,8 @@
-﻿using Microsoft.UI.Dispatching;
+﻿#if WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Microsoft.Maui.Dispatching;
+#endif
 using SkiaSharp;
 using SkiaSharp.Skottie;
 using System;
@@ -9,7 +13,11 @@ namespace SimpleWeather.SkiaSharp
     public class SKLottieDrawable : SKDrawable, ISKAnimatable, IDisposable
     {
         private readonly Animation animation;
+#if WINUI
         private readonly DispatcherQueueTimer timer;
+#else
+        private readonly IDispatcherTimer timer;
+#endif
         private readonly Stopwatch watch = new();
         private bool disposedValue;
 
@@ -22,7 +30,11 @@ namespace SimpleWeather.SkiaSharp
         {
             this.animation = animation;
 
+#if WINUI
             timer = SharedModule.Instance.DispatcherQueue.CreateTimer();
+#else
+            timer = SharedModule.Instance.Dispatcher.CreateTimer();
+#endif
             timer.IsRepeating = true;
             timer.Tick += (s, e) =>
             {

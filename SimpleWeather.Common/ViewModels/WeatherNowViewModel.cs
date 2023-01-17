@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.WinUI;
+﻿#if WINUI
+using CommunityToolkit.WinUI;
+#endif
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
@@ -13,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.ViewModels
 {
@@ -23,7 +25,6 @@ namespace SimpleWeather.Common.ViewModels
         private readonly SettingsManager SettingsManager;
         private readonly WeatherProviderManager wm;
         private readonly WeatherDataLoader weatherDataLoader = new();
-        private readonly ResourceLoader ResLoader = SharedModule.Instance.ResLoader;
 
         private readonly LocationProvider locationProvider = new();
 
@@ -88,7 +89,11 @@ namespace SimpleWeather.Common.ViewModels
         {
             UiState = UiState with { IsLoading = true };
 
-            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
+#if WINUI
+            DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
                 var locData = locationData ?? await SettingsManager.GetHomeData();
 
@@ -109,14 +114,18 @@ namespace SimpleWeather.Common.ViewModels
                 }
 
                 UpdateLocation(locData);
-            }));
+            });
         }
 
         public void RefreshWeather(bool forceRefresh = false)
         {
             UiState = UiState with { IsLoading = true };
 
-            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
+#if WINUI
+            DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
                 if (SettingsManager.FollowGPS)
                 {
@@ -136,7 +145,7 @@ namespace SimpleWeather.Common.ViewModels
                     .Build());
 
                 UpdateWeatherState(result);
-            }));
+            });
         }
 
         private void UpdateWeatherState(WeatherResult result)
@@ -150,7 +159,7 @@ namespace SimpleWeather.Common.ViewModels
                         if (state.LocationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
                             Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
-                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResLoader.GetString("error_message_weather_region_unsupported")));
+                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));
                         }
 
                         var errorMessages = new List<ErrorMessage>(state.ErrorMessages)
@@ -199,7 +208,11 @@ namespace SimpleWeather.Common.ViewModels
 
                         Alerts = result.Data.weather_alerts;
 
+#if WINUI
                         DispatcherQueue.EnqueueAsync(async () =>
+#else
+                        Dispatcher.Dispatch(async () =>
+#endif
                         {
                             ImageData = await Task.Run(weatherData.GetImageData);
                         });
@@ -214,7 +227,7 @@ namespace SimpleWeather.Common.ViewModels
                         if (state.LocationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
                             Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
-                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResLoader.GetString("error_message_weather_region_unsupported")));
+                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));
                         }
 
                         var errorMessages = new List<ErrorMessage>(state.ErrorMessages)
@@ -233,7 +246,11 @@ namespace SimpleWeather.Common.ViewModels
 
                         Alerts = result.Data.weather_alerts;
 
+#if WINUI
                         DispatcherQueue.EnqueueAsync(async () =>
+#else
+                        Dispatcher.Dispatch(async () =>
+#endif
                         {
                             ImageData = await Task.Run(weatherData.GetImageData);
                         });
@@ -285,7 +302,11 @@ namespace SimpleWeather.Common.ViewModels
         {
             if (locationData == null || !locationData.IsValid())
             {
+#if WINUI
                 DispatcherQueue.EnqueueAsync(async () =>
+#else
+                Dispatcher.Dispatch(async () =>
+#endif
                 {
                     await Task.Run(async () =>
                     {

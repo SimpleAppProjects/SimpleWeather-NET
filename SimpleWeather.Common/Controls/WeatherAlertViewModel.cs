@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.Controls
 {
@@ -29,23 +30,23 @@ namespace SimpleWeather.Common.Controls
             TimeSpan sincePost = (DateTimeOffset.Now - WeatherAlert.Date);
 
             if (sincePost.TotalDays >= 1)
-                PostDate = string.Format(SharedModule.Instance.ResLoader.GetString("DateTime_DayAgo"),
+                PostDate = string.Format(ResStrings.DateTime_DayAgo,
                     (int)Math.Floor(sincePost.TotalDays));
             else if (sincePost.TotalHours >= 1)
-                PostDate = string.Format(SharedModule.Instance.ResLoader.GetString("DateTime_HrAgo"),
+                PostDate = string.Format(ResStrings.DateTime_HrAgo,
                     (int)Math.Floor(sincePost.TotalHours));
             else if (sincePost.TotalMinutes >= 1)
-                PostDate = string.Format(SharedModule.Instance.ResLoader.GetString("DateTime_MinAgo"),
+                PostDate = string.Format(ResStrings.DateTime_MinAgo,
                     (int)Math.Floor(sincePost.TotalMinutes));
             else
-                PostDate = string.Format(SharedModule.Instance.ResLoader.GetString("DateTime_SecAgo"),
+                PostDate = string.Format(ResStrings.DateTime_SecAgo,
                     (int)Math.Floor(sincePost.TotalSeconds));
 
             var culture = CultureUtils.UserCulture;
 
             // Format: Monday, June 15, 2009 1:45 PM
             ExpireDate = string.Format("{0} {1} {2:zzz}",
-                SharedModule.Instance.ResLoader.GetString("datetime_validuntil"),
+                ResStrings.datetime_validuntil,
                 WeatherAlert.ExpiresDate.ToString("f", culture),
                 WeatherAlert.ExpiresDate);
 
@@ -53,7 +54,7 @@ namespace SimpleWeather.Common.Controls
 
             if (Attribution != null)
             {
-                Attribution = String.Format("{0} {1}", SharedModule.Instance.ResLoader.GetString("credit_prefix"), Attribution);
+                Attribution = String.Format("{0} {1}", ResStrings.credit_prefix, Attribution);
             }
         }
     }

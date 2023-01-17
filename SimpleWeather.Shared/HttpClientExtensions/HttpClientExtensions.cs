@@ -1,5 +1,9 @@
 ﻿using System.Net.Http.Headers;
+#if WINUI
 using Windows.ApplicationModel;
+#else
+using Microsoft.Maui.ApplicationModel;
+#endif
 
 namespace SimpleWeather.HttpClientExtensions
 {
@@ -7,8 +11,12 @@ namespace SimpleWeather.HttpClientExtensions
     {
         public static void AddAppUserAgent(this HttpHeaderValueCollection<ProductInfoHeaderValue> UAHeader)
         {
-            var version = string.Format("v{0}.{1}.{2}",
-                Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+#if WINUI
+            var versionInfo = Package.Current.Id.Version;
+#else
+            var versionInfo = AppInfo.Current.Version;
+#endif
+            var version = string.Format("v{0}.{1}.{2}", versionInfo.Major, versionInfo.Minor, versionInfo.Build);
 
             UAHeader.Add(new ProductInfoHeaderValue("SimpleWeather", version));
             UAHeader.Add(new ProductInfoHeaderValue("(thewizrd.dev@gmail.com)"));

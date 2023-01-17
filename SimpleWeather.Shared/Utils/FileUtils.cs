@@ -121,7 +121,7 @@ namespace SimpleWeather.Utils
             return false;
         }
 
-#if false
+#if !WINDOWS
         public static Task<bool> DeleteDirectory(String path)
         {
             if (Directory.Exists(path))

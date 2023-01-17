@@ -1,5 +1,4 @@
-﻿#if true
-using SimpleWeather.LocationData;
+﻿using SimpleWeather.LocationData;
 using SimpleWeather.WeatherData;
 using System;
 
@@ -179,4 +178,3 @@ namespace SimpleWeather.Weather_API.HERE
         }
     }
 }
-#endif

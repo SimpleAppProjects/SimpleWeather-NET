@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Globalization;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.LocationData
 {
@@ -38,7 +39,7 @@ namespace SimpleWeather.LocationData
 
         public LocationQuery()
         {
-            LocationName = SharedModule.Instance.ResLoader.GetString("error_noresults");
+            LocationName = ResStrings.error_noresults;
             LocationCountry = string.Empty;
             Location_Query = string.Empty;
         }

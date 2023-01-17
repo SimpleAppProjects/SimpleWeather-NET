@@ -1,6 +1,4 @@
-﻿using Windows.Devices.Geolocation;
-
-namespace SimpleWeather.LocationData
+﻿namespace SimpleWeather.LocationData
 {
     public static class LocationExtras
     {
@@ -9,9 +7,16 @@ namespace SimpleWeather.LocationData
             return new Location(locationData.latitude, locationData.longitude);
         }
 
-        public static Location ToLocation(this Geoposition geoposition)
+#if WINUI
+        public static Location ToLocation(this Windows.Devices.Geolocation.Geoposition geoposition)
         {
             return new Location(geoposition.Coordinate.Point.Position.Latitude, geoposition.Coordinate.Point.Position.Longitude);
         }
+#else
+        public static Location ToLocation(this Microsoft.Maui.Devices.Sensors.Location geoposition)
+        {
+            return new Location(geoposition.Latitude, geoposition.Longitude);
+        }
+#endif
     }
 }

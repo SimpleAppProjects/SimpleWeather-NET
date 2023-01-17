@@ -1,0 +1,19 @@
+{
+  "solution": {
+    "path": "SimpleWeather.NET.sln",
+    "projects": [
+      "EditManifest\\EditManifest.csproj",
+      "Timber\\Timber.csproj",
+      "KeyCheck\\KeyCheck.csproj",
+      "SimpleWeather.Shared\\SimpleWeather.Shared.csproj",
+      "SimpleWeather.Backgrounds\\SimpleWeather.Backgrounds.csproj",
+      "SimpleWeather.WeatherIcons\\SimpleWeather.WeatherIcons.csproj",
+      "SimpleWeather.Extras\\SimpleWeather.Extras.csproj",
+      "SimpleWeather.Weather-API\\SimpleWeather.Weather-API.csproj",
+      "SimpleWeather.Common\\SimpleWeather.Common.csproj",
+      "SimpleWeather.NET.Extras\\SimpleWeather.NET.Extras.shproj",
+      "BingMapsRESTToolkit\\Source\\BingMapsRESTToolkit.Standard\\BingMapsRESTToolkit.Standard.csproj",
+      "TranslationImport\\TranslationImport.csproj",
+    ]
+  }
+}

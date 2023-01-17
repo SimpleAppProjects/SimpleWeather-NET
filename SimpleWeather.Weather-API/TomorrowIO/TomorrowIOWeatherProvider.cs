@@ -2,6 +2,7 @@
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.SMC;
@@ -820,55 +821,55 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return conditionCode.Value switch
             {
                 /* Clear */
-                1000 or 10000 or 10001 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clear"),
+                1000 or 10000 or 10001 => WeatherConditions.weather_clear,
                 /* Mostly Clear */
-                1100 or 11000 or 11001 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_mostlyclear"),
+                1100 or 11000 or 11001 => WeatherConditions.weather_mostlyclear,
                 /* Partly Cloudy */
-                1101 or 11010 or 11011 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy"),
+                1101 or 11010 or 11011 => WeatherConditions.weather_partlycloudy,
                 /* Mostly Cloudy */
-                1102 or 11020 or 11021 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_mostlycloudy"),
+                1102 or 11020 or 11021 => WeatherConditions.weather_mostlycloudy,
                 /* Cloudy */
-                1001 or 10010 or 10011 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy"),
+                1001 or 10010 or 10011 => WeatherConditions.weather_cloudy,
                 /* Mostly Clear */
-                1103 or 11030 or 11031 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_mostlyclear"),
+                1103 or 11030 or 11031 => WeatherConditions.weather_mostlyclear,
                 /* Light Fog */
                 2100 or 21000 or 21001 or
                 2101 or 21010 or 21011 or
                 2102 or 21020 or 21021 or
-                2103 or 21030 or 21031 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightfog"),
+                2103 or 21030 or 21031 => WeatherConditions.weather_lightfog,
                 /* Fog */
                 2000 or 20000 or 20001 or
                 2106 or 21060 or 21061 or
                 2107 or 21070 or 21071 or
-                2108 or 21080 or 21081 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog"),
+                2108 or 21080 or 21081 => WeatherConditions.weather_fog,
                 /* Drizzle */
                 4000 or 40000 or 40001 or
                 4203 or 42030 or 42031 or
                 4204 or 42040 or 42041 or
-                4205 or 42050 or 42051 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_drizzle"),
+                4205 or 42050 or 42051 => WeatherConditions.weather_drizzle,
                 /* Light Rain */
                 4200 or 42000 or 42001 or
                 4213 or 42130 or 42131 or
                 4214 or 42140 or 42141 or
-                4215 or 42150 or 42151 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightrain"),
+                4215 or 42150 or 42151 => WeatherConditions.weather_lightrain,
                 /* Rain */
                 4001 or 40010 or 40011 or
                 4209 or 42090 or 42091 or
                 4208 or 42080 or 42081 or
-                4210 or 42100 or 42101 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain"),
+                4210 or 42100 or 42101 => WeatherConditions.weather_rain,
                 /* Heavy Rain */
                 4201 or 42010 or 42011 or
-                4211 or 42110 or 42111 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavyrain"),
+                4211 or 42110 or 42111 => WeatherConditions.weather_heavyrain,
                 /* Flurries */
                 5001 or 50010 or 50011 or
                 5115 or 51150 or 51151 or
                 5116 or 51160 or 51161 or
-                5117 or 51170 or 51171 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snowflurries"),
+                5117 or 51170 or 51171 => WeatherConditions.weather_snowflurries,
                 /* Light Snow */
                 5100 or 51000 or 51001 or
                 5102 or 51020 or 51021 or
                 5103 or 51030 or 51031 or
-                5104 or 51040 or 51041 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightsnowshowers"),
+                5104 or 51040 or 51041 => WeatherConditions.weather_lightsnowshowers,
                 /* Snow */
                 5000 or 50000 or 50001 or
                 /*
@@ -878,7 +879,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  */
                 5105 or 51050 or 51051 or
                 5106 or 51060 or 51061 or
-                5107 or 51070 or 51071 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow"),
+                5107 or 51070 or 51071 => WeatherConditions.weather_snow,
                 /* Heavy Snow */
                 5101 or 51010 or 51011 or
                 /*
@@ -888,7 +889,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  */
                 5119 or 51190 or 51191 or
                 5120 or 51200 or 51201 or
-                5121 or 51210 or 51211 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow"),
+                5121 or 51210 or 51211 => WeatherConditions.weather_heavysnow,
                 /*
                  * Mixed conditions:
                  * Condition 1: Drizzle / Rain
@@ -896,7 +897,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  */
                 5122 or 51220 or 51221 or
                 5110 or 51100 or 51101 or
-                5108 or 51080 or 51081 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsnow"),
+                5108 or 51080 or 51081 => WeatherConditions.weather_rainandsnow,
                 /*
                  * Mixed conditions:
                  * Condition 1: Snow
@@ -938,13 +939,13 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  */
                 6207 or 62070 or 62071 or
                 6202 or 62020 or 62021 or
-                6208 or 62080 or 62081 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_freezingrain"),
+                6208 or 62080 or 62081 => WeatherConditions.weather_freezingrain,
                 /*
                  * Mixed conditions:
                  * Condition 1: Snow
                  * Condition 2: Ice Pellets
                  */
-                5112 or 51120 or 51121 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snowandsleet"),
+                5112 or 51120 or 51121 => WeatherConditions.weather_snowandsleet,
                 /* Light Ice Pellets / Ice Pellets / Heavy Ice Pellets / [Sleet] */
                 7102 or 71020 or 71021 or
                 7000 or 70000 or 70001 or
@@ -962,7 +963,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 7109 or 71090 or 71091 or
                 7113 or 71130 or 71131 or
                 7114 or 71140 or 71141 or
-                7116 or 71160 or 71161 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
+                7116 or 71160 or 71161 => WeatherConditions.weather_sleet,
                 /*
                  * Mixed conditions:
                  * Condition 1: Drizzle / Light Rain / Rain / Freezing Rain
@@ -972,7 +973,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 7115 or 71150 or 71151 or
                 7117 or 71170 or 71171 or
                 7106 or 71060 or 71061 or
-                7103 or 71030 or 71031 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsleet"),
+                7103 or 71030 or 71031 => WeatherConditions.weather_rainandsleet,
                 /* Thunderstorm */
                 8000 or 80000 or 80001 or
                 /*
@@ -982,8 +983,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  */
                 8001 or 80010 or 80011 or
                 8003 or 80030 or 80031 or
-                8002 or 80020 or 80021 => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
-                _ => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable"),
+                8002 or 80020 or 80021 => WeatherConditions.weather_tstorms,
+                _ => WeatherConditions.weather_notavailable,
             };
         }
 

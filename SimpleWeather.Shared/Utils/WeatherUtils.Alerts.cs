@@ -1,6 +1,10 @@
-﻿using Microsoft.UI;
-using SimpleWeather.Icons;
+﻿using SimpleWeather.Icons;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -14,60 +18,60 @@ namespace SimpleWeather.Utils
             switch (type)
             {
                 case WeatherData.WeatherAlertType.DenseFog:
-                    fileIcon = "wi-fog.png";
+                    fileIcon = "wi_fog.png";
                     break;
                 case WeatherData.WeatherAlertType.Fire:
-                    fileIcon = "wi-fire.png";
+                    fileIcon = "wi_fire.png";
                     break;
                 case WeatherData.WeatherAlertType.FloodWarning:
                 case WeatherData.WeatherAlertType.FloodWatch:
-                    fileIcon = "wi-flood.png";
+                    fileIcon = "wi_flood.png";
                     break;
                 case WeatherData.WeatherAlertType.Heat:
-                    fileIcon = "wi-hot.png";
+                    fileIcon = "wi_hot.png";
                     break;
                 case WeatherData.WeatherAlertType.HighWind:
-                    fileIcon = "wi-strong-wind.png";
+                    fileIcon = "wi_strong_wind.png";
                     break;
                 case WeatherData.WeatherAlertType.HurricaneLocalStatement:
                 case WeatherData.WeatherAlertType.HurricaneWindWarning:
-                    fileIcon = "wi-hurricane.png";
+                    fileIcon = "wi_hurricane.png";
                     break;
                 case WeatherData.WeatherAlertType.SevereThunderstormWarning:
                 case WeatherData.WeatherAlertType.SevereThunderstormWatch:
-                    fileIcon = "wi-thunderstorm.png";
+                    fileIcon = "wi_thunderstorm.png";
                     break;
                 case WeatherData.WeatherAlertType.TornadoWarning:
                 case WeatherData.WeatherAlertType.TornadoWatch:
-                    fileIcon = "wi-tornado.png";
+                    fileIcon = "wi_tornado.png";
                     break;
                 case WeatherData.WeatherAlertType.Volcano:
-                    fileIcon = "wi-volcano.png";
+                    fileIcon = "wi_volcano.png";
                     break;
                 case WeatherData.WeatherAlertType.WinterWeather:
-                    fileIcon = "wi-snowflake-cold.png";
+                    fileIcon = "wi_snowflake_cold.png";
                     break;
                 case WeatherData.WeatherAlertType.DenseSmoke:
-                    fileIcon = "wi-smoke.png";
+                    fileIcon = "wi_smoke.png";
                     break;
                 case WeatherData.WeatherAlertType.DustAdvisory:
-                    fileIcon = "wi-dust.png";
+                    fileIcon = "wi_dust.png";
                     break;
                 case WeatherData.WeatherAlertType.EarthquakeWarning:
-                    fileIcon = "wi-earthquake.png";
+                    fileIcon = "wi_earthquake.png";
                     break;
                 case WeatherData.WeatherAlertType.GaleWarning:
-                    fileIcon = "wi-gale-warning.png";
+                    fileIcon = "wi_gale_warning.png";
                     break;
                 case WeatherData.WeatherAlertType.SmallCraft:
-                    fileIcon = "wi-small-craft-advisory.png";
+                    fileIcon = "wi_small_craft_advisory.png";
                     break;
                 case WeatherData.WeatherAlertType.StormWarning:
-                    fileIcon = "wi-storm-warning.png";
+                    fileIcon = "wi_storm_warning.png";
                     break;
                 case WeatherData.WeatherAlertType.TsunamiWarning:
                 case WeatherData.WeatherAlertType.TsunamiWatch:
-                    fileIcon = "wi-tsunami.png";
+                    fileIcon = "wi_tsunami.png";
                     break;
                 case WeatherData.WeatherAlertType.SevereWeather:
                 case WeatherData.WeatherAlertType.SpecialWeatherAlert:
@@ -86,6 +90,7 @@ namespace SimpleWeather.Utils
             }
         }
 
+#if WINUI
         public static Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
         {
             Color color;
@@ -106,5 +111,27 @@ namespace SimpleWeather.Utils
 
             return color;
         }
+#else
+        public static Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
+        {
+            Color color;
+
+            switch (severity)
+            {
+                case WeatherData.WeatherAlertSeverity.Severe:
+                    color = Colors.OrangeRed;
+                    break;
+                case WeatherData.WeatherAlertSeverity.Extreme:
+                    color = Colors.Red;
+                    break;
+                case WeatherData.WeatherAlertSeverity.Moderate:
+                default:
+                    color = Colors.Orange;
+                    break;
+            }
+
+            return color;
+        }
+#endif
     }
 }

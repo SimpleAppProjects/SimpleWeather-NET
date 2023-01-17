@@ -8,7 +8,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+#if WINDOWS
 using Windows.Foundation.Metadata;
+#else
+using System.ComponentModel.DataAnnotations;
+#endif
 
 namespace SimpleWeather.Preferences
 {
@@ -18,11 +22,31 @@ namespace SimpleWeather.Preferences
         public bool WeatherLoaded { get => IsWeatherLoaded(); set => SetWeatherLoaded(value); }
         public bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); } }
         public string API { get { return GetAPI(); } set { SetAPI(value); } }
-        [Deprecated("Replace with SettingsManager.APIKey or SettingsManager.APIKeys[String]", DeprecationType.Deprecate, 5530)]
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.APIKey or SettingsManager.APIKeys[String]"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5530)]
+#else
+            )]
+#endif
         public string API_KEY { get { return GetAPIKEY(); } set { SetAPIKey(value); } }
         public string APIKey { get { return API?.Let(it => APIKeys[it]); } set { API?.Let(it => APIKeys[it] = value); } }
         public IAPIKeyMap APIKeys { get; }
-        [Deprecated("Replace with SettingsManager.IsKeyVerified(String) or SettingsManager.SetKeyVerified(String, Boolean)", DeprecationType.Deprecate, 5530)]
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.IsKeyVerified(String) or SettingsManager.SetKeyVerified(String, Boolean)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5530)]
+#else
+            )]
+#endif
         public bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
         public IKeyVerifiedMap KeysVerified { get; }
         public bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
@@ -611,7 +635,17 @@ namespace SimpleWeather.Preferences
             SetValue(KEY_API, value);
         }
 
-        [Deprecated("Replace with SettingsManager.GetAPIKey(String)", DeprecationType.Remove, 5530)]
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.GetAPIKey(String)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5530)]
+#else
+            )]
+#endif
         private string GetAPIKEY()
         {
             if (!ContainsKey(KEY_APIKEY))
@@ -745,7 +779,17 @@ namespace SimpleWeather.Preferences
             SetValue(KEY_USERTHEME, (int)value);
         }
 
-        [Deprecated("Replace with SettingsManager.IsKeyVerified(String)", DeprecationType.Remove, 5530)]
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.IsKeyVerified(String)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5530)]
+#else
+            )]
+#endif
         private bool IsKeyVerified()
         {
             if (!WUSharedSettings.ContainsKey(KEY_APIKEY_VERIFIED))
@@ -758,7 +802,17 @@ namespace SimpleWeather.Preferences
             }
         }
 
-        [Deprecated("Replace with SettingsManager.SetKeyVerified(String, Boolean)", DeprecationType.Remove, 5530)]
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.SetKeyVerified(String, Boolean)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5530)]
+#else
+            )]
+#endif
         private void SetKeyVerified(bool value)
         {
             WUSharedSettings.SetValue(KEY_APIKEY_VERIFIED, value);

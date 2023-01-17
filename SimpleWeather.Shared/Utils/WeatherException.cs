@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Utils
 {
@@ -30,24 +31,24 @@ namespace SimpleWeather.Utils
                 switch (ErrorStatus)
                 {
                     case WeatherUtils.ErrorStatus.NoWeather:
-                        errorMsg = SharedModule.Instance.ResLoader.GetString("werror_noweather");
+                        errorMsg = ResStrings.werror_noweather;
                         break;
 
                     case WeatherUtils.ErrorStatus.NetworkError:
-                        errorMsg = SharedModule.Instance.ResLoader.GetString("werror_networkerror");
+                        errorMsg = ResStrings.werror_networkerror;
                         break;
 
                     case WeatherUtils.ErrorStatus.InvalidAPIKey:
-                        errorMsg = SharedModule.Instance.ResLoader.GetString("werror_invalidkey");
+                        errorMsg = ResStrings.werror_invalidkey;
                         break;
 
                     case WeatherUtils.ErrorStatus.QueryNotFound:
-                        errorMsg = SharedModule.Instance.ResLoader.GetString("werror_querynotfound");
+                        errorMsg = ResStrings.werror_querynotfound;
                         break;
 
                     case WeatherUtils.ErrorStatus.Unknown:
                     default:
-                        errorMsg = SharedModule.Instance.ResLoader.GetString("werror_unknown");
+                        errorMsg = ResStrings.werror_unknown;
                         break;
                 }
 

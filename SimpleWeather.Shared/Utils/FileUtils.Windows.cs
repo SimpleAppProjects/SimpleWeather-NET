@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if WINDOWS
+using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -150,3 +151,4 @@ namespace SimpleWeather.Utils
         }
     }
 }
+#endif

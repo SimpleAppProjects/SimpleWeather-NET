@@ -1,0 +1,77 @@
+﻿<UserControl
+    x:Class="SimpleWeather.NET.Controls.Graphs.BarGraphPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:graphs="using:SimpleWeather.NET.Controls.Graphs"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="Control"
+    d:DesignHeight="300"
+    d:DesignWidth="400"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Button
+            x:Name="LeftButton"
+            Grid.Column="0"
+            Click="LeftButton_Click"
+            IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
+            Style="{ThemeResource LeftArrowButton}" />
+        <Button
+            x:Name="RightButton"
+            Grid.Column="2"
+            Click="RightButton_Click"
+            IsEnabled="{x:Bind CanScrollToEnd, Mode=OneWay}"
+            Style="{ThemeResource RightArrowButton}" />
+        <graphs:BarGraphView
+            x:Name="BarChartView"
+            Grid.Column="1"
+            HorizontalAlignment="Stretch"
+            DrawDataLabels="True"
+            DrawIconLabels="False"
+            FontSize="{Binding ElementName=Control, Path=FontSize, Mode=TwoWay}"
+            ItemWidthChanged="GraphView_ItemWidthChanged"
+            Loaded="GraphView_Loaded"
+            ViewChanged="GraphView_ViewChanged" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Mobile">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BarChartView.FontSize" Value="13" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Desktop">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="641" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="BarChartView.FontSize" Value="15" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>

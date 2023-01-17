@@ -1,9 +1,13 @@
-﻿using Microsoft.UI;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Threading;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.ViewManagement;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -40,13 +44,21 @@ namespace SimpleWeather.Utils
             byte b = (byte)((color) & 0xff);
             byte a = (byte)((color >> 24) & 0xff);
 
+#if WINUI
             return Color.FromArgb(a, r, g, b);
+#else
+            return Color.FromRgba(r, g, b, a);
+#endif
         }
 
         public static Color GetAccentColor()
         {
+#if WINUI
             var uiSettings = new UISettings();
             return uiSettings.GetColorValue(UIColorType.Accent);
+#else
+            return Microsoft.Maui.Controls.Application.AccentColor;
+#endif
         }
 
         public static bool IsSuperLight(Color color)
@@ -64,13 +76,22 @@ namespace SimpleWeather.Utils
          */
         private static bool IsLegible(Color foreground, Color background)
         {
-            background.A = 0xFF;
+            background = background.WithAlpha(0xFF);
             return CalculateContrast(foreground, background) >= MIN_CONTRAST_RATIO;
+        }
+
+        public static Color WithAlpha(this Color color, byte alpha)
+        {
+#if WINUI
+            return new Color() { A = alpha, R = color.R, G = color.G, B = color.B };
+#else
+            return color.WithAlpha(Math.Clamp(alpha / 255f, 0f, 1f));
+#endif
         }
 
         public static Color SetAlphaComponent(Color color, byte alpha)
         {
-            return new Color() { A = alpha, R = color.R, G = color.G, B = color.B };
+            return WithAlpha(color, alpha);
         }
 
         /**
@@ -86,11 +107,19 @@ namespace SimpleWeather.Utils
         public static Color BlendColor(Color color1, Color color2, float ratio)
         {
             float inverseRatio = 1 - ratio;
+#if WINUI
             float a = color1.A * inverseRatio + color2.A * ratio;
             float r = color1.R * inverseRatio + color2.R * ratio;
             float g = color1.G * inverseRatio + color2.G * ratio;
             float b = color1.B * inverseRatio + color2.B * ratio;
             return new Color() { A = (byte)a, R = (byte)r, G = (byte)g, B = (byte)b };
+#else
+            float a = color1.Alpha * inverseRatio + color2.Alpha * ratio;
+            float r = color1.Red * inverseRatio + color2.Red * ratio;
+            float g = color1.Green * inverseRatio + color2.Green * ratio;
+            float b = color1.Blue * inverseRatio + color2.Blue * ratio;
+            return new Color(r, g, b, a);
+#endif
         }
 
         /**
@@ -110,12 +139,21 @@ namespace SimpleWeather.Utils
          */
         public static void ColorToXYZ(Color color, in double[] outXyz)
         {
+#if WINUI
             double sr = color.R / 255.0;
             sr = sr < 0.04045 ? sr / 12.92 : Math.Pow((sr + 0.055) / 1.055, 2.4);
             double sg = color.G / 255.0;
             sg = sg < 0.04045 ? sg / 12.92 : Math.Pow((sg + 0.055) / 1.055, 2.4);
             double sb = color.B / 255.0;
             sb = sb < 0.04045 ? sb / 12.92 : Math.Pow((sb + 0.055) / 1.055, 2.4);
+#else
+            double sr = color.Red;
+            sr = sr < 0.04045 ? sr / 12.92 : Math.Pow((sr + 0.055) / 1.055, 2.4);
+            double sg = color.Green;
+            sg = sg < 0.04045 ? sg / 12.92 : Math.Pow((sg + 0.055) / 1.055, 2.4);
+            double sb = color.Blue;
+            sb = sb < 0.04045 ? sb / 12.92 : Math.Pow((sb + 0.055) / 1.055, 2.4);
+#endif
 
             outXyz[0] = 100 * (sr * 0.4124 + sg * 0.3576 + sb * 0.1805);
             outXyz[1] = 100 * (sr * 0.2126 + sg * 0.7152 + sb * 0.0722);
@@ -139,6 +177,7 @@ namespace SimpleWeather.Utils
          */
         public static Color CompositeColors(Color foreground, Color background)
         {
+#if WINUI
             int bgAlpha = background.A;
             int fgAlpha = foreground.A;
             int a = CompositeAlpha(fgAlpha, bgAlpha);
@@ -151,6 +190,20 @@ namespace SimpleWeather.Utils
                     background.B, bgAlpha, a);
 
             return new Color() { A = (byte)a, R = (byte)r, G = (byte)g, B = (byte)b };
+#else
+            int bgAlpha = (int)(background.Alpha * 255f);
+            int fgAlpha = (int)(foreground.Alpha * 255f);
+            int a = CompositeAlpha(fgAlpha, bgAlpha);
+
+            int r = CompositeComponent((int)(foreground.Red * 255f), fgAlpha,
+                    (int)(background.Red * 255f), bgAlpha, a);
+            int g = CompositeComponent((int)(foreground.Green * 255f), fgAlpha,
+                    (int)(background.Green * 255f), bgAlpha, a);
+            int b = CompositeComponent((int)(foreground.Blue * 255f), fgAlpha,
+                    (int)(background.Blue * 255f), bgAlpha, a);
+
+            return new Color(r, g, b, a);
+#endif
         }
 
         private static int CompositeAlpha(int foregroundAlpha, int backgroundAlpha)
@@ -173,6 +226,7 @@ namespace SimpleWeather.Utils
          */
         public static double CalculateContrast(Color foreground, Color background)
         {
+#if WINUI
             if (background.A != 255)
             {
                 throw new ArgumentException("background can not be translucent: #"
@@ -183,6 +237,18 @@ namespace SimpleWeather.Utils
                 // If the foreground is translucent, composite the foreground over the background
                 foreground = CompositeColors(foreground, background);
             }
+#else
+            if (background.Alpha != 1f)
+            {
+                throw new ArgumentException("background can not be translucent: #"
+                        + background.ToString());
+            }
+            if (foreground.Alpha < 1f)
+            {
+                // If the foreground is translucent, composite the foreground over the background
+                foreground = CompositeColors(foreground, background);
+            }
+#endif
 
             double luminance1 = CalculateLuminance(foreground) + 0.05;
             double luminance2 = CalculateLuminance(background) + 0.05;

@@ -3,6 +3,7 @@ using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
+using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.AQICN;
 using SimpleWeather.Weather_API.TZDB;
@@ -13,9 +14,13 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
+using System.Net.Http;
+#if WINUI
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 using LocData = SimpleWeather.LocationData.LocationData;
 
 namespace SimpleWeather.Weather_API.WeatherData
@@ -169,13 +174,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                                     else
                                     {
                                         var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
-                                        var solarNoon = weather.astronomy.sunrise + (
-#if !NETSTANDARD2_0
-                                            totalSunlightTime / 2
-#else
-                                            totalSunlightTime.Divide(2)
-#endif
-                                            );
+                                        var solarNoon = weather.astronomy.sunrise + totalSunlightTime / 2;
 
                                         // If +/- 2hrs within solar noon, UV max
                                         if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
@@ -256,27 +255,25 @@ namespace SimpleWeather.Weather_API.WeatherData
         {
             return icon switch
             {
-                WeatherIcons.DAY_SUNNY
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sunny"),
+                WeatherIcons.DAY_SUNNY => WeatherConditions.weather_sunny,
 
-                WeatherIcons.NIGHT_CLEAR
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_clear"),
+                WeatherIcons.NIGHT_CLEAR => WeatherConditions.weather_clear,
 
                 WeatherIcons.DAY_SUNNY_OVERCAST or
                 WeatherIcons.NIGHT_OVERCAST or
                 WeatherIcons.OVERCAST
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_overcast"),
+                => WeatherConditions.weather_overcast,
 
                 WeatherIcons.DAY_PARTLY_CLOUDY or
                 WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_partlycloudy"),
+                => WeatherConditions.weather_partlycloudy,
 
                 WeatherIcons.DAY_CLOUDY or
                 WeatherIcons.NIGHT_ALT_CLOUDY or
                 WeatherIcons.CLOUDY or
                 WeatherIcons.NIGHT_ALT_CLOUDY_HIGH or
                 WeatherIcons.DAY_CLOUDY_HIGH
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cloudy"),
+                => WeatherConditions.weather_cloudy,
 
                 WeatherIcons.DAY_SPRINKLE or
                 WeatherIcons.NIGHT_ALT_SPRINKLE or
@@ -284,7 +281,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                 WeatherIcons.DAY_SHOWERS or
                 WeatherIcons.NIGHT_ALT_SHOWERS or
                 WeatherIcons.SHOWERS
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainshowers"),
+                => WeatherConditions.weather_rainshowers,
 
                 WeatherIcons.DAY_THUNDERSTORM or
                 WeatherIcons.NIGHT_ALT_THUNDERSTORM or
@@ -295,75 +292,75 @@ namespace SimpleWeather.Weather_API.WeatherData
                 WeatherIcons.DAY_LIGHTNING or
                 WeatherIcons.NIGHT_ALT_LIGHTNING or
                 WeatherIcons.LIGHTNING
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tstorms"),
+                => WeatherConditions.weather_tstorms,
 
                 WeatherIcons.DAY_SLEET or
                 WeatherIcons.NIGHT_ALT_SLEET or
                 WeatherIcons.SLEET
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet"),
+                => WeatherConditions.weather_sleet,
 
                 WeatherIcons.DAY_SNOW or
                 WeatherIcons.NIGHT_ALT_SNOW or
                 WeatherIcons.SNOW
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow"),
+                => WeatherConditions.weather_snow,
 
                 WeatherIcons.DAY_SNOW_WIND or
                 WeatherIcons.NIGHT_ALT_SNOW_WIND or
                 WeatherIcons.SNOW_WIND
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavysnow"),
+                => WeatherConditions.weather_heavysnow,
 
                 WeatherIcons.DAY_SNOW_THUNDERSTORM or
                 WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or
                 WeatherIcons.SNOW_THUNDERSTORM
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_snow_tstorms"),
+                => WeatherConditions.weather_snow_tstorms,
 
                 WeatherIcons.HAIL or
                 WeatherIcons.DAY_HAIL or
                 WeatherIcons.NIGHT_ALT_HAIL
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hail"),
+                => WeatherConditions.weather_hail,
 
                 WeatherIcons.DAY_RAIN or
                 WeatherIcons.NIGHT_ALT_RAIN or
                 WeatherIcons.RAIN
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rain"),
+                => WeatherConditions.weather_rain,
 
                 WeatherIcons.DAY_FOG or
                 WeatherIcons.NIGHT_FOG or
                 WeatherIcons.FOG
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_fog"),
+                => WeatherConditions.weather_fog,
 
                 WeatherIcons.DAY_SLEET_STORM or
                 WeatherIcons.NIGHT_ALT_SLEET_STORM or
                 WeatherIcons.SLEET_STORM
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_sleet_tstorms"),
+                => WeatherConditions.weather_sleet_tstorms,
 
                 WeatherIcons.SNOWFLAKE_COLD
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_cold"),
+                => WeatherConditions.weather_cold,
 
                 WeatherIcons.DAY_HOT or
                 WeatherIcons.NIGHT_HOT or
                 WeatherIcons.HOT
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_hot"),
+                => WeatherConditions.weather_hot,
 
                 WeatherIcons.DAY_HAZE or
                 WeatherIcons.NIGHT_HAZE or
                 WeatherIcons.HAZE
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_haze"),
+                => WeatherConditions.weather_haze,
 
                 WeatherIcons.SMOKE
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smoky"),
+                => WeatherConditions.weather_smoky,
 
                 WeatherIcons.SANDSTORM or
                 WeatherIcons.DUST
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_dust"),
+                => WeatherConditions.weather_dust,
 
                 WeatherIcons.TORNADO
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tornado"),
+                => WeatherConditions.weather_tornado,
 
                 WeatherIcons.DAY_RAIN_MIX or
                 WeatherIcons.NIGHT_ALT_RAIN_MIX or
                 WeatherIcons.RAIN_MIX
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_rainandsnow"),
+                => WeatherConditions.weather_rainandsnow,
 
                 WeatherIcons.DAY_WINDY or
                 WeatherIcons.NIGHT_WINDY or
@@ -375,25 +372,25 @@ namespace SimpleWeather.Weather_API.WeatherData
                 WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
                 WeatherIcons.CLOUDY_GUSTS or
                 WeatherIcons.STRONG_WIND
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_windy"),
+                => WeatherConditions.weather_windy,
 
                 WeatherIcons.HURRICANE
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_tropicalstorm"),
+                => WeatherConditions.weather_tropicalstorm,
 
                 WeatherIcons.DAY_RAIN_WIND or
                 WeatherIcons.NIGHT_ALT_RAIN_WIND or
                 WeatherIcons.RAIN_WIND
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_heavyrain"),
+                => WeatherConditions.weather_heavyrain,
 
                 WeatherIcons.DAY_LIGHT_WIND or
                 WeatherIcons.NIGHT_LIGHT_WIND or
                 WeatherIcons.LIGHT_WIND
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_lightwind"),
+                => WeatherConditions.weather_lightwind,
 
                 WeatherIcons.SMOG
-                => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_smog"),
+                => WeatherConditions.weather_smog,
 
-                _ => SharedModule.Instance.ResLoader.GetString("/WeatherConditions/weather_notavailable"),
+                _ => WeatherConditions.weather_notavailable,
             };
         }
 
@@ -581,7 +578,11 @@ namespace SimpleWeather.Weather_API.WeatherData
                 }
             }
 
+#if WINUI
             return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]);
+#else
+            return Color.FromRgba(argb[1], argb[2], argb[3], argb[0]);
+#endif
         }
     }
 }

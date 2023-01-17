@@ -1,0 +1,35 @@
+﻿<Page
+    x:Class="SimpleWeather.NET.Preferences.Settings_Icons"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Preferences"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:utils="using:SimpleWeather.Utils"
+    xmlns:uwpUtils="using:SimpleWeather.NET.Utils"
+    d:Background="{ThemeResource RegionBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer
+            Padding="16,0"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <StackPanel>
+                <ContentPresenter d:Content="Icons" Content="{helpers:StringRes Name='pref_title_icons'}">
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{ThemeResource SettingTitleStyle}" Text="{Binding}" />
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+                <StackPanel x:Name="IconRadioContainer" Orientation="Vertical" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

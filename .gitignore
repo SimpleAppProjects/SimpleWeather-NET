@@ -249,13 +249,13 @@ ModelManifest.xml
 
 # SimpleWeather
 API_KEY.txt
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/Package.StoreAssociation.xml
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/Package.StoreAssociation.xml
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-400.appx
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-150.appx
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-125.appx
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_scale-100.appx
-/SimpleWeather.Uno/SimpleWeather.Uno.UWP/_pkginfo.txt
+/SimpleWeather.Windows/Package.StoreAssociation.xml
+/SimpleWeather.Windows/Package.StoreAssociation.xml
+/SimpleWeather.Windows/_scale-400.appx
+/SimpleWeather.Windows/_scale-150.appx
+/SimpleWeather.Windows/_scale-125.appx
+/SimpleWeather.Windows/_scale-100.appx
+/SimpleWeather.Windows/_pkginfo.txt
 /Components
 /MigrationBackup
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs
@@ -269,7 +269,7 @@ API_KEY.txt
 /TranslationImport
 listingData-*.csv
 /SimpleWeather.Shared.Extras
-/SimpleWeather.Uno.Extras
+/SimpleWeather.NET.Extras
 /SimpleWeather.Backgrounds
 /SimpleWeather.Extras
 /SimpleWeather.WeatherIcons

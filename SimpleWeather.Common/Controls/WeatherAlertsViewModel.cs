@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+#if WINUI
 using CommunityToolkit.WinUI;
+#endif
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
 using SimpleWeather.LocationData;
@@ -33,7 +35,11 @@ namespace SimpleWeather.Common.Controls
         {
             if (locationData == null || !Equals(locationData?.query, location?.query))
             {
+#if WINUI
                 DispatcherQueue.EnqueueAsync(async () =>
+#else
+                Dispatcher.Dispatch(async () =>
+#endif
                 {
                     locationData = new LocationQuery(location).ToLocationData();
 
@@ -91,7 +97,11 @@ namespace SimpleWeather.Common.Controls
                 }
             }
 
+#if WINUI
             DispatcherQueue.EnqueueAsync(() =>
+#else
+            Dispatcher.Dispatch(() =>
+#endif
             {
                 Alerts.NotifyCollectionChanged();
                 OnPropertyChanged(nameof(Alerts));

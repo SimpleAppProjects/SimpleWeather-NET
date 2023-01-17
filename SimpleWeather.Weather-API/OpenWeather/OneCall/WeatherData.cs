@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 {
@@ -222,62 +223,62 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 
             var sb = new StringBuilder();
             sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_morning"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoF(forecast.temp.morn)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoF(forecast.feels_like.morn)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_afternoon"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoF(forecast.temp.day)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoF(forecast.temp.day)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_eve"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoF(forecast.temp.eve)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoF(forecast.feels_like.eve)));
             sb.AppendLine();
             sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_night"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoF(forecast.temp.night)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoF(forecast.feels_like.night)));
 
             txtForecast.fcttext = sb.ToString();
 
             var sb_metric = new StringBuilder();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_morning"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoC(forecast.temp.morn)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoC(forecast.feels_like.morn)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_afternoon"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoC(forecast.temp.day)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoC(forecast.feels_like.day)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_eve"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoC(forecast.temp.eve)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoC(forecast.feels_like.eve)));
             sb_metric.AppendLine();
             sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", SharedModule.Instance.ResLoader.GetString("label_night"),
-                SharedModule.Instance.ResLoader.GetString("label_temp"),
+                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
+                ResStrings.label_temp,
                 Math.Round(ConversionMethods.KtoC(forecast.temp.night)),
-                SharedModule.Instance.ResLoader.GetString("label_feelslike"),
+                ResStrings.label_feelslike,
                 Math.Round(ConversionMethods.KtoC(forecast.feels_like.night)));
 
             txtForecast.fcttext_metric = sb_metric.ToString();

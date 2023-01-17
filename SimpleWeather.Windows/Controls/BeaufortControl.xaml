@@ -1,0 +1,65 @@
+﻿<UserControl
+    x:Class="SimpleWeather.NET.Controls.BeaufortControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:SimpleWeather.NET.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:wicons="using:SimpleWeather.Icons"
+    MinWidth="340"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary Source="ms-appx:///Controls/BeaufortControl.Resources.xaml" />
+    </UserControl.Resources>
+
+    <StackPanel>
+        <toolkitControls:HeaderedContentControl
+            HorizontalContentAlignment="Stretch"
+            Header="{x:Bind ViewModel.Beaufort.Label, Mode=OneWay, FallbackValue='Beaufort'}"
+            Style="{StaticResource SectionLabelStyle}">
+            <RelativePanel>
+                <local:IconControl
+                    x:Name="BeaufortIcon"
+                    Width="55"
+                    Margin="20,10"
+                    VerticalAlignment="Center"
+                    Foreground="{ThemeResource BeaufortPaintColorBrush}"
+                    RelativePanel.Above="BeaufortProgressBar"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignTopWithPanel="True"
+                    ShowAsMonochrome="True"
+                    WeatherIcon="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay}" />
+                <TextBlock
+                    x:Name="BeaufortDescription"
+                    Padding="5"
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    RelativePanel.Above="BeaufortProgressBar"
+                    RelativePanel.AlignRightWithPanel="True"
+                    RelativePanel.AlignTopWithPanel="True"
+                    RelativePanel.RightOf="BeaufortIcon"
+                    Text="{x:Bind ViewModel.Beaufort.Value, Mode=OneWay, FallbackValue='Violent Storm'}"
+                    TextLineBounds="Tight" />
+                <muxc:ProgressBar
+                    x:Name="BeaufortProgressBar"
+                    Height="5"
+                    Margin="15,5"
+                    Background="{ThemeResource ProgressBarBackgroundBrush}"
+                    Maximum="100"
+                    RelativePanel.AlignBottomWithPanel="True"
+                    RelativePanel.AlignLeftWithPanel="True"
+                    RelativePanel.AlignRightWithPanel="True"
+                    Value="{x:Bind ViewModel.BeaufortScaleProgress, Mode=OneWay, FallbackValue='66'}">
+                    <muxc:ProgressBar.Foreground>
+                        <SolidColorBrush Color="{x:Bind ViewModel.BeaufortScaleProgressColor, Mode=OneWay, FallbackValue='Maroon'}" />
+                    </muxc:ProgressBar.Foreground>
+                </muxc:ProgressBar>
+            </RelativePanel>
+        </toolkitControls:HeaderedContentControl>
+    </StackPanel>
+</UserControl>

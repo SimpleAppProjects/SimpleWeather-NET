@@ -1,0 +1,92 @@
+﻿<UserControl
+    x:Class="SimpleWeather.NET.Controls.WeatherAlertPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SimpleWeather.Common.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SimpleWeather.NET.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    d:DataContext="{d:DesignInstance Type=controls:WeatherAlertViewModel}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <local:AlertSeverityColorConverter x:Key="alertSeverityColorConv" />
+        <local:AlertTypeIconConverter x:Key="alertTypeIconConv" />
+    </UserControl.Resources>
+
+    <Grid>
+        <muxc:Expander
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            ExpandDirection="Down"
+            IsExpanded="False">
+            <muxc:Expander.Resources>
+                <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}, Mode=OneWay}" />
+                <SolidColorBrush x:Key="ExpanderHeaderForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderForegroundPointerOver" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderForegroundPressed" Color="White" />
+                <SolidColorBrush x:Key="ExpanderHeaderDisabledForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPointerOverForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPressedForeground" Color="White" />
+                <SolidColorBrush x:Key="ExpanderChevronPointerOverBackground" Color="#0F000000" />
+                <SolidColorBrush x:Key="ExpanderChevronPressedBackground" Color="#0A000000" />
+            </muxc:Expander.Resources>
+            <muxc:Expander.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <BitmapIcon
+                        x:Name="AlertIcon"
+                        Grid.Column="0"
+                        Width="25"
+                        Margin="2,0,0,0"
+                        UriSource="{Binding AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
+                    <TextBlock
+                        x:Name="Title"
+                        Grid.Column="1"
+                        Padding="5"
+                        FontWeight="SemiBold"
+                        Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
+                    <TextBlock
+                        x:Name="Date"
+                        Grid.Column="2"
+                        Padding="5"
+                        FontWeight="SemiBold"
+                        Text="{Binding PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
+                </Grid>
+            </muxc:Expander.Header>
+            <muxc:Expander.Content>
+                <StackPanel>
+                    <RichTextBlock
+                        FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
+                        Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                        IsTextSelectionEnabled="False"
+                        TextWrapping="WrapWholeWords">
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding ExpireDate, Mode=OneWay}" />
+                                <LineBreak />
+                            </Span>
+                        </Paragraph>
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding Message, Mode=OneWay}" />
+                                <LineBreak />
+                            </Span>
+                        </Paragraph>
+                        <Paragraph>
+                            <Span>
+                                <Run Text="{Binding Attribution, Mode=OneWay}" />
+                            </Span>
+                        </Paragraph>
+                    </RichTextBlock>
+                </StackPanel>
+            </muxc:Expander.Content>
+        </muxc:Expander>
+    </Grid>
+</UserControl>

@@ -1,8 +1,12 @@
-﻿using Microsoft.UI;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 using static SimpleWeather.WeatherData.Beaufort;
 
 namespace SimpleWeather.Common.Controls
@@ -73,7 +77,11 @@ namespace SimpleWeather.Common.Controls
                         break;
                     case BeaufortScale.B12:
                         BeaufortScaleProgress = 100;
+#if WINUI
                         BeaufortScaleProgressColor = Color.FromArgb(0xFF, 0xBD, 0x00, 0x35); // FFBD0035
+#else
+                        BeaufortScaleProgressColor = Color.FromRgb(0xBD, 0x00, 0x35); // FFBD0035
+#endif
                         break;
                 }
             }

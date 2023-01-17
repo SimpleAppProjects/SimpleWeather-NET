@@ -9,6 +9,7 @@ using SimpleWeather.Common.Images;
 using SimpleWeather.DI;
 using SimpleWeather.Extras;
 using SimpleWeather.Firebase;
+using SimpleWeather.Helpers;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.LocationData;
 using SimpleWeather.RemoteConfig;
@@ -22,7 +23,6 @@ using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
 using System.Diagnostics;
 using System.Text;
-using Windows.Storage;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
 
 namespace UnitTestProject
@@ -400,7 +400,7 @@ namespace UnitTestProject
         [TestMethod]
         public async Task CacheCowTest()
         {
-            var CacheRootDir = Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, "CacheCowTest");
+            var CacheRootDir = Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "CacheCowTest");
             if (Directory.Exists(CacheRootDir))
             {
                 Directory.Delete(CacheRootDir, true);
@@ -423,20 +423,23 @@ namespace UnitTestProject
             var results = new List<ImageUtils.ImageType>();
 
             {
-                var CacheRootDir = ApplicationData.Current.LocalCacheFolder;
-                var CacheFolder = await CacheRootDir.GetFolderAsync("images");
-                var CacheFiles = await CacheFolder.GetFilesAsync();
+                var ImageCacheFolder = new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
+                if (!ImageCacheFolder.Exists)
+                {
+                    ImageCacheFolder.Create();
+                }
+                var CacheFiles = ImageCacheFolder.GetFiles();
 
                 foreach (var file in CacheFiles)
                 {
-                    while (FileUtils.IsFileLocked(file))
+                    while (FileUtils.IsFileLocked(file.FullName))
                     {
                         await Task.Delay(100);
                     }
 
-                    using var stream = new BufferedStream(await file.OpenStreamForReadAsync());
+                    using var stream = new BufferedStream(file.OpenRead());
                     var imageType = ImageUtils.GuessImageType(stream);
-                    Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                    Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                     Debug.WriteLine($"ImageTest: type: {imageType}");
                     results.Add(imageType);
                     //Assert.AreNotEqual(imageType, ImageUtils.ImageType.Unknown);
@@ -444,20 +447,20 @@ namespace UnitTestProject
             }
 
             {
-                var AppFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-                var AssetsFolder = await (await (await AppFolder.GetFolderAsync("SimpleWeather.Shared")).GetFolderAsync("Assets")).GetFolderAsync("Backgrounds");
-                var AssetFiles = await AssetsFolder.GetFilesAsync();
+                var AppFolder = AppDomain.CurrentDomain.BaseDirectory;
+                var AssetsFolder = new DirectoryInfo(Path.Combine(AppFolder, "SimpleWeather.Shared", "Assets", "Backgrounds"));
+                var AssetFiles = AssetsFolder.GetFiles();
 
                 foreach (var file in AssetFiles)
                 {
-                    while (FileUtils.IsFileLocked(file))
+                    while (FileUtils.IsFileLocked(file.FullName))
                     {
                         await Task.Delay(100);
                     }
 
-                    using var stream = new BufferedStream(await file.OpenStreamForReadAsync());
+                    using var stream = new BufferedStream(file.OpenRead());
                     var imageType = ImageUtils.GuessImageType(stream);
-                    Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                    Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                     Debug.WriteLine($"ImageTest: type: {imageType}");
                     results.Add(imageType);
                     //Assert.AreNotEqual(imageType, ImageUtils.ImageType.Unknown);
@@ -470,78 +473,81 @@ namespace UnitTestProject
         [TestMethod]
         public async Task ImageFileTest()
         {
-            var CacheRootDir = ApplicationData.Current.LocalCacheFolder;
-            var CacheFolder = await CacheRootDir.GetFolderAsync("images");
-            var CacheFiles = await CacheFolder.GetFilesAsync();
+            var ImageCacheFolder = new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
+            if (!ImageCacheFolder.Exists)
+            {
+                ImageCacheFolder.Create();
+            }
+            var CacheFiles = ImageCacheFolder.GetFiles();
             var file = CacheFiles.First();
 
             var t1 = new Thread(async () =>
             {
                 Thread.Sleep(2000);
-                while (FileUtils.IsFileLocked(file))
+                while (FileUtils.IsFileLocked(file.FullName))
                 {
                     Thread.Sleep(100);
                 }
 
-                using var stream = new BufferedStream(await file.OpenStreamForReadAsync());
+                using var stream = new BufferedStream(file.OpenRead());
                 var imageType = ImageUtils.GuessImageType(stream);
-                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                 Debug.WriteLine($"ImageTest: type: {imageType}");
             });
 
             var t2 = new Thread(() =>
             {
                 Thread.Sleep(2000);
-                while (FileUtils.IsFileLocked(file))
+                while (FileUtils.IsFileLocked(file.FullName))
                 {
                     Thread.Sleep(100);
                 }
 
-                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                using var stream = new BufferedStream(file.OpenRead());
                 var imageType = ImageUtils.GuessImageType(stream);
-                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                 Debug.WriteLine($"ImageTest: type: {imageType}");
             });
 
             var t3 = new Thread(() =>
             {
                 Thread.Sleep(2000);
-                while (FileUtils.IsFileLocked(file))
+                while (FileUtils.IsFileLocked(file.FullName))
                 {
                     Thread.Sleep(100);
                 }
 
-                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                using var stream = new BufferedStream(file.OpenRead());
                 var imageType = ImageUtils.GuessImageType(stream);
-                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                 Debug.WriteLine($"ImageTest: type: {imageType}");
             });
 
             var t4 = new Thread(() =>
             {
                 Thread.Sleep(2000);
-                while (FileUtils.IsFileLocked(file))
+                while (FileUtils.IsFileLocked(file.FullName))
                 {
                     Thread.Sleep(100);
                 }
 
-                using var stream = new BufferedStream(File.OpenRead(file.Path));
+                using var stream = new BufferedStream(file.OpenRead());
                 var imageType = ImageUtils.GuessImageType(stream);
-                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                 Debug.WriteLine($"ImageTest: type: {imageType}");
             });
 
             var t5 = new Thread(() =>
             {
                 Thread.Sleep(2000);
-                while (FileUtils.IsFileLocked(file))
+                while (FileUtils.IsFileLocked(file.FullName))
                 {
                     Thread.Sleep(100);
                 }
 
-                using var stream = new BufferedStream(File.Open(file.Path, FileMode.Open, FileAccess.Read, FileShare.Read));
+                using var stream = new BufferedStream(file.OpenRead());
                 var imageType = ImageUtils.GuessImageType(stream);
-                Debug.WriteLine($"ImageTest: file path: {file.Path}");
+                Debug.WriteLine($"ImageTest: file path: {file.FullName}");
                 Debug.WriteLine($"ImageTest: type: {imageType}");
             });
 

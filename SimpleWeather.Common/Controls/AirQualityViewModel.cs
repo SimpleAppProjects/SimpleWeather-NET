@@ -1,9 +1,14 @@
-﻿using Microsoft.UI;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using ResAQIndex = SimpleWeather.Resources.Strings.AQIndex;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 
 namespace SimpleWeather.Common.Controls
 {
@@ -32,38 +37,58 @@ namespace SimpleWeather.Common.Controls
             if (aqi.index < 51)
             {
                 ProgressColor = Colors.LimeGreen;
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_0_50");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_0_50");
+                Level = ResAQIndex.aqi_level_0_50;
+                Description = ResAQIndex.aqi_desc_0_50;
             }
             else if (aqi.index < 101)
             {
+#if WINUI
                 ProgressColor = Color.FromArgb(0xff, 0xff, 0xde, 0x33);
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_51_100");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_51_100");
+#else
+                ProgressColor = Color.FromRgb(0xff, 0xde, 0x33);
+#endif
+                Level = ResAQIndex.aqi_level_51_100;
+                Description = ResAQIndex.aqi_desc_51_100;
             }
             else if (aqi.index < 151)
             {
+#if WINUI
                 ProgressColor = Color.FromArgb(0xff, 0xff, 0x99, 0x33);
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_101_150");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_101_150");
+#else
+                ProgressColor = Color.FromRgb(0xff, 0x99, 0x33);
+#endif
+                Level = ResAQIndex.aqi_level_101_150;
+                Description = ResAQIndex.aqi_desc_101_150;
             }
             else if (aqi.index < 201)
             {
+#if WINUI
                 ProgressColor = Color.FromArgb(0xff, 0xcc, 0x00, 0x33);
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_151_200");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_151_200");
+#else
+                ProgressColor = Color.FromRgb(0xcc, 0x00, 0x33);
+#endif
+                Level = ResAQIndex.aqi_level_151_200;
+                Description = ResAQIndex.aqi_desc_151_200;
             }
             else if (aqi.index < 301)
             {
+#if WINUI
                 ProgressColor = Color.FromArgb(0xff, 0xaa, 0x00, 0xff); // 0xff660099
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_201_300");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_201_300");
+#else
+                ProgressColor = Color.FromRgb(0xaa, 0x00, 0xff); // 0xff660099
+#endif
+                Level = ResAQIndex.aqi_level_201_300;
+                Description = ResAQIndex.aqi_desc_201_300;
             }
             else if (aqi.index >= 301)
             {
+#if WINUI
                 ProgressColor = Color.FromArgb(0xff, 0xbd, 0x00, 0x35); // 0xff7e0023
-                Level = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Level_300");
-                Description = SharedModule.Instance.ResLoader.GetString("/AQIndex/AQI_Desc_300");
+#else
+                ProgressColor = Color.FromRgb(0xbd, 0x00, 0x35); // 0xff7e0023
+#endif
+                Level = ResAQIndex.aqi_level_300;
+                Description = ResAQIndex.aqi_desc_300;
             }
 
             Attribution = aqi.attribution;

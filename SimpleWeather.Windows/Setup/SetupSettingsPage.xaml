@@ -1,0 +1,81 @@
+﻿<Page
+    x:Class="SimpleWeather.NET.Setup.SetupSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:databinding="using:SimpleWeather.NET.DataBinding"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Setup"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    d:Background="{ThemeResource PrimarySurfaceColor}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+
+    <ScrollViewer x:Name="Scroller">
+        <StackPanel VerticalAlignment="Center" Orientation="Vertical">
+            <Viewbox
+                Height="50"
+                Margin="0,32,0,0"
+                HorizontalAlignment="Center"
+                RequestedTheme="Dark">
+                <FontIcon
+                    Glyph="&#xF8B0;" />
+            </Viewbox>
+            <TextBlock
+                Padding="8"
+                HorizontalAlignment="Center"
+                d:Text="Customize your settings below"
+                Foreground="{ThemeResource OnPrimarySurfaceColor}"
+                FontSize="{ThemeResource HubSectionHeaderThemeFontSize}"
+                Text="{helpers:StringRes Name='setup_preferences_prompt'}" />
+            <StackPanel
+                Width="{x:Bind databinding:BindingExtensions.Multiply(Scroller.ViewportWidth, 0.75), Mode=OneWay}"
+                MinHeight="480"
+                Margin="0,16,0,0"
+                Padding="16"
+                CornerRadius="{ThemeResource OverlayCornerRadius}"
+                Orientation="Vertical">
+                <StackPanel.Background>
+                    <SolidColorBrush
+                        Color="{ThemeResource RegionColor}"
+                        Opacity="0.85" />
+                </StackPanel.Background>
+                <TextBlock
+                    x:Uid="Pref_SummaryUnits"
+                    Padding="0,5"
+                    Text="Display units in:" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <RadioButton
+                        x:Name="Fahrenheit"
+                        Margin="0,0,10,0"
+                        d:Content="Fahrenheit"
+                        Content="{helpers:StringRes Name='/Units/unit_fahrenheit'}"
+                        GroupName="Unit" />
+                    <RadioButton
+                        x:Name="Celsius"
+                        Margin="10,0,0,0"
+                        d:Content="Celsius"
+                        Content="{helpers:StringRes Name='/Units/unit_celsius'}"
+                        GroupName="Unit" />
+                </StackPanel>
+                <ComboBox
+                    x:Name="RefreshComboBox"
+                    MinWidth="260"
+                    Margin="0,10">
+                    <ComboBox.Header>
+                        <TextBlock d:Text="Update Frequency" Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
+                    </ComboBox.Header>
+                </ComboBox>
+                <TextBlock
+                    Padding="0,5"
+                    d:Text="Show notifications for weather alerts:"
+                    Text="{helpers:StringRes Name='pref_summary_alerts'}" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <ToggleSwitch x:Name="AlertSwitch" />
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -2,8 +2,13 @@
 using CacheCow.Client.FileCacheStore;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
+#if WINUI
 using Microsoft.UI.Dispatching;
+#else
+using Microsoft.Maui.Dispatching;
+#endif
 using SimpleWeather.Extras;
+using SimpleWeather.Helpers;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
@@ -13,14 +18,12 @@ using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using Windows.ApplicationModel.Resources;
 using static SimpleWeather.CommonActionChangedEventArgs;
 
 namespace SimpleWeather
 {
     public sealed partial class SharedModule : IDisposable
     {
-        private readonly ResourceLoader _resourceLoader;
         private readonly ServiceCollection ServiceCollection = new();
 
         public event CommonActionChangedEventHandler OnCommonActionChanged;
@@ -32,8 +35,6 @@ namespace SimpleWeather
 
         private SharedModule()
         {
-            _resourceLoader = GetResourceLoader();
-
             ConfigureServices(ServiceCollection);
         }
 
@@ -44,15 +45,17 @@ namespace SimpleWeather
 
         public static SharedModule Instance => lazy.Value;
 
-        public ResourceLoader ResLoader => _resourceLoader;
-
         public HttpClient WebClient => httpClientLazy.Value;
 
         public WeatherIconsManager WeatherIconsManager => wimLazy.Value;
 
         public IServiceProvider Services => Ioc.Default;
 
+#if WINUI
         public readonly DispatcherQueue DispatcherQueue = DispatcherQueue.GetForCurrentThread();
+#else
+        public readonly IDispatcher Dispatcher = Microsoft.Maui.Dispatching.Dispatcher.GetForCurrentThread();
+#endif
 
         public void RequestAction(string Action, IDictionary<string, object> Bundle = null)
         {
@@ -60,17 +63,11 @@ namespace SimpleWeather
                 new CommonActionChangedEventArgs(Action, Bundle));
         }
 
-        private ResourceLoader GetResourceLoader()
-        {
-            return ResourceLoader.GetForViewIndependentUse();
-        }
-
         private void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IExtrasService, DefaultExtrasServiceImpl>();
             serviceCollection.AddSingleton<ImageDataHelperImpl, ImageDataHelperDefault>();
             serviceCollection.AddSingleton<IRemoteConfigService>(DI.Utils.RemoteConfigService);
-            serviceCollection.AddSingleton(ResLoader);
             serviceCollection.AddSingleton<SettingsManager>(DI.Utils.SettingsManager);
         }
 
@@ -86,9 +83,13 @@ namespace SimpleWeather
 
         private readonly Lazy<HttpClient> httpClientLazy = new(() =>
         {
+#if WINUI
             var CacheRoot = System.IO.Path.Combine(
                 Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path,
                 "CacheCow");
+#else
+            var CacheRoot = System.IO.Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "CacheCow");
+#endif
 
             return ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRoot) { MinExpiry = TimeSpan.FromDays(7) }), handler: new CacheFilter());
         });

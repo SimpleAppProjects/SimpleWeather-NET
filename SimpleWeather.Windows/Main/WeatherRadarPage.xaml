@@ -1,0 +1,18 @@
+﻿<Page
+    x:Class="SimpleWeather.NET.Main.WeatherRadarPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SimpleWeather.Common.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Main"
+    xmlns:localcontrols="using:SimpleWeather.NET.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    d:Background="{ThemeResource RegionBrush}"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Border x:Name="RadarWebViewContainer" Loaded="RadarWebViewContainer_Loaded" />
+    </Grid>
+</Page>

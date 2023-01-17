@@ -1,5 +1,9 @@
 ﻿using System;
+#if WINUI
 using Windows.ApplicationModel;
+#else
+using Microsoft.Maui.ApplicationModel;
+#endif
 
 namespace SimpleWeather
 {
@@ -15,8 +19,13 @@ namespace SimpleWeather
 
         public static string GetUserAgentString()
         {
+#if WINUI
             var version = string.Format("v{0}.{1}.{2}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build);
+#else
+            var version = string.Format("v{0}.{1}.{2}",
+                AppInfo.Version.Major, AppInfo.Version.Minor, AppInfo.Version.Build);
+#endif
 
             return $"SimpleWeather/{version} (thewizrd.dev@gmail.com)";
         }

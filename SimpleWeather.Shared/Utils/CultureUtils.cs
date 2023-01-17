@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
+#if WINDOWS
 using Windows.System.UserProfile;
+#endif
 
 namespace SimpleWeather.Utils
 {

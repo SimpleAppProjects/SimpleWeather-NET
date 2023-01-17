@@ -4,6 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Condition = SimpleWeather.WeatherData.Condition;
+using Location = SimpleWeather.WeatherData.Location;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.AccuWeather
 {
@@ -171,16 +174,15 @@ namespace SimpleWeather.Weather_API.AccuWeather
 
             forecast.date = daily.Date;
 
-            var ResLoader = SharedModule.Instance.ResLoader;
             var fctStr = new StringBuilder();
             if (daily.Day != null)
             {
-                fctStr.Append($"{ResLoader.GetString("label_day")} - {daily.Day.LongPhrase}");
+                fctStr.Append($"{ResStrings.label_day} - {daily.Day.LongPhrase}");
             }
             if (daily.Night != null)
             {
                 if (fctStr.Length > 0) fctStr.AppendLine();
-                fctStr.Append($"{ResLoader.GetString("label_night")} - {daily.Night.LongPhrase}");
+                fctStr.Append($"{ResStrings.label_night} - {daily.Night.LongPhrase}");
             }
 
             forecast.fcttext = fctStr.ToString();
@@ -422,9 +424,8 @@ namespace SimpleWeather.Weather_API.AccuWeather
 
             condition.summary = daily?.Let((it) =>
             {
-                var ResLoader = SharedModule.Instance.ResLoader;
-                var labelDay = ResLoader.GetString("label_day");
-                var labelNite = ResLoader.GetString("label_night");
+                var labelDay = ResStrings.label_day;
+                var labelNite = ResStrings.label_night;
 
                 var strBuilder = new StringBuilder();
                 if (!String.IsNullOrWhiteSpace(it.Day?.LongPhrase))

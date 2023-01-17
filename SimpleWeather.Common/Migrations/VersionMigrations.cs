@@ -4,8 +4,6 @@ using SimpleWeather.WeatherData;
 using SQLite;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Migrations
@@ -16,13 +14,13 @@ namespace SimpleWeather.Common.Migrations
         {
             var SettingsMgr = DI.Utils.SettingsManager;
 
-#if NETSTANDARD2_0
-            var version = Regex.Match(Assembly.GetEntryAssembly().FullName, @"(\d+)(.\d+)(.\d+)?(.\d+)?").ToString().Replace(".", "");
-#else
+#if WINUI
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+#else
+            var PackageVersion = Microsoft.Maui.ApplicationModel.AppInfo.Version;
+#endif
             var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
                 PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build); // Exclude revision number used by Xbox & others
-#endif
             var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
 
             if (SettingsMgr.WeatherLoaded && SettingsMgr.VersionCode < CurrentVersionCode)

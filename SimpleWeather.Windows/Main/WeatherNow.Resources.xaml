@@ -1,0 +1,31 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="using:SimpleWeather.NET.Converters">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            <Style
+                x:Key="AttributionStyle"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton">
+                <Setter Property="Foreground" Value="White" />
+            </Style>
+            <Color x:Key="ForegroundColor">White</Color>
+            <Color x:Key="AcrylicStackTintColor">#2C2C2C</Color>
+            <x:Double x:Key="AcrylicStackTintOpacity">0.85</x:Double>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Light">
+            <Style
+                x:Key="AttributionStyle"
+                BasedOn="{StaticResource HyperlinkButtonStyle}"
+                TargetType="HyperlinkButton" />
+            <Color x:Key="ForegroundColor">Black</Color>
+            <Color x:Key="AcrylicStackTintColor">#FCFCFC</Color>
+            <x:Double x:Key="AcrylicStackTintOpacity">1.0</x:Double>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    <SolidColorBrush x:Name="ForegroundColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
+    <converters:DetailsItemGridFilterConverter x:Key="detailsFilter" />
+    <converters:GraphDataVisibilityConverter x:Key="graphDataConv" />
+    <converters:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
+</ResourceDictionary>

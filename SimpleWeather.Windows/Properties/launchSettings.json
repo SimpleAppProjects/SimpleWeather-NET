@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "SimpleWeather.Windows (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "SimpleWeather.Windows (Unpackaged)": {
+      "commandName": "Project",
+      "doNotLaunchApp": true
+    }
+  }
+}

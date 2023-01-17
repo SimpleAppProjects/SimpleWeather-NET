@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
@@ -9,6 +10,24 @@ namespace SimpleWeather.RemoteConfig
     public sealed partial class RemoteConfigServiceImpl : IRemoteConfigService
     {
         private const String DEFAULT_WEATHERPROVIDER_KEY = "default_weather_provider";
+
+        // Shared Settings
+        private readonly SettingsContainer RemoteConfigContainer = new SettingsContainer("firebase_remoteconfig");
+
+        private String GetConfigString(String weatherAPI, bool useFallback = false)
+        {
+            if (useFallback)
+            {
+                return Config.ResourceManager.GetString(weatherAPI);
+            }
+
+            return RemoteConfigContainer.GetValue<string>(weatherAPI) ?? Config.ResourceManager.GetString(weatherAPI);
+        }
+
+        public void SetConfigString(String key, String value)
+        {
+            RemoteConfigContainer.SetValue(key, value);
+        }
 
         public string GetLocationProvider(string weatherAPI)
         {

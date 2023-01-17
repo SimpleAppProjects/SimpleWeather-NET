@@ -3,6 +3,9 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Condition = SimpleWeather.WeatherData.Condition;
+using Location = SimpleWeather.WeatherData.Location;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.TomorrowIO
 {
@@ -40,7 +43,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                         }
 
                         weather.forecast.Add(_.CreateForecast(interval));
-                        weather.txt_forecast.Add(_.CreateTextFprecast(interval));
+                        weather.txt_forecast.Add(_.CreateTextForecast(interval));
 
                         if (interval.values.epaIndex.HasValue)
                         {
@@ -178,7 +181,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return forecast;
         }
 
-        public static TextForecast CreateTextFprecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static TextForecast CreateTextForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
         {
             var txtForecast = new TextForecast();
 
@@ -186,12 +189,11 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
             var fcastStr = new StringBuilder().Apply(sb =>
             {
-                var resLoader = SharedModule.Instance.ResLoader;
                 var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.TomorrowIo);
 
-                sb.AppendFormat("{0} - {1}", resLoader.GetString("label_day"), provider.GetWeatherCondition(item.values.weatherCodeDay?.ToString()));
+                sb.AppendFormat("{0} - {1}", ResStrings.label_day, provider.GetWeatherCondition(item.values.weatherCodeDay?.ToString()));
                 sb.AppendLine();
-                sb.AppendFormat("{0} - {1}", resLoader.GetString("label_night"), provider.GetWeatherCondition(item.values.weatherCodeNight?.ToString()));
+                sb.AppendFormat("{0} - {1}", ResStrings.label_night, provider.GetWeatherCondition(item.values.weatherCodeNight?.ToString()));
             }).ToString();
 
             txtForecast.fcttext = fcastStr;

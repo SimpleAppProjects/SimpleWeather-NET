@@ -1,9 +1,15 @@
-﻿using Microsoft.UI;
-using SimpleWeather.Icons;
+﻿using SimpleWeather.Icons;
 using SimpleWeather.WeatherData;
-using System;
 using System.Collections.Generic;
+using System;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using ResUVIndex = SimpleWeather.Resources.Strings.UVIndex;
 
 namespace SimpleWeather.Common.Controls
 {
@@ -19,34 +25,42 @@ namespace SimpleWeather.Common.Controls
 
         public UVIndexViewModel(UV uvIdx)
         {
-            Title = SharedModule.Instance.ResLoader.GetString("label_uv");
+            Title = ResStrings.label_uv;
             Index = (int)uvIdx.index;
             Progress = uvIdx.index >= 11 ? 100 : (int)((uvIdx.index / 11) * 100);
 
             if (uvIdx.index < 3)
             {
-                Description = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_0");
+                Description = ResUVIndex.uv_0;
                 ProgressColor = Colors.LimeGreen;
             }
             else if (uvIdx.index < 6)
             {
-                Description = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_3");
+                Description = ResUVIndex.uv_3;
                 ProgressColor = Colors.Yellow;
             }
             else if (uvIdx.index < 8)
             {
-                Description = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_6");
+                Description = ResUVIndex.uv_6;
                 ProgressColor = Colors.Orange;
             }
             else if (uvIdx.index < 11)
             {
-                Description = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_8");
+                Description = ResUVIndex.uv_8;
+#if WINUI
                 ProgressColor = Color.FromArgb(0xFF, 0xBD, 0x00, 0x35); // Maroon
+#else
+                ProgressColor = Color.FromRgb(0xBD, 0x00, 0x35); // Maroon
+#endif
             }
             else if (uvIdx.index >= 11)
             {
-                Description = SharedModule.Instance.ResLoader.GetString("/UVIndex/UV_11");
+                Description = ResUVIndex.uv_11;
+#if WINUI
                 ProgressColor = Color.FromArgb(0xFF, 0xAA, 0x00, 0xFF); // Purple
+#else
+                ProgressColor = Color.FromRgb(0xAA, 0x00, 0xFF); // Purple
+#endif
             }
 
             switch (Index)

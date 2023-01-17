@@ -3,7 +3,12 @@ using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 
 namespace SimpleWeather.Common.Controls
 {

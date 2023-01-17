@@ -8,10 +8,13 @@ using SimpleWeather.Weather_API.TZDB;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if WINUI
 using Windows.Devices.Geolocation;
-#if !(WINDOWS || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0)
+#else
 using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Devices.Sensors;
 #endif
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.Location
 {
@@ -23,7 +26,7 @@ namespace SimpleWeather.Common.Location
 
         public async Task<bool> CheckPermissions()
         {
-#if WINDOWS || __MACOS__ || HAS_UNO_SKIA || NETSTANDARD2_0
+#if WINUI
             var geoStatus = GeolocationAccessStatus.Unspecified;
 
             try
@@ -50,22 +53,24 @@ namespace SimpleWeather.Common.Location
 
             try
             {
+#if WINUI
                 var geolocator = new Geolocator()
                 {
                     DesiredAccuracyInMeters = 5000,
-#if !HAS_UNO
                     ReportInterval = 900000,
                     MovementThreshold = 1600,
-#endif
                     DesiredAccuracy = PositionAccuracy.Default,
                 };
 
-#if !HAS_UNO
                 geolocator.AllowFallbackToConsentlessPositions();
-#endif
+
                 var geoposition = await geolocator.GetGeopositionAsync()
                     .AsTask(new CancellationTokenSource(10000).Token);
                 return geoposition.ToLocation();
+#else
+                var location = await Geolocation.Default.GetLastKnownLocationAsync();
+                return new LocationData.Location(location.Latitude, location.Longitude);
+#endif
             }
             catch
             {
@@ -83,24 +88,31 @@ namespace SimpleWeather.Common.Location
 
             try
             {
+#if WINUI
                 var geolocator = new Geolocator()
                 {
                     DesiredAccuracyInMeters = 5000,
-#if !HAS_UNO
                     ReportInterval = 900000,
                     MovementThreshold = 1600,
-#endif
                     DesiredAccuracy = PositionAccuracy.Default,
                 };
 
-#if !HAS_UNO
                 geolocator.AllowFallbackToConsentlessPositions();
-#endif
+
                 var geoposition = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
 
                 Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Location update received...");
 
                 return geoposition.ToLocation();
+#else
+                var request = new GeolocationRequest(GeolocationAccuracy.Default, TimeSpan.FromMinutes(15));
+
+                var geoposition = await Geolocation.Default.GetLocationAsync(request);
+
+                Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Location update received...");
+
+                return geoposition.ToLocation();
+#endif
             }
             catch
             {
@@ -155,7 +167,7 @@ namespace SimpleWeather.Common.Location
 
                 if (view == null || string.IsNullOrWhiteSpace(view.Location_Query))
                 {
-                    return new LocationResult.Error(new ErrorMessage.String(SharedModule.Instance.ResLoader.GetString("error_retrieve_location")));
+                    return new LocationResult.Error(new ErrorMessage.String(ResStrings.error_retrieve_location));
                 }
                 else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
                 {

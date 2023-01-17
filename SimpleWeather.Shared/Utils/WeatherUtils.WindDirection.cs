@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using ResWindDirection = SimpleWeather.Resources.Strings.WindDirection;
 
 namespace SimpleWeather.Utils
 {
@@ -10,67 +9,67 @@ namespace SimpleWeather.Utils
         {
             if (angle >= 348.75 && angle <= 11.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_n");
+                return ResWindDirection.wind_dir_n;
             }
             else if (angle >= 11.25 && angle <= 33.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_nne");
+                return ResWindDirection.wind_dir_nne;
             }
             else if (angle >= 33.75 && angle <= 56.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_ne");
+                return ResWindDirection.wind_dir_ne;
             }
             else if (angle >= 56.25 && angle <= 78.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_ene");
+                return ResWindDirection.wind_dir_ene;
             }
             else if (angle >= 78.75 && angle <= 101.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_e");
+                return ResWindDirection.wind_dir_e;
             }
             else if (angle >= 101.25 && angle <= 123.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_ese");
+                return ResWindDirection.wind_dir_ese;
             }
             else if (angle >= 123.75 && angle <= 146.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_se");
+                return ResWindDirection.wind_dir_se;
             }
             else if (angle >= 146.25 && angle <= 168.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_sse");
+                return ResWindDirection.wind_dir_sse;
             }
             else if (angle >= 168.75 && angle <= 191.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_s");
+                return ResWindDirection.wind_dir_s;
             }
             else if (angle >= 191.25 && angle <= 213.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_ssw");
+                return ResWindDirection.wind_dir_ssw;
             }
             else if (angle >= 213.75 && angle <= 236.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_sw");
+                return ResWindDirection.wind_dir_sw;
             }
             else if (angle >= 236.25 && angle <= 258.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_wsw");
+                return ResWindDirection.wind_dir_wsw;
             }
             else if (angle >= 258.75 && angle <= 281.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_w");
+                return ResWindDirection.wind_dir_w;
             }
             else if (angle >= 281.25 && angle <= 303.75)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_wnw");
+                return ResWindDirection.wind_dir_wnw;
             }
             else if (angle >= 303.75 && angle <= 326.25)
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_nw");
+                return ResWindDirection.wind_dir_nw;
             }
             else/* if (angle >= 326.25 && angle <= 348.75)*/
             {
-                return SharedModule.Instance.ResLoader.GetString("/WindDirection/wind_dir_nnw");
+                return ResWindDirection.wind_dir_nnw;
             }
         }
 

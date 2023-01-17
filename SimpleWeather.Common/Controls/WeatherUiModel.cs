@@ -6,12 +6,12 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 namespace SimpleWeather.Common.Controls
 {
-    [Bindable(true)]
     public class WeatherUiModel
     {
         public string Location { get; internal set; }
@@ -172,11 +172,11 @@ namespace SimpleWeather.Common.Controls
                         case Units.INCHES:
                         default:
                             precipValue = WeatherData.precipitation.qpf_rain_in.Value;
-                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_in");
+                            precipUnit = ResUnits.unit_in;
                             break;
                         case Units.MILLIMETERS:
                             precipValue = WeatherData.precipitation.qpf_rain_mm.Value;
-                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mm");
+                            precipUnit = ResUnits.unit_mm;
                             break;
                     }
 
@@ -194,11 +194,11 @@ namespace SimpleWeather.Common.Controls
                         case Units.INCHES:
                         default:
                             precipValue = WeatherData.precipitation.qpf_snow_in.Value;
-                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_in");
+                            precipUnit = ResUnits.unit_in;
                             break;
                         case Units.MILLIMETERS:
                             precipValue = WeatherData.precipitation.qpf_snow_cm.Value * 10;
-                            precipUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mm");
+                            precipUnit = ResUnits.unit_mm;
                             break;
                     }
 
@@ -221,11 +221,11 @@ namespace SimpleWeather.Common.Controls
                     case Units.INHG:
                     default:
                         pressureVal = WeatherData.atmosphere.pressure_in.Value;
-                        pressureUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_inHg");
+                        pressureUnit = ResUnits.unit_inHg;
                         break;
                     case Units.MILLIBAR:
                         pressureVal = WeatherData.atmosphere.pressure_mb.Value;
-                        pressureUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mBar");
+                        pressureUnit = ResUnits.unit_mBar;
                         break;
                 }
 
@@ -261,11 +261,11 @@ namespace SimpleWeather.Common.Controls
                     case Units.MILES:
                     default:
                         visibilityVal = (int)Math.Round(WeatherData.atmosphere.visibility_mi.Value);
-                        visibilityUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_miles");
+                        visibilityUnit = ResUnits.unit_miles;
                         break;
                     case Units.KILOMETERS:
                         visibilityVal = (int)Math.Round(WeatherData.atmosphere.visibility_km.Value);
-                        visibilityUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kilometers");
+                        visibilityUnit = ResUnits.unit_kilometers;
                         break;
                 }
 
@@ -296,15 +296,15 @@ namespace SimpleWeather.Common.Controls
                     case Units.MILES_PER_HOUR:
                     default:
                         speedVal = (int)Math.Round(WeatherData.condition.wind_mph.Value);
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mph");
+                        speedUnit = ResUnits.unit_mph;
                         break;
                     case Units.KILOMETERS_PER_HOUR:
                         speedVal = (int)Math.Round(WeatherData.condition.wind_kph.Value);
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kph");
+                        speedUnit = ResUnits.unit_kph;
                         break;
                     case Units.METERS_PER_SECOND:
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(WeatherData.condition.wind_kph.Value));
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_msec");
+                        speedUnit = ResUnits.unit_msec;
                         break;
                 }
 
@@ -324,15 +324,15 @@ namespace SimpleWeather.Common.Controls
                     case Units.MILES_PER_HOUR:
                     default:
                         speedVal = (int)Math.Round(WeatherData.condition.windgust_mph.Value);
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_mph");
+                        speedUnit = ResUnits.unit_mph;
                         break;
                     case Units.KILOMETERS_PER_HOUR:
                         speedVal = (int)Math.Round(WeatherData.condition.windgust_kph.Value);
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_kph");
+                        speedUnit = ResUnits.unit_kph;
                         break;
                     case Units.METERS_PER_SECOND:
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(WeatherData.condition.windgust_kph.Value));
-                        speedUnit = SharedModule.Instance.ResLoader.GetString("/Units/unit_msec");
+                        speedUnit = ResUnits.unit_msec;
                         break;
                 }
 
@@ -389,7 +389,7 @@ namespace SimpleWeather.Common.Controls
             AirQuality = WeatherData.condition.airQuality?.index != null ? new AirQualityViewModel(WeatherData.condition.airQuality) : null;
             Pollen = WeatherData.condition.pollen != null ? new PollenViewModel(WeatherData.condition.pollen) : null;
 
-            string creditPrefix = SharedModule.Instance.ResLoader.GetString("credit_prefix");
+            string creditPrefix = ResStrings.credit_prefix;
             WeatherCredit = String.Format("{0} {1}",
                 creditPrefix, WeatherAPI.APIs.FirstOrDefault(WApi => Equals(WeatherSource, WApi.Value))?.ToString() ?? WeatherIcons.EM_DASH);
         }

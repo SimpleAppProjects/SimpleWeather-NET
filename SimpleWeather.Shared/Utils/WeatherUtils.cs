@@ -1,7 +1,12 @@
-﻿using Microsoft.UI;
-using SimpleWeather.WeatherData;
+﻿using SimpleWeather.WeatherData;
 using System;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
+#if WINUI
+using Microsoft.UI;
 using Windows.UI;
+#else
+using Microsoft.Maui.Graphics;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -25,12 +30,12 @@ namespace SimpleWeather.Utils
 
             if (update_time.DayOfWeek == DateTime.Now.DayOfWeek)
             {
-                prefix = SharedModule.Instance.ResLoader.GetString("update_prefix_day");
+                prefix = ResStrings.update_prefix_day;
                 date = string.Format("{0} {1}", prefix, timeformat);
             }
             else
             {
-                prefix = SharedModule.Instance.ResLoader.GetString("update_prefix");
+                prefix = ResStrings.update_prefix;
                 date = string.Format("{0} {1} {2}",
                     prefix, update_time.ToString("ddd", culture), timeformat);
             }
@@ -131,7 +136,11 @@ namespace SimpleWeather.Utils
 
         public static Color GetColorFromTempF(float temp_f)
         {
+#if WINUI
             return GetColorFromTempF(temp_f, Color.FromArgb(0xff, 0x00, 0x70, 0xc0));
+#else
+            return GetColorFromTempF(temp_f, Color.FromRgb(0x00, 0x70, 0xc0));
+#endif
         }
 
         public static Color GetColorFromTempF(float temp_f, Color defaultColor)
@@ -171,8 +180,13 @@ namespace SimpleWeather.Utils
                 < 3 => Colors.LimeGreen,
                 < 6 => Colors.Yellow,
                 < 8 => Colors.Orange,
+#if WINUI
                 < 11 => Color.FromArgb(0xFF, 0xBD, 0x00, 0x35), // Maroon
                 >= 11 => Color.FromArgb(0xFF, 0xAA, 0x00, 0xFF), // Purple
+#else
+                < 11 => Color.FromRgb(0xBD, 0x00, 0x35), // Maroon
+                >= 11 => Color.FromRgb(0xAA, 0x00, 0xFF), // Purple
+#endif
                 _ => defaultColor
             };
         }

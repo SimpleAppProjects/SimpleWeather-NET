@@ -1,0 +1,42 @@
+﻿<Page
+    x:Class="SimpleWeather.NET.Preferences.DevSettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:SimpleWeather.NET.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Preferences"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:weather="using:SimpleWeather.WeatherData"
+    d:Background="{ThemeResource RegionBrush}"
+    mc:Ignorable="d">
+
+    <Grid>
+        <ScrollViewer
+            Padding="16,0"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <StackPanel>
+                <TextBlock Style="{StaticResource SettingTitleStyle}" Text="Developer Settings" />
+                <TextBlock
+                    FontSize="16"
+                    Style="{StaticResource SettingTitleStyle}"
+                    Text="API Keys" />
+                <Rectangle
+                    Height="1"
+                    Margin="0,-4,0,15"
+                    Fill="LightGray" />
+                <StackPanel Padding="0,0,0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
+                </StackPanel>
+                <StackPanel Padding="0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

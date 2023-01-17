@@ -1,6 +1,10 @@
-﻿using System;
+﻿using SimpleWeather.Helpers;
+using System;
+using System.IO;
 using System.Threading.Tasks;
+#if WINDOWS
 using Windows.Storage;
+#endif
 using Timber = TimberLog.Timber;
 
 namespace SimpleWeather.Utils
@@ -59,7 +63,11 @@ namespace SimpleWeather.Utils
 #if !UNIT_TEST
             Task.Run(async () =>
             {
-                await FileUtils.DeleteDirectory(System.IO.Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));
+#if WINUI
+                await FileUtils.DeleteDirectory(Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));
+#else
+                await FileUtils.DeleteDirectory(Path.Combine(ApplicationDataHelper.GetLocalFolderPath(), "logs"));
+#endif
             });
 #endif
         }

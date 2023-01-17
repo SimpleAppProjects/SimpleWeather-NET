@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.WinUI;
+﻿#if WINUI
+using CommunityToolkit.WinUI;
+#endif
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.ComponentModel;
@@ -18,7 +20,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Resources;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.ViewModels
 {
@@ -30,7 +32,6 @@ namespace SimpleWeather.Common.ViewModels
         private readonly IRemoteConfigService RemoteConfigService;
         private readonly ITZDBService TZDBService;
 
-        private readonly ResourceLoader resLoader = SharedModule.Instance.ResLoader;
         private CancellationTokenSource cts = new();
 
         private readonly LocationProvider locationProvider = new();
@@ -122,7 +123,7 @@ namespace SimpleWeather.Common.ViewModels
             var locationAPI = wm.LocationProvider.LocationAPI;
 
             var entry = WeatherAPI.LocationAPIs.First(lapi => locationAPI.Equals(lapi.Value));
-            var credit = $"{resLoader.GetString("credit_prefix")} {entry.ToString() ?? WeatherIcons.EM_DASH}";
+            var credit = $"{ResStrings.credit_prefix} {entry.ToString() ?? WeatherIcons.EM_DASH}";
             Footer = credit;
         }
 
@@ -142,13 +143,13 @@ namespace SimpleWeather.Common.ViewModels
                         currentLocation = result.Data;
                         break;
                     case LocationResult.PermissionDenied:
-                        PostErrorMessage(new ErrorMessage.Resource("error_location_denied"));
+                        PostErrorMessage(new ErrorMessage.String(ResStrings.error_location_denied));
                         break;
                     case LocationResult.Error err:
                         PostErrorMessage(err.ErrorMessage);
                         break;
                     default:
-                        PostErrorMessage(new ErrorMessage.Resource("error_retrieve_location"));
+                        PostErrorMessage(new ErrorMessage.String(ResStrings.error_retrieve_location));
                         break;
                 }
 
@@ -166,14 +167,14 @@ namespace SimpleWeather.Common.ViewModels
 
                     if (SettingsManager.UsePersonalKey && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
                     {
-                        PostErrorMessage(new ErrorMessage.Resource("werror_invalidkey"));
+                        PostErrorMessage(new ErrorMessage.String(ResStrings.werror_invalidkey));
                         UiState = UiState with { IsLoading = false };
                         return;
                     }
 
                     if (!wm.IsRegionSupported(locQuery.LocationCountry))
                     {
-                        PostErrorMessage(new ErrorMessage.Resource("error_message_weather_region_unsupported"));
+                        PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
                         UiState = UiState with { IsLoading = false };
                         return;
                     }
@@ -227,18 +228,22 @@ namespace SimpleWeather.Common.ViewModels
             UiState = UiState with { IsLoading = true };
 
             RefreshToken();
+#if WINUI
             DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
                 if (string.IsNullOrWhiteSpace(locQuery.Location_Query))
                 {
-                    PostErrorMessage(new ErrorMessage.Resource("error_retrieve_location"));
+                    PostErrorMessage(new ErrorMessage.String(ResStrings.error_retrieve_location));
                     UiState = UiState with { IsLoading = false };
                     return;
                 }
 
                 if (SettingsManager.UsePersonalKey && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
                 {
-                    PostErrorMessage(new ErrorMessage.Resource("werror_invalidkey"));
+                    PostErrorMessage(new ErrorMessage.String(ResStrings.werror_invalidkey));
                     UiState = UiState with { IsLoading = false };
                     return;
                 }
@@ -275,7 +280,7 @@ namespace SimpleWeather.Common.ViewModels
                 if (queryResult == null || string.IsNullOrWhiteSpace(queryResult.Location_Query))
                 {
                     // Stop since there is no valid query
-                    PostErrorMessage(new ErrorMessage.Resource("error_retrieve_location"));
+                    PostErrorMessage(new ErrorMessage.String(ResStrings.error_retrieve_location));
                     UiState = UiState with { IsLoading = false };
                     return;
                 }
@@ -302,7 +307,7 @@ namespace SimpleWeather.Common.ViewModels
 
                 if (!wm.IsRegionSupported(queryResult.LocationCountry))
                 {
-                    PostErrorMessage(new ErrorMessage.Resource("error_message_weather_region_unsupported"));
+                    PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
                     UiState = UiState with { IsLoading = false };
                     return;
                 }

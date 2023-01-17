@@ -1,0 +1,145 @@
+﻿<Page
+    x:Class="SimpleWeather.NET.Preferences.Settings_Credits"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:local="using:SimpleWeather.NET.Preferences"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:Background="{ThemeResource RegionBrush}"
+    NavigationCacheMode="Enabled"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Dark">
+                    <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here_dark.png</x:String>
+                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/bingmaps_dark.png</x:String>
+                    <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo_dark.png</x:String>
+                    <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored_dark.png</x:String>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Light">
+                    <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here.png</x:String>
+                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/bingmaps.png</x:String>
+                    <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo.png</x:String>
+                    <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored.png</x:String>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer
+        Padding="16,0"
+        HorizontalScrollMode="Disabled"
+        VerticalScrollBarVisibility="Auto"
+        VerticalScrollMode="Auto">
+        <Grid>
+            <StackPanel>
+                <TextBlock
+                    d:Text="Weather Providers"
+                    Style="{StaticResource SettingTitleStyle}"
+                    Text="{helpers:StringRes Name='pref_category_providers'}" />
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_here}" />
+                    <RichTextBlock Padding="0,10">
+                        <Paragraph>
+                            The HERE Logo is a trademark or registered trademark of HERE Global B.V.
+                        </Paragraph>
+                    </RichTextBlock>
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://here.com/en">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource HereImageSrc}" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_metno}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.met.no/en">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/metno.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_nws}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="http://www.weather.gov">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/nws.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_owm}" />
+                    <HyperlinkButton Padding="0,20" NavigateUri="http://openweathermap.org/">
+                        <Image
+                            Height="25"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/openweathermap.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Bing Maps" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.bing.com/maps">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource BingImageSrc}" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_waqi}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://aqicn.org/">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/waqi.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_wunlocked}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://developer.weatherunlocked.com/">
+                        <BitmapIcon
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+                            ShowAsMonochrome="True"
+                            UriSource="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/wunlocked.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_weatherapi}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.weatherapi.com/">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource WeatherApiImageSrc}" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_tomorrowio}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://tomorrow.io">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource TomorrowIoImageSrc}" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <ContentPresenter d:Content="Icons" Content="{helpers:StringRes Name='pref_title_icons'}">
+                    <ContentPresenter.ContentTemplate>
+                        <DataTemplate>
+                            <TextBlock Style="{ThemeResource SettingTitleStyle}" Text="{Binding}" />
+                        </DataTemplate>
+                    </ContentPresenter.ContentTemplate>
+                </ContentPresenter>
+                <StackPanel
+                    x:Name="IconCreditsContainer"
+                    HorizontalAlignment="Left"
+                    Orientation="Vertical" />
+            </StackPanel>
+        </Grid>
+    </ScrollViewer>
+</Page>

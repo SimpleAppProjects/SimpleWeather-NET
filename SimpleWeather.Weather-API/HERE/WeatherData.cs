@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using Condition = SimpleWeather.WeatherData.Condition;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.HERE
 {
@@ -322,7 +324,6 @@ namespace SimpleWeather.Weather_API.HERE
             if (todaysForecast != null && todaysTxtForecast != null)
             {
                 var culture = CultureUtils.UserCulture;
-                var resLoader = SharedModule.Instance.ResLoader;
 
                 // fcttext & fcttextMetric are the same
                 var summaryStr = new StringBuilder(todaysTxtForecast.fcttext).Apply(sb =>
@@ -333,10 +334,9 @@ namespace SimpleWeather.Weather_API.HERE
                         {
                             sb.Append('.');
                         }
-                        sb.AppendFormat(" {0}: {1}%", resLoader.GetString("label_chance"), todaysForecast.extras.pop.Value);
+                        sb.AppendFormat(" {0}: {1}%", ResStrings.label_chance, todaysForecast.extras.pop.Value);
                     }
                 });
-
 
                 condition.summary = summaryStr.ToString();
             }

@@ -2,7 +2,11 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+#if WINUI
 using Windows.Storage;
+#else
+using Microsoft.Maui.Storage;
+#endif
 using Animation = SkiaSharp.Skottie.Animation;
 using SKBitmap = SkiaSharp.SKBitmap;
 
@@ -28,26 +32,41 @@ namespace SimpleWeather.Icons
 
                 if (this is ILottieWeatherIconProvider lottieProvider)
                 {
+#if WINUI
                     var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon)));
+                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#else
+                    var fStream = await FileSystem.OpenAppPackageFileAsync(lottieProvider.GetLottieIconURI(icon));
+#endif
 
-                    drawable = Animation.Create((await file.OpenReadAsync()).AsStreamForRead())?.ToDrawable();
+                    drawable = Animation.Create(fStream)?.ToDrawable();
                 }
 
                 if (drawable == null)
                 {
                     var svg = new Svg.Skia.SKSvg();
 
+#if WINUI
                     var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
+                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#else
+                    var fStream = await FileSystem.OpenAppPackageFileAsync(GetSVGIconUri(icon, isLight));
+#endif
 
-                    svg.Load((await file.OpenReadAsync()).AsStreamForRead());
+                    svg.Load(fStream);
                     drawable = svg.ToDrawable();
                 }
 
                 if (drawable == null)
                 {
+#if WINUI
                     var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
+                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#else
+                    var fStream = await FileSystem.OpenAppPackageFileAsync(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight));
+#endif
 
-                    drawable = SKBitmap.Decode((await file.OpenReadAsync()).AsStreamForRead()).ToDrawable();
+                    drawable = SKBitmap.Decode(fStream).ToDrawable();
                 }
 
                 return drawable;
