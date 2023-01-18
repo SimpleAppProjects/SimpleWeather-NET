@@ -84,16 +84,12 @@ namespace SimpleWeather.NET.Controls.Graphs
         public Color BottomTextColor
         {
             get => (Color)GetValue(BottomTextColorProperty);
-            set
-            {
-                SetValue(BottomTextColorProperty, value);
-                bottomTextPaint.Color = value.ToSKColor();
-            }
+            set => SetValue(BottomTextColorProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BottomTextColorProperty =
-            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(Colors.White));
+            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
 
         public bool DrawIconLabels { get; set; }
         public bool DrawDataLabels { get; set; }
@@ -128,6 +124,20 @@ namespace SimpleWeather.NET.Controls.Graphs
                 this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontWeight);
                 UpdateGraph();
             }
+        }
+
+        private static void OnBottomTextColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (obj as BaseGraphView<T, S, E>)?.UpdateBottomTextColor();
+            }
+        }
+
+        private void UpdateBottomTextColor()
+        {
+            bottomTextPaint.Color = BottomTextColor.ToSKColor();
+            Canvas?.Invalidate();
         }
 
         protected IconControl CreateIconControl(string WeatherIcon)

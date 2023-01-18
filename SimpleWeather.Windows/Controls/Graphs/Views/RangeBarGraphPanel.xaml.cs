@@ -1,7 +1,7 @@
-﻿using SimpleWeather.NET.Helpers;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using SimpleWeather.NET.Helpers;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -56,25 +56,25 @@ namespace SimpleWeather.NET.Controls.Graphs
             }
         }
 
-        public static readonly DependencyProperty CanScrollToStartProperty =
-            DependencyProperty.Register("CanScrollToStart", typeof(bool),
-            typeof(RangeBarGraphPanel), new PropertyMetadata(false));
-
-        public static readonly DependencyProperty CanScrollToEndProperty =
-            DependencyProperty.Register("CanScrollToEnd", typeof(bool),
-            typeof(RangeBarGraphPanel), new PropertyMetadata(false));
-
         public bool CanScrollToStart
         {
             get => (bool)GetValue(CanScrollToStartProperty);
             set => SetValue(CanScrollToStartProperty, value);
         }
 
+        public static readonly DependencyProperty CanScrollToStartProperty =
+            DependencyProperty.Register(nameof(CanScrollToStart), typeof(bool),
+            typeof(RangeBarGraphPanel), new PropertyMetadata(false));
+
         public bool CanScrollToEnd
         {
             get => (bool)GetValue(CanScrollToEndProperty);
             set => SetValue(CanScrollToEndProperty, value);
         }
+
+        public static readonly DependencyProperty CanScrollToEndProperty =
+            DependencyProperty.Register(nameof(CanScrollToEnd), typeof(bool),
+            typeof(RangeBarGraphPanel), new PropertyMetadata(false));
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
@@ -86,19 +86,15 @@ namespace SimpleWeather.NET.Controls.Graphs
             ScrollViewerHelper.ScrollRight(BarChartView.ScrollViewer);
         }
 
-        public static readonly DependencyProperty ForecastDataProperty =
-            DependencyProperty.Register("ForecastData", typeof(RangeBarGraphData),
-            typeof(RangeBarGraphPanel), new PropertyMetadata(null));
-
         public RangeBarGraphData ForecastData
         {
             get => (RangeBarGraphData)GetValue(ForecastDataProperty);
-            set
-            {
-                SetValue(ForecastDataProperty, value);
-                UpdateView(false);
-            }
+            set => SetValue(ForecastDataProperty, value);
         }
+
+        public static readonly DependencyProperty ForecastDataProperty =
+            DependencyProperty.Register(nameof(ForecastData), typeof(RangeBarGraphData),
+            typeof(RangeBarGraphPanel), new PropertyMetadata(null, (o, e) => (o as RangeBarGraphPanel)?.UpdateView(false)));
 
         public RangeBarGraphPanel()
         {

@@ -33,13 +33,13 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         public double MaxCanvasWidth
         {
-            get { return (double)GetValue(MaxCanvasWidthProperty); }
-            set { SetValue(MaxCanvasWidthProperty, value); InvalidateMeasure(); }
+            get => (double)GetValue(MaxCanvasWidthProperty);
+            set => SetValue(MaxCanvasWidthProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for MaxCanvasWidth.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty MaxCanvasWidthProperty =
-            DependencyProperty.Register("MaxCanvasWidth", typeof(double), typeof(BaseGraphViewControl), new PropertyMetadata(0d));
+            DependencyProperty.Register(nameof(MaxCanvasWidth), typeof(double), typeof(BaseGraphViewControl), new PropertyMetadata(0d, (o, e) => (o as UIElement)?.InvalidateMeasure()));
 
         public BaseGraphViewControl()
         {

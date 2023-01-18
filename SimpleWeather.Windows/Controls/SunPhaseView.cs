@@ -57,50 +57,33 @@ namespace SimpleWeather.NET.Controls
 
         public Color PaintColor
         {
-            get { return (Color)GetValue(PaintColorProperty); }
-            set
-            {
-                SetValue(PaintColorProperty, value);
-                backgroundPaint.Color = ColorUtils.SetAlphaComponent(value, 0x50).ToSKColor();
-                pathArcPaint.Color = value.ToSKColor();
-                bigCirPaint.Color = value.ToSKColor();
-                Canvas?.Invalidate();
-            }
+            get => (Color)GetValue(PaintColorProperty);
+            set => SetValue(PaintColorProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for PaintColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PaintColorProperty =
-            DependencyProperty.Register("PaintColor", typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow));
+            DependencyProperty.Register(nameof(PaintColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow, OnPaintColorChanged));
 
         public Color PhaseArcColor
         {
-            get { return (Color)GetValue(PhaseArcColorProperty); }
-            set
-            {
-                SetValue(PhaseArcColorProperty, value);
-                fullArcPaint.Color = ColorUtils.SetAlphaComponent(value, 0x40).ToSKColor();
-                Canvas?.Invalidate();
-            }
+            get => (Color)GetValue(PhaseArcColorProperty);
+            set => SetValue(PhaseArcColorProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for PhaseArcColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PhaseArcColorProperty =
-            DependencyProperty.Register("PhaseArcColor", typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow));
+            DependencyProperty.Register(nameof(PhaseArcColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow, OnPhaseArcColorChanged));
 
         public Color BottomTextColor
         {
-            get { return (Color)GetValue(BottomTextColorProperty); }
-            set
-            {
-                SetValue(BottomTextColorProperty, value);
-                bottomTextPaint.Color = value.ToSKColor();
-                Canvas?.Invalidate();
-            }
+            get => (Color)GetValue(BottomTextColorProperty);
+            set => SetValue(BottomTextColorProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BottomTextColorProperty =
-            DependencyProperty.Register("BottomTextColor", typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.White));
+            DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
 
         public SunPhaseViewModel ViewModel
         {
@@ -191,6 +174,50 @@ namespace SimpleWeather.NET.Controls
             {
                 Canvas.PaintSurface += Canvas_PaintSurface;
             }
+        }
+
+        private static void OnPaintColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (obj as SunPhaseView)?.UpdatePaintColor();
+            }
+        }
+
+        private void UpdatePaintColor()
+        {
+            backgroundPaint.Color = ColorUtils.SetAlphaComponent(PaintColor, 0x50).ToSKColor();
+            pathArcPaint.Color = PaintColor.ToSKColor();
+            bigCirPaint.Color = PaintColor.ToSKColor();
+            Canvas?.Invalidate();
+        }
+
+        private static void OnPhaseArcColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (obj as SunPhaseView)?.UpdatePhaseArcColor();
+            }
+        }
+
+        private void UpdatePhaseArcColor()
+        {
+            fullArcPaint.Color = ColorUtils.SetAlphaComponent(PhaseArcColor, 0x40).ToSKColor();
+            Canvas?.Invalidate();
+        }
+
+        private static void OnBottomTextColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (obj as SunPhaseView)?.UpdateBottomTextColor();
+            }
+        }
+
+        private void UpdateBottomTextColor()
+        {
+            bottomTextPaint.Color = BottomTextColor.ToSKColor();
+            Canvas?.Invalidate();
         }
 
         private void SunPhaseView_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)

@@ -40,13 +40,13 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         public Color BackgroundLineColor
         {
-            get { return (Color)GetValue(BackgroundLineColorProperty); }
-            set { SetValue(BackgroundLineColorProperty, value); bgLinesPaint.Color = value.ToSKColor(); }
+            get => (Color)GetValue(BackgroundLineColorProperty);
+            set => SetValue(BackgroundLineColorProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for BackgroundLineColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BackgroundLineColorProperty =
-            DependencyProperty.Register("BackgroundLineColor", typeof(Color), typeof(LineView), new PropertyMetadata(Colors.White));
+            DependencyProperty.Register(nameof(BackgroundLineColor), typeof(Color), typeof(LineView), new PropertyMetadata(Colors.White, OnBackgroundLineColorChanged));
 
         public bool DrawGridLines { get; set; }
         public bool DrawDotLine { get; set; }
@@ -159,6 +159,20 @@ namespace SimpleWeather.NET.Controls.Graphs
 
                 return graphBottom;
             }
+        }
+
+        private static void OnBackgroundLineColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (e.NewValue != e.OldValue)
+            {
+                (obj as LineView)?.UpdateBackgroundLineColor();
+            }
+        }
+
+        private void UpdateBackgroundLineColor()
+        {
+            bgLinesPaint.Color = BackgroundLineColor.ToSKColor();
+            Canvas?.Invalidate();
         }
 
         public override void ResetData(bool invalidate = false)

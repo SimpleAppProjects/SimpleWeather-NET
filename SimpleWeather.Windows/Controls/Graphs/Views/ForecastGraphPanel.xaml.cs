@@ -1,7 +1,7 @@
-﻿using SimpleWeather.NET.Helpers;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using SimpleWeather.NET.Helpers;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -89,12 +89,12 @@ namespace SimpleWeather.NET.Controls.Graphs
         public LineViewData GraphData
         {
             get => (LineViewData)GetValue(GraphDataProperty);
-            set { SetValue(GraphDataProperty, value); UpdateView(false); }
+            set => SetValue(GraphDataProperty, value);
         }
 
         // Using a DependencyProperty as the backing store for GraphData.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty GraphDataProperty =
-            DependencyProperty.Register("GraphData", typeof(LineViewData), typeof(ForecastGraphPanel), new PropertyMetadata(null));
+            DependencyProperty.Register(nameof(GraphData), typeof(LineViewData), typeof(ForecastGraphPanel), new PropertyMetadata(null, (o, e) => (o as ForecastGraphPanel)?.UpdateView(false)));
 
         public ForecastGraphPanel()
         {

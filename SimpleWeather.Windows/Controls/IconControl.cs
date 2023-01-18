@@ -30,7 +30,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for WeatherIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WeatherIconProperty =
-            DependencyProperty.Register("WeatherIcon", typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(WeatherIcon), typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         public bool ForceDarkTheme
         {
@@ -40,7 +40,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ForceDarkTheme.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForceDarkThemeProperty =
-            DependencyProperty.Register("ForceDarkTheme", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ForceDarkTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         public string IconProvider
         {
@@ -50,7 +50,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for IconProvider.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconProviderProperty =
-            DependencyProperty.Register("IconProvider", typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IconProvider), typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         public bool IsLightTheme
         {
@@ -60,7 +60,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for IsLightTheme.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsLightThemeProperty =
-            DependencyProperty.Register("IsLightTheme", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IsLightTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         /// <summary>
         /// Gets or sets a value that indicates whether the bitmap is shown in a single color.
@@ -73,7 +73,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ShowAsMonochrome.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowAsMonochromeProperty =
-            DependencyProperty.Register("ShowAsMonochrome", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         public bool ForceBitmapIcon
         {
@@ -83,7 +83,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ForceBitmapIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForceBitmapIconProperty =
-            DependencyProperty.Register("ForceBitmapIcon", typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 

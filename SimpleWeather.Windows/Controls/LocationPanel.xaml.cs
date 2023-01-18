@@ -20,7 +20,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ControlShadowOpacity.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControlShadowOpacityProperty =
-            DependencyProperty.Register("ControlShadowOpacity", typeof(double), typeof(LocationPanel), new PropertyMetadata(0d));
+            DependencyProperty.Register(nameof(ControlShadowOpacity), typeof(double), typeof(LocationPanel), new PropertyMetadata(0d));
 
         private ElementTheme ControlTheme
         {
@@ -30,7 +30,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ControlTheme.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControlThemeProperty =
-            DependencyProperty.Register("ControlTheme", typeof(ElementTheme), typeof(LocationPanel), new PropertyMetadata(ElementTheme.Default));
+            DependencyProperty.Register(nameof(ControlTheme), typeof(ElementTheme), typeof(LocationPanel), new PropertyMetadata(ElementTheme.Default));
 
         public LocationPanel()
         {

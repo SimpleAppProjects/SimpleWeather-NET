@@ -1,19 +1,7 @@
-﻿using SimpleWeather.NET.Controls.Graphs;
-using SimpleWeather.NET.Helpers;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.NET.Helpers;
+using System.Collections.Generic;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,15 +9,15 @@ namespace SimpleWeather.NET.Controls
 {
     public sealed partial class HourlyForecastItemPanel : UserControl
     {
-        public static readonly DependencyProperty ForecastDataProperty =
-                    DependencyProperty.Register("ForecastData", typeof(ICollection<HourlyForecastNowViewModel>),
-                    typeof(HourlyForecastItemPanel), new PropertyMetadata(null));
-
         public ICollection<HourlyForecastNowViewModel> ForecastData
         {
             get => (ICollection<HourlyForecastNowViewModel>)GetValue(ForecastDataProperty);
             set => SetValue(ForecastDataProperty, value);
         }
+
+        public static readonly DependencyProperty ForecastDataProperty =
+                    DependencyProperty.Register(nameof(ForecastData), typeof(ICollection<HourlyForecastNowViewModel>),
+                    typeof(HourlyForecastItemPanel), new PropertyMetadata(null));
 
         // Hooks
         private ScrollViewer HorizontalScroller;
@@ -89,25 +77,25 @@ namespace SimpleWeather.NET.Controls
             }
         }
 
-        public static readonly DependencyProperty CanScrollToStartProperty =
-            DependencyProperty.Register("CanScrollToStart", typeof(bool),
-            typeof(HourlyForecastItemPanel), new PropertyMetadata(false));
-
-        public static readonly DependencyProperty CanScrollToEndProperty =
-            DependencyProperty.Register("CanScrollToEnd", typeof(bool),
-            typeof(HourlyForecastItemPanel), new PropertyMetadata(false));
-
         public bool CanScrollToStart
         {
             get { return (bool)GetValue(CanScrollToStartProperty); }
             set { SetValue(CanScrollToStartProperty, value); }
         }
 
+        public static readonly DependencyProperty CanScrollToStartProperty =
+            DependencyProperty.Register(nameof(CanScrollToStart), typeof(bool),
+            typeof(HourlyForecastItemPanel), new PropertyMetadata(false));
+
         public bool CanScrollToEnd
         {
             get { return (bool)GetValue(CanScrollToEndProperty); }
             set { SetValue(CanScrollToEndProperty, value); }
         }
+
+        public static readonly DependencyProperty CanScrollToEndProperty =
+            DependencyProperty.Register(nameof(CanScrollToEnd), typeof(bool),
+            typeof(HourlyForecastItemPanel), new PropertyMetadata(false));
 
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
