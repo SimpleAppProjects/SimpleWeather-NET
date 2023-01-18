@@ -11,6 +11,7 @@
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.NET.Utils"
     d:Background="{ThemeResource RegionBrush}"
+    x:DefaultBindMode="TwoWay"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
