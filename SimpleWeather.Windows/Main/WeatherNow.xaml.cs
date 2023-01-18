@@ -126,6 +126,8 @@ namespace SimpleWeather.NET.Main
             Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
             SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
             RadarProvider.RadarProviderChanged += RadarProvider_RadarProviderChanged;
+            this.Loaded += WeatherNow_Loaded;
+            this.Unloaded += WeatherNow_Unloaded;
         }
 
         public void ShowSnackbar(Snackbar snackbar)
@@ -827,7 +829,7 @@ namespace SimpleWeather.NET.Main
                 }
                 if (CurTemp != null)
                 {
-                    CurTemp.Foreground = new SolidColorBrush(Colors.White);
+                    CurTemp.Foreground = GetTempColorBrush();
                 }
             }
             else
@@ -836,18 +838,7 @@ namespace SimpleWeather.NET.Main
                 {
                     GradientOverlay.Visibility = Visibility.Collapsed;
                 }
-                switch (SettingsManager.UserTheme)
-                {
-                    case UserThemeMode.System:
-                        ControlTheme = App.Current.IsSystemDarkTheme ? ElementTheme.Dark : ElementTheme.Light;
-                        break;
-                    case UserThemeMode.Light:
-                        ControlTheme = ElementTheme.Light;
-                        break;
-                    case UserThemeMode.Dark:
-                        ControlTheme = ElementTheme.Dark;
-                        break;
-                }
+                ControlTheme = Shell.Instance.AppFrame.ActualTheme;
                 ControlShadowOpacity = 0;
                 if (StackBackgroundBrush != null)
                 {
@@ -898,6 +889,22 @@ namespace SimpleWeather.NET.Main
         private void AQIndexControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(WeatherAQIPage), null, new DrillInNavigationTransitionInfo());
+        }
+
+        private void WeatherNow_Loaded(object sender, RoutedEventArgs e)
+        {
+            ForecastView.RequestedTheme = Shell.Instance.AppFrame.ActualTheme;
+            Shell.Instance.AppFrame.ActualThemeChanged += WeatherNow_ActualThemeChanged;
+        }
+
+        private void WeatherNow_Unloaded(object sender, RoutedEventArgs e)
+        {
+            Shell.Instance.AppFrame.ActualThemeChanged -= WeatherNow_ActualThemeChanged;
+        }
+
+        private void WeatherNow_ActualThemeChanged(FrameworkElement sender, object args)
+        {
+            ForecastView.RequestedTheme = sender.ActualTheme;
         }
     }
 }

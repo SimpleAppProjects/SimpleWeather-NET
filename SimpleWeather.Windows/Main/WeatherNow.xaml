@@ -221,7 +221,7 @@
                             d:Text="70°F"
                             FontSize="84"
                             FontWeight="Light"
-                            Foreground="{x:Bind WNowViewModel.Weather, Converter={StaticResource tempToColorTempConverter}, Mode=OneWay}"
+                            Foreground="White"
                             RelativePanel.Above="CurCondition"
                             RelativePanel.AlignTopWithPanel="True"
                             Text="{x:Bind WNowViewModel.Weather.CurTemp, Mode=OneWay}"

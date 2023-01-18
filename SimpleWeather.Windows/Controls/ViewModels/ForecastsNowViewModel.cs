@@ -1,13 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Database;
 using SimpleWeather.LocationData;
+using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
-using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SQLite;
@@ -44,6 +45,9 @@ namespace SimpleWeather.NET.Controls
         [ObservableProperty]
         private bool isPrecipitationDataPresent;
 
+        [ObservableProperty]
+        private ElementTheme requestedTheme;
+
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
 
@@ -61,6 +65,11 @@ namespace SimpleWeather.NET.Controls
             if (e.PropertyName == nameof(HourlyPrecipitationGraphData) || e.PropertyName == nameof(MinutelyPrecipitationGraphData))
             {
                 IsPrecipitationDataPresent = HourlyPrecipitationGraphData?.DataSets?.FirstOrDefault()?.EntryData?.Count > 0 || MinutelyPrecipitationGraphData?.DataSets?.FirstOrDefault()?.EntryData?.Count > 0;
+            }
+            else if (e.PropertyName == nameof(RequestedTheme))
+            {
+                RefreshForecasts(currentForecastsData.GetValue());
+                RefreshHourlyForecasts(currentHrForecastsData.GetValue());
             }
         }
 
@@ -101,7 +110,7 @@ namespace SimpleWeather.NET.Controls
         {
             if (locationData == null) return;
 
-            Task.Run((Func<Task>)(async () =>
+            Task.Run(async () =>
             {
                 if (e?.Table?.TableName == WeatherData.Forecasts.TABLE_NAME)
                 {
@@ -111,7 +120,7 @@ namespace SimpleWeather.NET.Controls
                 {
                     currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
                 }
-            }));
+            });
         }
 
         private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -193,7 +202,7 @@ namespace SimpleWeather.NET.Controls
                 string date = forecast.date.ToString("ddd dd", culture);
 
                 entry.XLabel = date;
-                entry.XIcon = await CreateIconDrawable(forecast.icon);
+                entry.XIcon = await CreateIconDrawable(forecast.icon, isLight: RequestedTheme == ElementTheme.Light);
 
                 // Temp Data
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
@@ -215,12 +224,12 @@ namespace SimpleWeather.NET.Controls
             return new RangeBarGraphData(new RangeBarGraphDataSet(entryData));
         }
 
-        private async Task<SKDrawable> CreateIconDrawable(string icon)
+        private async Task<SKDrawable> CreateIconDrawable(string icon, bool isLight = false)
         {
             var iconsSource = SettingsManager.IconProvider;
             var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(iconsSource);
 
-            return await wip.GetDrawable(icon);
+            return await wip.GetDrawable(icon, isLight);
         }
 
         private bool isDisposed;
