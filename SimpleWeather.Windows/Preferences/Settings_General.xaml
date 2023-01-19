@@ -32,10 +32,7 @@
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="FollowGPS" />
                 </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <ComboBox
                     x:Name="RefreshComboBox"
                     MinWidth="260"
@@ -47,10 +44,7 @@
                             Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
                     </ComboBox.Header>
                 </ComboBox>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     d:Text="Choose a theme"
                     Style="{StaticResource PrefTitleStyle}"
@@ -69,10 +63,7 @@
                         d:Content="System Theme"
                         Content="{helpers:StringRes Name='userthememode_default'}" />
                 </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     d:Text="Show notifications for weather alerts:"
                     Style="{StaticResource PrefTitleStyle}"
@@ -80,10 +71,7 @@
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="AlertSwitch" />
                 </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     d:Text="Daily Notification:"
                     Style="{StaticResource PrefTitleStyle}"
@@ -91,10 +79,7 @@
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="DailyNotifSwitch" />
                 </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="Transparent" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TimePicker
                     x:Name="DailyNotifTimePicker"
                     Padding="0,5"
@@ -107,10 +92,7 @@
                         </DataTemplate>
                     </TimePicker.HeaderTemplate>
                 </TimePicker>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     d:Text="Precipitation Notification:"
                     Style="{StaticResource PrefTitleStyle}"
@@ -136,10 +118,7 @@
                         <controls:ComboBoxItem Display="&gt;= 90%" Value="90" />
                     </ComboBox>
                 </StackPanel>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <ComboBox
                     x:Name="APIComboBox"
                     x:Uid="API_Box"
@@ -154,10 +133,7 @@
                             Text="{helpers:StringRes Name='api_label'}" />
                     </ComboBox.Header>
                 </ComboBox>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="Transparent" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <StackPanel x:Name="KeyPanel">
                     <TextBlock
                         d:Text="Use personal provider key:"
@@ -166,10 +142,7 @@
                     <StackPanel Padding="10,5" Orientation="Horizontal">
                         <ToggleSwitch x:Name="PersonalKeySwitch" />
                     </StackPanel>
-                    <Rectangle
-                        Height="1"
-                        Margin="0,7.5"
-                        Fill="Transparent" />
+                    <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                     <TextBlock
                         d:Text="API Key"
                         Style="{StaticResource PrefTitleStyle}"

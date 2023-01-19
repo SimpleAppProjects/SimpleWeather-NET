@@ -77,10 +77,7 @@
                             Text="{helpers:StringRes Name='label_pressure'}" />
                     </muxc:RadioButtons.Header>
                 </muxc:RadioButtons>
-                <Rectangle
-                    Height="1"
-                    Margin="0,7.5"
-                    Fill="LightGray" />
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     x:Name="ResetTitle"
                     Style="{StaticResource PrefTitleStyle}"

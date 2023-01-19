@@ -334,5 +334,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style x:Key="SettingsDividerStyle" TargetType="Rectangle">
+        <Setter Property="Margin" Value="0,7.5" />
+        <Setter Property="Height" Value="1" />
+        <Setter Property="Fill" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
+    </Style>
     <!--  Custom Styles End  -->
 </ResourceDictionary>
