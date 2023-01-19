@@ -15,7 +15,6 @@ using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Preferences;
 using SimpleWeather.NET.Setup;
-using SimpleWeather.NET.Utils;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -504,7 +503,7 @@ namespace SimpleWeather.NET
         private void Initialize(LaunchActivatedEventArgs? e)
         {
             MainWindow.Current = _window = new MainWindow();
-            _window.SetMinSize(new Windows.Foundation.Size(500, 500));
+            InitializeWindow(_window);
             _window.Closed += Window_Closed;
             _window.SizeChanged += Window_SizeChanged;
             _window.VisibilityChanged += Window_VisibilityChanged;
