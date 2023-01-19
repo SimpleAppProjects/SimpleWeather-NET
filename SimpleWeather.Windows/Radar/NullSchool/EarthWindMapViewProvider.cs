@@ -11,6 +11,7 @@ namespace SimpleWeather.NET.Radar.NullSchool
     {
         public const string EARTHWINDMAP_DEFAULT_URL = "https://earth.nullschool.net/#current/wind/surface/level/overlay=precip_3hr";
         public const string EARTHWINDMAP_URL_FORMAT = EARTHWINDMAP_DEFAULT_URL + "/orthographic={0:0.####},{1:0.####},3000";
+        private const string BLANK_PAGE_URL = "about:blank";
 
         private Uri RadarURL;
 
@@ -34,7 +35,7 @@ namespace SimpleWeather.NET.Radar.NullSchool
             webview.NavigationStarting -= RadarWebView_NavigationStarting;
             try
             {
-                webview.CoreWebView2?.Navigate(RadarURL.ToString());
+                webview.Source = RadarURL;
             }
             catch (Exception e)
             {
@@ -75,7 +76,7 @@ namespace SimpleWeather.NET.Radar.NullSchool
                 webview.NavigationStarting -= RadarWebView_NavigationStarting;
                 try
                 {
-                    webview.CoreWebView2?.Navigate("about:blank");
+                    webview.Source = new Uri(BLANK_PAGE_URL);
                 }
                 catch (Exception e)
                 {
@@ -95,21 +96,21 @@ namespace SimpleWeather.NET.Radar.NullSchool
 
         private WebView2 CreateWebView()
         {
-            WebView2 webview = webview = new WebView2();
-
-            if (Windows.Foundation.Metadata.ApiInformation.IsEventPresent("Microsoft.UI.Xaml.Controls.WebView", "SeparateProcessLost"))
+            WebView2 webview = webview = new WebView2()
             {
-                webview.CoreProcessFailed += (sender, e) =>
-                {
-                    if (RadarContainer == null) return;
-                    var newWebView = CreateWebView();
-                    RadarContainer.Child = newWebView;
-                    UpdateRadarView();
-                };
-            }
+                HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment.Stretch,
+                VerticalAlignment = Microsoft.UI.Xaml.VerticalAlignment.Stretch
+            };
+
+            webview.CoreProcessFailed += (sender, e) =>
+            {
+                if (RadarContainer == null) return;
+                var newWebView = CreateWebView();
+                RadarContainer.Child = newWebView;
+                UpdateRadarView();
+            };
 
             webview.NavigationCompleted += Webview_NavigationCompleted;
-
             webview.CoreWebView2Initialized += Webview_CoreWebView2Initialized;
             webview.EnsureCoreWebView2Async();
 
@@ -118,13 +119,40 @@ namespace SimpleWeather.NET.Radar.NullSchool
 
         private void Webview_CoreWebView2Initialized(WebView2 sender, CoreWebView2InitializedEventArgs args)
         {
+            if (args.Exception != null)
+            {
+                Logger.WriteLine(LoggerLevel.Error, args.Exception);
+            }
+
+            sender.CoreWebView2.Settings.AreBrowserAcceleratorKeysEnabled = false;
+            sender.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            sender.CoreWebView2.Settings.AreDefaultScriptDialogsEnabled = false;
+            sender.CoreWebView2.Settings.AreDevToolsEnabled = false;
+            sender.CoreWebView2.Settings.AreHostObjectsAllowed = false;
+            sender.CoreWebView2.Settings.HiddenPdfToolbarItems = CoreWebView2PdfToolbarItems.None;
+            sender.CoreWebView2.Settings.IsBuiltInErrorPageEnabled = false;
+            sender.CoreWebView2.Settings.IsGeneralAutofillEnabled = false;
+            sender.CoreWebView2.Settings.IsPasswordAutosaveEnabled = false;
+            sender.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+            sender.CoreWebView2.Settings.IsScriptEnabled = true;
+            sender.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            sender.CoreWebView2.Settings.IsSwipeNavigationEnabled = false;
+            sender.CoreWebView2.Settings.IsWebMessageEnabled = false;
+            sender.CoreWebView2.Settings.IsZoomControlEnabled = false;
+
             UpdateRadarView();
         }
 
         private void RadarWebView_NavigationStarting(WebView2 sender, CoreWebView2NavigationStartingEventArgs args)
         {
+            var newUri = new Uri(args.Uri);
+            var defaultUri = new Uri(EARTHWINDMAP_DEFAULT_URL);
+
             // Cancel all navigation
-            args.Cancel = true;
+            if (Equals(args.Uri, BLANK_PAGE_URL) && newUri.Host != defaultUri.Host)
+            {
+                args.Cancel = true;
+            }
         }
     }
 }
