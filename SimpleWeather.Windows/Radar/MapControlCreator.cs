@@ -18,7 +18,13 @@ namespace SimpleWeather.NET.Radar
 
         private static MapControl CreateMapControl()
         {
-            var mapControl = new MapControl();
+            var mapControl = new MapControl()
+            {
+                Map = new Mapsui.Map()
+                {
+                    CRS = "EPSG:3857"
+                }
+            };
 
             if (OpenStreetMap.DefaultCache == null)
             {
@@ -37,6 +43,7 @@ namespace SimpleWeather.NET.Radar
         public void RemoveMapControl()
         {
             _mapControl?.Map?.Layers?.Clear();
+            _mapControl?.Dispose();
             _mapControl = null;
         }
     }

@@ -24,7 +24,6 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         private readonly List<RadarFrame> AvailableRadarFrames;
         private readonly Dictionary<long, TileLayer> RadarLayers;
-        private HttpTileSource TileSource;
 
         private MapControl _mapControl = null;
 
@@ -50,10 +49,6 @@ namespace SimpleWeather.NET.Radar.RainViewer
         public override async void UpdateMap(MapControl mapControl)
         {
             this._mapControl = mapControl;
-
-            if (TileSource == null)
-            {
-            }
 
             await GetRadarFrames();
         }
@@ -155,6 +150,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                     Opacity = 0
                 };
                 RadarLayers[mapFrame.TimeStamp] = layer;
+                _mapControl.Map.Layers.Add(layer);
             }
 
             RadarMapContainer?.UpdateSeekbarRange(0, AvailableRadarFrames.Count - 1);
@@ -198,14 +194,15 @@ namespace SimpleWeather.NET.Radar.RainViewer
             {
                 if (currentLayer != null)
                 {
-                    currentLayer.Opacity = 1;
+                    currentLayer.Opacity = 0;
                 }
             }
             var nextLayer = RadarLayers[nextTimeStamp];
             if (nextLayer != null)
             {
-                nextLayer.Opacity = 0;
+                nextLayer.Opacity = 1;
             }
+            _mapControl.RefreshGraphics();
 
             UpdateToolbar(position, nextFrame);
         }
@@ -241,7 +238,6 @@ namespace SimpleWeather.NET.Radar.RainViewer
             AnimationTimer?.Stop();
             base.OnDestroyView();
             AvailableRadarFrames?.Clear();
-            TileSource = null;
         }
 
         private void RadarMapContainer_OnPlayAnimation(object sender, EventArgs e)
@@ -293,7 +289,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 uri = "about:blank";
             }
 
-            return new HttpTileSource(new GlobalSphericalMercator(6, 6),
+            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: 6, maxZoomLevel: 6, name: "RainViewer"),
                 uri, name: RainViewerAttribution.Text,
                 persistentCache: new FileCache(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "RainViewer"), "tile.png"),
                 attribution: RainViewerAttribution, userAgent: Constants.GetUserAgentString());

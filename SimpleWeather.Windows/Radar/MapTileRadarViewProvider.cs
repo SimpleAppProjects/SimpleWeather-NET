@@ -7,6 +7,7 @@ using Mapsui.UI.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Extras;
+using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 using System.Linq;
 
@@ -74,7 +75,7 @@ namespace SimpleWeather.NET.Radar
 
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
-                mapControl.CallHomeIfNeeded();
+                mapControl.NavigateHome();
                 if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
                 {
                     markerFeature.Point.X = MapCameraPosition.X;
@@ -103,7 +104,8 @@ namespace SimpleWeather.NET.Radar
                 RadarMapContainer.MapContainerChild = null;
                 RadarMapContainer = null;
             }
-            mapControl?.Map?.Layers.Clear();
+            // Remove all layers except base (map) layer
+            mapControl?.Map?.Layers?.Remove(mapControl.Map.Layers.Skip(1).ToArray());
             mapControl = null;
         }
 
@@ -111,7 +113,7 @@ namespace SimpleWeather.NET.Radar
         {
             var mapControl = MapControlCreator.Instance.Map;
             mapControl.Map.Home = n => n.NavigateTo(MapCameraPosition, 6d.ToMapsuiResolution());
-            mapControl.CallHomeIfNeeded();
+            mapControl.NavigateHome();
             return mapControl;
         }
 
