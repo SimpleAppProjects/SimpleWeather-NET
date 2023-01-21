@@ -13,7 +13,7 @@ using System.Linq;
 
 namespace SimpleWeather.NET.Radar
 {
-    public abstract class MapTileRadarViewProvider : RadarViewProvider
+    public abstract partial class MapTileRadarViewProvider : RadarViewProvider
     {
         private MapControl mapControl;
         private WeatherUtils.Coordinate locationCoords;
@@ -46,19 +46,7 @@ namespace SimpleWeather.NET.Radar
 
             IsViewAlive = true;
 
-            switch (RadarContainer.ActualTheme)
-            {
-                default:
-                case ElementTheme.Default:
-                    mapControl.Map.BackColor = Mapsui.Styles.Color.White;
-                    break;
-                case ElementTheme.Light:
-                    mapControl.Map.BackColor = Mapsui.Styles.Color.White;
-                    break;
-                case ElementTheme.Dark:
-                    mapControl.Map.BackColor = Mapsui.Styles.Color.Black;
-                    break;
-            }
+            UpdateMapLayer();
 
             if (markerLayer == null)
             {
@@ -118,7 +106,7 @@ namespace SimpleWeather.NET.Radar
                 RadarMapContainer.MapContainerChild = null;
                 RadarMapContainer = null;
             }
-            mapControl?.Map?.Layers?.Remove(mapControl.Map.Layers.Skip(1).ToArray());
+            mapControl?.Map?.Layers?.Clear();
             mapControl = null;
         }
 

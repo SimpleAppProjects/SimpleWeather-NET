@@ -1,8 +1,4 @@
-﻿using BruTile.Cache;
-using Mapsui.Tiling;
-using Mapsui.UI.WinUI;
-using SimpleWeather.Helpers;
-using System.IO;
+﻿using Mapsui.UI.WinUI;
 
 namespace SimpleWeather.NET.Radar
 {
@@ -26,13 +22,6 @@ namespace SimpleWeather.NET.Radar
                 }
             };
 
-            if (OpenStreetMap.DefaultCache == null)
-            {
-                OpenStreetMap.DefaultCache = new FileCache(
-                    Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenStreepMap"), "tile.png");
-            }
-
-            mapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString())); // Default map layer
             mapControl.Map.ZoomLock = false;
             mapControl.Map.PanLock = false;
             mapControl.Map.RotationLock = true;
