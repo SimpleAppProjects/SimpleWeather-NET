@@ -1,4 +1,4 @@
-﻿#if !WINDOWS
+﻿#if true //!WINDOWS
 using BingMapsRESTToolkit;
 using SimpleWeather.LocationData;
 using SimpleWeather.Utils;

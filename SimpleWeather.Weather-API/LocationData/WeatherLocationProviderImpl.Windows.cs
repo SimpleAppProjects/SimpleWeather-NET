@@ -1,4 +1,6 @@
-﻿#if WINDOWS
+﻿// NOTE: Using MapLocationFinder causes application not close
+// https://social.msdn.microsoft.com/Forums/SECURITY/en-us/ed4fbea6-84f9-4c46-967f-78918e47327c/bug-in-maplocationfinderfindlocationsatasync?forum=bingmapssilverlightwpfcontrols
+#if false // WINDOWS
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Bing;

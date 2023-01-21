@@ -1,18 +1,15 @@
-﻿#if !WINDOWS
+﻿#if true // !WINDOWS
 using BingMapsRESTToolkit;
-using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Bing;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
