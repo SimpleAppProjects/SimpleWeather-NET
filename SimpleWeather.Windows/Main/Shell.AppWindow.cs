@@ -38,11 +38,11 @@ namespace SimpleWeather.NET.Main
             {
                 var titleBar = m_AppWindow.TitleBar;
                 titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonForegroundColor = this.FindResource("TextFillColorPrimary") as Windows.UI.Color?;
-                titleBar.ButtonHoverBackgroundColor = this.FindResource("SystemColorHighlightColor") as Windows.UI.Color?;
-                titleBar.ButtonHoverForegroundColor = this.FindResource("SystemColorHighlightTextColor") as Windows.UI.Color?;
-                titleBar.ButtonPressedBackgroundColor = this.FindResource("SystemColorButtonTextColor") as Windows.UI.Color?;
-                titleBar.ButtonPressedForegroundColor = this.FindResource("SystemColorButtonFaceColor") as Windows.UI.Color?;
+                titleBar.ButtonForegroundColor = ActualTheme == ElementTheme.Dark ? Colors.WhiteSmoke : Colors.Black;
+                titleBar.ButtonHoverBackgroundColor = this.FindResource("SimpleBlueLight") as Windows.UI.Color?;
+                titleBar.ButtonHoverForegroundColor = Colors.WhiteSmoke;
+                titleBar.ButtonPressedBackgroundColor = this.FindResource("SimpleBlueMedium") as Windows.UI.Color?;
+                titleBar.ButtonPressedForegroundColor = Colors.WhiteSmoke;
                 titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
             }
         }

@@ -1,4 +1,5 @@
-﻿using Microsoft.UI;
+﻿using CommunityToolkit.WinUI.UI;
+using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using SimpleWeather.NET.Helpers;
@@ -37,10 +38,14 @@ namespace SimpleWeather.NET.Setup
             {
                 var titleBar = m_AppWindow.TitleBar;
                 titleBar.ButtonBackgroundColor = Colors.Transparent;
-                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 titleBar.ButtonForegroundColor = Colors.White;
-                titleBar.InactiveForegroundColor = Colors.WhiteSmoke;
+                titleBar.ButtonHoverBackgroundColor = this.FindResource("SimpleBlueLight") as Windows.UI.Color?;
+                titleBar.ButtonHoverForegroundColor = Colors.WhiteSmoke;
+                titleBar.ButtonPressedBackgroundColor = this.FindResource("SimpleBlueMedium") as Windows.UI.Color?;
+                titleBar.ButtonPressedForegroundColor = Colors.WhiteSmoke;
+                titleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
                 titleBar.ButtonInactiveForegroundColor = Colors.WhiteSmoke;
+                titleBar.InactiveForegroundColor = Colors.WhiteSmoke;
             }
         }
 
