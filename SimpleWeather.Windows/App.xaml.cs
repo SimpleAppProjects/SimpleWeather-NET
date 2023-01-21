@@ -269,7 +269,7 @@ namespace SimpleWeather.NET
             }
         }
 
-        private void LaunchAndBringToForegroundIfNeeded(Microsoft.UI.Xaml.LaunchActivatedEventArgs? args = null)
+        private void LaunchAndBringToForegroundIfNeeded(LaunchActivatedEventArgs? args = null)
         {
             Initialize(args);
 
@@ -324,7 +324,6 @@ namespace SimpleWeather.NET
                                 TileId = tileId
                             });
                             Shell.Instance.AppFrame.BackStack.Clear();
-                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                         }
 
                         // If Shell content is empty navigate to default page
@@ -335,7 +334,6 @@ namespace SimpleWeather.NET
                                 IsHome = true
                             });
                             Shell.Instance.AppFrame.BackStack.Clear();
-                            //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                         }
                     }
                 }
@@ -365,6 +363,8 @@ namespace SimpleWeather.NET
 
             dispatcherQueue.TryEnqueue(async () =>
             {
+                Initialize();
+
                 // Get the root frame
                 RootFrame = _window?.Content as Frame;
 
@@ -421,7 +421,6 @@ namespace SimpleWeather.NET
                                         Location = locData,
                                         IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
                                     }, null));
-                                    //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
                             }
                         }
@@ -450,7 +449,6 @@ namespace SimpleWeather.NET
                                     {
                                         IsHome = true
                                     }, null));
-                                    //SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
                                 }
                             }
                         }
@@ -497,10 +495,15 @@ namespace SimpleWeather.NET
                     default:
                         break;
                 }
+
+                // Ensure the current window is active
+                _window?.Activate();
+
+                UpdateAppTheme();
             });
         }
 
-        private void Initialize(LaunchActivatedEventArgs? e)
+        private void Initialize(LaunchActivatedEventArgs? e = null)
         {
             if (MainWindow.Current == null || _window == null)
             {
