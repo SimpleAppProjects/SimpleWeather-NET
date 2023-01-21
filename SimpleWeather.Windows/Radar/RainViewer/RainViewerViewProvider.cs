@@ -116,7 +116,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
                 ProcessingFrames = false;
 
-                RadarMapContainer.DispatcherQueue.TryEnqueue(() =>
+                RadarMapContainer?.DispatcherQueue?.TryEnqueue(() =>
                 {
                     if (IsViewAlive)
                     {
@@ -149,6 +149,9 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 {
                     Opacity = 0
                 };
+                layer.Attribution.Enabled = false;
+                layer.Attribution.MarginY = 18;
+                layer.Attribution.PaddingX = 5;
                 RadarLayers[mapFrame.TimeStamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
@@ -195,12 +198,14 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 if (currentLayer != null)
                 {
                     currentLayer.Opacity = 0;
+                    currentLayer.Attribution.Enabled = false;
                 }
             }
             var nextLayer = RadarLayers[nextTimeStamp];
             if (nextLayer != null)
             {
                 nextLayer.Opacity = 1;
+                nextLayer.Attribution.Enabled = true;
             }
             _mapControl.RefreshGraphics();
 
