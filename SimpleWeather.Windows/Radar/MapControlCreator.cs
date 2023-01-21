@@ -33,9 +33,9 @@ namespace SimpleWeather.NET.Radar
             }
 
             mapControl.Map.Layers.Add(OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString())); // Default map layer
-            mapControl.Map.ZoomLock = true;
+            mapControl.Map.ZoomLock = false;
+            mapControl.Map.PanLock = false;
             mapControl.Map.RotationLock = true;
-            mapControl.Map.PanLock = true;
             mapControl.Navigator.ZoomTo(6d.ToMapsuiResolution());
             return mapControl;
         }

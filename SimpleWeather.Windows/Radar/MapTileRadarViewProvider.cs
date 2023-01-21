@@ -39,6 +39,7 @@ namespace SimpleWeather.NET.Radar
             if (mapControl == null || RadarMapContainer == null)
             {
                 mapControl = CreateMapControl();
+                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
                 RadarContainer.Child = (RadarMapContainer = new RadarToolbar());
                 RadarMapContainer.MapContainerChild = mapControl;
             }
@@ -63,14 +64,15 @@ namespace SimpleWeather.NET.Radar
             {
                 markerLayer = new MemoryLayer("Point")
                 {
-                    IsMapInfoLayer = true,
                     Features = new[]
                     {
                         new PointFeature(MapCameraPosition)
                     },
-                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle()
+                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle(pinColor: Mapsui.Styles.Color.FromString("#FF4500"), symbolScale: 0.75d)
                 };
+                mapControl.Map.Layers.LayerAdded -= Layers_LayerAdded;
                 mapControl.Map.Layers.Add(markerLayer);
+                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
             }
 
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
@@ -93,6 +95,18 @@ namespace SimpleWeather.NET.Radar
             UpdateMap(mapControl);
         }
 
+        private void Layers_LayerAdded(ILayer layer)
+        {
+            // Make sure marker layer is always on top
+            if (mapControl?.Map != null && markerLayer != null && layer != markerLayer)
+            {
+                mapControl.Map.Layers.LayerAdded -= Layers_LayerAdded;
+                mapControl.Map.Layers.Remove(markerLayer);
+                mapControl.Map.Layers.Add(markerLayer);
+                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
+            }
+        }
+
         public abstract void UpdateMap(MapControl mapControl);
 
         public override void OnDestroyView()
@@ -104,7 +118,6 @@ namespace SimpleWeather.NET.Radar
                 RadarMapContainer.MapContainerChild = null;
                 RadarMapContainer = null;
             }
-            // Remove all layers except base (map) layer
             mapControl?.Map?.Layers?.Remove(mapControl.Map.Layers.Skip(1).ToArray());
             mapControl = null;
         }
@@ -112,8 +125,14 @@ namespace SimpleWeather.NET.Radar
         private MapControl CreateMapControl()
         {
             var mapControl = MapControlCreator.Instance.Map;
-            mapControl.Map.Home = n => n.NavigateTo(MapCameraPosition, 6d.ToMapsuiResolution());
-            mapControl.NavigateHome();
+            mapControl.Map.Home = n =>
+            {
+                mapControl.Map.ZoomLock = false;
+                mapControl.Map.PanLock = false;
+                n.NavigateTo(MapCameraPosition, 6d.ToMapsuiResolution());
+                mapControl.Map.ZoomLock = true;
+                mapControl.Map.PanLock = !InteractionsEnabled();
+            };
             return mapControl;
         }
 
