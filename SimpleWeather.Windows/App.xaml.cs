@@ -502,11 +502,14 @@ namespace SimpleWeather.NET
 
         private void Initialize(LaunchActivatedEventArgs? e)
         {
-            MainWindow.Current = _window = new MainWindow();
-            InitializeWindow(_window);
-            _window.Closed += Window_Closed;
-            _window.SizeChanged += Window_SizeChanged;
-            _window.VisibilityChanged += Window_VisibilityChanged;
+            if (MainWindow.Current == null || _window == null)
+            {
+                MainWindow.Current = _window = new MainWindow();
+                InitializeWindow(_window);
+                _window.Closed += Window_Closed;
+                _window.SizeChanged += Window_SizeChanged;
+                _window.VisibilityChanged += Window_VisibilityChanged;
+            }
             _window.Activate();
 
             RootFrame = _window?.Content as Frame;
@@ -674,6 +677,12 @@ namespace SimpleWeather.NET
         private void Window_Closed(object sender, WindowEventArgs args)
         {
             Radar.MapControlCreator.Instance?.RemoveMapControl();
+            MainWindow.Current = null;
+            if (_window != null)
+            {
+                _window.Content = null;
+                _window = null;
+            }
         }
 
         private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs args)

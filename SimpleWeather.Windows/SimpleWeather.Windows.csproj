@@ -11,6 +11,8 @@
     <PublishProfile>win10-$(Platform).pubxml</PublishProfile>
 
     <DefineConstants>$(DefineConstants);WINDOWS;WINUI</DefineConstants>
+    <!-- Create custom Main method for Single Instanced -->
+    <DefineConstants>$(DefineConstants);DISABLE_XAML_GENERATED_MAIN</DefineConstants>
 
     <UseWinUI>true</UseWinUI>
     <EnableMsixTooling>true</EnableMsixTooling>
