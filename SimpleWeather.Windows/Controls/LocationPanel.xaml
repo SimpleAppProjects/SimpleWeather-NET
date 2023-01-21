@@ -99,6 +99,7 @@
                 Margin="0,0,8,0"
                 VerticalAlignment="Center"
                 d:Visibility="Visible"
+                Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                 ShowAsMonochrome="True"
                 UriSource="/Assets/outline_near_me_black_24dp.png"
                 Visibility="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(ViewModel.LocationType), Mode=OneWay}" />

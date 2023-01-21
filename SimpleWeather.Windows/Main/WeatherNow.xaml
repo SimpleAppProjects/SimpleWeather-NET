@@ -27,17 +27,7 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ms-appx:///Main/WeatherNow.Resources.xaml" />
-                <ResourceDictionary>
-                    <mtui:AttachedDropShadow
-                        x:Key="DropShadowEffect"
-                        BlurRadius="15.0"
-                        Opacity="{Binding ElementName=WNowPage, Path=ControlShadowOpacity, Mode=OneWay}" />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
+        <ResourceDictionary Source="ms-appx:///Main/WeatherNow.Resources.xaml" />
     </Page.Resources>
 
     <Grid x:Name="MainGrid" d:Background="LightGray">
@@ -125,34 +115,46 @@
                                 ShowAsMonochrome="True"
                                 UriSource="/Assets/outline_near_me_black_24dp.png" />
                         </Border>
-                        <TextBlock
-                            Name="Location"
+                        <toolkitControls:DropShadowPanel
                             Grid.Column="1"
-                            Margin="0,0,0,4"
                             VerticalAlignment="Center"
-                            d:Text="New York, NY"
-                            FontSize="28"
-                            FontWeight="SemiBold"
-                            Foreground="{ThemeResource ForegroundColor}"
-                            MaxLines="2"
-                            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                            Text="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay}"
-                            TextAlignment="Center"
-                            TextTrimming="CharacterEllipsis"
-                            TextWrapping="WrapWholeWords" />
+                            BlurRadius="15.0"
+                            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                            <TextBlock
+                                Name="Location"
+                                Grid.Column="1"
+                                Margin="0,0,0,4"
+                                VerticalAlignment="Center"
+                                d:Text="New York, NY"
+                                FontSize="28"
+                                FontWeight="SemiBold"
+                                Foreground="{ThemeResource ForegroundColor}"
+                                MaxLines="2"
+                                RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay}"
+                                TextAlignment="Center"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="WrapWholeWords" />
+                        </toolkitControls:DropShadowPanel>
                     </Grid>
-                    <TextBlock
-                        Name="UpdateDate"
+                    <toolkitControls:DropShadowPanel
                         Grid.Row="1"
                         MaxWidth="1280"
-                        Padding="2"
                         HorizontalAlignment="Center"
-                        d:Text="Updated on 11:12 PM"
-                        FontSize="12"
-                        FontWeight="Medium"
-                        Foreground="{ThemeResource ForegroundColor}"
-                        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
-                        Text="{x:Bind WNowViewModel.Weather.UpdateDate, Mode=OneWay}" />
+                        BlurRadius="15.0"
+                        ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                        <TextBlock
+                            Name="UpdateDate"
+                            Grid.Row="1"
+                            Padding="2"
+                            HorizontalAlignment="Center"
+                            d:Text="Updated on 11:12 PM"
+                            FontSize="12"
+                            FontWeight="Medium"
+                            Foreground="{ThemeResource ForegroundColor}"
+                            RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
+                            Text="{x:Bind WNowViewModel.Weather.UpdateDate, Mode=OneWay}" />
+                    </toolkitControls:DropShadowPanel>
                     <Button
                         x:Name="AlertButton"
                         Grid.Row="2"
@@ -213,39 +215,50 @@
                         x:Load="{x:Bind WNowViewModel.Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
                         RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                         SizeChanged="ConditionPanel_SizeChanged">
-                        <TextBlock
-                            Name="CurTemp"
+                        <toolkitControls:DropShadowPanel
+                            x:Name="CurTempPanel"
                             Margin="0,15"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            d:Text="70°F"
-                            FontSize="84"
-                            FontWeight="Light"
-                            Foreground="White"
-                            RelativePanel.Above="CurCondition"
+                            BlurRadius="15.0"
+                            RelativePanel.Above="CurConditionPanel"
                             RelativePanel.AlignTopWithPanel="True"
-                            Text="{x:Bind WNowViewModel.Weather.CurTemp, Mode=OneWay}"
-                            TextLineBounds="Tight" />
+                            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                            <TextBlock
+                                Name="CurTemp"
+                                d:Text="70°F"
+                                FontSize="84"
+                                FontWeight="Light"
+                                Foreground="White"
+                                Text="{x:Bind WNowViewModel.Weather.CurTemp, Mode=OneWay}"
+                                TextLineBounds="Tight" />
+                        </toolkitControls:DropShadowPanel>
                         <StackPanel
                             x:Name="HiLoPanel"
                             Grid.Column="2"
                             Padding="25,0,0,0"
                             VerticalAlignment="Center"
                             Orientation="Vertical"
-                            RelativePanel.AlignBottomWith="CurTemp"
-                            RelativePanel.AlignTopWith="CurTemp"
-                            RelativePanel.AlignVerticalCenterWith="CurTemp"
-                            RelativePanel.RightOf="CurTemp"
+                            RelativePanel.AlignBottomWith="CurTempPanel"
+                            RelativePanel.AlignTopWith="CurTempPanel"
+                            RelativePanel.AlignVerticalCenterWith="CurTempPanel"
+                            RelativePanel.RightOf="CurTempPanel"
                             Visibility="{x:Bind WNowViewModel.Weather.ShowHiLo, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                <TextBlock
-                                    Height="32"
+                                <toolkitControls:DropShadowPanel
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    d:Text="70°"
-                                    FontSize="24"
-                                    Foreground="{ThemeResource ForegroundColor}"
-                                    Text="{x:Bind WNowViewModel.Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                    BlurRadius="15.0"
+                                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                                    <TextBlock
+                                        Height="32"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        d:Text="70°"
+                                        FontSize="24"
+                                        Foreground="{ThemeResource ForegroundColor}"
+                                        Text="{x:Bind WNowViewModel.Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
                                     Foreground="OrangeRed"
@@ -254,13 +267,17 @@
                                     WeatherIcon="&#xf058;" />
                             </StackPanel>
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-                                <TextBlock
+                                <toolkitControls:DropShadowPanel
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    d:Text="60°"
-                                    FontSize="24"
-                                    Foreground="{ThemeResource ForegroundColor}"
-                                    Text="{x:Bind WNowViewModel.Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                    BlurRadius="15.0"
+                                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                                    <TextBlock
+                                        d:Text="60°"
+                                        FontSize="24"
+                                        Foreground="{ThemeResource ForegroundColor}"
+                                        Text="{x:Bind WNowViewModel.Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+                                </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
                                     Foreground="DeepSkyBlue"
@@ -276,37 +293,48 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-                            RelativePanel.Above="SummaryText"
+                            RelativePanel.Above="SummaryPanel"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignTopWithPanel="True"
                             WeatherIcon="{x:Bind WNowViewModel.Weather.WeatherIcon, Mode=OneWay}" />
-                        <TextBlock
-                            Name="CurCondition"
-                            Padding="5"
+                        <toolkitControls:DropShadowPanel
+                            x:Name="CurConditionPanel"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            d:Text="Sunny"
-                            FontSize="24"
-                            Foreground="{ThemeResource ForegroundColor}"
-                            RelativePanel.Above="SummaryText"
+                            BlurRadius="15.0"
+                            RelativePanel.Above="SummaryPanel"
                             RelativePanel.AlignLeftWithPanel="True"
-                            Text="{x:Bind WNowViewModel.Weather.CurCondition, Mode=OneWay}" />
-                        <TextBlock
-                            x:Name="SummaryText"
+                            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}">
+                            <TextBlock
+                                Name="CurCondition"
+                                Padding="5"
+                                d:Text="Sunny"
+                                FontSize="24"
+                                Foreground="{ThemeResource ForegroundColor}"
+                                Text="{x:Bind WNowViewModel.Weather.CurCondition, Mode=OneWay}" />
+                        </toolkitControls:DropShadowPanel>
+                        <toolkitControls:DropShadowPanel
+                            x:Name="SummaryPanel"
                             Margin="0,10"
-                            Padding="5"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            d:Text="Rain, some heavy, to affect the area tonight"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=OneWay}"
+                            BlurRadius="15.0"
                             FontSize="12"
-                            FontWeight="Normal"
-                            Foreground="{ThemeResource ForegroundColor}"
                             RelativePanel.Above="Attribution"
                             RelativePanel.AlignLeftWithPanel="True"
-                            Text="{Binding Weather.WeatherSummary, Mode=OneWay}"
-                            TextWrapping="Wrap"
-                            Visibility="{x:Bind WNowViewModel.Weather.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}" />
+                            ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
+                            Visibility="{x:Bind WNowViewModel.Weather.WeatherSummary, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                            <TextBlock
+                                x:Name="SummaryText"
+                                Padding="5"
+                                d:Text="Rain, some heavy, to affect the area tonight"
+                                FontSize="12"
+                                FontWeight="Normal"
+                                Foreground="{ThemeResource ForegroundColor}"
+                                Text="{Binding Weather.WeatherSummary, Mode=OneWay}"
+                                TextWrapping="Wrap" />
+                        </toolkitControls:DropShadowPanel>
                         <HyperlinkButton
                             x:Name="Attribution"
                             Margin="16,0"
@@ -320,9 +348,14 @@
                             RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}"
                             Style="{ThemeResource AttributionStyle}">
                             <HyperlinkButton.Content>
-                                <TextBlock Visibility="{x:Bind WNowViewModel.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
-                                    <Span><Run d:Text="Photo by" Text="{helpers:StringRes Name='attrib_prefix'}" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WNowViewModel.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WNowViewModel.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
-                                </TextBlock>
+                                <toolkitControls:DropShadowPanel
+                                    BlurRadius="15.0"
+                                    ShadowOpacity="1"
+                                    Visibility="{x:Bind WNowViewModel.ImageData.OriginalLink, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
+                                    <TextBlock>
+                                        <Span><Run d:Text="Photo by" Text="{helpers:StringRes Name='attrib_prefix'}" /><Run Text=" " /><Run d:Text="David" Text="{x:Bind WNowViewModel.ImageData.ArtistName, Mode=OneWay}" /><Run Text=" (" /><Run d:Text="Unsplash" Text="{x:Bind WNowViewModel.ImageData.SiteName, Mode=OneWay}" /><Run Text=")" /></Span>
+                                    </TextBlock>
+                                </toolkitControls:DropShadowPanel>
                             </HyperlinkButton.Content>
                         </HyperlinkButton>
                         <Rectangle
