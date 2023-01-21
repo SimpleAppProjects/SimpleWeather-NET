@@ -9,7 +9,10 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
+using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
+using SkiaSharp;
+using SkiaSharp.Views.Windows;
 using System;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -107,7 +110,11 @@ namespace SimpleWeather.NET.Controls
 
             UIElement iconElement;
 
+            // Remove any animatable drawables
+            RemoveAnimatedDrawables();
+
             var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? SettingsManager.IconProvider);
+
             if (ForceBitmapIcon)
             {
                 iconElement = CreateBitmapIcon(wip);
@@ -144,8 +151,33 @@ namespace SimpleWeather.NET.Controls
                 {
                     try
                     {
-                        // TODO: Create SkXamlCanvas using SkDrawable
-                        iconElement = CreateBitmapIcon(wip);
+                        var drawable = await wip.GetDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                        var canvas = new SKXamlCanvas();
+                        canvas.PaintSurface += (s, e) =>
+                        {
+                            e.Surface.Canvas.Clear();
+                            var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+                            drawable.Bounds = bounds;
+                            drawable.Draw(e.Surface.Canvas);
+                        };
+                        canvas.SetBinding(HeightProperty, new Binding()
+                        {
+                            Source = this,
+                            Path = new PropertyPath(nameof(ActualHeight)),
+                            Mode = BindingMode.OneWay,
+                        });
+                        canvas.SetBinding(WidthProperty, new Binding()
+                        {
+                            Source = this,
+                            Path = new PropertyPath(nameof(ActualWidth)),
+                            Mode = BindingMode.OneWay,
+                        });
+                        iconElement = canvas;
+
+                        if (drawable is SKLottieDrawable lottieDrawable)
+                        {
+                            AddAnimatedDrawable(lottieDrawable);
+                        }
                     }
                     catch (Exception e)
                     {
