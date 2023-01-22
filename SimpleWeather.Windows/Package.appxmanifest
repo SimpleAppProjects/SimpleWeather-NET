@@ -3,10 +3,12 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  IgnorableNamespaces="uap rescap mp">
+  IgnorableNamespaces="uap rescap mp desktop4">
   <Identity Name="49586DaveAntoine.SimpleWeatherDebug" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.7.2.0" />
   <mp:PhoneIdentity PhoneProductId="06966ad9-299e-4a4c-8204-576b8ada7455" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
@@ -47,14 +49,31 @@
         <desktop:Extension Category="windows.toastNotificationActivation">
           <desktop:ToastNotificationActivation ToastActivatorCLSID="AD1F464A-5E86-4CC9-A6B4-63CDB416CDED" />
         </desktop:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="SimpleWeather.BackgroundTasks.BackgroundTask">
+          <BackgroundTasks uap4:SupportsMultipleInstances="true">
+            <Task Type="systemEvent"/>
+            <Task Type="general"/>
+            <Task Type="deviceServicing"/>
+            <Task Type="timer"/>
+            <Task Type="deviceUse"/>
+          </BackgroundTasks>
+        </Extension>
         <com:Extension Category="windows.comServer">
           <com:ComServer>
             <!--Register COM CLSID LocalServer32 registry key-->
             <com:ExeServer Executable="SimpleWeather.Windows.exe" Arguments="-ToastActivated" DisplayName="Toast activator">
               <com:Class Id="AD1F464A-5E86-4CC9-A6B4-63CDB416CDED" DisplayName="Toast activator"/>
             </com:ExeServer>
-            <com:ExeServer Executable="SimpleWeather.Windows.exe" DisplayName="SimpleWeather.NET" Arguments="-StartSampleTaskServer">
-              <com:Class Id="14C5882B-35D3-41BE-86B2-5106269B97E6" DisplayName="Sample Task" />
+            <!-- NOTE: make sure to update your package SID here to explicitly allow activation from AppContainer context -->
+            <!-- 0x11 = (COM_RIGHTS_EXECUTE | COM_RIGHTS_EXECUTE_LOCAL | COM_RIGHTS_ACTIVATE_LOCAL) -->
+            <!-- O:PSG:BU   Owner: principal self, Group: Built-in users -->
+            <!-- (A;;0x11;;;IU) Allow SDDL_INTERACTIVE -->
+            <!-- (A;;11;;;S-1-15-3-2348949857-2020245415-1037339150-2736345358-663409332-3328911834-2849561672)S:(ML;;NX;;;LW) is this package (WinAppSDKApp.Package) SID -->
+            <com:ExeServer
+                Executable="SimpleWeather.Windows.exe"
+                Arguments="-RegisterProcessAsComServer"
+                LaunchAndActivationPermission="O:PSG:BUD:(A;;11;;;IU)(A;;11;;;S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191)S:(ML;;NX;;;LW)">
+              <com:Class Id="148C5627-665B-4DAC-AB27-64397E80335A" />
             </com:ExeServer>
           </com:ComServer>
         </com:Extension>
@@ -67,4 +86,12 @@
     <Capability Name="privateNetworkClientServer"/>
     <DeviceCapability Name="location" />
   </Capabilities>
+  <Extensions>
+    <Extension Category="windows.activatableClass.inProcessServer">
+      <InProcessServer>
+        <Path>SCRCHostNE.dll</Path>
+        <ActivatableClass ActivatableClassId="SimpleWeather.BackgroundTasks.BackgroundTask" ThreadingModel="both" />
+      </InProcessServer>
+    </Extension>
+  </Extensions>
 </Package>

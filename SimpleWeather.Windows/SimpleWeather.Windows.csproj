@@ -27,6 +27,10 @@
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.2.63-beta">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -142,7 +146,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SCRCHost\SCRCHost.csproj" />
     <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
+    <ProjectReference Include="..\SimpleWeather.BackgroundTasks\SimpleWeather.BackgroundTasks.csproj" />
     <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
@@ -172,7 +178,7 @@
   <Import Project="..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />
 
   <ItemGroup>
-    <Compile Remove="D:\Visual Studio 2022\Projects\SimpleWeather.NET\SimpleWeather.NET.Extras\Resources\Strings\Extras.Designer.cs" />
+    <AdditionalFiles Include="NativeMethods.txt" />
   </ItemGroup>
 
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

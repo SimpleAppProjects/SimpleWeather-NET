@@ -38,20 +38,13 @@ namespace SimpleWeather.NET
             {
                 AppInstance keyInstance = AppInstance.FindOrRegisterForKey("SimpleWeather.Windows.app");
 
-                if (keyInstance.IsCurrent)
-                {
-                    keyInstance.Activated += OnActivated;
-                }
-                else
+                if (!keyInstance.IsCurrent)
                 {
                     isRedirect = true;
                     RedirectActivationTo(args, keyInstance);
                 }
             }
-            catch (Exception ex)
-            {
-
-            }
+            catch { }
 
             return isRedirect;
         }
@@ -67,10 +60,6 @@ namespace SimpleWeather.NET
                 redirectSemaphore.Release();
             });
             redirectSemaphore.WaitOne();
-        }
-
-        private static void OnActivated(object sender, AppActivationArguments args)
-        {
         }
     }
 }

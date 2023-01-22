@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+    <AssetTargetFallback>uap10.0.18362</AssetTargetFallback>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Platforms>x64;x86;ARM64</Platforms>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
+    <AssetTargetFallback>native</AssetTargetFallback>
+
+    <IsPackable>false</IsPackable>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <SelfContained>true</SelfContained>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Enable self-contained -->
+    <DnneSelfContained_Experimental>true</DnneSelfContained_Experimental>
+    <DnneAddGeneratedBinaryToProject>true</DnneAddGeneratedBinaryToProject>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Platform)'=='x86'">
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='x64'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Platform)'=='ARM64'">
+    <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DNNE" Version="1.0.33" />
+  </ItemGroup>
+  
+</Project>

@@ -8,8 +8,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.Windows.AppLifecycle;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
+using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
@@ -22,7 +24,10 @@ using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.System;
 using Windows.UI.ViewManagement;
@@ -80,6 +85,7 @@ namespace SimpleWeather.NET
         /// </summary>
         public App()
         {
+            this.syncContext = SynchronizationContext.Current;
             this.UnhandledException += OnUnhandledException;
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
             CoreApplication.EnablePrelaunch(true);
@@ -254,22 +260,53 @@ namespace SimpleWeather.NET
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs args)
+        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
             // Register for toast activation. Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
             ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
+            // Register activation events
+            AppInstance.GetCurrent().Activated += (sender, e) =>
+            {
+                // Use the synchronous option to ensure AppActivationArguments stays alive.
+                // Once the Activated event returns the other instance will close and so 
+                // will the AppActivationArguments object.
+                this.syncContext.Send(
+                    state =>
+                    {
+                        AppActivationArguments arguments = (AppActivationArguments)state;
+                        this.OnActivated(arguments);
+                    },
+                    e);
+            };
 
             // If we weren't launched by an app, launch our window like normal.
             // Otherwise if launched by a toast, our OnActivated callback will be triggered
             if (!ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
             {
-                var activatedArgs = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().GetActivatedEventArgs();
+                var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
                 var activationKind = activatedArgs.Kind;
-                LaunchAndBringToForegroundIfNeeded(args);
+
+                if (activatedArgs.Data is ILaunchActivatedEventArgs launchArgs &&
+                    launchArgs.Arguments?.Contains("RegisterProcessAsComServer") == true)
+                {
+                    RegisterCOMServer();
+                }
+                else
+                {
+                    LaunchAndBringToForegroundIfNeeded(args.ToCompatArgs());
+                }
             }
         }
 
-        private void LaunchAndBringToForegroundIfNeeded(LaunchActivatedEventArgs? args = null)
+        private void OnActivated(AppActivationArguments e)
+        {
+            if (e.Data is Windows.ApplicationModel.Activation.LaunchActivatedEventArgs args)
+            {
+                LaunchAndBringToForegroundIfNeeded(args.ToCompatArgs());
+            }
+        }
+
+        private void LaunchAndBringToForegroundIfNeeded(LaunchActivatedEventExArgs? args = null)
         {
             Initialize(args);
 
@@ -291,21 +328,12 @@ namespace SimpleWeather.NET
                 await RemoteConfigUpdateTask.RegisterBackgroundTask();
             });
 
-            var prelaunchActivated = false;
-
-            // args.UWPLaunchActivatedEventArgs throws an InvalidCastException in desktop apps.
-            prelaunchActivated = this.RunCatching(() =>
-            {
-                return args?.UWPLaunchActivatedEventArgs?.PrelaunchActivated ?? false;
-            }).GetOrDefault(prelaunchActivated);
+            var prelaunchActivated = args?.PrelaunchActivated ?? false;
 
             if (!prelaunchActivated)
             {
                 // args.UWPLaunchActivatedEventArgs throws an InvalidCastException in desktop apps.
-                var tileId = this.RunCatching(() =>
-                {
-                    return args?.UWPLaunchActivatedEventArgs?.TileId;
-                }).GetOrNull();
+                var tileId = args?.TileId;
 
                 if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete && !String.IsNullOrEmpty(tileId) && !tileId.Equals("App", StringComparison.OrdinalIgnoreCase))
                 {
@@ -503,7 +531,62 @@ namespace SimpleWeather.NET
             });
         }
 
-        private void Initialize(LaunchActivatedEventArgs? e = null)
+        internal async Task OnBackgroundActivatedAsync(IBackgroundTaskInstance instance)
+        {
+            await TaskEx.YieldToBackground();
+
+            Initialize(instance);
+
+            AnalyticsLogger.LogEvent("App: Background Activated",
+                new Dictionary<string, string>()
+                {
+                    { "Task", instance.Task?.Name }
+                });
+
+            switch (instance.Task?.Name)
+            {
+                case nameof(WeatherUpdateBackgroundTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
+                    new WeatherUpdateBackgroundTask().Run(instance);
+                    break;
+
+                case nameof(UpdateTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting UpdateTask");
+                    new UpdateTask().Run(instance);
+                    break;
+
+                case nameof(AppUpdaterTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting AppUpdaterTask");
+                    new AppUpdaterTask().Run(instance);
+                    break;
+
+                case nameof(RemoteConfigUpdateTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting RemoteConfigUpdateTask");
+                    new RemoteConfigUpdateTask().Run(instance);
+                    break;
+
+                case nameof(WeatherTileUpdaterTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherTileUpdaterTask");
+                    new WeatherTileUpdaterTask().Run(instance);
+                    break;
+
+                case nameof(DailyNotificationTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting DailyNotificationTask");
+                    new DailyNotificationTask().Run(instance);
+                    break;
+
+                case nameof(PremiumStatusTask):
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting PremiumStatusTask");
+                    new PremiumStatusTask().Run(instance);
+                    break;
+
+                default:
+                    Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", instance.Task.Name);
+                    break;
+            }
+        }
+
+        private void Initialize(LaunchActivatedEventExArgs? e = null)
         {
             if (MainWindow.Current == null || _window == null)
             {
@@ -526,7 +609,7 @@ namespace SimpleWeather.NET
 
                 RootFrame.NavigationFailed += OnNavigationFailed;
 
-                if (e?.UWPLaunchActivatedEventArgs?.PreviousExecutionState == Windows.ApplicationModel.Activation.ApplicationExecutionState.Terminated)
+                if (e?.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     // TODO: Load state from previously suspended application
                 }
@@ -540,6 +623,18 @@ namespace SimpleWeather.NET
                 UpdateAppTheme();
             }
 
+            // Load data if needed
+            _ = Task.Run(SettingsManager.LoadIfNeeded);
+
+            DI.Utils.RemoteConfigService.UpdateWeatherProvider();
+
+            ExtrasService.CheckPremiumStatus();
+
+            Initialized = true;
+        }
+
+        private void Initialize(IBackgroundTaskInstance instance)
+        {
             // Load data if needed
             _ = Task.Run(SettingsManager.LoadIfNeeded);
 

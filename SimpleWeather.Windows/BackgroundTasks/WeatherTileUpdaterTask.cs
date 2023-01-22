@@ -1,8 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Common.WeatherData;
+using SimpleWeather.NET.Tiles;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.NET.Tiles;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -236,13 +237,29 @@ namespace SimpleWeather.NET.BackgroundTasks
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
-                var tb1 = new BackgroundTaskBuilder() { Name = taskName };
+                var tb1 = new BackgroundTaskBuilder()
+                {
+                    Name = taskName,
+                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
+                };
                 tb1.SetTrigger(new TimeTrigger(60, false));
-                var tb2 = new BackgroundTaskBuilder() { Name = taskName };
+                var tb2 = new BackgroundTaskBuilder()
+                {
+                    Name = taskName,
+                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
+                };
                 tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
-                var tb3 = new BackgroundTaskBuilder() { Name = taskName };
+                var tb3 = new BackgroundTaskBuilder()
+                {
+                    Name = taskName,
+                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
+                };
                 tb3.SetTrigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
-                var tb4 = new BackgroundTaskBuilder() { Name = taskName };
+                var tb4 = new BackgroundTaskBuilder()
+                {
+                    Name = taskName,
+                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
+                };
                 tb4.SetTrigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
 
                 try

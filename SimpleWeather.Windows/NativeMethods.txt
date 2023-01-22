@@ -1,0 +1,3 @@
+// OOP COM
+CoRegisterClassObject
+REGCLS

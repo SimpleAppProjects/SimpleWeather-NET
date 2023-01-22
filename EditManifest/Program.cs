@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace EditManifest
 {
@@ -74,10 +70,12 @@ namespace EditManifest
                             if (ConfigMode?.StartsWith("Debug") == true)
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeatherDebug\"");
+                                line = line.Replace("S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756", "S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191");
                             }
                             else
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeatherDebug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
+                                line = line.Replace("S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191", "S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756");
                             }
                         }
                         else if (OSVersion == OSVersion.MaciOS)

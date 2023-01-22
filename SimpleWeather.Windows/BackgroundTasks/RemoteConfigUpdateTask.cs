@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.BackgroundTasks;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using System;
@@ -70,7 +71,11 @@ namespace SimpleWeather.NET.BackgroundTasks
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
-                var taskBuilder = new BackgroundTaskBuilder() { Name = taskName };
+                var taskBuilder = new BackgroundTaskBuilder()
+                {
+                    Name = taskName,
+                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
+                };
                 taskBuilder.SetTrigger(new TimeTrigger(1440, false)); // Daily task
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.SessionConnected));
