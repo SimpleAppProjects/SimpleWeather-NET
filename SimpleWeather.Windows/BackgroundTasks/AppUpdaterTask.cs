@@ -38,10 +38,18 @@ namespace SimpleWeather.NET.BackgroundTasks
             deferral.Complete();
         }
 
+        private bool IsAppUpdaterSupported()
+        {
+            return ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext") &&
+                ApiInformation.IsMethodPresent("Windows.Services.Store.StoreContext", nameof(context.GetAppAndOptionalStorePackageUpdatesAsync)) &&
+                ApiInformation.IsPropertyPresent("Windows.Services.Store.StoreContext", nameof(context.CanSilentlyDownloadStorePackageUpdates)) &&
+                ApiInformation.IsMethodPresent("Windows.Services.Store.StoreContext", nameof(context.TrySilentDownloadStorePackageUpdatesAsync)) &&
+                ApiInformation.IsMethodPresent("Windows.Services.Store.StoreContext", nameof(context.TrySilentDownloadAndInstallStorePackageUpdatesAsync));
+        }
+
         private async Task CheckForUpdates()
         {
-            if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext") &&
-                ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContext", 4))
+            if (IsAppUpdaterSupported())
             {
                 await DownloadAndInstallAllUpdatesInBackgroundAsync();
             }
