@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
@@ -19,7 +20,11 @@ namespace SimpleWeather.NET.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.Current.ResLoader.GetString("not_channel_name_precipnotification");
-            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/wi-umbrella.png");
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
+            var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}wi-umbrella.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new ToastArguments()
@@ -97,11 +102,15 @@ namespace SimpleWeather.NET.Notifications
                                             App.Current.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
             };
 
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
             var toastContent = new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
-                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
+                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
                     BindingGeneric = new ToastBindingGeneric()
                     {
                         Children =
@@ -190,11 +199,15 @@ namespace SimpleWeather.NET.Notifications
                 _ => string.Format(formatStr, App.Current.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
             };
 
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
             var toastContent = new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
-                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
+                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
                     BindingGeneric = new ToastBindingGeneric()
                     {
                         Children =

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
@@ -20,7 +21,11 @@ namespace SimpleWeather.NET.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.Current.ResLoader.GetString("not_channel_name_dailynotification");
-            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/wi-day-cloudy.png");
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
+            var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}wi-day-cloudy.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new ToastArguments()
@@ -117,11 +122,16 @@ namespace SimpleWeather.NET.Notifications
                 appendDiv = true;
             }
 
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
+
             return new ToastContent()
             {
                 Visual = new ToastVisual()
                 {
-                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
+                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
                     BindingGeneric = new ToastBindingGeneric()
                     {
                         Children =

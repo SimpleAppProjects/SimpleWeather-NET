@@ -55,7 +55,14 @@ namespace SimpleWeather.NET
         {
             get
             {
-                return Current.RequestedTheme == ApplicationTheme.Dark;
+                try
+                {
+                    return Current.RequestedTheme == ApplicationTheme.Dark;
+                }
+                catch (AccessViolationException)
+                {
+                    return UISettings.GetColorValue(UIColorType.Background).ToString() == "#FF000000";
+                }
             }
         }
 

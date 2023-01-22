@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.WinUI.Notifications;
+﻿using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Notifications;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Utils;
@@ -17,7 +18,11 @@ namespace SimpleWeather.NET.Notifications
         private static async Task CreateToastCollection()
         {
             string displayName = App.Current.ResLoader.GetString("label_nav_alerts");
-            var icon = new Uri("ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_error.png");
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
+            var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}ic_error.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new ToastArguments()
@@ -33,6 +38,10 @@ namespace SimpleWeather.NET.Notifications
 
         public static async Task CreateAlerts(LocationData.LocationData location, IEnumerable<WeatherAlert> alerts)
         {
+            var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
+            {
+                return !App.Current.IsSystemDarkTheme;
+            });
             await CreateToastCollection().ConfigureAwait(true);
             var toastNotifier = await ToastNotificationManager.GetDefault()
                 .GetToastNotifierForToastCollectionIdAsync(TAG);
@@ -48,7 +57,7 @@ namespace SimpleWeather.NET.Notifications
                 {
                     Visual = new ToastVisual()
                     {
-                        BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(), UriKind.Absolute),
+                        BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
                         BindingGeneric = new ToastBindingGeneric()
                         {
                             Children =
