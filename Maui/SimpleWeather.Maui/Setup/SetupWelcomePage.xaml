@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<local:BaseSetupPage
+    x:Class="SimpleWeather.Maui.Setup.SetupWelcomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Setup"
+    xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    x:DataType="local:SetupViewModel"
+    Background="{DynamicResource PrimarySurfaceColorBrush}"
+    NavigationPage.HasNavigationBar="False"
+    NavigationPage.HasBackButton="False"
+    mc:Ignorable="d">
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <localControls:ViewBox
+            x:Name="AppLogo"
+            Margin="0,25,0,-10"
+            HeightRequest="175">
+            <Image Source="app_logo.png" />
+        </localControls:ViewBox>
+        <Label
+            x:Name="WelcomeText"
+            Padding="4"
+            FontAttributes="Bold"
+            FontSize="22"
+            FontAutoScalingEnabled="True"
+            HorizontalTextAlignment="Center"
+            Text="{x:Static res_strings:Resources.setup_welcome_prompt}"
+            TextColor="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnSurface}}" />
+        <Label
+            x:Name="WelcomeSubText"
+            Padding="4"
+            FontAttributes="Bold"
+            FontSize="18"
+            HorizontalTextAlignment="Center"
+            Opacity="0.75"
+            Text="{x:Static res_strings:Resources.setup_welcome_tagline_prompt}"
+            TextColor="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnSurface}}" />
+    </VerticalStackLayout>
+</local:BaseSetupPage>

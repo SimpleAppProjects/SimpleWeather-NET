@@ -1,0 +1,152 @@
+﻿<controls:ScopePage
+    x:Class="SimpleWeather.Maui.Location.LocationSearchPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:m="http://compiledbindings.com/"
+    xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mx="http://compiledbindings.com/x"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:win="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+    x:DataType="commonVM:LocationSearchViewModel"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}"
+    BindingContext="{Binding Source={RelativeSource Mode=Self}, Path=LocationSearchViewModel}"
+    mc:Ignorable="d m mx">
+    <Grid x:Name="RootGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid VerticalOptions="Start">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Label
+                Grid.Row="0"
+                Grid.Column="1"
+                FontAttributes="Bold"
+                FontSize="Subtitle"
+                IsVisible="{OnPlatform WinUI=true,
+                                       MacCatalyst=true,
+                                       Default=false}"
+                Text="{x:Static res_strings:Resources.label_fab_add_location}"
+                VerticalOptions="Center" />
+            <ImageButton
+                Grid.Row="0"
+                Grid.Column="0"
+                Aspect="AspectFit"
+                BackgroundColor="Transparent"
+                Clicked="BackButton_Clicked"
+                HorizontalOptions="Start">
+                <ImageButton.Source>
+                    <maticons:MaterialIcon
+                        Size="{OnPlatform WinUI=24,
+                                          Default=48}"
+                        Symbol="ArrowBack"
+                        Color="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                Dark={StaticResource DarkOnBackground}}" />
+                </ImageButton.Source>
+            </ImageButton>
+            <Entry
+                x:Name="SearchView"
+                Grid.Row="{OnPlatform WinUI=1,
+                                      MacCatalyst=1,
+                                      Default=0}"
+                Grid.Column="{OnPlatform WinUI=0,
+                                         MacCatalyst=0,
+                                         Default=1}"
+                Grid.ColumnSpan="{OnPlatform WinUI=2,
+                                             MacCatalyst=2,
+                                             Default=1}"
+                Margin="{OnPlatform WinUI='4,8,4,0',
+                                    MacCatalyst='4,8,4,0',
+                                    Default='0'}"
+                android:Entry.ImeOptions="Search"
+                BackgroundColor="Transparent"
+                ClearButtonVisibility="WhileEditing"
+                Keyboard="Text"
+                MaximumWidthRequest="1080"
+                Placeholder="{x:Static res_strings:Resources.location_search_hint}"
+                PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                   Dark={StaticResource DarkOnBackground}}"
+                ReturnType="Search"
+                TextChanged="LocationSearchBox_TextChanged"
+                TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                            Dark={StaticResource DarkOnBackground}}"
+                VerticalTextAlignment="Center" />
+            <controls:IndeterminateProgressBar
+                x:Name="ProgressBarControl"
+                Grid.Row="1"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Margin="{OnPlatform WinUI='4,1,4,0',
+                                    MacCatalyst='4,1,4,0',
+                                    Default='2,1,2,0'}"
+                BaseColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                            Dark={StaticResource DarkSurfaceVariant}}"
+                HeightRequest="2"
+                IsActive="{Binding IsLoading, Mode=OneWay}"
+                MaximumWidthRequest="{OnPlatform WinUI='1080',
+                                                 MacCatalyst='1080',
+                                                 Default='NaN'}"
+                ProgressColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                Dark={StaticResource DarkPrimary}}"
+                VerticalOptions="End" />
+        </Grid>
+        <Grid
+            Grid.Row="{OnPlatform WinUI=2,
+                                  MacCatalyst=2,
+                                  Default=1}"
+            BackgroundColor="Transparent"
+            VerticalOptions="FillAndExpand">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="BackButton_Tapped" />
+                <ClickGestureRecognizer Clicked="BackButton_Clicked" />
+            </Grid.GestureRecognizers>
+            <Border
+                IsVisible="{Binding Locations, Converter={StaticResource collectionBooleanConverter}}"
+                MaximumWidthRequest="1080"
+                Stroke="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                         Dark={StaticResource DarkSurfaceVariant}}"
+                StrokeThickness="1"
+                VerticalOptions="StartAndExpand">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="4" />
+                </Border.StrokeShape>
+                <ListView
+                    x:Name="SearchList"
+                    Margin="8,4"
+                    BackgroundColor="Transparent"
+                    HasUnevenRows="False"
+                    ItemSelected="LocationSearchBox_ItemSelected"
+                    ItemTemplate="{StaticResource LocationQueryDataTemplate}"
+                    ItemsSource="{Binding Locations, Mode=OneWay}"
+                    RowHeight="64"
+                    SelectionMode="Single"
+                    SeparatorVisibility="None"
+                    VerticalOptions="StartAndExpand">
+                    <ListView.Footer>
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="Default"
+                            Text="{Binding Footer, Mode=OneWay}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                        Dark={StaticResource DarkOnBackground}}" />
+                    </ListView.Footer>
+                </ListView>
+            </Border>
+        </Grid>
+    </Grid>
+</controls:ScopePage>

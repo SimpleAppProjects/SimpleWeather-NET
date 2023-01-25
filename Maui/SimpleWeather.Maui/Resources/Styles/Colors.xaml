@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<?xaml-comp compile="true" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--  Maui Colors Start  -->
+    <Color x:Key="White">White</Color>
+    <Color x:Key="Black">Black</Color>
+    <Color x:Key="Gray100">#E1E1E1</Color>
+    <Color x:Key="Gray200">#C8C8C8</Color>
+    <Color x:Key="Gray300">#ACACAC</Color>
+    <Color x:Key="Gray400">#919191</Color>
+    <Color x:Key="Gray500">#6E6E6E</Color>
+    <Color x:Key="Gray600">#404040</Color>
+    <Color x:Key="Gray900">#212121</Color>
+    <Color x:Key="Gray950">#141414</Color>
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource Primary}" />
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{DynamicResource Secondary}" />
+    <SolidColorBrush x:Key="TertiaryBrush" Color="{DynamicResource Tertiary}" />
+    <SolidColorBrush x:Key="WhiteBrush" Color="{StaticResource White}" />
+    <SolidColorBrush x:Key="BlackBrush" Color="{StaticResource Black}" />
+    <SolidColorBrush x:Key="Gray100Brush" Color="{StaticResource Gray100}" />
+    <SolidColorBrush x:Key="Gray200Brush" Color="{StaticResource Gray200}" />
+    <SolidColorBrush x:Key="Gray300Brush" Color="{StaticResource Gray300}" />
+    <SolidColorBrush x:Key="Gray400Brush" Color="{StaticResource Gray400}" />
+    <SolidColorBrush x:Key="Gray500Brush" Color="{StaticResource Gray500}" />
+    <SolidColorBrush x:Key="Gray600Brush" Color="{StaticResource Gray600}" />
+    <SolidColorBrush x:Key="Gray900Brush" Color="{StaticResource Gray900}" />
+    <SolidColorBrush x:Key="Gray950Brush" Color="{StaticResource Gray950}" />
+    <!--  Maui Colors End  -->
+
+    <!--  App Colors Start  -->
+    <Color x:Key="SimpleBlue">#0070c0</Color>
+    <Color x:Key="SimpleBlueDark">#00468f</Color>
+    <Color x:Key="SimpleBlueLight">#599ef3</Color>
+    <Color x:Key="SimpleBlueMedium">#007dd6</Color>
+    <SolidColorBrush x:Key="SimpleBlueBrush" Color="{StaticResource SimpleBlue}" />
+    <SolidColorBrush x:Key="SimpleBlueDarkBrush" Color="{StaticResource SimpleBlueDark}" />
+    <SolidColorBrush x:Key="SimpleBlueLightBrush" Color="{StaticResource SimpleBlueLight}" />
+    <SolidColorBrush x:Key="SimpleBlueMediumBrush" Color="{StaticResource SimpleBlueMedium}" />
+    <!--  App Colors End  -->
+
+    <!--  Material Colors Start  -->
+    <Color x:Key="LightPrimary">#0060A8</Color>
+    <Color x:Key="LightOnPrimary">#FFFFFF</Color>
+    <Color x:Key="LightPrimaryContainer">#D1E4FF</Color>
+    <Color x:Key="LightOnPrimaryContainer">#001C38</Color>
+    <Color x:Key="LightSecondary">#006494</Color>
+    <Color x:Key="LightOnSecondary">#FFFFFF</Color>
+    <Color x:Key="LightSecondaryContainer">#C8E6FF</Color>
+    <Color x:Key="LightOnSecondaryContainer">#001E31</Color>
+    <Color x:Key="LightTertiary">#2B5EA8</Color>
+    <Color x:Key="LightOnTertiary">#FFFFFF</Color>
+    <Color x:Key="LightTertiaryContainer">#D6E3FF</Color>
+    <Color x:Key="LightOnTertiaryContainer">#001B3F</Color>
+    <Color x:Key="LightError">#BA1B1B</Color>
+    <Color x:Key="LightErrorContainer">#FFDAD4</Color>
+    <Color x:Key="LightOnError">#FFFFFF</Color>
+    <Color x:Key="LightOnErrorContainer">#410001</Color>
+    <Color x:Key="LightBackground">#FDFCFF</Color>
+    <Color x:Key="LightOnBackground">#1B1B1B</Color>
+    <Color x:Key="LightSurface">#FDFCFF</Color>
+    <Color x:Key="LightOnSurface">#1B1B1B</Color>
+    <Color x:Key="LightSurfaceVariant">#DFE2EB</Color>
+    <Color x:Key="LightOnSurfaceVariant">#43474E</Color>
+    <Color x:Key="LightOutline">#73777F</Color>
+    <Color x:Key="LightInverseOnSurface">#F1F0F3</Color>
+    <Color x:Key="LightInverseSurface">#2F3033</Color>
+    <Color x:Key="LightPrimaryInverse">#9FCAFF</Color>
+
+    <Color x:Key="DarkPrimary">#9FCAFF</Color>
+    <Color x:Key="DarkOnPrimary">#00315B</Color>
+    <Color x:Key="DarkPrimaryContainer">#004881</Color>
+    <Color x:Key="DarkOnPrimaryContainer">#D1E4FF</Color>
+    <Color x:Key="DarkSecondary">#8BCEFF</Color>
+    <Color x:Key="DarkOnSecondary">#003450</Color>
+    <Color x:Key="DarkSecondaryContainer">#004B71</Color>
+    <Color x:Key="DarkOnSecondaryContainer">#C8E6FF</Color>
+    <Color x:Key="DarkTertiary">#A8C7FF</Color>
+    <Color x:Key="DarkOnTertiary">#002F68</Color>
+    <Color x:Key="DarkTertiaryContainer">#00458E</Color>
+    <Color x:Key="DarkOnTertiaryContainer">#D6E3FF</Color>
+    <Color x:Key="DarkError">#FFB4A9</Color>
+    <Color x:Key="DarkErrorContainer">#930006</Color>
+    <Color x:Key="DarkOnError">#680003</Color>
+    <Color x:Key="DarkOnErrorContainer">#FFDAD4</Color>
+    <Color x:Key="DarkBackground">#1B1B1B</Color>
+    <Color x:Key="DarkOnBackground">#E2E2E6</Color>
+    <Color x:Key="DarkSurface">#1B1B1B</Color>
+    <Color x:Key="DarkOnSurface">#E2E2E6</Color>
+    <Color x:Key="DarkSurfaceVariant">#43474E</Color>
+    <Color x:Key="DarkOnSurfaceVariant">#C3C6CF</Color>
+    <Color x:Key="DarkOutline">#8D9199</Color>
+    <Color x:Key="DarkInverseOnSurface">#1B1B1B</Color>
+    <Color x:Key="DarkInverseSurface">#E2E2E6</Color>
+    <Color x:Key="DarkPrimaryInverse">#0060A8</Color>
+    <Color x:Key="Error">#BA1B1B</Color>
+    <!--  Material Colors End  -->
+
+</ResourceDictionary>

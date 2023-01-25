@@ -1,0 +1,252 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls;assembly=SimpleWeather.Maui"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:location="clr-namespace:SimpleWeather.LocationData;assembly=SimpleWeather.Shared"
+    xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons;assembly=SimpleWeather.Maui"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mext="clr-namespace:SimpleWeather.Maui.MarkupExtensions;assembly=SimpleWeather.Maui"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
+    xmlns:stepper="clr-namespace:SimpleWeather.Maui.Stepper;assembly=SimpleWeather.Maui"
+    mc:Ignorable="d">
+    <x:Double x:Key="AppBarThemeCompactHeight">40</x:Double>
+    <x:Double x:Key="TextButtonFontSize">16</x:Double>
+    <x:Double x:Key="BottomStepperIconSize">14</x:Double>
+    <x:Double x:Key="BottomStepperButtonPadding">12</x:Double>
+
+    <Style x:Key="DefaultBottomStepperNavigationBarStyle" TargetType="stepper:BottomStepperNavigationBar">
+        <Setter Property="MinimumHeightRequest" Value="{DynamicResource AppBarThemeCompactHeight}" />
+        <Setter Property="ForegroundColor" Value="{AppThemeBinding Default=White, Light=Black, Dark=White}" />
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
+        <Setter Property="BackButtonIcon" Value="{mext:MaterialIcon Symbol=ChevronLeft, Size=24}" />
+        <Setter Property="NextButtonIcon" Value="{mext:MaterialIcon Symbol=ChevronRight, Size=24}" />
+        <Setter Property="CompleteButtonIcon" Value="{mext:MaterialIcon Symbol=Done, Size=24}" />
+        <Setter Property="ControlTemplate">
+            <ControlTemplate>
+                <Grid
+                    x:Name="RootGrid"
+                    Background="{TemplateBinding Background}"
+                    BackgroundColor="{TemplateBinding BackgroundColor}"
+                    HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                    MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button
+                        x:Name="BackBtn"
+                        Grid.Column="0"
+                        Margin="8,0,0,0"
+                        Padding="{StaticResource BottomStepperButtonPadding}"
+                        Background="Transparent"
+                        BorderColor="Transparent"
+                        ContentLayout="{OnPlatform WinUI='Left,8',
+                                                   Default='Left,4'}"
+                        HorizontalOptions="Start"
+                        ImageSource="{TemplateBinding BackButtonIcon}"
+                        Text="{TemplateBinding BackButtonText}"
+                        TextColor="{TemplateBinding ForegroundColor}"
+                        VerticalOptions="Center" />
+                    <HorizontalStackLayout
+                        x:Name="IndicatorBox"
+                        Grid.Column="1"
+                        Background="Transparent"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
+                    <Button
+                        x:Name="NextBtn"
+                        Grid.Column="2"
+                        Margin="0,0,8,0"
+                        Padding="{StaticResource BottomStepperButtonPadding}"
+                        Background="Transparent"
+                        BorderColor="Transparent"
+                        ContentLayout="{OnPlatform WinUI='Right,8',
+                                                   Default='Right,4'}"
+                        HorizontalOptions="End"
+                        ImageSource="{TemplateBinding BackButtonIcon}"
+                        Text="{TemplateBinding BackButtonText}"
+                        TextColor="{TemplateBinding ForegroundColor}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultBottomStepperNavigationBarStyle}"
+        CanCascade="True"
+        TargetType="stepper:BottomStepperNavigationBar" />
+
+    <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="location:LocationQuery">
+        <ViewCell>
+            <Grid Padding="0,5" MinimumHeightRequest="65">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Image
+                    x:Name="PinIcon"
+                    Grid.Column="0"
+                    Margin="16,0,0,0"
+                    HeightRequest="24"
+                    IsVisible="{Binding IsEmpty, Converter={StaticResource inverseBoolConverter}}"
+                    VerticalOptions="Center">
+                    <Image.Source>
+                        <maticons:MaterialIcon Symbol="Place" Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                    </Image.Source>
+                </Image>
+                <Grid Grid.Column="1" VerticalOptions="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Label
+                        x:Name="LocationName"
+                        Grid.Row="0"
+                        Padding="16,0,0,0"
+                        FontSize="Body"
+                        HorizontalTextAlignment="Start"
+                        Text="{Binding LocationName, Mode=OneWay}"
+                        VerticalTextAlignment="Center" />
+                    <Label
+                        x:Name="LocationCountry"
+                        Grid.Row="1"
+                        Padding="16,0,0,0"
+                        FontSize="Caption"
+                        HorizontalTextAlignment="Start"
+                        IsVisible="{Binding Source={x:Reference LocationCountry}, Path=Text, Converter={StaticResource stringBooleanConverter}}"
+                        Text="{Binding LocationRegionText, Mode=OneWay}"
+                        VerticalTextAlignment="Center" />
+                </Grid>
+            </Grid>
+        </ViewCell>
+    </DataTemplate>
+
+    <ControlTemplate x:Key="SetupPageTemplate">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <ContentPresenter Grid.Row="0" />
+            <stepper:BottomStepperNavigationBar
+                x:Name="BottomNavBar"
+                Grid.Row="1"
+                BackButtonText="{x:Static res_strings:Resources.label_back}"
+                CompleteButtonText="{x:Static res_strings:Resources.Label_Done}"
+                ForegroundColor="{AppThemeBinding Light={StaticResource LightOnPrimary},
+                                                  Dark={StaticResource DarkOnSurface}}"
+                NextButtonText="{x:Static res_strings:Resources.label_next}"
+                StartButtonText="{x:Static res_strings:Resources.label_getstarted}" />
+        </Grid>
+    </ControlTemplate>
+
+    <Style x:Key="DefaultProgressAutoSuggestBoxStyle" TargetType="controls:ProgressAutoSuggestBox">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="PlaceholderTextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+        <Setter Property="ProgressBarTrackColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+        <Setter Property="ProgressBarIndicatorColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="ControlTemplate">
+            <ControlTemplate>
+                <Border
+                    Margin="{TemplateBinding Margin}"
+                    Padding="{TemplateBinding Padding}"
+                    BackgroundColor="{TemplateBinding BackgroundColor}"
+                    HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                    MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="8" />
+                    </Border.StrokeShape>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Border
+                            x:Name="HeaderContainer"
+                            Margin="0"
+                            Padding="0"
+                            Stroke="Transparent"
+                            StrokeThickness="0" />
+                        <SearchBar
+                            x:Name="LocationSearchBox"
+                            Grid.Row="1"
+                            ios:SearchBar.SearchBarStyle="Minimal"
+                            BackgroundColor="Transparent"
+                            CancelButtonColor="{TemplateBinding TextColor}"
+                            Placeholder="{TemplateBinding PlaceholderText}"
+                            PlaceholderColor="{TemplateBinding PlaceholderTextColor}"
+                            TextColor="{TemplateBinding TextColor}">
+                            <simpleCore:Popover.AttachedPopover>
+                                <simpleCore:Popover>
+                                    <Border
+                                        x:Name="PopupContainer"
+                                        Padding="8"
+                                        MinimumHeightRequest="{Binding Source={x:Reference LocationSearchBox}, Path=Height}"
+                                        MinimumWidthRequest="{Binding Source={x:Reference LocationSearchBox}, Path=Width}"
+                                        Stroke="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                                                 Dark={StaticResource DarkSurfaceVariant}}"
+                                        StrokeThickness="1"
+                                        VerticalOptions="End"
+                                        ZIndex="1">
+                                        <Border.Background>
+                                            <OnPlatform x:TypeArguments="Brush">
+                                                <OnPlatform.Default>
+                                                    <SolidColorBrush Color="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                                                                             Dark={StaticResource DarkSurfaceVariant}}" />
+                                                </OnPlatform.Default>
+                                                <On Platform="MacCatalyst,iOS">
+                                                    <On.Value>
+                                                        <SolidColorBrush Color="Transparent" />
+                                                    </On.Value>
+                                                </On>
+                                            </OnPlatform>
+                                        </Border.Background>
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="8" />
+                                        </Border.StrokeShape>
+                                        <ListView
+                                            x:Name="SearchList"
+                                            Footer="{TemplateBinding Footer}"
+                                            FooterTemplate="{TemplateBinding FooterTemplate}"
+                                            ItemTemplate="{TemplateBinding ItemTemplate}"
+                                            ItemsSource="{TemplateBinding ItemsSource}"
+                                            BackgroundColor="Transparent"
+                                            MaximumHeightRequest="374"
+                                            SelectionMode="Single"
+                                            SeparatorVisibility="None" />
+                                    </Border>
+                                </simpleCore:Popover>
+                            </simpleCore:Popover.AttachedPopover>
+                        </SearchBar>
+                        <controls:IndeterminateProgressBar
+                            x:Name="ProgressBarControl"
+                            Grid.Row="1"
+                            Margin="2,-6,2,0"
+                            BaseColor="{TemplateBinding ProgressBarTrackColor}"
+                            HeightRequest="1"
+                            IsActive="{TemplateBinding IsLoading}"
+                            ProgressColor="{TemplateBinding ProgressBarIndicatorColor}"
+                            VerticalOptions="End" />
+                    </Grid>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultProgressAutoSuggestBoxStyle}"
+        CanCascade="True"
+        TargetType="controls:ProgressAutoSuggestBox" />
+
+</ResourceDictionary>

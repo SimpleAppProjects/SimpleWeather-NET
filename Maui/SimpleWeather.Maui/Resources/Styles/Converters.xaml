@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters;assembly=SimpleWeather.Maui"
+    xmlns:toolkitConverters="clr-namespace:CommunityToolkit.Maui.Converters;assembly=CommunityToolkit.Maui">
+    <toolkitConverters:InvertedBoolConverter x:Key="inverseBoolConverter" />
+    <converters:ColorToSolidColorBrushConverter x:Key="color2SolidColorConverter" />
+    <converters:SolidColorBrushToColorConverter x:Key="solidColorBrush2ColorConverter" />
+    <converters:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
+    <converters:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
+    <toolkitConverters:IsStringNotNullOrWhiteSpaceConverter x:Key="stringBooleanConverter" />
+    <toolkitConverters:IsListNotNullOrEmptyConverter x:Key="collectionBooleanConverter" />
+    <converters:DoubleToBooleanConverter x:Key="valueBooleanConverter" GreaterThan="0" />
+</ResourceDictionary>

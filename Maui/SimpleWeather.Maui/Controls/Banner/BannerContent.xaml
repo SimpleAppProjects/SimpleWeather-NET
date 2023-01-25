@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SimpleWeather.Maui.Controls.BannerContent"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    x:DataType="controls:Banner">
+    <Frame BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}">
+        <Grid Padding="4">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <HorizontalStackLayout Grid.Row="0" HorizontalOptions="FillAndExpand">
+                <Border
+                    x:Name="BannerIconFrame"
+                    Margin="16,24,16,0"
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                      Dark={StaticResource DarkPrimary}}"
+                    HeightRequest="40"
+                    WidthRequest="40">
+                    <Border.StrokeShape>
+                        <Ellipse />
+                    </Border.StrokeShape>
+                    <Border.Content>
+                        <Image Source="{Binding Icon}" />
+                    </Border.Content>
+                </Border>
+                <Label
+                    Margin="16,0"
+                    FontSize="Medium"
+                    Text="{Binding Message}" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Grid.Row="0" HorizontalOptions="End">
+                <Button
+                    x:Name="PrimaryButton"
+                    Margin="8,0"
+                    Command="{Binding ButtonAction}"
+                    IsVisible="{Binding ButtonLabel, Converter={StaticResource stringBooleanConverter}}"
+                    Text="{Binding ButtonLabel}" />
+                <Button
+                    x:Name="SecondaryButton"
+                    Margin="8,0"
+                    IsVisible="false" />
+            </HorizontalStackLayout>
+        </Grid>
+    </Frame>
+</ContentView>

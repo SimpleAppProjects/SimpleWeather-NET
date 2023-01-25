@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<viewModels:ViewModelShell
+    x:Class="SimpleWeather.Maui.Main.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
+    xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:settings="clr-namespace:SimpleWeather.Maui.Preferences"
+    xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
+    xmlns:win="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                                  Dark={StaticResource DarkSurface}}"
+    Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                  Dark={StaticResource DarkOnSurface}}"
+    Shell.TabBarIsVisible="True">
+
+    <TabBar>
+        <ShellContent
+            Title="{x:Static res_strings:Resources.label_nav_weathernow}"
+            ContentTemplate="{DataTemplate local:WeatherNow}"
+            Icon="{FileImageSource File='solar_stroke.png'}" />
+        <ShellContent
+            Title="{x:Static res_strings:Resources.label_nav_alerts}"
+            ContentTemplate="{DataTemplate local:WeatherAlertPage}"
+            Icon="{maticons:MaterialIcon Symbol=Error}" />
+        <ShellContent
+            Title="{x:Static res_strings:Resources.label_radar}"
+            ContentTemplate="{DataTemplate local:WeatherRadarPage}"
+            Icon="{maticons:MaterialIcon Symbol=Radar}" />
+        <ShellContent
+            Title="{x:Static res_strings:Resources.label_nav_locations}"
+            ContentTemplate="{DataTemplate local:LocationsPage}"
+            Icon="{maticons:MaterialIcon Symbol=MyLocation}" />
+        <ShellContent
+            Title="{x:Static res_strings:Resources.title_activity_settings}"
+            ContentTemplate="{DataTemplate settings:SettingsPage}"
+            Icon="{maticons:MaterialIcon Symbol=Settings}" />
+    </TabBar>
+
+</viewModels:ViewModelShell>

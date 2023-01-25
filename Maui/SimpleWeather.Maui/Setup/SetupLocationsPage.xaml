@@ -1,0 +1,155 @@
+﻿<local:BaseSetupPage
+    x:Class="SimpleWeather.Maui.Setup.SetupLocationsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Setup"
+    xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:m="http://compiledbindings.com/"
+    xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mx="http://compiledbindings.com/x"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:toolkitConverters="clr-namespace:CommunityToolkit.Maui.Converters;assembly=CommunityToolkit.Maui"
+    Background="{DynamicResource PrimarySurfaceColorBrush}"
+    NavigationPage.HasBackButton="False"
+    NavigationPage.HasNavigationBar="False"
+    mc:Ignorable="d m mx">
+
+    <ContentPage.Resources>
+        <toolkitConverters:IsListNotNullOrEmptyConverter x:Key="collectionBooleanConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <VerticalStackLayout HorizontalOptions="Fill" VerticalOptions="Center">
+            <localControls:ViewBox
+                x:Name="AppLogo"
+                Margin="0,8,0,48"
+                MaximumHeightRequest="72"
+                MinimumHeightRequest="32">
+                <Image>
+                    <Image.Source>
+                        <maticons:MaterialIcon
+                            Size="108"
+                            Symbol="Place"
+                            Color="{AppThemeBinding Light={StaticResource LightOnPrimary},
+                                                    Dark={StaticResource DarkOnSurface}}" />
+                    </Image.Source>
+                </Image>
+            </localControls:ViewBox>
+            <Border
+                Margin="8,0"
+                BackgroundColor="Transparent"
+                HorizontalOptions="Fill"
+                MaximumWidthRequest="1080"
+                Stroke="Transparent">
+                <Border.Content>
+                    <OnPlatform x:TypeArguments="View">
+                        <On Platform="MacCatalyst">
+                            <On.Value>
+                                <localControls:ProgressAutoSuggestBox
+                                    x:Name="LocationSearchBox"
+                                    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                                                      Dark=Transparent}"
+                                    Footer="{x:Bind LocationSearchViewModel.Footer, Mode=OneWay}"
+                                    HorizontalOptions="CenterAndExpand"
+                                    IsSuggestionListOpen="{x:Bind LocationSearchViewModel.Locations, Converter={StaticResource collectionBooleanConverter}, Mode=OneWay}"
+                                    ItemTemplate="{StaticResource LocationQueryDataTemplate}"
+                                    ItemsSource="{x:Bind LocationSearchViewModel.Locations, Mode=OneWay}"
+                                    MaximumWidthRequest="1080"
+                                    PlaceholderText="{x:Static res_strings:Resources.setup_location_prompt}"
+                                    PlaceholderTextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                                           Dark={StaticResource DarkOnSurface}}"
+                                    QuerySubmitted="LocationSearchBox_QuerySubmitted"
+                                    SuggestionChosen="LocationSearchBox_SuggestionChosen"
+                                    TextChanged="LocationSearchBox_TextChanged"
+                                    TextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                                Dark={StaticResource DarkOnSurface}}">
+                                    <localControls:ProgressAutoSuggestBox.FooterTemplate>
+                                        <DataTemplate>
+                                            <Label
+                                                x:Name="FooterLabel"
+                                                Margin="8,6,8,4"
+                                                FontAttributes="Bold"
+                                                Text="{Binding}" />
+                                        </DataTemplate>
+                                    </localControls:ProgressAutoSuggestBox.FooterTemplate>
+                                </localControls:ProgressAutoSuggestBox>
+                            </On.Value>
+                        </On>
+                        <OnPlatform.Default>
+                            <Frame
+                                x:Name="LocationSearchBar"
+                                Padding="8"
+                                HorizontalOptions="Fill">
+                                <Frame.Background>
+                                    <OnPlatform x:TypeArguments="SolidColorBrush">
+                                        <OnPlatform.Default>
+                                            <SolidColorBrush Color="Transparent" />
+                                        </OnPlatform.Default>
+                                        <On Platform="WinUI">
+                                            <SolidColorBrush Color="{AppThemeBinding Light={StaticResource LightSecondaryContainer}, Dark={StaticResource DarkSecondaryContainer}}" />
+                                        </On>
+                                    </OnPlatform>
+                                </Frame.Background>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer NumberOfTapsRequired="1" Tapped="SearchBar_Tapped" />
+                                </Frame.GestureRecognizers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image Grid.Column="0" Margin="4">
+                                        <Image.Source>
+                                            <maticons:MaterialIcon
+                                                Size="24"
+                                                Symbol="Search"
+                                                Color="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},
+                                                                        Dark={StaticResource DarkOnSecondaryContainer}}" />
+                                        </Image.Source>
+                                    </Image>
+                                    <Label
+                                        Grid.Column="1"
+                                        Margin="22,0,0,0"
+                                        FontSize="Body"
+                                        Text="{x:Static res_strings:Resources.setup_location_prompt}"
+                                        TextColor="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},
+                                                                    Dark={StaticResource DarkOnSecondaryContainer}}"
+                                        VerticalOptions="Center" />
+                                </Grid>
+                            </Frame>
+                        </OnPlatform.Default>
+                    </OnPlatform>
+                </Border.Content>
+            </Border>
+            <Button
+                x:Name="GPSButton"
+                Margin="0,10"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryContainer},
+                                                  Dark={StaticResource DarkSecondaryContainer}}"
+                BorderColor="Transparent"
+                Clicked="GPS_Click"
+                ContentLayout="Right,5"
+                HorizontalOptions="Center"
+                Text="{x:Static res_strings:Resources.label_gpsfollow}"
+                TextColor="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},
+                                            Dark={StaticResource DarkOnSecondaryContainer}}">
+                <Button.ImageSource>
+                    <maticons:MaterialIcon
+                        Size="18"
+                        Symbol="MyLocation"
+                        Color="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},
+                                                Dark={StaticResource DarkOnSecondaryContainer}}" />
+                </Button.ImageSource>
+            </Button>
+            <ActivityIndicator
+                x:Name="LoadingRing"
+                Margin="10"
+                Color="{AppThemeBinding Light={StaticResource LightOnPrimary},
+                                        Dark={StaticResource DarkOnSurface}}"
+                IsRunning="{x:Bind LocationSearchViewModel.IsLoading, Mode=OneWay}" />
+        </VerticalStackLayout>
+    </Grid>
+</local:BaseSetupPage>

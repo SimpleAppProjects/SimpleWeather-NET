@@ -14,6 +14,11 @@
       "SimpleWeather.NET.Extras\\SimpleWeather.NET.Extras.shproj",
       "BingMapsRESTToolkit\\Source\\BingMapsRESTToolkit.Standard\\BingMapsRESTToolkit.Standard.csproj",
       "TranslationImport\\TranslationImport.csproj",
+	  "Maui\\SimpleToolkit.Core\\SimpleToolkit.Core.csproj",
+	  "Maui\\SupportWidgetXF\\SupportWidgetXF.csproj",
+	  "Maui\\SupportWidgetXF.Droid\\SupportWidgetXF.Droid.csproj",
+	  "Maui\\SupportWidgetXF.iOS\\SupportWidgetXF.iOS.csproj",
+	  "Maui\\SimpleWeather.Maui\\SimpleWeather.Maui.csproj"
     ]
   }
 }

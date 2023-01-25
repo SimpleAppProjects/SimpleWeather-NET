@@ -1,0 +1,67 @@
+﻿<local:BaseSetupPage
+    x:Class="SimpleWeather.Maui.Setup.SetupSettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:dataBinding="clr-namespace:SimpleWeather.Maui.DataBinding"
+    xmlns:helpers="clr-namespace:SimpleWeather.Maui.Helpers"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Setup"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    Background="{DynamicResource PrimarySurfaceColorBrush}"
+    NavigationPage.HasNavigationBar="False"
+    NavigationPage.HasBackButton="False">
+    <ScrollView x:Name="Scroller">
+        <VerticalStackLayout VerticalOptions="Center">
+            <controls:ViewBox
+                Margin="0,32,0,0"
+                HeightRequest="50"
+                HorizontalOptions="Center">
+                <Image Source="{matIcons:MaterialIcon Symbol=Settings, Size=96}" />
+            </controls:ViewBox>
+            <Label
+                Padding="8"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="{x:Static res_strings:Resources.setup_preferences_prompt}"
+                TextColor="{DynamicResource White}" />
+            <Border HorizontalOptions="Center" Stroke="Transparent">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="8,8,8,8" />
+                </Border.StrokeShape>
+                <Border.Background>
+                    <helpers:SolidColorAlphaBrush Opacity="0.85" Color="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+                </Border.Background>
+                <VerticalStackLayout
+                    Margin="0,16,0,0"
+                    Padding="16"
+                    MinimumHeightRequest="480"
+                    WidthRequest="{x:Bind dataBinding:BindingExtensions.Multiply(Scroller.Width, 0.75)}">
+                    <Label Padding="0,5" Text="{x:Static res_strings:Resources.Pref_SummaryUnits_Text}" />
+                    <HorizontalStackLayout Padding="10,5">
+                        <RadioButton
+                            x:Name="Fahrenheit"
+                            Margin="0,0,10,0"
+                            Content="{x:Static res_strings:Units.unit_fahrenheit}"
+                            GroupName="Unit" />
+                        <RadioButton
+                            x:Name="Celsius"
+                            Margin="10,0,0,0"
+                            Content="{x:Static res_strings:Units.unit_celsius}"
+                            GroupName="Unit" />
+                    </HorizontalStackLayout>
+                    <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
+                    <Picker
+                        x:Name="RefreshComboBox"
+                        Margin="0,10"
+                        HorizontalOptions="FillAndExpand"
+                        MinimumWidthRequest="260" />
+                    <Label Padding="0,5" Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
+                    <HorizontalStackLayout Padding="10,5">
+                        <Switch x:Name="AlertSwitch" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </VerticalStackLayout>
+    </ScrollView>
+</local:BaseSetupPage>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary
+    x:Class="SimpleWeather.Maui.Resources.Styles.LightTheme"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <!--  Maui Colors Start  -->
+    <Color x:Key="Primary">#0060A8</Color>
+    <Color x:Key="Secondary">#006494</Color>
+    <Color x:Key="Tertiary">#2B5EA8</Color>
+    <!--  Maui Colors End  -->
+
+    <!--  Custom Colors Start  -->
+    <Color x:Key="RegionColor">#FFFFFFFF</Color>
+    <SolidColorBrush x:Key="RegionBrush" Color="{DynamicResource RegionColor}" />
+    <Color x:Key="AppColor">#0070c0</Color>
+    <Color x:Key="AppAccentColor">#0070c0</Color>
+    <SolidColorBrush x:Key="AppColorBrush" Color="{DynamicResource AppColor}" />
+    <SolidColorBrush x:Key="AppAccentColorBrush" Color="{DynamicResource AppAccentColor}" />
+
+    <SolidColorBrush x:Key="PrimarySurfaceColorBrush" Color="{DynamicResource LightPrimary}" />
+    <SolidColorBrush x:Key="OnPrimarySurfaceColorBrush" Color="{DynamicResource LightOnPrimary}" />
+    <!--  Custom Colors End  -->
+</ResourceDictionary>

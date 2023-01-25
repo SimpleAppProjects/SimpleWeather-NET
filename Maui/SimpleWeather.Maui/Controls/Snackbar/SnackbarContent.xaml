@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+    x:Class="SimpleWeather.Maui.Controls.SnackbarContent"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matico="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
+    Margin="16,0"
+    MaximumWidthRequest="960"
+    MinimumWidthRequest="132"
+    VerticalOptions="End"
+    mc:Ignorable="d">
+    <d:ContentView.BindingContext>
+        <local:Snackbar />
+    </d:ContentView.BindingContext>
+    <Frame
+        Padding="0"
+        BackgroundColor="{AppThemeBinding Light={StaticResource LightInverseSurface},
+                                          Dark={StaticResource DarkInverseSurface}}"
+        HorizontalOptions="FillAndExpand">
+        <Grid
+            Padding="16,0,0,0"
+            HorizontalOptions="FillAndExpand"
+            MinimumHeightRequest="48">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Label
+                Margin="12,0,0,0"
+                FontAttributes="None"
+                FontSize="14"
+                Text="{Binding Message, Mode=OneWay}"
+                TextColor="{AppThemeBinding Light={StaticResource LightInverseOnSurface},
+                                            Dark={StaticResource DarkInverseOnSurface}}"
+                VerticalOptions="CenterAndExpand" />
+            <Button
+                x:Name="ActionButton"
+                Grid.Column="1"
+                Margin="16,0,0,0"
+                IsVisible="{Binding ButtonLabel, Converter={StaticResource stringBooleanConverter}}"
+                Text="{Binding ButtonLabel}"
+                TextColor="{AppThemeBinding Light={StaticResource LightInverseOnSurface},
+                                            Dark={StaticResource DarkInverseOnSurface}}"
+                VerticalOptions="Center" />
+            <ImageButton
+                x:Name="CloseButton"
+                Grid.Column="2"
+                Margin="5"
+                Clicked="CloseButton_Clicked"
+                CornerRadius="8"
+                HeightRequest="38"
+                Source="{matico:MaterialIcon Symbol=Close,
+                                             Color={AppThemeBinding Light={StaticResource LightInverseOnSurface},
+                                                                    Dark={StaticResource DarkInverseOnSurface}},
+                                             Size=16}"
+                VerticalOptions="Center"
+                WidthRequest="38" />
+        </Grid>
+    </Frame>
+</ContentView>
