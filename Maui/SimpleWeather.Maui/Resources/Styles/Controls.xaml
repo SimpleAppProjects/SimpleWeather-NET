@@ -85,7 +85,10 @@
 
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="location:LocationQuery">
         <ViewCell>
-            <Grid Padding="0,5" MinimumHeightRequest="65">
+            <Grid
+                Padding="0,5"
+                HorizontalOptions="FillAndExpand"
+                MinimumHeightRequest="65">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -112,7 +115,6 @@
                         Grid.Row="0"
                         Padding="16,0,0,0"
                         FontSize="Body"
-                        HorizontalTextAlignment="Start"
                         Text="{Binding LocationName, Mode=OneWay}"
                         VerticalTextAlignment="Center" />
                     <Label
@@ -120,7 +122,6 @@
                         Grid.Row="1"
                         Padding="16,0,0,0"
                         FontSize="Caption"
-                        HorizontalTextAlignment="Start"
                         IsVisible="{Binding Source={x:Reference LocationCountry}, Path=Text, Converter={StaticResource stringBooleanConverter}}"
                         Text="{Binding LocationRegionText, Mode=OneWay}"
                         VerticalTextAlignment="Center" />
@@ -185,49 +186,7 @@
                             CancelButtonColor="{TemplateBinding TextColor}"
                             Placeholder="{TemplateBinding PlaceholderText}"
                             PlaceholderColor="{TemplateBinding PlaceholderTextColor}"
-                            TextColor="{TemplateBinding TextColor}">
-                            <simpleCore:Popover.AttachedPopover>
-                                <simpleCore:Popover>
-                                    <Border
-                                        x:Name="PopupContainer"
-                                        Padding="8"
-                                        MinimumHeightRequest="{Binding Source={x:Reference LocationSearchBox}, Path=Height}"
-                                        MinimumWidthRequest="{Binding Source={x:Reference LocationSearchBox}, Path=Width}"
-                                        Stroke="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
-                                                                 Dark={StaticResource DarkSurfaceVariant}}"
-                                        StrokeThickness="1"
-                                        VerticalOptions="End"
-                                        ZIndex="1">
-                                        <Border.Background>
-                                            <OnPlatform x:TypeArguments="Brush">
-                                                <OnPlatform.Default>
-                                                    <SolidColorBrush Color="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
-                                                                                             Dark={StaticResource DarkSurfaceVariant}}" />
-                                                </OnPlatform.Default>
-                                                <On Platform="MacCatalyst,iOS">
-                                                    <On.Value>
-                                                        <SolidColorBrush Color="Transparent" />
-                                                    </On.Value>
-                                                </On>
-                                            </OnPlatform>
-                                        </Border.Background>
-                                        <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="8" />
-                                        </Border.StrokeShape>
-                                        <ListView
-                                            x:Name="SearchList"
-                                            Footer="{TemplateBinding Footer}"
-                                            FooterTemplate="{TemplateBinding FooterTemplate}"
-                                            ItemTemplate="{TemplateBinding ItemTemplate}"
-                                            ItemsSource="{TemplateBinding ItemsSource}"
-                                            BackgroundColor="Transparent"
-                                            MaximumHeightRequest="374"
-                                            SelectionMode="Single"
-                                            SeparatorVisibility="None" />
-                                    </Border>
-                                </simpleCore:Popover>
-                            </simpleCore:Popover.AttachedPopover>
-                        </SearchBar>
+                            TextColor="{TemplateBinding TextColor}" />
                         <controls:IndeterminateProgressBar
                             x:Name="ProgressBarControl"
                             Grid.Row="1"

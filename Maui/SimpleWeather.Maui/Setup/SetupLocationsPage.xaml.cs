@@ -1,4 +1,3 @@
-using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using SimpleWeather.Common.Utils;
@@ -169,68 +168,15 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         return ViewModel.LocationData?.IsValid() == true;
     }
 
-    private void FetchLocations(string queryString)
-    {
-        if (!String.IsNullOrWhiteSpace(queryString))
-        {
-            LocationSearchViewModel.FetchLocations(queryString);
-        }
-        else if (String.IsNullOrWhiteSpace(queryString))
-        {
-            timer?.Stop();
-            LocationSearchViewModel.FetchLocations(queryString);
-        }
-    }
-
-    private void LocationSearchBox_QuerySubmitted(object sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-    {
-        if (args.ChosenSuggestion is LocationQuery theChosenOne && theChosenOne != LocationQuery.Empty)
-        {
-            LocationSearchViewModel.OnLocationSelected(theChosenOne);
-        }
-        else if (!String.IsNullOrEmpty(args.QueryText))
-        {
-            FetchLocations(args.QueryText);
-        }
-    }
-
-    private void LocationSearchBox_SuggestionChosen(object sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-    {
-        if (args.SelectedItem is LocationQuery theChosenOne && sender is ProgressAutoSuggestBox suggestBox)
-        {
-            if (!String.IsNullOrEmpty(theChosenOne.Location_Query))
-            {
-                suggestBox.Text = theChosenOne.LocationName;
-                suggestBox.IsSuggestionListOpen = false;
-            }
-        }
-    }
-
-    private void LocationSearchBox_TextChanged(object sender, AutoSuggestBoxTextChangedEventArgs args)
-    {
-        // user is typing: reset already started timer (if existing)
-        if (timer?.IsRunning == true)
-            timer.Stop();
-
-        if (String.IsNullOrEmpty(args.NewText))
-        {
-            FetchLocations(args.NewText);
-        }
-        else
-        {
-            timer = Dispatcher.CreateTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(1000);
-            timer.Tick += (t, _) =>
-            {
-                timer?.Stop();
-                FetchLocations(args.NewText);
-            };
-            timer.Start();
-        }
-    }
-
     private async void SearchBar_Tapped(object sender, TappedEventArgs e)
     {
         await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
+    }
+
+    private void SearchBar_Clicked(object sender, EventArgs e)
+    {
+#if WINDOWS || MACCATALYST
+        await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
+#endif
     }
 }

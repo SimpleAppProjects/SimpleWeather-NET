@@ -22,93 +22,79 @@
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Grid VerticalOptions="Start">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
-            <Label
-                Grid.Row="0"
-                Grid.Column="1"
-                FontAttributes="Bold"
-                FontSize="Subtitle"
-                IsVisible="{OnPlatform WinUI=true,
-                                       MacCatalyst=true,
-                                       Default=false}"
-                Text="{x:Static res_strings:Resources.label_fab_add_location}"
-                VerticalOptions="Center" />
-            <ImageButton
-                Grid.Row="0"
-                Grid.Column="0"
-                Aspect="AspectFit"
-                BackgroundColor="Transparent"
-                Clicked="BackButton_Clicked"
-                HorizontalOptions="Start">
-                <ImageButton.Source>
-                    <maticons:MaterialIcon
-                        Size="{OnPlatform WinUI=24,
-                                          Default=48}"
-                        Symbol="ArrowBack"
-                        Color="{AppThemeBinding Light={StaticResource LightOnBackground},
-                                                Dark={StaticResource DarkOnBackground}}" />
-                </ImageButton.Source>
-            </ImageButton>
-            <Entry
-                x:Name="SearchView"
-                Grid.Row="{OnPlatform WinUI=1,
-                                      MacCatalyst=1,
-                                      Default=0}"
-                Grid.Column="{OnPlatform WinUI=0,
-                                         MacCatalyst=0,
-                                         Default=1}"
-                Grid.ColumnSpan="{OnPlatform WinUI=2,
-                                             MacCatalyst=2,
-                                             Default=1}"
-                Margin="{OnPlatform WinUI='4,8,4,0',
-                                    MacCatalyst='4,8,4,0',
-                                    Default='0'}"
-                android:Entry.ImeOptions="Search"
-                BackgroundColor="Transparent"
-                ClearButtonVisibility="WhileEditing"
-                Keyboard="Text"
-                MaximumWidthRequest="1080"
-                Placeholder="{x:Static res_strings:Resources.location_search_hint}"
-                PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnBackground},
-                                                   Dark={StaticResource DarkOnBackground}}"
-                ReturnType="Search"
-                TextChanged="LocationSearchBox_TextChanged"
-                TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
-                                            Dark={StaticResource DarkOnBackground}}"
-                VerticalTextAlignment="Center" />
-            <controls:IndeterminateProgressBar
-                x:Name="ProgressBarControl"
-                Grid.Row="1"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Margin="{OnPlatform WinUI='4,1,4,0',
-                                    MacCatalyst='4,1,4,0',
-                                    Default='2,1,2,0'}"
-                BaseColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
-                                            Dark={StaticResource DarkSurfaceVariant}}"
-                HeightRequest="2"
-                IsActive="{Binding IsLoading, Mode=OneWay}"
-                MaximumWidthRequest="{OnPlatform WinUI='1080',
-                                                 MacCatalyst='1080',
-                                                 Default='NaN'}"
-                ProgressColor="{AppThemeBinding Light={StaticResource LightPrimary},
-                                                Dark={StaticResource DarkPrimary}}"
-                VerticalOptions="End" />
-        </Grid>
+        <Border
+            BackgroundColor="Transparent"
+            HeightRequest="48"
+            HorizontalOptions="FillAndExpand"
+            Stroke="Transparent">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Image
+                    Grid.Column="0"
+                    Margin="12,0"
+                    Aspect="AspectFit"
+                    BackgroundColor="Transparent"
+                    HorizontalOptions="Start"
+                    VerticalOptions="FillAndExpand"
+                    WidthRequest="24">
+                    <Image.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="BackButton_Tapped" />
+                        <ClickGestureRecognizer Clicked="BackButton_Clicked" />
+                    </Image.GestureRecognizers>
+                    <Image.Source>
+                        <maticons:MaterialIcon
+                            Size="48"
+                            Symbol="ArrowBack"
+                            Color="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                    Dark={StaticResource DarkOnBackground}}" />
+                    </Image.Source>
+                </Image>
+                <Entry
+                    x:Name="SearchView"
+                    Grid.Column="1"
+                    Margin="0,0,8,0"
+                    android:Entry.ImeOptions="Search"
+                    Background="{x:Null}"
+                    ClearButtonVisibility="WhileEditing"
+                    Keyboard="Text"
+                    Placeholder="{x:Static res_strings:Resources.location_search_hint}"
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                       Dark={StaticResource DarkOnBackground}}"
+                    ReturnType="Search"
+                    TextChanged="LocationSearchBox_TextChanged"
+                    TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                Dark={StaticResource DarkOnBackground}}"
+                    VerticalOptions="FillAndExpand"
+                    VerticalTextAlignment="Center" />
+            </Grid>
+        </Border>
+        <controls:IndeterminateProgressBar
+            x:Name="ProgressBarControl"
+            Grid.Row="1"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            BaseColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                        Dark={StaticResource DarkSurfaceVariant}}"
+            HeightRequest="2"
+            IsActive="{Binding IsLoading, Mode=OneWay}"
+            ProgressColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                            Dark={StaticResource DarkPrimary}}"
+            VerticalOptions="End" />
+        <Rectangle
+            Grid.Row="1"
+            HeightRequest="1"
+            Opacity="0.25"
+            Stroke="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                     Dark={StaticResource DarkOnBackground}}"
+            VerticalOptions="End" />
         <Grid
-            Grid.Row="{OnPlatform WinUI=2,
-                                  MacCatalyst=2,
-                                  Default=1}"
+            Grid.Row="2"
             BackgroundColor="Transparent"
             VerticalOptions="FillAndExpand">
             <Grid.GestureRecognizers>
@@ -116,36 +102,35 @@
                 <ClickGestureRecognizer Clicked="BackButton_Clicked" />
             </Grid.GestureRecognizers>
             <Border
+                BackgroundColor="Transparent"
                 IsVisible="{Binding Locations, Converter={StaticResource collectionBooleanConverter}}"
-                MaximumWidthRequest="1080"
-                Stroke="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
-                                         Dark={StaticResource DarkSurfaceVariant}}"
-                StrokeThickness="1"
+                Stroke="Transparent"
                 VerticalOptions="StartAndExpand">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="4" />
-                </Border.StrokeShape>
-                <ListView
-                    x:Name="SearchList"
-                    Margin="8,4"
-                    BackgroundColor="Transparent"
-                    HasUnevenRows="False"
-                    ItemSelected="LocationSearchBox_ItemSelected"
-                    ItemTemplate="{StaticResource LocationQueryDataTemplate}"
-                    ItemsSource="{Binding Locations, Mode=OneWay}"
-                    RowHeight="64"
-                    SelectionMode="Single"
-                    SeparatorVisibility="None"
-                    VerticalOptions="StartAndExpand">
-                    <ListView.Footer>
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="Default"
-                            Text="{Binding Footer, Mode=OneWay}"
-                            TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
-                                                        Dark={StaticResource DarkOnBackground}}" />
-                    </ListView.Footer>
-                </ListView>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ListView
+                        x:Name="SearchList"
+                        Grid.Row="0"
+                        BackgroundColor="Transparent"
+                        HasUnevenRows="False"
+                        ItemSelected="LocationSearchBox_ItemSelected"
+                        ItemTemplate="{StaticResource LocationQueryDataTemplate}"
+                        ItemsSource="{Binding Locations, Mode=OneWay}"
+                        RowHeight="64"
+                        SelectionMode="Single"
+                        SeparatorVisibility="None" />
+                    <Label
+                        Grid.Row="1"
+                        Padding="8"
+                        FontAttributes="Bold"
+                        FontSize="Default"
+                        Text="{Binding Footer, Mode=OneWay}"
+                        TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                    Dark={StaticResource DarkOnBackground}}" />
+                </Grid>
             </Border>
         </Grid>
     </Grid>

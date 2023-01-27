@@ -8,6 +8,10 @@ using SimpleWeather.Weather_API.TZDB;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if __ANDROID__
+using Android.Locations;
+using AndroidX.Core.Content;
+#endif
 #if WINUI
 using Windows.Devices.Geolocation;
 #else
@@ -24,6 +28,15 @@ namespace SimpleWeather.Common.Location
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly ITZDBService TZDBService = Ioc.Default.GetService<ITZDBService>();
 
+#if __ANDROID__
+        private readonly LocationManager LocationMgr;
+
+        public LocationProvider()
+        {
+            LocationMgr = Platform.AppContext.GetSystemService(Android.Content.Context.LocationService) as LocationManager;
+        }
+#endif
+
         public async Task<bool> CheckPermissions()
         {
 #if WINUI
@@ -39,8 +52,13 @@ namespace SimpleWeather.Common.Location
             }
 
             return geoStatus == GeolocationAccessStatus.Allowed;
+#elif __ANDROID__
+            return AndroidX.Core.Location.LocationManagerCompat.IsLocationEnabled(LocationMgr) &&
+                ((ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessFineLocation) == Android.Content.PM.Permission.Granted) ||
+                (ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessCoarseLocation) == Android.Content.PM.Permission.Granted));
 #else
-            return await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
+            var permStatus = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+            return permStatus == PermissionStatus.Granted;
 #endif
         }
 

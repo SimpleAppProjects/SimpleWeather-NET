@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<!--<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>-->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
@@ -42,6 +42,54 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
+	  <AndroidResource Remove="Controls\Graphs\**" />
+	  <AndroidResource Remove="Notifications\**" />
+	  <AndroidResource Remove="Pages\**" />
+	  <AndroidResource Remove="Radar\**" />
+	  <AndroidResource Remove="Utf8JsonGen\**" />
+	  <AndroidResource Remove="WeatherAlerts\**" />
+	  <Compile Remove="Controls\Graphs\**" />
+	  <Compile Remove="Notifications\**" />
+	  <Compile Remove="Pages\**" />
+	  <Compile Remove="Radar\**" />
+	  <Compile Remove="Utf8JsonGen\**" />
+	  <Compile Remove="WeatherAlerts\**" />
+	  <EmbeddedResource Remove="Controls\Graphs\**" />
+	  <EmbeddedResource Remove="Notifications\**" />
+	  <EmbeddedResource Remove="Pages\**" />
+	  <EmbeddedResource Remove="Radar\**" />
+	  <EmbeddedResource Remove="Utf8JsonGen\**" />
+	  <EmbeddedResource Remove="WeatherAlerts\**" />
+	  <MauiCss Remove="Controls\Graphs\**" />
+	  <MauiCss Remove="Notifications\**" />
+	  <MauiCss Remove="Pages\**" />
+	  <MauiCss Remove="Radar\**" />
+	  <MauiCss Remove="Utf8JsonGen\**" />
+	  <MauiCss Remove="WeatherAlerts\**" />
+	  <MauiXaml Remove="Controls\Graphs\**" />
+	  <MauiXaml Remove="Notifications\**" />
+	  <MauiXaml Remove="Pages\**" />
+	  <MauiXaml Remove="Radar\**" />
+	  <MauiXaml Remove="Utf8JsonGen\**" />
+	  <MauiXaml Remove="WeatherAlerts\**" />
+	  <None Remove="Controls\Graphs\**" />
+	  <None Remove="Notifications\**" />
+	  <None Remove="Pages\**" />
+	  <None Remove="Radar\**" />
+	  <None Remove="Utf8JsonGen\**" />
+	  <None Remove="WeatherAlerts\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Platforms\Android\Resources\color\color_text_hint.xml" />
+	  <None Remove="Platforms\Android\Resources\values-v29\styles.xml" />
+	  <None Remove="Platforms\Android\Resources\values-v31\colors.xml" />
+	  <None Remove="Platforms\Android\Resources\values-night-v31\colors.xml" />
+	  <None Remove="Platforms\Android\Resources\values-night\colors.xml" />
+	  <None Remove="Platforms\Android\Resources\values-night\styles.xml" />
+	  <None Remove="Platforms\Android\Resources\values\dimens.xml" />
+	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
+	</ItemGroup>
+	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="2.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
@@ -66,7 +114,6 @@
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
   </ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SimpleToolkit.Core\SimpleToolkit.Core.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
@@ -133,13 +180,9 @@
 		</MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Controls\Graphs\" />
-		<Folder Include="Pages\" />
+		<Folder Include="Platforms\Android\Resources\layout\" />
+		<Folder Include="Platforms\Android\Resources\drawable\" />
 		<Folder Include="Properties\PublishProfiles\" />
-		<Folder Include="WeatherAlerts\" />
-		<Folder Include="Utf8JsonGen\" />
-		<Folder Include="Radar\" />
-		<Folder Include="Notifications\" />
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Update="Main\LocationsPage.xaml.cs">
@@ -297,4 +340,5 @@
 	  </CustomCommands>
 	  <CreatePackage>false</CreatePackage>
 	</PropertyGroup>
+	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 </Project>

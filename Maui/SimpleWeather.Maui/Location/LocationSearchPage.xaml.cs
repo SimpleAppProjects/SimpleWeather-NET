@@ -20,6 +20,24 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
     public LocationSearchPage()
     {
         InitializeComponent();
+#if ANDROID
+        this.SearchView.HandlerChanged += SearchView_HandlerChanged;
+#endif
+    }
+
+    private void SearchView_HandlerChanged(object sender, EventArgs e)
+    {
+#if ANDROID
+        if (this.SearchView.Handler?.PlatformView is Android.Widget.EditText view)
+        {
+            view.Background = null;
+            view.Gravity = Android.Views.GravityFlags.CenterVertical;
+            view.SetCursorVisible(true);
+            view.Focusable = true;
+            view.FocusableInTouchMode = true;
+            view.SetSingleLine();
+        }
+#endif
     }
 
     private SnackbarManager SnackMgr;

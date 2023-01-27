@@ -1,6 +1,4 @@
 ﻿using CommunityToolkit.Maui.Markup;
-using SimpleToolkit.Core;
-using SimpleWeather.Utils;
 using System.Collections;
 
 namespace SimpleWeather.Maui.Controls;
@@ -26,7 +24,7 @@ public partial class ProgressAutoSuggestBox : TemplatedView
 
     public Color ProgressBarTrackColor
     {
-        get => (Color) GetValue(ProgressBarTrackColorProperty);
+        get => (Color)GetValue(ProgressBarTrackColorProperty);
         set => SetValue(ProgressBarTrackColorProperty, value);
     }
 
@@ -35,7 +33,7 @@ public partial class ProgressAutoSuggestBox : TemplatedView
 
     public Color ProgressBarIndicatorColor
     {
-        get => (Color) GetValue(ProgressBarIndicatorColorProperty);
+        get => (Color)GetValue(ProgressBarIndicatorColorProperty);
         set => SetValue(ProgressBarIndicatorColorProperty, value);
     }
 
@@ -197,22 +195,10 @@ public partial class ProgressAutoSuggestBox : TemplatedView
         LocationSearchBox.TextChanged += LocationSearchBox_TextChanged;
         LocationSearchBox.SizeChanged += LocationSearchBox_SizeChanged;
         SearchList.ItemSelected += SearchList_ItemSelected;
-
-        if (Popover.GetAttachedPopover(LocationSearchBox) is Popover popover)
-        {
-            popover.Opened += PopoverExt_Opened;
-            popover.Closed += PopoverExt_Closed;
-        }
     }
 
     private void ProgressAutoSuggestBox_Unloaded(object sender, EventArgs e)
     {
-        if (Popover.GetAttachedPopover(LocationSearchBox) is Popover popover)
-        {
-            popover.Opened -= PopoverExt_Opened;
-            popover.Closed -= PopoverExt_Closed;
-        }
-
         LocationSearchBox.SearchButtonPressed += LocationSearchBox_SearchButtonPressed;
         LocationSearchBox.TextChanged += LocationSearchBox_TextChanged;
         LocationSearchBox.SizeChanged += LocationSearchBox_SizeChanged;
@@ -324,36 +310,6 @@ public partial class ProgressAutoSuggestBox : TemplatedView
         if (bindable is ProgressAutoSuggestBox suggestBox)
         {
             var isVisible = (bool)newValue;
-
-            var popover = Popover.GetAttachedPopover(suggestBox.LocationSearchBox);
-            if (popover != null)
-            {
-                try
-                {
-                    if (isVisible)
-                    {
-
-                        var window = suggestBox.LocationSearchBox.Window ?? suggestBox.LocationSearchBox.GetVisualElementWindow();
-
-                        if (window != null)
-                        {
-                            var suggestedHeight = suggestBox.LocationSearchBox.GetBestPopupHeight(window);
-#if IOS || MACCATALYST
-                            suggestBox.PopupContainer.HeightRequest = suggestedHeight;
-#else
-                            suggestBox.PopupContainer.MaximumHeightRequest = suggestedHeight;
-#endif
-                        }
-
-                        suggestBox.LocationSearchBox.ShowAttachedPopover();
-                    }
-                    else
-                    {
-                        suggestBox.LocationSearchBox.HideAttachedPopover();
-                    }
-                }
-                catch { }
-            }
         }
     }
 
