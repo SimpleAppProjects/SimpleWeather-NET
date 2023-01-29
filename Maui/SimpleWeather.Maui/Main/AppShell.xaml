@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <viewModels:ViewModelShell
     x:Class="SimpleWeather.Maui.Main.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -14,7 +14,9 @@
     Shell.NavBarIsVisible="False"
     Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
                                                   Dark={StaticResource DarkSurface}}"
-    Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+    Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                  Dark={StaticResource DarkPrimary}}"
+    Shell.TabBarUnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                   Dark={StaticResource DarkOnSurface}}"
     Shell.TabBarIsVisible="True">
 
@@ -22,23 +24,23 @@
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_weathernow}"
             ContentTemplate="{DataTemplate local:WeatherNow}"
-            Icon="{FileImageSource File='solar_stroke.png'}" />
+            Icon="{FileImageSource File='full_sun.png'}" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_alerts}"
             ContentTemplate="{DataTemplate local:WeatherAlertPage}"
-            Icon="{maticons:MaterialIcon Symbol=Error}" />
+            Icon="{FileImageSource File='ic_error.png'}" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_radar}"
             ContentTemplate="{DataTemplate local:WeatherRadarPage}"
-            Icon="{maticons:MaterialIcon Symbol=Radar}" />
+            Icon="{FileImageSource File='ic_radar.png'}" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_locations}"
             ContentTemplate="{DataTemplate local:LocationsPage}"
-            Icon="{maticons:MaterialIcon Symbol=MyLocation}" />
+            Icon="{FileImageSource File='ic_star_border.png'}" />
         <ShellContent
             Title="{x:Static res_strings:Resources.title_activity_settings}"
             ContentTemplate="{DataTemplate settings:SettingsPage}"
-            Icon="{maticons:MaterialIcon Symbol=Settings}" />
+            Icon="{FileImageSource File='ic_settings.png'}" />
     </TabBar>
 
 </viewModels:ViewModelShell>

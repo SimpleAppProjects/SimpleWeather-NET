@@ -42,54 +42,6 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
-	  <AndroidResource Remove="Controls\Graphs\**" />
-	  <AndroidResource Remove="Notifications\**" />
-	  <AndroidResource Remove="Pages\**" />
-	  <AndroidResource Remove="Radar\**" />
-	  <AndroidResource Remove="Utf8JsonGen\**" />
-	  <AndroidResource Remove="WeatherAlerts\**" />
-	  <Compile Remove="Controls\Graphs\**" />
-	  <Compile Remove="Notifications\**" />
-	  <Compile Remove="Pages\**" />
-	  <Compile Remove="Radar\**" />
-	  <Compile Remove="Utf8JsonGen\**" />
-	  <Compile Remove="WeatherAlerts\**" />
-	  <EmbeddedResource Remove="Controls\Graphs\**" />
-	  <EmbeddedResource Remove="Notifications\**" />
-	  <EmbeddedResource Remove="Pages\**" />
-	  <EmbeddedResource Remove="Radar\**" />
-	  <EmbeddedResource Remove="Utf8JsonGen\**" />
-	  <EmbeddedResource Remove="WeatherAlerts\**" />
-	  <MauiCss Remove="Controls\Graphs\**" />
-	  <MauiCss Remove="Notifications\**" />
-	  <MauiCss Remove="Pages\**" />
-	  <MauiCss Remove="Radar\**" />
-	  <MauiCss Remove="Utf8JsonGen\**" />
-	  <MauiCss Remove="WeatherAlerts\**" />
-	  <MauiXaml Remove="Controls\Graphs\**" />
-	  <MauiXaml Remove="Notifications\**" />
-	  <MauiXaml Remove="Pages\**" />
-	  <MauiXaml Remove="Radar\**" />
-	  <MauiXaml Remove="Utf8JsonGen\**" />
-	  <MauiXaml Remove="WeatherAlerts\**" />
-	  <None Remove="Controls\Graphs\**" />
-	  <None Remove="Notifications\**" />
-	  <None Remove="Pages\**" />
-	  <None Remove="Radar\**" />
-	  <None Remove="Utf8JsonGen\**" />
-	  <None Remove="WeatherAlerts\**" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="Platforms\Android\Resources\color\color_text_hint.xml" />
-	  <None Remove="Platforms\Android\Resources\values-v29\styles.xml" />
-	  <None Remove="Platforms\Android\Resources\values-v31\colors.xml" />
-	  <None Remove="Platforms\Android\Resources\values-night-v31\colors.xml" />
-	  <None Remove="Platforms\Android\Resources\values-night\colors.xml" />
-	  <None Remove="Platforms\Android\Resources\values-night\styles.xml" />
-	  <None Remove="Platforms\Android\Resources\values\dimens.xml" />
-	  <None Remove="Platforms\Android\Resources\values\styles.xml" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="2.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
@@ -132,33 +84,11 @@
 		<MauiXaml Update="Location\LocationSearchPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Main\LocationsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherAlertPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherAQIPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherChartsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherDetailsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherNow.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Main\WeatherRadarPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Preferences\SettingsPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Controls.xaml">
-			<Generator>
-			</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Converters.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -180,15 +110,10 @@
 		</MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Platforms\Android\Resources\layout\" />
-		<Folder Include="Platforms\Android\Resources\drawable\" />
-		<Folder Include="Properties\PublishProfiles\" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Update="Main\LocationsPage.xaml.cs">
-			<DependentUpon>LocationsPage.xaml</DependentUpon>
+		<Compile Include="**/*.xaml.cs" Exclude="@(Compile)">
+		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
-	</ItemGroup>
+    </ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
