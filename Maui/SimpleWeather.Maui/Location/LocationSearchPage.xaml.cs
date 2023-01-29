@@ -76,6 +76,8 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
 
         LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
         LocationSearchViewModel.Initialize();
+
+        this.SearchView.Focus();
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -152,7 +154,6 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
         SettingsManager.WeatherLoaded = true;
 
         // Setup complete
-        App.Current.SendBackButtonPressed();
         WeakReferenceMessenger.Default.Send(new LocationSelectedMessage(location));
     }
 

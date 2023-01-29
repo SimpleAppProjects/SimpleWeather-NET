@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView
     x:Class="SimpleWeather.Maui.Controls.SnackbarContent"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,7 +7,6 @@
     xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:matico="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
     Margin="16,0"
     MaximumWidthRequest="960"
     MinimumWidthRequest="132"
@@ -54,12 +53,13 @@
                 Clicked="CloseButton_Clicked"
                 CornerRadius="8"
                 HeightRequest="38"
-                Source="{matico:MaterialIcon Symbol=Close,
-                                             Color={AppThemeBinding Light={StaticResource LightInverseOnSurface},
-                                                                    Dark={StaticResource DarkInverseOnSurface}},
-                                             Size=16}"
                 VerticalOptions="Center"
-                WidthRequest="38" />
+                WidthRequest="38">
+                <ImageButton.Source>
+                    <matico:MaterialIcon Symbol="Close" Size="16" Color="{AppThemeBinding Light={StaticResource LightInverseOnSurface},
+                                                                    Dark={StaticResource DarkInverseOnSurface}}" />
+                </ImageButton.Source>
+            </ImageButton>
         </Grid>
     </Frame>
 </ContentView>

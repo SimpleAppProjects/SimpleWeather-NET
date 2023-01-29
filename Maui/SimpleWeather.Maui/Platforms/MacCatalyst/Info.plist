@@ -26,5 +26,11 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
 </dict>
 </plist>

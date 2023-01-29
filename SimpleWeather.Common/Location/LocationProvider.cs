@@ -57,8 +57,7 @@ namespace SimpleWeather.Common.Location
                 ((ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessFineLocation) == Android.Content.PM.Permission.Granted) ||
                 (ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessCoarseLocation) == Android.Content.PM.Permission.Granted));
 #else
-            var permStatus = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-            return permStatus == PermissionStatus.Granted;
+            return await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
 #endif
         }
 

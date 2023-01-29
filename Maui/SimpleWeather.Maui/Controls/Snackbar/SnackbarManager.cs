@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Mvvm.Input;
 using toolkitAlerts = CommunityToolkit.Maui.Alerts;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using SimpleWeather.Maui.MaterialIcons;
 
 namespace SimpleWeather.Maui.Controls
 {
@@ -128,21 +130,54 @@ namespace SimpleWeather.Maui.Controls
             else
             {
 #if !WINDOWS
-                var snackView = toolkitAlerts.Snackbar.Make(snackbar.Message, action: snackbar?.ButtonAction != null ? () =>
+                var snackOptions = new SnackbarOptions()
+                {
+                    ActionButtonFont = Microsoft.Maui.Font.SystemFontOfSize(14, FontWeight.Semibold)
+                };
+
+                if (App.Current.CurrentTheme == AppTheme.Dark)
+                {
+                    if (App.Current.Resources.TryGetValue("DarkInverseSurface", out object backgroundColor))
+                    {
+                        snackOptions.BackgroundColor = backgroundColor as Color;
+                    }
+                    if (App.Current.Resources.TryGetValue("DarkInverseOnSurface", out object textColor))
+                    {
+                        snackOptions.TextColor = textColor as Color;
+                    }
+                    if (App.Current.Resources.TryGetValue("SimpleBlue", out object accentColor))
+                    {
+                        snackOptions.ActionButtonTextColor = accentColor as Color;
+                    }
+                }
+                else
+                {
+                    if (App.Current.Resources.TryGetValue("LightInverseSurface", out object backgroundColor))
+                    {
+                        snackOptions.BackgroundColor = backgroundColor as Color;
+                    }
+                    if (App.Current.Resources.TryGetValue("LightInverseOnSurface", out object textColor))
+                    {
+                        snackOptions.TextColor = textColor as Color;
+                    }
+                    if (App.Current.Resources.TryGetValue("SimpleBlueLight", out object accentColor))
+                    {
+                        snackOptions.ActionButtonTextColor = accentColor as Color;
+                    }
+                }
+
+                var snackView = toolkitAlerts.Snackbar.Make(snackbar.Message, action: () =>
                 {
                     snackbar?.ButtonAction?.Invoke();
                     // Now dismiss the Snackbar
                     snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.Action);
                     if (snacks.Count > 0) snacks.Pop();
                     UpdateView();
-                }
-                : null, actionButtonText: snackbar.ButtonLabel ?? string.Empty, TimeSpan.FromMinutes(1), anchor: anchorView,
-                visualOptions: new SnackbarOptions()
-                {
-                    //ActionButtonTextColor = ,
-                    //TextColor = ,
-                    //BackgroundColor = ,
-                });
+                }, actionButtonText: snackbar.ButtonLabel
+#if IOS || MACCATALYST
+                + "    " // Add whitespace after label
+#endif
+                ?? string.Empty, TimeSpan.FromMinutes(1), anchor: anchorView, visualOptions: snackOptions);
 
                 snackbarView?.Dismiss();
                 snackbarView = snackView;

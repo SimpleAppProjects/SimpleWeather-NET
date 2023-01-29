@@ -80,7 +80,6 @@ namespace SimpleWeather.Maui.Setup
             SettingsManager.WeatherLoaded = true;
             SettingsManager.OnBoardComplete = true;
             App.Current.MainPage = new AppShell();
-            //this.Frame.Navigate(typeof(Shell), ViewModel.LocationData);
         }
 
         public void OnNavigated()

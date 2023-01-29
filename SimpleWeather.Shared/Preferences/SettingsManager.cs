@@ -877,6 +877,7 @@ namespace SimpleWeather.Preferences
         {
             if (!ContainsKey(KEY_ONBOARDINGCOMPLETE))
             {
+                SetValue(KEY_ONBOARDINGCOMPLETE, false);
                 return false;
             }
             else

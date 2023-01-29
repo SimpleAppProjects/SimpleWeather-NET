@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIDeviceFamily</key>
@@ -32,5 +34,9 @@
 	<string></string>
 	<key>CFBundleDisplayName</key>
 	<string>SimpleWeather</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
 </dict>
 </plist>

@@ -10,6 +10,7 @@ using SimpleWeather.Maui.Location;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System.ComponentModel;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Setup;
 
@@ -71,6 +72,8 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         UnloadSnackManager();
 
         LocationSearchViewModel.PropertyChanged -= LocationSearchViewModel_PropertyChanged;
+
+        WeakReferenceMessenger.Default.Unregister<LocationSelectedMessage>(this);
     }
 
     private async void LocationSearchViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -124,6 +127,8 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
         SettingsManager.WeatherLoaded = true;
 
+        // Pop Modals
+        await App.Current.Navigation.PopModalAsync();
         // Setup complete
         ViewModel.LocationData = location;
         ViewModel.Next();
@@ -158,7 +163,16 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
     private async Task FetchGeoLocation()
     {
-        await this.LocationPermissionEnabled();
+        if (!await this.LocationPermissionEnabled())
+        {
+            var snackbar = Snackbar.Make(ResStrings.Msg_LocDeniedSettings, SnackbarDuration.Short);
+            snackbar.SetAction(ResStrings.action_settings, async () =>
+            {
+                await this.LaunchLocationSettings();
+            });
+            ShowSnackbar(snackbar);
+            return;
+        }
 
         LocationSearchViewModel.FetchGeoLocation();
     }
@@ -173,10 +187,25 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
     }
 
-    private void SearchBar_Clicked(object sender, EventArgs e)
+    private async void SearchBar_Clicked(object sender, EventArgs e)
     {
 #if WINDOWS || MACCATALYST
         await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
 #endif
+    }
+
+    private void SearchBar_SizeChanged(System.Object sender, System.EventArgs e)
+    {
+        if (SearchBar.Width > 1080)
+        {
+            SearchBar.WidthRequest = 1080;
+        }
+        else
+        {
+            if (SearchBar.Parent is VisualElement parent)
+            {
+                SearchBar.WidthRequest = parent.Width - SearchBar.Margin.Left - SearchBar.Margin.Right;
+            }
+        }
     }
 }

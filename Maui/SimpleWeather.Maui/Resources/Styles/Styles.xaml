@@ -298,7 +298,7 @@
                         <Grid x:Name="Root" RowSpacing="0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
@@ -366,6 +366,10 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Radio Button Theme -->
+    <SolidColorBrush x:Key="RadioButtonCheckMarkThemeColor" Color="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+    <SolidColorBrush x:Key="RadioButtonThemeColor" Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
 
     <Style TargetType="RefreshView">
         <Setter Property="RefreshColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource Gray200}}" />

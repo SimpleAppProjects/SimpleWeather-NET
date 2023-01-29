@@ -23,6 +23,7 @@
                 Padding="8"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
+                FontSize="Header"
                 Text="{x:Static res_strings:Resources.setup_preferences_prompt}"
                 TextColor="{DynamicResource White}" />
             <Border HorizontalOptions="Center" Stroke="Transparent">
@@ -43,12 +44,20 @@
                             x:Name="Fahrenheit"
                             Margin="0,0,10,0"
                             Content="{x:Static res_strings:Units.unit_fahrenheit}"
-                            GroupName="Unit" />
+                            GroupName="Unit">
+                            <RadioButton.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                            </RadioButton.GestureRecognizers>
+                        </RadioButton>
                         <RadioButton
                             x:Name="Celsius"
                             Margin="10,0,0,0"
                             Content="{x:Static res_strings:Units.unit_celsius}"
-                            GroupName="Unit" />
+                            GroupName="Unit">
+                            <RadioButton.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                            </RadioButton.GestureRecognizers>
+                        </RadioButton>
                     </HorizontalStackLayout>
                     <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
                     <Picker

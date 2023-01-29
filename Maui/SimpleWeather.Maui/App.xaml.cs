@@ -64,6 +64,8 @@ public partial class App : Application
         this.RequestedThemeChanged += App_RequestedThemeChanged;
         UpdateAppTheme(this.CurrentTheme);
 
+        Console.WriteLine(SimpleWeather.Helpers.ApplicationDataHelper.GetLocalFolderPath());
+
         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
         {
             MainPage = new AppShell();

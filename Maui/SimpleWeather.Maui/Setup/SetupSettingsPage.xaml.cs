@@ -122,4 +122,12 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
     {
         return true;
     }
+
+    private void RadioButton_Tapped(object sender, TappedEventArgs e)
+    {
+        if (sender is RadioButton button && button.IsEnabled)
+        {
+            button.IsChecked = true;
+        }
+    }
 }
