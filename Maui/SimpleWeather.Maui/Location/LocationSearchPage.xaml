@@ -60,9 +60,9 @@
                     Grid.Column="1"
                     Margin="0,0,8,0"
                     android:Entry.ImeOptions="Search"
+                    ios:Entry.CursorColor="{StaticResource AppAccentColor}"
                     Background="{x:Null}"
                     ClearButtonVisibility="WhileEditing"
-                    ios:Entry.CursorColor="{StaticResource AppAccentColor}"
                     Keyboard="Text"
                     Placeholder="{x:Static res_strings:Resources.location_search_hint}"
                     PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnBackground},

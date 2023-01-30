@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_Units"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                      Dark={StaticResource DarkSurface}}">
+    <Grid>
+        <ScrollView Padding="16,0" HorizontalScrollBarVisibility="Never">
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource SettingsTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_units}" />
+                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_temperature}" />
+                <HorizontalStackLayout x:Name="TemperatureUnits" />
+                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_speed}" />
+                <HorizontalStackLayout x:Name="SpeedUnits" />
+                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_distance}" />
+                <HorizontalStackLayout x:Name="DistanceUnits" />
+                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_precipitation}" />
+                <HorizontalStackLayout x:Name="PrecipitationUnits" />
+                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_pressure}" />
+                <HorizontalStackLayout x:Name="PressureUnits" />
+                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
+                <Label
+                    x:Name="ResetTitle"
+                    Style="{DynamicResource PrefTitleStyle}"
+                    Text="{x:Static res_strings:Resources.pref_title_resetunits}" />
+                <HorizontalStackLayout Padding="0,5">
+                    <Button
+                        x:Name="ResetImperialUnits"
+                        Margin="0,5,5,5"
+                        Clicked="ResetImperialUnits_Clicked"
+                        Text="°F, mph, in, inHg, mi" />
+                    <Button
+                        x:Name="ResetMetricUnits"
+                        Margin="5"
+                        Clicked="ResetMetricUnits_Clicked"
+                        Text="°C, km/h, mm, mb, km" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

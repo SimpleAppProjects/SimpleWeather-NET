@@ -9,8 +9,8 @@
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     Background="{DynamicResource PrimarySurfaceColorBrush}"
-    NavigationPage.HasNavigationBar="False"
-    NavigationPage.HasBackButton="False">
+    NavigationPage.HasBackButton="False"
+    NavigationPage.HasNavigationBar="False">
     <ScrollView x:Name="Scroller">
         <VerticalStackLayout VerticalOptions="Center">
             <controls:ViewBox
@@ -21,9 +21,9 @@
             </controls:ViewBox>
             <Label
                 Padding="8"
+                FontSize="Header"
                 HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
-                FontSize="Header"
                 Text="{x:Static res_strings:Resources.setup_preferences_prompt}"
                 TextColor="{DynamicResource White}" />
             <Border HorizontalOptions="Center" Stroke="Transparent">
@@ -47,6 +47,7 @@
                             GroupName="Unit">
                             <RadioButton.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                                <ClickGestureRecognizer Clicked="RadioButton_Clicked" />
                             </RadioButton.GestureRecognizers>
                         </RadioButton>
                         <RadioButton
@@ -56,6 +57,7 @@
                             GroupName="Unit">
                             <RadioButton.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                                <ClickGestureRecognizer Clicked="RadioButton_Clicked" />
                             </RadioButton.GestureRecognizers>
                         </RadioButton>
                     </HorizontalStackLayout>

@@ -16,9 +16,13 @@
                                                   Dark={StaticResource DarkSurface}}"
     Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource LightPrimary},
                                                   Dark={StaticResource DarkPrimary}}"
+    Shell.TabBarIsVisible="True"
     Shell.TabBarUnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                   Dark={StaticResource DarkOnSurface}}"
-    Shell.TabBarIsVisible="True">
+    Shell.TitleColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                       Dark={StaticResource DarkPrimary}}"
+    Shell.UnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                            Dark={StaticResource DarkOnSurface}}">
 
     <TabBar>
         <ShellContent
@@ -37,10 +41,15 @@
             Title="{x:Static res_strings:Resources.label_nav_locations}"
             ContentTemplate="{DataTemplate local:LocationsPage}"
             Icon="{FileImageSource File='ic_star_border.png'}" />
-        <ShellContent
-            Title="{x:Static res_strings:Resources.title_activity_settings}"
-            ContentTemplate="{DataTemplate settings:SettingsPage}"
-            Icon="{FileImageSource File='ic_settings.png'}" />
+        <Tab Title="{x:Static res_strings:Resources.title_activity_settings}" Icon="{FileImageSource File='ic_settings.png'}">
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_general}" ContentTemplate="{DataTemplate settings:Settings_General}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_icons}" ContentTemplate="{DataTemplate settings:Settings_Icons}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_units}" ContentTemplate="{DataTemplate settings:Settings_Units}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_features}" ContentTemplate="{DataTemplate settings:Settings_Features}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_credits}" ContentTemplate="{DataTemplate settings:Settings_Credits}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_oslibs}" ContentTemplate="{DataTemplate settings:Settings_OSSLibs}" />
+            <ShellContent Title="{x:Static res_strings:Resources.pref_title_about}" ContentTemplate="{DataTemplate settings:Settings_About}" />
+        </Tab>
     </TabBar>
 
 </viewModels:ViewModelShell>

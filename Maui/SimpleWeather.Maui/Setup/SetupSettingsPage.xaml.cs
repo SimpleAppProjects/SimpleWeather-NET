@@ -130,4 +130,14 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
             button.IsChecked = true;
         }
     }
+
+    private void RadioButton_Clicked(object sender, EventArgs e)
+    {
+#if WINDOWS || MACCATALYST
+        if (sender is RadioButton button && button.IsEnabled)
+        {
+            button.IsChecked = true;
+        }
+#endif
+    }
 }

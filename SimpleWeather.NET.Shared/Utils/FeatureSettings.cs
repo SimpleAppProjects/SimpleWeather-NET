@@ -24,7 +24,9 @@ namespace SimpleWeather.NET.Utils
         public static bool ExtraDetailsEnabled => UV || Beaufort || AQIndex || MoonPhase;
 
         public static bool LocationPanelBackgroundImage { get { return GetPanelBackgroundImageEnabled(); } set { SetPanelBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_LOCPANELBGIMAGE, NewValue = value }); } }
+#if WINDOWS
         public static bool TileBackgroundImage { get { return GetTileBackgroundImageEnabled(); } set { SetTileBackgroundImageEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_TILEBGIMAGE, NewValue = value }); } }
+#endif
         public static bool PollenEnabled { get { return GetPollenEnabled(); } set { SetPollenEnabled(value); OnFeatureSettingsChanged?.Invoke(new FeatureSettingsChangedEventArgs { Key = KEY_POLLEN, NewValue = value }); } }
         #endregion
 
@@ -181,6 +183,7 @@ namespace SimpleWeather.NET.Utils
             featureSettings.SetValue(KEY_LOCPANELBGIMAGE, value);
         }
 
+#if WINDOWS
         private static bool GetTileBackgroundImageEnabled()
         {
             return featureSettings.GetValue(KEY_TILEBGIMAGE, true);
@@ -191,6 +194,7 @@ namespace SimpleWeather.NET.Utils
             featureSettings.SetValue(KEY_TILEBGIMAGE, value);
             Task.Run(BackgroundTasks.WeatherUpdateBackgroundTask.RequestAppTrigger);
         }
+#endif
 
         private static bool GetPollenEnabled()
         {

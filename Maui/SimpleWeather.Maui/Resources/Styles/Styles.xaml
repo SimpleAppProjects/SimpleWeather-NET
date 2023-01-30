@@ -367,7 +367,7 @@
         </Setter>
     </Style>
 
-    <!-- Radio Button Theme -->
+    <!--  Radio Button Theme  -->
     <SolidColorBrush x:Key="RadioButtonCheckMarkThemeColor" Color="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
     <SolidColorBrush x:Key="RadioButtonThemeColor" Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
 
@@ -553,6 +553,23 @@
                 </VisualStateGroup>
             </VisualStateGroupList>
         </Setter>
+    </Style>
+
+    <Style x:Key="SettingsTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Header" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="PrefTitleStyle" TargetType="Label">
+        <Setter Property="FontSize" Value="Subtitle" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
+    <Style x:Key="SettingsDividerStyle" TargetType="Rectangle">
+        <Setter Property="Margin" Value="0,7.5" />
+        <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+        <Setter Property="Opacity" Value="0.25" />
     </Style>
 
 </ResourceDictionary>

@@ -1,8 +1,8 @@
 namespace SimpleWeather.Maui.Preferences;
 
-public partial class SettingsPage : ContentPage
+public partial class Settings_Icons : ContentPage
 {
-	public SettingsPage()
+	public Settings_Icons()
 	{
 		InitializeComponent();
 	}

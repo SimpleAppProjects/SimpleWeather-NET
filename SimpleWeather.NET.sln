@@ -49,6 +49,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Maui", "Maui", "{3791BCEF-9
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWeather.Maui", "Maui\SimpleWeather.Maui\SimpleWeather.Maui.csproj", "{0BE9C0AC-5EDA-4256-8720-CC4CC4052CB8}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "SimpleWeather.NET.Shared", "SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.shproj", "{A8A32AF8-0A88-4F3B-9DCC-E3DF76EBF2DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -546,7 +548,10 @@ Global
 		SolutionGuid = {4A2283E1-635B-4980-A603-0389637BE725}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems*{0be9c0ac-5eda-4256-8720-cc4cc4052cb8}*SharedItemsImports = 5
 		SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 5
+		SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems*{8fe7159f-184d-48d6-b0e0-7c49acce9703}*SharedItemsImports = 5
+		SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems*{a8a32af8-0a88-4f3b-9dcc-e3df76ebf2df}*SharedItemsImports = 13
 		SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems*{dcdf58d5-d7f9-4282-9957-db7ca59442ad}*SharedItemsImports = 13
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution

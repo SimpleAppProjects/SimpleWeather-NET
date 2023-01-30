@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_Credits"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared">
+    <ScrollView Padding="16,0" HorizontalScrollBarVisibility="Never">
+        <Grid>
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource SettingTitleStyle}" Text="{x:Static res_strings:Resources.pref_category_providers}" />
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_here}" />
+                    <Label TextType="Html">
+                        <![CDATA[
+                        <p>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</p>
+                        ]]>
+                    </Label>
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="{AppThemeBinding Light='here.png', Dark='here_dark.png'}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_metno}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="metno.png" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_nws}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="nws.png" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_owm}" />
+                    <ImageButton Padding="0,20" MaximumHeightRequest="25">
+                        <ImageButton.Source>
+                            <FileImageSource File="openweathermap.png" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="Bing Maps" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="{AppThemeBinding Light='bingmaps.png', Dark='bingmaps_dark.png'}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_waqi}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="waqi.png" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_wunlocked}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="wunlocked.png" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_weatherapi}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="10">
+                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_tomorrowio}" />
+                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                        <ImageButton.Source>
+                            <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
+                        </ImageButton.Source>
+                    </ImageButton>
+                </VerticalStackLayout>
+                <Label Style="{DynamicResource SettingsTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_icons}" />
+                <VerticalStackLayout x:Name="IconCreditsContainer" />
+            </VerticalStackLayout>
+        </Grid>
+    </ScrollView>
+</ContentPage>

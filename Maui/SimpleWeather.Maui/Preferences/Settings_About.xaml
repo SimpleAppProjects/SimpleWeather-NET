@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_About"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared">
+    <VerticalStackLayout Padding="16">
+        <Label
+            x:Name="AppName"
+            FontSize="Title"
+            Text="{x:Static res_strings:Resources.app_name}" />
+        <Label
+            x:Name="Version"
+            FontSize="Caption"
+            Text="v0.00"
+            TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant},
+                                        Dark={StaticResource DarkOnSurfaceVariant}}" />
+        <VerticalStackLayout
+            x:Name="UpdateProgressPanel"
+            Margin="0,8,0,8"
+            HorizontalOptions="Start"
+            MinimumWidthRequest="250">
+            <HorizontalStackLayout>
+                <ActivityIndicator
+                    x:Name="CheckUpdateIndicator"
+                    Margin="8,0"
+                    IsRunning="True" />
+                <Button
+                    x:Name="CheckUpdateButton"
+                    IsEnabled="False"
+                    MinimumWidthRequest="250"
+                    Text="{x:Static res_strings:Resources.CheckUpdatePrompt_Text}" />
+            </HorizontalStackLayout>
+            <Button
+                x:Name="InstallButton"
+                IsVisible="False"
+                MinimumWidthRequest="250"
+                Text="{x:Static res_strings:Resources.DownloadingPrompt}" />
+            <controls:IndeterminateProgressBar
+                x:Name="UpdateProgressBar"
+                Margin="0,0,0,0"
+                BaseColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
+                                            Dark={StaticResource DarkSurfaceVariant}}"
+                HeightRequest="2"
+                IsActive="False"
+                ProgressColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                Dark={StaticResource DarkPrimary}}" />
+            <Button
+                x:Name="FeedbackButton"
+                ContentLayout="Left, 8"
+                Clicked="FeedbackButton_Clicked"
+                ImageSource="{matIcons:MaterialIcon Symbol=Star}"
+                Text="{x:Static res_strings:Resources.pref_title_feedback}" />
+            <Button
+                x:Name="ReviewButton"
+                ContentLayout="Left, 8"
+                Clicked="ReviewButton_Clicked"
+                ImageSource="{matIcons:MaterialIcon Symbol=Star}"
+                Text="{x:Static res_strings:Resources.pref_title_rateandreview}" />
+            <Button
+                x:Name="TranslateButton"
+                ContentLayout="Left, 8"
+                Clicked="TranslateButton_Clicked"
+                ImageSource="{matIcons:MaterialIcon Symbol=Star}"
+                Text="{x:Static res_strings:Resources.pref_title_rateandreview}" />
+        </VerticalStackLayout>
+    </VerticalStackLayout>
+</ContentPage>

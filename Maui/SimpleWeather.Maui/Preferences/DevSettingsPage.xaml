@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.DevSettingsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared">
+    <Grid>
+        <ScrollView Padding="16,0" HorizontalScrollBarVisibility="Never">
+            <VerticalStackLayout>
+                <Label Style="{StaticResource SettingTitleStyle}" Text="Developer Settings" />
+                <Label
+                    FontSize="16"
+                    Style="{StaticResource SettingTitleStyle}"
+                    Text="API Keys" />
+                <Rectangle
+                    Height="1"
+                    Margin="0,-4,0,15"
+                    Fill="LightGray" />
+                <VerticalStackLayout Padding="0,0,0,8">
+                    <Label Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
+                </VerticalStackLayout>
+                <VerticalStackLayout Padding="0,8">
+                    <Label Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
+                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

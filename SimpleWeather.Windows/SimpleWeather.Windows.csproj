@@ -177,6 +177,8 @@
 
   <Import Project="..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />
 
+  <Import Project="..\SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems" Label="Shared" />
+
   <ItemGroup>
     <AdditionalFiles Include="NativeMethods.txt" />
   </ItemGroup>

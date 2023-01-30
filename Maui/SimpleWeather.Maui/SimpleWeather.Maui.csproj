@@ -78,14 +78,44 @@
 		<MauiXaml Update="Controls\Banner\BannerContent.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Controls\DevKeyEntry.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\KeyEntryPopup.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Controls\Snackbar\SnackbarContent.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Location\LocationSearchPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Preferences\SettingsPage.xaml">
+		<MauiXaml Update="Preferences\DevSettingsPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\IconRadioPreference.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_About.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_Credits.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_Features.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_General.xaml">
 			<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_Icons.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_OSSLibs.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Preferences\Settings_Units.xaml">
+		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Controls.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -114,6 +144,14 @@
 		  <DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
     </ItemGroup>
+	<ItemGroup>
+	  <Compile Update="Preferences\Settings_Features.xaml.cs">
+	    <DependentUpon>Settings_Features.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Preferences\Settings_General.xaml.cs">
+	    <DependentUpon>Settings_General.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
@@ -266,4 +304,5 @@
 	  <CreatePackage>false</CreatePackage>
 	</PropertyGroup>
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
+	<Import Project="..\..\SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems" Label="Shared" />
 </Project>

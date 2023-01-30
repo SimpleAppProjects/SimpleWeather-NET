@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_Icons"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared">
+    <Grid>
+        <ScrollView Padding="16,0" HorizontalScrollBarVisibility="Never">
+            <VerticalStackLayout>
+                <Label Style="{DynamicResource SettingsTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_icons}" />
+                <VerticalStackLayout x:Name="IconRadioContainer" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>
