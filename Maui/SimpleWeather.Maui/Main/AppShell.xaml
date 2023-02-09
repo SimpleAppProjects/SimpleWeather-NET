@@ -11,6 +11,8 @@
     xmlns:settings="clr-namespace:SimpleWeather.Maui.Preferences"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     xmlns:win="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+    Shell.BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                            Dark={StaticResource DarkBackground}}"
     Shell.NavBarIsVisible="False"
     Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
                                                   Dark={StaticResource DarkSurface}}"
@@ -41,15 +43,10 @@
             Title="{x:Static res_strings:Resources.label_nav_locations}"
             ContentTemplate="{DataTemplate local:LocationsPage}"
             Icon="{FileImageSource File='ic_star_border.png'}" />
-        <Tab Title="{x:Static res_strings:Resources.title_activity_settings}" Icon="{FileImageSource File='ic_settings.png'}">
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_general}" ContentTemplate="{DataTemplate settings:Settings_General}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_icons}" ContentTemplate="{DataTemplate settings:Settings_Icons}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_units}" ContentTemplate="{DataTemplate settings:Settings_Units}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_features}" ContentTemplate="{DataTemplate settings:Settings_Features}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_credits}" ContentTemplate="{DataTemplate settings:Settings_Credits}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_oslibs}" ContentTemplate="{DataTemplate settings:Settings_OSSLibs}" />
-            <ShellContent Title="{x:Static res_strings:Resources.pref_title_about}" ContentTemplate="{DataTemplate settings:Settings_About}" />
-        </Tab>
+        <ShellContent
+            Title="{x:Static res_strings:Resources.title_activity_settings}"
+            ContentTemplate="{DataTemplate settings:Settings_General}"
+            Icon="{FileImageSource File='ic_settings.png'}" />
     </TabBar>
 
 </viewModels:ViewModelShell>

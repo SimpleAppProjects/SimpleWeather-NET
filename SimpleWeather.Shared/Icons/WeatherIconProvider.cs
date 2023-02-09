@@ -44,32 +44,48 @@ namespace SimpleWeather.Icons
 
                 if (drawable == null)
                 {
-                    var svg = new Svg.Skia.SKSvg();
-
-#if WINUI
-                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
-                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#else
-                    var fStream = await FileSystem.OpenAppPackageFileAsync(GetSVGIconUri(icon, isLight));
-#endif
-
-                    svg.Load(fStream);
-                    drawable = svg.ToDrawable();
+                    drawable = await GetSVGDrawable(icon, isLight);
                 }
 
                 if (drawable == null)
                 {
-#if WINUI
-                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
-                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#else
-                    var fStream = await FileSystem.OpenAppPackageFileAsync(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight));
-#endif
-
-                    drawable = SKBitmap.Decode(fStream).ToDrawable();
+                    drawable = await GetBitmapDrawable(icon, isLight);
                 }
 
                 return drawable;
+            });
+        }
+
+        public virtual Task<SKDrawable> GetSVGDrawable(string icon, bool isLight = false)
+        {
+            return Task.Run(async () =>
+            {
+                var svg = new Svg.Skia.SKSvg();
+
+#if WINUI
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
+                var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#else
+                var fStream = await FileSystem.OpenAppPackageFileAsync(GetSVGIconUri(icon, isLight));
+#endif
+
+                svg.Load(fStream);
+                return svg.ToDrawable();
+            });
+        }
+
+        public virtual Task<SKDrawable> GetBitmapDrawable(string icon, bool isLight = false)
+        {
+            return Task.Run(async () =>
+            {
+#if WINUI
+                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
+                var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#else
+                var fStream = await FileSystem.OpenAppPackageFileAsync(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight));
+#endif
+
+                return SKBitmap.Decode(fStream).ToDrawable();
             });
         }
     }

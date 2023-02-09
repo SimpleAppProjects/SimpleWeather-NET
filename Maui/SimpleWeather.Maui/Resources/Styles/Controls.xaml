@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:location="clr-namespace:SimpleWeather.LocationData;assembly=SimpleWeather.Shared"
+    xmlns:localGraphs="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons;assembly=SimpleWeather.Maui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mext="clr-namespace:SimpleWeather.Maui.MarkupExtensions;assembly=SimpleWeather.Maui"
@@ -206,5 +207,36 @@
         BasedOn="{StaticResource DefaultProgressAutoSuggestBoxStyle}"
         CanCascade="True"
         TargetType="controls:ProgressAutoSuggestBox" />
+
+    <Style x:Key="DefaultIconControlStyle" TargetType="controls:IconControl">
+        <Setter Property="IsLightTheme" Value="{AppThemeBinding Light='True', Dark='False'}" />
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <controls:ViewBox
+                        x:Name="IconBox"
+                        WidthRequest="{TemplateBinding WidthRequest}"
+                        HeightRequest="{TemplateBinding WidthRequest}"
+                        MinimumWidthRequest="{TemplateBinding MinimumWidthRequest}"
+                        MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}"
+                        MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}"
+                        MaximumHeightRequest="{TemplateBinding MaximumHeightRequest}"
+                        Stretch="Uniform" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultIconControlStyle}"
+        CanCascade="True"
+        TargetType="controls:IconControl" />
+
+    <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
+        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="HeightRequest" Value="275" />
+        <Setter Property=""
+    </Style>
 
 </ResourceDictionary>

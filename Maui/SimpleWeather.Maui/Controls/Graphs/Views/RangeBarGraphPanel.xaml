@@ -1,0 +1,44 @@
+﻿<ContentView
+    x:Class="SimpleWeather.Maui.Controls.Graphs.RangeBarGraphPanel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Name="Control"
+    xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:graphs="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Button
+            x:Name="LeftButton"
+            Grid.Column="0"
+            Clicked="LeftButton_Click"
+            IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
+            Style="{DynamicResource LeftArrowButton}" />
+        <Button
+            x:Name="RightButton"
+            Grid.Column="2"
+            Clicked="RightButton_Click"
+            IsEnabled="{x:Bind CanScrollToEnd, Mode=OneWay}"
+            Style="{DynamicResource RightArrowButton}" />
+        <graphs:RangeBarGraphView
+            x:Name="BarChartView"
+            Grid.Column="1"
+            DrawDataLabels="True"
+            DrawIconLabels="True"
+            FontSize="{OnIdiom Phone=13, Default=15}"
+            ItemWidthChanged="GraphView_ItemWidthChanged"
+            Loaded="GraphView_Loaded"
+            ViewChanged="GraphView_ViewChanged">
+            <graphs:RangeBarGraphView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
+                <ClickGestureRecognizer Clicked="ClickGestureRecognizer_Clicked" />
+            </graphs:RangeBarGraphView.GestureRecognizers>
+        </graphs:RangeBarGraphView>
+    </Grid>
+</ContentView>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="SimpleWeather.Maui.Preferences.Settings_Features"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -15,59 +15,59 @@
                     Text="{x:Static res_strings:Resources.pref_summary_features}" />
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_bgimage}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_bgimage}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_forecast}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_forecast}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_hrforecast}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_hrforecast}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_charts}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_charts}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_summary}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_summary}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_details}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_details}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_uv}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_uv}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_beaufort}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_beaufort}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_aqindex}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_aqindex}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.label_pollen_count}" />
+                    <Label Text="{x:Static res_strings:Resources.label_pollen_count}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_moonphase}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_moonphase}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_sunphase}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_sunphase}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_radar}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_radar}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout>
                     <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings.Resources.pref_title_feature_locpanelimg}" />
+                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_locpanelimg}" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
         </ScrollView>

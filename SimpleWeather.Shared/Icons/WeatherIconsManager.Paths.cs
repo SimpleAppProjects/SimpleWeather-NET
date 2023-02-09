@@ -18,7 +18,7 @@ namespace SimpleWeather.Icons
 #if WINUI
             return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
 #else
-            return "SimpleWeather.Shared/Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
+            return "Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
 #endif
         }
 
@@ -27,7 +27,7 @@ namespace SimpleWeather.Icons
 #if WINUI
             return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
 #else
-            return "SimpleWeather.Shared/Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
+            return "Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
 #endif
         }
 
@@ -41,16 +41,14 @@ namespace SimpleWeather.Icons
             return _IconsProvider.GetWeatherIconURI(icon, isAbsoluteUri, isLight);
         }
 
-        public async Task<SKDrawable> GetDrawable(string icon, bool isLight = false)
+        public Task<SKDrawable> GetDrawable(string icon, bool isLight = false)
         {
-#if WINUI
-            var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
-            var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#else
-            var fStream = await FileSystem.OpenAppPackageFileAsync(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight));
-#endif
+            return _IconsProvider.GetDrawable(icon, isLight);
+        }
 
-            return SKBitmap.Decode(fStream).ToDrawable();
+        public Task<SKDrawable> GetBitmapDrawable(string icon, bool isLight = false)
+        {
+            return _IconsProvider.GetBitmapDrawable(icon, isLight);
         }
     }
 }

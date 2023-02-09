@@ -13,6 +13,7 @@
       "SimpleWeather.Common\\SimpleWeather.Common.csproj",
       "BingMapsRESTToolkit\\Source\\BingMapsRESTToolkit.Standard\\BingMapsRESTToolkit.Standard.csproj",
       "TranslationImport\\TranslationImport.csproj",
+      "SimpleWeather.NET.Shared\\SimpleWeather.NET.Shared.shproj",
       "Maui\\SimpleWeather.Maui\\SimpleWeather.Maui.csproj"
     ]
   }

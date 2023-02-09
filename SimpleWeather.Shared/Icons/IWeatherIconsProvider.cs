@@ -13,6 +13,7 @@ namespace SimpleWeather.Icons
         Uri GetWeatherIconURI(string icon);
         String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false);
         Task<SKDrawable> GetDrawable(string icon, bool isLight = false);
+        Task<SKDrawable> GetBitmapDrawable(string icon, bool isLight = false);
     }
 
     public interface ILottieWeatherIconProvider
@@ -28,5 +29,6 @@ namespace SimpleWeather.Icons
     public interface ISVGWeatherIconProvider
     {
         public abstract String GetSVGIconUri(string icon, bool isLight = false);
+        Task<SKDrawable> GetSVGDrawable(string icon, bool isLight = false);
     }
 }

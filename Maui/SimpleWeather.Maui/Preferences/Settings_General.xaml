@@ -1,125 +1,101 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<ContentPage
     x:Class="SimpleWeather.Maui.Preferences.Settings_General"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-    Title="{x:Static res_strings:Resources.pref_title_general}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
-                                      Dark={StaticResource DarkSurface}}">
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
+    xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
+    xmlns:system="using:System"
+    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+    xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    Title="{x:Static res_strings:Resources.title_activity_settings}"
+    BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
+                                      Dark={StaticResource BlackBrush}}"
+    Shell.NavBarIsVisible="True">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="True" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <Style x:Key="SettingsFrameStyle" TargetType="Frame">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+        <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
+            <Setter Property="HasUnevenRows" Value="True" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+    </ContentPage.Resources>
+
     <Grid>
-        <ScrollView
-            Padding="16,0"
-            HorizontalScrollBarVisibility="Never"
-            VerticalScrollBarVisibility="Default">
-            <VerticalStackLayout>
-                <Label
-                    x:Name="GeneralHeader"
-                    Style="{StaticResource SettingsTitleStyle}"
-                    Text="{x:Static res_strings:Resources.Pref_GeneralHeader_Text}" />
-                <Label Style="{StaticResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <Switch x:Name="FollowGPS" />
-                </HorizontalStackLayout>
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Picker
-                    x:Name="RefreshComboBox"
-                    Title="{x:Static res_strings:Resources.pref_title_refreshinterval}"
-                    Margin="0,10"
-                    MaximumWidthRequest="260" />
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_userthememode}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <RadioButton x:Name="LightMode" Content="{x:Static res_strings:Resources.userthememode_light}" />
-                    <RadioButton x:Name="DarkMode" Content="{x:Static res_strings:Resources.userthememode_dark}" />
-                    <RadioButton x:Name="SystemMode" Content="{x:Static res_strings:Resources.userthememode_default}" />
-                </HorizontalStackLayout>
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <Switch x:Name="AlertSwitch" />
-                </HorizontalStackLayout>
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.not_channel_name_dailynotification}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <Switch x:Name="DailyNotifSwitch" />
-                </HorizontalStackLayout>
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_time}" />
-                <TimePicker x:Name="DailyNotifTimePicker" Margin="0,5" />
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <Switch x:Name="PoPChanceNotifSwitch" />
-                </HorizontalStackLayout>
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.label_chance}" />
-                <HorizontalStackLayout Padding="10,5">
-                    <Picker
-                        x:Name="PoPChancePct"
-                        IsEnabled="{Binding Source={x:Reference PoPChanceNotifSwitch}, Path='IsToggled'}"
-                        ItemDisplayBinding="{Binding Display}">
-                        <Picker.ItemsSource>
-                            <x:Array Type="{x:Type controls:ComboBoxItem}">
-                                <controls:ComboBoxItem Display="&gt;= 40%" Value="40" />
-                                <controls:ComboBoxItem Display="&gt;= 50%" Value="50" />
-                                <controls:ComboBoxItem Display="&gt;= 60%" Value="60" />
-                                <controls:ComboBoxItem Display="&gt;= 70%" Value="70" />
-                                <controls:ComboBoxItem Display="&gt;= 80%" Value="80" />
-                                <controls:ComboBoxItem Display="&gt;= 90%" Value="90" />
-                            </x:Array>
-                        </Picker.ItemsSource>
-                    </Picker>
-                </HorizontalStackLayout>
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.api_label}" />
-                <Picker
-                    x:Name="APIComboBox"
-                    Margin="0,10"
-                    HorizontalOptions="Start"
-                    MinimumWidthRequest="260" />
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <VerticalStackLayout x:Name="KeyPanel">
-                    <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
-                    <HorizontalStackLayout Padding="10,5">
-                        <Switch x:Name="PersonalKeySwitch" />
-                    </HorizontalStackLayout>
-                    <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                    <Label
-                        IsVisible="{Binding Source={x:Reference KeyEntry}, Path='IsVisible'}"
-                        Style="{DynamicResource PrefTitleStyle}"
-                        Text="{x:Static res_strings:Resources.key_hint}" />
-                    <Border
-                        x:Name="KeyBorder"
-                        Padding="10,4"
-                        HorizontalOptions="Start"
-                        IsVisible="{Binding Source={x:Reference KeyEntry}, Path='IsVisible'}"
-                        MinimumWidthRequest="260"
-                        Stroke="DarkGray"
-                        StrokeThickness="2">
-                        <Label
-                            x:Name="KeyEntry"
-                            Focused="KeyEntry_Focused"
-                            Text="{x:Static res_strings:Resources.key_hint}">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="KeyEntry_Tapped" />
-                                <ClickGestureRecognizer Clicked="KeyEntry_Clicked" />
-                            </Label.GestureRecognizers>
-                        </Label>
-                    </Border>
-                    <Button
-                        x:Name="RegisterKeyButton"
-                        Padding="0,10"
-                        IsVisible="{Binding Source={x:Reference KeyEntry}, Path='IsVisible'}"
-                        Text="{x:Static res_strings:Resources.pref_summary_apiregister}" />
-                </VerticalStackLayout>
-                <Label Style="{DynamicResource PrefTitleStyle}" Text="{x:Static res_strings:Resources.label_radar}" />
-                <Picker
-                    x:Name="RadarComboBox"
-                    Margin="0,10"
-                    HorizontalOptions="Start"
-                    MinimumWidthRequest="260" />
-            </VerticalStackLayout>
-        </ScrollView>
+        <TableView x:Name="SettingsTable" Intent="Settings" Style="{DynamicResource SettingsTableViewStyle}">
+            <TableRoot>
+                <TableSection Title="{x:Static res_strings:Resources.pref_title_general}">
+                    <prefs:SwitchCell x:Name="FollowGPS" Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
+                    <prefs:ListViewCell x:Name="IntervalPref"
+                                        PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
+                                        Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_units}"
+                              Tapped="TextCell_Tapped" CommandParameter="{x:Type prefs:Settings_Units}" />
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_features}"
+                              Detail="{x:Static res_strings:Resources.pref_summary_features}"
+                              CommandParameter="{x:Type prefs:Settings_Features}"
+                              Tapped="TextCell_Tapped" />
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_icons}"
+                              CommandParameter="{x:Type prefs:Settings_Icons}"
+                              Tapped="TextCell_Tapped"/>
+                    <prefs:ListViewCell x:Name="ThemePref"
+                                        PreferenceKey="{x:Static settings:SettingsManager.KEY_USERTHEME}"
+                                        Text="{x:Static res_strings:Resources.pref_title_userthememode}">
+                        <prefs:ListViewCell.Items>
+                            <m:List Type="{x:Type prefs:PreferenceListItem}">
+                                <prefs:PreferenceListItem
+                                    Display="{x:Static res_strings:Resources.userthememode_light}"
+                                    Value="{x:Static utils:UserThemeMode.Light}" />
+                                <prefs:PreferenceListItem
+                                    Display="{x:Static res_strings:Resources.userthememode_dark}"
+                                    Value="{x:Static utils:UserThemeMode.Dark}" />
+                                <prefs:PreferenceListItem
+                                    Display="{x:Static res_strings:Resources.userthememode_default}"
+                                    Value="{x:Static utils:UserThemeMode.System}" />
+                            </m:List>
+                        </prefs:ListViewCell.Items>
+                    </prefs:ListViewCell>
+                    <prefs:ListViewCell x:Name="LanguagePref"
+                                        Text="{x:Static res_strings:Resources.pref_title_language}"
+                                        Tapped="TextCell_Tapped" />
+                </TableSection>
+                <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
+                    <TextCell Text="Weather Notification" Detail="Weather notif, daily notif"
+                              Tapped="TextCell_Tapped" />
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_alerts}"
+                              Detail="Weather alerts, precip notif"
+                              Tapped="TextCell_Tapped" />
+                </TableSection>
+                <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
+                    <prefs:ListViewCell x:Name="APIPref" Text="{x:Static res_strings:Resources.api_label}" />
+                    <prefs:SwitchCell Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_apiregister}"
+                              Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
+                              Tapped="TextCell_Tapped" />
+                    <TextCell Text="Provider Key" Tapped="TextCell_Tapped" />
+                    <prefs:ListViewCell x:Name="RadarPref"
+                                        Text="{x:Static res_strings:Resources.label_radar}" />
+                </TableSection>
+                <TableSection Title="{x:Static res_strings:Resources.pref_title_about}">
+                    <TextCell Text="{x:Static res_strings:Resources.pref_title_about_app}"
+                              CommandParameter="{x:Type prefs:Settings_About}"
+                              Tapped="TextCell_Tapped"/>
+                </TableSection>
+            </TableRoot>
+        </TableView>
     </Grid>
+
 </ContentPage>

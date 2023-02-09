@@ -1,4 +1,8 @@
-﻿using Mapsui.UI.WinUI;
+﻿#if WINDOWS
+using Mapsui.UI.WinUI;
+#else
+using Mapsui.UI.Maui;
+#endif
 
 namespace SimpleWeather.NET.Utils
 {
