@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>À propos</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>À propos de SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>Crédits</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Permettre l&apos;accès à la position actuelle via le GPS</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Entrez la clé de fournisseur requise pour %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Veuillez entrer une clé de fournisseur</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Fournisseur de météo</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Notifications</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Alertes météo</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Les alertes météo ne sont pas prises en charge par ce fournisseur</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Créer un compte</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Créer un compte pour s&apos;enregistrer pour une clé de fournisseur</value>
@@ -579,6 +591,9 @@
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Aider à traduire l&apos;application</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Langue</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Température</value>

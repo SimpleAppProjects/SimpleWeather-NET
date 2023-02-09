@@ -114,6 +114,7 @@
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings\AQIndex.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AQIndex.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Strings\Beaufort.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>关于</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>关于 SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>许可</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>允许通过 GPS 获取当前位置</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>输入 %1$s 所需的密钥</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>请输入密钥</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>天气提供商</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>通知</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>天气预警</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>此数据提供商不支持天气预警</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>创建账户</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>创建一个帐户以注册提供者密钥</value>
@@ -586,6 +598,9 @@ Fuzzy</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>帮助翻译这个软件</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>语言</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>温度</value>

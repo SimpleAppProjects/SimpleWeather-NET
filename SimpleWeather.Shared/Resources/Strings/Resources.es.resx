@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>Acerca</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Acerca de SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>Créditos</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Permitir acceso a la ubicación actual vía GPS</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Introduzca la clave del proveedor para %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Por favor introduzca una clave de proveedor</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Proveedor del tiempo</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Notificaciones</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Alertas del tiempo</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Las alertas del tiempo no están disponibles con este proveedor del tiempo</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Crea una cuenta</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Crear una cuenta para registrar una clave de proveedor</value>
@@ -588,6 +600,9 @@ Fuzzy</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Ayude a traducir la aplicación</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Idioma</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Temperatura</value>

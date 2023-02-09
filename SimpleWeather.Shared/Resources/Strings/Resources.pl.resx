@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikacji</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>O SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>Autorzy</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Zezwalaj na dostęp do aktualnej lokalizacji GPS</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Wprowadź klucz dla %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Wprowadź klucz</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Dostawca pogody</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Powiadomienia</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Alarmy pogodowe</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Ten dostawca pogody nie oferuje alarmów pogodowych</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Utwórz konto</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Utwórz konto aby zarejestrować klucz</value>
@@ -578,6 +590,9 @@
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Pomóż przetłumaczyć aplikację</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Język</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Temperatura</value>

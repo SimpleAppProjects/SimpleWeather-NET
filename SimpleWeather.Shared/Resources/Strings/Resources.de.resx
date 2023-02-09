@@ -318,6 +318,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>Über</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Über SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>Danksagungen</value>
   </data>
@@ -330,12 +333,18 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Standortzugriff per GPS erlauben</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Anbieterschlüssel notwendig für %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Anbieterschlüssel eingeben</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Wetteranbieter</value>
     <comment>Sometimes the title is Weather Provider sometimes it is Data Provider. It could also be titled more precisely as Weather Data Provider. Maybe we should unify this?</comment>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Benachrichtigungen</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Wetterwarnungen</value>
@@ -346,6 +355,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Wetterwarnungen werden von diesem Wetteranbieter nicht unterstützt</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Benutzerkonto erstellen</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Benutzerkonto zum Erhalt eines Anbieterschlüssels erstellen</value>
@@ -601,6 +613,9 @@
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Bei der Übersetzung der Anwendung helfen</value>
     <comment>Can be changed to &apos;Help us translate the app&apos;</comment>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Sprache</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Temperatur</value>

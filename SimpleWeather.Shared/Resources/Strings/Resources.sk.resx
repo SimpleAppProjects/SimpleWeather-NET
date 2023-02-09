@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikácii</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>O SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>S podporou</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Povoliť prístup k aktuálnej polohe cez GPS</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Vložiť kľúč poskytovateľa pre %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Vložte prosím kľúč poskytovateľa</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Poskytovateľ počasia</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Oznámenia</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Meteovýstrahy</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Tento poskytovateľ nepodporuje meteovýstrahy</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Vytvoriť užívateľa</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Vytvoriť registráciu na získanie kľúča poskytovateľa</value>
@@ -578,6 +590,9 @@
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Pomôcť s prekladom aplikácie</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Jazyk</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Teplota</value>

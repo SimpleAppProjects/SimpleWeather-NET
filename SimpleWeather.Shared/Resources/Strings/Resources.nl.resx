@@ -307,6 +307,9 @@
   <data name="pref_title_about" xml:space="preserve">
     <value>Over</value>
   </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Over SimpleWeather</value>
+  </data>
   <data name="pref_title_credits" xml:space="preserve">
     <value>Dank aan</value>
   </data>
@@ -319,11 +322,17 @@
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Toegang tot huidige locatie via GPS toestaan</value>
   </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Voer providersleutel in voor %1$s</value>
+  </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Voer alsjeblieft een providersleutel in</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Weeraanbieder</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Meldingen</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Weerwaarschuwingen</value>
@@ -333,6 +342,9 @@
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Weerwaarschuwingen niet ondersteund door huidige weeraanbieder</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Account aanmaken</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
     <value>Account aanmaken om een providersleutel te verkrijgen</value>
@@ -578,6 +590,9 @@
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Help de app te vertalen</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Taal</value>
   </data>
   <data name="label_temperature" xml:space="preserve">
     <value>Temperatuur</value>
