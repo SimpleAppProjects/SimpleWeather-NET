@@ -148,6 +148,9 @@
 		</Compile>
     </ItemGroup>
 	<ItemGroup>
+	  <MauiXaml Remove="Radar\RadarToolbar.xaml" />
+	</ItemGroup>
+	<ItemGroup>
 	  <Compile Update="Preferences\Settings_Features.xaml.cs">
 	    <DependentUpon>Settings_Features.xaml</DependentUpon>
 	  </Compile>
@@ -169,7 +172,12 @@
 	  <Folder Include="Preferences\TableView\" />
 	  <Folder Include="Controls\ViewModels\" />
 	  <Folder Include="Controls\Graphs\" />
-	  <Folder Include="Controls\Graphs\Data\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Page Include="Radar\RadarToolbar.xaml">
+	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+	    <Generator>MSBuild:Compile</Generator>
+	  </Page>
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />

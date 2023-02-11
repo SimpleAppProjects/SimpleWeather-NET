@@ -49,20 +49,20 @@
                                                 Dark={StaticResource DarkPrimary}}" />
             <Button
                 x:Name="FeedbackButton"
-                ContentLayout="Left, 8"
                 Clicked="FeedbackButton_Clicked"
+                ContentLayout="Left, 8"
                 ImageSource="{matIcons:MaterialIcon Symbol=Star}"
                 Text="{x:Static res_strings:Resources.pref_title_feedback}" />
             <Button
                 x:Name="ReviewButton"
-                ContentLayout="Left, 8"
                 Clicked="ReviewButton_Clicked"
+                ContentLayout="Left, 8"
                 ImageSource="{matIcons:MaterialIcon Symbol=Star}"
                 Text="{x:Static res_strings:Resources.pref_title_rateandreview}" />
             <Button
                 x:Name="TranslateButton"
-                ContentLayout="Left, 8"
                 Clicked="TranslateButton_Clicked"
+                ContentLayout="Left, 8"
                 ImageSource="{matIcons:MaterialIcon Symbol=Star}"
                 Text="{x:Static res_strings:Resources.pref_title_rateandreview}" />
         </VerticalStackLayout>

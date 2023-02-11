@@ -3,7 +3,7 @@
     x:Class="SimpleWeather.Maui.Controls.BannerContent"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:controls="clr-namespace:SimpleWeather.NET.Controls"
     x:DataType="controls:Banner">
     <Frame BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}">
         <Grid Padding="4">

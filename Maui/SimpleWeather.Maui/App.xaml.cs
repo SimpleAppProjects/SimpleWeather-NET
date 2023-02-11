@@ -1,6 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
+using SimpleWeather.Maui.Main;
 using SimpleWeather.Maui.Resources.Styles;
 using SimpleWeather.Maui.Setup;
 using SimpleWeather.Preferences;
@@ -8,8 +10,9 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
-using SimpleWeather.Maui.Main;
-using CommunityToolkit.Maui;
+#if IOS || MACCATALYST
+using WebKit;
+#endif
 #if !MACCATALYST
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;

@@ -5,6 +5,7 @@ using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.LocationData;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System.ComponentModel;

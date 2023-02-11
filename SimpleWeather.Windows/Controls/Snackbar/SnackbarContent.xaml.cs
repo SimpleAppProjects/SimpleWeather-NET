@@ -1,8 +1,5 @@
-﻿using System;
-using Windows.Foundation;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using muxc = Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -69,7 +66,7 @@ namespace SimpleWeather.NET.Controls
         public event EventHandler Shown;
         public event EventHandler<SnackbarDismissedEventArgs> Dismissed;
 
-        private void Infobar_CloseButtonClick(muxc.InfoBar sender, object args)
+        private void Infobar_CloseButtonClick(InfoBar sender, object args)
         {
             Dismissed(this, new SnackbarDismissedEventArgs()
             {
@@ -77,14 +74,9 @@ namespace SimpleWeather.NET.Controls
             });
         }
 
-        internal static muxc.InfoBarSeverity ToSeverity(SnackbarInfoType type)
+        internal static InfoBarSeverity ToSeverity(SnackbarInfoType type)
         {
-            return (muxc.InfoBarSeverity)type;
+            return (InfoBarSeverity)type;
         }
-    }
-
-    public class SnackbarDismissedEventArgs
-    {
-        public SnackbarDismissEvent DismissKind;
     }
 }

@@ -1,18 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<localControls:ScopePage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleWeather.Maui.Main.WeatherNow"
-             xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls">
+<localControls:ScopePage
+    x:Class="SimpleWeather.Maui.Main.WeatherNow"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils"
+    xmlns:viewModels="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
+    x:DataType="viewModels:WeatherNowViewModel">
     <Grid x:Name="MainGrid">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition x:Name="BannerRow" Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Image x:Name="BackgroundOverlay" Grid.RowSpan="2">
-
-            </Image>
-            <Grid x:Name="GradientOverlay" Grid.RowSpan="2">
+        <Grid.RowDefinitions>
+            <RowDefinition x:Name="BannerRow" Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Image
+                x:Name="BackgroundOverlay"
+                Grid.RowSpan="2"
+                IsVisible="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}" />
+            <Grid
+                x:Name="GradientOverlay"
+                Grid.RowSpan="2"
+                IsVisible="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}">
                 <Grid.Background>
                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                         <LinearGradientBrush.GradientStops>
@@ -22,7 +32,11 @@
                     </LinearGradientBrush>
                 </Grid.Background>
             </Grid>
-            <ScrollView x:Name="MainViewer" Grid.Row="1">
+            <ScrollView
+                x:Name="MainViewer"
+                Grid.Row="1"
+                IsVisible="{Binding Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                SizeChanged="MainViewer_SizeChanged">
                 <Grid>
                     <Grid.RowDefinitions>
                         <!--  Row 0  -->
@@ -38,8 +52,220 @@
                         <!--  Row 5  -->
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
+                    <Grid
+                        Grid.Row="0"
+                        Margin="5,10,5,5"
+                        HorizontalOptions="Center"
+                        MaximumWidthRequest="1280"
+                        VerticalOptions="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border
+                            x:Name="GPSIcon"
+                            Grid.Column="0"
+                            Margin="16,0"
+                            IsVisible="{Binding UiState.IsGPSLocation, Mode=OneWay}"
+                            VerticalOptions="Center">
+                            <Image HeightRequest="24" WidthRequest="24">
+                                <Image.Source>
+                                    <matIcons:MaterialIcon Symbol="MyLocation" Color="{AppThemeBinding Light=Black, Dark=White}" />
+                                </Image.Source>
+                            </Image>
+                        </Border>
+                        <Label
+                            x:Name="Location"
+                            Grid.Column="1"
+                            Margin="0,0,0,4"
+                            FontAttributes="Bold"
+                            FontSize="28"
+                            HorizontalTextAlignment="Center"
+                            LineBreakMode="WordWrap"
+                            MaxLines="2"
+                            Text="{Binding Weather.Location, Mode=OneWay}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                        Dark={StaticResource DarkOnBackground}}"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
+                    <Border
+                        Grid.Column="1"
+                        HorizontalOptions="Center"
+                        MaximumWidthRequest="1280">
+                        <Label
+                            x:Name="UpdateDate"
+                            Padding="2"
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            HorizontalOptions="Center"
+                            HorizontalTextAlignment="Center"
+                            Text="{Binding Weather.UpdateDate, Mode=OneWay}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                                        Dark={StaticResource DarkOnBackground}}" />
+                    </Border>
+                    <Grid
+                        x:Name="AlertButton"
+                        Grid.Row="2"
+                        Margin="0,5,0,5"
+                        BackgroundColor="OrangeRed"
+                        HorizontalOptions="FillAndExpand"
+                        MaximumWidthRequest="1280">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="AlertButton_Tapped" />
+                            <ClickGestureRecognizer Clicked="AlertButton_Clicked" />
+                        </Grid.GestureRecognizers>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Column="0" Margin="5,2,5,0">
+                            <Image.Source>
+                                <matIcons:MaterialIcon Symbol="Error" Color="White" />
+                            </Image.Source>
+                        </Image>
+                        <Label
+                            Grid.Column="1"
+                            Padding="5,0"
+                            FontSize="Default"
+                            Text="{x:Static res_strings:Resources.title_fragment_alerts}"
+                            VerticalOptions="Center"
+                            VerticalTextAlignment="Center" />
+                        <Image
+                            Grid.Column="2"
+                            Margin="5,0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center">
+                            <Image.Source>
+                                <matIcons:MaterialIcon Symbol="ChevronRight" Color="White" />
+                            </Image.Source>
+                        </Image>
+                    </Grid>
+                    <Grid
+                        x:Name="ConditionPanel"
+                        Grid.Row="4"
+                        Padding="16,0"
+                        IsVisible="{Binding Weather.Location, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                        MaximumWidthRequest="1280"
+                        MinimumHeightRequest="108"
+                        SizeChanged="ConditionPanel_SizeChanged">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            x:Name="CurTemp"
+                            Grid.Column="0"
+                            Margin="0,15"
+                            FontAttributes="None"
+                            FontSize="84"
+                            Text="{Binding Weather.CurTemp, Mode=OneWay}"
+                            TextColor="White" />
+                        <VerticalStackLayout
+                            Grid.Column="1"
+                            HeightRequest="{Binding Source={x:Reference CurTemp}, Path=Height}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                            <HorizontalStackLayout HorizontalOptions="End">
+                                <Label
+                                    FontSize="24"
+                                    HeightRequest="32"
+                                    HorizontalTextAlignment="Center"
+                                    Text="{Binding Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                                    VerticalTextAlignment="Center" />
+                                <localControls:IconControl
+                                    IconColor="OrangeRed"
+                                    IconProvider="wi-erik-flowers"
+                                    ShowAsMonochrome="True"
+                                    WeatherIcon="&#xf058;"
+                                    WidthRequest="25" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout HorizontalOptions="End">
+                                <Label
+                                    FontSize="24"
+                                    HeightRequest="32"
+                                    HorizontalTextAlignment="Center"
+                                    Text="{Binding Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                                    VerticalTextAlignment="Center" />
+                                <localControls:IconControl
+                                    IconColor="DeepSkyBlue"
+                                    IconProvider="wi-erik-flowers"
+                                    ShowAsMonochrome="True"
+                                    WeatherIcon="&#xf044;"
+                                    WidthRequest="25" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                        <localControls:IconControl
+                            x:Name="WeatherBox"
+                            Grid.Column="3"
+                            ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                            HeightRequest="108"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            WeatherIcon="{Binding Weather.WeatherIcon, Mode=OneWay}"
+                            WidthRequest="108" />
+                        <Label
+                            x:Name="CurCondition"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="4"
+                            Padding="5"
+                            FontSize="24"
+                            Text="{Binding Weather.CurCondition, Mode=OneWay}" />
+                        <Label
+                            x:Name="SummaryText"
+                            Grid.Row="2"
+                            Grid.ColumnSpan="4"
+                            Margin="0,10"
+                            Padding="5"
+                            FontSize="12"
+                            IsVisible="{Binding Weather.WeatherSummary, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                            LineBreakMode="WordWrap"
+                            Text="{Binding Weather.WeatherSummary, Mode=OneWay}" />
+                        <Button
+                            x:Name="Attribution"
+                            Margin="16,0"
+                            Padding="5"
+                            BackgroundColor="Transparent"
+                            FontSize="11"
+                            IsVisible="{Binding ImageData.OriginalLink, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}" />
+                    </Grid>
+                    <VerticalStackLayout
+                        Grid.Row="5"
+                        Padding="16,4,16,0"
+                        BackgroundColor="{DynamicResource RegionColor}">
+                        <Grid>
+                            <Rectangle
+                                Fill="Transparent"
+                                HeightRequest="360"
+                                MaximumWidthRequest="640"
+                                ZIndex="1" />
+                            <Border
+                                x:Name="RadarWebViewContainer"
+                                HeightRequest="360"
+                                MaximumWidthRequest="640" />
+                        </Grid>
+                    </VerticalStackLayout>
                 </Grid>
             </ScrollView>
         </Grid>
+        <Grid
+            x:Name="BannerContainer"
+            Grid.Row="0"
+            VerticalOptions="Start"
+            ZIndex="0" />
+        <Grid
+            x:Name="SnackbarContainer"
+            Grid.RowSpan="2"
+            VerticalOptions="End"
+            ZIndex="1" />
     </Grid>
 </localControls:ScopePage>

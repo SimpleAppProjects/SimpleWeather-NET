@@ -1,12 +1,10 @@
 ﻿using CommunityToolkit.Maui.Core;
-using CommunityToolkit.Mvvm.Input;
+using SimpleWeather.NET.Controls;
 using toolkitAlerts = CommunityToolkit.Maui.Alerts;
-using ResStrings = SimpleWeather.Resources.Strings.Resources;
-using SimpleWeather.Maui.MaterialIcons;
 
 namespace SimpleWeather.Maui.Controls
 {
-    internal class SnackbarManager
+    public sealed class SnackbarManager
     {
 #if !WINDOWS
         private ISnackbar snackbarView;

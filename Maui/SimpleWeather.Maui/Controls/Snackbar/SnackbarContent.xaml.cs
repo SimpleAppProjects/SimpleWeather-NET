@@ -1,3 +1,5 @@
+using SimpleWeather.NET.Controls;
+
 namespace SimpleWeather.Maui.Controls;
 
 public partial class SnackbarContent : ContentView

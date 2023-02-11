@@ -5,8 +5,8 @@
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls;assembly=SimpleWeather.Maui"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:localGraphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
     xmlns:location="clr-namespace:SimpleWeather.LocationData;assembly=SimpleWeather.Shared"
-    xmlns:localGraphs="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons;assembly=SimpleWeather.Maui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mext="clr-namespace:SimpleWeather.Maui.MarkupExtensions;assembly=SimpleWeather.Maui"
@@ -215,13 +215,13 @@
                 <ControlTemplate>
                     <controls:ViewBox
                         x:Name="IconBox"
-                        WidthRequest="{TemplateBinding WidthRequest}"
                         HeightRequest="{TemplateBinding WidthRequest}"
-                        MinimumWidthRequest="{TemplateBinding MinimumWidthRequest}"
-                        MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}"
-                        MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}"
                         MaximumHeightRequest="{TemplateBinding MaximumHeightRequest}"
-                        Stretch="Uniform" />
+                        MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}"
+                        MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}"
+                        MinimumWidthRequest="{TemplateBinding MinimumWidthRequest}"
+                        Stretch="Uniform"
+                        WidthRequest="{TemplateBinding WidthRequest}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -236,7 +236,30 @@
     <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
         <Setter Property="HorizontalOptions" Value="Fill" />
         <Setter Property="HeightRequest" Value="275" />
-        <Setter Property=""
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BackgroundColor="{TemplateBinding BackgroundColor}"
+                        StrokeThickness="{TemplateBinding StrokeThickness}">
+                        <ScrollView
+                            x:Name="InternalScrollViewer"
+                            HorizontalScrollBarVisibility="Never"
+                            VerticalScrollBarVisibility="Never">
+                            <Grid>
+                                <skiaSharp:SKCanvasView
+                                    xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                                    x:Name="Canvas"
+                                    BackgroundColor="Transparent"
+                                    HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                                    IgnorePixelScaling="True" />
+                            </Grid>
+                        </ScrollView>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

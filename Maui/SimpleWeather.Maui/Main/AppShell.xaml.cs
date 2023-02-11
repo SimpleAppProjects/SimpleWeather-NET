@@ -2,6 +2,7 @@
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.ViewModels;
+using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 

@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;

@@ -15,6 +15,8 @@
         ErrorOutline = 0xe001,
         Radar = 0xf04e,
         StarBorder = 0xe83a,
-        Star = 0xe838
+        Star = 0xe838,
+        Play = 0xe037,
+        Pause = 0xe034,
     }
 }

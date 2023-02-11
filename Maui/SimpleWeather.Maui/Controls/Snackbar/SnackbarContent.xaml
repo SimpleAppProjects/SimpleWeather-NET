@@ -56,8 +56,11 @@
                 VerticalOptions="Center"
                 WidthRequest="38">
                 <ImageButton.Source>
-                    <matico:MaterialIcon Symbol="Close" Size="16" Color="{AppThemeBinding Light={StaticResource LightInverseOnSurface},
-                                                                    Dark={StaticResource DarkInverseOnSurface}}" />
+                    <matico:MaterialIcon
+                        Size="16"
+                        Symbol="Close"
+                        Color="{AppThemeBinding Light={StaticResource LightInverseOnSurface},
+                                                Dark={StaticResource DarkInverseOnSurface}}" />
                 </ImageButton.Source>
             </ImageButton>
         </Grid>

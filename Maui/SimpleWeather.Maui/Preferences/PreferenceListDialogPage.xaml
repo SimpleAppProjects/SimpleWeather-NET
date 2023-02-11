@@ -1,13 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
-             xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
-             x:Class="SimpleWeather.Maui.Preferences.PreferenceListDialogPage"
-             x:DataType="local:ListViewCell"
-             BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
-             Title="{Binding Text}"
-             Shell.NavBarIsVisible="True">
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.PreferenceListDialogPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    Title="{Binding Text}"
+    x:DataType="local:ListViewCell"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                      Dark={StaticResource DarkSurface}}"
+    Shell.NavBarIsVisible="True">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -15,14 +17,21 @@
         </Grid.RowDefinitions>
 
         <Frame Margin="16">
-            <ListView x:Name="PreferenceListView" SelectionMode="Single" VerticalOptions="FillAndExpand"
-                      IsGroupingEnabled="False" IsPullToRefreshEnabled="False">
+            <ListView
+                x:Name="PreferenceListView"
+                IsGroupingEnabled="False"
+                IsPullToRefreshEnabled="False"
+                SelectionMode="Single"
+                VerticalOptions="FillAndExpand">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:PreferenceListItemViewModel">
-                        <ViewCell>                            
+                        <ViewCell>
                             <HorizontalStackLayout>
-                                <RadioButton VerticalOptions="Center" IsChecked="{Binding IsChecked, Mode=TwoWay}" />
-                                <Label Text="{Binding Display}" FontSize="Default" VerticalOptions="Center" />
+                                <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+                                <Label
+                                    FontSize="Default"
+                                    Text="{Binding Display}"
+                                    VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </ViewCell>
                     </DataTemplate>

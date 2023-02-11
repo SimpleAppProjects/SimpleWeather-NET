@@ -12,20 +12,30 @@
     <Grid>
         <ScrollView Padding="16" HorizontalScrollBarVisibility="Never">
             <VerticalStackLayout>
-                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_temperature}"
-                       FontSize="Header"/>
+                <Label
+                    Padding="0,5"
+                    FontSize="Header"
+                    Text="{x:Static res_strings:Resources.label_temperature}" />
                 <HorizontalStackLayout x:Name="TemperatureUnits" />
-                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_speed}"
-                       FontSize="Header" />
+                <Label
+                    Padding="0,5"
+                    FontSize="Header"
+                    Text="{x:Static res_strings:Resources.label_speed}" />
                 <HorizontalStackLayout x:Name="SpeedUnits" />
-                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_distance}"
-                       FontSize="Header" />
+                <Label
+                    Padding="0,5"
+                    FontSize="Header"
+                    Text="{x:Static res_strings:Resources.label_distance}" />
                 <HorizontalStackLayout x:Name="DistanceUnits" />
-                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_precipitation}"
-                       FontSize="Header" />
+                <Label
+                    Padding="0,5"
+                    FontSize="Header"
+                    Text="{x:Static res_strings:Resources.label_precipitation}" />
                 <HorizontalStackLayout x:Name="PrecipitationUnits" />
-                <Label Padding="0,5" Text="{x:Static res_strings:Resources.label_pressure}"
-                       FontSize="Header" />
+                <Label
+                    Padding="0,5"
+                    FontSize="Header"
+                    Text="{x:Static res_strings:Resources.label_pressure}" />
                 <HorizontalStackLayout x:Name="PressureUnits" />
                 <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
                 <Label

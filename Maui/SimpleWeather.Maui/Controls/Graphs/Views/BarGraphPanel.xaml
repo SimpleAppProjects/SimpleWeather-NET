@@ -2,10 +2,10 @@
     x:Class="SimpleWeather.Maui.Controls.Graphs.BarGraphPanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Control"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:graphs="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
+    x:Name="Control"
     mc:Ignorable="d">
 
     <Grid>
@@ -29,13 +29,14 @@
         <graphs:BarGraphView
             x:Name="BarChartView"
             Grid.Column="1"
-            HorizontalOptions="FillAndExpand"
             DrawDataLabels="True"
             DrawIconLabels="False"
+            FontSize="{OnIdiom Phone=13,
+                               Default=15}"
+            HorizontalOptions="FillAndExpand"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
-            ViewChanged="GraphView_ViewChanged"
-            FontSize="{OnIdiom Phone=13, Default=15}">
+            ViewChanged="GraphView_ViewChanged">
             <graphs:BarGraphView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
                 <ClickGestureRecognizer Clicked="ClickGestureRecognizer_Clicked" />

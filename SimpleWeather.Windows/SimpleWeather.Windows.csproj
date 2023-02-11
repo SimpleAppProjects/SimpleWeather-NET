@@ -19,6 +19,7 @@
     <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
     <Title>SimpleWeather</Title>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
+    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -181,6 +182,10 @@
 
   <ItemGroup>
     <AdditionalFiles Include="NativeMethods.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controls\ViewModels\" />
   </ItemGroup>
 
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

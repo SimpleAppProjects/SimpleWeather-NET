@@ -3,13 +3,13 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
-    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
     xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
-    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.title_activity_settings}"
     BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
@@ -35,64 +35,72 @@
     </ContentPage.Resources>
 
     <Grid>
-        <TableView x:Name="SettingsTable" Intent="Settings" Style="{DynamicResource SettingsTableViewStyle}">
+        <TableView
+            x:Name="SettingsTable"
+            Intent="Settings"
+            Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_general}">
                     <prefs:SwitchCell x:Name="FollowGPS" Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
-                    <prefs:ListViewCell x:Name="IntervalPref"
-                                        PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
-                                        Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_units}"
-                              Tapped="TextCell_Tapped" CommandParameter="{x:Type prefs:Settings_Units}" />
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_features}"
-                              Detail="{x:Static res_strings:Resources.pref_summary_features}"
-                              CommandParameter="{x:Type prefs:Settings_Features}"
-                              Tapped="TextCell_Tapped" />
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_icons}"
-                              CommandParameter="{x:Type prefs:Settings_Icons}"
-                              Tapped="TextCell_Tapped"/>
-                    <prefs:ListViewCell x:Name="ThemePref"
-                                        PreferenceKey="{x:Static settings:SettingsManager.KEY_USERTHEME}"
-                                        Text="{x:Static res_strings:Resources.pref_title_userthememode}">
+                    <prefs:ListViewCell
+                        x:Name="IntervalPref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
+                        Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
+                    <TextCell
+                        CommandParameter="{x:Type prefs:Settings_Units}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_units}" />
+                    <TextCell
+                        CommandParameter="{x:Type prefs:Settings_Features}"
+                        Detail="{x:Static res_strings:Resources.pref_summary_features}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_features}" />
+                    <TextCell
+                        CommandParameter="{x:Type prefs:Settings_Icons}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_icons}" />
+                    <prefs:ListViewCell
+                        x:Name="ThemePref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_USERTHEME}"
+                        Text="{x:Static res_strings:Resources.pref_title_userthememode}">
                         <prefs:ListViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
-                                <prefs:PreferenceListItem
-                                    Display="{x:Static res_strings:Resources.userthememode_light}"
-                                    Value="{x:Static utils:UserThemeMode.Light}" />
-                                <prefs:PreferenceListItem
-                                    Display="{x:Static res_strings:Resources.userthememode_dark}"
-                                    Value="{x:Static utils:UserThemeMode.Dark}" />
-                                <prefs:PreferenceListItem
-                                    Display="{x:Static res_strings:Resources.userthememode_default}"
-                                    Value="{x:Static utils:UserThemeMode.System}" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_light}" Value="{x:Static utils:UserThemeMode.Light}" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_dark}" Value="{x:Static utils:UserThemeMode.Dark}" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_default}" Value="{x:Static utils:UserThemeMode.System}" />
                             </m:List>
                         </prefs:ListViewCell.Items>
                     </prefs:ListViewCell>
-                    <prefs:ListViewCell x:Name="LanguagePref"
-                                        Text="{x:Static res_strings:Resources.pref_title_language}"
-                                        Tapped="TextCell_Tapped" />
+                    <prefs:ListViewCell
+                        x:Name="LanguagePref"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_language}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
-                    <TextCell Text="Weather Notification" Detail="Weather notif, daily notif"
-                              Tapped="TextCell_Tapped" />
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_alerts}"
-                              Detail="Weather alerts, precip notif"
-                              Tapped="TextCell_Tapped" />
+                    <TextCell
+                        Detail="Weather notif, daily notif"
+                        Tapped="TextCell_Tapped"
+                        Text="Weather Notification" />
+                    <TextCell
+                        Detail="Weather alerts, precip notif"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_alerts}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
                     <prefs:ListViewCell x:Name="APIPref" Text="{x:Static res_strings:Resources.api_label}" />
                     <prefs:SwitchCell Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_apiregister}"
-                              Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
-                              Tapped="TextCell_Tapped" />
-                    <TextCell Text="Provider Key" Tapped="TextCell_Tapped" />
-                    <prefs:ListViewCell x:Name="RadarPref"
-                                        Text="{x:Static res_strings:Resources.label_radar}" />
+                    <TextCell
+                        Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_apiregister}" />
+                    <TextCell Tapped="TextCell_Tapped" Text="Provider Key" />
+                    <prefs:ListViewCell x:Name="RadarPref" Text="{x:Static res_strings:Resources.label_radar}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_about}">
-                    <TextCell Text="{x:Static res_strings:Resources.pref_title_about_app}"
-                              CommandParameter="{x:Type prefs:Settings_About}"
-                              Tapped="TextCell_Tapped"/>
+                    <TextCell
+                        CommandParameter="{x:Type prefs:Settings_About}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_about_app}" />
                 </TableSection>
             </TableRoot>
         </TableView>

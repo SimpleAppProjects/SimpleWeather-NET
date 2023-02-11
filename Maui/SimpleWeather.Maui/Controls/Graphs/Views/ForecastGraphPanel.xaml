@@ -2,10 +2,10 @@
     x:Class="SimpleWeather.Maui.Controls.Graphs.ForecastGraphPanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Name="Control"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
+    xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:graphs="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
+    x:Name="Control"
     mc:Ignorable="d">
 
     <Grid>
@@ -29,7 +29,6 @@
         <graphs:LineView
             x:Name="LineGraphView"
             Grid.Column="1"
-            HeightRequest="275"
             DrawDataLabels="True"
             DrawDotLine="False"
             DrawDotPoints="False"
@@ -37,7 +36,9 @@
             DrawGridLines="False"
             DrawIconLabels="False"
             DrawSeriesLabels="False"
-            FontSize="{OnIdiom Phone=13, Default=15}"
+            FontSize="{OnIdiom Phone=13,
+                               Default=15}"
+            HeightRequest="275"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged">
