@@ -26,8 +26,8 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<DefaultLanguage>en-US</DefaultLanguage>
 		<!-- Distribution -->
-		<EnableMsixTooling Condition="'$(TargetFramework)' == 'net7.0-windows10.0.19041.0'">true</EnableMsixTooling>
-		<PublishProfile Condition="'$(TargetFramework)' == 'net7.0-windows10.0.19041.0'">Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
+		<EnableMsixTooling Condition="$(TargetFramework.Contains('windows'))">true</EnableMsixTooling>
+		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
@@ -61,6 +61,8 @@
 		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.6" />
 	</ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+    <PackageReference Include="WinUIEx" Version="2.1.0" />
+
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
@@ -117,6 +119,9 @@
 		<MauiXaml Update="Preferences\Settings_Units.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Radar\RadarToolbar.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Controls.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -148,9 +153,6 @@
 		</Compile>
     </ItemGroup>
 	<ItemGroup>
-	  <MauiXaml Remove="Radar\RadarToolbar.xaml" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Compile Update="Preferences\Settings_Features.xaml.cs">
 	    <DependentUpon>Settings_Features.xaml</DependentUpon>
 	  </Compile>
@@ -159,25 +161,9 @@
 	  </Compile>
 	</ItemGroup>
 	<ItemGroup>
-	  <None Remove="Mapsui.Maui" />
-	  <None Remove="Services\" />
-	  <None Remove="Preferences\TableView\" />
-	  <None Remove="SkiaSharp.Views.Maui.Controls" />
-	  <None Remove="Controls\ViewModels\" />
-	  <None Remove="Controls\Graphs\" />
-	  <None Remove="Controls\Graphs\Data\" />
-	</ItemGroup>
-	<ItemGroup>
 	  <Folder Include="Services\" />
 	  <Folder Include="Preferences\TableView\" />
-	  <Folder Include="Controls\ViewModels\" />
 	  <Folder Include="Controls\Graphs\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Include="Radar\RadarToolbar.xaml">
-	    <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-	    <Generator>MSBuild:Compile</Generator>
-	  </Page>
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />

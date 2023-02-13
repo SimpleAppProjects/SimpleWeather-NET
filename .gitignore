@@ -266,10 +266,9 @@ API_KEY.txt
 /Utf8Json.UniversalCodeGenerator
 /*.bat*
 /*.sh*
-/TranslationImport
 listingData-*.csv
-/SimpleWeather.Shared.Extras
-/SimpleWeather.NET.Extras
 /SimpleWeather.Backgrounds
 /SimpleWeather.Extras
+/SimpleWeather.NET.Extras
 /SimpleWeather.WeatherIcons
+/TranslationImport

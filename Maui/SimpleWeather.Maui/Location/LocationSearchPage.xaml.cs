@@ -15,6 +15,7 @@ namespace SimpleWeather.Maui.Location;
 public partial class LocationSearchPage : ScopePage, ISnackbarManager
 {
     public LocationSearchViewModel LocationSearchViewModel { get; } = Ioc.Default.GetViewModel<LocationSearchViewModel>();
+    private LocationSelectedMessage PendingMessage = null;
 
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -155,7 +156,8 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
         SettingsManager.WeatherLoaded = true;
 
         // Setup complete
-        WeakReferenceMessenger.Default.Send(new LocationSelectedMessage(location));
+        PendingMessage = new LocationSelectedMessage(location);
+        await App.Current.Navigation.PopAsync();
     }
 
     private void OnErrorMessage(ErrorMessage error)
@@ -231,11 +233,23 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
 
     private async void BackButton_Clicked(object sender, EventArgs e)
     {
-        await App.Current.Navigation.PopModalAsync();
+        await App.Current.Navigation.PopAsync();
     }
 
     private async void BackButton_Tapped(object sender, TappedEventArgs e)
     {
-        await App.Current.Navigation.PopModalAsync();
+        await App.Current.Navigation.PopAsync();
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        if (PendingMessage != null)
+        {
+            Dispatcher.Dispatch(() =>
+            {
+                WeakReferenceMessenger.Default.Send(PendingMessage);
+            });
+        }
     }
 }

@@ -18,6 +18,11 @@
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                       Dark={StaticResource DarkBackground}}"
     BindingContext="{Binding Source={RelativeSource Mode=Self}, Path=LocationSearchViewModel}"
+    NavigationPage.HasBackButton="False"
+    NavigationPage.HasNavigationBar="False"
+    Shell.FlyoutItemIsVisible="False"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False"
     mc:Ignorable="d m mx">
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>

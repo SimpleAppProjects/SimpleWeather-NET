@@ -49,13 +49,14 @@
                 x:Name="SearchBar"
                 Grid.Row="1"
                 Margin="16,8"
-                MaximumWidthRequest="1080"
-                HorizontalOptions="FillAndExpand"
                 Padding="8"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryContainer},
                                                   Dark={StaticResource DarkSecondaryContainer}}"
+                BorderColor="Transparent"
                 HasShadow="False"
+                HorizontalOptions="FillAndExpand"
                 IsEnabled="{x:Bind not LocationSearchViewModel.IsLoading, Mode=OneWay}"
+                MaximumWidthRequest="1080"
                 SizeChanged="SearchBar_SizeChanged">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="SearchBar_Tapped" />

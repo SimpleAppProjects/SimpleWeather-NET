@@ -62,8 +62,6 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
         LocationSearchViewModel.PropertyChanged += LocationSearchViewModel_PropertyChanged;
         LocationSearchViewModel.Initialize();
-
-        WeakReferenceMessenger.Default.Register<LocationSelectedMessage>(this);
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
@@ -73,7 +71,17 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         UnloadSnackManager();
 
         LocationSearchViewModel.PropertyChanged -= LocationSearchViewModel_PropertyChanged;
+    }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        WeakReferenceMessenger.Default.Register<LocationSelectedMessage>(this);
+    }
+
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
         WeakReferenceMessenger.Default.Unregister<LocationSelectedMessage>(this);
     }
 
@@ -129,7 +137,7 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         SettingsManager.WeatherLoaded = true;
 
         // Pop Modals
-        await App.Current.Navigation.PopModalAsync();
+        // await App.Current.Navigation.PopModalAsync();
         // Setup complete
         ViewModel.LocationData = location;
         ViewModel.Next();
@@ -185,13 +193,13 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
     private async void SearchBar_Tapped(object sender, TappedEventArgs e)
     {
-        await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
+        await App.Current.Navigation.PushAsync(new LocationSearchPage());
     }
 
     private async void SearchBar_Clicked(object sender, EventArgs e)
     {
 #if WINDOWS || MACCATALYST
-        await App.Current.Navigation.PushModalAsync(new LocationSearchPage());
+        await App.Current.Navigation.PushAsync(new LocationSearchPage());
 #endif
     }
 
