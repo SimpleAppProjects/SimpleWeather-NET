@@ -1,4 +1,5 @@
 ﻿using Microsoft.Maui.Handlers;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Helpers
 {
@@ -9,6 +10,13 @@ namespace SimpleWeather.Maui.Helpers
             view.IsEnabled = false;
             view.GestureRecognizers.Clear();
             var platformView = view.GetPlatformView();
+
+            if (platformView == null)
+            {
+                Logger.WriteLine(LoggerLevel.Warn, "DisableInteractions: Webview not available");
+                return;
+            }
+
 #if __ANDROID__
             platformView.SetOnClickListener(null);
             platformView.SetOnTouchListener(new NoTouchListener());
@@ -24,6 +32,13 @@ namespace SimpleWeather.Maui.Helpers
         {
             view.IsEnabled = true;
             var platformView = view.GetPlatformView();
+
+            if (platformView == null)
+            {
+                Logger.WriteLine(LoggerLevel.Warn, "EnableInteractions: Webview not available");
+                return;
+            }
+
 #if __ANDROID__
             platformView.SetOnTouchListener(null);
             platformView.Settings.SetSupportZoom(true);
@@ -37,6 +52,13 @@ namespace SimpleWeather.Maui.Helpers
         public static void RestrictWebView(this WebView view)
         {
             var platformView = view.GetPlatformView();
+
+            if (platformView == null)
+            {
+                Logger.WriteLine(LoggerLevel.Warn, "RestrictWebView: Webview not available");
+                return;
+            }
+
 #if __ANDROID__
             platformView.Settings.JavaScriptEnabled = false;
             platformView.Settings.AllowContentAccess = false;
@@ -70,6 +92,13 @@ namespace SimpleWeather.Maui.Helpers
         public static void EnableJS(this WebView view, bool enabled)
         {
             var platformView = view.GetPlatformView();
+
+            if (platformView == null)
+            {
+                Logger.WriteLine(LoggerLevel.Warn, "EnableJS: Webview not available");
+                return;
+            }
+
 #if __ANDROID__
             platformView.Settings.JavaScriptEnabled = enabled;
 #elif IOS || MACCATALYST

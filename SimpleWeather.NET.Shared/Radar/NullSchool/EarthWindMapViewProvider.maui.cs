@@ -118,8 +118,12 @@ namespace SimpleWeather.NET.Radar.NullSchool
             };
 
             webview.Navigated += Webview_NavigationCompleted;
-            webview.RestrictWebView();
-            webview.EnableJS(true);
+            webview.HandlerChanged += (s, e) =>
+            {
+                webview.RestrictWebView();
+                webview.EnableJS(true);
+                UpdateRadarView();
+            };
 
             return webview;
         }

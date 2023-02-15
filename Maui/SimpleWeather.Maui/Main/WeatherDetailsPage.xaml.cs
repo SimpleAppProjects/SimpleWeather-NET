@@ -6,4 +6,8 @@ public partial class WeatherDetailsPage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+    internal WeatherDetailsPage(DetailsPageArgs detailsPageArgs) : this()
+    {
+    }
 }

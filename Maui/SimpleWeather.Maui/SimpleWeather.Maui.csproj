@@ -146,6 +146,9 @@
 		<MauiXaml Update="Preferences\PreferenceListDialogPage.xaml">
 		  <SubType></SubType>
 		</MauiXaml>
+		<MauiXaml Update="Controls\WeatherAlertPanel.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="**\*.xaml.cs" Exclude="@(Compile)">

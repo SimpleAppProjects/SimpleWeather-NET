@@ -1,13 +1,20 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="SimpleWeather.Maui.Main.WeatherRadarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="WeatherRadarPage">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    Title="{x:Static res_strings:Resources.label_radar}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}"
+    Shell.NavBarIsVisible="True">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="{x:Static res_strings:Resources.action_refresh}"
+                     IconImageSource="{matIcons:MaterialIcon Symbol=Refresh, Size=24, FontAutoScalingEnabled=True}"
+                     Clicked="RefreshBtn_Clicked"/>
+    </ContentPage.ToolbarItems>
+    <Grid>
+        <Border x:Name="RadarWebViewContainer" Loaded="RadarWebViewContainer_Loaded" />
+    </Grid>
 </ContentPage>

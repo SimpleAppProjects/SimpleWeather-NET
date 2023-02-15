@@ -1,10 +1,13 @@
+using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
+using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
+using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Utils;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Radar;
@@ -48,6 +51,12 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         RadarProvider.RadarProviderChanged += RadarProvider_RadarProviderChanged;
         this.Loaded += WeatherNow_Loaded;
         this.Unloaded += WeatherNow_Unloaded;
+
+        BindingContext = WNowViewModel;
+    }
+
+    internal WeatherNow(WeatherNowArgs args) : this()
+    {
     }
 
     public void InitSnackManager()
@@ -134,22 +143,219 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
 
     private async void WeatherView_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
+        switch (e.PropertyName)
+        {
+            case nameof(WNowViewModel.UiState):
+                var uiState = WNowViewModel.UiState;
 
+                AdjustViewLayout();
+
+                if (Utils.FeatureSettings.WeatherRadar)
+                {
+                    WNowViewModel.Weather?.LocationCoord?.Let(coords =>
+                    {
+                        radarViewProvider?.UpdateCoordinates(coords, true);
+                    });
+                }
+
+                if (uiState.NoLocationAvailable)
+                {
+                    await Dispatcher.DispatchAsync(() =>
+                    {
+                        var banner = Banner.Make(ResStrings.prompt_location_not_set);
+                        banner.Icon = new MaterialIcon(MaterialSymbol.Map);
+                        banner.SetAction(ResStrings.label_fab_add_location, async () =>
+                        {
+                            await Navigation.PushAsync(new LocationsPage());
+                        });
+                        ShowBanner(banner);
+                    });
+                }
+                else
+                {
+                    DismissBanner();
+                }
+                break;
+
+            case nameof(WNowViewModel.Weather):
+                WNowViewModel.UiState?.LocationData?.Let(locationData =>
+                {
+                    ForecastView.UpdateForecasts(locationData);
+                    AlertsView.UpdateAlerts(locationData);
+
+                    /*
+                    Task.Run(async () =>
+                    {
+                        // Update home tile if it hasn't been already
+                        bool isHome = Equals(locationData, await SettingsManager.GetHomeData());
+                        if (isHome && (TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks)).TotalMinutes > SettingsManager.RefreshInterval))
+                        {
+                            await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                        }
+                        else if (isHome || SecondaryTileUtils.Exists(locationData?.query))
+                        {
+                            await WeatherTileCreator.TileUpdater(locationData);
+                        }
+                    });
+                    */
+                });
+                break;
+
+            case nameof(WNowViewModel.Alerts):
+                {
+                    var weatherAlerts = WNowViewModel.Alerts;
+                    var locationData = WNowViewModel.UiState?.LocationData;
+
+                    /*
+                    if (wm.SupportsAlerts && locationData != null)
+                    {
+                        _ = Task.Run(async () =>
+                        {
+                            // Alerts are posted to the user here. Set them as notified.
+#if DEBUG
+                            await WeatherAlertHandler.PostAlerts(locationData, weatherAlerts);
+#endif
+                            await WeatherAlertHandler.SetasNotified(locationData, weatherAlerts);
+
+                        });
+                    }
+                    */
+
+                    ResizeAlertPanel();
+                }
+                break;
+
+            case nameof(WNowViewModel.ErrorMessages):
+                {
+                    var errorMessages = WNowViewModel.ErrorMessages;
+
+                    var error = errorMessages.FirstOrDefault();
+
+                    if (error != null)
+                    {
+                        OnErrorMessage(error);
+                    }
+                }
+                break;
+        }
+    }
+
+    private void ResizeAlertPanel()
+    {
+        double w = this.Width;
+
+        if (w <= 0 || AlertButton == null)
+            return;
+
+        if (w <= 640)
+            AlertButton.MaximumWidthRequest = w;
+        else if (w <= 1080)
+            AlertButton.MaximumWidthRequest = w * (0.75);
+        else
+            AlertButton.MaximumWidthRequest = w * (0.50);
+    }
+
+    private void MainViewer_SizeChanged(object sender, EventArgs e)
+    {
+        AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
+        AdjustViewLayout();
+    }
+
+    private void ConditionPanel_SizeChanged(object sender, EventArgs e)
+    {
+        AdjustViewLayout();
+    }
+
+    private void DeferedControl_Loaded(object sender, EventArgs e)
+    {
+        AdjustViewLayout();
+    }
+
+    private void AdjustViewLayout()
+    {
+        if (MainViewer == null) return;
+
+        double w = MainViewer.Width - 16d - 16d; // Scrollbar padding
+        double h = MainViewer.Height - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
+
+        if (w <= 0 || h <= 0) return;
+
+        ResizeAlertPanel();
+
+        if (SpacerRow != null)
+        {
+
+        }
+
+        SummaryText?.FontSize(w > 640 ? 14 : 12);
     }
 
     protected override void OnNavigatingFrom(NavigatingFromEventArgs args)
     {
+        radarViewProvider?.OnDestroyView();
         base.OnNavigatingFrom(args);
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs e)
     {
         base.OnNavigatedFrom(e);
+        WNowViewModel.PropertyChanged -= WeatherView_PropertyChanged;
     }
 
-    protected override void OnNavigatedTo(NavigatedToEventArgs e)
+    protected override async void OnNavigatedTo(NavigatedToEventArgs e)
     {
         base.OnNavigatedTo(e);
+
+        AnalyticsLogger.LogEvent("WeatherNow: OnNavigatedTo");
+
+        WNowViewModel.PropertyChanged += WeatherView_PropertyChanged;
+
+        MainViewer.ScrollToAsync(0, 0, false);
+
+        if (UpdateTheme)
+        {
+            // UpdateControlTheme
+            UpdateTheme = false;
+        }
+
+        if (ClearGraphIconCache)
+        {
+            WeatherBox?.UpdateWeatherIcon();
+            ClearGraphIconCache = false;
+        }
+
+        if (UpdateBindings)
+        {
+            this.ApplyBindings();
+            UpdateBindings = false;
+        }
+
+        await Dispatcher.DispatchAsync(async () =>
+        {
+            await InitializeState();
+        });
+    }
+
+    private void OnErrorMessage(ErrorMessage error)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            switch (error)
+            {
+                case ErrorMessage.String err:
+                    {
+                        ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
+                    }
+                    break;
+                case ErrorMessage.WeatherError err:
+                    {
+                        OnWeatherError(err.Exception);
+                    }
+                    break;
+            }
+        });
+
+        WNowViewModel.SetErrorMessageShown(error);
     }
 
     private void OnWeatherError(WeatherException wEx)
@@ -259,6 +465,72 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         }
     }
 
+    private void RefreshBtn_Clicked(object sender, EventArgs e)
+    {
+        AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
+        WNowViewModel.RefreshWeather(true);
+    }
+
+    private async void GotoAlertsPage()
+    {
+        AnalyticsLogger.LogEvent("WeatherNow: GotoAlertsPage");
+        await Navigation.PushAsync(new WeatherAlertPage());
+    }
+
+    private void AlertButton_Tapped(object sender, TappedEventArgs e)
+    {
+        GotoAlertsPage();
+    }
+
+    private void AlertButton_Clicked(object sender, EventArgs e)
+    {
+#if WINDOWS || MACCATALYST
+        GotoAlertsPage();
+#endif
+    }
+
+    private async void GotoDetailsPage(bool IsHourly, int Position)
+    {
+        await Navigation.PushAsync(new WeatherDetailsPage(new DetailsPageArgs()
+        {
+            IsHourly = IsHourly,
+            ScrollToPosition = Position
+        }));
+    }
+
+    private void RadarWebView_Loaded(object sender, EventArgs e)
+    {
+        var cToken = GetCancellationToken();
+
+        AsyncTask.Run(async () =>
+        {
+            await Dispatcher.DispatchAsync(() =>
+            {
+                if (radarViewProvider == null)
+                {
+                    radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+                }
+                radarViewProvider.EnableInteractions(false);
+                WNowViewModel.Weather?.Let(it =>
+                {
+                    radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
+                });
+            });
+        }, 1000, cToken);
+    }
+
+    private async void RadarWebView_Tapped(object sender, TappedEventArgs e)
+    {
+        await Navigation.PushAsync(new WeatherRadarPage());
+    }
+
+    private async void RadarWebView_Clicked(object sender, EventArgs e)
+    {
+#if WINDOWS || MACCATALYST
+        await Navigation.PushAsync(new WeatherRadarPage());
+#endif
+    }
+
     private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
     {
         if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
@@ -274,25 +546,5 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
 
     private void WeatherNow_Unloaded(object sender, EventArgs e)
     {
-    }
-
-    private void MainViewer_SizeChanged(object sender, EventArgs e)
-    {
-
-    }
-
-    private void AlertButton_Tapped(object sender, TappedEventArgs e)
-    {
-
-    }
-
-    private void AlertButton_Clicked(object sender, EventArgs e)
-    {
-
-    }
-
-    private void ConditionPanel_SizeChanged(object sender, EventArgs e)
-    {
-
     }
 }

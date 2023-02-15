@@ -18,5 +18,7 @@
         Star = 0xe838,
         Play = 0xe037,
         Pause = 0xe034,
+        Refresh = 0xe5d5,
+        Map = 0xe55b,
     }
 }

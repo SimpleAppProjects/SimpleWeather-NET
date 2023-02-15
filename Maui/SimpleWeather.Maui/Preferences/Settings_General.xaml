@@ -12,8 +12,8 @@
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.title_activity_settings}"
-    BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
-                                      Dark={StaticResource BlackBrush}}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}"
     Shell.NavBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
