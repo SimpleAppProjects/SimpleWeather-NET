@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:mauictrls="clr-namespace:Microsoft.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:progBar="clr-namespace:epj.ProgressBar.Maui;assembly=epj.ProgressBar.Maui">
 
     <Style TargetType="ActivityIndicator">
@@ -570,6 +571,45 @@
         <Setter Property="HeightRequest" Value="1" />
         <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
         <Setter Property="Opacity" Value="0.25" />
+    </Style>
+
+    <Style x:Key="WeatherNowSectionLabel" TargetType="Label">
+        <Setter Property="Padding" Value="12,20" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontFamily" Value="OpenSansSemibold" />
+    </Style>
+
+    <Style x:Key="ArrowButton" TargetType="ImageButton">
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Padding" Value="8,4,8,4" />
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="CornerRadius" Value="20" />
+    </Style>
+
+    <Style
+        x:Key="LeftArrowButton"
+        BasedOn="{StaticResource ArrowButton}"
+        TargetType="ImageButton">
+        <Setter Property="Source">
+            <Setter.Value>
+                <matIcons:MaterialIcon Symbol="ChevronLeft"
+                                       Color="{AppThemeBinding Light='Black', Dark='White'}" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        x:Key="RightArrowButton"
+        BasedOn="{StaticResource ArrowButton}"
+        TargetType="ImageButton">
+        <Setter Property="Source">
+            <Setter.Value>
+                <matIcons:MaterialIcon Symbol="ChevronRight"
+                                       Color="{AppThemeBinding Light='Black', Dark='White'}" />
+            </Setter.Value>
+        </Setter>
     </Style>
 
 </ResourceDictionary>

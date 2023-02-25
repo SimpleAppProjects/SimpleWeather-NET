@@ -1,30 +1,51 @@
-﻿using CommunityToolkit.WinUI;
+﻿#if WINDOWS
+using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+#endif
 using SimpleWeather.Common.Controls;
-using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 using SkiaSharp;
 using System;
 using System.Collections.Immutable;
+#if WINDOWS
+using SimpleWeather.NET.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
+#else
+using SKPaintSurfaceEventArgs = SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs;
+using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
+using Microsoft.Maui.Layouts;
+#endif
+#if !WINDOWS
+using RoutedEventArgs = System.EventArgs;
+#endif
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
 namespace SimpleWeather.NET.Controls
 {
+#if WINDOWS
     [TemplatePart(Name = nameof(Canvas), Type = typeof(SKXamlCanvas))]
     public sealed partial class SunPhaseView : Control, IDisposable
+#else
+    public sealed partial class SunPhaseView : TemplatedView, IDisposable
+#endif
     {
+#if WINDOWS
         private const string SunIconUri = "ms-appx:///Assets/FullSun.png";
+#else
+        private const string SunIconUri = "full_sun.png";
+#endif
+
+        private bool IsInitialized { get; set; } = false;
 
         private SKXamlCanvas Canvas { get; set; }
 
@@ -61,9 +82,14 @@ namespace SimpleWeather.NET.Controls
             set => SetValue(PaintColorProperty, value);
         }
 
+#if WINDOWS
         // Using a DependencyProperty as the backing store for PaintColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PaintColorProperty =
             DependencyProperty.Register(nameof(PaintColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow, OnPaintColorChanged));
+#else
+        public static readonly BindableProperty PaintColorProperty =
+            BindableProperty.Create(nameof(PaintColor), typeof(Color), typeof(SunPhaseView), Colors.Yellow, propertyChanged: OnPaintColorChanged);
+#endif
 
         public Color PhaseArcColor
         {
@@ -71,9 +97,14 @@ namespace SimpleWeather.NET.Controls
             set => SetValue(PhaseArcColorProperty, value);
         }
 
+#if WINDOWS
         // Using a DependencyProperty as the backing store for PhaseArcColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PhaseArcColorProperty =
             DependencyProperty.Register(nameof(PhaseArcColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.Yellow, OnPhaseArcColorChanged));
+#else
+        public static readonly BindableProperty PhaseArcColorProperty =
+            BindableProperty.Create(nameof(PhaseArcColor), typeof(Color), typeof(SunPhaseView), Colors.Yellow, propertyChanged: OnPhaseArcColorChanged);
+#endif
 
         public Color BottomTextColor
         {
@@ -81,19 +112,31 @@ namespace SimpleWeather.NET.Controls
             set => SetValue(BottomTextColorProperty, value);
         }
 
+#if WINDOWS
         // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BottomTextColorProperty =
             DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(SunPhaseView), new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
+#else
+        public static readonly BindableProperty BottomTextColorProperty =
+            BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(SunPhaseView), Colors.White, propertyChanged: OnBottomTextColorChanged);
+#endif
 
         public SunPhaseViewModel ViewModel
         {
+#if WINDOWS
             get => DataContext as SunPhaseViewModel;
             set => DataContext = value;
+#else
+            get => BindingContext as SunPhaseViewModel;
+            set => BindingContext = value;
+#endif
         }
 
         public SunPhaseView()
         {
+#if WINDOWS
             this.DefaultStyleKey = typeof(SunPhaseView);
+#endif
 
             this.Loaded += SunPhaseView_Loaded;
             this.Unloaded += SunPhaseView_Unloaded;
@@ -102,11 +145,23 @@ namespace SimpleWeather.NET.Controls
             sunrise = date;
             sunset = date;
 
+#if WINDOWS
             DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
+#if WINDOWS
                 var fs = await StorageFileHelper.GetFileStreamFromApplicationUri(SunIconUri);
+#else
+                var fs = await FileSystem.OpenAppPackageFileAsync(SunIconUri);
+#endif
                 SunIcon = SKImage.FromEncodedData(fs);
+#if WINDOWS
                 Canvas?.Invalidate();
+#else
+                Canvas?.InvalidateSurface();
+#endif
             });
 
             bottomTextPaint = new SKPaint()
@@ -159,10 +214,29 @@ namespace SimpleWeather.NET.Controls
 
             // UpdateColors();
 
+#if WINDOWS
             RegisterPropertyChangedCallback(FontSizeProperty, OnDependencyPropertyChanged);
             RegisterPropertyChangedCallback(FontWeightProperty, OnDependencyPropertyChanged);
             this.DataContextChanged += SunPhaseView_DataContextChanged;
+#else
+            this.HandlerChanged += SunPhaseView_HandlerChanged;
+            this.BindingContextChanged += SunPhaseView_BindingContextChanged;
+#endif
+
+            IsInitialized = true;
         }
+
+#if !WINDOWS
+        private void SunPhaseView_HandlerChanged(object sender, EventArgs e)
+        {
+#if ANDROID
+            if (this.Handler?.PlatformView is Android.Views.View v)
+            {
+                v.SetWillNotDraw(false);
+            }
+#endif
+        }
+#endif
 
         protected override void OnApplyTemplate()
         {
@@ -176,9 +250,15 @@ namespace SimpleWeather.NET.Controls
             }
         }
 
+#if WINDOWS
         private static void OnPaintColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue != e.OldValue)
+#else
+        private static void OnPaintColorChanged(BindableObject obj, object oldValue, object newValue)
+        {
+            if (newValue != oldValue)
+#endif
             {
                 (obj as SunPhaseView)?.UpdatePaintColor();
             }
@@ -186,15 +266,27 @@ namespace SimpleWeather.NET.Controls
 
         private void UpdatePaintColor()
         {
+            if (!IsInitialized) return;
+
             backgroundPaint.Color = ColorUtils.SetAlphaComponent(PaintColor, 0x50).ToSKColor();
             pathArcPaint.Color = PaintColor.ToSKColor();
             bigCirPaint.Color = PaintColor.ToSKColor();
+#if WINDOWS
             Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
         }
 
+#if WINDOWS
         private static void OnPhaseArcColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue != e.OldValue)
+#else
+        private static void OnPhaseArcColorChanged(BindableObject obj, object oldValue, object newValue)
+        {
+            if (newValue != oldValue)
+#endif
             {
                 (obj as SunPhaseView)?.UpdatePhaseArcColor();
             }
@@ -202,13 +294,25 @@ namespace SimpleWeather.NET.Controls
 
         private void UpdatePhaseArcColor()
         {
+            if (!IsInitialized) return;
+
             fullArcPaint.Color = ColorUtils.SetAlphaComponent(PhaseArcColor, 0x40).ToSKColor();
+#if WINDOWS
             Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
         }
 
+#if WINDOWS
         private static void OnBottomTextColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue != e.OldValue)
+#else
+        private static void OnBottomTextColorChanged(BindableObject obj, object oldValue, object newValue)
+        {
+            if (newValue != oldValue)
+#endif
             {
                 (obj as SunPhaseView)?.UpdateBottomTextColor();
             }
@@ -216,13 +320,27 @@ namespace SimpleWeather.NET.Controls
 
         private void UpdateBottomTextColor()
         {
+            if (!IsInitialized) return;
+
             bottomTextPaint.Color = BottomTextColor.ToSKColor();
+#if WINDOWS
             Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
         }
 
+#if WINDOWS
         private void SunPhaseView_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+#else
+        private void SunPhaseView_BindingContextChanged(object sender, EventArgs args)
+#endif
         {
+#if WINDOWS
             if (args.NewValue is SunPhaseViewModel viewModel)
+#else
+            if (BindingContext is SunPhaseViewModel viewModel)
+#endif
             {
                 SetSunriseSetTimes(viewModel.SunriseTime, viewModel.SunsetTime, viewModel.TZOffset);
             }
@@ -244,6 +362,7 @@ namespace SimpleWeather.NET.Controls
             }
         }
 
+#if WINDOWS
         private SKTypeface GetSKTypeface(FontFamily fontFamily, FontWeight fontWeight)
         {
             if (fontWeight.Weight >= FontWeights.Medium.Weight)
@@ -255,12 +374,26 @@ namespace SimpleWeather.NET.Controls
                 return SKTypeface.FromFamilyName(fontFamily.Source, SKFontStyle.Normal);
             }
         }
+#else
+        private SKTypeface GetSKTypeface(string fontFamily, FontAttributes fontAttribs)
+        {
+            if (fontAttribs == FontAttributes.Bold)
+            {
+                return SKTypeface.FromFamilyName(fontFamily, SKFontStyle.Bold);
+            }
+            else
+            {
+                return SKTypeface.FromFamilyName(fontFamily, SKFontStyle.Normal);
+            }
+        }
+#endif
 
         private float FontSizeToTextSize(double fontSize)
         {
             return (float)fontSize /** (1f / 0.75f)*/;
         }
 
+#if WINDOWS
         private void OnDependencyPropertyChanged(DependencyObject obj, DependencyProperty property)
         {
             if (property == FontSizeProperty)
@@ -276,6 +409,7 @@ namespace SimpleWeather.NET.Controls
                 Canvas?.Invalidate();
             }
         }
+#endif
 
         private float GraphHeight =>
             ViewHeight - bottomTextTopMargin - bottomTextHeight - bottomTextDescent;
@@ -313,7 +447,11 @@ namespace SimpleWeather.NET.Controls
                 this.offset = offset;
 
                 CalculateBottomTextSize();
+#if WINDOWS
                 Canvas?.Invalidate();
+#else
+                Canvas?.InvalidateSurface();
+#endif
             }
         }
 
@@ -351,7 +489,11 @@ namespace SimpleWeather.NET.Controls
             }
 
             RefreshXCoordinateList();
+#if WINDOWS
             Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
         }
 
         private void RefreshXCoordinateList()
@@ -365,7 +507,11 @@ namespace SimpleWeather.NET.Controls
             var canvas = e.Surface.Canvas;
 
             // get the screen density for scaling
+#if WINDOWS
             var scale = (float)XamlRoot.RasterizationScale;
+#else
+            var scale = 1f;
+#endif
 
             // handle the device screen density
             canvas.Scale(scale);
@@ -511,19 +657,49 @@ namespace SimpleWeather.NET.Controls
             canvas.DrawText(SunsetLabel, sunsetX, y, bottomTextFont, bottomTextPaint);
         }
 
-        protected override Size MeasureOverride(Size availableSize)
+#if WINDOWS
+        protected sealed override Size MeasureOverride(Size availableSize)
         {
+            Size size = base.MeasureOverride(availableSize);
+
             Canvas.Width = availableSize.Width;
             Canvas.Height = availableSize.Height;
 
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
+#else
+        protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
+        {
+            Size availableSize = base.MeasureOverride(widthConstraint, heightConstraint);
+            availableSize.Width = MeasureWidth(widthConstraint, availableSize.Width);
+
+            if (Canvas != null)
+            {
+                Canvas.WidthRequest = availableSize.Width;
+                Canvas.HeightRequest = availableSize.Height;
+
+                ViewHeight = (float)Canvas.Height;
+                ViewWidth = (float)Canvas.Width;
+            }
+#endif
 
             RefreshXCoordinateList();
 
-            Canvas.Invalidate();
+            // Redraw View
+#if WINDOWS
+            Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
 
             return availableSize;
+        }
+
+        private double MeasureWidth(double widthConstraint, double measuredWidth)
+        {
+            int MIN_HORIZONTAL_GRID_NUM = 2;
+            double preferred = backgroundGridWidth * MIN_HORIZONTAL_GRID_NUM + sideLineLength * 2;
+            return LayoutManager.ResolveConstraints(widthConstraint, this.Width, measuredWidth, min: preferred);
         }
 
         public void Dispose()

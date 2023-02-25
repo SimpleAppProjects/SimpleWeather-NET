@@ -386,7 +386,11 @@ namespace SimpleWeather.NET.Controls.Graphs
                             }
                             if (entry.LoTempData != null)
                             {
+#if WINDOWS
                                 canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth * 1.5f, bottomTextFont, bottomTextPaint);
+#else
+                                canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth, bottomTextFont, bottomTextPaint);
+#endif
                             }
                         }
                     }

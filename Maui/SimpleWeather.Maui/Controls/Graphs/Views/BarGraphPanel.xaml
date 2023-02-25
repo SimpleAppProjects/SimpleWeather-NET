@@ -14,13 +14,13 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Button
+        <ImageButton
             x:Name="LeftButton"
             Grid.Column="0"
             Clicked="LeftButton_Click"
             IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
-        <Button
+        <ImageButton
             x:Name="RightButton"
             Grid.Column="2"
             Clicked="RightButton_Click"
@@ -29,6 +29,7 @@
         <graphs:BarGraphView
             x:Name="BarChartView"
             Grid.Column="1"
+            BottomTextColor="{AppThemeBinding Light=Black, Dark=White}"
             DrawDataLabels="True"
             DrawIconLabels="False"
             FontSize="{OnIdiom Phone=13,

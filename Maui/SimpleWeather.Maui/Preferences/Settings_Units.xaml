@@ -10,7 +10,7 @@
     Shell.NavBarIsVisible="True">
 
     <Grid>
-        <ScrollView Padding="16" HorizontalScrollBarVisibility="Never">
+        <ScrollView Orientation="Vertical" Padding="16" HorizontalScrollBarVisibility="Never">
             <VerticalStackLayout>
                 <Label
                     Padding="0,5"

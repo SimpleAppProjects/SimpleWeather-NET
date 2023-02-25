@@ -17,10 +17,6 @@
     NavigationPage.HasNavigationBar="False"
     mc:Ignorable="d m mx">
 
-    <ContentPage.Resources>
-        <toolkitConverters:IsListNotNullOrEmptyConverter x:Key="collectionBooleanConverter" />
-    </ContentPage.Resources>
-
     <Grid>
         <Grid VerticalOptions="Center">
             <Grid.RowDefinitions>

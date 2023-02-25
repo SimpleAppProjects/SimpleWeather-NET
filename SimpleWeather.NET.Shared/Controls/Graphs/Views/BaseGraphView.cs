@@ -10,6 +10,8 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
 #else
+using Microsoft.Maui.Layouts;
+using Microsoft.Maui.Primitives;
 using SimpleWeather.Maui;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
@@ -53,7 +55,11 @@ namespace SimpleWeather.NET.Controls.Graphs
         protected float backgroundGridWidth = 45f; // 45dp
         protected float longestTextWidth;
 
+#if WINDOWS
         protected float IconHeight = 48f; // 30dp // 48dp
+#else
+        protected float IconHeight = 48f;
+#endif
 
         public BaseGraphView() : base()
         {
@@ -273,6 +279,9 @@ namespace SimpleWeather.NET.Controls.Graphs
 #else
                 HeightRequest = IconHeight,
                 WidthRequest = IconHeight,
+                IconWidth = 30,
+                IconHeight = 30,
+                VerticalOptions = LayoutOptions.Center,
 #endif
             };
         }
@@ -364,6 +373,18 @@ namespace SimpleWeather.NET.Controls.Graphs
             return 0;
         }
 
+#if !WINDOWS
+        protected double GetMeasurement(double constraint, double desiredSize, double measuredSize, double maxSize)
+        {
+            if (desiredSize > 0)
+            {
+                return maxSize > 0 ? Math.Min(desiredSize, maxSize) : desiredSize;
+            }
+
+            return measuredSize;
+        }
+#endif
+
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
         {
@@ -371,8 +392,9 @@ namespace SimpleWeather.NET.Controls.Graphs
 #else
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
+            OnPreMeasure();
             Size size = base.MeasureOverride(widthConstraint, heightConstraint);
-            var availableSize = new Size(widthConstraint, heightConstraint);
+            var availableSize = new Size(GetMeasurement(widthConstraint, GetPreferredWidth(), size.Width, MaxCanvasWidth), size.Height);
 #endif
 
             if (this.ScrollViewer == null || this.Canvas == null)
@@ -381,19 +403,11 @@ namespace SimpleWeather.NET.Controls.Graphs
             }
 
 #if WINDOWS
-            ScrollViewer.Height =
-#else
-            ScrollViewer.HeightRequest =
-#endif
-                double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
-#if WINDOWS
-            ScrollViewer.Width =
-#else
-            ScrollViewer.WidthRequest =
-#endif
-                double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
+            ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
+            ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
 
             OnPreMeasure();
+#endif
 
 #if WINDOWS
             Canvas.Width = 

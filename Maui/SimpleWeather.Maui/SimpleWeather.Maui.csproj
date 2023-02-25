@@ -149,6 +149,30 @@
 		<MauiXaml Update="Controls\WeatherAlertPanel.xaml">
 		  <SubType></SubType>
 		</MauiXaml>
+		<MauiXaml Update="Controls\DetailItem.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\UVControl.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\BeaufortControl.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\AQIControl.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\PollenCountControl.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\MoonPhaseControl.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\HourlyForecastItemPanel.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
+		<MauiXaml Update="Controls\HourlyForecastItem.xaml">
+		  <SubType></SubType>
+		</MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="**\*.xaml.cs" Exclude="@(Compile)">
@@ -167,6 +191,9 @@
 	  <Folder Include="Services\" />
 	  <Folder Include="Preferences\TableView\" />
 	  <Folder Include="Controls\Graphs\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="AlohaKit.Layouts" />
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />

@@ -10,6 +10,7 @@
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons;assembly=SimpleWeather.Maui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mext="clr-namespace:SimpleWeather.Maui.MarkupExtensions;assembly=SimpleWeather.Maui"
+    xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls;assembly=SimpleWeather.Maui"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:stepper="clr-namespace:SimpleWeather.Maui.Stepper;assembly=SimpleWeather.Maui"
     mc:Ignorable="d">
@@ -234,7 +235,7 @@
         TargetType="controls:IconControl" />
 
     <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
-        <Setter Property="HorizontalOptions" Value="Fill" />
+        <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="HeightRequest" Value="275" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
@@ -242,9 +243,11 @@
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
-                        StrokeThickness="{TemplateBinding StrokeThickness}">
+                        StrokeThickness="0"
+                        Stroke="Transparent">
                         <ScrollView
                             x:Name="InternalScrollViewer"
+                            Orientation="Horizontal"
                             HorizontalScrollBarVisibility="Never"
                             VerticalScrollBarVisibility="Never">
                             <Grid>
@@ -261,5 +264,104 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource BaseGraphViewControlStyle}"
+        CanCascade="True"
+        TargetType="localGraphs:BaseGraphViewControl" />
+
+    <Style x:Key="DefaultTemplatedContentPresenterStyle" TargetType="controls:TemplatedContentPresenter">
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid x:Name="HostGrid" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultTemplatedContentPresenterStyle}"
+        CanCascade="True"
+        TargetType="controls:TemplatedContentPresenter" />
+
+    <Style x:Key="DefaultHeaderedContentControlStyle" TargetType="controls:HeaderedContentControl">
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <controls:TemplatedContentPresenter x:Name="HeaderPresenter"
+                                                            Data="{TemplateBinding Header}"
+                                                            DataTemplate="{TemplateBinding HeaderTemplate}"
+                                                            Grid.ColumnSpan="2" />
+                        <Grid x:Name="HostGrid"
+                              Grid.ColumnSpan="2"
+                              Grid.Row="1"/>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="OrientationStates">
+                                <VisualState x:Name="Vertical" />
+                                <VisualState x:Name="Horizontal">
+                                    <VisualState.Setters>
+                                        <Setter TargetName="HeaderPresenter" Property="Grid.ColumnSpan" Value="1" />
+                                        <Setter TargetName="ContentPresenter" Property="Grid.ColumnSpan" Value="1" />
+                                        <Setter TargetName="ContentPresenter" Property="Grid.Column" Value="1" />
+                                        <Setter TargetName="HeaderPresenter" Property="Grid.Row" Value="1" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultHeaderedContentControlStyle}"
+        CanCascade="True"
+        TargetType="controls:HeaderedContentControl" />
+
+    <Style x:Key="DefaultSunPhaseViewStyle" TargetType="sharedControls:SunPhaseView">
+        <Setter Property="PaintColor" Value="{AppThemeBinding Light=Orange, Dark=Yellow}" />
+        <Setter Property="PhaseArcColor" Value="{AppThemeBinding Light='#40000000', Dark='#40FFFFFF'}" />
+        <Setter Property="BottomTextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+        <Setter Property="HeightRequest" Value="225" />
+        <Setter Property="MaximumWidthRequest" Value="560" />
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BackgroundColor="{TemplateBinding BackgroundColor}"
+                        StrokeThickness="0"
+                        Stroke="Transparent">
+                        <skiaSharp:SKCanvasView
+                            xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                            x:Name="Canvas"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                            IgnorePixelScaling="True" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultSunPhaseViewStyle}"
+        CanCascade="True"
+        TargetType="sharedControls:SunPhaseView" />
 
 </ResourceDictionary>

@@ -5,16 +5,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:matico="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:netControls="clr-namespace:SimpleWeather.NET.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Margin="16,0"
     MaximumWidthRequest="960"
     MinimumWidthRequest="132"
     VerticalOptions="End"
+    x:DataType="netControls:Snackbar"
     mc:Ignorable="d">
-    <d:ContentView.BindingContext>
-        <local:Snackbar />
-    </d:ContentView.BindingContext>
     <Frame
         Padding="0"
         BackgroundColor="{AppThemeBinding Light={StaticResource LightInverseSurface},
@@ -56,7 +55,7 @@
                 VerticalOptions="Center"
                 WidthRequest="38">
                 <ImageButton.Source>
-                    <matico:MaterialIcon
+                    <matIcons:MaterialIcon
                         Size="16"
                         Symbol="Close"
                         Color="{AppThemeBinding Light={StaticResource LightInverseOnSurface},

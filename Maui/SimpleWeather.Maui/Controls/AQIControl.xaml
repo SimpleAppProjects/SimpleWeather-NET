@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Controls.AQIControl"
+             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+             xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+             xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+             x:DataType="commonControls:AirQualityViewModel"
+             MinimumWidthRequest="340">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="Auto,*" VerticalOptions="FillAndExpand">
+        <Label
+            Grid.Row="0"
+            Grid.Column="0"
+            x:Name="AQILabel"
+            Text="{x:Static res_strings:Resources.label_airquality}"
+            Style="{DynamicResource WeatherNowSectionLabel}" />
+        <Image
+            Grid.Row="0"
+            Grid.Column="1"
+            VerticalOptions="Center"
+            HorizontalOptions="End">
+            <Image.Source>
+                <matIcons:MaterialIcon Symbol="ChevronRight" Size="24"
+                                       Color="{AppThemeBinding Light=Black, Dark=White}" />
+            </Image.Source>
+        </Image>
+        <Grid Grid.Row="1" Grid.ColumnSpan="2"
+              RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*">
+            <Label
+                x:Name="AQIndex"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.RowSpan="2"
+                MinimumHeightRequest="72"
+                MinimumWidthRequest="85"
+                VerticalOptions="Center"
+                VerticalTextAlignment="Center"
+                FontSize="32"
+                FontFamily="OpenSansSemibold"
+                Text="{Binding Index}"
+                HorizontalTextAlignment="Center"
+                TextColor="{Binding ProgressColor}" />
+            <Label
+                x:Name="AQILevel"
+                Grid.Row="0"
+                Grid.Column="1"
+                Padding="6"
+                VerticalOptions="Center"
+                FontSize="18"
+                FontFamily="OpenSansSemibold"
+                Text="{Binding Level}" />
+            <Label
+                x:Name="AQIBlock"
+                Grid.Row="1"
+                Grid.Column="1"
+                Padding="6"
+                VerticalOptions="Start"
+                FontSize="14"
+                MaxLines="3"
+                Text="{Binding Description}"
+                LineBreakMode="TailTruncation" />
+        </Grid>
+        <ProgressBar
+            x:Name="AQIProgressBar"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HeightRequest="4"
+            Margin="12,0,12,12"
+            BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
+            ProgressColor="{Binding ProgressColor}"
+            Progress="{x:Bind Progress / 100}" />
+        <Label
+            x:Name="Attribution"
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Padding="12,0,12,12"
+            HorizontalOptions="Center"
+            FontSize="12"
+            IsVisible="{Binding Attribution, Converter={StaticResource stringBooleanConverter}}"
+            Text="{x:Bind $'{res_strings:Resources.credit_prefix} {Attribution}'}"/>
+    </Grid>
+</ContentView>

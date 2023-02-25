@@ -1,6 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿#if !WINUI
+using Microsoft.Maui.Storage;
+#endif
+using Newtonsoft.Json;
+using SimpleWeather.Utils;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.WeatherData.Images.Model
 {
@@ -25,17 +30,24 @@ namespace SimpleWeather.WeatherData.Images.Model
         [JsonProperty("siteName")]
         public string SiteName { get; set; }
 
+#if WINUI
         public bool IsValid()
         {
             return ImageUrl != null &&
+                (File.Exists(ImageUrl) || Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute)) &&
+                !String.IsNullOrWhiteSpace(HexColor);
+        }
+#else
+        public async Task<bool> IsValidAsync()
+        {
+            return ImageUrl != null &&
                 ((
-#if !WINDOWS
-                ImageUrl?.StartsWith("ms-appx") != true &&
-#endif
-                File.Exists(ImageUrl)) ||
+                ImageUrl?.StartsWith("maui-appx") != true &&
+                await FileSystemUtils.FileExistsAsync(ImageUrl)) ||
                 Uri.IsWellFormedUriString(ImageUrl, UriKind.Absolute)) &&
                 !String.IsNullOrWhiteSpace(HexColor);
         }
+#endif
 
         public static ImageData CopyWithNewImageUrl(ImageData @old, String newImagePath)
         {

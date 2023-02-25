@@ -39,5 +39,37 @@ namespace SimpleWeather.Utils
                 action(item);
             }
         }
+
+        public static int IndexOf(this IEnumerable e, object value)
+        {
+            int index = 0;
+
+            foreach (object item in e)
+            {
+                if (Equals(item, value))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
+        }
+
+        public static int IndexOf<T>(this IEnumerable<T> e, T value)
+        {
+            int index = 0;
+
+            var comparer = EqualityComparer<T>.Default;
+
+            foreach (T item in e)
+            {
+                if (comparer.Equals(item, value))
+                    return index;
+
+                index++;
+            }
+
+            return -1;
+        }
     }
 }

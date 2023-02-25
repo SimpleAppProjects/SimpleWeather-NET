@@ -110,6 +110,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>WindDirection.resx</DependentUpon>
     </Compile>
+    <Compile Update="Utils\FileSystemUtils.cs">
+      <SubType></SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resources\Strings\AQIndex.resx">

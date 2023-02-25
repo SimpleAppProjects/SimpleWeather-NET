@@ -76,6 +76,8 @@ namespace SimpleWeather.NET.Radar.NullSchool
                     Logger.WriteLine(LoggerLevel.Error, e);
                 }
             }
+
+            webview.InputTransparent = !InteractionsEnabled();
         }
 
         public override void OnDestroyView()

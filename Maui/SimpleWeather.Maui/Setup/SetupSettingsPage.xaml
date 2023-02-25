@@ -11,7 +11,7 @@
     Background="{DynamicResource PrimarySurfaceColorBrush}"
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False">
-    <ScrollView x:Name="Scroller">
+    <ScrollView x:Name="Scroller" Orientation="Vertical">
         <VerticalStackLayout VerticalOptions="Center">
             <controls:ViewBox
                 Margin="0,32,0,0"

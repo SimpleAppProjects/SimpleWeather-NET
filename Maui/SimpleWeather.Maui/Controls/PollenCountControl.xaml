@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Controls.PollenCountControl"
+             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+             xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+             xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+             x:DataType="commonControls:PollenViewModel"
+             MinimumWidthRequest="340">
+    <ContentView.Resources>
+        <converters:NullableColorConverter x:Key="nullableColorConv" FallbackColor="{AppThemeBinding Light=Black, Dark=White}" />
+    </ContentView.Resources>
+
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,*,*,*" VerticalOptions="FillAndExpand">
+        <Label
+            Grid.Row="0"
+            Grid.ColumnSpan="3"
+            x:Name="PollenLabel"
+            Text="{x:Static res_strings:Resources.label_pollen_count}"
+            Style="{DynamicResource WeatherNowSectionLabel}" />
+        <Label
+            x:Name="TreePollenLabel"
+            Grid.Row="1"
+            Grid.Column="0"
+            HorizontalOptions="Center"
+            VerticalOptions="Start"
+            FontSize="16"
+            Text="{x:Static res_strings:Resources.label_pollen_tree}" />
+        <Label
+            x:Name="TreePollenDescription"
+            Grid.Row="2"
+            Grid.Column="0"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontSize="24"
+            TextColor="{Binding TreePollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
+            Text="{Binding TreePollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
+        <Label
+            x:Name="GrassPollenLabel"
+            Grid.Row="1"
+            Grid.Column="1"
+            HorizontalOptions="Center"
+            FontSize="16"
+            Text="{x:Static res_strings:Resources.label_pollen_grass}" />
+        <Label
+            x:Name="GrassPollenDescription"
+            Grid.Row="2"
+            Grid.Column="1"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontSize="24"
+            TextColor="{Binding GrassPollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
+            Text="{Binding GrassPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
+        <Label
+            x:Name="RagweedPollenLabel"
+            Grid.Row="1"
+            Grid.Column="2"
+            HorizontalOptions="Center"
+            FontSize="16"
+            Text="{x:Static res_strings:Resources.label_pollen_grass}" />
+        <Label
+            x:Name="RagweedPollenDescription"
+            Grid.Row="2"
+            Grid.Column="2"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            FontSize="24"
+            TextColor="{Binding RagweedPollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
+            Text="{Binding RagweedPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
+    </Grid>
+</ContentView>

@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Controls.DetailItem"
+             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+             xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             x:DataType="commonControls:DetailItemViewModel"
+             HeightRequest="{OnIdiom Default=150, Desktop=175}"
+             WidthRequest="{OnIdiom Default=150, Desktop=175}">
+    <Border x:Name="ItemBorder"
+            Margin="15"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}">
+        <Border.StrokeShape>
+            <RoundRectangle CornerRadius="2" />
+        </Border.StrokeShape>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Label x:Name="DetailLabel"
+                   Grid.Row="0"
+                   FontSize="{OnIdiom Default=13, Desktop=15}"
+                   Padding="8"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   Text="{Binding Label, FallbackValue='Label'}" />
+            <controls:IconControl
+                x:Name="IconCtrl"
+                Grid.Row="1"
+                Margin="7.5"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                ForceBitmapIcon="True"
+                IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                ShowAsMonochrome="False"
+                WeatherIcon="{Binding Icon}"
+                Rotation="{Binding IconRotation}"
+                IconHeight="50"
+                IconWidth="50" />
+            <controls:ViewBox
+                Grid.Row="2"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                StretchDirection="DownOnly">
+                <Label x:Name="DetailValue"
+                       FontSize="{OnIdiom Default=15, Desktop=18}"
+                       Padding="8"
+                       Text="{Binding Value, FallbackValue='50.00 in'}"
+                       LineBreakMode="WordWrap" />
+            </controls:ViewBox>
+        </Grid>
+    </Border>
+</ContentView>
+

@@ -11,6 +11,8 @@ using System.IO;
 using System.Threading.Tasks;
 #if WINUI
 using Windows.Storage;
+#else
+using Microsoft.Maui.Storage;
 #endif
 
 namespace SimpleWeather.Common.Images
@@ -164,7 +166,11 @@ namespace SimpleWeather.Common.Images
             var imageHelper = SharedModule.Instance.Services.GetService<ImageDataHelperImpl>();
             var imageData = await imageHelper.GetCachedImageData(backgroundCode);
             // Check if cache is available and valid
+#if WINUI
             var imgDataValid = imageData != null && imageData.IsValid();
+#else
+            var imgDataValid = imageData != null && await imageData.IsValidAsync();
+#endif
             // Validate image header/contents
             var imgValid = imgDataValid && (await imageData?.IsImageValid());
             if (imgValid)
@@ -193,12 +199,20 @@ namespace SimpleWeather.Common.Images
                 {
 #endif
                     imageData = await imageHelper.GetRemoteImageData(backgroundCode);
+#if WINUI
                     if (imageData?.IsValid() == true)
+#else
+                    if (await imageData?.IsValidAsync() == true)
+#endif
                         return new ImageDataViewModel(imageData);
                     else
                     {
                         imageData = imageHelper.GetDefaultImageData(backgroundCode);
+#if WINUI
                         if (imageData?.IsValid() == true)
+#else
+                        if (await imageData?.IsValidAsync() == true)
+#endif
                             return new ImageDataViewModel(imageData);
                     }
 #if !UNIT_TEST
@@ -206,7 +220,11 @@ namespace SimpleWeather.Common.Images
                 else
                 {
                     imageData = imageHelper.GetDefaultImageData(backgroundCode);
+#if WINUI
                     if (imageData?.IsValid() == true)
+#else
+                    if (await imageData?.IsValidAsync() == true)
+#endif
                         return new ImageDataViewModel(imageData);
                 }
 #endif
@@ -217,10 +235,14 @@ namespace SimpleWeather.Common.Images
 
         public static async Task<bool> IsImageValid(this ImageData imgData)
         {
-            if (imgData.IsValid())
+#if WINUI
+            if (imgData?.IsValid() == true)
+#else
+            if (await imgData?.IsValidAsync() == true)
+#endif
             {
                 var uri = new Uri(imgData.ImageUrl);
-                if (uri.Scheme == "file" || uri.Scheme == "ms-appx")
+                if (uri.Scheme == "file" || uri.Scheme == "ms-appx" || uri.Scheme == "maui-appx")
                 {
                     Stream stream;
 #if !WINUI
@@ -248,6 +270,29 @@ namespace SimpleWeather.Common.Images
                             {
                                 return false;
                             }
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                            // Assume we're ok
+                            return true;
+                        }
+#endif
+                    }
+                    else if (uri.Scheme == "maui-appx")
+                    {
+#if !WINUI
+                        var filePath = $"{uri.Authority}{uri.AbsolutePath}";
+
+                        try
+                        {
+                            while (await FileSystem.Current.IsAppPackageFileLockedAsync(filePath))
+                            {
+                                await Task.Delay(250);
+                            }
+                            var fs = await FileSystem.Current.OpenAppPackageFileAsync(filePath);
+                            var bs = new BufferedStream(fs);
+                            stream = bs;
                         }
                         catch (Exception e)
                         {

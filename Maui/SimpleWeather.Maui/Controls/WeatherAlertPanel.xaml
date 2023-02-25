@@ -5,32 +5,68 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+             xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
              x:DataType="controls:WeatherAlertViewModel">
     <ContentView.Resources>
         <localControls:AlertTypeIconConverter x:Key="alertTypeIconConv" />
+        <localControls:AlertSeverityColorConverter x:Key="alertSeverityColorConv" />
     </ContentView.Resources>
 
     <Grid>
-        <toolkit:Expander HorizontalOptions="FillAndExpand" Direction="Down" IsExpanded="False">
+        <toolkit:Expander
+            x:Name="Expander"
+            HorizontalOptions="FillAndExpand"
+            Direction="Down"
+            IsExpanded="False"
+            BackgroundColor="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}}">
             <toolkit:Expander.Header>
-                <Grid>
+                <Grid VerticalOptions="Center" HeightRequest="48">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="AlertIcon" Grid.Column="0" WidthRequest="25" Margin="2,0,0,0"
-                           Source="{Binding AlertType, Converter={StaticResource alertTypeIconConv}}" />
-                    <Label x:Name="Title" Grid.Column="1" Padding="5" FontAttributes="Bold"
-                           Text="{Binding Title}" />
-                    <Label x:Name="Date" Grid.Column="2" Padding="5" FontAttributes="Bold"
-                           Text="{Binding PostDate}" />
+                    <Image x:Name="AlertIcon"
+                           Grid.Column="0"
+                           WidthRequest="25"
+                           Margin="2,0,0,0"
+                           Source="{Binding AlertType, Converter={StaticResource alertTypeIconConv}}"
+                           VerticalOptions="Center" />
+                    <Label x:Name="Title"
+                           Grid.Column="1"
+                           Padding="8,0"
+                           MaxLines="1"
+                           LineBreakMode="TailTruncation"
+                           FontAttributes="Bold"
+                           Text="{Binding Title}"
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                    <Label x:Name="Date"
+                           Grid.Column="2"
+                           Padding="8,0"
+                           FontAttributes="Bold"
+                           Text="{Binding PostDate}"
+                           TextColor="White"
+                           VerticalOptions="Center" />
+                    <Image Grid.Column="3" Margin="0,0,12,0">
+                        <Image.Source>
+                            <matIcons:MaterialIcon
+                                x:DataType="{x:Null}"
+                                Symbol="{x:Bind Expander.IsExpanded ? matIcons:MaterialSymbol.ExpandLess : matIcons:MaterialSymbol.ExpandMore}"
+                                Color="White" />
+                        </Image.Source>
+                    </Image>
                 </Grid>
             </toolkit:Expander.Header>
             <toolkit:Expander.Content>
-                <Label FontSize="{Binding Source={x:Reference Title}, Path=FontSize}"
-                       LineBreakMode="WordWrap"
-                       Text="{Binding Message}" />
+                <VerticalStackLayout BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}">
+                    <Label FontSize="{Binding Source={x:Reference Title}, Path=FontSize}"
+                           LineBreakMode="WordWrap"
+                           Padding="24"
+                           Text="{x:Bind $'{ExpireDate}\n\n{Message}\n\n{Attribution}'}"
+                           TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                </VerticalStackLayout>
             </toolkit:Expander.Content>
         </toolkit:Expander>
     </Grid>

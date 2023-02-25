@@ -128,7 +128,7 @@ namespace SimpleWeather.Maui.Controls.Graphs
         private void ClickGestureRecognizer_Clicked(object sender, EventArgs e)
         {
 #if WINDOWS || MACCATALYST
-            GraphViewTapped?.Invoke(sender, e);
+            //GraphViewTapped?.Invoke(sender, e);
 #endif
         }
     }

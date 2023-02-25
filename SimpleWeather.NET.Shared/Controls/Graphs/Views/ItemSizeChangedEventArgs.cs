@@ -6,7 +6,7 @@ using Microsoft.UI.Xaml;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    internal class ItemSizeChangedEventArgs :
+    public class ItemSizeChangedEventArgs :
 #if WINDOWS
         RoutedEventArgs
 #else

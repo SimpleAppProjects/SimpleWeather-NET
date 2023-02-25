@@ -24,7 +24,9 @@
     Shell.TitleColor="{AppThemeBinding Light={StaticResource LightPrimary},
                                        Dark={StaticResource DarkPrimary}}"
     Shell.UnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
-                                            Dark={StaticResource DarkOnSurface}}">
+                                            Dark={StaticResource DarkOnSurface}}"
+    Shell.ForegroundColor="{AppThemeBinding Light={StaticResource LightOnBackground},
+                                            Dark={StaticResource DarkOnBackground}}">
 
     <TabBar>
         <ShellContent

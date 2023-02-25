@@ -49,7 +49,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         public event EventHandler<ScrolledEventArgs> ViewChanged;
 #endif
 
-        internal event EventHandler<ItemSizeChangedEventArgs> ItemWidthChanged;
+        public event EventHandler<ItemSizeChangedEventArgs> ItemWidthChanged;
 
         protected ScrollViewer InternalScrollViewer { get; private set; }
         protected SKXamlCanvas Canvas { get; private set; }

@@ -38,6 +38,8 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
         {
             WNowViewModel.PropertyChanged += WNowViewModel_PropertyChanged;
         }
+
+        Initialize();
     }
 
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)

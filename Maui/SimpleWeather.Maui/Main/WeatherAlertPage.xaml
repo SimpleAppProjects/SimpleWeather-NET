@@ -6,29 +6,35 @@
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+    xmlns:viewModels="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     Title="{x:Static res_strings:Resources.title_fragment_alerts}"
-    Shell.NavBarIsVisible="True">
+    Shell.NavBarIsVisible="True"
+    x:Name="AlertsPage">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <VerticalStackLayout Grid.Row="0">
-            <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start">
+            <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
+                                   BindingContext="{Binding Source={x:Reference AlertsPage}, Path=WNowViewModel}">
                 <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
-                       Text="{x:Bind WNowViewModel.Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
+                       Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </localControls:ViewBox>
             <Rectangle HeightRequest="1" StrokeThickness="1" Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
         </VerticalStackLayout>
 
-        <ScrollView Grid.Row="1" Padding="8" HorizontalScrollBarVisibility="Never">
-            <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand" BindableLayout.ItemsSource="{x:Bind AlertsView.Alerts, Mode=OneWay}">
+        <ScrollView Grid.Row="1" Orientation="Vertical" Padding="8"
+                    HorizontalScrollBarVisibility="Never"
+                    BindingContext="{Binding Source={x:Reference AlertsPage}, Path=AlertsView}">
+            <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand"
+                                 BindableLayout.ItemsSource="{Binding Alerts, Mode=OneWay}">
                 <BindableLayout.EmptyView>
                     <Label Padding="4" Text="{x:Static res_strings:Resources.NoWeatherAlerts_Prompt_Text}" />
                 </BindableLayout.EmptyView>
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Border Stroke="Transparent" StrokeThickness="0.5">
+                        <Border Stroke="Transparent" StrokeThickness="0.5" Margin="0,0,0,0">
                             <localControls:WeatherAlertPanel />
                         </Border>
                     </DataTemplate>

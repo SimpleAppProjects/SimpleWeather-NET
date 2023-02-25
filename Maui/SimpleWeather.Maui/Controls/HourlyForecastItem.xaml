@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Controls.HourlyForecastItem"
+             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
+             x:DataType="sharedControls:HourlyForecastNowViewModel"
+             WidthRequest="150"
+             HeightRequest="240"
+             BindingContextChanged="HourlyForecastItem_BindingContextChanged">
+    <VerticalStackLayout>
+        <Grid
+            MinimumHeightRequest="20"
+            Padding="5"
+            HorizontalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <controls:IconControl
+                WidthRequest="20"
+                HeightRequest="20"
+                IconWidth="20"
+                IconHeight="20"
+                IconColor="{DynamicResource SimpleBlueLight}"
+                IconProvider="wi-erik-flowers"
+                ShowAsMonochrome="True"
+                IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}"
+                WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
+            <Label
+                Grid.Column="1"
+                Margin="5,0,0,0"
+                FontSize="14"
+                TextColor="{DynamicResource SimpleBlueLight}"
+                MaxLines="1"
+                Text="{Binding PoPChance}"
+                IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}" />
+        </Grid>
+        <Label
+            x:Name="DateBlock"
+            Padding="10,5"
+            HorizontalOptions="Center"
+            FontSize="{OnIdiom Default=14, Desktop=16}"
+            FontFamily="OpenSansSemibold"
+            MaxLines="1"
+            Text="{Binding ShortDate}" />
+        <controls:IconControl
+            HeightRequest="50"
+            WidthRequest="50"
+            IconHeight="50"
+            IconWidth="50"
+            Margin="5"
+            HorizontalOptions="Center"
+            WeatherIcon="{Binding Icon}" />
+        <Label
+            Padding="10,0"
+            HorizontalOptions="Center"
+            FontSize="24"
+            FontFamily="OpenSansLight"
+            MaxLines="1"
+            Text="{Binding Temperature}" />
+        <Label
+            x:Name="ConditionBlock"
+            MinimumHeightRequest="52"
+            Padding="10,5"
+            HorizontalOptions="Center"
+            FontSize="{OnIdiom Default=12, Desktop=14}"
+            MaxLines="2"
+            Text="{Binding Condition}"
+            LineBreakMode="TailTruncation" />
+        <Grid
+            MinimumHeightRequest="20"
+            Padding="5"
+            HorizontalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <controls:IconControl
+                WidthRequest="20"
+                HeightRequest="20"
+                IconWidth="20"
+                IconHeight="20"
+                IconColor="LightSeaGreen"
+                IconProvider="wi-erik-flowers"
+                Rotation="{Binding WindDirection}"
+                ShowAsMonochrome="True"
+                IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}"
+                WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}" />
+            <Label
+                Grid.Column="1"
+                Margin="5,0,0,0"
+                FontSize="14"
+                TextColor="LightSeaGreen"
+                MaxLines="1"
+                Text="{Binding WindSpeed}"
+                IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}" />
+        </Grid>
+    </VerticalStackLayout>
+</ContentView>
+

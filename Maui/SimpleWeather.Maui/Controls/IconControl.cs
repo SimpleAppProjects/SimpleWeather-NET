@@ -6,6 +6,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using SkiaSharp;
+using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 
 namespace SimpleWeather.Maui.Controls
@@ -77,7 +78,25 @@ namespace SimpleWeather.Maui.Controls
 		public static readonly BindableProperty IconColorProperty =
 			BindableProperty.Create(nameof(IconColor), typeof(Color), typeof(IconControl), Colors.Transparent, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
 
-		private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+		public double IconHeight
+		{
+			get => (double)GetValue(IconHeightProperty);
+			set => SetValue(IconHeightProperty, value);
+		}
+
+		public static readonly BindableProperty IconHeightProperty =
+			BindableProperty.Create(nameof(IconHeight), typeof(double), typeof(IconControl), double.NaN, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+
+        public double IconWidth
+		{
+			get => (double)GetValue(IconWidthProperty);
+			set => SetValue(IconWidthProperty, value);
+		}
+
+		public static readonly BindableProperty IconWidthProperty =
+			BindableProperty.Create(nameof(IconWidth), typeof(double), typeof(IconControl), double.NaN, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public IconControl()
 		{
@@ -146,7 +165,11 @@ namespace SimpleWeather.Maui.Controls
                     try
                     {
                         var drawable = await wip.GetDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                        var canvas = new SKCanvasView();
+                        var canvas = new SKCanvasView()
+						{
+							VerticalOptions = LayoutOptions.Center,
+							HorizontalOptions = LayoutOptions.Center
+						};
                         canvas.PaintSurface += (s, e) =>
                         {
                             e.Surface.Canvas.Clear();
@@ -157,13 +180,13 @@ namespace SimpleWeather.Maui.Controls
                         canvas.SetBinding(HeightRequestProperty, new Binding()
                         {
                             Source = this,
-                            Path = nameof(Height),
+                            Path = nameof(IconHeight),
                             Mode = BindingMode.OneWay,
                         });
                         canvas.SetBinding(WidthRequestProperty, new Binding()
                         {
                             Source = this,
-                            Path = nameof(Width),
+                            Path = nameof(IconWidth),
                             Mode = BindingMode.OneWay,
                         });
                         iconElement = canvas;
@@ -186,7 +209,8 @@ namespace SimpleWeather.Maui.Controls
 				iconElement = await CreateBitmapIcon(wip);
 			}
 
-			IconBox.Children.Add(iconElement);
+            IconBox.Children.Clear();
+            IconBox.Children.Add(iconElement);
 		}
 
 		private bool ShouldUseBitmap()
@@ -206,7 +230,11 @@ namespace SimpleWeather.Maui.Controls
                 try
                 {
                     var drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                    var canvas = new SKCanvasView();
+                    var canvas = new SKCanvasView()
+                    {
+                        VerticalOptions = LayoutOptions.Center,
+                        HorizontalOptions = LayoutOptions.Center
+                    };
                     canvas.PaintSurface += (s, e) =>
                     {
                         e.Surface.Canvas.Clear();
@@ -214,20 +242,20 @@ namespace SimpleWeather.Maui.Controls
                         drawable.Bounds = bounds;
                         drawable.Draw(e.Surface.Canvas);
                     };
-                    canvas.SetBinding(HeightProperty, new Binding()
+                    canvas.SetBinding(HeightRequestProperty, new Binding()
                     {
                         Source = this,
-                        Path = nameof(Height),
+                        Path = nameof(IconHeight),
                         Mode = BindingMode.OneWay,
                     });
-                    canvas.SetBinding(WidthProperty, new Binding()
+                    canvas.SetBinding(WidthRequestProperty, new Binding()
                     {
                         Source = this,
-                        Path = nameof(Width),
+                        Path = nameof(IconWidth),
                         Mode = BindingMode.OneWay,
-					});
+                    });
 
-					return canvas;
+                    return canvas;
                 }
                 catch (Exception e)
                 {
@@ -238,7 +266,15 @@ namespace SimpleWeather.Maui.Controls
 
 			{
                 var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                var canvas = new SKCanvasView();
+				if (drawable is SKBitmapDrawable bmpDrawable)
+				{
+					bmpDrawable.TintColor = IconColor.ToSKColor();
+				}
+                var canvas = new SKCanvasView()
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center
+                };
                 canvas.PaintSurface += (s, e) =>
                 {
                     e.Surface.Canvas.Clear();
@@ -246,16 +282,16 @@ namespace SimpleWeather.Maui.Controls
                     drawable.Bounds = bounds;
                     drawable.Draw(e.Surface.Canvas);
                 };
-                canvas.SetBinding(HeightProperty, new Binding()
+                canvas.SetBinding(HeightRequestProperty, new Binding()
                 {
                     Source = this,
-                    Path = nameof(Height),
+                    Path = nameof(IconHeight),
                     Mode = BindingMode.OneWay,
                 });
-                canvas.SetBinding(WidthProperty, new Binding()
+                canvas.SetBinding(WidthRequestProperty, new Binding()
                 {
                     Source = this,
-                    Path = nameof(Width),
+                    Path = nameof(IconWidth),
                     Mode = BindingMode.OneWay,
                 });
 

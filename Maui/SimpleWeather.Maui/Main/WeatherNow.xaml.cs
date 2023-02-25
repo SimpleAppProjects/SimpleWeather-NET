@@ -1,15 +1,21 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.Shapes;
+using Microsoft.Maui.Layouts;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.Controls.Flow;
+using SimpleWeather.Maui.Controls.Graphs;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Utils;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.NET.Radar;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -36,9 +42,21 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     private ForecastsNowViewModel ForecastView { get; } = AppShell.Instance.GetViewModel<ForecastsNowViewModel>();
     private WeatherAlertsViewModel AlertsView { get; } = AppShell.Instance.GetViewModel<WeatherAlertsViewModel>();
 
+    public Color ConditionPanelTextColor
+    {
+        get => (Color)GetValue(ConditionPanelTextColorProperty);
+        set => SetValue(ConditionPanelTextColorProperty, value);
+    }
+
+    public static readonly BindableProperty ConditionPanelTextColorProperty =
+        BindableProperty.Create(nameof(ConditionPanelTextColor), typeof(Color), typeof(WeatherNow), Colors.White);
+
     private bool UpdateBindings = false;
     private bool UpdateTheme = false;
     private bool ClearGraphIconCache = false;
+
+    // Views
+    private Border RadarWebViewContainer { get; set; }
 
     public WeatherNow()
     {
@@ -53,10 +71,13 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         this.Unloaded += WeatherNow_Unloaded;
 
         BindingContext = WNowViewModel;
+
+        InitControls();
     }
 
     internal WeatherNow(WeatherNowArgs args) : this()
     {
+        this.args = args;
     }
 
     public void InitSnackManager()
@@ -148,8 +169,6 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
             case nameof(WNowViewModel.UiState):
                 var uiState = WNowViewModel.UiState;
 
-                AdjustViewLayout();
-
                 if (Utils.FeatureSettings.WeatherRadar)
                 {
                     WNowViewModel.Weather?.LocationCoord?.Let(coords =>
@@ -220,8 +239,6 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                         });
                     }
                     */
-
-                    ResizeAlertPanel();
                 }
                 break;
 
@@ -240,54 +257,580 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         }
     }
 
-    private void ResizeAlertPanel()
-    {
-        double w = this.Width;
-
-        if (w <= 0 || AlertButton == null)
-            return;
-
-        if (w <= 640)
-            AlertButton.MaximumWidthRequest = w;
-        else if (w <= 1080)
-            AlertButton.MaximumWidthRequest = w * (0.75);
-        else
-            AlertButton.MaximumWidthRequest = w * (0.50);
-    }
-
     private void MainViewer_SizeChanged(object sender, EventArgs e)
     {
         AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
-        AdjustViewLayout();
     }
 
-    private void ConditionPanel_SizeChanged(object sender, EventArgs e)
+    private void InitControls()
     {
-        AdjustViewLayout();
-    }
+        App.Current.Resources.TryGetValue("inverseBoolConverter", out var inverseBoolConverter);
+        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
+        App.Current.Resources.TryGetValue("stringBooleanConverter", out var stringBooleanConverter);
+        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
+        App.Current.Resources.TryGetValue("bool2GridLengthConverter", out var bool2GridLengthConverter);
+        App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
+        App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
+        Resources.TryGetValue("detailsFilter", out var detailsFilter);
+        Resources.TryGetValue("graphDataConv", out var graphDataConv);
+        Resources.TryGetValue("graphDataGridLengthConv", out var graphDataGridLengthConv);
 
-    private void DeferedControl_Loaded(object sender, EventArgs e)
-    {
-        AdjustViewLayout();
-    }
-
-    private void AdjustViewLayout()
-    {
-        if (MainViewer == null) return;
-
-        double w = MainViewer.Width - 16d - 16d; // Scrollbar padding
-        double h = MainViewer.Height - MainViewer.Padding.Top - MainViewer.Padding.Bottom;
-
-        if (w <= 0 || h <= 0) return;
-
-        ResizeAlertPanel();
-
-        if (SpacerRow != null)
+        // Refresh toolbar item
+        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
         {
-
+            var refreshTlbrItm = new ToolbarItem()
+            {
+                Text = ResStrings.action_refresh,
+                IconImageSource = new MaterialIcon(MaterialSymbol.Refresh)
+                {
+                    Size = 24,
+                    FontAutoScalingEnabled = true
+                }.AppThemeColorBinding(MaterialIcon.ColorProperty, Colors.Black, Colors.White),
+                Order = ToolbarItemOrder.Primary,
+            }.Bind(ToolbarItem.IsEnabledProperty, nameof(RefreshLayout.IsRefreshing), BindingMode.OneWay, inverseBoolConverter as IValueConverter, source: RefreshLayout);
+            refreshTlbrItm.Clicked += RefreshBtn_Clicked;
+            ToolbarItems.Add(refreshTlbrItm);
         }
 
-        SummaryText?.FontSize(w > 640 ? 14 : 12);
+        ConditionPanelLayout.SizeChanged += (s, e) =>
+        {
+            if (RefreshLayout == null) return;
+
+            double h = RefreshLayout.Height;
+
+            if (Spacer != null)
+            {
+                if (Utils.FeatureSettings.BackgroundImage && h > 0)
+                {
+                    Spacer.HeightRequest = h - (ConditionPanelLayout.Height - Spacer.Height);
+                }
+                else
+                {
+                    Spacer.HeightRequest = 0;
+                }
+            }
+        };
+
+        // Forecast Panel
+        if (Utils.FeatureSettings.Forecast)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Auto),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.label_forecast,
+                        }
+                        .Column(0)
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                        new Image()
+                        {
+                            VerticalOptions = LayoutOptions.Center,
+                            Source = new MaterialIcon(MaterialSymbol.ChevronRight)
+                            {
+                                Size = 24
+                            }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        }
+                        .Column(1)
+                        .Row(0),
+                        // Content
+                        new RangeBarGraphPanel()
+                        {
+
+                        }
+                        .Bind(RangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}",
+                                BindingMode.OneWay, source: ForecastView
+                        )
+                        .Row(1)
+                        .ColumnSpan(2)
+                        .Apply(it =>
+                        {
+                            it.GraphViewTapped += (s, e) =>
+                            {
+                                if (s is IGraph control)
+                                {
+                                    if (e is TappedEventArgs ev)
+                                    {
+                                        GotoDetailsPage(false,
+                                            control.GetItemPositionFromPoint((float)(ev.GetPosition(control.Control)?.X + control.ScrollViewer.ScrollX)));
+                                    }
+                                    else
+                                    {
+                                        GotoDetailsPage(false, 0);
+                                    }
+                                }
+                            };
+                        })
+                    }
+                }
+                .Margins(bottom: 25)
+                .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
+                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                )
+            );
+        }
+
+        // HourlyForecast Panel
+        if (Utils.FeatureSettings.HourlyForecast)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Auto),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.label_hourlyforecast,
+                        }
+                        .Column(0)
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                        new Image()
+                        {
+                            VerticalOptions = LayoutOptions.Center,
+                            Source = new MaterialIcon(MaterialSymbol.ChevronRight)
+                            {
+                                Size = 24
+                            }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        }
+                        .Column(1)
+                        .Row(0),
+                        // Content
+                        new HourlyForecastItemPanel()
+                        {
+
+                        }
+                        .Bind(HourlyForecastItemPanel.ForecastDataProperty, $"{nameof(ForecastView.HourlyForecastData)}",
+                                BindingMode.OneWay, source: ForecastView
+                        )
+                        .MinHeight(250)
+                        .Row(1)
+                        .ColumnSpan(2)
+                        .Apply(it =>
+                        {
+                            it.ItemClick += (s, e) =>
+                            {
+                                AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
+                                GotoDetailsPage(true, it.GetItemPosition(e.Item));
+                            };
+                        })
+                    }
+                }
+                .Margins(bottom: 25)
+                .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
+                        BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: ForecastView
+                )
+            );
+        }
+
+        // Charts
+        if (Utils.FeatureSettings.Charts)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Auto),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.pref_title_feature_charts,
+                        }
+                        .Column(0)
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                        new Image()
+                        {
+                            VerticalOptions = LayoutOptions.Center,
+                            Source = new MaterialIcon(MaterialSymbol.ChevronRight)
+                            {
+                                Size = 24
+                            }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        }
+                        .Column(1)
+                        .Row(0),
+                        // Content
+                        new Grid()
+                        {
+                            RowDefinitions =
+                            {
+                                new RowDefinition()
+                                    .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataGridLengthConv as IValueConverter, source: ForecastView
+                                    ),
+                                new RowDefinition()
+                                    .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataGridLengthConv as IValueConverter, source: ForecastView
+                                    ),
+                            },
+                            Children =
+                            {
+                                // Minutely
+                                new ForecastGraphPanel()
+                                {
+                                    Margin = new Thickness(0, 5)
+                                }
+                                .Row(0)
+                                .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, source: ForecastView
+                                )
+                                .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                )
+                                .Apply(it =>
+                                {
+                                    it.GraphViewTapped += async (s, e) =>
+                                    {
+                                        await Navigation.PushAsync(new WeatherChartsPage());
+                                    };
+                                }),
+                                // Hourly
+                                new ForecastGraphPanel()
+                                {
+                                    Margin = new Thickness(0, 5)
+                                }
+                                .Row(1)
+                                .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, source: ForecastView
+                                )
+                                .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                )
+                                .Apply(it =>
+                                {
+                                    it.GraphViewTapped += async (s, e) =>
+                                    {
+                                        await Navigation.PushAsync(new WeatherChartsPage());
+                                    };
+                                })
+                            }
+                        }
+                        .Row(1)
+                        .ColumnSpan(2)
+                    }
+                }
+                .Margins(bottom: 25)
+                .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView)
+            );
+        }
+
+        // Details
+        if (Utils.FeatureSettings.DetailsEnabled)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.label_details,
+                        }
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                    }
+                }
+                .Margins(bottom: 25)
+                .Apply(grid =>
+                {
+                    var detailsStackLayout = new VerticalStackLayout();
+                    if (Utils.FeatureSettings.WeatherDetails)
+                    {
+                        detailsStackLayout.Add(
+                            new FlexLayout()
+                            {
+                                HorizontalOptions = LayoutOptions.Center,
+                                Wrap = FlexWrap.Wrap,
+                                JustifyContent = FlexJustify.Center,
+                            }
+                            .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
+                                    BindingMode.OneWay, detailsFilter as IValueConverter, source: WNowViewModel
+                            )
+                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
+                                    BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: WNowViewModel
+                            )
+                            .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
+                        );
+                    }
+                    if (Utils.FeatureSettings.ExtraDetailsEnabled)
+                    {
+                        detailsStackLayout.Add(
+                            new FlowLayout()
+                            .Apply(detailExtrasLayout =>
+                            {
+                                if (Utils.FeatureSettings.UV)
+                                {
+                                    detailExtrasLayout.Add(
+                                        new UVControl()
+                                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                                                    BindingMode.OneWay, source: WNowViewModel
+                                            )
+                                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                                                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                            )
+                                    );
+                                }
+
+                                if (Utils.FeatureSettings.Beaufort)
+                                {
+                                    detailExtrasLayout.Add(
+                                        new BeaufortControl()
+                                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                                                    BindingMode.OneWay, source: WNowViewModel
+                                            )
+                                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                                                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                            )
+                                    );
+                                }
+
+                                if (Utils.FeatureSettings.AQIndex)
+                                {
+                                    detailExtrasLayout.Add(
+                                        new AQIControl()
+                                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                                                    BindingMode.OneWay, source: WNowViewModel
+                                            )
+                                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                                                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                            )
+                                            .TapGesture(async () =>
+                                            {
+
+                                            })
+#if WINDOWS || MACCATALYST
+                                            .ClickGesture(async () =>
+                                            {
+
+                                            })
+#endif
+                                    );
+                                }
+
+                                if (Utils.FeatureSettings.PollenEnabled)
+                                {
+                                    detailExtrasLayout.Add(
+                                        new PollenCountControl()
+                                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                                                    BindingMode.OneWay, source: WNowViewModel
+                                            )
+                                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                                                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                            )
+                                    );
+                                }
+
+                                if (Utils.FeatureSettings.MoonPhase)
+                                {
+                                    detailExtrasLayout.Add(
+                                        new MoonPhaseControl()
+                                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                                                    BindingMode.OneWay, source: WNowViewModel
+                                            )
+                                            .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                                                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                            )
+                                    );
+                                }
+                            })
+                        );
+                    }
+
+                    grid.Add(detailsStackLayout, row: 1);
+                })
+            );
+        }
+
+        // Sun Phase
+        if (Utils.FeatureSettings.SunPhase)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.label_sunriseset,
+                        }
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                        // Content
+                        new SunPhaseView()
+                            .Row(1)
+                            .Bind(
+                                VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
+                                BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .CenterHorizontal()
+                            .Apply(it =>
+                            {
+                                it.PropertyChanged += (s, e) =>
+                                {
+                                    if (e.PropertyName == nameof(it.Height))
+                                    {
+                                        it.WidthRequest = it.Height * 2;
+                                    }
+                                };
+                                it.WidthRequest = it.Height * 2;
+                            })
+                    }
+                }
+                .Margins(bottom: 25)
+                .Bind(
+                    VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
+                    BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                )
+            );
+        }
+
+        if (Utils.FeatureSettings.WeatherRadar)
+        {
+            ListLayout.Add(
+                new Grid()
+                {
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
+                    },
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Auto),
+                    },
+                    Children =
+                    {
+                        // Header
+                        new Label()
+                        {
+                            Text = ResStrings.label_radar,
+                        }
+                        .Column(0)
+                        .Row(0)
+                        .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                        new Image()
+                        {
+                            VerticalOptions = LayoutOptions.Center,
+                            Source = new MaterialIcon(MaterialSymbol.ChevronRight)
+                            {
+                                Size = 24
+                            }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
+                        }
+                        .Column(1)
+                        .Row(0),
+                        // Content
+                        new Border()
+                        {
+                            BackgroundColor = Colors.Transparent,
+                            Stroke = Colors.Transparent,
+                            HeightRequest = 360,
+                            MaximumWidthRequest = 640,
+                            ZIndex = 1,
+                        }
+                        .Row(1)
+                        .ColumnSpan(2)
+                        .TapGesture(async () =>
+                        {
+                            await Navigation.PushAsync(new WeatherRadarPage());
+                        })
+#if WINDOWS || MACCATALYST
+                        .ClickGesture(async () =>
+                        {
+                            await Navigation.PushAsync(new WeatherRadarPage());
+                        })
+#endif
+                        ,
+                        new Border()
+                        {
+                            HeightRequest = 360,
+                            MaximumWidthRequest = 640,
+                        }
+                        .Row(1)
+                        .ColumnSpan(2)
+                        .Apply(it =>
+                        {
+                            RadarWebViewContainer = it;
+                            it.Loaded += RadarWebView_Loaded;
+                            it.SizeChanged += (s, e) =>
+                            {
+                                if (it.Width > it.MaximumWidthRequest)
+                                {
+                                    it.WidthRequest = it.MaximumWidthRequest;
+                                }
+                            };
+                        })
+                    }
+                }
+                .Margins(bottom: 25)
+            );
+        }
+
+        // Weather Credit
+        ListLayout.Add(
+            new Label()
+            {
+                Padding = 10,
+                HorizontalOptions = LayoutOptions.Center,
+                FontSize = 14
+            }.Bind(
+                Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherCredit)}",
+                BindingMode.OneWay, source: WNowViewModel, fallbackValue: "Data from Weather Provider"
+            )
+        );
     }
 
     protected override void OnNavigatingFrom(NavigatingFromEventArgs args)
@@ -314,7 +857,7 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
 
         if (UpdateTheme)
         {
-            // UpdateControlTheme
+            UpdateControlTheme();
             UpdateTheme = false;
         }
 
@@ -500,6 +1043,7 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
 
     private void RadarWebView_Loaded(object sender, EventArgs e)
     {
+        var container = sender as Border;
         var cToken = GetCancellationToken();
 
         AsyncTask.Run(async () =>
@@ -508,7 +1052,7 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
             {
                 if (radarViewProvider == null)
                 {
-                    radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+                    radarViewProvider = RadarProvider.GetRadarViewProvider(container);
                 }
                 radarViewProvider.EnableInteractions(false);
                 WNowViewModel.Weather?.Let(it =>
@@ -517,18 +1061,6 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                 });
             });
         }, 1000, cToken);
-    }
-
-    private async void RadarWebView_Tapped(object sender, TappedEventArgs e)
-    {
-        await Navigation.PushAsync(new WeatherRadarPage());
-    }
-
-    private async void RadarWebView_Clicked(object sender, EventArgs e)
-    {
-#if WINDOWS || MACCATALYST
-        await Navigation.PushAsync(new WeatherRadarPage());
-#endif
     }
 
     private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
@@ -542,9 +1074,117 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
 
     private void WeatherNow_Loaded(object sender, EventArgs e)
     {
+        OnAppThemeChanged(App.Current.CurrentTheme);
+        App.Current.RequestedThemeChanged += WeatherNow_RequestedThemeChanged;
     }
 
     private void WeatherNow_Unloaded(object sender, EventArgs e)
     {
+        App.Current.RequestedThemeChanged -= WeatherNow_RequestedThemeChanged;
+    }
+
+    private void WeatherNow_RequestedThemeChanged(object sender, AppThemeChangedEventArgs args)
+    {
+        OnAppThemeChanged(args.RequestedTheme);
+    }
+
+    private void OnAppThemeChanged(AppTheme requestedTheme)
+    {
+        var isLight = requestedTheme switch
+        {
+            AppTheme.Light => true,
+            AppTheme.Dark => false,
+            _ => !App.Current.IsSystemDarkTheme, // AppTheme.Unspecified
+        };
+
+        ForecastView.IsLight = isLight;
+    }
+
+    private void UpdateControlTheme()
+    {
+        UpdateControlTheme(Utils.FeatureSettings.BackgroundImage);
+    }
+
+    private void UpdateControlTheme(bool backgroundEnabled)
+    {
+        if (backgroundEnabled)
+        {
+            if (GradientOverlay != null)
+            {
+                GradientOverlay.IsVisible = true;
+            }
+            ConditionPanelTextColor = Colors.White;
+            if (CurTemp != null)
+            {
+                CurTemp.TextColor = GetTempColor();
+            }
+        }
+        else
+        {
+            if (GradientOverlay != null)
+            {
+                GradientOverlay.IsVisible = false;
+            }
+            this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
+            if (CurTemp != null)
+            {
+                CurTemp.TextColor = GetTempColor();
+            }
+        }
+    }
+
+    private Color GetTempColor()
+    {
+        string temp = WNowViewModel?.Weather?.CurTemp;
+        string temp_str = temp?.RemoveNonDigitChars();
+
+        if (float.TryParse(temp_str, out float temp_f))
+        {
+            var tempUnit = SettingsManager.TemperatureUnit;
+
+            if (Equals(tempUnit, Units.CELSIUS) || temp.EndsWith(Units.CELSIUS))
+            {
+                temp_f = ConversionMethods.CtoF(temp_f);
+            }
+
+            var color = WeatherUtils.GetColorFromTempF(temp_f, Colors.Transparent);
+
+            if (color != Colors.Transparent)
+            {
+                return color;
+            }
+        }
+
+        return ConditionPanelTextColor;
+    }
+
+    private void BackgroundOverlay_Loaded(object sender, EventArgs e)
+    {
+        var bgImage = sender as Image;
+        bgImage.PropertyChanged += BgImage_PropertyChanged;
+        UpdateControlTheme(bgImage.Source != null);
+    }
+
+    private void BackgroundOverlay_Unloaded(object sender, EventArgs e)
+    {
+        var bgImage = sender as Image;
+        bgImage.PropertyChanged -= BgImage_PropertyChanged;
+    }
+
+    private void BgImage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        var bgImage = sender as Image;
+        if (e.PropertyName == nameof(bgImage.Source))
+        {
+            UpdateControlTheme(bgImage.Source != null);
+        }
+    }
+
+    private void Attribution_Clicked(object sender, EventArgs e)
+    {
+        WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
+        {
+            await Browser.Default.OpenAsync(uri);
+        });
     }
 }

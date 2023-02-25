@@ -62,5 +62,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MapControlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SkiaSharpExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\SunPhaseView.cs" />
   </ItemGroup>
 </Project>

@@ -14,16 +14,37 @@ namespace SimpleWeather.SkiaSharp
     public class SKBitmapDrawable : SKDrawable, IDisposable
     {
         private readonly SKBitmap _bitmap;
+        private readonly SKPaint _paint;
         private bool disposedValue;
+
+        private SKColor _tintColor = default;
+        public SKColor TintColor
+        {
+            get => _tintColor;
+            set
+            {
+                _tintColor = value;
+                UpdateColorFilter();
+            }
+        }
 
         public SKBitmapDrawable(SKBitmap bitmap)
         {
             _bitmap = bitmap;
+            _paint = new SKPaint()
+            {
+                ColorFilter = SKColorFilter.CreateBlendMode(TintColor, SKBlendMode.SrcIn)
+            };
+        }
+
+        private void UpdateColorFilter()
+        {
+            _paint.ColorFilter = SKColorFilter.CreateBlendMode(TintColor, SKBlendMode.SrcIn);
         }
 
         public override void Draw(SKCanvas canvas)
         {
-            canvas.DrawBitmap(_bitmap, Bounds);
+            canvas.DrawBitmap(_bitmap, Bounds, _paint);
         }
 
         protected virtual void Dispose(bool disposing)

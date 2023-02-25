@@ -12,4 +12,5 @@
     <toolkitConverters:IsStringNotNullOrWhiteSpaceConverter x:Key="stringBooleanConverter" />
     <toolkitConverters:IsListNotNullOrEmptyConverter x:Key="collectionBooleanConverter" />
     <converters:DoubleToBooleanConverter x:Key="valueBooleanConverter" GreaterThan="0" />
+    <converters:ObjectToBooleanConverter x:Key="objectBooleanConverter" />
 </ResourceDictionary>

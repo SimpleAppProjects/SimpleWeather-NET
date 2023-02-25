@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Controls.BeaufortControl"
+             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+             xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             x:DataType="commonControls:BeaufortViewModel"
+             MinimumWidthRequest="340">
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*" VerticalOptions="FillAndExpand">
+        <Label
+            Grid.Row="0"
+            Grid.ColumnSpan="2"
+            x:Name="BeaufortLabel"
+            Text="{Binding Beaufort.Label}"
+            Style="{DynamicResource WeatherNowSectionLabel}" />
+        <controls:IconControl
+            x:Name="BeaufortIcon"
+            Grid.Row="1"
+            Grid.Column="0"
+            WidthRequest="85"
+            HeightRequest="72"
+            IconWidth="85"
+            IconHeight="72"
+            Margin="12,0"
+            VerticalOptions="Center"
+            ForceBitmapIcon="True"
+            IconColor="{AppThemeBinding Light=Purple, Dark=DodgerBlue}"
+            WeatherIcon="{Binding Beaufort.Icon}" />
+        <Label
+            x:Name="BeaufortDescription"
+            Grid.Row="1"
+            Grid.Column="1"
+            Padding="6"
+            VerticalOptions="Center"
+            FontSize="18"
+            Text="{Binding Beaufort.Value}" />
+        <ProgressBar
+            x:Name="BeaufortProgressBar"
+            Grid.Row="2"
+            Grid.ColumnSpan="2"
+            HeightRequest="4"
+            Margin="12,0,12,12"
+            BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
+            ProgressColor="{Binding BeaufortScaleProgressColor}"
+            Progress="{x:Bind BeaufortScaleProgress / 100}" />
+    </Grid>
+</ContentView>

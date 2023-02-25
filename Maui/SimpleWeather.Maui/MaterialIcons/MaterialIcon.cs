@@ -11,7 +11,7 @@
         }
 
         public static readonly BindableProperty SymbolProperty =
-            BindableProperty.Create("Symbol", typeof(MaterialSymbol), typeof(MaterialIcon), MaterialSymbol.ChevronLeft, propertyChanged: OnBindingPropertyChanged);
+            BindableProperty.Create(nameof(Symbol), typeof(MaterialSymbol), typeof(MaterialIcon), MaterialSymbol.ChevronLeft, propertyChanged: OnBindingPropertyChanged);
 
         public MaterialIcon() : this(MaterialSymbol.ChevronLeft)
         {

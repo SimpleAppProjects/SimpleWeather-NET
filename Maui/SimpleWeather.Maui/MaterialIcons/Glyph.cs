@@ -20,5 +20,7 @@
         Pause = 0xe034,
         Refresh = 0xe5d5,
         Map = 0xe55b,
+        ExpandLess = 0xe5ce,
+        ExpandMore = 0xe5cf,
     }
 }
