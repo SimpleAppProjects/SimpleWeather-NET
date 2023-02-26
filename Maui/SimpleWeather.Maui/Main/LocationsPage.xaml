@@ -1,13 +1,146 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<viewModels:ViewModelPage
     x:Class="SimpleWeather.Maui.Main.LocationsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="LocationsPage">
-    <VerticalStackLayout>
-        <Label
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
+    xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
+    xmlns:sharedViewModels="clr-namespace:SimpleWeather.NET.ViewModels"
+    Title="{x:Static res_strings:Resources.label_nav_locations}"
+    Shell.NavBarIsVisible="True"
+    x:DataType="sharedViewModels:LocationsViewModel"
+    x:Name="LocPage">
+
+    <ContentPage.Resources>
+        <converters:LocationTypeConverter x:Key="locTypeConverter" />
+    </ContentPage.Resources>
+
+    <Grid>
+        <CollectionView
+            x:Name="LocationsPanel"
+            IsGrouped="True"
+            CanReorderItems="False"
+            SelectionMode="None"
+            Margin="16,0"
+            SizeChanged="LocationsPanel_SizeChanged"
+            IsVisible="{Binding UiState.IsLoading, Converter={StaticResource inverseBoolConverter}}">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="local:LocationPanelGroup">
+                    <Label
+                        Padding="16"
+                        FontSize="16"
+                        FontFamily="OpenSansSemibold"
+                        Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
+                        TextColor="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout
+                    x:Name="LocationsPanelLayout"
+                    Orientation="Vertical"
+                    Span="1"
+                    HorizontalItemSpacing="4"
+                    VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="Transparent" StrokeThickness="8">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="Selected">
+                                    <VisualState.Setters>
+                                        <Setter
+                                            Property="BackgroundColor"
+                                            Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+                                        <Setter
+                                            Property="Stroke"
+                                            Value="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                                    </VisualState.Setters>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="LocationsPanel_ItemTapped" />
+                        </Border.GestureRecognizers>
+                        <SwipeView
+                            Margin="-4"
+                            RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems}"
+                            IsEnabled="True">
+                            <SwipeView.LeftItems>
+                                <SwipeItems>
+                                    <SwipeItem
+                                        Text="{x:Static res_strings:Resources.delete}"
+                                        BackgroundColor="#FFDB4437"
+                                        Invoked="SwipeItem_Invoked">
+                                        <SwipeItem.IconImageSource>
+                                            <matIcons:MaterialIcon Symbol="Add" Size="24" Color="White" />
+                                        </SwipeItem.IconImageSource>
+                                    </SwipeItem>
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
+                            <SwipeView.Content>
+                                <localControls:LocationPanel
+                                    MinimumWidthRequest="480"
+                                    HeightRequest="{OnIdiom Phone=115, Default=135}"
+                                    HorizontalOptions="Fill"
+                                    VerticalOptions="Fill"
+                                    LongPress="LocationPanel_LongPress" />
+                            </SwipeView.Content>
+                        </SwipeView>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.EmptyView>
+                <VerticalStackLayout
+                    Margin="0,0,0,48"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image Margin="8" HorizontalOptions="Center">
+                        <Image.Source>
+                            <matIcons:MaterialIcon
+                                Symbol="Add"
+                                Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                        </Image.Source>
+                    </Image>
+                    <Label
+                        FontSize="Subtitle"
+                        HorizontalOptions="Center"
+                        Text="{x:Static res_strings:Resources.prompt_location_not_set}"
+                        LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+        </CollectionView>
+        <ActivityIndicator
+            VerticalOptions="Center"
             HorizontalOptions="Center"
-            Text="Welcome to .NET MAUI!"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
-</ContentPage>
+            Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}"
+            IsRunning="{Binding UiState.IsLoading}" />
+        <Button
+            x:Name="AddLocationsButton"
+            CornerRadius="20"
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            Margin="16,0,20,20"
+            Clicked="AddLocationButton_Clicked"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+            Text="{x:Static res_strings:Resources.label_btn_add_location}"
+            ContentLayout="Left, 7.5">
+            <Button.ImageSource>
+                <matIcons:MaterialIcon Symbol="AddLocation"
+                                       Size="24"
+                                       Color="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}"/>
+            </Button.ImageSource>
+        </Button>
+        <Grid
+            x:Name="SnackbarContainer"
+            VerticalOptions="End"
+            ZIndex="2" />
+    </Grid>
+</viewModels:ViewModelPage>

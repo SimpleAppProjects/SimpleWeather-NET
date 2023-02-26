@@ -101,18 +101,14 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
                     {
                         case LocationSearchResult.AlreadyExists result:
                             {
-                                if (result.Data?.IsValid() == true)
-                                {
-                                    await OnLocationReceived(result.Data);
-                                }
+                                PendingMessage = new LocationSelectedMessage(result);
+                                await App.Current.Navigation.PopAsync();
                             }
                             break;
                         case LocationSearchResult.Success result:
                             {
-                                if (result.Data?.IsValid() == true)
-                                {
-                                    await OnLocationReceived(result.Data);
-                                }
+                                PendingMessage = new LocationSelectedMessage(result);
+                                await App.Current.Navigation.PopAsync();
                             }
                             break;
                         case LocationSearchResult.Failed:
@@ -134,30 +130,6 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
                 }
                 break;
         }
-    }
-
-    private async Task OnLocationReceived(LocationData.LocationData location)
-    {
-        await SettingsManager.DeleteLocations();
-
-        if (location.locationType == LocationType.GPS)
-        {
-            await SettingsManager.SaveLastGPSLocData(location);
-            await SettingsManager.AddLocation(new LocationQuery(location).ToLocationData());
-            SettingsManager.FollowGPS = true;
-        }
-        else
-        {
-            await SettingsManager.SaveLastGPSLocData(null);
-            await SettingsManager.AddLocation(location);
-            SettingsManager.FollowGPS = false;
-        }
-
-        SettingsManager.WeatherLoaded = true;
-
-        // Setup complete
-        PendingMessage = new LocationSelectedMessage(location);
-        await App.Current.Navigation.PopAsync();
     }
 
     private void OnErrorMessage(ErrorMessage error)

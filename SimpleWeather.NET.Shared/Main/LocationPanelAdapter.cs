@@ -1,12 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+#if WINDOWS
 using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+#endif
 using SimpleWeather.LocationData;
 using SimpleWeather.NET.Controls;
+#if WINDOWS
 using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.Tiles;
+#else
+using SimpleWeather.Maui.Helpers;
+using SimpleWeather.Maui.Controls;
+#endif
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System;
@@ -15,16 +22,31 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
+#if WINDOWS
 using Windows.UI.StartScreen;
+#endif
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
+#if WINDOWS
 namespace SimpleWeather.NET.Main
+#else
+namespace SimpleWeather.Maui.Main
+#endif
 {
     internal class LocationPanelAdapter
     {
+#if WINDOWS
         private CollectionViewSource _ViewSource;
         private ObservableCollection<LocationPanelGroup> LocationPanelGroups;
+#else
+        internal ObservableCollection<LocationPanelGroup> LocationPanelGroups;
+#endif
 
+#if WINDOWS
         private ListViewBase ParentListView;
+#else
+        private CollectionView ParentListView;
+#endif
         private SnackbarManager SnackMgr;
 
         internal bool HasGPSPanel { get; private set; }
@@ -42,10 +64,12 @@ namespace SimpleWeather.NET.Main
 
         internal Collection<LocationPanelUiModel> GetDataset(LocationType locationType)
         {
-            return LocationPanelGroups.Single(grp => grp.LocationType == locationType)?.LocationPanels;
+            return LocationPanelGroups.SingleOrDefault(grp => grp.LocationType == locationType)?.LocationPanels;
         }
 
+#if WINDOWS
         internal CollectionViewSource ViewSource { get { return _ViewSource; } }
+#endif
 
         internal event NotifyCollectionChangedEventHandler ListChanged;
 
@@ -75,7 +99,11 @@ namespace SimpleWeather.NET.Main
             }
         }
 
+#if WINDOWS
         internal LocationPanelAdapter(ListViewBase listViewBase)
+#else
+        internal LocationPanelAdapter(CollectionView listViewBase)
+#endif
         {
             if (listViewBase == null)
                 throw new ArgumentNullException(nameof(listViewBase));
@@ -83,24 +111,34 @@ namespace SimpleWeather.NET.Main
             ParentListView = listViewBase;
             ParentListView.Loaded += (s, e) =>
             {
+#if WINDOWS
                 SnackMgr = new SnackbarManager(VisualTreeHelperExtensions.GetParent<Panel>(ParentListView));
+#else
+                SnackMgr = new SnackbarManager(ParentListView);
+#endif
             };
 
+#if WINDOWS
             _ViewSource = new CollectionViewSource()
             {
                 IsSourceGrouped = true,
                 ItemsPath = new PropertyPath("LocationPanels")
             };
+#endif
             LocationPanelGroups = new ObservableCollection<LocationPanelGroup>()
             {
+#if WINDOWS
                 new LocationPanelGroup(LocationType.GPS),
                 new LocationPanelGroup(LocationType.Search),
+#endif
             };
             foreach (var grp in LocationPanelGroups)
             {
                 grp.LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
             }
+#if WINDOWS
             _ViewSource.Source = LocationPanelGroups;
+#endif
         }
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -131,7 +169,7 @@ namespace SimpleWeather.NET.Main
         {
             if (HasGPSPanel)
                 return LocationPanelGroups
-                    .Single(grp => grp.LocationType == LocationType.GPS)
+                    .SingleOrDefault(grp => grp.LocationType == LocationType.GPS)
                     .LocationPanels.FirstOrDefault();
             return null;
         }
@@ -139,7 +177,7 @@ namespace SimpleWeather.NET.Main
         internal LocationPanelUiModel GetFirstFavPanel()
         {
             return LocationPanelGroups
-                .Single(grp => grp.LocationType == LocationType.Search)
+                .SingleOrDefault(grp => grp.LocationType == LocationType.Search)
                 .LocationPanels.FirstOrDefault();
         }
 
@@ -155,16 +193,42 @@ namespace SimpleWeather.NET.Main
 
         internal void Add(LocationPanelUiModel item)
         {
+#if WINDOWS
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Add(item);
+#else
+            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
+            group ??= CreateLocationPanelGroup((LocationType)item.LocationType);
+            group.LocationPanels.Add(item);
+#endif
         }
 
         internal void Add(int index, LocationPanelUiModel item)
         {
+#if WINDOWS
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Insert(index, item);
+#else
+            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
+            group ??= CreateLocationPanelGroup((LocationType)item.LocationType);
+            group.LocationPanels.Insert(index, item);
+#endif
+        }
+
+        private LocationPanelGroup CreateLocationPanelGroup(LocationType locationType)
+        {
+            LocationPanelGroup group;
+
+            if (locationType == LocationType.GPS)
+                LocationPanelGroups.Insert(0, group = new LocationPanelGroup(locationType));
+            else
+                LocationPanelGroups.Add(group = new LocationPanelGroup(locationType));
+
+            group.LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
+
+            return group;
         }
 
         internal void AddAll(IEnumerable<LocationPanelUiModel> items)
@@ -180,9 +244,37 @@ namespace SimpleWeather.NET.Main
 
         internal bool Remove(LocationPanelUiModel item)
         {
+#if WINDOWS
             return (bool)LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Remove(item);
+#else
+            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
+
+            if (group != null)
+            {
+                try
+                {
+                    bool result = false;
+
+                    try
+                    {
+                        result = group.Remove(item);
+                    } catch { }
+
+                    if (group.Count == 0)
+                    {
+                        group.CollectionChanged -= LocationPanels_CollectionChanged;
+                        LocationPanelGroups.Remove(group);
+                    }
+
+                    return result;
+                }
+                catch { }
+            }
+
+            return false;
+#endif
         }
 
         internal void RemoveGPSPanel()
@@ -195,7 +287,22 @@ namespace SimpleWeather.NET.Main
         internal void RemoveAll()
         {
             foreach (var group in LocationPanelGroups)
+            {
+#if WINDOWS
                 group.LocationPanels.Clear();
+#else
+                try
+                {
+                    if (group.Count > 0)
+                        group.Clear();
+                }
+                catch { }
+#endif
+            }
+
+#if !WINDOWS
+            LocationPanelGroups.Clear();
+#endif
 
             HasGPSPanel = false;
             HasSearchPanel = false;
@@ -213,19 +320,25 @@ namespace SimpleWeather.NET.Main
                     var SettingsManager = Ioc.Default.GetService<SettingsManager>();
                     await SettingsManager.DeleteLocation(data.query);
 
+#if WINDOWS
                     // Remove secondary tile if it exists
                     if (SecondaryTileUtils.Exists(data.query))
                     {
                         await new SecondaryTile(
                             SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
                     }
+#endif
                 }
             });
         }
 
         internal Task RemovePanel(LocationPanelUiModel panel)
         {
+#if WINDOWS
             return ParentListView?.DispatcherQueue?.EnqueueAsync(() =>
+#else
+            return ParentListView?.Dispatcher?.DispatchAsync(() =>
+#endif
             {
                 int dataPosition = GetDataset((LocationType)panel.LocationType).IndexOf(panel);
 
@@ -252,13 +365,13 @@ namespace SimpleWeather.NET.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr.Show(Snackbar.MakeWarning(App.Current.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr.Show(Snackbar.MakeWarning(ResStrings.message_needfavorite, SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.Current.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.Current.ResLoader.GetString("undo"), () =>
+                Snackbar snackbar = Snackbar.Make(ResStrings.message_locationremoved, SnackbarDuration.Short);
+                snackbar.SetAction(ResStrings.undo, () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();
@@ -276,7 +389,11 @@ namespace SimpleWeather.NET.Main
 
         internal Task BatchRemovePanels(IEnumerable<LocationPanelUiModel> panelsToDelete)
         {
+#if WINDOWS
             return ParentListView?.DispatcherQueue?.EnqueueAsync(() =>
+#else
+            return ParentListView?.Dispatcher?.DispatchAsync(() =>
+#endif
             {
                 if (!panelsToDelete.Any()) return;
 
@@ -293,6 +410,7 @@ namespace SimpleWeather.NET.Main
                     foreach (var panelPair in panelPairs.OrderBy(p => p.Key))
                     {
                         var collection = GetDataset((LocationType)panelPair.Value.LocationType);
+                        collection ??= CreateLocationPanelGroup((LocationType)panelPair.Value.LocationType);
 
                         if (!collection.Contains(panelPair.Value))
                         {
@@ -316,13 +434,13 @@ namespace SimpleWeather.NET.Main
                 if (FavoritesCount <= 0)
                 {
                     UndoAction.Invoke();
-                    SnackMgr?.Show(Snackbar.MakeWarning(App.Current.ResLoader.GetString("message_needfavorite"), SnackbarDuration.Short));
+                    SnackMgr?.Show(Snackbar.MakeWarning(ResStrings.message_needfavorite, SnackbarDuration.Short));
                     return;
                 }
 
                 // Show undo snackbar
-                Snackbar snackbar = Snackbar.Make(App.Current.ResLoader.GetString("message_locationremoved"), SnackbarDuration.Short);
-                snackbar.SetAction(App.Current.ResLoader.GetString("undo"), () =>
+                Snackbar snackbar = Snackbar.Make(ResStrings.message_locationremoved, SnackbarDuration.Short);
+                snackbar.SetAction(ResStrings.undo, () =>
                 {
                     //panel = null;
                     UndoAction.Invoke();
@@ -343,14 +461,23 @@ namespace SimpleWeather.NET.Main
     }
 
     internal class LocationPanelGroup
+#if !WINDOWS
+        : ObservableCollection<LocationPanelUiModel>
+#endif
     {
         public LocationPanelGroup(LocationType locationType)
         {
             this.LocationType = locationType;
+#if WINDOWS
             this.LocationPanels = new ObservableCollection<LocationPanelUiModel>();
+#endif
         }
 
         public LocationType LocationType { get; set; }
+#if WINDOWS
         public ObservableCollection<LocationPanelUiModel> LocationPanels { get; private set; }
+#else
+        public ObservableCollection<LocationPanelUiModel> LocationPanels { get => this; }
+#endif
     }
 }

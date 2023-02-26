@@ -28,27 +28,32 @@
     Shell.ForegroundColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                             Dark={StaticResource DarkOnBackground}}">
 
-    <TabBar>
+    <TabBar x:Name="ShellTabBar">
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_weathernow}"
             ContentTemplate="{DataTemplate local:WeatherNow}"
-            Icon="{FileImageSource File='full_sun.png'}" />
+            Icon="{FileImageSource File='full_sun.png'}"
+            Route="weather" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_alerts}"
             ContentTemplate="{DataTemplate local:WeatherAlertPage}"
-            Icon="{FileImageSource File='ic_error.png'}" />
+            Icon="{FileImageSource File='ic_error.png'}"
+            Route="alerts" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_radar}"
             ContentTemplate="{DataTemplate local:WeatherRadarPage}"
-            Icon="{FileImageSource File='ic_radar.png'}" />
+            Icon="{FileImageSource File='ic_radar.png'}"
+            Route="radar" />
         <ShellContent
             Title="{x:Static res_strings:Resources.label_nav_locations}"
             ContentTemplate="{DataTemplate local:LocationsPage}"
-            Icon="{FileImageSource File='ic_star_border.png'}" />
+            Icon="{FileImageSource File='ic_star_border.png'}"
+            Route="locations" />
         <ShellContent
             Title="{x:Static res_strings:Resources.title_activity_settings}"
             ContentTemplate="{DataTemplate settings:Settings_General}"
-            Icon="{FileImageSource File='ic_settings.png'}" />
+            Icon="{FileImageSource File='ic_settings.png'}"
+            Route="settings" />
     </TabBar>
 
 </viewModels:ViewModelShell>

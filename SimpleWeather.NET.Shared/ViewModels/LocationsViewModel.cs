@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+#if WINDOWS
 using CommunityToolkit.WinUI;
+#endif
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.WeatherData;
@@ -65,7 +67,11 @@ namespace SimpleWeather.NET.ViewModels
         {
             UiState = UiState with { IsLoading = true };
 
+#if WINDOWS
             DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
                 var locations = (await SettingsManager.GetFavorites()).ToList();
 
@@ -83,7 +89,11 @@ namespace SimpleWeather.NET.ViewModels
 
         public void RefreshLocations()
         {
-            DispatcherQueue.EnqueueAsync((Func<Task>)(async () =>
+#if WINDOWS
+            DispatcherQueue.EnqueueAsync(async () =>
+#else
+            Dispatcher.Dispatch(async () =>
+#endif
             {
                 var locations = (await SettingsManager.GetFavorites()).ToList();
 
@@ -106,7 +116,7 @@ namespace SimpleWeather.NET.ViewModels
                 }
 
                 RefreshLocationWeather(locations);
-            }));
+            });
         }
 
         private void RefreshLocationWeather(IEnumerable<LocationData.LocationData> locations)
@@ -151,7 +161,11 @@ namespace SimpleWeather.NET.ViewModels
                                     value.IsLoading = false;
                                 });
 
+#if WINDOWS
                                 DispatcherQueue.TryEnqueue(() =>
+#else
+                                Dispatcher.Dispatch(() =>
+#endif
                                 {
                                     WeatherUpdated?.Invoke(this, new WeatherUpdatedEventArgs(entry.Value));
                                 });
@@ -180,7 +194,11 @@ namespace SimpleWeather.NET.ViewModels
                                     value.IsLoading = false;
                                 });
 
+#if WINDOWS
                                 DispatcherQueue.TryEnqueue(() =>
+#else
+                                Dispatcher.Dispatch(() =>
+#endif
                                 {
                                     WeatherUpdated?.Invoke(this, new WeatherUpdatedEventArgs(entry.Value));
                                 });
@@ -194,7 +212,11 @@ namespace SimpleWeather.NET.ViewModels
                                     value.IsLoading = false;
                                 });
 
+#if WINDOWS
                                 DispatcherQueue.TryEnqueue(() =>
+#else
+                                Dispatcher.Dispatch(() =>
+#endif
                                 {
                                     WeatherUpdated?.Invoke(this, new WeatherUpdatedEventArgs(entry.Value));
                                 });
@@ -223,7 +245,11 @@ namespace SimpleWeather.NET.ViewModels
                                     value.IsLoading = false;
                                 });
 
+#if WINDOWS
                                 DispatcherQueue.TryEnqueue(() =>
+#else
+                                Dispatcher.Dispatch(() =>
+#endif
                                 {
                                     WeatherUpdated?.Invoke(this, new WeatherUpdatedEventArgs(entry.Value));
                                 });

@@ -1,10 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.Messaging.Messages;
+using SimpleWeather.Common.Location;
+using SimpleWeather.Common.ViewModels;
 
 namespace SimpleWeather.Maui.Location
 {
-    public class LocationSelectedMessage : ValueChangedMessage<LocationData.LocationData>
+    public class LocationSelectedMessage : ValueChangedMessage<LocationSearchResult>
     {
-        public LocationSelectedMessage(LocationData.LocationData value) : base(value)
+        public LocationSelectedMessage(LocationSearchResult result) : base(result)
         {
         }
     }

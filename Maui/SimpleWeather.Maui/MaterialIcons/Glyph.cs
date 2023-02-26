@@ -22,5 +22,11 @@
         Map = 0xe55b,
         ExpandLess = 0xe5ce,
         ExpandMore = 0xe5cf,
+        Edit = 0xe3c9,
+        Add = 0xe145,
+        AddCircle = 0xe147,
+        AddCircleOutline = 0xe148,
+        Delete = 0xe872,
+        AddLocation = 0xe567,
     }
 }

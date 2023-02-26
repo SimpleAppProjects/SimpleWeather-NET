@@ -114,7 +114,19 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
     public void Receive(LocationSelectedMessage message)
     {
-        Dispatcher.DispatchAsync(async () => await OnLocationReceived(message.Value));
+        switch (message.Value)
+        {
+            case LocationSearchResult.AlreadyExists:
+            case LocationSearchResult.Success:
+                Dispatcher.DispatchAsync(async () =>
+                {
+                    if (message.Value.Data is LocationData.LocationData data && data.IsValid())
+                    {
+                        await OnLocationReceived(data);
+                    }
+                });
+                break;
+        }
     }
 
     private async Task OnLocationReceived(LocationData.LocationData location)

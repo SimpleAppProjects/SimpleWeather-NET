@@ -90,9 +90,7 @@ public partial class WeatherNow
                                 HeightRequest = 24,
                                 WidthRequest = 24,
                                 Source = new MaterialIcon(MaterialSymbol.MyLocation)
-                                {
-
-                                }.Bind(FontImageSource.ColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                                    .Bind(FontImageSource.ColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
                             }
                         }
                         .Column(0)
