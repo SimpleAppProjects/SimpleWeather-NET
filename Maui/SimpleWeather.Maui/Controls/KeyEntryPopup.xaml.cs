@@ -32,16 +32,10 @@ public partial class KeyEntryPopup : Popup
     private void Initialize()
     {
         InitializeComponent();
-        this.Closed += KeyEntryPopup_Closed;
         KeyEntry1.TextChanged += KeyEntry1_TextChanged;
         KeyEntry2.TextChanged += KeyEntry2_TextChanged;
         PasswordEntry.TextChanged += PasswordEntry_TextChanged;
         UpdateAuthType();
-    }
-
-    private void KeyEntryPopup_Closed(object sender, CommunityToolkit.Maui.Core.PopupClosedEventArgs e)
-    {
-        throw new NotImplementedException();
     }
 
     private void UpdateAuthType()
@@ -183,7 +177,7 @@ public partial class KeyEntryPopup : Popup
         }
         else
         {
-            this.Close();
+            this.Close(false);
         }
     }
 }

@@ -301,8 +301,17 @@
     <value>General</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Versión</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Unidades</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Muestra las unidades en Fahrenheit</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Muestra las unidades en Celcius</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>Acerca</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Por favor introduzca una clave de proveedor</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Notificación meteorológica</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Proveedor del tiempo</value>
@@ -438,6 +450,10 @@ Fuzzy</comment>
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Válido hasta el</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Clave personal del proveedor</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Utilizar la clave personal del proveedor</value>
@@ -589,14 +605,31 @@ Fuzzy</comment>
     <value>Actualización disponible. Haga clic para instalar</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Apoyar</value>
+    <comment>Support
+Fuzzy</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Comentarios</value>
     <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Informar de cualquier error o sugerencia para mejorar la aplicación</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Calificar y revisar</value>
     <comment>Rate / Review
 Fuzzy</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>¿Te gusta la aplicación? Ayude a apoyar proporcionando una reseña</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Traducir</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Ayude a traducir la aplicación</value>
@@ -647,6 +680,12 @@ Fuzzy</comment>
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Hora</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Desactivado</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Activado</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Notificación de precipitaciones</value>

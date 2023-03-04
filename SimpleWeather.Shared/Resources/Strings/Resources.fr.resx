@@ -301,8 +301,17 @@
     <value>Paramètres généraux</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Version</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Unités</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Afficher les unités en Fahrenheit</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Afficher les unités en Celsius</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>À propos</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Veuillez entrer une clé de fournisseur</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Notification de météo</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Fournisseur de météo</value>
@@ -433,6 +445,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Valable jusqu&apos;en</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Clé du fournisseur personnel</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Utiliser la clé personnelle du fournisseur de services météo</value>
@@ -581,13 +597,28 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Mise à jour disponible. Cliquer pour installer</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Soutien</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Commentaires</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Rapporter tout problème ou suggestion pour améliorer l&apos;application</value>
+    <comment>&apos;Bug&apos; can be replaced with &apos;issue&apos;</comment>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Évaluer et réviser</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Vous aimez l&apos;application? Aidez-nous en fournissant une évaluation</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Traduire</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Aider à traduire l&apos;application</value>
@@ -636,6 +667,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Heure</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Désactivé</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Activé</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Notification des précipitations</value>

@@ -1192,6 +1192,24 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Support.
+        /// </summary>
+        public static string pref_category_support {
+            get {
+                return ResourceManager.GetString("pref_category_support", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string pref_category_version {
+            get {
+                return ResourceManager.GetString("pref_category_version", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select features to enable/disable:.
         /// </summary>
         public static string Pref_Features_Subtitle_Text {
@@ -1255,11 +1273,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display units in Celsius.
+        /// </summary>
+        public static string pref_summary_celsius {
+            get {
+                return ResourceManager.GetString("pref_summary_celsius", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Allow access to current location via GPS.
         /// </summary>
         public static string pref_summary_currentlocation {
             get {
                 return ResourceManager.GetString("pref_summary_currentlocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display units in Fahrenheit.
+        /// </summary>
+        public static string pref_summary_fahrenheit {
+            get {
+                return ResourceManager.GetString("pref_summary_fahrenheit", resourceCulture);
             }
         }
         
@@ -1273,11 +1309,47 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report any bugs or suggestions to improve the app.
+        /// </summary>
+        public static string pref_summary_feedback {
+            get {
+                return ResourceManager.GetString("pref_summary_feedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Off.
+        /// </summary>
+        public static string pref_summary_off {
+            get {
+                return ResourceManager.GetString("pref_summary_off", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On.
+        /// </summary>
+        public static string pref_summary_on {
+            get {
+                return ResourceManager.GetString("pref_summary_on", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use personal weather provider key.
         /// </summary>
         public static string pref_summary_personalkey {
             get {
                 return ResourceManager.GetString("pref_summary_personalkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Like the app? Help support by providing a review.
+        /// </summary>
+        public static string pref_summary_rateandreview {
+            get {
+                return ResourceManager.GetString("pref_summary_rateandreview", resourceCulture);
             }
         }
         
@@ -1516,11 +1588,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Weather Notification.
+        /// </summary>
+        public static string pref_title_onnotification {
+            get {
+                return ResourceManager.GetString("pref_title_onnotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Source Libraries.
         /// </summary>
         public static string pref_title_oslibs {
             get {
                 return ResourceManager.GetString("pref_title_oslibs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Personal Provider Key.
+        /// </summary>
+        public static string pref_title_personalkey {
+            get {
+                return ResourceManager.GetString("pref_title_personalkey", resourceCulture);
             }
         }
         
@@ -1557,6 +1647,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string pref_title_time {
             get {
                 return ResourceManager.GetString("pref_title_time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translate.
+        /// </summary>
+        public static string pref_title_translate {
+            get {
+                return ResourceManager.GetString("pref_title_translate", resourceCulture);
             }
         }
         

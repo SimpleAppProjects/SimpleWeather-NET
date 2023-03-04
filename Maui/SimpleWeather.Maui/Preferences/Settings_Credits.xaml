@@ -3,13 +3,33 @@
     x:Class="SimpleWeather.Maui.Preferences.Settings_Credits"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
-    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared">
+    xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+    xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
+    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
+    xmlns:system="using:System"
+    xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    Title="{x:Static res_strings:Resources.pref_title_credits}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}"
+    Shell.NavBarIsVisible="True">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="True" />
+    </Shell.BackButtonBehavior>
+
     <ScrollView Orientation="Vertical" Padding="16,0" HorizontalScrollBarVisibility="Never">
         <Grid>
             <VerticalStackLayout>
-                <Label Style="{DynamicResource SettingTitleStyle}" Text="{x:Static res_strings:Resources.pref_category_providers}" />
+                <Label
+                    Style="{DynamicResource SettingTitleStyle}"
+                    FontSize="Title"
+                    FontAttributes="Bold"
+                    Padding="8,16"
+                    Text="{x:Static res_strings:Resources.pref_category_providers}" />
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_here}" />
                     <Label TextType="Html">
@@ -17,7 +37,9 @@
                         <p>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</p>
                         ]]>
                     </Label>
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://here.com/en"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='here.png', Dark='here_dark.png'}" />
                         </ImageButton.Source>
@@ -25,7 +47,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_metno}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://www.met.no/en"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="metno.png" />
                         </ImageButton.Source>
@@ -33,7 +57,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_nws}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="http://www.weather.gov"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="nws.png" />
                         </ImageButton.Source>
@@ -41,7 +67,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_owm}" />
-                    <ImageButton Padding="0,20" MaximumHeightRequest="25">
+                    <ImageButton Padding="0,20" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="http://openweathermap.org/"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="openweathermap.png" />
                         </ImageButton.Source>
@@ -49,7 +77,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="Bing Maps" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://www.bing.com/maps"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='bingmaps.png', Dark='bingmaps_dark.png'}" />
                         </ImageButton.Source>
@@ -57,7 +87,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_waqi}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://aqicn.org/"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="waqi.png" />
                         </ImageButton.Source>
@@ -65,7 +97,11 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_wunlocked}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 BackgroundColor="{StaticResource DarkSurfaceVariant}"
+                                 HorizontalOptions="Center" VerticalOptions="Center"
+                                 CommandParameter="https://developer.weatherunlocked.com/"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="wunlocked.png" />
                         </ImageButton.Source>
@@ -73,7 +109,9 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_weatherapi}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://www.weatherapi.com/"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
                         </ImageButton.Source>
@@ -81,13 +119,20 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout Padding="10">
                     <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_tomorrowio}" />
-                    <ImageButton Padding="0,10" MaximumHeightRequest="50">
+                    <ImageButton Padding="0,10" MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
+                                 CommandParameter="https://tomorrow.io"
+                                 Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
                         </ImageButton.Source>
                     </ImageButton>
                 </VerticalStackLayout>
-                <Label Style="{DynamicResource SettingsTitleStyle}" Text="{x:Static res_strings:Resources.pref_title_icons}" />
+                <Label
+                    Style="{DynamicResource SettingsTitleStyle}"
+                    FontSize="Subtitle"
+                    FontAttributes="Bold"
+                    Padding="0,8"
+                    Text="{x:Static res_strings:Resources.pref_title_icons}" />
                 <VerticalStackLayout x:Name="IconCreditsContainer" />
             </VerticalStackLayout>
         </Grid>

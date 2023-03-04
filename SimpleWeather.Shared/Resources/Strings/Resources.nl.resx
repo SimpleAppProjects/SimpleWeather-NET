@@ -301,8 +301,17 @@
     <value>Algemeen</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Versie</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Eenheden</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Eenheden in Farenheit weergeven</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Eenheden in Celcius weergeven</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>Over</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Voer alsjeblieft een providersleutel in</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Weer Meldingen</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Weeraanbieder</value>
@@ -432,6 +444,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Geldig tot</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Persoonlijke Providersleutel</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Gebruik persoonlijk weersprovidersleutel</value>
@@ -580,13 +596,27 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Update beschikbaar. Klik om te installeren</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Ondersteuning</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Terugkoppeling</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Bug(s) of suggestie(s) melden om de app te verbeteren</value>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Beoordeel en Review</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Bevalt de app? Ondersteun ons door een review te plaatsen</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Vertalen</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Help de app te vertalen</value>
@@ -635,6 +665,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Tijd</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Uit</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Aan</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Neerslagmelding</value>

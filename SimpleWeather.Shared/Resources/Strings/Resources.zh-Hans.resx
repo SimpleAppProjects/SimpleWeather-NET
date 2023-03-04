@@ -301,8 +301,17 @@
     <value>设置</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>版本</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>单位</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>使用华氏体系单位</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>使用摄氏体系单位</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>关于</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>请输入密钥</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>天气通知</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>天气提供商</value>
@@ -434,6 +446,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>有效期至</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>个人密钥</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>使用个人密钥</value>
@@ -587,14 +603,30 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>有可用更新，点击以安装</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>支持</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>反馈</value>
     <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>提交问题或建议以改进应用程序</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>评分 / 评论</value>
     <comment>Rate / Review
 Fuzzy</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>喜欢这个应用吗？撰写评论来支持与帮助我们</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>翻译</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>帮助翻译这个软件</value>
@@ -647,6 +679,12 @@ Fuzzy</comment>
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>时间</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>关</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>开</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>降水通知</value>

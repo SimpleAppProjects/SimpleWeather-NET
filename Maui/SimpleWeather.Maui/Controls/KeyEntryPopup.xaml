@@ -1,60 +1,83 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <toolkit:Popup
     x:Class="SimpleWeather.Maui.Controls.KeyEntryPopup"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="{x:Static res_strings:Resources.message_enter_apikey}"
-            VerticalOptions="Start" />
-        <Border
-            Padding="10"
-            Stroke="Transparent"
-            StrokeThickness="0">
-            <Entry
-                x:Name="KeyEntry1"
-                Margin="0,4"
-                FontSize="12"
-                VerticalOptions="Center" />
-        </Border>
-        <Border
-            Padding="10"
-            Stroke="Transparent"
-            StrokeThickness="0">
-            <Entry
-                x:Name="KeyEntry2"
-                Margin="0,4"
-                FontSize="12"
-                VerticalOptions="Center" />
-        </Border>
-        <Border
-            Padding="10"
-            Stroke="Transparent"
-            StrokeThickness="0">
-            <Entry
-                x:Name="PasswordEntry"
-                Margin="0,4"
-                FontSize="12"
-                IsPassword="True"
-                IsVisible="False"
-                Placeholder="{x:Static res_strings:Resources.hint_password}"
-                VerticalOptions="Center" />
-        </Border>
+    <Grid BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
+          Padding="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <VerticalStackLayout Grid.Row="0">
+            <Label
+                FontSize="Header"
+                HorizontalOptions="Center"
+                Text="{x:Static res_strings:Resources.message_enter_apikey}"
+                TextColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                VerticalOptions="Start" />
+            <Border
+                Padding="10"
+                Stroke="Transparent"
+                StrokeThickness="0">
+                <Entry
+                    x:Name="KeyEntry1"
+                    Margin="0,4"
+                    ClearButtonVisibility="WhileEditing"
+                    FontSize="Default"
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    TextColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    VerticalOptions="Center" />
+            </Border>
+            <Border
+                Padding="10"
+                Stroke="Transparent"
+                StrokeThickness="0">
+                <Entry
+                    x:Name="KeyEntry2"
+                    Margin="0,4"
+                    ClearButtonVisibility="WhileEditing"
+                    FontSize="Default"
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    TextColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    VerticalOptions="Center" />
+            </Border>
+            <Border
+                Padding="10"
+                Stroke="Transparent"
+                StrokeThickness="0">
+                <Entry
+                    x:Name="PasswordEntry"
+                    Margin="0,4"
+                    ClearButtonVisibility="WhileEditing"
+                    FontSize="Default"
+                    IsPassword="True"
+                    IsVisible="False"
+                    Placeholder="{x:Static res_strings:Resources.hint_password}"
+                    PlaceholderColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    TextColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}"
+                    VerticalOptions="Center" />
+            </Border>
+        </VerticalStackLayout>
         <HorizontalStackLayout
+            Grid.Row="1"
             HorizontalOptions="End"
             Spacing="8"
             VerticalOptions="End">
             <Button
                 x:Name="PrimaryButton"
                 Clicked="PrimaryButton_Clicked"
-                Text="{x:Static res_strings:Resources.ConfirmDialog_PrimaryButtonText}" />
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+                Text="{x:Static res_strings:Resources.ConfirmDialog_PrimaryButtonText}"
+                TextColor="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}" />
             <Button
                 x:Name="SecondaryButton"
                 Clicked="SecondaryButton_Clicked"
-                Text="{x:Static res_strings:Resources.Label_Cancel}" />
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}"
+                Text="{x:Static res_strings:Resources.Label_Cancel}"
+                TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" />
         </HorizontalStackLayout>
-    </VerticalStackLayout>
+    </Grid>
 </toolkit:Popup>

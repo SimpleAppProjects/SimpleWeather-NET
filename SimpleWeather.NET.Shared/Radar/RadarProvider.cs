@@ -19,7 +19,7 @@ namespace SimpleWeather.NET.Radar
     public static class RadarProvider
     {
         private static readonly SettingsContainer localSettings = new SettingsContainer();
-        private const string KEY_RADARPROVIDER = "key_radarprovider";
+        internal const string KEY_RADARPROVIDER = "key_radarprovider";
 
         private const string EARTHWINDMAP = "nullschool";
         private const string RAINVIEWER = "rainviewer";

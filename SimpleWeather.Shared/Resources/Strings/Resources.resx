@@ -301,8 +301,17 @@
     <value>General</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Version</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Units</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Display units in Fahrenheit</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Display units in Celsius</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>About</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Please enter a Provider Key</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Weather Notification</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Weather Provider</value>
@@ -433,6 +445,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Valid until</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Personal Provider Key</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Use personal weather provider key</value>
@@ -581,13 +597,27 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Update available. Click to install</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Support</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Feedback</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Report any bugs or suggestions to improve the app</value>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Rate and Review</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Like the app? Help support by providing a review</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Translate</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Help translate the app</value>
@@ -636,6 +666,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Time</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Off</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>On</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Precipitation Notification</value>

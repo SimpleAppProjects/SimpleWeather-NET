@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Maui.ViewModels;
 using SimpleWeather.NET.Controls;
@@ -25,8 +26,16 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         App.Current.UpdateAppTheme();
     }
 
-    protected override void OnNavigating(ShellNavigatingEventArgs args)
+    protected override async void OnNavigating(ShellNavigatingEventArgs args)
     {
+        if (args.CanCancel)
+        {
+            if (CurrentPage is IBackRequestedPage backRequestedPage && await backRequestedPage.OnBackRequested())
+            {
+                args.Cancel();
+            }
+        }
+
         base.OnNavigating(args);
     }
 
@@ -34,6 +43,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
     {
         base.OnNavigated(args);
 
+        /*
         var currentPageType = this.CurrentPage?.GetType();
         if (currentPageType == typeof(WeatherNow) || currentPageType == typeof(WeatherDetailsPage))
         {
@@ -70,5 +80,6 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
                 this.CurrentItem = item;
             }
         }
+        */
     }
 }

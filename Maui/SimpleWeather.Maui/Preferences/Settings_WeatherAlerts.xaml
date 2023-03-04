@@ -1,19 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage
-    x:Class="SimpleWeather.Maui.Preferences.Settings_About"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherAlerts"
     xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
     xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
-    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
-    Title="{x:Static res_strings:Resources.title_activity_settings}"
+    Title="{x:Static res_strings:Resources.pref_title_alerts}"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                       Dark={StaticResource DarkBackground}}"
     Shell.NavBarIsVisible="True">
@@ -42,39 +40,29 @@
             Intent="Settings"
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
-                <TableSection>
-                    <TextCell
-                        CommandParameter="{x:Type prefs:Settings_Credits}"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_credits}" />
-                    <TextCell
-                        CommandParameter="{x:Type prefs:Settings_OSSLibs}"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_oslibs}" />
-                </TableSection>
-                <TableSection Title="{x:Static res_strings:Resources.pref_category_support}">
-                    <prefs:DialogCell
-                        PreferenceKey="key_feedback"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_feedback}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_feedback}" />
-                    <prefs:DialogCell
-                        PreferenceKey="key_ratereview"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_rateandreview}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_rateandreview}"/>
-                    <prefs:DialogCell
-                        PreferenceKey="key_translate"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_translate}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_translate}" />
-                </TableSection>
-                <TableSection Title="{x:Static res_strings:Resources.pref_category_version}">
-                    <TextCell
-                        x:Name="VersionPref"
-                        Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.app_name}"
-                        Detail="v0.00" />
+                <TableSection Title="{x:Static res_strings:Resources.pref_title_alerts}">
+                    <prefs:SwitchCell
+                        x:Name="AlertPref"
+                        Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
+                    <prefs:SwitchCell
+                        x:Name="PoPChancePref"
+                        Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
+                    <prefs:ListViewCell
+                        x:Name="PoPChancePctPref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_POPCHANCEPCT}"
+                        Text="{x:Static res_strings:Resources.label_chance}"
+                        IsEnabled="{Binding Source={x:Reference PoPChancePref}, Path=On, Mode=OneWay}">
+                        <prefs:ListViewCell.Items>
+                            <m:List Type="{x:Type prefs:PreferenceListItem}">
+                                <prefs:PreferenceListItem Display="&gt;= 40%" Value="40" />
+                                <prefs:PreferenceListItem Display="&gt;= 50%" Value="50" />
+                                <prefs:PreferenceListItem Display="&gt;= 60%" Value="60" />
+                                <prefs:PreferenceListItem Display="&gt;= 70%" Value="70" />
+                                <prefs:PreferenceListItem Display="&gt;= 80%" Value="80" />
+                                <prefs:PreferenceListItem Display="&gt;= 90%" Value="90" />
+                            </m:List>
+                        </prefs:ListViewCell.Items>
+                    </prefs:ListViewCell>
                 </TableSection>
             </TableRoot>
         </TableView>

@@ -301,8 +301,17 @@
     <value>Ogólne</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Wersja</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Jednostki</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Wyświetlaj jednostki w skali Fahrenheita</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Wyświetlaj jednostki w skali Celsjusza</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikacji</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Wprowadź klucz</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Powiadomienie o pogodzie</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Dostawca pogody</value>
@@ -432,6 +444,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Ważne do</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Klucz osobisty</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Użyj osobistego klucza</value>
@@ -580,13 +596,27 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Dostępna aktualizacja. Kliknij, aby zainstalować</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Wsparcie</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Opinia</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Zgłoś błędy lub sugestie, by ulepszyć aplikację</value>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Oceń i napisz opinię</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Podoba Ci się ta aplikacja? Wesprzyj nas swoją opinią</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Przetłumacz</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Pomóż przetłumaczyć aplikację</value>
@@ -636,6 +666,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Czas</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Wyłączone</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Włączone</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Powiadomienie o opadach</value>

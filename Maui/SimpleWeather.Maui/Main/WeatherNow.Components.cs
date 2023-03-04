@@ -356,40 +356,47 @@ public partial class WeatherNow
                             BindingMode.OneWay, source: WNowViewModel
                         )
                         .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
-                        // Attribution
-                        new Button()
-                            .Row(3)
-                            .ColumnSpan(4)
-                            .End()
-                            .Margin(16,0)
-                            .Padding(5)
-                            .BackgroundColor(Colors.Transparent)
-                            .Font(size: 11)
-                            .Bind(Button.IsVisibleProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.OriginalLink)}",
-                                BindingMode.OneWay, source: WNowViewModel, converter: objectBooleanConverter as IValueConverter
-                            )
-                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
-                            .Apply(it =>
-                            {
-                                it.Clicked += (s, e) =>
-                                {
-                                    WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
-                                    {
-                                        await Browser.Default.OpenAsync(uri);
-                                    });
-                                };
-
-                                it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
-                                WNowViewModel.PropertyChanged += (s, e) =>
-                                {
-                                    if (e.PropertyName == nameof(WNowViewModel.ImageData))
-                                    {
-                                        it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
-                                    }
-                                };
-                            }),
                     }
-                }
+                }.Apply(it =>
+                {
+                    // Attribution
+                    if (Utils.FeatureSettings.BackgroundImage)
+                    {
+                        it.Add(
+                            new Button()
+                                .Row(3)
+                                .ColumnSpan(4)
+                                .End()
+                                .Margin(16,0)
+                                .Padding(5)
+                                .BackgroundColor(Colors.Transparent)
+                                .Font(size: 11)
+                                .Bind(Button.IsVisibleProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.OriginalLink)}",
+                                    BindingMode.OneWay, source: WNowViewModel, converter: objectBooleanConverter as IValueConverter
+                                )
+                                .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                                .Apply(it =>
+                                {
+                                    it.Clicked += (s, e) =>
+                                    {
+                                        WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
+                                        {
+                                            await Browser.Default.OpenAsync(uri);
+                                        });
+                                    };
+
+                                    it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                    WNowViewModel.PropertyChanged += (s, e) =>
+                                    {
+                                        if (e.PropertyName == nameof(WNowViewModel.ImageData))
+                                        {
+                                            it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                        }
+                                    };
+                                })
+                        );
+                    }
+                })
             }
         }
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",

@@ -301,8 +301,17 @@
     <value>Všeobecné</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Verzia</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Jednotky</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Zobraziť v stupňoch Fahrenheita</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Zobraziť v stupňoch Celzia</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikácii</value>
@@ -327,6 +336,9 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Vložte prosím kľúč poskytovateľa</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Oznámenie o počasí</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Poskytovateľ počasia</value>
@@ -432,6 +444,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Platné do:</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Váš osobný kľúč poskytovateľa</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Použiť osobný kľúč poskytovateľa počasia</value>
@@ -580,13 +596,27 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Je dostupná aktualizácia. Ťuknutím inštalujte</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Podpora</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Spätná väzba</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Nahlásiť chyby alebo návrhy na vylepšenie aplikácie</value>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Hodnotenie a recenzia</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Páči sa Vám aplikácia? Pomôžte podpore poskytnutím recenzie.</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Preklad</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Pomôcť s prekladom aplikácie</value>
@@ -635,6 +665,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Čas</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Vypnuté</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Zapnuté</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Oznámenie o zrážkach</value>

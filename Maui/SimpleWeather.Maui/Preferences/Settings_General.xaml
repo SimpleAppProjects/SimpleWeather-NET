@@ -7,6 +7,7 @@
     xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
     xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
+    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
@@ -41,7 +42,9 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_general}">
-                    <prefs:SwitchCell x:Name="FollowGPS" Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
+                    <prefs:SwitchCell
+                        x:Name="FollowGPS"
+                        Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
                     <prefs:ListViewCell
                         x:Name="IntervalPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
@@ -73,28 +76,45 @@
                     </prefs:ListViewCell>
                     <prefs:ListViewCell
                         x:Name="LanguagePref"
-                        Tapped="TextCell_Tapped"
+                        PreferenceKey=""
                         Text="{x:Static res_strings:Resources.pref_title_language}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
                     <TextCell
-                        Detail="Weather notif, daily notif"
+                        x:Name="WeatherNotifPref"
+                        Detail="{x:Static res_strings:Resources.not_channel_name_dailynotification}"
                         Tapped="TextCell_Tapped"
-                        Text="Weather Notification" />
+                        Text="{x:Static res_strings:Resources.pref_title_onnotification}"
+                        CommandParameter="{x:Type prefs:Settings_WeatherNotifications}" />
                     <TextCell
-                        Detail="Weather alerts, precip notif"
+                        x:Name="WeatherAlertPref"
+                        Detail="{x:Bind utils:StringUtils.ToPascalCase($'{res_strings:Resources.pref_title_alerts}, {res_strings:Resources.not_channel_name_precipnotification}')}"
                         Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_alerts}" />
+                        Text="{x:Static res_strings:Resources.pref_title_alerts}"
+                        CommandParameter="{x:Type prefs:Settings_WeatherAlerts}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
-                    <prefs:ListViewCell x:Name="APIPref" Text="{x:Static res_strings:Resources.api_label}" />
-                    <prefs:SwitchCell Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
+                    <prefs:ListViewCell
+                        x:Name="APIPref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_API}"
+                        Text="{x:Static res_strings:Resources.api_label}" />
+                    <prefs:SwitchCell
+                        x:Name="PersonalKeyPref"
+                        Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
                     <TextCell
+                        x:Name="APIRegisterPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_apiregister}" />
-                    <TextCell Tapped="TextCell_Tapped" Text="Provider Key" />
-                    <prefs:ListViewCell x:Name="RadarPref" Text="{x:Static res_strings:Resources.label_radar}" />
+                    <prefs:DialogCell
+                        x:Name="KeyEntryPref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_APIKEY}"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.key_hint}" />
+                    <prefs:ListViewCell
+                        x:Name="RadarPref"
+                        PreferenceKey="{x:Static radar:RadarProvider.KEY_RADARPROVIDER}"
+                        Text="{x:Static res_strings:Resources.label_radar}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_about}">
                     <TextCell

@@ -312,8 +312,18 @@
     <value>Allgemein</value>
     <comment>Settings</comment>
   </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Version</value>
+  </data>
   <data name="pref_title_units" xml:space="preserve">
     <value>Einheiten</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Einheiten in Fahrenheit</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Einheiten in Celsius</value>
+    <comment>Maybe leave out the bracketed metric?</comment>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>Über</value>
@@ -338,6 +348,10 @@
   </data>
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Anbieterschlüssel eingeben</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Wetter-Benachrichtigung</value>
+    <comment>Or &quot;Laufende Benachrichtigung&quot; in a less formal way.</comment>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Wetteranbieter</value>
@@ -446,6 +460,10 @@
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Gültig bis</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Persönlicher Anbieterschlüssel</value>
+    <comment>HERE API</comment>
   </data>
   <data name="pref_summary_personalkey" xml:space="preserve">
     <value>Persönlichen Anbieterschlüssel benutzen</value>
@@ -602,13 +620,30 @@
   <data name="prompt_update_available" xml:space="preserve">
     <value>Aktualisierung verfügbar. Zum Installieren klicken</value>
   </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Unterstützung</value>
+    <comment>Support</comment>
+  </data>
   <data name="pref_title_feedback" xml:space="preserve">
     <value>Feedback</value>
     <comment>Feedback</comment>
   </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Melden Sie alle Probleme oder Vorschläge zur Verbesserung der App</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Bewertung und Überprüfung</value>
     <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Mag die App? Helfen Sie bei der Unterstützung durch eine Rezension</value>
+    <comment>Gefällt die Anwendung? Die Entwicklung durch eine Bewertung unterstützen
+Fuzzy</comment>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Übersetzung</value>
+    <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Bei der Übersetzung der Anwendung helfen</value>
@@ -658,6 +693,12 @@
   </data>
   <data name="pref_title_time" xml:space="preserve">
     <value>Zeit</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Deaktiviert</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Aktiviert</value>
   </data>
   <data name="not_channel_name_precipnotification" xml:space="preserve">
     <value>Niederschlagsbenachrichtigung</value>

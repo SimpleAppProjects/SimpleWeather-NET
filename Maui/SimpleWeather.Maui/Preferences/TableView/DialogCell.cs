@@ -3,7 +3,7 @@ using CommunityToolkit.Maui.Markup;
 
 namespace SimpleWeather.Maui.Preferences
 {
-	public abstract class DialogCell : TextCell
+	public class DialogCell : TextCell
 	{
 		public string PreferenceKey
 		{
