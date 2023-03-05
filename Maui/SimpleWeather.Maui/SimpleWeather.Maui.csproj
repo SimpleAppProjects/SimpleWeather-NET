@@ -59,6 +59,8 @@
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.4" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
 		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.6" />
+		<PackageReference Include="SimpleToolkit.Core" Version="2.0.3" />
+		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.0" />
 	</ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <PackageReference Include="WinUIEx" Version="2.1.0" />
@@ -186,14 +188,6 @@
 	  <Compile Update="Preferences\Settings_General.xaml.cs">
 	    <DependentUpon>Settings_General.xaml</DependentUpon>
 	  </Compile>
-	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Services\" />
-	  <Folder Include="Preferences\TableView\" />
-	  <Folder Include="Controls\Graphs\" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Remove="AlohaKit.Layouts" />
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />

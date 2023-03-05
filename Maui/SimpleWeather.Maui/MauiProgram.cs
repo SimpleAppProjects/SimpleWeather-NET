@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Embedding;
 using Microsoft.Maui.LifecycleEvents;
+using SimpleToolkit.Core;
+using SimpleToolkit.SimpleShell;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Weather_API.Keys;
 using SkiaSharp.Views.Maui.Controls.Hosting;
@@ -45,6 +47,8 @@ public static class MauiProgram
                 handlers.AddHandler<SelectableItemsView, SelectableItemsViewHandler<SelectableItemsView>>();
             })
             .UseProgressBar()
+            .UseSimpleShell()
+            .UseSimpleToolkit()
             //.ConfigureContainer()
             //.ConfigureGraphicsControls(DrawableType.Fluent)
             ;

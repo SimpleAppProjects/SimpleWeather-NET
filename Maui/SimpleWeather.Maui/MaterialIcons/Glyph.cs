@@ -28,5 +28,9 @@
         AddCircleOutline = 0xe148,
         Delete = 0xe872,
         AddLocation = 0xe567,
+        LightMode = 0xe518,
+        MoreVert = 0xe5d4,
+        MoreHoriz = 0xe5d3,
+        ArrowBackiOS = 0xe5e0,
     }
 }

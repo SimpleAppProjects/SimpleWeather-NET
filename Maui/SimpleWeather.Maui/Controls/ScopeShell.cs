@@ -1,6 +1,8 @@
-﻿namespace SimpleWeather.Maui.Controls
+﻿using SimpleToolkit.SimpleShell;
+
+namespace SimpleWeather.Maui.Controls
 {
-    public abstract partial class ScopeShell : Shell, IDisposable
+    public abstract partial class ScopeShell : SimpleShell, IDisposable
     {
         private CancellationTokenSource cts;
         private bool disposedValue;

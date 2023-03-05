@@ -1,7 +1,9 @@
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
+#if IOS || MACCATALYST
 using CoreFoundation;
+#endif
 using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.Controls;
