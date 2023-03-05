@@ -1,5 +1,7 @@
 ﻿#if WINDOWS
 using Mapsui.UI.WinUI;
+//#elif ANDROID || IOS || MACCATALYST
+//using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #else
 using Mapsui.UI.Maui;
 #endif
@@ -18,25 +20,44 @@ namespace SimpleWeather.NET.Radar
 
         private static MapControl CreateMapControl()
         {
+#if MACCATALYST
+            MapControl.UseGPU = false;
+#endif
+
             var mapControl = new MapControl()
             {
+#if false //ANDROID || IOS || MACCATALYST
+                MapType = Microsoft.Maui.Maps.MapType.Hybrid
+#else
                 Map = new Mapsui.Map()
                 {
                     CRS = "EPSG:3857"
-                }
+                },
+#endif
             };
 
+#if false //ANDROID || IOS || MACCATALYST
+            mapControl.IsZoomEnabled = false;
+            mapControl.IsScrollEnabled = false;
+            mapControl.IsTrafficEnabled = false;
+#else
             mapControl.Map.ZoomLock = false;
             mapControl.Map.PanLock = false;
             mapControl.Map.RotationLock = true;
             mapControl.Navigator.ZoomTo(6d.ToMapsuiResolution());
+#endif
             return mapControl;
         }
 
         public void RemoveMapControl()
         {
+#if false //ANDROID || IOS || MACCATALYST
+            _mapControl?.MapElements?.Clear();
+            _mapControl?.Pins?.Clear();
+#else
             _mapControl?.Map?.Layers?.Clear();
             _mapControl?.Dispose();
+#endif
             _mapControl = null;
         }
     }

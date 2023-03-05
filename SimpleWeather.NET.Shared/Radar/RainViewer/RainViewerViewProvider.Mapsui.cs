@@ -1,4 +1,5 @@
-﻿using BruTile.Cache;
+﻿//#if !(ANDROID || IOS || MACCATALYST)
+using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
 using Mapsui.Tiling.Layers;
@@ -256,7 +257,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
             AvailableRadarFrames?.Clear();
         }
 
-        private void RadarMapContainer_OnPlayAnimation(object sender, EventArgs e)
+        protected override void OnPlayRadarAnimation()
         {
             if (AnimationTimer == null)
             {
@@ -285,7 +286,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
             AnimationTimer?.Start();
         }
 
-        private void RadarMapContainer_OnPauseAnimation(object sender, EventArgs e)
+        protected override void OnPauseRadarAnimation()
         {
             AnimationTimer?.Stop();
         }
@@ -336,18 +337,5 @@ namespace SimpleWeather.NET.Radar.RainViewer
             GC.SuppressFinalize(this);
         }
     }
-
-    internal sealed class RadarFrame
-    {
-        public String Host { get; }
-        public String Path { get; }
-        public long TimeStamp { get; }
-
-        public RadarFrame(long timeStamp, string host, string path)
-        {
-            Host = host;
-            Path = path;
-            TimeStamp = timeStamp;
-        }
-    }
 }
+//#endif

@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿//#if !(ANDROID || IOS || MACCATALYST)
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
@@ -50,6 +51,8 @@ namespace SimpleWeather.NET.Radar
                 RadarContainer.Content = (RadarMapContainer = new RadarToolbar());
 #endif
                 RadarMapContainer.MapContainerChild = mapControl;
+                RadarMapContainer.OnPlayAnimation += RadarMapContainer_OnPlayAnimation;
+                RadarMapContainer.OnPauseAnimation += RadarMapContainer_OnPauseAnimation;
             }
 
             IsViewAlive = true;
@@ -95,6 +98,19 @@ namespace SimpleWeather.NET.Radar
             UpdateMap(mapControl);
         }
 
+        private void RadarMapContainer_OnPlayAnimation(object sender, EventArgs e)
+        {
+            OnPlayRadarAnimation();
+        }
+
+        private void RadarMapContainer_OnPauseAnimation(object sender, EventArgs e)
+        {
+            OnPauseRadarAnimation();
+        }
+
+        protected virtual void OnPlayRadarAnimation() { }
+        protected virtual void OnPauseRadarAnimation() { }
+
         private void Layers_LayerAdded(ILayer layer)
         {
             // Make sure marker layer is always on top
@@ -119,6 +135,8 @@ namespace SimpleWeather.NET.Radar
 #endif
             if (RadarMapContainer != null)
             {
+                RadarMapContainer.OnPauseAnimation -= RadarMapContainer_OnPauseAnimation;
+                RadarMapContainer.OnPlayAnimation -= RadarMapContainer_OnPlayAnimation;
                 RadarMapContainer.MapContainerChild = null;
                 RadarMapContainer = null;
             }
@@ -157,3 +175,4 @@ namespace SimpleWeather.NET.Radar
         }
     }
 }
+//#endif

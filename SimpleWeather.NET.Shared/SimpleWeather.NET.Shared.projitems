@@ -48,15 +48,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\HourlyForecastNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\LocationPanelUiModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.MapLayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.MapLayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.maui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\OpenWeather\OWMRadarViewProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProviderChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarViewProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\WeatherMapsResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
@@ -66,5 +66,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SunPhaseView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LocationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationPanelAdapter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.maui.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.maui.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.RadarFrame.cs" />
   </ItemGroup>
 </Project>

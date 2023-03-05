@@ -18,12 +18,12 @@ public partial class RadarToolbar : ContentView
 
         if (isButtonChecked)
         {
-            button.Source = new MaterialIcon(MaterialSymbol.Pause);
+            button.Source = new MaterialIcon(MaterialSymbol.Pause) { Size = 24 };
             OnPlayAnimation?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            button.Source = new MaterialIcon(MaterialSymbol.Play);
+            button.Source = new MaterialIcon(MaterialSymbol.Play) { Size = 24 };
             OnPauseAnimation?.Invoke(this, EventArgs.Empty);
         }
     }
@@ -48,8 +48,6 @@ public partial class RadarToolbar : ContentView
     public void UpdateSeekbarRange(int minimumPosition, int maxPosition)
     {
         AnimationSlider.Maximum = Math.Max(maxPosition, 1);
-        //AnimationSlider.TickFrequency = 1;
-        //AnimationSlider.TickPlacement = TickPlacement.Inline;
         AnimationSlider.Minimum = minimumPosition;
     }
 

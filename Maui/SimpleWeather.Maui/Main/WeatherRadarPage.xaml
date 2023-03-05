@@ -11,8 +11,13 @@
     Shell.NavBarIsVisible="True">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="{x:Static res_strings:Resources.action_refresh}"
-                     IconImageSource="{matIcons:MaterialIcon Symbol=Refresh, Size=24, FontAutoScalingEnabled=True}"
-                     Clicked="RefreshBtn_Clicked"/>
+                     Clicked="RefreshBtn_Clicked">
+            <ToolbarItem.IconImageSource>
+                <matIcons:MaterialIcon Symbol="Refresh" Size="24"
+                                       Color="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                               Dark={StaticResource DarkOnSurface}}" />
+            </ToolbarItem.IconImageSource>
+        </ToolbarItem>
     </ContentPage.ToolbarItems>
     <Grid>
         <Border x:Name="RadarWebViewContainer" Loaded="RadarWebViewContainer_Loaded" />

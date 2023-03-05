@@ -1,4 +1,5 @@
-﻿using BruTile.Cache;
+﻿//#if !(ANDROID || IOS || MACCATALYST)
+using BruTile.Cache;
 using Mapsui.Tiling;
 #if !DEBUG
 using Microsoft.UI.Xaml;
@@ -59,3 +60,4 @@ namespace SimpleWeather.NET.Radar
         }
     }
 }
+//#endif

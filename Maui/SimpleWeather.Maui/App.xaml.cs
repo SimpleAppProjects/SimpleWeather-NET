@@ -87,8 +87,8 @@ public partial class App : Application
         // Set UTF8Json Resolver
         Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
             JSONParser.Resolver,
-            Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance//,
-                                                                        //UWP.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
+            Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
+            NET.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
         );
 
         // Build DI Services
