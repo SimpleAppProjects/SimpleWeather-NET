@@ -42,16 +42,16 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="CommunityToolkit.Maui" Version="3.1.0" />
-		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="2.1.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.1.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.14" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.0" />
-		<PackageReference Include="KeyedSemaphores" Version="3.1.0" />
+		<PackageReference Include="KeyedSemaphores" Version="4.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.1" />
 		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.1" />
-		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.52" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.59" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.61" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.3" />
@@ -323,18 +323,40 @@
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.NET/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.NET/SimpleWeather.Shared/Keys</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.NET/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.NET/SimpleWeather.Weather-API/Keys</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.NET/EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Shared/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Weather-API/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Release"</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>
