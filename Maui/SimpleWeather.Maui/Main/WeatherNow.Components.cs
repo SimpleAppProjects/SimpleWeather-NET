@@ -35,6 +35,8 @@ public partial class WeatherNow
     private IconControl WeatherBox { get; set; }
     private Border RadarWebViewContainer { get; set; }
 
+    private HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
+
     private ToolbarItem CreateRefreshToolbarButton()
     {
         App.Current.Resources.TryGetValue("inverseBoolConverter", out var inverseBoolConverter);
@@ -406,7 +408,7 @@ public partial class WeatherNow
         {
             ConditionPanelLayout = it;
 
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
             it.SizeChanged += (s, e) =>
             {
                 if (RefreshLayout == null) return;
@@ -503,7 +505,7 @@ public partial class WeatherNow
         )
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 
@@ -562,7 +564,7 @@ public partial class WeatherNow
                     it.ItemClick += (s, e) =>
                     {
                         AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
-                        GotoDetailsPage(true, it.GetItemPosition(e.Item));
+                        GotoDetailsPage(true, e.ItemIndex);
                     };
                 })
             }
@@ -573,7 +575,7 @@ public partial class WeatherNow
         )
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 
@@ -681,7 +683,7 @@ public partial class WeatherNow
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView)
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 
@@ -734,7 +736,7 @@ public partial class WeatherNow
                     .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
                 );
             }
-            if (false)
+            if (Utils.FeatureSettings.ExtraDetailsEnabled)
             {
                 detailsStackLayout.Add(
                     new FlowLayout()
@@ -816,7 +818,7 @@ public partial class WeatherNow
         })
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 
@@ -871,7 +873,7 @@ public partial class WeatherNow
         )
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 
@@ -952,7 +954,7 @@ public partial class WeatherNow
         .Margins(bottom: 25)
         .Apply(it =>
         {
-            it.SizeChanged += ControlMaxWidth_SizeChanged;
+            ResizeElements.Add(it);
         });
     }
 

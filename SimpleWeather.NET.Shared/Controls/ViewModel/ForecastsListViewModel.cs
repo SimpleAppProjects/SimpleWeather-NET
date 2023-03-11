@@ -15,6 +15,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System.ComponentModel;
+using System.Collections;
 
 namespace SimpleWeather.NET.Controls
 {
@@ -31,14 +32,18 @@ namespace SimpleWeather.NET.Controls
         private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
 
         [ObservableProperty]
+#if WINDOWS
         private object selectedForecasts;
+#else
+        private IEnumerable selectedForecasts;
+#endif
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
 
         public void SelectForecast(bool isHourly)
         {
-            selectedForecasts = isHourly ? HourlyForecasts : Forecasts;
+            SelectedForecasts = isHourly ? HourlyForecasts : Forecasts;
         }
 
         public void UpdateForecasts(LocationData.LocationData location)

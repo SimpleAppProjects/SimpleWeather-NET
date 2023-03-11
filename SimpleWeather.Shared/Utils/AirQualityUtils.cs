@@ -377,7 +377,7 @@ namespace SimpleWeather.Utils
             return index.HasValue ? new Microsoft.UI.Xaml.Media.SolidColorBrush(GetColorFromIndex(index.Value)) : null;
         }
 #else
-        public static Microsoft.Maui.Graphics.Color GetColorFromIndex(int index)
+        public static Microsoft.Maui.Graphics.Color GetColorFromIndex(int? index)
         {
             return index switch
             {

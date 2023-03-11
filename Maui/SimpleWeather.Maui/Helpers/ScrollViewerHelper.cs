@@ -54,22 +54,22 @@ namespace SimpleWeather.Maui.Helpers
 
         public static async void ScrollLeft(ScrollView scrollViewer)
         {
-            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX - scrollViewer.Width, scrollViewer.ScrollY, true);
+            await scrollViewer?.ScrollToAsync(Math.Max(0, scrollViewer.ScrollX - scrollViewer.Width), scrollViewer.ScrollY, true);
         }
 
         public static async void ScrollRight(ScrollView scrollViewer)
         {
-            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX + scrollViewer.Width, scrollViewer.ScrollY, true);
+            await scrollViewer?.ScrollToAsync(Math.Min(scrollViewer.ContentSize.Width - scrollViewer.Width, scrollViewer.ScrollX + scrollViewer.Width), scrollViewer.ScrollY, true);
         }
 
         public static async void ScrollUp(ScrollView scrollViewer)
         {
-            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX, scrollViewer.ScrollY - scrollViewer.Height, true);
+            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX, Math.Max(0, scrollViewer.ScrollY - scrollViewer.Height), true);
         }
 
         public static async void ScrollDown(ScrollView scrollViewer)
         {
-            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX, scrollViewer.ScrollY + scrollViewer.Height, true);
+            await scrollViewer?.ScrollToAsync(scrollViewer.ScrollX, Math.Min(scrollViewer.ContentSize.Height - scrollViewer.Height, scrollViewer.ScrollY + scrollViewer.Height), true);
         }
     }
 }

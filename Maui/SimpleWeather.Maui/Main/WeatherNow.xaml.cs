@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Layouts;
@@ -255,24 +256,8 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         }
     }
 
-    private void MainViewer_SizeChanged(object sender, EventArgs e)
-    {
-        AnalyticsLogger.LogEvent("WeatherNow: MainGrid_SizeChanged");
-    }
-
     private void InitControls()
     {
-        App.Current.Resources.TryGetValue("inverseBoolConverter", out var inverseBoolConverter);
-        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
-        App.Current.Resources.TryGetValue("stringBooleanConverter", out var stringBooleanConverter);
-        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
-        App.Current.Resources.TryGetValue("bool2GridLengthConverter", out var bool2GridLengthConverter);
-        App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
-        App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
-        Resources.TryGetValue("detailsFilter", out var detailsFilter);
-        Resources.TryGetValue("graphDataConv", out var graphDataConv);
-        Resources.TryGetValue("graphDataGridLengthConv", out var graphDataGridLengthConv);
-
         // Refresh toolbar item
         if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
         {
@@ -291,17 +276,18 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                     CreateConditionPanel()
                     .Row(0)
                 );
-            }
 
-            // Overlay
-            ListLayout.Add(
-                new BoxView()
-                {
-                    CornerRadius = new CornerRadius(8, 8, 0, 0),
-                }
-                .DynamicResource(BoxView.ColorProperty, "RegionColor")
-                .Row(1)
-            );
+                // Overlay
+                ListLayout.Add(
+                    new BoxView()
+                    {
+                        CornerRadius = new CornerRadius(8, 8, 0, 0),
+                        //Opacity = 0.8d
+                    }
+                    .DynamicResource(BoxView.ColorProperty, "RegionColor")
+                    .Row(1)
+                );
+            }
         }
 
         // Add Grid
@@ -385,15 +371,48 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
             CreateWeatherCredit()
             .Row(6)
         );
+
+        AdjustViewsLayout();
     }
 
-    private void ControlMaxWidth_SizeChanged(object sender, EventArgs e)
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        ListLayout.WidthRequest = width;
+        ListLayout.MaximumWidthRequest = width;
+        MainGrid.WidthRequest = width;
+        MainGrid.MaximumWidthRequest = width;
+
+        AdjustViewsLayout(width);
+
+        System.Diagnostics.Debug.WriteLine($"Window size: {width}x{height}");
+        System.Diagnostics.Debug.WriteLine($"MainGrid size: {MainGrid.Width}x{MainGrid.Height}");
+        System.Diagnostics.Debug.WriteLine($"MainViewer size: {MainViewer.Width}x{MainViewer.Height}");
+        System.Diagnostics.Debug.WriteLine($"ListLayout size: {ListLayout.Width}x{ListLayout.Height}");
+    }
+
+    private void AdjustViewsLayout(double? width = null)
     {
         if (DeviceInfo.Idiom != DeviceIdiom.Phone)
         {
-            if (sender is VisualElement view && view.Width > 1280)
+            var maxWidth = 1280;
+            var requestedWidth = width ?? MainGrid.Width;
+
+            foreach (var element in ResizeElements)
             {
-                view.WidthRequest = 1280;
+                if (element.WidthRequest > requestedWidth)
+                {
+                    element.WidthRequest = requestedWidth;
+                }
+                else if (element.WidthRequest >= maxWidth)
+                {
+                    element.WidthRequest = maxWidth;
+                }
+                else if (element.WidthRequest != requestedWidth)
+                {
+                    element.WidthRequest = requestedWidth;
+                }
             }
         }
     }

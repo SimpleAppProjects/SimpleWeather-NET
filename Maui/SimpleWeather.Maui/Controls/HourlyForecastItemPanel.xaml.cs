@@ -171,4 +171,15 @@ public partial class HourlyForecastItemPanel : ContentView
         PlatformScroller?.CollectionView?.ScrollRight();
 #endif
     }
+
+    private void HourlyItem_Tapped(object sender, TappedEventArgs e)
+    {
+        if (sender is BindableObject obj)
+        {
+            var item = obj.BindingContext;
+            var itemIdx = GetItemPosition(item);
+
+            ItemClick?.Invoke(sender, new ItemTappedEventArgs(HourlyForecastControl.ItemsSource, sender, itemIdx));
+        }
+    }
 }

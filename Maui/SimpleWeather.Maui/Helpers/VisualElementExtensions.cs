@@ -22,5 +22,23 @@
                     break;
             }
         }
+
+        public static T GetParent<T>(this VisualElement depObj) where T : VisualElement
+        {
+            if (depObj != null)
+            {
+                var parent = depObj?.Parent;
+
+                while (parent is VisualElement element && !(parent is T))
+                {
+                    parent = element.Parent;
+                }
+
+                if (parent is T)
+                    return (T)parent;
+            }
+
+            return null;
+        }
     }
 }

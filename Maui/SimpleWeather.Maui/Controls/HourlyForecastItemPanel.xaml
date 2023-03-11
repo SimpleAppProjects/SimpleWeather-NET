@@ -32,7 +32,11 @@
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <controls:HourlyForecastItem />
+                    <controls:HourlyForecastItem>
+                        <controls:HourlyForecastItem.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="HourlyItem_Tapped" />
+                        </controls:HourlyForecastItem.GestureRecognizers>
+                    </controls:HourlyForecastItem>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

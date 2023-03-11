@@ -60,10 +60,9 @@
             Grid.Row="2"
             IsRefreshing="{Binding UiState.IsLoading, Mode=OneWay}"
             IsVisible="{x:Bind dataBinding:WeatherNowBinding.IsViewVisible(UiState), Mode=OneWay}"
-            Refreshing="RefreshBtn_Clicked"
-            SizeChanged="MainViewer_SizeChanged">
+            Refreshing="RefreshBtn_Clicked">
             <ScrollView x:Name="MainViewer" Orientation="Vertical">
-                <Grid x:Name="ListLayout" RowDefinitions="Auto, *" />
+                <Grid x:Name="ListLayout" RowDefinitions="Auto, Auto" />
             </ScrollView>
         </RefreshView>
         <ActivityIndicator x:Name="ContentRing"

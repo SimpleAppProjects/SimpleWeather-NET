@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class DoubleToBooleanConverter : BaseConverterOneWay<double?, bool>
+    public class DoubleToBooleanConverter : BaseConverterOneWay<object, bool>
     {
         public double GreaterThan
         {
@@ -32,9 +32,9 @@ namespace SimpleWeather.Maui.Converters
         public static readonly BindableProperty IsInverseProperty =
             BindableProperty.Create(nameof(IsInverse), typeof(bool), typeof(DoubleToBooleanConverter), false);
 
-        public override bool DefaultConvertReturnValue { get; set; }
+        public override bool DefaultConvertReturnValue { get; set; } = false;
 
-        public override bool ConvertFrom(double? value, CultureInfo culture)
+        public override bool ConvertFrom(object value, CultureInfo culture)
         {
             if (value == null)
             {
