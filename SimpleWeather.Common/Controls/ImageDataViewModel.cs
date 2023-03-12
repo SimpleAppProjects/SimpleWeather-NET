@@ -43,7 +43,7 @@ namespace SimpleWeather.Common.Controls
                     this.ImageUri = new Uri(imageData.ImageUrl.ReplaceFirst("maui-appx://", ""), UriKind.Relative);
                     this.ImageSource = ImageSource.FromStream(async (ct) =>
                     {
-                        return await FileSystem.OpenAppPackageFileAsync(this.ImageUri.ToString()).WaitAsync(ct);
+                        return await FileSystemUtils.OpenAppPackageFileAsync(this.ImageUri.ToString()).WaitAsync(ct);
                     });
                 }
                 else

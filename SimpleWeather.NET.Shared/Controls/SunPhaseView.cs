@@ -154,7 +154,7 @@ namespace SimpleWeather.NET.Controls
 #if WINDOWS
                 var fs = await StorageFileHelper.GetFileStreamFromApplicationUri(SunIconUri);
 #else
-                var fs = await FileSystem.OpenAppPackageFileAsync(SunIconUri);
+                var fs = await FileSystemUtils.OpenAppPackageFileAsync(SunIconUri);
 #endif
                 SunIcon = SKImage.FromEncodedData(fs);
 #if WINDOWS

@@ -2,6 +2,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Maui;
+#if __ANDROID__
+using Microsoft.Maui.Controls.Compatibility.Platform.Android;
+#endif
 using Microsoft.Maui.Storage;
 
 namespace SimpleWeather.Utils
@@ -56,6 +60,49 @@ namespace SimpleWeather.Utils
             //file is not locked
             return false;
         }
+
+#if __ANDROID__
+        public static async Task<Stream> OpenAppPackageFileAsync(string filename)
+        {
+            filename = Path.GetFileName(filename);
+
+            if (File.Exists(filename))
+            {
+                return File.OpenRead(filename);
+            }
+            else if (await FileSystem.AppPackageFileExistsAsync(filename))
+            {
+                return await FileSystem.OpenAppPackageFileAsync(filename);
+            }
+            else
+            {
+                var context = Android.App.Application.Context;
+                var resources = context.Resources;
+
+                var resourceId = context.GetDrawableId(filename.ReplaceFirst(".svg", ".png"));
+                if (resourceId > 0)
+                {
+                    var imageUri = new Android.Net.Uri.Builder()
+                        .Scheme(Android.Content.ContentResolver.SchemeAndroidResource)
+                        .Authority(resources.GetResourcePackageName(resourceId))
+                        .AppendPath(resources.GetResourceTypeName(resourceId))
+                        .AppendPath(resources.GetResourceEntryName(resourceId))
+                        .Build();
+
+                    var stream = context.ContentResolver.OpenInputStream(imageUri);
+                    if (stream is not null)
+                        return stream;
+                }
+
+                return Stream.Null;
+            }
+        }
+#else
+        public static Task<Stream> OpenAppPackageFileAsync(string filename)
+        {
+            return FileSystem.OpenAppPackageFileAsync(filename);
+        }
+#endif
     }
 }
 #endif

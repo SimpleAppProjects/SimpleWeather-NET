@@ -290,7 +290,7 @@ namespace SimpleWeather.Common.Images
                             {
                                 await Task.Delay(250);
                             }
-                            var fs = await FileSystem.Current.OpenAppPackageFileAsync(filePath);
+                            var fs = await FileSystemUtils.OpenAppPackageFileAsync(filePath);
                             var bs = new BufferedStream(fs);
                             stream = bs;
                         }
