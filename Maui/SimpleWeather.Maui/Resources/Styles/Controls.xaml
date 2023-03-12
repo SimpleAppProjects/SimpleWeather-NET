@@ -240,26 +240,22 @@
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate>
-                    <Border
+                    <Grid
                         Background="{TemplateBinding Background}"
-                        BackgroundColor="{TemplateBinding BackgroundColor}"
-                        StrokeThickness="0"
-                        Stroke="Transparent">
+                        BackgroundColor="{TemplateBinding BackgroundColor}">
                         <ScrollView
                             x:Name="InternalScrollViewer"
                             Orientation="Horizontal"
                             HorizontalScrollBarVisibility="Never"
                             VerticalScrollBarVisibility="Never">
-                            <Grid>
-                                <skiaSharp:SKCanvasView
-                                    xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-                                    x:Name="Canvas"
-                                    BackgroundColor="Transparent"
-                                    HorizontalOptions="{TemplateBinding HorizontalOptions}"
-                                    IgnorePixelScaling="True" />
-                            </Grid>
+                            <skiaSharp:SKCanvasView
+                                xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                                x:Name="Canvas"
+                                BackgroundColor="Transparent"
+                                HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                                IgnorePixelScaling="True" />
                         </ScrollView>
-                    </Border>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

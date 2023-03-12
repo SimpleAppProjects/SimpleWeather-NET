@@ -281,8 +281,7 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                 ListLayout.Add(
                     new BoxView()
                     {
-                        CornerRadius = new CornerRadius(8, 8, 0, 0),
-                        //Opacity = 0.8d
+                        CornerRadius = new CornerRadius(8, 8, 0, 0)
                     }
                     .DynamicResource(BoxView.ColorProperty, "RegionColor")
                     .Row(1)
@@ -372,24 +371,22 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
             .Row(6)
         );
 
-        AdjustViewsLayout();
+        AdjustViewsLayout(0);
     }
 
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
 
-        ListLayout.WidthRequest = width;
-        ListLayout.MaximumWidthRequest = width;
-        MainGrid.WidthRequest = width;
-        MainGrid.MaximumWidthRequest = width;
+        Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100), () =>
+        {
+            ListLayout.WidthRequest = width;
+            ListLayout.MaximumWidthRequest = width;
+            MainGrid.WidthRequest = width;
+            MainGrid.MaximumWidthRequest = width;
 
-        AdjustViewsLayout(width);
-
-        System.Diagnostics.Debug.WriteLine($"Window size: {width}x{height}");
-        System.Diagnostics.Debug.WriteLine($"MainGrid size: {MainGrid.Width}x{MainGrid.Height}");
-        System.Diagnostics.Debug.WriteLine($"MainViewer size: {MainViewer.Width}x{MainViewer.Height}");
-        System.Diagnostics.Debug.WriteLine($"ListLayout size: {ListLayout.Width}x{ListLayout.Height}");
+            AdjustViewsLayout(width);
+        });
     }
 
     private void AdjustViewsLayout(double? width = null)
@@ -599,7 +596,8 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     private void RefreshBtn_Clicked(object sender, EventArgs e)
     {
         AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
-        WNowViewModel.RefreshWeather(true);
+        if (SettingsManager.FollowGPS || WNowViewModel.UiState?.LocationData?.IsValid() == true)
+            WNowViewModel.RefreshWeather(true);
     }
 
     private async void GotoAlertsPage()

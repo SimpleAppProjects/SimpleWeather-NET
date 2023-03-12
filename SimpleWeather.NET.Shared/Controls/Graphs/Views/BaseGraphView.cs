@@ -106,6 +106,12 @@ namespace SimpleWeather.NET.Controls.Graphs
             {
                 v.SetWillNotDraw(false);
             }
+#elif IOS || MACCATALYST
+            if (this.Handler?.PlatformView is UIKit.UIView v)
+            {
+                v.ClearsContextBeforeDrawing = false;
+                v.ContentMode = UIKit.UIViewContentMode.Redraw;
+            }
 #endif
         }
 
@@ -392,7 +398,6 @@ namespace SimpleWeather.NET.Controls.Graphs
 #else
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
-            OnPreMeasure();
             Size size = base.MeasureOverride(widthConstraint, heightConstraint);
             var availableSize = new Size(GetMeasurement(widthConstraint, GetPreferredWidth(), size.Width, MaxCanvasWidth), size.Height);
 #endif
@@ -405,16 +410,16 @@ namespace SimpleWeather.NET.Controls.Graphs
 #if WINDOWS
             ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
             ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
+#endif
 
             OnPreMeasure();
-#endif
 
 #if WINDOWS
             Canvas.Width = 
 #else
             Canvas.WidthRequest =
 #endif
-            MaxCanvasWidth > 0
+                MaxCanvasWidth > 0
                     ? Math.Min(MaxCanvasWidth, GetPreferredWidth())
                     : GetPreferredWidth();
 #if WINDOWS
@@ -424,8 +429,13 @@ namespace SimpleWeather.NET.Controls.Graphs
 #endif
                 availableSize.Height;
 
+#if WINDOWS
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
+#else
+            ViewHeight = (float)Canvas.HeightRequest;
+            ViewWidth = (float)Canvas.WidthRequest;
+#endif
 
             OnPostMeasure();
 

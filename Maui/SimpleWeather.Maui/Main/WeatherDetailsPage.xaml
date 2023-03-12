@@ -46,7 +46,7 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
             </CollectionView.ItemsLayout>
         </CollectionView>
         <ActivityIndicator

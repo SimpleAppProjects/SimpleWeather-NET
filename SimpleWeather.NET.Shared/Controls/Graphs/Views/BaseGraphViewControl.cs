@@ -13,6 +13,7 @@ using ScrollViewer = Microsoft.Maui.Controls.ScrollView;
 using ScrollViewerViewChangedEventArgs = Microsoft.Maui.Controls.ScrolledEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
 using RoutedEventArgs = System.EventArgs;
+using System.Diagnostics;
 #endif
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
@@ -102,6 +103,7 @@ namespace SimpleWeather.NET.Controls.Graphs
                 InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
 #else
                 InternalScrollViewer.Scrolled += InternalScrollViewer_ViewChanged;
+                InternalScrollViewer.HandlerChanged += InternalScrollViewer_HandlerChanged;
 #endif
             }
         }
@@ -139,6 +141,7 @@ namespace SimpleWeather.NET.Controls.Graphs
                 InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
 #else
                 InternalScrollViewer.Scrolled += InternalScrollViewer_ViewChanged;
+                InternalScrollViewer.HandlerChanged += InternalScrollViewer_HandlerChanged;
 #endif
             }
         }
@@ -156,9 +159,25 @@ namespace SimpleWeather.NET.Controls.Graphs
                 InternalScrollViewer.ViewChanging -= InternalScrollViewer_ViewChanging;
 #else
                 InternalScrollViewer.Scrolled -= InternalScrollViewer_ViewChanged;
+                InternalScrollViewer.HandlerChanged -= InternalScrollViewer_HandlerChanged;
 #endif
             }
         }
+
+#if !WINDOWS
+        private void InternalScrollViewer_HandlerChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is VisualElement element && element.Handler is IPlatformViewHandler handler)
+            {
+#if IOS || MACCATALYST
+                if (handler.PlatformView is UIKit.UIScrollView v)
+                {
+                    v.Bounces = false;
+                }
+#endif
+            }
+        }
+#endif
 
         private void Canvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -167,6 +186,12 @@ namespace SimpleWeather.NET.Controls.Graphs
             // get the screen density for scaling
 #if WINDOWS
             var scale = (float)XamlRoot.RasterizationScale;
+#elif __IOS__
+            var scale = 1f;
+            if (sender is VisualElement element && element.Handler?.PlatformView is UIKit.UIView v)
+            {
+                scale = (float)v.ContentScaleFactor;
+            }
 #else
             var scale = 1f;
 #endif

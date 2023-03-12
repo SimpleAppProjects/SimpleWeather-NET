@@ -40,6 +40,8 @@ public partial class WeatherNow
     private ToolbarItem CreateRefreshToolbarButton()
     {
         App.Current.Resources.TryGetValue("inverseBoolConverter", out var inverseBoolConverter);
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
 
         return new ToolbarItem()
         {
@@ -48,7 +50,7 @@ public partial class WeatherNow
             {
                 Size = 24,
                 FontAutoScalingEnabled = true
-            }.AppThemeColorBinding(MaterialIcon.ColorProperty, Colors.Black, Colors.White),
+            }.AppThemeColorBinding(MaterialIcon.ColorProperty, LightPrimary as Color, DarkPrimary as Color),
             Order = ToolbarItemOrder.Primary,
         }
         .Bind(ToolbarItem.IsEnabledProperty, nameof(RefreshLayout.IsRefreshing), BindingMode.OneWay, inverseBoolConverter as IValueConverter, source: RefreshLayout)
@@ -404,6 +406,7 @@ public partial class WeatherNow
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
             BindingMode.OneWay, source: WNowViewModel, converter: stringBooleanConverter as IValueConverter
         )
+        .Padding(16, 0)
         .Apply(it =>
         {
             ConditionPanelLayout = it;
@@ -500,6 +503,7 @@ public partial class WeatherNow
             }
         }
         .Margins(bottom: 25)
+        .Padding(16, 0)
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
                 BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
         )
@@ -570,6 +574,7 @@ public partial class WeatherNow
             }
         }
         .Margins(bottom: 25)
+        .Padding(16, 0)
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                 BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: ForecastView
         )
@@ -680,6 +685,7 @@ public partial class WeatherNow
             }
         }
         .Margins(bottom: 25)
+        .Padding(16, 0)
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView)
         .Apply(it =>
         {
@@ -816,6 +822,7 @@ public partial class WeatherNow
 
             grid.Add(detailsStackLayout, row: 1);
         })
+        .Padding(16, 0)
         .Apply(it =>
         {
             ResizeElements.Add(it);
@@ -867,6 +874,7 @@ public partial class WeatherNow
             }
         }
         .Margins(bottom: 25)
+        .Padding(16, 0)
         .Bind(
             VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
             BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
@@ -952,6 +960,7 @@ public partial class WeatherNow
             }
         }
         .Margins(bottom: 25)
+        .Padding(16, 0)
         .Apply(it =>
         {
             ResizeElements.Add(it);
