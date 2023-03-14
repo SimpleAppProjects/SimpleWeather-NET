@@ -60,6 +60,12 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         RestoreSettings();
 
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+        SettingsTable.UpdateCellColors(
+            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            LightPrimary as Color, DarkPrimary as Color);
+
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         FollowGPS.OnChanged += FollowGPS_OnChanged;
@@ -363,9 +369,18 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                             App.Current.UserAppTheme = AppTheme.Dark;
                             break;
                         case UserThemeMode.System:
-                            App.Current.UserAppTheme = AppTheme.Unspecified;
+                            {
+#if __IOS__
+                                App.Current.UserAppTheme = App.Current.IsSystemDarkTheme ? AppTheme.Dark : AppTheme.Light;
+#else
+                                App.Current.UserAppTheme = AppTheme.Unspecified;
+#endif
+                                App.Current.UpdateAppTheme();
+                            }
                             break;
                     }
+
+                    App.Current.UpdateAppTheme();
                 }
                 break;
             case SettingsManager.KEY_API:
@@ -468,7 +483,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         SwitchCell sw = sender as SwitchCell;
 
-        if (sw.On)
+        if (e.Value)
         {
             var locationStatus = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
 

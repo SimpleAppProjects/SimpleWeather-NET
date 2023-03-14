@@ -11,6 +11,7 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 #if IOS || MACCATALYST
+using UIKit;
 using WebKit;
 #endif
 #if !MACCATALYST
@@ -34,11 +35,15 @@ public partial class App : Application
     {
         get
         {
+#if __IOS__
+            return UIKit.UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark;
+#else
             return Current.RequestedTheme == AppTheme.Dark;
+#endif
         }
     }
 
-    public AppTheme CurrentTheme => this.UserAppTheme == AppTheme.Unspecified ? this.RequestedTheme : this.UserAppTheme;
+    public AppTheme CurrentTheme => this.UserAppTheme == AppTheme.Unspecified ? (IsSystemDarkTheme ? AppTheme.Dark : AppTheme.Light) : this.UserAppTheme;
 
     private IExtrasService ExtrasService { get; set; }
 
@@ -64,10 +69,14 @@ public partial class App : Application
 
         RegisterSettingsListener();
 
+        this.UserAppTheme = SettingsManager.UserTheme switch
+        {
+            UserThemeMode.Light => AppTheme.Light,
+            UserThemeMode.Dark => AppTheme.Dark,
+            _ => AppTheme.Unspecified
+        };
         this.RequestedThemeChanged += App_RequestedThemeChanged;
         UpdateAppTheme(this.CurrentTheme);
-
-        Console.WriteLine(SimpleWeather.Helpers.ApplicationDataHelper.GetLocalFolderPath());
 
         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
         {
@@ -168,12 +177,28 @@ public partial class App : Application
 
     private void App_RequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
     {
-        UpdateAppTheme(e.RequestedTheme);
+        if (e.RequestedTheme == AppTheme.Unspecified)
+        {
+            UpdateAppTheme(IsSystemDarkTheme ? AppTheme.Dark : AppTheme.Light);
+        }
+        else
+        {
+            UpdateAppTheme(e.RequestedTheme);
+        }
     }
 
     public void UpdateAppTheme()
     {
-        UpdateAppTheme(CurrentTheme);
+        var currentTheme = CurrentTheme;
+
+        if (currentTheme == AppTheme.Unspecified)
+        {
+            UpdateAppTheme(IsSystemDarkTheme ? AppTheme.Dark : AppTheme.Light);
+        }
+        else
+        {
+            UpdateAppTheme(currentTheme);
+        }
     }
 
     public void UpdateAppTheme(AppTheme requestedTheme)
@@ -189,6 +214,48 @@ public partial class App : Application
         {
             themeDictionary.Add(new LightTheme());
         }
+
+#if __IOS__ && (IOS13_0_OR_GREATER || MACCATALYST)
+#if IOS
+        if (OperatingSystem.IsIOSVersionAtLeast(13))
+#elif MACCATALYST
+        if (OperatingSystem.IsMacCatalystVersionAtLeast(11))
+#else
+        if (false)
+#endif
+        {
+            UIKit.UIWindow uiWindow = null;
+
+#if IOS
+            if (OperatingSystem.IsIOSVersionAtLeast(15))
+#elif MACCATALYST
+            if (OperatingSystem.IsMacCatalystVersionAtLeast(15))
+#else
+            if (false)
+#endif
+            {
+                uiWindow = UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIScene>()
+                    .Select(s => (s as UIKit.UIWindowScene)?.KeyWindow)
+                    .FirstOrDefault();
+            }
+            else
+            {
+                uiWindow = UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIScene>()
+                    .SelectMany(s => (s as UIKit.UIWindowScene)?.Windows ?? Array.Empty<UIKit.UIWindow>())
+                    .FirstOrDefault(w => w.IsKeyWindow);
+            }
+
+            if (uiWindow != null)
+            {
+                uiWindow.OverrideUserInterfaceStyle = requestedTheme switch
+                {
+                    AppTheme.Light => UIKit.UIUserInterfaceStyle.Light,
+                    AppTheme.Dark => UIKit.UIUserInterfaceStyle.Dark,
+                    _ => UIScreen.MainScreen.TraitCollection.UserInterfaceStyle
+                };
+            }
+        }
+#endif
     }
 
     private void App_OnSettingsChanged(SettingsChangedEventArgs e)

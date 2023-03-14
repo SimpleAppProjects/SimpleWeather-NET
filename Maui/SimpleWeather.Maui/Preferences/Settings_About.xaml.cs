@@ -15,6 +15,12 @@ public partial class Settings_About : ContentPage
 	{
 		InitializeComponent();
 
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+        SettingsTable.UpdateCellColors(
+            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            LightPrimary as Color, DarkPrimary as Color);
+
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
 

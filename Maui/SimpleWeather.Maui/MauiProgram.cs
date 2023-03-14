@@ -2,12 +2,14 @@
 using CommunityToolkit.Maui.Markup;
 using epj.ProgressBar.Maui;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Compatibility.Hosting;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Embedding;
 using Microsoft.Maui.LifecycleEvents;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SimpleWeather.Maui.MaterialIcons;
+using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Weather_API.Keys;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
@@ -45,6 +47,9 @@ public static class MauiProgram
             .ConfigureMauiHandlers(handlers =>
             {
                 handlers.AddHandler<SelectableItemsView, SelectableItemsViewHandler<SelectableItemsView>>();
+#if __IOS__
+                handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
+#endif
             })
             .UseProgressBar()
             .UseSimpleShell()

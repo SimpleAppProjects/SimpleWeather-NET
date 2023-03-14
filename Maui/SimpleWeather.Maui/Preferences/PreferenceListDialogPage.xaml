@@ -16,24 +16,28 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Frame Margin="16">
+        <Frame BackgroundColor="Transparent" BorderColor="Transparent">
             <ListView
                 x:Name="PreferenceListView"
                 IsGroupingEnabled="False"
                 IsPullToRefreshEnabled="False"
+                HasUnevenRows="True"
                 SelectionMode="Single"
-                VerticalOptions="FillAndExpand">
+                VerticalOptions="Start"
+                BackgroundColor="Transparent"
+                SeparatorVisibility="Default"
+                SeparatorColor="{AppThemeBinding Light='#2073777F', Dark='#408D9199'}">
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="local:PreferenceListItemViewModel">
-                        <ViewCell>
-                            <HorizontalStackLayout>
+                        <local:TransparentViewCell>
+                            <HorizontalStackLayout Margin="0,2">
                                 <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
                                 <Label
                                     FontSize="Default"
                                     Text="{Binding Display}"
                                     VerticalOptions="Center" />
                             </HorizontalStackLayout>
-                        </ViewCell>
+                        </local:TransparentViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
