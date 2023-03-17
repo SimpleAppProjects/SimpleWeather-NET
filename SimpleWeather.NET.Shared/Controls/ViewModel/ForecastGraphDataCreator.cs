@@ -148,7 +148,7 @@ namespace SimpleWeather.NET.Controls
         private void AddEntryData<T>(T forecast, LineDataSeries series, ForecastGraphType graphType) where T : BaseForecast
         {
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string date = GetDateFromForecast(forecast);
 
@@ -267,7 +267,7 @@ namespace SimpleWeather.NET.Controls
         {
             if (forecast.rain_mm.HasValue && forecast.rain_mm >= 0)
             {
-                var culture = CultureUtils.UserCulture;
+                var culture = LocaleUtils.GetLocale();
 
                 string date;
                 if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
@@ -381,7 +381,7 @@ namespace SimpleWeather.NET.Controls
         private void AddEntryData<T>(T forecast, BarGraphDataSet dataSet, ForecastGraphType graphType) where T : BaseForecast
         {
             string date = GetDateFromForecast(forecast);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             if (graphType == ForecastGraphType.UVIndex)
             {
@@ -399,7 +399,7 @@ namespace SimpleWeather.NET.Controls
         private string GetDateFromForecast<T>(T forecast) where T : BaseForecast
         {
             string date;
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             if (forecast is Forecast fcast)
             {

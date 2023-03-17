@@ -206,7 +206,7 @@ namespace SimpleWeather.NET.Controls
         private void RefreshView()
         {
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(weather.source);
 
             unitCode = SettingsManager.TemperatureUnit;

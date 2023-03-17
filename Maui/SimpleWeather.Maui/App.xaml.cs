@@ -5,11 +5,14 @@ using SimpleWeather.Extras;
 using SimpleWeather.Maui.Main;
 using SimpleWeather.Maui.Resources.Styles;
 using SimpleWeather.Maui.Setup;
+using SimpleWeather.NET.Localization;
+using SimpleWeather.NET.Radar;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
+using System.Runtime.CompilerServices;
 #if IOS || MACCATALYST
 using UIKit;
 using WebKit;
@@ -66,6 +69,9 @@ public partial class App : Application
         InitializeDependencies();
 
         SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+        // Init user-preferred locale
+        LocaleUtils.Init();
 
         RegisterSettingsListener();
 
@@ -124,6 +130,10 @@ public partial class App : Application
             .AddTransient<SetupWelcomePage>()
             .AddTransient<SetupLocationsPage>()
             .AddTransient<SetupSettingsPage>();
+        // Add localization support
+        serviceCollection.AddLocalization();
+        serviceCollection.AddSingleton<CustomStringLocalizer>();
+        serviceCollection.AddSingleton<IResourceLoader, ResourceLoaderImpl>();
     }
 
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)

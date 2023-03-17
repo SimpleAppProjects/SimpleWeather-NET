@@ -173,7 +173,7 @@ namespace SimpleWeather.Weather_API.NWS
             var forecast = new Forecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.NWS);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             forecast.date = forecastItem.startTime.DateTime;
             if (float.TryParse(forecastItem.temperature, out float temp))
@@ -218,7 +218,7 @@ namespace SimpleWeather.Weather_API.NWS
             var forecast = new Forecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.NWS);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             forecast.date = forecastItem.startTime.DateTime;
             if (float.TryParse(forecastItem.temperature, out float hiTemp))
@@ -260,7 +260,7 @@ namespace SimpleWeather.Weather_API.NWS
             var hrf = new HourlyForecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.NWS);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             hrf.date = DateTimeOffset.FromUnixTimeSeconds(long.Parse(forecastItem.unixTime));
             if (adjustDate)
@@ -355,7 +355,7 @@ namespace SimpleWeather.Weather_API.NWS
             var condition = new Condition();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.NWS);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
             {

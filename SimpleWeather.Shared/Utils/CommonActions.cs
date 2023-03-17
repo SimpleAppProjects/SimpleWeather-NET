@@ -22,6 +22,8 @@ namespace SimpleWeather.Utils
 
         public const string ACTION_SETTINGS_UPDATEDAILYNOTIFICATION = "SimpleWeather.action.SETTINGS_UPDATEDAILYNOTIFICATION";
 
+        public const string ACTION_LOCALE_CHANGED = "SimpleWeather.action.LOCALE_CHANGED";
+
         public const string EXTRA_FORCEUPDATE = "SimpleWeather.extra.FORCE_UPDATE";
     }
 }

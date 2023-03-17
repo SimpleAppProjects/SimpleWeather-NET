@@ -45,7 +45,7 @@
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
-		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.14" />
+		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.15" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.0" />
 		<PackageReference Include="KeyedSemaphores" Version="4.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
@@ -58,9 +58,10 @@
 		<PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.4" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
-		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.6" />
+		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.8" />
 		<PackageReference Include="SimpleToolkit.Core" Version="2.0.3" />
 		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.0" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
 	</ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <PackageReference Include="WinUIEx" Version="2.1.0" />
@@ -323,18 +324,18 @@
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Shared/Keys</command>
+	        <workingdir></workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Weather-API/Keys</command>
+	        <workingdir></workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
+	        <workingdir></workingdir>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>

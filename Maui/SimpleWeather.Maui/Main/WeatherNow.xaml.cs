@@ -615,28 +615,6 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         }));
     }
 
-    private void RadarWebView_Loaded(object sender, EventArgs e)
-    {
-        var container = sender as Border;
-        var cToken = GetCancellationToken();
-
-        AsyncTask.Run(async () =>
-        {
-            await Dispatcher.DispatchAsync(() =>
-            {
-                if (radarViewProvider == null)
-                {
-                    radarViewProvider = RadarProvider.GetRadarViewProvider(container);
-                }
-                radarViewProvider.EnableInteractions(false);
-                WNowViewModel.Weather?.Let(it =>
-                {
-                    radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
-                });
-            });
-        }, 1000, cToken);
-    }
-
     private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
     {
         if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
@@ -735,22 +713,41 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     private void BackgroundOverlay_Loaded(object sender, EventArgs e)
     {
         var bgImage = sender as Image;
-        bgImage.PropertyChanged += BgImage_PropertyChanged;
-        UpdateControlTheme(bgImage.Source != null);
+        UpdateControlTheme(bgImage.Source != null ? !bgImage.Source.IsEmpty : false);
     }
 
-    private void BackgroundOverlay_Unloaded(object sender, EventArgs e)
-    {
-        var bgImage = sender as Image;
-        bgImage.PropertyChanged -= BgImage_PropertyChanged;
-    }
-
-    private void BgImage_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void BackgroundOverlay_PropertyChanging(object sender, Microsoft.Maui.Controls.PropertyChangingEventArgs e)
     {
         var bgImage = sender as Image;
         if (e.PropertyName == nameof(bgImage.Source))
         {
-            UpdateControlTheme(bgImage.Source != null);
+            if (bgImage.Source != null)
+            {
+                bgImage.Source.PropertyChanged -= Source_PropertyChanged;
+            }
         }
+    }
+
+    private void BackgroundOverlay_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        var bgImage = sender as Image;
+        if (e.PropertyName == nameof(bgImage.Source))
+        {
+            if (bgImage.Source != null)
+            {
+                bgImage.Source.PropertyChanged += Source_PropertyChanged;
+                UpdateControlTheme(!bgImage.Source.IsEmpty);
+            }
+            else
+            {
+                UpdateControlTheme(false);
+            }
+        }
+    }
+
+    private void Source_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        var src = sender as ImageSource;
+        UpdateControlTheme(!src.IsEmpty);
     }
 }

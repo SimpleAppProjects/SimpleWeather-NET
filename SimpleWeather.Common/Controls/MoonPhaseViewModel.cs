@@ -18,7 +18,7 @@ namespace SimpleWeather.Common.Controls
 
         public MoonPhaseViewModel(Astronomy astronomy)
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             if (astronomy.moonrise != null && astronomy.moonrise != DateTime.MinValue)
             {

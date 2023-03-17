@@ -28,7 +28,7 @@ namespace SimpleWeather.Weather_API.Bing
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string key = GetAPIKey();
 
@@ -103,7 +103,7 @@ namespace SimpleWeather.Weather_API.Bing
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string key = GetAPIKey();
 

@@ -38,9 +38,10 @@
             Grid.RowSpan="3"
             Aspect="AspectFill"
             Loaded="BackgroundOverlay_Loaded"
-            Unloaded="BackgroundOverlay_Unloaded"
+            PropertyChanged="BackgroundOverlay_PropertyChanged"
+            PropertyChanging="BackgroundOverlay_PropertyChanging"
             IsVisible="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-            Source="{Binding ImageData.ImageSource}"/>
+            Source="{Binding ImageData.ImageSource}" />
         <Grid
             x:Name="GradientOverlay"
             Grid.RowSpan="3"

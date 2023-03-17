@@ -39,7 +39,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             ObservableCollection<LocationQuery> locations = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -132,7 +132,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -211,7 +211,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

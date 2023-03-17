@@ -36,7 +36,7 @@ namespace SimpleWeather.Weather_API.Bing
             //private const string AUTOCOMPLETE_QUERY_URL = "http://dev.virtualearth.net/REST/v1/Autosuggest?query={0}&userLocation=0,0&includeEntityTypes=Place&key={1}&culture={2}&maxResults=10";
             ObservableCollection<LocationQuery> locations = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string key = GetAPIKey();
 

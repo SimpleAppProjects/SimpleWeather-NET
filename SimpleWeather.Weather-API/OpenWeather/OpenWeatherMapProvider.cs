@@ -112,7 +112,7 @@ namespace SimpleWeather.Weather_API.OpenWeather
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

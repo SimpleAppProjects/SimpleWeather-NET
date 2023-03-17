@@ -94,7 +94,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             var forecast = new SimpleWeather.WeatherData.Forecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             forecast.date = DateTimeOffset.FromUnixTimeSeconds(day.dt).UtcDateTime;
 
@@ -147,7 +147,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             var hrf = new SimpleWeather.WeatherData.HourlyForecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             hrf.date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt);
 
@@ -321,7 +321,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             var condition = new SimpleWeather.WeatherData.Condition();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             if (currRoot?.observation?.T.HasValue == true)
             {

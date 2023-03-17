@@ -200,7 +200,7 @@ namespace SimpleWeather.NET.Controls
             if (forecastData == null) return null;
 
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             var entryData = new List<RangeBarGraphEntry>(forecastData.Count());
 

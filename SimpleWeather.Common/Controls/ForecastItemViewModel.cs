@@ -21,7 +21,7 @@ namespace SimpleWeather.Common.Controls
                 throw new ArgumentNullException(nameof(forecast));
             }
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsMgr.TemperatureUnit);
 
             WeatherIcon = forecast.icon;

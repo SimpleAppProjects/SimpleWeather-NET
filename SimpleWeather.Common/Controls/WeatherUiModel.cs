@@ -98,7 +98,7 @@ namespace SimpleWeather.Common.Controls
 
         private void RefreshView()
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherData.source);
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
 

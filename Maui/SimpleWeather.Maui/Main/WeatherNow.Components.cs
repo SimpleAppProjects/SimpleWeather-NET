@@ -948,7 +948,6 @@ public partial class WeatherNow
                 .Apply(it =>
                 {
                     RadarWebViewContainer = it;
-                    it.Loaded += RadarWebView_Loaded;
                     it.SizeChanged += (s, e) =>
                     {
                         if (it.Width > it.MaximumWidthRequest)
@@ -956,6 +955,10 @@ public partial class WeatherNow
                             it.WidthRequest = it.MaximumWidthRequest;
                         }
                     };
+
+                    radarViewProvider?.OnDestroyView();
+                    radarViewProvider = RadarProvider.GetRadarViewProvider(it);
+                    radarViewProvider.EnableInteractions(false);
                 })
             }
         }

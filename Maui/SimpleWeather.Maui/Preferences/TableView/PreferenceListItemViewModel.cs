@@ -9,6 +9,10 @@ namespace SimpleWeather.Maui.Preferences
 		private string display;
         [ObservableProperty]
         private object value;
+
+        [ObservableProperty]
+        private string detail;
+
         [ObservableProperty]
         private bool isChecked;
 
@@ -20,6 +24,7 @@ namespace SimpleWeather.Maui.Preferences
         {
             this.Display = item.Display;
             this.Value = item.Value;
+            this.Detail = item.Detail;
         }
     }
 }

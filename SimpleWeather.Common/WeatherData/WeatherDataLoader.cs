@@ -544,7 +544,7 @@ namespace SimpleWeather.Common.WeatherData
 
         private bool IsDataValid(Weather weather, bool overrideTtl = false)
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var locale = wm.LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             if (weather == null) return false;

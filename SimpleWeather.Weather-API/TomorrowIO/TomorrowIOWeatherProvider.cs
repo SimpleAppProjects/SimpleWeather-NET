@@ -118,7 +118,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             Weather weather = null;
             WeatherException wEx = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.TomorrowIo] : GetAPIKey();

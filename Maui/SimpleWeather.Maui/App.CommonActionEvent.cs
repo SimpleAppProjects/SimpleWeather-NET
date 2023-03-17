@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Preferences;
+﻿using System.Diagnostics;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui
@@ -7,7 +8,6 @@ namespace SimpleWeather.Maui
     {
         private void App_OnCommonActionChanged(object sender, CommonActionChangedEventArgs e)
         {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             if (e.Action == CommonActions.ACTION_WEATHER_UPDATETILELOCATION)
             {
             }
@@ -40,7 +40,11 @@ namespace SimpleWeather.Maui
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION)
             {
             }
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            else if (e.Action == CommonActions.ACTION_LOCALE_CHANGED)
+            {
+                // Update locale for string resources
+                UpdateAppLocale();
+            }
         }
     }
 }

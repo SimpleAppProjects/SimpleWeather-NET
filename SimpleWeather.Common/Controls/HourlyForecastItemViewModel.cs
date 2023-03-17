@@ -19,7 +19,7 @@ namespace SimpleWeather.Common.Controls
             }
             this.forecast = hrForecast;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsMgr.TemperatureUnit);
 
             WeatherIcon = forecast.icon;

@@ -22,7 +22,7 @@ namespace SimpleWeather.LocationData
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             BingMapsRESTToolkit.Location result = null;
             WeatherException wEx = null;

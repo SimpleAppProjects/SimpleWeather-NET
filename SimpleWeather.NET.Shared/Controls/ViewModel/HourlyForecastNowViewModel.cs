@@ -26,7 +26,7 @@ namespace SimpleWeather.NET.Controls
         public HourlyForecastNowViewModel(HourlyForecast forecast)
         {
             var SettingsManager = Ioc.Default.GetService<SettingsManager>();
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
             var wm = WeatherModule.Instance.WeatherManager;
 

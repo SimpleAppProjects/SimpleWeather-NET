@@ -76,8 +76,22 @@
                     </prefs:ListViewCell>
                     <prefs:ListViewCell
                         x:Name="LanguagePref"
-                        PreferenceKey=""
-                        Text="{x:Static res_strings:Resources.pref_title_language}" />
+                        PreferenceKey="key_language"
+                        Text="{x:Static res_strings:Resources.pref_title_language}">
+                        <prefs:ListViewCell.Items>
+                            <m:List Type="{x:Type prefs:PreferenceListItem}">
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.summary_default}" Value="" />
+                                <prefs:PreferenceListItem Value="en" />
+                                <prefs:PreferenceListItem Value="es" />
+                                <prefs:PreferenceListItem Value="fr" />
+                                <prefs:PreferenceListItem Value="de" />
+                                <prefs:PreferenceListItem Value="nl" />
+                                <prefs:PreferenceListItem Value="pl" />
+                                <prefs:PreferenceListItem Value="sk" />
+                                <prefs:PreferenceListItem Value="zh-Hans" />
+                            </m:List>
+                        </prefs:ListViewCell.Items>
+                    </prefs:ListViewCell>
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
                     <TextCell

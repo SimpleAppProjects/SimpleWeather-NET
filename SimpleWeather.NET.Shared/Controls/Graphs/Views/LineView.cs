@@ -734,7 +734,7 @@ namespace SimpleWeather.NET.Controls.Graphs
                     String title = Data.GetDataSetByIndex(i).SeriesLabel;
                     if (String.IsNullOrWhiteSpace(title))
                     {
-                        title = String.Format(CultureUtils.UserCulture, "{0} {1}", ResStrings.label_series, i);
+                        title = String.Format(LocaleUtils.GetLocale(), "{0} {1}", ResStrings.label_series, i);
                     }
 
                     bottomTextPaint.MeasureText(title, ref r);

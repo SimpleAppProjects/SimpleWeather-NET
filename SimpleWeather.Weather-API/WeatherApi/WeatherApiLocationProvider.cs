@@ -35,7 +35,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         {
             ObservableCollection<LocationQuery> locations = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             var key = GetAPIKey();
@@ -129,7 +129,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             var key = GetAPIKey();

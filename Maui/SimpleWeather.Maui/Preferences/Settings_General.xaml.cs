@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Globalization;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
@@ -202,6 +204,25 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         ThemePref.SelectedItem = SettingsManager.UserTheme;
         ThemePref.Detail = ThemePref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, ThemePref.SelectedItem)).Display;
+
+        // Language
+        LanguagePref.Items.OfType<PreferenceListItem>().ForEach(it =>
+        {
+            var code = it.Value.ToString();
+
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                it.Display = ResStrings.summary_default;
+            }
+            else
+            {
+                var culture = CultureInfo.GetCultureInfo(code, true);
+                it.Display = culture.GetNativeDisplayName(culture);
+                it.Detail = culture.GetNativeDisplayName();
+            }
+        });
+        LanguagePref.SelectedItem = LocaleUtils.GetLocaleCode();
+        LanguagePref.Detail = string.IsNullOrWhiteSpace(LanguagePref.SelectedItem?.ToString()) ? ResStrings.summary_default : LocaleUtils.GetLocaleDisplayName();
     }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
@@ -322,7 +343,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
     private void UpdateRegisterLink()
     {
-        UpdateKeySummary(APIPref.SelectedItem?.ToString());
+        UpdateRegisterLink(APIPref.SelectedItem?.ToString());
     }
 
     private void UpdateRegisterLink(string providerAPI)
@@ -397,6 +418,31 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                     RadarProvider.RadarAPIProvider = radarProviderValues
                         .Cast<RadarProvider.RadarProviders>()
                         .FirstOrDefault(@enum => Equals(@enum.GetStringValue(), RadarAPI));
+                }
+                break;
+            case LocaleUtils.KEY_LANGUAGE:
+                {
+                    // Copy navigation stack and skip last page (dialog)
+                    var navigationStack = App.Current.Navigation.NavigationStack.Where(p => p != null).SkipLast(1).ToList();
+
+                    var requestedLang = message.Value.NewValue.ToString();
+                    LocaleUtils.SetLocaleCode(requestedLang);
+
+                    Dispatcher.Dispatch(async () =>
+                    {
+                        // Note: Workaround: destroy MapControl before replacing shell
+                        MapControlCreator.Instance?.RemoveMapControl();
+
+                        // Reset shell + navigation stack
+                        App.Current.MainPage = new Main.AppShell();
+
+                        foreach (var page in navigationStack)
+                        {
+                            var instance = ActivatorUtilities.CreateInstance(Ioc.Default, page.GetType()) as Page;
+
+                            await App.Current.Navigation.PushAsync(instance);
+                        }
+                    });
                 }
                 break;
         }

@@ -37,7 +37,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
         {
             LocationQuery location;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             GeopositionRootobject result = null;
@@ -115,7 +115,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             GeopositionRootobject result = null;

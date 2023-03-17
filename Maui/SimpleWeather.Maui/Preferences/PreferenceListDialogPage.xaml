@@ -11,37 +11,38 @@
                                       Dark={StaticResource DarkSurface}}"
     Shell.NavBarIsVisible="True">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <Frame BackgroundColor="Transparent" BorderColor="Transparent">
-            <ListView
-                x:Name="PreferenceListView"
-                IsGroupingEnabled="False"
-                IsPullToRefreshEnabled="False"
-                HasUnevenRows="True"
-                SelectionMode="Single"
-                VerticalOptions="Start"
-                BackgroundColor="Transparent"
-                SeparatorVisibility="Default"
-                SeparatorColor="{AppThemeBinding Light='#2073777F', Dark='#408D9199'}">
-                <ListView.ItemTemplate>
-                    <DataTemplate x:DataType="local:PreferenceListItemViewModel">
-                        <local:TransparentViewCell>
-                            <HorizontalStackLayout Margin="0,2">
-                                <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+    <Frame BackgroundColor="Transparent" BorderColor="Transparent">
+        <ListView
+            x:Name="PreferenceListView"
+            IsGroupingEnabled="False"
+            IsPullToRefreshEnabled="False"
+            HasUnevenRows="True"
+            SelectionMode="Single"
+            VerticalOptions="FillAndExpand"
+            BackgroundColor="Transparent"
+            SeparatorVisibility="Default"
+            SeparatorColor="{AppThemeBinding Light='#2073777F', Dark='#408D9199'}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:PreferenceListItemViewModel">
+                    <local:TransparentViewCell>
+                        <HorizontalStackLayout Margin="0,2">
+                            <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+                            <VerticalStackLayout VerticalOptions="Center">
                                 <Label
                                     FontSize="Default"
                                     Text="{Binding Display}"
                                     VerticalOptions="Center" />
-                            </HorizontalStackLayout>
-                        </local:TransparentViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </Frame>
-    </Grid>
+                                <Label
+                                    FontSize="Caption"
+                                    Text="{Binding Detail}"
+                                    IsVisible="{Binding Detail, Converter={StaticResource stringBooleanConverter}}"
+                                    VerticalOptions="Center" />
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+                    </local:TransparentViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Frame>
 
 </ContentPage>

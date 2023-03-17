@@ -7,18 +7,17 @@ namespace SimpleWeather.Utils
 {
     public static class CultureUtils
     {
-        public static CultureInfo UserCulture
+        public static string GetNativeDisplayName(this CultureInfo culture, CultureInfo displayCulture = null)
         {
-            get
-            {
-#if WINDOWS
-                var userlang = GlobalizationPreferences.Languages[0];
-                var culture = new CultureInfo(userlang);
-                return culture;
+#if __IOS__
+            var locale = Foundation.NSLocale.FromLocaleIdentifier((displayCulture ?? LocaleUtils.GetLocale()).Name);
+            var str = locale.GetIdentifierDisplayName(culture.Name);
+            return str;
+#elif __ANDROID__
+            return Java.Util.Locale.ForLanguageTag(culture.Name).DisplayName;
 #else
-                return CultureInfo.CurrentUICulture;
+            return culture.DisplayName;
 #endif
-            }
         }
     }
 }

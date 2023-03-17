@@ -76,7 +76,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({country_code})"));
             }
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

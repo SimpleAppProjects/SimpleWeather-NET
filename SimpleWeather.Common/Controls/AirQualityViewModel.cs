@@ -102,7 +102,7 @@ namespace SimpleWeather.Common.Controls
 
             if (aqi.date.HasValue && aqi.date.Value != DateTime.MinValue)
             {
-                Date = aqi.date.Value.ToString("dddd", CultureUtils.UserCulture);
+                Date = aqi.date.Value.ToString("dddd", LocaleUtils.GetLocale());
             }
         }
 

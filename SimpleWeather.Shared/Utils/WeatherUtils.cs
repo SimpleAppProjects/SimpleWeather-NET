@@ -19,7 +19,7 @@ namespace SimpleWeather.Utils
                 return String.Empty;
             }
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             String date;
             String prefix;

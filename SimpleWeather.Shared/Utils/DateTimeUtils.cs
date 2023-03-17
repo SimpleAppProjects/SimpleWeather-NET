@@ -117,7 +117,7 @@ namespace SimpleWeather.Utils
                 if (nodaTz != null)
                 {
                     return new NodaTime.ZonedDateTime(NodaTime.SystemClock.Instance.GetCurrentInstant(), nodaTz)
-                        .ToString("%x", CultureUtils.UserCulture);
+                        .ToString("%x", LocaleUtils.GetLocale());
                 }
             }
             return "UTC";

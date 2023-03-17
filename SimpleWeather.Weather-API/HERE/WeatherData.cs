@@ -323,7 +323,7 @@ namespace SimpleWeather.Weather_API.HERE
 
             if (todaysForecast != null && todaysTxtForecast != null)
             {
-                var culture = CultureUtils.UserCulture;
+                var culture = LocaleUtils.GetLocale();
 
                 // fcttext & fcttextMetric are the same
                 var summaryStr = new StringBuilder(todaysTxtForecast.fcttext).Apply(sb =>

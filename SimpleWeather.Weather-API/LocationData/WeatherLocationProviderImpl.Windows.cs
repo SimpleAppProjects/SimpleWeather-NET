@@ -24,7 +24,7 @@ namespace SimpleWeather.LocationData
         {
             LocationQuery location = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             MapLocation result = null;
             WeatherException wEx = null;

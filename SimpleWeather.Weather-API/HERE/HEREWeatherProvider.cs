@@ -66,7 +66,7 @@ namespace SimpleWeather.Weather_API.HERE
             Weather weather = null;
             WeatherException wEx = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
@@ -210,7 +210,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             ICollection<WeatherAlert> alerts = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

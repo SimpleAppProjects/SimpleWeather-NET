@@ -72,6 +72,7 @@
                 BorderColor="{AppThemeBinding Light={StaticResource LightOutline},
                                               Dark={StaticResource DarkOutline}}"
                 BorderHeight="{OnPlatform iOS=1, MacCatalyst=1, Default=0}"
+                BackButtonTitle="{x:Static res_strings:Resources.label_back}"
                 BackButtonVisible="False"
                 BackTapped="ShellAppBar_BackTapped"
                 Title="{x:Static res_strings:Resources.app_name}" />

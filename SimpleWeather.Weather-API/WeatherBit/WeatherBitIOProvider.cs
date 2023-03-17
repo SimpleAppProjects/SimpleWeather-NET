@@ -113,7 +113,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
             Weather weather = null;
             WeatherException wEx = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
             var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.WeatherBitIo] : GetAPIKey();
@@ -195,7 +195,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
         {
             ICollection<WeatherAlert> alerts = null;
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 

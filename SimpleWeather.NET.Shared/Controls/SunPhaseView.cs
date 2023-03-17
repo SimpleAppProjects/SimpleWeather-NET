@@ -418,7 +418,7 @@ namespace SimpleWeather.NET.Controls
         {
             get
             {
-                var culture = CultureUtils.UserCulture;
+                var culture = LocaleUtils.GetLocale();
                 return sunrise.ToString("t", culture);
             }
         }
@@ -427,7 +427,7 @@ namespace SimpleWeather.NET.Controls
         {
             get
             {
-                var culture = CultureUtils.UserCulture;
+                var culture = LocaleUtils.GetLocale();
                 return sunset.ToString("t", culture);
             }
         }

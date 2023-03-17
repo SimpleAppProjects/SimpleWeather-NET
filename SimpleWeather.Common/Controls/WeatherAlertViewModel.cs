@@ -42,7 +42,7 @@ namespace SimpleWeather.Common.Controls
                 PostDate = string.Format(ResStrings.DateTime_SecAgo,
                     (int)Math.Floor(sincePost.TotalSeconds));
 
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             // Format: Monday, June 15, 2009 1:45 PM
             ExpireDate = string.Format("{0} {1} {2:zzz}",

@@ -114,7 +114,7 @@ namespace SimpleWeather.NET.Controls
 
                     aqiIndexData?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.index.Value, aqi.index.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.index.Value)
                     });
@@ -140,7 +140,7 @@ namespace SimpleWeather.NET.Controls
 
                     pm25Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.pm25.Value, aqi.pm25.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm25.Value)
                     });
@@ -166,7 +166,7 @@ namespace SimpleWeather.NET.Controls
 
                     pm10Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.pm10.Value, aqi.pm10.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm10.Value)
                     });
@@ -192,7 +192,7 @@ namespace SimpleWeather.NET.Controls
 
                     o3Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.o3.Value, aqi.o3.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.o3.Value)
                     });
@@ -218,7 +218,7 @@ namespace SimpleWeather.NET.Controls
 
                     coData?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.co.Value, aqi.co.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.co.Value)
                     });
@@ -244,7 +244,7 @@ namespace SimpleWeather.NET.Controls
 
                     no2Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.no2.Value, aqi.no2.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.no2.Value)
                     });
@@ -270,7 +270,7 @@ namespace SimpleWeather.NET.Controls
 
                     so2Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
                     {
-                        XLabel = aqi.date?.ToString("ddd", CultureUtils.UserCulture),
+                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
                         EntryData = new(aqi.so2.Value, aqi.so2.Value.ToInvariantString()),
                         FillColor = AirQualityUtils.GetColorFromIndex(aqi.so2.Value)
                     });
