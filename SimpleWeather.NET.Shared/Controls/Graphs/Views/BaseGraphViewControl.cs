@@ -188,10 +188,12 @@ namespace SimpleWeather.NET.Controls.Graphs
             var scale = (float)XamlRoot.RasterizationScale;
 #elif __IOS__
             var scale = 1f;
+            /*
             if (sender is VisualElement element && element.Handler?.PlatformView is UIKit.UIView v)
             {
                 scale = (float)v.ContentScaleFactor;
             }
+            */
 #else
             var scale = 1f;
 #endif
