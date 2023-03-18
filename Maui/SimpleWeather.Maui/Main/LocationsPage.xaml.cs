@@ -57,7 +57,13 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         {
             ToolbarItems.Clear();
         }
+
         LocationsPanel.ItemsSource = PanelAdapter.ItemCount > 0 ? PanelAdapter.LocationPanelGroups : null;
+
+        LocationsPanel.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
+        ContentIndicator.IsRunning = LocationsViewModel?.UiState?.IsLoading ?? true;
+        AddLocationsButton.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
+        NoLocationsView.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true) && (LocationsViewModel?.Locations?.Any() == false);
 
         AnalyticsLogger.LogEvent("LocationsPage");
     }
@@ -147,6 +153,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         InitSnackManager();
 
         LocationsViewModel = this.GetViewModel<LocationsViewModel>();
+        BindingContext = LocationsViewModel;
 
         LocationsViewModel.PropertyChanged += LocationsViewModel_PropertyChanged;
         LocationsViewModel.WeatherUpdated += LocationsViewModel_WeatherUpdated;
@@ -158,7 +165,10 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         switch (e.PropertyName)
         {
             case nameof(LocationsViewModel.Locations):
-                PanelAdapter.ReplaceAll(LocationsViewModel.Locations);
+                {
+                    PanelAdapter.ReplaceAll(LocationsViewModel.Locations);
+                    NoLocationsView.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true) && (LocationsViewModel?.Locations?.Any() == false);
+                }
                 break;
             case nameof(LocationsViewModel.ErrorMessages):
                 {
@@ -170,6 +180,14 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     {
                         OnErrorMessage(error);
                     }
+                }
+                break;
+            case nameof(LocationsViewModel.UiState):
+                {
+                    LocationsPanel.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
+                    ContentIndicator.IsRunning = LocationsViewModel?.UiState?.IsLoading ?? true;
+                    AddLocationsButton.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
+                    NoLocationsView.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true) && (LocationsViewModel?.Locations?.Any() == false);
                 }
                 break;
         }
@@ -269,10 +287,12 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         if (onlyHomeIsLeft)
         {
             ToolbarItems.Remove(EditButton);
+            this.OnPropertyChanged(nameof(ToolbarItems));
         }
         else if (!ToolbarItems.Contains(EditButton))
         {
             ToolbarItems.Add(EditButton);
+            this.OnPropertyChanged(nameof(ToolbarItems));
         }
         AddLocationsButton.IsVisible = !limitReached;
     }
@@ -370,6 +390,8 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         }
 
         HomeChanged = false;
+
+        this.OnPropertyChanged(nameof(ToolbarItems));
     }
 
     private ToolbarItem CreateDeleteButton()

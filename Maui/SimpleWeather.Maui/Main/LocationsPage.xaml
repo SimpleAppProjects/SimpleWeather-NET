@@ -12,6 +12,7 @@
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     xmlns:sharedViewModels="clr-namespace:SimpleWeather.NET.ViewModels"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     Title="{x:Static res_strings:Resources.label_nav_locations}"
     Shell.NavBarIsVisible="True"
     x:DataType="sharedViewModels:LocationsViewModel"
@@ -29,7 +30,7 @@
             SelectionMode="None"
             Margin="16,0"
             SizeChanged="LocationsPanel_SizeChanged"
-            IsVisible="{Binding UiState.IsLoading, Converter={StaticResource inverseBoolConverter}}">
+            IsVisible="False">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="local:LocationPanelGroup">
                     <Label
@@ -71,10 +72,11 @@
                         </Border.GestureRecognizers>
                         <SwipeView
                             Margin="-4"
-                            RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems}"
-                            IsEnabled="True">
+                            RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay}"
+                            IsEnabled="True"
+                            ios:SwipeView.SwipeTransitionMode="Reveal">
                             <SwipeView.LeftItems>
-                                <SwipeItems>
+                                <SwipeItems Mode="Reveal">
                                     <SwipeItem
                                         Text="{x:Static res_strings:Resources.delete}"
                                         BackgroundColor="#FFDB4437"
@@ -99,6 +101,7 @@
             </CollectionView.ItemTemplate>
             <CollectionView.EmptyView>
                 <VerticalStackLayout
+                    x:Name="NoLocationsView"
                     Margin="0,0,0,48"
                     HorizontalOptions="Center"
                     VerticalOptions="Center">
@@ -118,10 +121,11 @@
             </CollectionView.EmptyView>
         </CollectionView>
         <ActivityIndicator
+            x:Name="ContentIndicator"
             VerticalOptions="Center"
             HorizontalOptions="Center"
             Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}"
-            IsRunning="{Binding UiState.IsLoading}" />
+            IsRunning="True" />
         <Button
             x:Name="AddLocationsButton"
             CornerRadius="20"
@@ -131,7 +135,8 @@
             Clicked="AddLocationButton_Clicked"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
             Text="{x:Static res_strings:Resources.label_btn_add_location}"
-            ContentLayout="Left, 7.5">
+            ContentLayout="Left, 7.5"
+            IsVisible="False">
             <Button.ImageSource>
                 <matIcons:MaterialIcon Symbol="AddLocation"
                                        Size="24"

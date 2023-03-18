@@ -1,7 +1,13 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.Controls.AppBar;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Maui.ViewModels;
@@ -69,6 +75,15 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
             }
         }
 
+        if (CurrentPage?.ToolbarItems is INotifyCollectionChanged notifyColl)
+        {
+            notifyColl.CollectionChanged -= NotifyColl_CollectionChanged;
+        }
+        if (CurrentPage?.ToolbarItems is INotifyPropertyChanged notifyProp)
+        {
+            notifyProp.PropertyChanged -= NotifyProp_PropertyChanged;
+        }
+
         base.OnNavigating(args);
     }
 
@@ -117,12 +132,38 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
     {
         if (this.CurrentPage is Page currentPage)
         {
-            ShellAppBar.Title = currentPage.Title;
-            ShellAppBar.ToolbarItems = currentPage.ToolbarItems;
+            ShellAppBar.Bind(AppBar.TitleProperty, nameof(currentPage.Title), BindingMode.OneWay, source: currentPage);
+            ShellAppBar.Bind(AppBar.ToolbarItemsProperty, nameof(currentPage.ToolbarItems), BindingMode.OneWay, source: currentPage);
+
+            if (currentPage.ToolbarItems is INotifyCollectionChanged notifyColl)
+            {
+                notifyColl.CollectionChanged += NotifyColl_CollectionChanged;
+            }
+            if (currentPage.ToolbarItems is INotifyPropertyChanged notifyProp)
+            {
+                notifyProp.PropertyChanged += NotifyProp_PropertyChanged;
+            }
+
             ShellAppBar.IsVisible = Shell.GetNavBarIsVisible(currentPage);
+        }
+        else
+        {
+            ShellAppBar.ClearValue(AppBar.TitleProperty);
+            ShellAppBar.ClearValue(AppBar.ToolbarItemsProperty);
+            ShellAppBar.IsVisible = true;
         }
 
         ShellAppBar.BackButtonVisible = this.Navigation.NavigationStack.Count > 1;
+    }
+
+    private void NotifyColl_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    {
+        ShellAppBar.ToolbarItems = (sender as IList<ToolbarItem>)?.ToList();
+    }
+
+    private void NotifyProp_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        ShellAppBar.ToolbarItems = (sender as IList<ToolbarItem>)?.ToList();
     }
 
     private async void ShellAppBar_BackTapped(object sender, EventArgs e)
