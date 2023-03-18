@@ -13,7 +13,7 @@
         <converters:NullableColorConverter x:Key="nullableColorConv" FallbackColor="{AppThemeBinding Light=Black, Dark=White}" />
     </ContentView.Resources>
 
-    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,*,*,*" VerticalOptions="FillAndExpand">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,*" VerticalOptions="FillAndExpand">
         <Label
             Grid.Row="0"
             Grid.ColumnSpan="3"
@@ -27,6 +27,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Start"
             FontSize="16"
+            Margin="0,0,0,8"
             Text="{x:Static res_strings:Resources.label_pollen_tree}" />
         <Label
             x:Name="TreePollenDescription"
@@ -43,6 +44,7 @@
             Grid.Column="1"
             HorizontalOptions="Center"
             FontSize="16"
+            Margin="0,0,0,8"
             Text="{x:Static res_strings:Resources.label_pollen_grass}" />
         <Label
             x:Name="GrassPollenDescription"
@@ -59,6 +61,7 @@
             Grid.Column="2"
             HorizontalOptions="Center"
             FontSize="16"
+            Margin="0,0,0,8"
             Text="{x:Static res_strings:Resources.label_pollen_grass}" />
         <Label
             x:Name="RagweedPollenDescription"
