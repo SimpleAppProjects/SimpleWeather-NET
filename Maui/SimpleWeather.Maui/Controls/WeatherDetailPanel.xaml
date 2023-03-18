@@ -147,7 +147,7 @@
                     TextColor="{AppThemeBinding Light=Black, Dark=White}"
                     Text="{Binding ConditionLongDesc, Mode=OneWay}"
                     LineBreakMode="WordWrap" />
-                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Extras, Mode=OneWay}">
+                <VerticalStackLayout Padding="0,8" BindableLayout.ItemsSource="{Binding Extras, Mode=OneWay}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate x:DataType="{x:Type commonControls:DetailItemViewModel}">
                             <Grid>
