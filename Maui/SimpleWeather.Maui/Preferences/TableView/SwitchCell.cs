@@ -99,6 +99,13 @@ namespace SimpleWeather.Maui.Preferences
                     }
                     .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
                     .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
+                        convert: (enabled) =>
+                        {
+                            return enabled ? 1.0d : 0.5d;
+                        }
+                     )
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -115,12 +122,20 @@ namespace SimpleWeather.Maui.Preferences
                             return !string.IsNullOrWhiteSpace(s?.ToString());
                         }
                     )
+                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
+                        convert: (enabled) =>
+                        {
+                            return enabled ? 1.0d : 0.5d;
+                        }
+                     )
                     .CenterVertical()
                     .Column(0)
                     .Row(1),
                     new Switch()
                         .Bind(Switch.OnColorProperty, nameof(OnColor), BindingMode.OneWay, source: this)
                         .Bind(Switch.IsToggledProperty, nameof(On), BindingMode.OneWay, source: this)
+                        .Bind(Switch.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)
                         .RowSpan(2)

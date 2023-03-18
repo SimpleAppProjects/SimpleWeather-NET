@@ -67,7 +67,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
     protected override async void OnNavigating(ShellNavigatingEventArgs args)
     {
-        if (args.CanCancel)
+        if (args.CanCancel && (args.Source == ShellNavigationSource.Pop || args.Source == ShellNavigationSource.PopToRoot || args.Source == ShellNavigationSource.Remove))
         {
             if (CurrentPage is IBackRequestedPage backRequestedPage && await backRequestedPage.OnBackRequested())
             {

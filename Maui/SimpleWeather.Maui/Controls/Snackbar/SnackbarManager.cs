@@ -171,11 +171,11 @@ namespace SimpleWeather.Maui.Controls
                     snackbar?.Dismissed?.Invoke(snackbar, SnackbarDismissEvent.Action);
                     if (snacks.Count > 0) snacks.Pop();
                     UpdateView();
-                }, actionButtonText: snackbar.ButtonLabel
+                }, actionButtonText: snackbar.ButtonLabel != null ? (snackbar.ButtonLabel
 #if IOS || MACCATALYST
                 + "    " // Add whitespace after label
 #endif
-                ?? string.Empty, TimeSpan.FromMinutes(1), anchor: parentView/*anchorView*/, visualOptions: snackOptions);
+                ) : string.Empty, TimeSpan.FromMinutes(1), anchor: parentView/*anchorView*/, visualOptions: snackOptions);
 
                 snackbarView?.Dismiss();
                 snackbarView = snackView;
