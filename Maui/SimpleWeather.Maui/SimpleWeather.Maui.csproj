@@ -83,9 +83,6 @@
 		<MauiXaml Update="Controls\Banner\BannerContent.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="Controls\DevKeyEntry.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Controls\KeyEntryPopup.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
@@ -324,18 +321,18 @@
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Shared/Keys</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Weather-API/Keys</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
-	        <workingdir></workingdir>
+	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
+	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>
@@ -346,17 +343,17 @@
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Shared/Keys</command>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
 	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/KeyCheck/bin/Release/net7.0/publish/KeyCheck /Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/SimpleWeather.Weather-API/Keys</command>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
 	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>/Users/dave.b.antoine/SimpleWeather/SimpleWeather.Maui/EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Release"</command>
+	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Release"</command>
 	        <workingdir>$(ProjectDir)</workingdir>
 	      </Command>
 	    </CustomCommands>

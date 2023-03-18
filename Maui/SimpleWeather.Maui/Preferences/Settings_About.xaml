@@ -72,10 +72,11 @@
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_version}">
                     <TextCell
                         x:Name="VersionPref"
-                        Tapped="TextCell_Tapped"
+                        Tapped="VersionPref_Tapped"
                         Text="{x:Static res_strings:Resources.app_name}"
                         Detail="v0.00" />
                 </TableSection>
+                <TableSection x:Name="DevSettingsSection" />
             </TableRoot>
         </TableView>
     </Grid>

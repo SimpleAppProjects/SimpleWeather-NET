@@ -4,30 +4,54 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+    xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
+    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-    xmlns:weather="clr-namespace:SimpleWeather.WeatherData;assembly=SimpleWeather.Shared">
+    xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
+    xmlns:system="using:System"
+    xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    xmlns:weather="clr-namespace:SimpleWeather.WeatherData;assembly=SimpleWeather.Shared"
+    Title="{x:Static res_strings:Resources.title_dev_settings}"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}"
+    Shell.NavBarIsVisible="True">
+    <Shell.BackButtonBehavior>
+        <BackButtonBehavior IsVisible="True" />
+    </Shell.BackButtonBehavior>
+
+    <ContentPage.Resources>
+        <Style x:Key="SettingsFrameStyle" TargetType="Frame">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+        <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
+            <Setter Property="HasUnevenRows" Value="True" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+    </ContentPage.Resources>
+
     <Grid>
-        <ScrollView Orientation="Vertical" Padding="16,0" HorizontalScrollBarVisibility="Never">
-            <VerticalStackLayout>
-                <Label Style="{StaticResource SettingTitleStyle}" Text="Developer Settings" />
-                <Label
-                    FontSize="16"
-                    Style="{StaticResource SettingTitleStyle}"
-                    Text="API Keys" />
-                <Rectangle
-                    Height="1"
-                    Margin="0,-4,0,15"
-                    Fill="LightGray" />
-                <VerticalStackLayout Padding="0,0,0,8">
-                    <Label Style="{StaticResource PrefTitleStyle}" Text="AccuWeather Key" />
-                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="0,8">
-                    <Label Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
-                    <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
-                </VerticalStackLayout>
-            </VerticalStackLayout>
-        </ScrollView>
+        <TableView
+            x:Name="SettingsTable"
+            Intent="Settings"
+            Style="{DynamicResource SettingsTableViewStyle}">
+            <TableRoot>
+                <TableSection Title="API Keys">
+                    <prefs:DevKeyEntryCell
+                        Text="AccuWeather Key"
+                        API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
+                    <prefs:DevKeyEntryCell
+                        Text="Tomorrow.io Key"
+                        API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
+                </TableSection>
+            </TableRoot>
+        </TableView>
     </Grid>
 </ContentPage>

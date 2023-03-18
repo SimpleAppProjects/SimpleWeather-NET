@@ -1,13 +1,13 @@
-using CommunityToolkit.Maui.Views;
+﻿using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Maui.Controls;
 using SimpleWeather.Preferences;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
-namespace SimpleWeather.Maui.Controls;
+namespace SimpleWeather.Maui.Preferences;
 
-public partial class DevKeyEntry : ContentView
+public partial class DevKeyEntryCell : TextCell
 {
-
     public string API
     {
         get { return (string)GetValue(APIProperty); }
@@ -15,30 +15,19 @@ public partial class DevKeyEntry : ContentView
     }
 
     public static readonly BindableProperty APIProperty =
-        BindableProperty.Create(nameof(API), typeof(string), typeof(DevKeyEntry), string.Empty, propertyChanged: (obj, _, _) => (obj as DevKeyEntry)?.UpdateKeyEntry());
+        BindableProperty.Create(nameof(API), typeof(string), typeof(DevKeyEntryCell), string.Empty, propertyChanged: (obj, _, _) => (obj as DevKeyEntryCell)?.UpdateKeyEntry());
 
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
-    public DevKeyEntry()
-    {
-        InitializeComponent();
-    }
-
     public void UpdateKeyEntry()
     {
-        KeyEntryTextBlock.Text = SettingsManager.APIKeys[API] ?? ResStrings.key_hint;
+        Detail = SettingsManager.APIKeys[API] ?? "null";
     }
 
-    private void TapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
+    protected override void OnTapped()
     {
+        base.OnTapped();
         ItemClicked();
-    }
-
-    private void ClickGestureRecognizer_Clicked(object sender, EventArgs e)
-    {
-#if WINDOWS || MACCATALYST
-        ItemClicked();
-#endif
     }
 
     private void ItemClicked()
@@ -50,7 +39,7 @@ public partial class DevKeyEntry : ContentView
             var diag = s as KeyEntryPopup;
 
             string key = diag.Key;
-            KeyEntryTextBlock.Text = key ?? string.Empty;
+            Detail = key ?? string.Empty;
             SettingsManager.APIKeys[API] = key;
 
             diag.Close();
