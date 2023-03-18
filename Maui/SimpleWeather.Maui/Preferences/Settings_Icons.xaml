@@ -16,6 +16,11 @@
         <ScrollView Orientation="Vertical" Padding="16,0" HorizontalScrollBarVisibility="Never">
             <VerticalStackLayout x:Name="IconRadioContainer" />
         </ScrollView>
+        <ActivityIndicator
+            x:Name="LoadingRing"
+            IsRunning="True"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" />
     </Grid>
 
 </ContentPage>

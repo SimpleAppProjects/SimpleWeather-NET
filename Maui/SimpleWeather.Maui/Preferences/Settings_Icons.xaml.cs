@@ -23,28 +23,35 @@ public partial class Settings_Icons : ContentPage
 
     private void Initialize()
     {
-        IconRadioContainer.Children.Clear();
+        LoadingRing.IsRunning = true;
 
-        var currentProvider = SettingsManager.IconProvider;
-
-        var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
-
-        foreach (var provider in providers)
+        Dispatcher.Dispatch(() =>
         {
-            var radioBtn = new IconRadioPreference(provider.Value)
-            {
-                Padding = new Thickness(0, 10, 0, 10),
-            };
+            IconRadioContainer.Children.Clear();
 
-            IconRadioContainer.Children.Add(radioBtn);
+            var currentProvider = SettingsManager.IconProvider;
 
-            if (provider.Key == currentProvider)
+            var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
+
+            foreach (var provider in providers)
             {
-                radioBtn.IsChecked = true;
+                var radioBtn = new IconRadioPreference(provider.Value)
+                {
+                    Padding = new Thickness(0, 10, 0, 10),
+                };
+
+                IconRadioContainer.Children.Add(radioBtn);
+
+                if (provider.Key == currentProvider)
+                {
+                    radioBtn.IsChecked = true;
+                }
+
+                radioBtn.RadioButtonChecked += Preference_RadioButtonChecked;
             }
 
-            radioBtn.RadioButtonChecked += Preference_RadioButtonChecked;
-        }
+            LoadingRing.IsRunning = false;
+        });
     }
 
     private void Preference_RadioButtonChecked(object sender, EventArgs e)
