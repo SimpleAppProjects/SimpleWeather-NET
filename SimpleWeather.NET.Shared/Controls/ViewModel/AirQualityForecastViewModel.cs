@@ -56,13 +56,13 @@ namespace SimpleWeather.NET.Controls
         {
             if (locationData == null) return;
 
-            Task.Run((Func<Task>)(async () =>
+            Task.Run(async () =>
             {
                 if (e?.Table?.TableName == Forecasts.TABLE_NAME)
                 {
                     currentForecastsData.SetValue(await WeatherDB.GetForecastData(locationData.query));
                 }
-            }));
+            });
         }
 
         private void CurrentForecastsData_ItemValueChanged(object sender, ObservableItemChangedEventArgs e)
@@ -77,8 +77,15 @@ namespace SimpleWeather.NET.Controls
         {
             var now = DateTime.Now.Date;
             var enumerable = forecasts?.WhereNot(item => item.date?.CompareTo(now) < 0);
-            AQIGraphData = CreateGraphData(enumerable);
-            AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
+#if WINDOWS
+            DispatcherQueue.TryEnqueue(() =>
+#else
+            Dispatcher.Dispatch(() =>
+#endif
+            {
+                AQIGraphData = CreateGraphData(enumerable);
+                AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
+            });
         }
 
         private ICollection<BarGraphData> CreateGraphData(IEnumerable<AirQuality> enumerable)

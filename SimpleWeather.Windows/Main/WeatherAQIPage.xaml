@@ -110,6 +110,13 @@
                 </ItemsControl>
             </StackPanel>
         </ScrollViewer>
+        <ProgressRing
+            x:Name="LoadingRing"
+            Grid.RowSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsActive="{Binding ElementName=AQIContainer, Path='ItemsSource.Count', Converter={StaticResource valueBooleanConverter}, ConverterParameter='True', Mode=OneWay, FallbackValue=True, TargetNullValue=True}"
+            IsIndeterminate="True" />
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">

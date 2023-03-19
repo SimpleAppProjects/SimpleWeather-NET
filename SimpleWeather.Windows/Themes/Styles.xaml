@@ -31,6 +31,11 @@
         NotEmptyValue="True" />
     <toolkitConverters:CollectionVisibilityConverter x:Key="collectionVisibilityConverter" />
     <toolkitConverters:DoubleToVisibilityConverter x:Key="valueVisibilityConverter" GreaterThan="0" />
+    <toolkitConverters:DoubleToObjectConverter
+        x:Key="valueBooleanConverter"
+        FalseValue="False"
+        GreaterThan="0"
+        TrueValue="True" />
     <!--  Converters End  -->
     <!--  Custom Styles Start  -->
     <Style x:Key="CommandBarLabel" TargetType="TextBlock">

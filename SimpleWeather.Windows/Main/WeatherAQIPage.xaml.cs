@@ -1,16 +1,14 @@
-﻿using SimpleWeather.Common.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.ViewModels;
-using SimpleWeather.Utils;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Utils;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -105,6 +103,19 @@ namespace SimpleWeather.NET.Main
             {
                 AQIView.UpdateForecasts(locationData);
             }
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                var windowWidth = MainWindow.Current.Bounds.Width;
+
+                AQIContainer.SetBinding(ItemsControl.ItemsSourceProperty, new Binding()
+                {
+                    Mode = BindingMode.OneWay,
+                    Source = AQIView,
+                    Path = new PropertyPath(windowWidth >= 691 ? nameof(AQIView.AQIForecastData) : nameof(AQIView.AQIGraphData)),
+                    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
+            });
         }
     }
 
