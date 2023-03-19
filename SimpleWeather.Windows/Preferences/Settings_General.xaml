@@ -65,6 +65,27 @@
                 </StackPanel>
                 <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
+                    d:Text="Language:"
+                    Style="{StaticResource PrefTitleStyle}"
+                    Text="{helpers:StringRes Name='pref_title_language'}" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <ComboBox
+                        x:Name="LanguageComboBox"
+                        DisplayMemberPath="Display"
+                        SelectedValuePath="Value">
+                        <controls:ComboBoxItem Display="{helpers:StringRes Name='summary_default'}" Value="" />
+                        <controls:ComboBoxItem Value="en" />
+                        <controls:ComboBoxItem Value="es" />
+                        <controls:ComboBoxItem Value="fr" />
+                        <controls:ComboBoxItem Value="de" />
+                        <controls:ComboBoxItem Value="nl" />
+                        <controls:ComboBoxItem Value="pl" />
+                        <controls:ComboBoxItem Value="sk" />
+                        <controls:ComboBoxItem Value="zh-Hans" />
+                    </ComboBox>
+                </StackPanel>
+                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
+                <TextBlock
                     d:Text="Show notifications for weather alerts:"
                     Style="{StaticResource PrefTitleStyle}"
                     Text="{helpers:StringRes Name='pref_summary_alerts'}" />

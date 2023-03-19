@@ -18,10 +18,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Globalization;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
 
@@ -88,6 +85,7 @@ namespace SimpleWeather.NET.Preferences
             LightMode.Checked += LightMode_Checked;
             DarkMode.Checked += DarkMode_Checked;
             SystemMode.Checked += SystemMode_Checked;
+            LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
             DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
             DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
             PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
@@ -253,6 +251,22 @@ namespace SimpleWeather.NET.Preferences
             SystemMode.IsChecked = userTheme == UserThemeMode.System;
             LightMode.IsChecked = userTheme == UserThemeMode.Light;
             DarkMode.IsChecked = userTheme == UserThemeMode.Dark;
+
+            LanguageComboBox.SelectedValue = LocaleUtils.GetLocaleCode();
+            LanguageComboBox.Items.OfType<SimpleWeather.Controls.ComboBoxItem>().ForEach(it =>
+            {
+                var code = it.Value.ToString();
+
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    it.Display = App.Current.ResLoader.GetString("summary_default");
+                }
+                else
+                {
+                    var culture = CultureInfo.GetCultureInfo(code, true);
+                    it.Display = culture.GetNativeDisplayName(culture);
+                }
+            });
         }
 
         public Task<bool> OnBackRequested()
@@ -720,6 +734,18 @@ namespace SimpleWeather.NET.Preferences
             SettingsManager.UserTheme = UserThemeMode.Light;
             App.Current.UpdateAppTheme();
             Shell.Instance.UpdateAppTheme();
+        }
+
+        private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            string requestedLang = box.SelectedValue.ToString();
+            LocaleUtils.SetLocaleCode(requestedLang);
+
+            DispatcherQueue.TryEnqueue(() =>
+            {
+                App.Current.RefreshAppShell();
+            });
         }
 
         private async void DailyNotifSwitch_Toggled(object sender, RoutedEventArgs e)

@@ -4,9 +4,6 @@ using SimpleWeather.Utils;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Tiles;
 #endif
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.NET
 {
@@ -109,6 +106,11 @@ namespace SimpleWeather.NET
                     Task.Run(() => DailyNotificationTask.UnregisterBackgroundTask());
                 }
 #endif
+            }
+            else if (e.Action == CommonActions.ACTION_LOCALE_CHANGED)
+            {
+                // Update locale for string resources
+                UpdateAppLocale();
             }
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }

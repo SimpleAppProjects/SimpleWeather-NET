@@ -83,7 +83,7 @@
             IsBackEnabled="True"
             IsPaneOpen="False"
             IsPaneToggleButtonVisible="True"
-            IsSettingsVisible="True"
+            IsSettingsVisible="False"
             IsTabStop="False"
             IsTitleBarAutoPaddingEnabled="False"
             ItemInvoked="NavView_ItemInvoked"
@@ -128,6 +128,16 @@
                     </muxc:NavigationViewItem.Icon>
                 </muxc:NavigationViewItem>
             </muxc:NavigationView.MenuItems>
+            <muxc:NavigationView.FooterMenuItems>
+                <muxc:NavigationViewItem
+                    d:Content="Settings"
+                    Content="{helpers:StringRes Name='title_activity_settings'}"
+                    Tag="SettingsPage">
+                    <muxc:NavigationViewItem.Icon>
+                        <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE713;" />
+                    </muxc:NavigationViewItem.Icon>
+                </muxc:NavigationViewItem>
+            </muxc:NavigationView.FooterMenuItems>
 
             <Grid>
                 <Grid.RowDefinitions>

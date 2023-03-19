@@ -22,10 +22,6 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
@@ -118,6 +114,9 @@ namespace SimpleWeather.NET
 
             UISettings = new UISettings();
             SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            // Init user-preferred locale
+            LocaleUtils.Init();
 
             RegisterSettingsListener();
         }
