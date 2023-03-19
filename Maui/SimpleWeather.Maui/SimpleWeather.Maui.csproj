@@ -66,7 +66,7 @@
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <PackageReference Include="WinUIEx" Version="2.1.0" />
 
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230313.1" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
   </ItemGroup>
