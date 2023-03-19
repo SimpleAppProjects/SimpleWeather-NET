@@ -684,7 +684,12 @@ namespace SimpleWeather.NET.Controls.Graphs
                     {
                         var drwTextRect = new SKRect();
                         float drwTextWidth = bottomTextPaint.MeasureText(entry.XLabel, ref drwTextRect);
+#if WINDOWS
+                        drawingRect.X = x - drwTextWidth / 2;
+                        drawingRect.Y = y - drwTextRect.Height / 2;
+#else
                         drawingRect.Set(x, y, x + drwTextWidth, y + bottomTextHeight);
+#endif
 
                         if (drawingRect.Intersects(visibleRect))
                             canvas.DrawText(entry.XLabel, x, y, bottomTextFont, bottomTextPaint);
