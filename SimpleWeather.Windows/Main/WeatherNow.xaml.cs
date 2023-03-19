@@ -26,11 +26,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using Windows.Foundation.Metadata;
 using Windows.UI.StartScreen;
@@ -764,23 +760,14 @@ namespace SimpleWeather.NET.Main
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
-            var cToken = GetCancellationToken();
+            radarViewProvider?.OnDestroyView();
+            radarViewProvider ??= RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            radarViewProvider.EnableInteractions(false);
 
-            AsyncTask.Run(async () =>
+            WNowViewModel.Weather?.Let(it =>
             {
-                await DispatcherQueue.EnqueueAsync(() =>
-                {
-                    if (radarViewProvider == null)
-                    {
-                        radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
-                    }
-                    radarViewProvider.EnableInteractions(false);
-                    WNowViewModel.Weather?.Let(it =>
-                    {
-                        radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
-                    });
-                });
-            }, 1000, cToken);
+                radarViewProvider?.UpdateCoordinates(it.LocationCoord, true);
+            });
         }
 
         private void RadarWebView_Tapped(object sender, TappedRoutedEventArgs e)
