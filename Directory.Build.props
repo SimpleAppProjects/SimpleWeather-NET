@@ -15,4 +15,9 @@
   <PropertyGroup>
     <DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
   </PropertyGroup>
+
+  <!-- Build acceleration -->
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
 </Project>
