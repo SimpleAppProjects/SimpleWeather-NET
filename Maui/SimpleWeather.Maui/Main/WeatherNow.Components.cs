@@ -504,11 +504,14 @@ public partial class WeatherNow
         }
         .Margins(bottom: 25)
         .Padding(16, 0)
-        .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
-                BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
-        )
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
+                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                );
+            };
             ResizeElements.Add(it);
         });
     }
@@ -524,7 +527,7 @@ public partial class WeatherNow
             RowDefinitions =
             {
                 new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Auto),
             },
             ColumnDefinitions =
             {
@@ -560,7 +563,7 @@ public partial class WeatherNow
                 .Bind(HourlyForecastItemPanel.ForecastDataProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                         BindingMode.OneWay, source: ForecastView
                 )
-                .MinHeight(250)
+                .Height(250)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
@@ -575,11 +578,14 @@ public partial class WeatherNow
         }
         .Margins(bottom: 25)
         .Padding(16, 0)
-        .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
-                BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: ForecastView
-        )
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
+                    BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: ForecastView
+                );
+            };
             ResizeElements.Add(it);
         });
     }
@@ -649,11 +655,14 @@ public partial class WeatherNow
                         .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
                                 BindingMode.OneWay, source: ForecastView
                         )
-                        .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
-                        )
                         .Apply(it =>
                         {
+                            it.Loaded += (s,e) =>
+                            {
+                                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                );
+                            };
                             it.GraphViewTapped += async (s, e) =>
                             {
                                 await Navigation.PushAsync(new WeatherChartsPage());
@@ -668,11 +677,14 @@ public partial class WeatherNow
                         .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
                                 BindingMode.OneWay, source: ForecastView
                         )
-                        .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
-                        )
                         .Apply(it =>
                         {
+                            it.Loaded += (s,e) =>
+                            {
+                                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
+                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                );
+                            };
                             it.GraphViewTapped += async (s, e) =>
                             {
                                 await Navigation.PushAsync(new WeatherChartsPage());
@@ -686,9 +698,12 @@ public partial class WeatherNow
         }
         .Margins(bottom: 25)
         .Padding(16, 0)
-        .Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView)
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView);
+            };
             ResizeElements.Add(it);
         });
     }
@@ -776,18 +791,19 @@ public partial class WeatherNow
 
                         if (Utils.FeatureSettings.AQIndex)
                         {
+                            // TODO: check why click doesn't work until window is resized
                             detailExtrasLayout.Add(
                                 new AQIControl()
                                     .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                                             BindingMode.OneWay, source: WNowViewModel
                                     )
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
                                     .TapGesture(async () =>
                                     {
                                         await Navigation.PushAsync(new WeatherAQIPage());
                                     })
+                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
+                                    )
                             );
                         }
 
@@ -936,12 +952,14 @@ public partial class WeatherNow
                 .ColumnSpan(2)
                 .TapGesture(async () =>
                 {
+                    // TODO: check why click doesn't work until window is resized
                     await Navigation.PushAsync(new WeatherRadarPage());
                 }),
                 new Border()
                 {
                     HeightRequest = 360,
                     MaximumWidthRequest = 640,
+                    BackgroundColor = Colors.Black
                 }
                 .Row(1)
                 .ColumnSpan(2)

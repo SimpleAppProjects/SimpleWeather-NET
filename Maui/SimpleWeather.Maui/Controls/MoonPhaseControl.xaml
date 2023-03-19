@@ -10,7 +10,7 @@
              xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
              xmlns:wicons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              x:DataType="commonControls:MoonPhaseViewModel"
-             MinimumWidthRequest="340">
+             MinimumWidthRequest="420">
     <ContentView.Resources>
         <Style x:Key="DisabledMoonStyle" TargetType="controls:IconControl">
             <Setter Property="Opacity" Value="0.5" />

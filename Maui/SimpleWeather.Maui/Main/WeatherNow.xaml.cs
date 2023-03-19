@@ -378,15 +378,12 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     {
         base.OnSizeAllocated(width, height);
 
-        Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100), () =>
-        {
-            ListLayout.WidthRequest = width;
-            ListLayout.MaximumWidthRequest = width;
-            MainGrid.WidthRequest = width;
-            MainGrid.MaximumWidthRequest = width;
+        ListLayout.WidthRequest = width;
+        ListLayout.MaximumWidthRequest = width;
+        MainGrid.WidthRequest = width;
+        MainGrid.MaximumWidthRequest = width;
 
-            AdjustViewsLayout(width);
-        });
+        AdjustViewsLayout(width);
     }
 
     private void AdjustViewsLayout(double? width = null)
