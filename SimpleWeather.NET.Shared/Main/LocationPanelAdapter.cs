@@ -16,12 +16,8 @@ using SimpleWeather.Maui.Controls;
 #endif
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
 #if WINDOWS
 using Windows.UI.StartScreen;
 #endif
@@ -410,7 +406,9 @@ namespace SimpleWeather.Maui.Main
                     foreach (var panelPair in panelPairs.OrderBy(p => p.Key))
                     {
                         var collection = GetDataset((LocationType)panelPair.Value.LocationType);
+#if !WINDOWS
                         collection ??= CreateLocationPanelGroup((LocationType)panelPair.Value.LocationType);
+#endif
 
                         if (!collection.Contains(panelPair.Value))
                         {

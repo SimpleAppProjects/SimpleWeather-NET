@@ -10,7 +10,6 @@ using SimpleWeather.Common.Controls;
 using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 using SkiaSharp;
-using System;
 using System.Collections.Immutable;
 #if WINDOWS
 using SimpleWeather.NET.Helpers;
@@ -695,12 +694,14 @@ namespace SimpleWeather.NET.Controls
             return availableSize;
         }
 
+#if !WINDOWS
         private double MeasureWidth(double widthConstraint, double measuredWidth)
         {
             int MIN_HORIZONTAL_GRID_NUM = 2;
             double preferred = backgroundGridWidth * MIN_HORIZONTAL_GRID_NUM + sideLineLength * 2;
             return LayoutManager.ResolveConstraints(widthConstraint, this.Width, measuredWidth, min: preferred);
         }
+#endif
 
         public void Dispose()
         {

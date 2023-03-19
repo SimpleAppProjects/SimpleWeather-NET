@@ -9,12 +9,6 @@ using SimpleWeather.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -93,7 +87,7 @@ namespace SimpleWeather.NET.MapsUi
         public static async Task<ITileSource> GetBingMapsCanvasGrayTileSource(string? userAgent = null)
         {
             var key = APIKeys.GetBingMapsKey();
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             try
             {
@@ -163,7 +157,7 @@ namespace SimpleWeather.NET.MapsUi
         public static async Task<ITileSource> GetBingMapsRoadOnDemandTileSource(bool isDarkMode = false, string? userAgent = null)
         {
             var key = APIKeys.GetBingMapsKey();
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             try
             {

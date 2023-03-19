@@ -10,9 +10,6 @@ using SimpleWeather.NET.Shared.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Windows.UI.Notifications;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -49,7 +46,7 @@ namespace SimpleWeather.NET.Tiles
 
         private static TileBindingContentAdaptive GenerateForecast(WeatherUiModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType, ImageDataViewModel imageData)
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, imageData);
@@ -394,7 +391,7 @@ namespace SimpleWeather.NET.Tiles
 
         private static TileBindingContentAdaptive GenerateHrForecast(WeatherUiModel weather, List<HourlyForecastItemViewModel> forecasts, ForecastTileType forecastTileType, ImageDataViewModel imageData)
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, imageData);
@@ -633,7 +630,7 @@ namespace SimpleWeather.NET.Tiles
 
         private static TileBindingContentAdaptive GenerateCondition(WeatherUiModel weather, List<ForecastItemViewModel> forecasts, ForecastTileType forecastTileType, ImageDataViewModel imageData)
         {
-            var culture = CultureUtils.UserCulture;
+            var culture = LocaleUtils.GetLocale();
 
             var content = new TileBindingContentAdaptive();
             SetContentBackground(content, imageData);

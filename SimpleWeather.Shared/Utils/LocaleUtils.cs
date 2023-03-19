@@ -1,53 +1,54 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
+﻿using System.Globalization;
 using System.Threading;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Maui.ApplicationModel;
 using SimpleWeather.Preferences;
 #if WINDOWS
+using CommunityToolkit.WinUI;
 using Windows.System.UserProfile;
 #elif __ANDROID__
 using AndroidX.Core.App;
 #endif
+#if !WINDOWS
+using Microsoft.Maui.ApplicationModel;
+#endif
 
 namespace SimpleWeather.Utils
 {
-	public static class LocaleUtils
-	{
-		public const string KEY_LANGUAGE = "key_language";
-		private static CultureInfo sLangInfo = null;
+    public static class LocaleUtils
+    {
+        public const string KEY_LANGUAGE = "key_language";
+        private static CultureInfo sLangInfo = null;
 
-		public static void Init() => UpdateAppLocale();
+        public static void Init() => UpdateAppLocale();
 
-		private static void UpdateAppLocale()
-		{
-			var localeAction = () =>
-			{
-				var locale = GetLocale();
+        private static void UpdateAppLocale()
+        {
+            var localeAction = () =>
+            {
+                var locale = GetLocale();
 
                 Thread.CurrentThread.CurrentCulture = locale;
                 Thread.CurrentThread.CurrentUICulture = locale;
-				CultureInfo.CurrentCulture = locale;
+                CultureInfo.CurrentCulture = locale;
                 CultureInfo.CurrentUICulture = locale;
 
-				SharedModule.Instance.RequestAction(CommonActions.ACTION_LOCALE_CHANGED);
+                SharedModule.Instance.RequestAction(CommonActions.ACTION_LOCALE_CHANGED);
             };
 
 #if WINDOWS || WINUI
-			if (SharedModule.Instance.DispatcherQueue.HasThreadAccess)
+            if (SharedModule.Instance.DispatcherQueue.HasThreadAccess)
 #else
 			if (MainThread.IsMainThread)
 #endif
-			{
-				localeAction();
-			}
-			else
-			{
-				// Update current thread and Main Thread
-				localeAction();
+            {
+                localeAction();
+            }
+            else
+            {
+                // Update current thread and Main Thread
+                localeAction();
 #if WINDOWS || WINUI
-				SharedModule.Instance.DispatcherQueue.EnqueueAsync(localeAction);
+                SharedModule.Instance.DispatcherQueue.EnqueueAsync(localeAction);
 #else
                 MainThread.BeginInvokeOnMainThread(localeAction);
 #endif
@@ -55,52 +56,52 @@ namespace SimpleWeather.Utils
         }
 
         public static string GetLocaleCode()
-		{
-			var settingsMgr = Ioc.Default.GetService<SettingsManager>();
-			return settingsMgr.GetValue<string>(KEY_LANGUAGE, "");
-		}
-
-		public static void SetLocaleCode(string localeCode)
-		{
+        {
             var settingsMgr = Ioc.Default.GetService<SettingsManager>();
-			settingsMgr.SetValue<string>(KEY_LANGUAGE, localeCode);
-			UpdateLocale(localeCode);
-			UpdateAppLocale();
+            return settingsMgr.GetValue<string>(KEY_LANGUAGE, "");
         }
 
-		public static CultureInfo GetLocale()
-		{
-			if (sLangInfo == null)
-				UpdateLocale(GetLocaleCode());
+        public static void SetLocaleCode(string localeCode)
+        {
+            var settingsMgr = Ioc.Default.GetService<SettingsManager>();
+            settingsMgr.SetValue<string>(KEY_LANGUAGE, localeCode);
+            UpdateLocale(localeCode);
+            UpdateAppLocale();
+        }
 
-			return sLangInfo;
-		}
+        public static CultureInfo GetLocale()
+        {
+            if (sLangInfo == null)
+                UpdateLocale(GetLocaleCode());
 
-		private static void UpdateLocale(string localeCode)
-		{
-			sLangInfo = GetLocaleForTag(localeCode);
-		}
+            return sLangInfo;
+        }
 
-		public static string GetLocaleDisplayName()
-		{
-			return GetLocale().GetNativeDisplayName();
-		}
+        private static void UpdateLocale(string localeCode)
+        {
+            sLangInfo = GetLocaleForTag(localeCode);
+        }
 
-		public static CultureInfo GetLocaleForTag(string localeCode)
-		{
-			if (string.IsNullOrWhiteSpace(localeCode))
-			{
-				return GetDefault();
-			}
-			else
-			{
-				var culture = new CultureInfo(localeCode);
+        public static string GetLocaleDisplayName()
+        {
+            return GetLocale().GetNativeDisplayName();
+        }
+
+        public static CultureInfo GetLocaleForTag(string localeCode)
+        {
+            if (string.IsNullOrWhiteSpace(localeCode))
+            {
+                return GetDefault();
+            }
+            else
+            {
+                var culture = new CultureInfo(localeCode);
                 return culture;
-			}
-		}
+            }
+        }
 
-		public static CultureInfo GetDefault()
-		{
+        public static CultureInfo GetDefault()
+        {
 #if WINDOWS
             var userlang = GlobalizationPreferences.Languages[0];
             var culture = new CultureInfo(userlang);
@@ -125,7 +126,7 @@ namespace SimpleWeather.Utils
 #else
 			return CultureInfo.DefaultThreadCurrentUICulture ?? CultureInfo.CurrentUICulture;
 #endif
-		}
+        }
     }
 }
 

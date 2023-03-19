@@ -1,4 +1,7 @@
 ﻿using SimpleWeather.SkiaSharp;
+#if WINDOWS
+using Windows.UI;
+#endif
 
 namespace SimpleWeather.NET.Controls.Graphs
 {

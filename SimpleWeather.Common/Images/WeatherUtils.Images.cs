@@ -279,9 +279,9 @@ namespace SimpleWeather.Common.Images
                         }
 #endif
                     }
+#if !WINUI
                     else if (uri.Scheme == "maui-appx")
                     {
-#if !WINUI
                         var filePath = $"{uri.Authority}{uri.AbsolutePath}";
 
                         try
@@ -300,8 +300,8 @@ namespace SimpleWeather.Common.Images
                             // Assume we're ok
                             return true;
                         }
-#endif
                     }
+#endif
                     else
                     {
                         try
