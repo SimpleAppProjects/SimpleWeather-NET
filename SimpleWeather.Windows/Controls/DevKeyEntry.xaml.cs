@@ -4,7 +4,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using SimpleWeather.Preferences;
-using System;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -39,7 +38,10 @@ namespace SimpleWeather.NET.Controls
         {
             var keydialog = new KeyEntryDialog(API)
             {
-                RequestedTheme = this.ActualTheme
+                RequestedTheme = this.ActualTheme,
+                // NOTE: Required to avoid System.ArgumentException: This element is already associated with a XamlRoot...
+                // https://github.com/microsoft/microsoft-ui-xaml/issues/4990#issuecomment-1181390828
+                XamlRoot = this.XamlRoot
             };
 
             keydialog.PrimaryButtonClick += (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>

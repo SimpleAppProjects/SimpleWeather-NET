@@ -412,58 +412,62 @@ namespace SimpleWeather.NET.Preferences
             await ShowKeyEntryDialog();
         }
 
-        private async Task ShowKeyEntryDialog()
+        private Task ShowKeyEntryDialog()
         {
-            var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
+            return DispatcherQueue.EnqueueAsync(async () =>
             {
-                RequestedTheme = Shell.Instance.AppFrame.RequestedTheme
-            };
-
-            keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
-            {
-                var diag = dialog as KeyEntryDialog;
-
-                string provider = diag.APIProvider;
-                string key = diag.Key;
-
-                try
+                var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
                 {
-                    if (await wm.IsKeyValid(key, provider))
+                    RequestedTheme = Shell.Instance.AppFrame.RequestedTheme,
+                    // NOTE: Required to avoid System.ArgumentException: This element is already associated with a XamlRoot...
+                    // https://github.com/microsoft/microsoft-ui-xaml/issues/4990#issuecomment-1181390828
+                    XamlRoot = this.XamlRoot
+                };
+
+                keydialog.PrimaryButtonClick += async (ContentDialog dialog, ContentDialogButtonClickEventArgs args) =>
+                {
+                    var diag = dialog as KeyEntryDialog;
+
+                    string provider = diag.APIProvider;
+                    string key = diag.Key;
+
+                    try
                     {
+                        if (await wm.IsKeyValid(key, provider))
+                        {
+                            await DispatcherQueue.EnqueueAsync(() =>
+                            {
+                                SettingsManager.APIKeys[provider] = key;
+                                SettingsManager.API = provider;
+                                SettingsManager.KeysVerified[provider] = true;
+
+                                KeyEntry.Text = key;
+                                UpdateKeyBorder();
+
+                                AlertSwitch.IsEnabled = wm.SupportsAlerts;
+
+                                diag.CanClose = true;
+                                diag.Hide();
+                            });
+                        }
+                        else
+                        {
+                            await DispatcherQueue.EnqueueAsync(() =>
+                            {
+                                diag.CanClose = false;
+                            });
+                        }
+                    }
+                    catch (WeatherException ex)
+                    {
+                        Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
                         await DispatcherQueue.EnqueueAsync(() =>
                         {
-                            SettingsManager.APIKeys[provider] = key;
-                            SettingsManager.API = provider;
-                            SettingsManager.KeysVerified[provider] = true;
-
-                            KeyEntry.Text = key;
-                            UpdateKeyBorder();
-
-                            AlertSwitch.IsEnabled = wm.SupportsAlerts;
-
-                            diag.CanClose = true;
-                            diag.Hide();
+                            ShowSnackbar(Snackbar.MakeWarning(ex.Message, SnackbarDuration.Short));
                         });
                     }
-                    else
-                    {
-                        await DispatcherQueue.EnqueueAsync(() =>
-                        {
-                            diag.CanClose = false;
-                        });
-                    }
-                }
-                catch (WeatherException ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "Settings: KeyEntry: invalid key");
-                    await DispatcherQueue.EnqueueAsync(() =>
-                    {
-                        ShowSnackbar(Snackbar.MakeWarning(ex.Message, SnackbarDuration.Short));
-                    });
-                }
-            };
-            await DispatcherQueue.EnqueueAsync(async () =>
-            {
+                };
+
                 await keydialog.ShowAsync();
             });
         }
