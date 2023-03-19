@@ -31,9 +31,9 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0070c0" />
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0070c0" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\AppIcon\appiconfg.svg" Color="#0070c0" BaseSize="128,128" />
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
 		<!-- Custom Fonts -->
@@ -337,6 +337,7 @@
 	    </CustomCommands>
 	  </CustomCommands>
 	  <CreatePackage>false</CreatePackage>
+	  <CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 	  <CustomCommands>
@@ -359,6 +360,33 @@
 	    </CustomCommands>
 	  </CustomCommands>
 	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
+	  <CustomCommands>
+	    <CustomCommands xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest MacCatalyst/Info.plist "Debug"</command>
+	        <workingdir>$(ProjectDir)</workingdir>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	  <CreatePackage>true</CreatePackage>
+	  <CodesignKey>Mac Developer</CodesignKey>
+	  <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
 	</PropertyGroup>
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 	<Import Project="..\..\SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems" Label="Shared" />

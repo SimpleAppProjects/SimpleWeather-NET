@@ -32,5 +32,11 @@
 	<string>Optional. Allows access to current location to retrieve weather data.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
+	<key>CFBundleDisplayName</key>
+	<string>SimpleWeather</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>CFBundleName</key>
+	<string>SimpleWeather</string>
 </dict>
 </plist>
