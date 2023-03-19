@@ -263,6 +263,8 @@ public partial class App : Application
                     AppTheme.Dark => UIKit.UIUserInterfaceStyle.Dark,
                     _ => UIScreen.MainScreen.TraitCollection.UserInterfaceStyle
                 };
+
+                uiWindow.OverrideUserInterfaceStyle = UIKit.UIUserInterfaceStyle.Unspecified;
             }
         }
 #endif
