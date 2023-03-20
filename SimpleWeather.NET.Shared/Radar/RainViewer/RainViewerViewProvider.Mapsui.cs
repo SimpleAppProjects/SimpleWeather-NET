@@ -1,23 +1,26 @@
 ﻿//#if !(ANDROID || IOS || MACCATALYST)
-using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
+using CacheCow.Client.Headers;
+using Mapsui.Tiling.Fetcher;
 using Mapsui.Tiling.Layers;
+using Mapsui.Tiling.Rendering;
 #if WINDOWS
 using Mapsui.UI.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Helpers;
 #else
 using Mapsui.UI.Maui;
 using Microsoft.Maui.Dispatching;
 #endif
-using SimpleWeather.Helpers;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.NET.Radar.RainViewer
 {
-    public class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
+    public partial class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
     {
         private const string MapsURL = "https://api.rainviewer.com/public/weather-maps.json";
         private const string URLTemplate = "{host}{path}/256/{z}/{x}/{y}/1/1_1.png";
@@ -157,7 +160,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
             if (!RadarLayers.ContainsKey(mapFrame.TimeStamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame))
+                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
                 {
                     Opacity = 0
                 };
@@ -219,7 +222,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 nextLayer.Opacity = 1;
                 nextLayer.Attribution.Enabled = true;
             }
-            _mapControl.RefreshGraphics();
+            _mapControl.ForceUpdate();
 
             UpdateToolbar(position, nextFrame);
         }
@@ -231,7 +234,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         private void UpdateToolbar(int position, RadarFrame mapFrame)
         {
-            RadarMapContainer.UpdateTimestamp(AnimationPosition, AvailableRadarFrames[AnimationPosition].TimeStamp);
+            RadarMapContainer.UpdateTimestamp(position, mapFrame.TimeStamp);
         }
 
         /**
@@ -299,7 +302,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         private static readonly BruTile.Attribution RainViewerAttribution = new("RainViewer", "https://www.rainviewer.com/api.html");
 
-        private static HttpTileSource CreateTileSource(RadarFrame? mapFrame)
+        private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
         {
             string uri;
             if (mapFrame != null)
@@ -313,8 +316,45 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
             return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: 6, maxZoomLevel: 6, name: "RainViewer"),
                 uri, name: RainViewerAttribution.Text,
-                persistentCache: new FileCache(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "RainViewer"), "tile.png"),
+                tileFetcher: FetchTileAsync,
                 attribution: RainViewerAttribution, userAgent: Constants.GetUserAgentString());
+        }
+
+        private async Task<byte[]> FetchTileAsync(Uri arg)
+        {
+            byte[] arr = null;
+
+            try
+            {
+                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
+                request.Headers.CacheControl = new CacheControlHeaderValue()
+                {
+                    MaxAge = TimeSpan.FromMinutes(30)
+                };
+
+                using var response = await WebClient.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+#if DEBUG
+                var cacheHeader = response.Headers.GetCacheCowHeader();
+                if (cacheHeader?.RetrievedFromCache == true)
+                {
+                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from cache");
+                }
+                else
+                {
+                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from web");
+                }
+#endif
+
+                arr = await response.Content.ReadAsByteArrayAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Error, ex);
+            }
+
+            return arr;
         }
 
         protected virtual void Dispose(bool disposing)

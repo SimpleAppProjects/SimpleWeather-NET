@@ -8,7 +8,7 @@ using SimpleWeather.Weather_API.Utils;
 
 namespace SimpleWeather.NET.Radar.RainViewer
 {
-    public class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
+    public partial class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
     {
         private const string MapsURL = "https://api.rainviewer.com/public/weather-maps.json";
         private const string URLTemplate = "{host}{path}/256/{z}/{x}/{y}/1/1_1.png";
