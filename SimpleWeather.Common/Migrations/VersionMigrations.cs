@@ -143,6 +143,36 @@ namespace SimpleWeather.Common.Migrations
                     }
                 }
             }
+            // v5.8.0
+            // Clear image cache due to file path change
+            // Windows: unregister all bg tasks
+            if (SettingsMgr.VersionCode < 5801)
+            {
+                var ImageDataContainer = new Preferences.SettingsContainer("images");
+                ImageDataContainer.Clear();
+
+#if WINDOWS || WINUI
+                try
+                {
+                    var tasks = Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTasks;
+
+                    foreach (var task in tasks)
+                    {
+                        try
+                        {
+                            task.Value.Unregister(true);
+
+                            AnalyticsLogger.LogEvent("BGTasks: unregistered task", new Dictionary<string, string>()
+                            {
+                                { "task", task.Value.Name },
+                            });
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+#endif
+            }
 #if !UNIT_TEST
             if (SettingsMgr.VersionCode < CurrentVersionCode)
             {
