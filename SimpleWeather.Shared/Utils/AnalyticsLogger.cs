@@ -1,4 +1,4 @@
-﻿#if !DEBUG && !UNIT_TEST
+﻿#if !DEBUG && !UNIT_TEST && !__MACCATALYST__
 using Microsoft.AppCenter.Analytics;
 #endif
 using SimpleWeather.Utils;
@@ -15,7 +15,7 @@ namespace SimpleWeather.Utils
 #if DEBUG
             string append = properties == null ? String.Empty : Environment.NewLine + JSONParser.Serializer(properties);
             Logger.WriteLine(LoggerLevel.Info, "EVENT | " + eventName + append);
-#elif !UNIT_TEST
+#elif !UNIT_TEST && !__MACCATALYST__
             Analytics.TrackEvent(eventName, properties);
 #endif
         }

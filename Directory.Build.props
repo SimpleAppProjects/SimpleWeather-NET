@@ -18,6 +18,11 @@
 
   <!-- Build acceleration -->
   <PropertyGroup>
-    <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
+    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
+    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Release'">false</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
   </PropertyGroup>
 </Project>
