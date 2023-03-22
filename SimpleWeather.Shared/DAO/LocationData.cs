@@ -1,11 +1,9 @@
-﻿using NodaTime;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
+using SQLite;
 using System;
 using System.Collections.Generic;
-using SQLite;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using Utf8Json;
 
 namespace SimpleWeather.LocationData
@@ -74,9 +72,11 @@ namespace SimpleWeather.LocationData
         public LocationType locationType { get; set; } = LocationType.Search;
 
         [Column("source")]
+        [DataMember(Name = "source")]
         public string weatherSource { get; set; }
 
         [Column("locsource")]
+        [DataMember(Name = "locsource")]
         public string locationSource { get; set; }
 
         public override bool Equals(System.Object obj)
@@ -142,10 +142,12 @@ namespace SimpleWeather.LocationData
                         break;
 
                     case "source":
+                    case "weatherSource":
                         this.weatherSource = reader.ReadString();
                         break;
 
                     case "locsource":
+                    case "locationSource":
                         this.locationSource = reader.ReadString();
                         break;
 
