@@ -1,0 +1,15 @@
+[submodule "SimpleWeather.Backgrounds"]
+	path = SimpleWeather.Backgrounds
+	url = git@bitbucket.org:bryan2894/simpleweather-windows_backgrounds.git
+[submodule "SimpleWeather.Extras"]
+	path = SimpleWeather.Extras
+	url = git@bitbucket.org:bryan2894/simpleweather-windows_extras.git
+[submodule "SimpleWeather.NET.Extras"]
+	path = SimpleWeather.NET.Extras
+	url = git@bitbucket.org:bryan2894/simpleweather-windows_uwp_extras.git
+[submodule "SimpleWeather.WeatherIcons"]
+	path = SimpleWeather.WeatherIcons
+	url = git@bitbucket.org:bryan2894/simpleweather-windows_weathericons.git
+[submodule "TranslationImport"]
+	path = TranslationImport
+	url = git@bitbucket.org:bryan2894/simpleweather-translationsimport.git

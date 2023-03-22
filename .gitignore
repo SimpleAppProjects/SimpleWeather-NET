@@ -269,8 +269,3 @@ API_KEY.txt
 /*.bat.old.*
 /*.sh
 listingData-*.csv
-/SimpleWeather.Backgrounds
-/SimpleWeather.Extras
-/SimpleWeather.NET.Extras
-/SimpleWeather.WeatherIcons
-/TranslationImport
