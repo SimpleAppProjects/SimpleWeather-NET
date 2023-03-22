@@ -42,9 +42,7 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_general}">
-                    <prefs:SwitchCell
-                        x:Name="FollowGPS"
-                        Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
+                    <prefs:SwitchCell x:Name="FollowGPS" Text="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
                     <prefs:ListViewCell
                         x:Name="IntervalPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
@@ -96,25 +94,23 @@
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
                     <TextCell
                         x:Name="WeatherNotifPref"
+                        CommandParameter="{x:Type prefs:Settings_WeatherNotifications}"
                         Detail="{x:Static res_strings:Resources.not_channel_name_dailynotification}"
                         Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_onnotification}"
-                        CommandParameter="{x:Type prefs:Settings_WeatherNotifications}" />
+                        Text="{x:Static res_strings:Resources.pref_title_onnotification}" />
                     <TextCell
                         x:Name="WeatherAlertPref"
+                        CommandParameter="{x:Type prefs:Settings_WeatherAlerts}"
                         Detail="{x:Bind utils:StringUtils.ToPascalCase($'{res_strings:Resources.pref_title_alerts}, {res_strings:Resources.not_channel_name_precipnotification}')}"
                         Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_alerts}"
-                        CommandParameter="{x:Type prefs:Settings_WeatherAlerts}" />
+                        Text="{x:Static res_strings:Resources.pref_title_alerts}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
                     <prefs:ListViewCell
                         x:Name="APIPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_API}"
                         Text="{x:Static res_strings:Resources.api_label}" />
-                    <prefs:SwitchCell
-                        x:Name="PersonalKeyPref"
-                        Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
+                    <prefs:SwitchCell x:Name="PersonalKeyPref" Text="{x:Static res_strings:Resources.pref_summary_personalkey}" />
                     <TextCell
                         x:Name="APIRegisterPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"

@@ -1,12 +1,30 @@
+using SimpleWeather.Utils;
+
 namespace SimpleWeather.Maui.Preferences;
 
 public partial class DevSettingsPage : ContentPage
 {
-	public DevSettingsPage()
-	{
-		InitializeComponent();
+    public DevSettingsPage()
+    {
+        InitializeComponent();
 
         UpdateSettingsTableTheme();
+
+#if DEBUG
+        // This should always be true in debug mode
+        DebugSwitch.On = Logger.IsDebugLoggerEnabled();
+        DebugSwitch.IsEnabled = false;
+#else
+        DebugSwitch.IsOn = Logger.IsDebugLoggerEnabled();
+        DebugSwitch.IsEnabled = true;
+#endif
+
+        DebugSwitch.OnChanged += DebugSwitch_OnChanged;
+    }
+
+    private void DebugSwitch_OnChanged(object sender, ToggledEventArgs e)
+    {
+        Logger.EnableDebugLogger(e.Value);
     }
 
     private void UpdateSettingsTableTheme()

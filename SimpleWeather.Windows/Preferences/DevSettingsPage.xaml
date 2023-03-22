@@ -36,6 +36,14 @@
                     <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
                     <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
                 </StackPanel>
+                <Rectangle
+                    Height="1"
+                    Margin="0,-4,0,15"
+                    Fill="LightGray" />
+                <StackPanel Padding="0,8">
+                    <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Enable Debug Logger" />
+                    <ToggleSwitch x:Name="DebugSwitch" />
+                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

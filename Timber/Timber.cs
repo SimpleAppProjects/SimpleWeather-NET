@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace TimberLog
+﻿namespace TimberLog
 {
     public enum LoggerLevel
     {
@@ -80,6 +75,17 @@ namespace TimberLog
             {
                 FOREST.Clear();
                 forestAsArray = TREE_ARRAY_EMPTY;
+            }
+        }
+
+        public static IReadOnlyList<Tree> Forest
+        {
+            get
+            {
+                lock (FOREST)
+                {
+                    return FOREST.ToList();
+                }
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Helpers;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 #if WINDOWS
 using Windows.Storage;
@@ -30,6 +31,34 @@ namespace SimpleWeather.Utils
             CleanupLogs();
             Timber.Plant(new AppCenterLoggingTree());
 #endif
+        }
+
+        public static bool IsDebugLoggerEnabled() => Timber.Forest.Any(it => it is FileLoggingTree);
+
+        public static void EnableDebugLogger(bool enable)
+        {
+            if (enable)
+            {
+                if (!Timber.Forest.Any(it => it is FileLoggingTree))
+                {
+                    Timber.Plant(new FileLoggingTree());
+                }
+            }
+            else
+            {
+                Timber.Forest.ForEach(tree =>
+                {
+                    if (tree is FileLoggingTree)
+                    {
+                        Timber.Uproot(tree);
+                    }
+                });
+            }
+        }
+
+        public static void RegisterLogger(Timber.Tree tree)
+        {
+            Timber.Plant(tree);
         }
 
         public static void Shutdown()

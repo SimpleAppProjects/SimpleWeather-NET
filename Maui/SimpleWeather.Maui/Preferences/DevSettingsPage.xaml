@@ -44,12 +44,11 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="API Keys">
-                    <prefs:DevKeyEntryCell
-                        Text="AccuWeather Key"
-                        API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" />
-                    <prefs:DevKeyEntryCell
-                        Text="Tomorrow.io Key"
-                        API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
+                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" Text="AccuWeather Key" />
+                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" Text="Tomorrow.io Key" />
+                </TableSection>
+                <TableSection Title="Misc">
+                    <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />
                 </TableSection>
             </TableRoot>
         </TableView>
