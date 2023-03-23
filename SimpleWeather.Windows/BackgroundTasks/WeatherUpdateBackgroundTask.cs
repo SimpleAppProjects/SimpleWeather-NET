@@ -10,11 +10,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET.BackgroundTasks
@@ -188,12 +184,12 @@ namespace SimpleWeather.NET.BackgroundTasks
         {
             var taskRegistration = GetTaskRegistration();
 
-            if (taskRegistration != null)
+            if (taskRegistration.Any())
             {
                 if (reregister)
                 {
                     // Unregister any previous exising background task
-                    taskRegistration.Unregister(true);
+                    taskRegistration.ForEach(t => t.Unregister(true));
                 }
                 else
                 {
@@ -278,17 +274,11 @@ namespace SimpleWeather.NET.BackgroundTasks
             }
         }
 
-        private static IBackgroundTaskRegistration GetTaskRegistration()
+        private static IEnumerable<IBackgroundTaskRegistration> GetTaskRegistration()
         {
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
-            {
-                if (task.Value.Name == taskName)
-                {
-                    return task.Value;
-                }
-            }
-
-            return null;
+            return BackgroundTaskRegistration.AllTasks
+                .Where(t => t.Value.Name == taskName)
+                .Select(t => t.Value);
         }
 
         /// <exception cref="WeatherException">Ignore.</exception>
