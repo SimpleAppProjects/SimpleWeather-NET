@@ -3,7 +3,7 @@
     x:Class="SimpleWeather.Maui.Preferences.Settings_OSSLibs"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
     xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
@@ -23,274 +23,461 @@
 
     <ScrollView Orientation="Vertical">
         <VerticalStackLayout>
-            <Label Padding="16,8" TextType="Html">
-                <![CDATA[
-                <p>
-    <span>
-        <a href="https://github.com/aliostad/CacheCow">CacheCow</a>
-    </span>
-    <span>
-        <br>
-        The MIT License (MIT)<br>
-        <br>
-        Copyright (C) 2013 Ali Kheyrollahi<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/Microsoft/UWPCommunityToolkit">Microsoft UWP Community Toolkit</a>
-    </span>
-    <span>
-        <br>
-        The MIT License (MIT)<br>
-        <br>
-        Copyright (c) .NET Foundation and Contributors<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="http://www.newtonsoft.com/json">Newtonsoft.Json</a>
-    </span>
-    <span>
-        <br>
-        The MIT License (MIT)<br>
-        <br>
-        Copyright (c) 2007 James Newton-King<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/nodatime/nodatime">NodaTime</a>
-    </span>
-    <span>
-        <br>
-        Copyright (C) 2015 The Noda Time Authors<br>
-        <br>
-        Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);<br>
-        you may not use this file except in compliance with the License.<br>
-        You may obtain a copy of the License at<br>
-        <br>
-        http://www.apache.org/licenses/LICENSE-2.0<br>
-        <br>
-        Unless required by applicable law or agreed to in writing, software<br>
-        distributed under the License is distributed on an &quot;AS IS&quot; BASIS,<br>
-        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br>
-        See the License for the specific language governing permissions and<br>
-        limitations under the License.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/praeclarum/sqlite-net">SQLite-net</a>
-    </span>
-    <span>
-        <br>
-        The MIT License (MIT)<br>
-        <br>
-        Copyright (c) 2009-2016 Krueger Systems, Inc.<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in<br>
-        all copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>
-        THE SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://bitbucket.org/twincoders/sqlite-net-extensions">SQLite-net Extensions</a>
-    </span>
-    <span>
-        <br>
-        The MIT License (MIT)<br>
-        <br>
-        Copyright (C) 2013 TwinCoders S.L.<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in<br>
-        all copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<br>
-        THE SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/neuecc/Utf8Json">Utf8Json</a>
-    </span>
-    <span>
-        <br>
-        MIT License<br>
-        <br>
-        Copyright (c) 2017 Yoshifumi Kawai<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="http://weathericons.io/">WeatherIcons</a>
-    </span>
-    <span>
-        <br>
-        Author - Erik Flowers - erik@helloerik.com<br>
-        <br>
-        Font licensed under SIL OFL 1.1<br>
-        http://scripts.sil.org/OFL<br>
-        <br>
-        Documentation licensed under CC BY 3.0<br>
-        http://creativecommons.org/licenses/by/3.0/<br>
-        <br>
-        Inspired by and works great as a companion with Font Awesome<br>
-        &quot;Font Awesome by Dave Gandy - http://fontawesome.io&quot;</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/Microsoft/Win2D">Win2D UWP</a>
-    </span>
-    <span>
-        <br>
-        Win2D<br>
-        <br>
-        Copyright (c) Microsoft Corporation. All rights reserved.<br>
-        <br>
-        MIT License<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;&quot;Software&quot;&quot;), to<br>
-        deal in the Software without restriction, including without limitation the<br>
-        rights to use, copy, modify, merge, publish, distribute, sublicense, and/or<br>
-        sell copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE.</span>
-    <br>
-    <br>
-    <span>
-        <a href="https://github.com/Microsoft/microsoft-ui-xaml">Windows UI Library</a>
-    </span>
-    <span>
-        <br>
-        MIT License<br>
-        <br>
-        Copyright (c) Microsoft Corporation. All rights reserved.<br>
-        <br>
-        Permission is hereby granted, free of charge, to any person obtaining a copy<br>
-        of this software and associated documentation files (the &quot;Software&quot;), to deal<br>
-        in the Software without restriction, including without limitation the rights<br>
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<br>
-        copies of the Software, and to permit persons to whom the Software is<br>
-        furnished to do so, subject to the following conditions:<br>
-        <br>
-        The above copyright notice and this permission notice shall be included in all<br>
-        copies or substantial portions of the Software.<br>
-        <br>
-        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<br>
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<br>
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<br>
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<br>
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<br>
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<br>
-        SOFTWARE</span>
-    <br>
-    <br>
-</p>
-                ]]>
+            <Label Padding="16,8">
+                <Label.FormattedText>
+                    <FormattedString>
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/aliostad/CacheCow">CacheCow</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (C) 2013 Ali Kheyrollahi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/CommunityToolkit/Maui">CommunityToolkit.Maui</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/CommunityToolkit/dotnet">CommunityToolkit.Mvvm</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/levitali/CompiledBindings">CompiledBindings.Maui</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2022 levitali
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/ewerspej/epj.ProgressBar.Maui">epj.ProgressBar.Maui</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2022 Julian Ewers-Peters
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/step-up-labs/firebase-authentication-dotnet">FirebaseAuthentication.net</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2019 Step Up Labs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/step-up-labs/firebase-database-dotnet">FirebaseDatabase.net</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Step Up Labs
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/Mapsui/Mapsui">Mapsui.Maui</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2022 The Mapsui authors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/microsoft/appcenter-sdk-dotnet">Microsoft.AppCenter</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) Microsoft Corporation
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/JamesNK/Newtonsoft.Json/">Newtonsoft.Json</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+
+The MIT License (MIT)
+
+Copyright (c) 2007 James Newton-King
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/nodatime/nodatime">NodaTime</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+Copyright (C) 2015 The Noda Time Authors
+
+Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/RadekVyM/SimpleToolkit">SimpleToolkit</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+The MIT License (MIT)
+
+Copyright (c) 2022 Radek Vymětalík
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/mono/SkiaSharp">SkiaSharp</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+The MIT License (MIT)
+
+Copyright (c) 2015-2016 Xamarin, Inc.
+
+Copyright (c) 2017-2018 Microsoft Corporation.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/praeclarum/sqlite-net">sqlite-net-pcl</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+The MIT License (MIT)
+
+Copyright (c) Krueger Systems, Inc.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://bitbucket.org/twincoders/sqlite-net-extensions">SQLiteNetExtensions.Async</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+The MIT License (MIT)
+
+Copyright (C) 2013 TwinCoders S.L.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://github.com/neuecc/Utf8Json">Utf8Json</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+The MIT License (MIT)
+
+Copyright (c) 2017 Yoshifumi Kawai
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the &quot;Software&quot;), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+                        </Span>
+                        <controls:LineBreakSpan />
+                        <controls:LineBreakSpan />
+                        <controls:HyperlinkSpan NavigateUri="https://erikflowers.github.io/weather-icons/">WeatherIcons</controls:HyperlinkSpan>
+                        <controls:LineBreakSpan />
+                        <Span>
+Author - Erik Flowers - erik@helloerik.com
+
+Font licensed under SIL OFL 1.1
+http://scripts.sil.org/OFL
+
+Documentation licensed under CC BY 3.0
+http://creativecommons.org/licenses/by/3.0/
+
+Inspired by and works great as a companion with Font Awesome
+&quot;Font Awesome by Dave Gandy - http://fontawesome.io&quot;
+                        </Span>
+                    </FormattedString>
+                </Label.FormattedText>
             </Label>
         </VerticalStackLayout>
     </ScrollView>

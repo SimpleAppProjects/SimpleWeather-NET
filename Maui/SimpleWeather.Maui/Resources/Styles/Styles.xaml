@@ -538,6 +538,11 @@
         <Setter Property="UseGradient" Value="False" />
     </Style>
 
+    <Style TargetType="controls:HyperlinkSpan">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
+
     <Style x:Key="ClickableImageStyle" TargetType="Image">
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
