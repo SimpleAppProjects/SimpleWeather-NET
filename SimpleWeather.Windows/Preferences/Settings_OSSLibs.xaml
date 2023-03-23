@@ -67,7 +67,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/UWPCommunityToolkit" Style="{ThemeResource CreditHyperlinkButtonStyle}">Microsoft UWP Community Toolkit</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/dotnet" Style="{ThemeResource CreditHyperlinkButtonStyle}">CommunityToolkit.Mvvm</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -75,6 +75,96 @@
                         The MIT License (MIT)<LineBreak />
                         <LineBreak />
                         Copyright (c) .NET Foundation and Contributors<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/CommunityToolkit/WindowsCommunityToolkit" Style="{ThemeResource CreditHyperlinkButtonStyle}">CommunityToolkit.WinUI</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) .NET Foundation and Contributors<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/mapsui/mapsui" Style="{ThemeResource CreditHyperlinkButtonStyle}">Mapsui.WinUI</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2022 The Mapsui authors<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/microsoft/appcenter-sdk-dotnet" Style="{ThemeResource CreditHyperlinkButtonStyle}">Microsoft.AppCenter</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) Microsoft Corporation<LineBreak />
                         <LineBreak />
                         Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
                         of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
@@ -145,6 +235,37 @@
                         WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<LineBreak />
                         See the License for the specific language governing permissions and<LineBreak />
                         limitations under the License.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/mono/SkiaSharp" Style="{ThemeResource CreditHyperlinkButtonStyle}">SkiaSharp</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2015-2016 Xamarin, Inc.<LineBreak />
+                        Copyright (c) 2017-2018 Microsoft Corporation.<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
                     <LineBreak />
                     <LineBreak />
                     <Span>
@@ -239,7 +360,7 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="http://weathericons.io/" Style="{ThemeResource CreditHyperlinkButtonStyle}">WeatherIcons</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://erikflowers.github.io/weather-icons/" Style="{ThemeResource CreditHyperlinkButtonStyle}">WeatherIcons</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
@@ -258,46 +379,14 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/Win2D" Style="{ThemeResource CreditHyperlinkButtonStyle}">Win2D UWP</HyperlinkButton>
-                        </InlineUIContainer>
-                    </Span>
-                    <Span>
-                        <LineBreak />
-                        Win2D<LineBreak />
-                        <LineBreak />
-                        Copyright (c) Microsoft Corporation. All rights reserved.<LineBreak />
-                        <LineBreak />
-                        MIT License<LineBreak />
-                        <LineBreak />
-                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
-                        of this software and associated documentation files (the &quot;&quot;Software&quot;&quot;), to<LineBreak />
-                        deal in the Software without restriction, including without limitation the<LineBreak />
-                        rights to use, copy, modify, merge, publish, distribute, sublicense, and/or<LineBreak />
-                        sell copies of the Software, and to permit persons to whom the Software is<LineBreak />
-                        furnished to do so, subject to the following conditions:<LineBreak />
-                        <LineBreak />
-                        The above copyright notice and this permission notice shall be included in all<LineBreak />
-                        copies or substantial portions of the Software.<LineBreak />
-                        <LineBreak />
-                        THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
-                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
-                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
-                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
-                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
-                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
-                        SOFTWARE.</Span>
-                    <LineBreak />
-                    <LineBreak />
-                    <Span>
-                        <InlineUIContainer>
-                            <HyperlinkButton NavigateUri="https://github.com/Microsoft/microsoft-ui-xaml" Style="{ThemeResource CreditHyperlinkButtonStyle}">Windows UI Library</HyperlinkButton>
+                            <HyperlinkButton NavigateUri="https://github.com/dotMorten/WinUIEx" Style="{ThemeResource CreditHyperlinkButtonStyle}">WinUIEx</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
                     <Span>
                         <LineBreak />
                         MIT License<LineBreak />
                         <LineBreak />
-                        Copyright (c) Microsoft Corporation. All rights reserved.<LineBreak />
+                        Copyright (c) 2021 Morten Nielsen<LineBreak />
                         <LineBreak />
                         Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
                         of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
@@ -315,7 +404,7 @@
                         AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
                         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
                         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
-                        SOFTWARE</Span>
+                        SOFTWARE.</Span>
                     <LineBreak />
                     <LineBreak />
                 </Paragraph>
