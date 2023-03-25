@@ -1,11 +1,5 @@
 ﻿using CommunityToolkit.WinUI.Notifications;
-using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Metadata;
 using Windows.Services.Store;
@@ -247,14 +241,10 @@ namespace SimpleWeather.NET.BackgroundTasks
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
-                var taskBuilder = new BackgroundTaskBuilder()
-                {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                taskBuilder.SetTrigger(new TimeTrigger(1440, false)); // Daily
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
+                var taskBuilder = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(new TimeTrigger(1440, false)) // Daily
+                    .Condition(new SystemCondition(SystemConditionType.InternetAvailable))
+                    .Condition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
 
                 try
                 {

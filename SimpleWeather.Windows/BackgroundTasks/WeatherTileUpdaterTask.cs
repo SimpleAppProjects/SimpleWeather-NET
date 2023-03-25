@@ -1,5 +1,4 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.NET.Tiles;
 using SimpleWeather.Preferences;
@@ -233,30 +232,14 @@ namespace SimpleWeather.NET.BackgroundTasks
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
-                var tb1 = new BackgroundTaskBuilder()
-                {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                tb1.SetTrigger(new TimeTrigger(60, false));
-                var tb2 = new BackgroundTaskBuilder()
-                {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                tb2.SetTrigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
-                var tb3 = new BackgroundTaskBuilder()
-                {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                tb3.SetTrigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
-                var tb4 = new BackgroundTaskBuilder()
-                {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                tb4.SetTrigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
+                var tb1 = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(new TimeTrigger(60, false));
+                var tb2 = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(new SystemTrigger(SystemTriggerType.SessionConnected, false));
+                var tb3 = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
+                var tb4 = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
 
                 try
                 {

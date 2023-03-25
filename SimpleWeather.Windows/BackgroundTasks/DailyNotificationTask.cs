@@ -1,10 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.BackgroundTasks;
 using SimpleWeather.NET.Notifications;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using System;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET.BackgroundTasks
@@ -78,14 +75,13 @@ namespace SimpleWeather.NET.BackgroundTasks
                 backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
             {
                 // Register a task for each trigger
-                var taskBuilder = new BackgroundTaskBuilder()
+                var taskBuilder = BackgroundTaskUtils.CreateTask(taskName).Apply(t =>
                 {
-                    Name = taskName,
-                    TaskEntryPoint = BackgroundTask.TASK_ENTRY_POINT
-                };
-                var delay = GetTaskDelayInMinutes();
-                taskBuilder.SetTrigger(new TimeTrigger(delay < 15 ? 15 : delay, true));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                    var delay = GetTaskDelayInMinutes();
+
+                    t.Trigger(new TimeTrigger(delay < 15 ? 15 : delay, true))
+                     .Condition(new SystemCondition(SystemConditionType.InternetAvailable));
+                });
 
                 try
                 {

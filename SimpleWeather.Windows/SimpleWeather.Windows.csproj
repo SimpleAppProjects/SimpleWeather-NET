@@ -30,6 +30,9 @@
     <AppxBundle>Always</AppxBundle>
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>F2B9FB0AE4F9CA77C82E269A490F4E42D0B247E9</PackageCertificateThumbprint>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
 
   <ItemGroup>
@@ -157,7 +160,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SCRCHost\SCRCHost.csproj" />
     <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
     <ProjectReference Include="..\SimpleWeather.BackgroundTasks\SimpleWeather.BackgroundTasks.csproj" />
     <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
