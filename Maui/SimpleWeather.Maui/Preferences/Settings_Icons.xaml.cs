@@ -1,7 +1,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
+using SimpleWeather.NET.Extras.Store;
 using SimpleWeather.Preferences;
-using System;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -11,9 +11,9 @@ public partial class Settings_Icons : ContentPage
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
     public Settings_Icons()
-	{
-		InitializeComponent();
-	}
+    {
+        InitializeComponent();
+    }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
@@ -76,7 +76,7 @@ public partial class Settings_Icons : ContentPage
         }
         if (!ExtrasService.IsIconPackSupported(key))
         {
-            //Frame.Navigate(typeof(Extras.Store.PremiumPage));
+            this.Navigation.PushAsync(new PremiumPage());
             return false;
         }
         SettingsManager.IconProvider = key;
@@ -91,10 +91,13 @@ public partial class Settings_Icons : ContentPage
             if (preference is IconRadioPreference radioPref)
             {
                 bool newCheckedState = Equals(radioPref.Key, selectedKey);
+
+                radioPref.RadioButtonChecked -= Preference_RadioButtonChecked;
                 if (radioPref.IsChecked != newCheckedState)
                 {
                     radioPref.IsChecked = Equals(radioPref.Key, selectedKey);
                 }
+                radioPref.RadioButtonChecked += Preference_RadioButtonChecked;
             }
         }
     }
@@ -103,6 +106,8 @@ public partial class Settings_Icons : ContentPage
     {
         if (success)
         {
+            // TODO: Update for widgets
+            // WidgetUpdaterTask.UpdateWidgets();
             // Refresh page
         }
     }

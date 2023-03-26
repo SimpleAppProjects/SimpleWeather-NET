@@ -239,5 +239,14 @@ namespace SimpleWeather.Utils
         {
             return Regex.IsMatch(text, pattern, RegexOptions.CultureInvariant);
         }
+
+        public static string RemoveSuffix(this string text, string suffix)
+        {
+            if (text.EndsWith(suffix))
+            {
+                return text.Substring(0, text.Length - suffix.Length);
+            }
+            return text;
+        }
     }
 }

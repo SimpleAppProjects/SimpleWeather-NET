@@ -1,19 +1,17 @@
-﻿using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using CommunityToolkit.Maui.Markup;
+﻿using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.ComponentModel;
-using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls.AppBar;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Preferences;
+using SimpleWeather.Maui.Updates;
 using SimpleWeather.Maui.ViewModels;
-using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -34,6 +32,25 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
         RegisterRoutes();
         UpdateBottomBarItemWidth();
+
+        // Register BG Tasks
+#if __IOS__
+        UpdaterTaskUtils.StartTasks();
+
+        if (FeatureSettings.IsUpdateAvailable)
+        {
+            Task.Run(async () =>
+            {
+                var appUpdateManager = Ioc.Default.GetService<InAppUpdateManager>();
+                var isUpdateAvailable = await appUpdateManager.ShouldStartImmediateUpdateFlow();
+
+                if (isUpdateAvailable)
+                {
+                    await appUpdateManager.StartImmediateUpdateFlow();
+                }
+            });
+        }
+#endif
     }
 
     private void RegisterRoutes()

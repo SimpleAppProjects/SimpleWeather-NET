@@ -600,6 +600,9 @@
   <data name="FeebackButton.Content" xml:space="preserve">
     <value>反馈</value>
   </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>更新 SimpleWeather</value>
+  </data>
   <data name="prompt_update_available" xml:space="preserve">
     <value>有可用更新，点击以安装</value>
   </data>

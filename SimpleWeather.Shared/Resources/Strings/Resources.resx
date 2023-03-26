@@ -594,6 +594,9 @@
   <data name="FeebackButton.Content" xml:space="preserve">
     <value>Feedback</value>
   </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Update SimpleWeather</value>
+  </data>
   <data name="prompt_update_available" xml:space="preserve">
     <value>Update available. Click to install</value>
   </data>

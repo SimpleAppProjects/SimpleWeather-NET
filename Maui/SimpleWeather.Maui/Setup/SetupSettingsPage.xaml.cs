@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Helpers;
 using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.Helpers;
@@ -76,8 +77,20 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
         RefreshComboBox.SelectedIndexChanged += RefreshComboBox_SelectionChanged;
     }
 
-    private void AlertSwitch_Toggled(object sender, ToggledEventArgs e)
+    private async void AlertSwitch_Toggled(object sender, ToggledEventArgs e)
     {
+        var sw = sender as Switch;
+
+        if (e.Value)
+        {
+            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
+            {
+                sw.IsToggled = false;
+                await NotificationPermissionRequestHelper.RequestNotificationPermission();
+                return;
+            }
+        }
+
         SettingsManager.ShowAlerts = e.Value;
     }
 

@@ -1,10 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
+#if __IOS__
+using Foundation;
+#endif
+using SimpleWeather.Common.Helpers;
 using SimpleWeather.Extras;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Extras.Store;
 using SimpleWeather.Preferences;
-using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
@@ -12,16 +17,18 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
 
-public partial class Settings_WeatherAlerts : ContentPage, IRecipient<SettingsChangedMessage>
+public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRecipient<SettingsChangedMessage>
 {
     private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
+    private SnackbarManager SnackMgr;
+
     private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
     public Settings_WeatherAlerts()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         RestoreSettings();
 
@@ -56,6 +63,42 @@ public partial class Settings_WeatherAlerts : ContentPage, IRecipient<SettingsCh
         }
     }
 
+    public void InitSnackManager()
+    {
+        if (SnackMgr == null)
+        {
+            SnackMgr = new SnackbarManager(Content);
+        }
+    }
+
+    public void ShowSnackbar(Snackbar snackbar)
+    {
+        SnackMgr?.Show(snackbar);
+    }
+
+    public void DismissAllSnackbars()
+    {
+        SnackMgr?.DismissAll();
+    }
+
+    public void UnloadSnackManager()
+    {
+        DismissAllSnackbars();
+        SnackMgr = null;
+    }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        InitSnackManager();
+    }
+
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+        UnloadSnackManager();
+    }
+
     public void Receive(SettingsChangedMessage message)
     {
         switch (message.Value.PreferenceKey)
@@ -73,41 +116,76 @@ public partial class Settings_WeatherAlerts : ContentPage, IRecipient<SettingsCh
         RestoreSettings();
     }
 
-    private void AlertPref_OnChanged(object sender, ToggledEventArgs e)
+    private async void AlertPref_OnChanged(object sender, ToggledEventArgs e)
     {
         SwitchCell sw = sender as SwitchCell;
-        SettingsManager.ShowAlerts = sw.On;
-    }
-
-    private void PoPChancePref_OnChanged(object sender, ToggledEventArgs e)
-    {
-        SwitchCell sw = sender as SwitchCell;
-
 
         if (sw.On)
         {
-            // if !BackgroundAccess
-                // alert
-                // return
-        }
+            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
+            {
+                sw.On = false;
+                await NotificationPermissionRequestHelper.RequestNotificationPermission();
+                return;
+            }
 
-        if (sw.On && ExtrasService.IsEnabled())
-        {
-            SettingsManager.PoPChanceNotificationEnabled = true;
-            // TODO: Re-register background task if needed
+#if __IOS__
+            UpdaterTaskUtils.StartTasks();
+#endif
         }
         else
         {
-            if (sw.On && !ExtrasService.IsEnabled())
+#if __IOS__
+            UpdaterTaskUtils.CancelTasks();
+#endif
+        }
+
+        SettingsManager.ShowAlerts = sw.On;
+    }
+
+    private async void PoPChancePref_OnChanged(object sender, ToggledEventArgs e)
+    {
+        SwitchCell sw = sender as SwitchCell;
+
+        if (sw.On)
+        {
+#if __IOS__
+            if (UIKit.UIApplication.SharedApplication.BackgroundRefreshStatus == UIKit.UIBackgroundRefreshStatus.Denied)
             {
-                // TODO: show premium popup
-                SettingsManager.PoPChanceNotificationEnabled = sw.On = false;
-                //App.Current.Navigation.PushAsync(// PremiumPage)
+                var snackbar = Snackbar.MakeError(ResStrings.Msg_BGAccessDeniedSettings, SnackbarDuration.Long);
+                snackbar.SetAction(ResStrings.action_settings, async () =>
+                {
+                    await UIKit.UIApplication.SharedApplication.OpenUrlAsync(NSUrl.FromString(UIKit.UIApplication.OpenSettingsUrlString), new UIKit.UIApplicationOpenUrlOptions());
+                });
+                ShowSnackbar(snackbar);
+                SettingsManager.DailyNotificationEnabled = sw.On = false;
+                return;
             }
-            else
+#endif
+        }
+
+        if (sw.On && !ExtrasService.IsEnabled())
+        {
+            SettingsManager.PoPChanceNotificationEnabled = sw.On = false;
+            await this.Navigation.PushAsync(new PremiumPage());
+            return;
+        }
+
+        if (sw.On)
+        {
+            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
             {
-                SettingsManager.PoPChanceNotificationEnabled = sw.On = false;
+                sw.On = false;
+                await NotificationPermissionRequestHelper.RequestNotificationPermission();
+                return;
             }
+
+            SettingsManager.PoPChanceNotificationEnabled = true;
+            UpdaterTaskUtils.StartTasks();
+        }
+        else
+        {
+            UpdaterTaskUtils.CancelTasks();
         }
     }
 }

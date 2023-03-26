@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherNotifications"
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherNotifications"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
@@ -41,21 +42,19 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
-                    <prefs:SwitchCell
-                        x:Name="DailyNotifPref"
-                        Text="{x:Static res_strings:Resources.not_channel_name_dailynotification}" />
+                    <prefs:SwitchCell x:Name="DailyNotifPref" Text="{x:Static res_strings:Resources.not_channel_name_dailynotification}" />
                     <ViewCell>
                         <VerticalStackLayout Padding="16,0">
                             <Label
-                                FontSize="18"
                                 Margin="0,12,0,0"
+                                FontSize="18"
                                 Text="{x:Static res_strings:Resources.pref_title_time}" />
                             <TimePicker
                                 x:Name="DailyNotifTimePref"
-                                HorizontalOptions="Fill"
-                                VerticalOptions="Center"
                                 Margin="0,8,0,0"
-                                IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}" />
+                                HorizontalOptions="Fill"
+                                IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}"
+                                VerticalOptions="Center" />
                         </VerticalStackLayout>
                     </ViewCell>
                 </TableSection>

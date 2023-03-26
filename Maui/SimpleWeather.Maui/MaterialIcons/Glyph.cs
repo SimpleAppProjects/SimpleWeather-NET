@@ -32,5 +32,7 @@
         MoreVert = 0xe5d4,
         MoreHoriz = 0xe5d3,
         ArrowBackiOS = 0xe5e0,
+        Check = 0xe5ca,
+        ThumbsUp = 0xe8dc,
     }
 }

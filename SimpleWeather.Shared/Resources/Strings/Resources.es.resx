@@ -601,6 +601,10 @@ Fuzzy</comment>
   <data name="FeebackButton.Content" xml:space="preserve">
     <value>Comentarios</value>
   </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Actualizar SimpleWeather</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="prompt_update_available" xml:space="preserve">
     <value>Actualización disponible. Haga clic para instalar</value>
     <comment>Fuzzy</comment>

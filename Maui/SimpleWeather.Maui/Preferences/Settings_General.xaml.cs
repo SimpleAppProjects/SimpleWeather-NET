@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Globalization;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -8,11 +7,12 @@ using CoreFoundation;
 #endif
 using SimpleWeather.Controls;
 using SimpleWeather.Extras;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Extras.Store;
 using SimpleWeather.NET.Radar;
-using SimpleWeather.NET.Radar.RainViewer;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
@@ -318,13 +318,19 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                             { "API", SettingsManager.API },
                             { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
                         });
-                    // TODO: trigger task
+#if __IOS__
+                    WeatherUpdaterTask.UpdateWeather();
+#endif
                     break;
                 case CommonActions.ACTION_WEATHER_REREGISTERTASK:
-                    // TODO: trigger task
+#if __IOS__
+                    UpdaterTaskUtils.UpdateTasks();
+#endif
                     break;
                 case CommonActions.ACTION_WEATHER_UPDATE:
-                    // TODO: trigger task
+#if __IOS__
+                    WeatherUpdaterTask.UpdateWeather();
+#endif
                     break;
             }
         }
@@ -401,6 +407,9 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         {
             case SettingsManager.KEY_REFRESHINTERVAL:
                 SettingsManager.RefreshInterval = int.Parse(message.Value.NewValue.ToString());
+#if __IOS__
+                WeatherUpdaterTask.ScheduleTask();
+#endif
                 break;
             case SettingsManager.KEY_USERTHEME:
                 {
@@ -476,7 +485,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         RestoreSettings();
     }
 
-    private void OnWeatherProviderChanged(object newValue)
+    private async void OnWeatherProviderChanged(object newValue)
     {
         string selectedProvider = newValue?.ToString();
 
@@ -484,7 +493,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         if (!ExtrasService.IsWeatherAPISupported(selectedProvider))
         {
-            // TODO: show premium popup
+            await this.Navigation.PushAsync(new PremiumPage());
             return;
         }
 

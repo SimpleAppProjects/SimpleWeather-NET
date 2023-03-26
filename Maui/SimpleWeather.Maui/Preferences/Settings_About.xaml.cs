@@ -2,7 +2,6 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
@@ -19,8 +18,8 @@ public partial class Settings_About : ContentPage, ISnackbarManager
     private SnackbarManager SnackMgr;
 
     public Settings_About()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
@@ -113,7 +112,20 @@ public partial class Settings_About : ContentPage, ISnackbarManager
                     break;
                 case KEY_RATEREVIEW:
                     {
-                        // TODO: rate and review
+                        try
+                        {
+#if __IOS__
+                            var app = UIKit.UIApplication.SharedApplication;
+                            // TODO: replace with ID
+                            var reviewUrl = Foundation.NSUrl.FromString("https://apps.apple.com/app/id<#Your App Store ID#>?action=write-review");
+
+                            if (app.CanOpenUrl(reviewUrl))
+                            {
+                                app.OpenUrl(reviewUrl, new UIKit.UIApplicationOpenUrlOptions(), null);
+                            }
+#endif
+                        }
+                        catch { }
                     }
                     break;
                 case KEY_TRANSLATE:

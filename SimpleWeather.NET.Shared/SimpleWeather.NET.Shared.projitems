@@ -57,7 +57,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProviderChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarViewProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)radar\rainviewer\RainViewerViewProvider.HttpClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\WeatherMapsResponse.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />

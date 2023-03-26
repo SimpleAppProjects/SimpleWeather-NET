@@ -1,23 +1,17 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Maui;
-using Microsoft.Maui.Controls;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Layouts;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
 using SimpleWeather.Common.ViewModels;
-using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
-using SimpleWeather.Maui.Controls.Flow;
-using SimpleWeather.Maui.Controls.Graphs;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Utils;
+using SimpleWeather.Maui.WeatherAlerts;
 using SimpleWeather.NET.Controls;
-using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.NET.Radar;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -201,21 +195,34 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                     ForecastView.UpdateForecasts(locationData);
                     AlertsView.UpdateAlerts(locationData);
 
-                    /*
                     Task.Run(async () =>
                     {
-                        // Update home tile if it hasn't been already
                         bool isHome = Equals(locationData, await SettingsManager.GetHomeData());
-                        if (isHome && (TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks)).TotalMinutes > SettingsManager.RefreshInterval))
+                        if (isHome)
                         {
-                            await WeatherUpdateBackgroundTask.RequestAppTrigger();
+                            // Update widgets if they haven't been already
+                            if ((TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks)).TotalMinutes > SettingsManager.RefreshInterval))
+                            {
+                                // Enqueue weather update task
+#if __IOS__
+                                WeatherUpdaterTask.UpdateWeather();
+#endif
+                            }
+                            else
+                            {
+                                // Enqueue widget update task
+#if __IOS__
+                                WidgetUpdaterTask.UpdateWidgets();
+#endif
+                            }
                         }
-                        else if (isHome || SecondaryTileUtils.Exists(locationData?.query))
+                        else
                         {
-                            await WeatherTileCreator.TileUpdater(locationData);
+                            // Update widgets anyway
+                            // TODO: enqueue refresh widgets task
+                            // WidgetUpdaterTask.UpdateWidgets(locationData);
                         }
                     });
-                    */
                 });
                 break;
 
@@ -224,7 +231,6 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                     var weatherAlerts = WNowViewModel.Alerts;
                     var locationData = WNowViewModel.UiState?.LocationData;
 
-                    /*
                     if (wm.SupportsAlerts && locationData != null)
                     {
                         _ = Task.Run(async () =>
@@ -234,10 +240,8 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                             await WeatherAlertHandler.PostAlerts(locationData, weatherAlerts);
 #endif
                             await WeatherAlertHandler.SetasNotified(locationData, weatherAlerts);
-
                         });
                     }
-                    */
                 }
                 break;
 

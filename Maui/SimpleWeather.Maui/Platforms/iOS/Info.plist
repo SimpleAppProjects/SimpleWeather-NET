@@ -40,5 +40,11 @@
 	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
 	<key>CFBundleName</key>
 	<string>SimpleWeather</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>

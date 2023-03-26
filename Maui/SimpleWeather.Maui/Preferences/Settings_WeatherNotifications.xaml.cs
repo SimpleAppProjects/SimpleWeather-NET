@@ -1,29 +1,34 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
+#if __IOS__
+using Foundation;
+#endif
 using SimpleWeather.Extras;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Extras.Store;
 using SimpleWeather.Preferences;
-using SimpleWeather.RemoteConfig;
-using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
 
-public partial class Settings_WeatherNotifications : ContentPage, IRecipient<SettingsChangedMessage>
+public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManager, IRecipient<SettingsChangedMessage>
 {
     private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
+    private SnackbarManager SnackMgr;
+
     private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
     public Settings_WeatherNotifications()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
-		RestoreSettings();
+        RestoreSettings();
 
         App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
@@ -52,6 +57,42 @@ public partial class Settings_WeatherNotifications : ContentPage, IRecipient<Set
         }
     }
 
+    public void InitSnackManager()
+    {
+        if (SnackMgr == null)
+        {
+            SnackMgr = new SnackbarManager(Content);
+        }
+    }
+
+    public void ShowSnackbar(Snackbar snackbar)
+    {
+        SnackMgr?.Show(snackbar);
+    }
+
+    public void DismissAllSnackbars()
+    {
+        SnackMgr?.DismissAll();
+    }
+
+    public void UnloadSnackManager()
+    {
+        DismissAllSnackbars();
+        SnackMgr = null;
+    }
+
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        InitSnackManager();
+    }
+
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+        UnloadSnackManager();
+    }
+
     public void Receive(SettingsChangedMessage message)
     {
         switch (message.Value.PreferenceKey)
@@ -61,29 +102,46 @@ public partial class Settings_WeatherNotifications : ContentPage, IRecipient<Set
         RestoreSettings();
     }
 
-    // TODO: Daily notification task
     private async void DailyNotifPref_OnChanged(object sender, ToggledEventArgs e)
     {
         SwitchCell sw = sender as SwitchCell;
 
         if (sw.On)
         {
-            // if !BackgroundAccessEnabled
+#if __IOS__
+            if (UIKit.UIApplication.SharedApplication.BackgroundRefreshStatus == UIKit.UIBackgroundRefreshStatus.Denied)
+            {
+                var snackbar = Snackbar.MakeError(ResStrings.Msg_BGAccessDeniedSettings, SnackbarDuration.Long);
+                snackbar.SetAction(ResStrings.action_settings, async () =>
+                {
+                    await UIKit.UIApplication.SharedApplication.OpenUrlAsync(NSUrl.FromString(UIKit.UIApplication.OpenSettingsUrlString), new UIKit.UIApplicationOpenUrlOptions());
+                });
+                ShowSnackbar(snackbar);
+                SettingsManager.DailyNotificationEnabled = sw.On = false;
+                return;
+            }
+#endif
         }
 
         if (sw.On && ExtrasService.IsEnabled())
         {
             SettingsManager.DailyNotificationEnabled = true;
-            // Register task
+#if __IOS__
+            DailyNotificationTask.CancelPendingTasks();
+            DailyNotificationTask.ScheduleTask();
+#endif
         }
         else
         {
             if (sw.On && !ExtrasService.IsEnabled())
             {
-                // TODO: show premium popup                
+                await this.Navigation.PushAsync(new PremiumPage());
             }
             SettingsManager.DailyNotificationEnabled = sw.On = false;
-            // TODO: unregister task
+#if __IOS__
+            // Unregister task
+            DailyNotificationTask.CancelPendingTasks();
+#endif
         }
     }
 
@@ -95,7 +153,10 @@ public partial class Settings_WeatherNotifications : ContentPage, IRecipient<Set
 
             if (SettingsManager.DailyNotificationEnabled)
             {
-                // TODO: register task
+#if __IOS__
+                DailyNotificationTask.CancelPendingTasks();
+                DailyNotificationTask.ScheduleTask();
+#endif
             }
         }
     }
