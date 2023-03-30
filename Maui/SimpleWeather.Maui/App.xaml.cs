@@ -83,6 +83,11 @@ public partial class App : Application
         this.RequestedThemeChanged += App_RequestedThemeChanged;
         UpdateAppTheme(this.CurrentTheme);
 
+#if __IOS__
+        // Register BG Tasks
+        BGTaskRegistrar.RegisterBGTasks();
+#endif
+
         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
         {
             MainPage = new AppShell();

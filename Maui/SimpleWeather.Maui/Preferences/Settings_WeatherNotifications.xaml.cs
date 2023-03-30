@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Messaging;
 #if __IOS__
 using Foundation;
+using SimpleWeather.Common.Helpers;
 #endif
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.BackgroundTasks;
@@ -123,8 +124,24 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
 #endif
         }
 
-        if (sw.On && ExtrasService.IsEnabled())
+        if (sw.On && !ExtrasService.IsEnabled())
         {
+            SettingsManager.DailyNotificationEnabled = sw.On = false;
+            await this.Navigation.PushAsync(new PremiumPage());
+            return;
+        }
+
+        if (sw.On)
+        {
+#if __IOS__
+            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
+            {
+                sw.On = false;
+                await NotificationPermissionRequestHelper.RequestNotificationPermission();
+                return;
+            }
+#endif
+
             SettingsManager.DailyNotificationEnabled = true;
 #if __IOS__
             DailyNotificationTask.CancelPendingTasks();
@@ -133,11 +150,6 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
         }
         else
         {
-            if (sw.On && !ExtrasService.IsEnabled())
-            {
-                await this.Navigation.PushAsync(new PremiumPage());
-            }
-            SettingsManager.DailyNotificationEnabled = sw.On = false;
 #if __IOS__
             // Unregister task
             DailyNotificationTask.CancelPendingTasks();

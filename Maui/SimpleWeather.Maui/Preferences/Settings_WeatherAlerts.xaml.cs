@@ -153,9 +153,9 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
             if (UIKit.UIApplication.SharedApplication.BackgroundRefreshStatus == UIKit.UIBackgroundRefreshStatus.Denied)
             {
                 var snackbar = Snackbar.MakeError(ResStrings.Msg_BGAccessDeniedSettings, SnackbarDuration.Long);
-                snackbar.SetAction(ResStrings.action_settings, async () =>
+                snackbar.SetAction(ResStrings.action_settings, () =>
                 {
-                    await UIKit.UIApplication.SharedApplication.OpenUrlAsync(NSUrl.FromString(UIKit.UIApplication.OpenSettingsUrlString), new UIKit.UIApplicationOpenUrlOptions());
+                    AppInfo.ShowSettingsUI();
                 });
                 ShowSnackbar(snackbar);
                 SettingsManager.DailyNotificationEnabled = sw.On = false;
@@ -173,12 +173,14 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
 
         if (sw.On)
         {
+#if __IOS__
             if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
             {
                 sw.On = false;
                 await NotificationPermissionRequestHelper.RequestNotificationPermission();
                 return;
             }
+#endif
 
             SettingsManager.PoPChanceNotificationEnabled = true;
             UpdaterTaskUtils.StartTasks();

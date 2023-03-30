@@ -2,10 +2,35 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>SimpleWeather.WidgetUpdaterTask</string>
+		<string>SimpleWeather.WeatherUpdaterTask</string>
+		<string>SimpleWeather.DailyNotificationTask</string>
+		<string>SimpleWeather.RemoteConfigUpdateTask</string>
+		<string>SimpleWeather.PremiumStatusTask</string>
+		<string>SimpleWeather.AppUpdaterTask</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>SimpleWeather</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.thewizrd.simpleweather.debug</string>
+	<key>CFBundleName</key>
+	<string>SimpleWeather</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Optional. Allows access to current location to retrieve weather data.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>
@@ -30,21 +55,5 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>CFBundleDisplayName</key>
-	<string>SimpleWeather</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Optional. Allows access to current location to retrieve weather data.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Optional. Allows access to current location for weather notifications and widgets.</string>
-	<key>CFBundleName</key>
-	<string>SimpleWeather</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-		<string>fetch</string>
-		<string>processing</string>
-	</array>
 </dict>
 </plist>

@@ -14,5 +14,7 @@ namespace SimpleWeather.Extras
         bool IsIconPackSupported(string packKey);
         bool IsWeatherAPISupported(string api);
         void CheckPremiumStatus();
+
+        bool AreSubscriptionsSupported { get; }
     }
 }

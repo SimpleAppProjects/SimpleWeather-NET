@@ -16,8 +16,11 @@
 
         public static Task<bool> LaunchLocationSettings(this Page _)
         {
-            AppInfo.ShowSettingsUI();
-            return Task.FromResult(true);
+            return MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                AppInfo.ShowSettingsUI();
+                return true;
+            });
         }
     }
 }

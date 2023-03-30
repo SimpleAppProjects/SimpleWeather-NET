@@ -13,7 +13,7 @@ namespace SimpleWeather.Maui
 {
     public static class BGTaskRegistrar
     {
-        public static void RegisterBGTasks(this AppDelegate appDelegate)
+        public static void RegisterBGTasks()
         {
             WidgetUpdaterTask.RegisterTask();
             WeatherUpdaterTask.RegisterTask();
@@ -22,6 +22,7 @@ namespace SimpleWeather.Maui
             PremiumStatusTask.RegisterTask();
             AppUpdaterTask.RegisterTask();
 
+#if DEBUG
             BGTaskScheduler.Shared.GetPending((tks) =>
             {
                 tks.ForEach(t =>
@@ -29,6 +30,7 @@ namespace SimpleWeather.Maui
                     Logger.WriteLine(LoggerLevel.Debug, $"{t.Identifier}: task registered");
                 });
             });
+#endif
         }
     }
 }

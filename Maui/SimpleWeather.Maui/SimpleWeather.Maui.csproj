@@ -29,6 +29,54 @@
 		<EnableMsixTooling Condition="$(TargetFramework.Contains('windows'))">true</EnableMsixTooling>
 		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	  <CodesignProvision>SimpleWeather - Debug</CodesignProvision>
+	  <CodesignKey>iPhone Developer</CodesignKey>
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}iOS/Info.plist "Debug"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
+	  <CreatePackage>false</CreatePackage>
+	  <UseHardenedRuntime>true</UseHardenedRuntime>
+	  <CodesignKey>Developer ID Application</CodesignKey>
+	  <CodesignProvision>Automatic</CodesignProvision>
+	  <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}MacCatalyst/Info.plist "Debug"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	  <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0070c0" />
@@ -64,8 +112,13 @@
 		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
 	</ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-    <ProjectReference Include="..\..\Maui.RevenueCat.iOS\Maui.RevenueCat.iOS.csproj" />
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+	  <PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
+	  <PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+	  <PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
+	  <PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.9.0.4" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <PackageReference Include="WinUIEx" Version="2.1.0" />
@@ -194,203 +247,80 @@
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-ios' And $(Configuration.StartsWith('Debug'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)iOS/Info.plist "Debug"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-macos' And $(Configuration.StartsWith('Debug'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)macOS/Info.plist "Debug"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-maccatalyst' And $(Configuration.StartsWith('Debug'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)MacCatalyst/Info.plist "Debug"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-ios' And $(Configuration.StartsWith('Release'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)iOS/Info.plist "Release"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-macos' And $(Configuration.StartsWith('Release'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)macOS/Info.plist "Release"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And '$(TargetFramework)' == 'net7.0-maccatalyst' And $(Configuration.StartsWith('Release'))">
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest $(ProjectDir)MacCatalyst/Info.plist "Release"</command>
-		      <workingdir>$(ProjectDir)</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <CustomCommands>
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Debug"</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}iOS/Info.plist "Debug"</command>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 	  <CustomCommands>
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest iOS/Info.plist "Release"</command>
-	        <workingdir>$(ProjectDir)</workingdir>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}iOS/Info.plist "Release"</command>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>
-	  <CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' And '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}MacCatalyst/Info.plist "Debug"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	</PropertyGroup>
+	<PropertyGroup Condition="$([MSBuild]::IsOSPlatform('OSX')) And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' And '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}MacCatalyst/Info.plist "Release"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 	  <WarningLevel>4</WarningLevel>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-	  <CustomCommands>
-	    <CustomCommands xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Shared/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)KeyCheck/bin/Release/net7.0/publish/KeyCheck $(SolutionDir)SimpleWeather.Weather-API/Keys</command>
-	        <workingdir>$(ProjectDir)</workingdir>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>$(SolutionDir)EditManifest/bin/Release/net7.0/publish/EditManifest MacCatalyst/Info.plist "Debug"</command>
-	        <workingdir>$(ProjectDir)</workingdir>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
-	  <CreatePackage>true</CreatePackage>
-	  <CodesignKey>Mac Developer</CodesignKey>
-	  <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
 	</PropertyGroup>
 	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 	<Import Project="..\..\SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems" Label="Shared" />

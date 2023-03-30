@@ -33,6 +33,7 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
         base.OnNavigatedTo(args);
+        InitSnackManager();
 
         if (locationData == null)
         {
@@ -45,6 +46,7 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
         base.OnNavigatedFrom(args);
+        UnloadSnackManager();
         WNowViewModel.PropertyChanged -= WNowViewModel_PropertyChanged;
     }
 

@@ -132,6 +132,7 @@
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_about_app}" />
                 </TableSection>
+                <TableSection x:Name="PremiumSection" />
             </TableRoot>
         </TableView>
     </Grid>

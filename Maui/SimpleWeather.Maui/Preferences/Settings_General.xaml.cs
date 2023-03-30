@@ -20,6 +20,7 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -74,6 +75,11 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         AnalyticsLogger.LogEvent("Settings_General");
         WeakReferenceMessenger.Default.Register(this);
+
+        if (ExtrasService.AreSubscriptionsSupported)
+        {
+            CreatePremiumPreference();
+        }
     }
 
     public void InitSnackManager()
@@ -635,6 +641,17 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
             {
                 await Navigation.PushAsync(new Settings_About());
             }
+            else if (pageType == typeof(PremiumPage))
+            {
+                if (ExtrasService.AreSubscriptionsSupported)
+                {
+                    await Navigation.PushAsync(new PremiumPage());
+                }
+                else
+                {
+                    ShowSnackbar(Snackbar.Make(ResExtras.message_premium_required, SnackbarDuration.Short));
+                }
+            }
         }
         else if (cell.CommandParameter is Uri uri)
         {
@@ -704,5 +721,22 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         };
 
         this.ShowPopup(keyPopup);
+    }
+
+    private void CreatePremiumPreference()
+    {
+        PremiumSection.Clear();
+
+        PremiumSection.Add(
+            new TextCell()
+            {
+                CommandParameter = typeof(PremiumPage),
+                Text = ResExtras.pref_title_premium,
+                Detail = ResExtras.message_premium_prompt
+            }.Apply(it =>
+            {
+                it.Tapped += TextCell_Tapped;
+            })
+        );
     }
 }

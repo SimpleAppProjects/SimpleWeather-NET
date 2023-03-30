@@ -16,9 +16,6 @@ public class AppDelegate : MauiUIApplicationDelegate
         App.Current.UpdateAppTheme();
         this.InitThemeListener();
 
-        // Register background tasks
-        this.RegisterBGTasks();
-
         return ret;
     }
 }

@@ -14,6 +14,8 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(DailyNotificationTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        private static bool Registered = false;
+
         private readonly CancellationTokenSource cts = new();
 
         public bool IsCancelled => cts.IsCancellationRequested;
@@ -46,7 +48,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
                         await DailyNotificationCreator.CreateNotification(await settingsMgr.GetHomeData());
 
                         // Register task for next time
-                        RegisterTask();
+                        ScheduleTask();
                     }
                 }
             }
@@ -58,10 +60,17 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
         public static void RegisterTask()
         {
-            BGTaskScheduler.Shared.Register(TASK_ID, null, (task) =>
+            if (!Registered)
             {
-                HandleTaskRegistration(task as BGAppRefreshTask);
-            });
+                Registered = BGTaskScheduler.Shared.Register(TASK_ID, null, (task) =>
+                {
+                    HandleTaskRegistration(task as BGAppRefreshTask);
+                });
+            }
+            else
+            {
+                ScheduleTask();
+            }
         }
 
         public static void SendDailyNotification()
@@ -71,7 +80,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
             try
             {
                 var cts = new CancellationTokenSource();
-                var id = UIKit.UIApplication.SharedApplication.BeginBackgroundTask(cts.Cancel);
+                var id = UIKit.UIApplication.SharedApplication.BeginBackgroundTask($"{TASK_ID}.immediate", cts.Cancel);
 
                 if (id != UIApplication.BackgroundTaskInvalid)
                 {
@@ -119,6 +128,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
             try
             {
                 BGTaskScheduler.Shared.Submit(request, out var error);
+
+                if (error != null)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, $"{taskName}: Error - ${error}");
+                }
             }
             catch (Exception ex)
             {

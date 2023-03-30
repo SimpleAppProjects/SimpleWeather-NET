@@ -22,6 +22,8 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(WeatherUpdaterTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        private static bool Registered = false;
+
         private readonly CancellationTokenSource cts = new();
 
         public bool IsCancelled => cts.IsCancellationRequested;
@@ -223,10 +225,17 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
         public static void RegisterTask()
         {
-            BGTaskScheduler.Shared.Register(TASK_ID, null, (task) =>
+            if (!Registered)
             {
-                HandleTaskRegistration(task as BGProcessingTask);
-            });
+                Registered = BGTaskScheduler.Shared.Register(TASK_ID, null, (task) =>
+                {
+                    HandleTaskRegistration(task as BGProcessingTask);
+                });
+            }
+            else
+            {
+                ScheduleTask();
+            }
         }
 
         public static void UpdateWeather()
@@ -236,7 +245,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
             try
             {
                 var cts = new CancellationTokenSource();
-                var id = UIKit.UIApplication.SharedApplication.BeginBackgroundTask(cts.Cancel);
+                var id = UIKit.UIApplication.SharedApplication.BeginBackgroundTask($"{TASK_ID}.immediate", cts.Cancel);
 
                 if (id != UIApplication.BackgroundTaskInvalid)
                 {
@@ -286,6 +295,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
             try
             {
                 BGTaskScheduler.Shared.Submit(request, out var error);
+
+                if (error != null)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, $"{taskName}: Error - ${error}");
+                }
             }
             catch (Exception ex)
             {

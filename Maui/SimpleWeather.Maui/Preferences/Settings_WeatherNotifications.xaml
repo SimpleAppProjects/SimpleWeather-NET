@@ -52,6 +52,7 @@
                             <TimePicker
                                 x:Name="DailyNotifTimePref"
                                 Margin="0,8,0,0"
+                                ios:TimePicker.UpdateMode="Immediately"
                                 HorizontalOptions="Fill"
                                 IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}"
                                 VerticalOptions="Center" />

@@ -8,6 +8,8 @@ namespace SimpleWeather.Extras
 {
     public class DefaultExtrasServiceImpl : IExtrasService
     {
+        public bool AreSubscriptionsSupported => true;
+
         public void DisableExtras()
         {
             // no-op
