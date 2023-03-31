@@ -8,10 +8,12 @@
     xmlns:local="clr-namespace:SimpleWeather.Maui.Setup"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     Background="{DynamicResource PrimarySurfaceColorBrush}"
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False">
-    <ScrollView x:Name="Scroller" Orientation="Vertical">
+    <ScrollView x:Name="Scroller" Orientation="Vertical"
+                SizeChanged="Scroller_SizeChanged">
         <VerticalStackLayout VerticalOptions="Center">
             <controls:ViewBox
                 Margin="0,32,0,0"
@@ -26,51 +28,123 @@
                 HorizontalTextAlignment="Center"
                 Text="{x:Static res_strings:Resources.setup_preferences_prompt}"
                 TextColor="{DynamicResource White}" />
-            <Border HorizontalOptions="Center" Stroke="Transparent">
+            <Border HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}" Stroke="Transparent"
+                    VerticalOptions="Start">
                 <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="8,8,8,8" />
+                    <RoundRectangle CornerRadius="{OnIdiom Default='8,8,8,8', Phone='0'}" />
                 </Border.StrokeShape>
                 <Border.Background>
                     <helpers:SolidColorAlphaBrush Opacity="0.85" Color="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
                 </Border.Background>
                 <VerticalStackLayout
+                    x:Name="StackContainer"
                     Margin="0,16,0,0"
-                    Padding="16"
-                    MinimumHeightRequest="480"
-                    WidthRequest="{x:Bind dataBinding:BindingExtensions.Multiply(Scroller.Width, 0.75)}">
-                    <Label Padding="0,5" Text="{x:Static res_strings:Resources.Pref_SummaryUnits_Text}" />
-                    <HorizontalStackLayout Padding="10,5">
-                        <RadioButton
-                            x:Name="Fahrenheit"
-                            Margin="0,0,10,0"
-                            Content="{x:Static res_strings:Units.unit_fahrenheit}"
-                            GroupName="Unit">
-                            <RadioButton.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="RadioButton_Tapped" />
-                                <ClickGestureRecognizer Clicked="RadioButton_Clicked" />
-                            </RadioButton.GestureRecognizers>
-                        </RadioButton>
-                        <RadioButton
-                            x:Name="Celsius"
-                            Margin="10,0,0,0"
-                            Content="{x:Static res_strings:Units.unit_celsius}"
-                            GroupName="Unit">
-                            <RadioButton.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="RadioButton_Tapped" />
-                                <ClickGestureRecognizer Clicked="RadioButton_Clicked" />
-                            </RadioButton.GestureRecognizers>
-                        </RadioButton>
-                    </HorizontalStackLayout>
-                    <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
-                    <Picker
-                        x:Name="RefreshComboBox"
-                        Margin="0,10"
-                        HorizontalOptions="FillAndExpand"
-                        MinimumWidthRequest="260" />
-                    <Label Padding="0,5" Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
-                    <HorizontalStackLayout Padding="10,5">
-                        <Switch x:Name="AlertSwitch" />
-                    </HorizontalStackLayout>
+                    Padding="{OnIdiom Default=16, Phone=0}"
+                    MinimumHeightRequest="{OnIdiom Default=360, Phone=240}"
+                    VerticalOptions="Start">
+                    <Border Stroke="Transparent" Margin="0" Padding="0">
+                        <Border.Content>
+                            <OnIdiom x:TypeArguments="View">
+                                <OnIdiom.Default>
+                                    <VerticalStackLayout>
+                                        <Label Padding="10,5" Text="{x:Static res_strings:Resources.Pref_SummaryUnits_Text}" />
+                                        <HorizontalStackLayout Padding="10,5">
+                                            <RadioButton
+                                                x:Name="Fahrenheit"
+                                                Margin="0,0,10,0"
+                                                Content="{x:Static res_strings:Units.unit_fahrenheit}"
+                                                GroupName="Unit">
+                                                <RadioButton.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                                                </RadioButton.GestureRecognizers>
+                                            </RadioButton>
+                                            <RadioButton
+                                                x:Name="Celsius"
+                                                Margin="10,0,0,0"
+                                                Content="{x:Static res_strings:Units.unit_celsius}"
+                                                GroupName="Unit">
+                                                <RadioButton.GestureRecognizers>
+                                                    <TapGestureRecognizer Tapped="RadioButton_Tapped" />
+                                                </RadioButton.GestureRecognizers>
+                                            </RadioButton>
+                                        </HorizontalStackLayout>
+                                    </VerticalStackLayout>
+                                </OnIdiom.Default>
+                                <OnIdiom.Phone>
+                                    <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto"
+                                          Padding="10,0,10,5">
+                                        <Grid.GestureRecognizers>
+                                            <TapGestureRecognizer Tapped="UnitSwitch_Tapped" />
+                                        </Grid.GestureRecognizers>
+                                        <Label Padding="4"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                               Text="{x:Static res_strings:Resources.pref_title_units}"
+                                               Grid.Row="0" />
+                                        <Label x:Name="TempSummary"
+                                               Padding="4"
+                                               VerticalOptions="Center"
+                                               VerticalTextAlignment="Center"
+                                               MaxLines="1"
+                                               LineBreakMode="TailTruncation"
+                                               FontSize="Caption"
+                                               Text="{x:Static res_strings:Resources.pref_summary_fahrenheit}"
+                                               Grid.Row="1" />
+                                        <Switch x:Name="TempSwitch"
+                                                Grid.Column="1"
+                                                Grid.RowSpan="2"
+                                                IsToggled="False"
+                                                VerticalOptions="Center" />
+                                    </Grid>
+                                </OnIdiom.Phone>
+                            </OnIdiom>
+                        </Border.Content>
+                    </Border>
+                    <VerticalStackLayout Padding="{OnIdiom Default='10,5', Phone='15,5'}"
+                                         HorizontalOptions="{OnIdiom Default=Start, Phone=Fill}">
+                        <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
+                        <Picker
+                            x:Name="RefreshComboBox"
+                            Margin="0,10"
+                            HorizontalOptions="FillAndExpand"
+                            MinimumWidthRequest="260"
+                            HandlerChanged="RefreshComboBox_HandlerChanged"
+                            ios:Picker.UpdateMode="WhenFinished" />
+                    </VerticalStackLayout>
+                    <Grid Padding="{OnIdiom Default='10,5', Phone='15,5'}"
+                          RowDefinitions="{OnIdiom Default='Auto,Auto,Auto', Phone='*,*'}" ColumnDefinitions="*,Auto">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="AlertSwitch_Tapped" />
+                        </Grid.GestureRecognizers>
+                        <Label Padding="0,5"
+                               Grid.Column="0"
+                               Grid.Row="0"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               MaxLines="1"
+                               LineBreakMode="TailTruncation"
+                               IsVisible="{OnIdiom Default=false, Phone=true}"
+                               Text="{x:Static res_strings:Resources.pref_title_alerts}" />
+                        <Label Padding="0,5"
+                               Margin="{OnIdiom Default='0,0,0,10', Phone='0'}"
+                               Grid.Column="0"
+                               Grid.Row="1"
+                               VerticalOptions="Center"
+                               VerticalTextAlignment="Center"
+                               MaxLines="1"
+                               LineBreakMode="TailTruncation"
+                               FontSize="{OnIdiom Default=14, Phone=Caption}"
+                               Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
+                        <Switch x:Name="AlertSwitch"
+                                Grid.Column="{OnIdiom Default=0, Phone=1}"
+                                Grid.Row="{OnIdiom Default=2, Phone=0}"
+                                Grid.RowSpan="{OnIdiom Default=1, Phone=2}"
+                                Margin="0,2"
+                                IsToggled="False"
+                                VerticalOptions="Center" />
+                    </Grid>
                 </VerticalStackLayout>
             </Border>
         </VerticalStackLayout>

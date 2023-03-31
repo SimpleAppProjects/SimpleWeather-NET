@@ -50,7 +50,6 @@
                     WidthRequest="24">
                     <Image.GestureRecognizers>
                         <TapGestureRecognizer Tapped="BackButton_Tapped" />
-                        <ClickGestureRecognizer Clicked="BackButton_Clicked" />
                     </Image.GestureRecognizers>
                     <Image.Source>
                         <maticons:MaterialIcon
@@ -63,7 +62,6 @@
                 <Entry
                     x:Name="SearchView"
                     Grid.Column="1"
-                    Margin="0,0,8,0"
                     android:Entry.ImeOptions="Search"
                     ios:Entry.CursorColor="{StaticResource AppAccentColor}"
                     Background="{x:Null}"
@@ -110,7 +108,7 @@
                 VerticalOptions="StartAndExpand">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <ListView
@@ -128,7 +126,7 @@
                         Grid.Row="1"
                         Padding="8"
                         FontAttributes="Bold"
-                        FontSize="Default"
+                        FontSize="Caption"
                         Text="{Binding Footer, Mode=OneWay}"
                         TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                                     Dark={StaticResource DarkOnBackground}}" />

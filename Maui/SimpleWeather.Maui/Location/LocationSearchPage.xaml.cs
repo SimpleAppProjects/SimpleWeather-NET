@@ -9,6 +9,7 @@ using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SimpleWeather.Maui.Location;
 
@@ -22,7 +23,7 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
     public LocationSearchPage()
     {
         InitializeComponent();
-#if ANDROID
+#if ANDROID || __IOS__
         this.SearchView.HandlerChanged += SearchView_HandlerChanged;
 #endif
     }
@@ -38,6 +39,11 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
             view.Focusable = true;
             view.FocusableInTouchMode = true;
             view.SetSingleLine();
+        }
+#elif __IOS__
+        if (this.SearchView.Handler?.PlatformView is UIKit.UITextField view)
+        {
+            view.BorderStyle = UIKit.UITextBorderStyle.None;
         }
 #endif
     }
@@ -216,11 +222,13 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
     protected override void OnDisappearing()
     {
         base.OnDisappearing();
+
         if (PendingMessage != null)
         {
             Dispatcher.Dispatch(() =>
             {
                 WeakReferenceMessenger.Default.Send(PendingMessage);
+                PendingMessage = null;
             });
         }
     }

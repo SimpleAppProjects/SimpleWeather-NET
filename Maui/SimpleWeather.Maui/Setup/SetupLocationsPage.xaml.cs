@@ -11,6 +11,7 @@ using SimpleWeather.NET.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using System.ComponentModel;
+using System.Diagnostics;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Setup;
@@ -148,8 +149,6 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
 
         SettingsManager.WeatherLoaded = true;
 
-        // Pop Modals
-        // await App.Current.Navigation.PopModalAsync();
         // Setup complete
         ViewModel.LocationData = location;
         ViewModel.Next();
@@ -208,14 +207,7 @@ public partial class SetupLocationsPage : BaseSetupPage, IPageVerification, ISna
         await App.Current.Navigation.PushAsync(new LocationSearchPage());
     }
 
-    private async void SearchBar_Clicked(object sender, EventArgs e)
-    {
-#if WINDOWS || MACCATALYST
-        await App.Current.Navigation.PushAsync(new LocationSearchPage());
-#endif
-    }
-
-    private void SearchBar_SizeChanged(System.Object sender, System.EventArgs e)
+    private void SearchBar_SizeChanged(object sender, EventArgs e)
     {
         if (SearchBar.Width > 1080)
         {

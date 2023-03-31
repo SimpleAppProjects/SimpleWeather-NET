@@ -10,6 +10,7 @@ using Microsoft.Maui.ApplicationModel;
 using UserNotifications;
 #endif
 using System.Threading.Tasks;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Common.Helpers
 {
@@ -36,24 +37,30 @@ namespace SimpleWeather.Common.Helpers
 #endif
         }
 
-        public static Task RequestNotificationPermission()
+        public static async Task<bool> RequestNotificationPermission()
         {
 #if WINDOWS
-            return Task.CompletedTask;
+            return true;
 #elif __ANDROID__
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
             {
-                return Permissions.RequestAsync<NotificationPermission>();
+                var result = await Permissions.RequestAsync<NotificationPermission>();
+                return result == PermissionStatus.Granted;
             }
             else
             {
-                return Task.CompletedTask;
+                return true;
             }
 #elif __IOS__ || __MACCATALYST__
             var notificationCenter = UNUserNotificationCenter.Current;
-            return notificationCenter.RequestAuthorizationAsync(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Provisional);
+            var result = await notificationCenter.RequestAuthorizationAsync(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Provisional);
+            if (result.Item2 != null)
+            {
+                Logger.WriteLine(LoggerLevel.Debug, $"NotificationPermission: error - {result.Item2.Description}");
+            }
+            return result.Item1;
 #else
-            return Task.CompletedTask;
+            return true;
 #endif
         }
 

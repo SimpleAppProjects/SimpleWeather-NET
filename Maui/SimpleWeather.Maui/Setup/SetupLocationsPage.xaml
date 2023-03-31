@@ -44,7 +44,7 @@
             <Frame
                 x:Name="SearchBar"
                 Grid.Row="1"
-                Margin="16,8"
+                Margin="16,0"
                 Padding="8"
                 BackgroundColor="{AppThemeBinding Light={StaticResource LightSecondaryContainer},
                                                   Dark={StaticResource DarkSecondaryContainer}}"
@@ -56,7 +56,6 @@
                 SizeChanged="SearchBar_SizeChanged">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="SearchBar_Tapped" />
-                    <ClickGestureRecognizer Clicked="SearchBar_Clicked" />
                 </Frame.GestureRecognizers>
                 <Frame.Content>
                     <Grid VerticalOptions="Center">
@@ -66,13 +65,14 @@
                         </Grid.ColumnDefinitions>
                         <Image Grid.Column="0" Margin="4">
                             <Image.Source>
-                                <maticons:MaterialIcon Symbol="Search" Color="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer}, Dark={StaticResource DarkOnSecondaryContainer}}" />
+                                <maticons:MaterialIcon Symbol="Search" Size="24"
+                                                       Color="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer}, Dark={StaticResource DarkOnSecondaryContainer}}" />
                             </Image.Source>
                         </Image>
                         <Label
                             Grid.Column="1"
                             Margin="22,0,0,0"
-                            FontSize="Default"
+                            FontSize="14"
                             Text="{x:Static res_strings:Resources.setup_location_prompt}"
                             TextColor="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},
                                                         Dark={StaticResource DarkOnSecondaryContainer}}"
@@ -88,7 +88,8 @@
                                                   Dark={StaticResource DarkSecondaryContainer}}"
                 BorderColor="Transparent"
                 Clicked="GPS_Click"
-                ContentLayout="Right,5"
+                ContentLayout="Left,8"
+                CornerRadius="20"
                 HorizontalOptions="Center"
                 Text="{x:Static res_strings:Resources.label_gpsfollow}"
                 TextColor="{AppThemeBinding Light={StaticResource LightOnSecondaryContainer},

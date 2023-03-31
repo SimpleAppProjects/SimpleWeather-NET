@@ -73,6 +73,7 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
 
         Fahrenheit.CheckedChanged += Fahrenheit_Checked;
         Celsius.CheckedChanged += Celsius_Checked;
+        TempSwitch.Toggled += TempSwitch_Toggled;
         AlertSwitch.Toggled += AlertSwitch_Toggled;
         RefreshComboBox.SelectedIndexChanged += RefreshComboBox_SelectionChanged;
     }
@@ -80,18 +81,28 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
     private async void AlertSwitch_Toggled(object sender, ToggledEventArgs e)
     {
         var sw = sender as Switch;
+        var result = e.Value;
 
-        if (e.Value)
+        if (result)
         {
             if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
             {
-                sw.IsToggled = false;
-                await NotificationPermissionRequestHelper.RequestNotificationPermission();
-                return;
+                result = await NotificationPermissionRequestHelper.RequestNotificationPermission();
+                sw.IsToggled = result;
+
+                if (!result)
+                {
+                    return;
+                }
             }
         }
 
-        SettingsManager.ShowAlerts = e.Value;
+        SettingsManager.ShowAlerts = result;
+    }
+
+    private void AlertSwitch_Tapped(object sender, TappedEventArgs e)
+    {
+        AlertSwitch.IsToggled = !AlertSwitch.IsToggled;
     }
 
     private void RefreshComboBox_SelectionChanged(object sender, EventArgs e)
@@ -144,12 +155,34 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
         }
     }
 
-    private void RadioButton_Clicked(object sender, EventArgs e)
+    private void Scroller_SizeChanged(object sender, EventArgs e)
     {
-#if WINDOWS || MACCATALYST
-        if (sender is RadioButton button && button.IsEnabled)
+        if (DeviceInfo.Idiom != DeviceIdiom.Phone)
         {
-            button.IsChecked = true;
+            StackContainer.WidthRequest = Scroller.Width * 0.75;
+        }
+    }
+
+    private void TempSwitch_Toggled(object sender, ToggledEventArgs e)
+    {
+        SettingsManager.SetDefaultUnits(e.Value ? Units.CELSIUS : Units.FAHRENHEIT);
+        TempSummary.Text = e.Value ? ResStrings.pref_summary_celsius : ResStrings.pref_summary_fahrenheit;
+    }
+
+    private void UnitSwitch_Tapped(object sender, TappedEventArgs e)
+    {
+        TempSwitch.IsToggled = !TempSwitch.IsToggled;
+    }
+
+    private void RefreshComboBox_HandlerChanged(object sender, EventArgs e)
+    {
+#if __IOS__
+        if (sender is VisualElement element && element.Handler?.PlatformView is UIKit.UITextField view)
+        {
+            view.Layer.MasksToBounds = true;
+            view.Layer.CornerRadius = 4f;
+            view.Layer.BorderColor = CoreGraphics.CGColor.CreateSrgb(0.53333f, 0.53333f, 0.53333f, 1f);
+            view.Layer.BorderWidth = 1f;
         }
 #endif
     }

@@ -17,7 +17,7 @@
         <localControls:ViewBox
             x:Name="AppLogo"
             Margin="0,25,0,-10"
-            HeightRequest="175">
+            HeightRequest="{OnIdiom Default=175, Phone=128}">
             <Image Source="app_logo.png" />
         </localControls:ViewBox>
         <Label

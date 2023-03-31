@@ -461,7 +461,7 @@
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
                             <Setter Property="OnColor" Value="{AppThemeBinding Light={StaticResource LightInverseOnSurface}, Dark={StaticResource DarkInverseOnSurface}}" />
-                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
                         </VisualState.Setters>
                     </VisualState>
                     <VisualState x:Name="On">
@@ -472,7 +472,7 @@
                     </VisualState>
                     <VisualState x:Name="Off">
                         <VisualState.Setters>
-                            <Setter Property="ThumbColor" Value="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
+                            <Setter Property="ThumbColor" Value="White" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>

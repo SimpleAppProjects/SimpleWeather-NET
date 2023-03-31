@@ -87,7 +87,7 @@
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="location:LocationQuery">
         <ViewCell>
             <Grid
-                Padding="0,5"
+                Padding="16,20"
                 HorizontalOptions="FillAndExpand"
                 MinimumHeightRequest="65">
                 <Grid.ColumnDefinitions>
@@ -98,7 +98,6 @@
                 <Image
                     x:Name="PinIcon"
                     Grid.Column="0"
-                    Margin="16,0,0,0"
                     HeightRequest="24"
                     IsVisible="{Binding IsEmpty, Converter={StaticResource inverseBoolConverter}}"
                     VerticalOptions="Center">
@@ -115,7 +114,7 @@
                         x:Name="LocationName"
                         Grid.Row="0"
                         Padding="16,0,0,0"
-                        FontSize="Body"
+                        FontSize="Small"
                         Text="{Binding LocationName, Mode=OneWay}"
                         VerticalTextAlignment="Center" />
                     <Label

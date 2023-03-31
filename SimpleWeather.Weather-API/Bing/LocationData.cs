@@ -16,41 +16,57 @@ namespace SimpleWeather.Weather_API.Bing
 
             var model = new LocationQuery();
 
-            string town, region;
-
-            // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(place.Name))
-                town = place.Name;
-            else
-                town = place.Address.Locality;
-
-            // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(place.Address.AdminDistrict))
-                region = place.Address.AdminDistrict;
-            else
-                region = place.Address.AdminDistrict2;
-
-            if (String.IsNullOrEmpty(region) || Equals(town, region))
+            if (!string.IsNullOrWhiteSpace(place?.Name))
             {
-                region = place.Address.CountryRegion;
+                model.LocationName = place.Name;
+
+                if (!string.IsNullOrWhiteSpace(place?.Address?.AdminDistrict) && !model.LocationName.EndsWith(place.Address.AdminDistrict))
+                {
+                    model.LocationName = $"{model.LocationName}, {place.Address.AdminDistrict}";
+                }
             }
-
-            if (!Equals(region, place.Address.CountryRegion))
+            else if (!string.IsNullOrWhiteSpace(place?.Address?.FormattedAddress))
             {
-                if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
-                    !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
-                    model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
+                model.LocationName = place.Address.FormattedAddress;
+            }
+            else
+            {
+                string town, region;
+
+                // Try to get district name or fallback to city name
+                if (!String.IsNullOrEmpty(place?.Address?.Neighborhood))
+                    town = place.Address.Neighborhood;
                 else
+                    town = place.Address.Locality;
+
+                // Try to get district name or fallback to city name
+                if (!String.IsNullOrEmpty(place.Address.AdminDistrict))
+                    region = place.Address.AdminDistrict;
+                else
+                    region = place.Address.AdminDistrict2;
+
+                if (String.IsNullOrEmpty(region) || Equals(town, region))
+                {
+                    region = place.Address.CountryRegion;
+                }
+
+                if (!Equals(region, place.Address.CountryRegion))
+                {
+                    if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
+                        !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
+                        model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
+                    else
+                        model.LocationName = string.Format("{0}, {1}", town, region);
+                }
+                else if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
+                    !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
+                {
+                    model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
+                }
+                else
+                {
                     model.LocationName = string.Format("{0}, {1}", town, region);
-            }
-            else if (!String.IsNullOrEmpty(place.Address.AdminDistrict2) &&
-                !(place.Address.AdminDistrict2.Equals(region) || place.Address.AdminDistrict2.Equals(town)))
-            {
-                model.LocationName = string.Format("{0}, {1}, {2}", town, place.Address.AdminDistrict2, region);
-            }
-            else
-            {
-                model.LocationName = string.Format("{0}, {1}", town, region);
+                }
             }
 
             model.LocationCountry = place.Address.CountryRegionIso2;
@@ -137,46 +153,62 @@ namespace SimpleWeather.Weather_API.Bing
 
         public static LocationQuery CreateLocationModel(this WeatherLocationProviderImpl _, BingMapsRESTToolkit.Location result, String weatherAPI)
         {
-            if (result == null)
+            if (result?.Address == null)
                 return null;
 
             var model = new LocationQuery();
 
-            string town, region;
-
-            // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(result.Name))
-                town = result.Name;
-            else
-                town = result.Address.Locality;
-
-            // Try to get district name or fallback to city name
-            if (!String.IsNullOrEmpty(result.Address.AdminDistrict))
-                region = result.Address.AdminDistrict;
-            else
-                region = result.Address.AdminDistrict2;
-
-            if (String.IsNullOrEmpty(region) || Equals(town, region))
+            if (!string.IsNullOrWhiteSpace(result?.Name))
             {
-                region = result.Address.CountryRegion;
+                model.LocationName = result.Name;
+
+                if (!string.IsNullOrWhiteSpace(result?.Address?.AdminDistrict) && !model.LocationName.EndsWith(result.Address.AdminDistrict))
+                {
+                    model.LocationName = $"{model.LocationName}, {result.Address.AdminDistrict}";
+                }
             }
-
-            if (!Equals(region, result.Address.CountryRegion))
+            else if (!string.IsNullOrWhiteSpace(result?.Address?.FormattedAddress))
             {
-                if (!String.IsNullOrEmpty(result.Address.AdminDistrict2) &&
-                    !(result.Address.AdminDistrict2.Equals(region) || result.Address.AdminDistrict2.Equals(town)))
-                    model.LocationName = string.Format("{0}, {1}, {2}", town, result.Address.AdminDistrict2, region);
+                model.LocationName = result.Address.FormattedAddress;
+            }
+            else
+            {
+                string town, region;
+
+                // Try to get district name or fallback to city name
+                if (!String.IsNullOrEmpty(result?.Address?.Neighborhood))
+                    town = result.Address.Neighborhood;
                 else
+                    town = result.Address.Locality;
+
+                // Try to get district name or fallback to city name
+                if (!String.IsNullOrEmpty(result.Address.AdminDistrict))
+                    region = result.Address.AdminDistrict;
+                else
+                    region = result.Address.AdminDistrict2;
+
+                if (String.IsNullOrEmpty(region) || Equals(town, region))
+                {
+                    region = result.Address.CountryRegion;
+                }
+
+                if (!Equals(region, result.Address.CountryRegion))
+                {
+                    if (!String.IsNullOrEmpty(result.Address.AdminDistrict2) &&
+                        !(result.Address.AdminDistrict2.Equals(region) || result.Address.AdminDistrict2.Equals(town)))
+                        model.LocationName = string.Format("{0}, {1}, {2}", town, result.Address.AdminDistrict2, region);
+                    else
+                        model.LocationName = string.Format("{0}, {1}", town, region);
+                }
+                else if (!String.IsNullOrEmpty(result.Address.AdminDistrict2) &&
+                    !(result.Address.AdminDistrict2.Equals(region) || result.Address.AdminDistrict2.Equals(town)))
+                {
+                    model.LocationName = string.Format("{0}, {1}, {2}", town, result.Address.AdminDistrict2, region);
+                }
+                else
+                {
                     model.LocationName = string.Format("{0}, {1}", town, region);
-            }
-            else if (!String.IsNullOrEmpty(result.Address.AdminDistrict2) &&
-                !(result.Address.AdminDistrict2.Equals(region) || result.Address.AdminDistrict2.Equals(town)))
-            {
-                model.LocationName = string.Format("{0}, {1}, {2}", town, result.Address.AdminDistrict2, region);
-            }
-            else
-            {
-                model.LocationName = string.Format("{0}, {1}", town, region);
+                }
             }
 
             model.LocationCountry = result.Address.CountryRegionIso2;
