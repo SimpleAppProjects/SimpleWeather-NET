@@ -5,9 +5,9 @@ using SimpleWeather.Icons;
 
 namespace SimpleWeather.Maui.Controls;
 
-public partial class WeatherDetailPanel : ContentView
+public partial class WeatherDetailExtraPanel : ContentView
 {
-    public WeatherDetailViewModel ViewModel { get; }
+    public WeatherDetailExtraViewModel ViewModel { get; }
     private readonly WeatherIconsManager wim;
 
     public bool UseMonochrome
@@ -19,11 +19,13 @@ public partial class WeatherDetailPanel : ContentView
     public static readonly BindableProperty UseMonochromeProperty =
         BindableProperty.Create(nameof(UseMonochrome), typeof(bool), typeof(WeatherDetailPanel), false);
 
-    public WeatherDetailPanel()
-	{
-		InitializeComponent();
+    public event EventHandler CloseButtonClicked;
+
+    public WeatherDetailExtraPanel()
+    {
+        InitializeComponent();
         wim = SharedModule.Instance.WeatherIconsManager;
-        ViewModel = new WeatherDetailViewModel();
+        ViewModel = new WeatherDetailExtraViewModel();
         this.BindingContextChanged += (sender, args) =>
         {
             if (BindingContext is HourlyForecastItemViewModel)
@@ -34,5 +36,10 @@ public partial class WeatherDetailPanel : ContentView
             ApplyBindings();
             UseMonochrome = wim.ShouldUseMonochrome();
         };
-	}
+    }
+
+    private void CloseButton_Clicked(object sender, EventArgs e)
+    {
+        CloseButtonClicked?.Invoke(this, EventArgs.Empty);
+    }
 }

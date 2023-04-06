@@ -12,7 +12,7 @@
     MinimumWidthRequest="340">
     <Grid
         ColumnDefinitions="Auto,*"
-        RowDefinitions="Auto,Auto,Auto,Auto"
+        RowDefinitions="Auto,*,Auto,Auto"
         VerticalOptions="FillAndExpand">
         <Label
             x:Name="AQILabel"
@@ -67,7 +67,7 @@
                 Grid.Column="1"
                 Padding="6"
                 FontSize="14"
-                LineBreakMode="TailTruncation"
+                LineBreakMode="WordWrap"
                 MaxLines="3"
                 Text="{Binding Description}"
                 VerticalOptions="Start" />

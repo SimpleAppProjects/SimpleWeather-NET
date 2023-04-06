@@ -6,7 +6,6 @@
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls">
     <ContentView.GestureRecognizers>
         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-        <ClickGestureRecognizer Clicked="ClickGestureRecognizer_Clicked" />
     </ContentView.GestureRecognizers>
 
     <HorizontalStackLayout VerticalOptions="Center">

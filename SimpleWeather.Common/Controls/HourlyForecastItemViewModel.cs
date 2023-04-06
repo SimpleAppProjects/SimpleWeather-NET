@@ -26,11 +26,13 @@ namespace SimpleWeather.Common.Controls
 
             if (culture.DateTimeFormat.ShortTimePattern.Contains("H"))
             {
+                LongDate = forecast.date.ToString("dddd HH:00", culture);
                 Date = forecast.date.ToString("ddd HH:00", culture);
                 ShortDate = forecast.date.ToString("HH:00", culture);
             }
             else
             {
+                LongDate = forecast.date.ToString("dddd h tt", culture);
                 Date = forecast.date.ToString("ddd h tt", culture);
                 ShortDate = forecast.date.ToString("ht", culture);
             }

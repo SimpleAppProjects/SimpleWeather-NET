@@ -13,6 +13,7 @@ namespace SimpleWeather.Common.Controls
         public string WeatherIcon { get; set; }
         public string Date { get; set; }
         public string ShortDate { get; set; }
+        public string LongDate { get; set; }
         public string Condition { get; set; }
         public string HiTemp { get; set; }
         public string WindDir { get; set; }

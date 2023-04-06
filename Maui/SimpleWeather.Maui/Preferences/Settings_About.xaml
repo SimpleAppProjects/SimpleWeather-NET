@@ -13,7 +13,7 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
-    Title="{x:Static res_strings:Resources.title_activity_settings}"
+    Title="{x:Static res_strings:Resources.pref_title_about}"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                       Dark={StaticResource DarkBackground}}"
     Shell.NavBarIsVisible="True">

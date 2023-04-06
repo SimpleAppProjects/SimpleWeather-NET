@@ -58,7 +58,7 @@ namespace SimpleWeather.NET.Controls.Graphs
 #if WINDOWS
         protected float IconHeight = 48f; // 30dp // 48dp
 #else
-        protected float IconHeight = 48f;
+        protected readonly float IconHeight;
 #endif
 
         public BaseGraphView() : base()
@@ -95,6 +95,13 @@ namespace SimpleWeather.NET.Controls.Graphs
             this.HandlerChanged += BaseGraphView_HandlerChanged;
             this.Loaded += BaseGraphView_Loaded;
             this.Unloaded += BaseGraphView_Unloaded;
+#endif
+
+#if !WINDOWS
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                IconHeight = 36f;
+            else
+                IconHeight = 48f;
 #endif
         }
 

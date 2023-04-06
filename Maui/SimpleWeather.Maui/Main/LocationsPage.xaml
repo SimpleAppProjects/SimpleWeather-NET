@@ -28,13 +28,13 @@
             IsGrouped="True"
             CanReorderItems="False"
             SelectionMode="None"
-            Margin="16,0"
+            Margin="16,8,16,0"
             SizeChanged="LocationsPanel_SizeChanged"
             IsVisible="False">
             <CollectionView.GroupHeaderTemplate>
                 <DataTemplate x:DataType="local:LocationPanelGroup">
                     <Label
-                        Padding="16"
+                        Padding="8,0"
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
                         Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
@@ -47,7 +47,7 @@
                     Orientation="Vertical"
                     Span="1"
                     HorizontalItemSpacing="4"
-                    VerticalItemSpacing="8" />
+                    VerticalItemSpacing="4" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate>

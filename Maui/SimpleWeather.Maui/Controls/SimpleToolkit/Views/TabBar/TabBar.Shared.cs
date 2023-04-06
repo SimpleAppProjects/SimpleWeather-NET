@@ -1,4 +1,5 @@
 ﻿using SimpleToolkit.Core;
+using System.Collections;
 using System.Runtime.CompilerServices;
 
 namespace SimpleToolkit.SimpleShell.Controls
@@ -93,6 +94,12 @@ namespace SimpleToolkit.SimpleShell.Controls
         {
             get => (IEnumerable<BaseShellItem>)GetValue(ItemsProperty);
             set => SetValue(ItemsProperty, value);
+        }
+
+        public IEnumerable _Items
+        {
+            get => Items;
+            set => Items = value.Cast<BaseShellItem>();
         }
 
         public virtual IReadOnlyList<BaseShellItem> HiddenItems

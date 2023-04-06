@@ -35,87 +35,104 @@
             Style="{DynamicResource WeatherNowSectionLabel}" />
         <FlexLayout
             x:Name="MoonStack"
-            Padding="15,0"
+            Padding="{OnIdiom Default='15,0', Phone='4,0'}"
             HorizontalOptions="Center"
             Wrap="NoWrap" AlignContent="Center" JustifyContent="Center" AlignItems="Center">
             <!--  New Moon  -->
             <controls:IconControl
                 x:Name="NewMoonIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_NEW}" />
             <!--  Waxing Crescent  -->
             <controls:IconControl
                 x:Name="WaxCresIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}" />
             <!--  First Qtr  -->
             <controls:IconControl
                 x:Name="FirstQtrIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_FIRST_QUARTER}" />
             <!--  Waxing Gibbous  -->
             <controls:IconControl
                 x:Name="WaxGibbousIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}" />
             <!--  Full Moon  -->
             <controls:IconControl
                 x:Name="FullMoonIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_FULL}" />
             <!--  Waning Gibbous  -->
             <controls:IconControl
                 x:Name="WanGibbousIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}" />
             <!--  Third Qtr  -->
             <controls:IconControl
                 x:Name="ThirdQtrIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_THIRD_QUARTER}" />
             <!--  Waning Crescent  -->
             <controls:IconControl
                 x:Name="WanCrescentIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="50"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                MaximumHeightRequest="48"
+                MaximumWidthRequest="48"
+                MinimumHeightRequest="36"
+                MinimumWidthRequest="36"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 Style="{DynamicResource DisabledMoonStyle}"
                 WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WANING_CRESCENT_3}" />
         </FlexLayout>
-        <Label Padding="10"
+        <Label Padding="12"
                HorizontalOptions="Center"
                VerticalOptions="Center"
-               FontSize="18"
-               Text="{Binding MoonPhase.Value}" />
+               FontSize="{OnIdiom Default=18, Phone=16}"
+               LineHeight="1.25"
+               Text="{Binding MoonPhase.Value, Mode=OneWay}" />
         <HorizontalStackLayout HorizontalOptions="Center">
             <HorizontalStackLayout
                 Margin="10,0"
@@ -124,7 +141,7 @@
                 <controls:IconControl
                     x:Name="MoonriseIcon"
                     WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="35"
+                    HeightRequest="{OnIdiom Default=36, Phone=32}"
                     IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
                     IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
                     WeatherIcon="{x:Static wicons:WeatherIcons.MOONRISE}" />
@@ -132,7 +149,7 @@
                     x:Name="MoonriseText"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    FontSize="16"
+                    FontSize="{OnIdiom Default=18, Phone=16}"
                     Text="{Binding Moonrise}" />
             </HorizontalStackLayout>
             <HorizontalStackLayout
@@ -142,7 +159,7 @@
                 <controls:IconControl
                     x:Name="MoonsetIcon"
                     WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="35"
+                    HeightRequest="{OnIdiom Default=36, Phone=32}"
                     IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
                     IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
                     WeatherIcon="{x:Static wicons:WeatherIcons.MOONSET}" />
@@ -150,7 +167,7 @@
                     x:Name="MoonsetText"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
-                    FontSize="16"
+                    FontSize="{OnIdiom Default=18, Phone=16}"
                     Text="{Binding Moonset}" />
             </HorizontalStackLayout>
         </HorizontalStackLayout>

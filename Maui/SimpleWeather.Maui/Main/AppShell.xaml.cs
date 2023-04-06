@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls.AppBar;
@@ -147,10 +148,14 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
     private void UpdateAppBar()
     {
+        // Ignore appbar updates for modals
+        if (this.Navigation.ModalStack.Any()) return;
+
         if (this.CurrentPage is Page currentPage)
         {
             ShellAppBar.Bind(AppBar.TitleProperty, nameof(currentPage.Title), BindingMode.OneWay, source: currentPage);
             ShellAppBar.Bind(AppBar.ToolbarItemsProperty, nameof(currentPage.ToolbarItems), BindingMode.OneWay, source: currentPage);
+            ShellAppBar.TitleView = Shell.GetTitleView(currentPage);
 
             if (currentPage.ToolbarItems is INotifyCollectionChanged notifyColl)
             {
@@ -166,6 +171,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         else
         {
             ShellAppBar.ClearValue(AppBar.TitleProperty);
+            ShellAppBar.ClearValue(AppBar.TitleViewProperty);
             ShellAppBar.ClearValue(AppBar.ToolbarItemsProperty);
             ShellAppBar.IsVisible = true;
         }

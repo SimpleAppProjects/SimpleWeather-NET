@@ -27,6 +27,7 @@ namespace SimpleWeather.Common.Controls
             WeatherIcon = forecast.icon;
             Date = forecast.date.ToString("ddd dd", culture);
             ShortDate = forecast.date.ToString("ddd", culture);
+            LongDate = forecast.date.ToString("D", culture);
             Condition = wm.SupportsWeatherLocale ? forecast.condition : wm.GetWeatherCondition(forecast.icon);
             try
             {

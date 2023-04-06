@@ -61,7 +61,8 @@
             <Image
                 x:Name="GPSIcon"
                 WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="{Binding Source={x:Reference LocationName}, Path=Height}"
+                HeightRequest="20"
+                Aspect="AspectFit"
                 Margin="0,0,8,0"
                 VerticalOptions="Center"
                 IsVisible="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(LocationType), TargetNullValue=false, FallbackValue=false, Mode=OneWay}">

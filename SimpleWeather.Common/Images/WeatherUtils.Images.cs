@@ -282,7 +282,7 @@ namespace SimpleWeather.Common.Images
 #if !WINUI
                     else if (uri.Scheme == "maui-appx")
                     {
-                        var filePath = $"{uri.Authority}{uri.AbsolutePath}";
+                        var filePath = imgData.ImageUrl.ReplaceFirst("maui-appx://", "");
 
                         try
                         {

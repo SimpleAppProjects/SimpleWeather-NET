@@ -1,9 +1,13 @@
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using SimpleToolkit.Core;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.IncrementalLoadingCollection;
+using SimpleWeather.Maui.Utils;
 using SimpleWeather.Maui.ViewModels;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.Utils;
@@ -112,6 +116,50 @@ public partial class WeatherDetailsPage : ViewModelPage
         if (ListControl.ItemsSource is ISupportIncrementalLoading loadingCollection)
         {
             await loadingCollection.LoadMoreItemsAsync((uint)ListControl.RemainingItemsThreshold);
+        }
+    }
+
+    private async void DetailPanel_Tapped(object sender, TappedEventArgs e)
+    {
+        var deviceIdiom = DeviceInfo.Idiom;
+
+        if (deviceIdiom == DeviceIdiom.Phone || deviceIdiom == DeviceIdiom.Tablet || deviceIdiom == DeviceIdiom.Desktop)
+        {
+            var content = new WeatherDetailExtraPanel()
+            {
+                BindingContext = (sender as BindableObject)?.BindingContext,
+            };
+
+            if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+            {
+                var popover = new Popover()
+                {
+                    Content = content.MinHeight(this.Height / 2d).MinWidth(420).Apply(it => it.MaximumWidthRequest = 480)
+                };
+
+                content.CloseButtonClicked += (s, e) =>
+                {
+                    popover.Hide();
+                };
+
+                popover.Show(sender as View);
+            }
+            else
+            {
+                var page = new ContentPage()
+                {
+                    Content = content
+                };
+
+                content.CloseButtonClicked += async (s, e) =>
+                {
+                    await this.Navigation.PopModalAsync(true);
+                };
+
+                page.On<iOS>().SetModalPresentationStyle(UIModalPresentationStyle.FormSheet);
+
+                await this.Navigation.PushModalAsync(page);
+            }
         }
     }
 }

@@ -14,6 +14,8 @@
     xmlns:simpleControls="clr-namespace:SimpleToolkit.SimpleShell.Controls"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     xmlns:win="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.WindowsSpecific;assembly=Microsoft.Maui.Controls"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
     Shell.BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                             Dark={StaticResource DarkBackground}}"
     Shell.NavBarIsVisible="False"
@@ -34,7 +36,22 @@
     x:FieldModifier="private">
 
     <Shell.Resources>
-        <Style x:Key="AppShellTabBar" TargetType="simpleControls:TabBar">
+        <Style x:Key="MobileAppShellTabBarStyle" TargetType="simpleControls:TabBar">
+            <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                                 Dark={StaticResource DarkOnSurface}}"/>
+            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightOnPrimary},
+                                                                          Dark={StaticResource DarkOnPrimary}}"/>
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                                                 Dark={StaticResource DarkOnSurface}}"/>
+            <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                                          Dark={StaticResource DarkPrimary}}"/>
+            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightSurface},
+                                                                  Dark={StaticResource DarkSurface}}"/>
+            <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                                    Dark={StaticResource DarkPrimary}}"/>
+            <Setter Property="DesignLanguage" Value="{OnIdiom Phone='Material3', Default='Fluent'}"/>
+        </Style>
+        <Style x:Key="DefaultAppShellTabBarStyle" TargetType="simpleControls:TabBar">
             <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                                  Dark={StaticResource DarkOnSurface}}"/>
             <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary},
@@ -49,6 +66,55 @@
                                                                     Dark={StaticResource DarkPrimary}}"/>
             <Setter Property="DesignLanguage" Value="{OnIdiom Phone='Material3', Default='Fluent'}"/>
         </Style>
+        <x:Array x:Key="DesktopTabItems" Type="{x:Type BaseShellItem}">
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_weathernow}"
+                ContentTemplate="{DataTemplate local:WeatherNow}"
+                Icon="{maticons:MaterialIcon Symbol=LightMode, Size=24}"
+                Route="weather" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_alerts}"
+                ContentTemplate="{DataTemplate local:WeatherAlertPage}"
+                Icon="{maticons:MaterialIcon Symbol=Error, Size=24}"
+                Route="alerts" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_radar}"
+                ContentTemplate="{DataTemplate local:WeatherRadarPage}"
+                Icon="{maticons:MaterialIcon Symbol=Radar, Size=24}"
+                Route="radar" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_locations}"
+                ContentTemplate="{DataTemplate local:LocationsPage}"
+                Icon="{maticons:MaterialIcon Symbol=StarBorder, Size=24}"
+                Route="locations" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.title_activity_settings}"
+                ContentTemplate="{DataTemplate settings:Settings_General}"
+                Icon="{maticons:MaterialIcon Symbol=Settings, Size=24}"
+                Route="settings" />
+        </x:Array>
+        <x:Array x:Key="MobileTabItems" Type="{x:Type BaseShellItem}">
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_weathernow}"
+                ContentTemplate="{DataTemplate local:WeatherNow}"
+                Icon="{maticons:MaterialIcon Symbol=LightMode, Size=24}"
+                Route="weather" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_radar}"
+                ContentTemplate="{DataTemplate local:WeatherRadarPage}"
+                Icon="{maticons:MaterialIcon Symbol=Radar, Size=24}"
+                Route="radar" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_locations}"
+                ContentTemplate="{DataTemplate local:LocationsPage}"
+                Icon="{maticons:MaterialIcon Symbol=StarBorder, Size=24}"
+                Route="locations" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.title_activity_settings}"
+                ContentTemplate="{DataTemplate settings:Settings_General}"
+                Icon="{maticons:MaterialIcon Symbol=Settings, Size=24}"
+                Route="settings" />
+        </x:Array>
     </Shell.Resources>
 
     <!-- Default content -->
@@ -67,8 +133,8 @@
                 Grid.Row="0"
                 BarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
                                                      Dark={StaticResource DarkSurface}}"
-                BarTextColor="{AppThemeBinding Light={StaticResource LightPrimary},
-                                               Dark={StaticResource DarkPrimary}}"
+                BarTextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
+                                               Dark={StaticResource DarkOnSurface}}"
                 BorderColor="{AppThemeBinding Light={StaticResource LightOutline},
                                               Dark={StaticResource DarkOutline}}"
                 BorderHeight="{OnPlatform iOS=1, MacCatalyst=1, Default=0}"
@@ -88,36 +154,12 @@
                 ItemSelected="ShellTabBar_ItemSelected"
                 ShowButtonWhenMoreItemsDoNotFit="True"
                 ShowMenuOnMoreButtonClick="True"
-                Style="{StaticResource AppShellTabBar}">
-                <simpleControls:TabBar.Items>
-                    <x:Array Type="{x:Type BaseShellItem}">
-                        <ShellContent
-                            Title="{x:Static res_strings:Resources.label_nav_weathernow}"
-                            ContentTemplate="{DataTemplate local:WeatherNow}"
-                            Icon="{maticons:MaterialIcon Symbol=LightMode, Size=24}"
-                            Route="weather" />
-                        <ShellContent
-                            Title="{x:Static res_strings:Resources.label_nav_alerts}"
-                            ContentTemplate="{DataTemplate local:WeatherAlertPage}"
-                            Icon="{maticons:MaterialIcon Symbol=Error, Size=24}"
-                            Route="alerts" />
-                        <ShellContent
-                            Title="{x:Static res_strings:Resources.label_radar}"
-                            ContentTemplate="{DataTemplate local:WeatherRadarPage}"
-                            Icon="{maticons:MaterialIcon Symbol=Radar, Size=24}"
-                            Route="radar" />
-                        <ShellContent
-                            Title="{x:Static res_strings:Resources.label_nav_locations}"
-                            ContentTemplate="{DataTemplate local:LocationsPage}"
-                            Icon="{maticons:MaterialIcon Symbol=StarBorder, Size=24}"
-                            Route="locations" />
-                        <ShellContent
-                            Title="{x:Static res_strings:Resources.title_activity_settings}"
-                            ContentTemplate="{DataTemplate settings:Settings_General}"
-                            Icon="{maticons:MaterialIcon Symbol=Settings, Size=24}"
-                            Route="settings" />
-                    </x:Array>
-                </simpleControls:TabBar.Items>
+                Style="{OnIdiom Default={StaticResource DefaultAppShellTabBarStyle}, Phone={StaticResource MobileAppShellTabBarStyle}}">
+                <simpleControls:TabBar._Items>
+                    <OnIdiom x:TypeArguments="collections:IEnumerable"
+                             Default="{StaticResource DesktopTabItems}"
+                             Phone="{StaticResource MobileTabItems}"/>
+                </simpleControls:TabBar._Items>
             </simpleControls:TabBar>
         </Grid>
     </simpleShell:SimpleShell.Content>

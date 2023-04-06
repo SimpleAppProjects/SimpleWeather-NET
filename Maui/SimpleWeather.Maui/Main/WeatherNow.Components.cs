@@ -24,6 +24,7 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using System.ComponentModel;
+using System.Timers;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
@@ -34,8 +35,9 @@ public partial class WeatherNow
     private Label CurTemp { get; set; }
     private IconControl WeatherBox { get; set; }
     private Border RadarWebViewContainer { get; set; }
+    private VisualElement GradientOverlay { get; set; }
 
-    private HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
+    private readonly HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
 
     private ToolbarItem CreateRefreshToolbarButton()
     {
@@ -60,7 +62,434 @@ public partial class WeatherNow
         });
     }
 
-    private VerticalStackLayout CreateConditionPanel()
+    private View CreateClockToolbar()
+    {
+        App.Current.Resources.TryGetValue("LightOnSurface", out var LightOnSurface);
+        App.Current.Resources.TryGetValue("DarkOnSurface", out var DarkOnSurface);
+
+        return new Grid()
+        {
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(GridLength.Auto),
+                new ColumnDefinition(GridLength.Star),
+            },
+            RowDefinitions =
+            {
+                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Auto),
+                new RowDefinition(GridLength.Auto),
+                new RowDefinition(GridLength.Star),
+            },
+            HeightRequest = 64,
+            VerticalOptions = LayoutOptions.Start,
+            Children =
+            {
+                new Image()
+                {
+                    Source = new MaterialIcon(MaterialSymbol.Place)
+                        .AppThemeColorBinding(MaterialIcon.ColorProperty, LightOnSurface as Color, DarkOnSurface as Color),
+                    Aspect = Aspect.AspectFit,
+                    HeightRequest = 24,
+                    WidthRequest = 24,
+                    Margin = new Thickness(16, 0)
+                }
+                .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
+                    BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
+                )
+                .Column(0)
+                .RowSpan(4),
+                new Label()
+                {
+                    HorizontalOptions = LayoutOptions.Fill,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalOptions = LayoutOptions.End,
+                    VerticalTextAlignment = TextAlignment.End,
+                    MaxLines = 1,
+                    LineBreakMode = LineBreakMode.TailTruncation,
+                    FontSize = 22,
+                    CharacterSpacing = 0,
+                    Padding = new Thickness(8, 0)
+                }
+                .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
+                    BindingMode.OneWay, source: WNowViewModel, fallbackValue: ResStrings.label_nav_weathernow, targetNullValue: ResStrings.label_nav_weathernow
+                )
+                .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color)
+                .Column(1)
+                .Row(1),
+                new Label()
+                {
+                    HorizontalOptions = LayoutOptions.Center,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    VerticalOptions = LayoutOptions.Center,
+                    VerticalTextAlignment = TextAlignment.Center,
+                    MaxLines = 1,
+                    LineBreakMode = LineBreakMode.TailTruncation,
+                    FontFamily = "OpenSansSemibold",
+                    FontSize = 14,
+                    CharacterSpacing = 0.00714286,
+                    Text = DateTime.Now.ToString("t")
+                }
+                .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color)
+                .Column(0)
+                .ColumnSpan(2)
+                .Row(2)
+                .Apply(it =>
+                {
+                    var timer = new System.Timers.Timer();
+                    timer.AutoReset = false;
+
+                    double GetInterval()
+                    {
+                        DateTime now = DateTime.Now;
+                        return (60 - now.Second) * 1000 - now.Millisecond;
+                    }
+
+                    void UpdateClock()
+                    {
+                        var locale = LocaleUtils.GetLocale();
+                        var tz = WNowViewModel?.UiState?.LocationData?.tz_offset;
+                        var now = DateTimeOffset.Now;
+                        string tzs;
+
+                        if (tz.HasValue)
+                        {
+                            now = now.ToOffset(tz.Value);
+                            tzs = WNowViewModel.UiState.LocationData.tz_short;
+                        }
+                        else
+                        {
+                            tzs = now.ToString("zzz", locale);
+                        }
+
+                        it.Dispatcher.Dispatch(() =>
+                        {
+                            it.Text = $"{now.ToString("t", locale)} {tzs}";
+                        });
+                    }
+
+                    timer.Elapsed += (s, e) =>
+                    {
+                        timer.Interval = GetInterval();
+                        timer.Start();
+                        UpdateClock();
+                    };
+
+                    void WNow_PropertyChanged(object s, PropertyChangedEventArgs e)
+                    {
+                        if (e.PropertyName == nameof(WNowViewModel.Weather))
+                        {
+                            UpdateClock();
+                        }
+                    }
+
+                    it.ParentChanged += (s, e) =>
+                    {
+                        if (it.Parent != null && !timer.Enabled)
+                        {
+                            timer.Interval = GetInterval();
+                            timer.Start();
+                            WNowViewModel.PropertyChanged += WNow_PropertyChanged;
+                        }
+                        else if (it.Parent == null)
+                        {
+                            timer.Stop();
+                            WNowViewModel.PropertyChanged -= WNow_PropertyChanged;
+                        }
+                    };
+
+                    if (it.IsLoaded)
+                    {
+                        timer.Interval = GetInterval();
+                        timer.Start();
+                    }
+                })
+            },
+            ZIndex = 1
+        };
+    }
+
+    private VerticalStackLayout CreateMobileConditionPanel()
+    {
+        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
+        App.Current.Resources.TryGetValue("stringBooleanConverter", out var stringBooleanConverter);
+        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
+
+        this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
+
+        return new VerticalStackLayout()
+        {
+            Children =
+            {
+                // Alert button
+                CreateAlertButton(),
+                // Image
+                new AspectRatioFrame()
+                {
+                    Margin = new Thickness(8, 4, 8, 8),
+                    HorizontalOptions = LayoutOptions.FillAndExpand,
+                    VerticalOptions = LayoutOptions.Center,
+                    Padding = 0,
+                    IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null,
+                    HasShadow = false,
+                    CornerRadius = 8,
+                    IsClippedToBounds = true,
+                    Content = new Grid()
+                    {
+                        Children =
+                        {
+                            new Image()
+                            {
+                                Aspect = Aspect.AspectFill,
+                                IsVisible = Utils.FeatureSettings.BackgroundImage
+                            }
+                            .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
+                                BindingMode.OneWay, source: WNowViewModel
+                            ),
+                            new Button()
+                                .End()
+                                .Bottom()
+                                .Margin(16,0)
+                                .Padding(0)
+                                .BackgroundColor(Colors.Transparent)
+                                .Font(size: 11)
+                                .TextColor(Colors.White)
+                                .Apply(it =>
+                                {
+                                    it.Clicked += (s, e) =>
+                                    {
+                                        WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
+                                        {
+                                            await Browser.Default.OpenAsync(uri);
+                                        });
+                                    };
+
+                                    it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                    WNowViewModel.PropertyChanged += (s, e) =>
+                                    {
+                                        if (e.PropertyName == nameof(WNowViewModel.ImageData))
+                                        {
+                                            it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                        }
+                                    };
+                                })
+                        }
+                    }
+                }
+                .Apply(it =>
+                {
+                    WNowViewModel.PropertyChanged += (s, e) =>
+                    {
+                        if (e.PropertyName == nameof(WNowViewModel.ImageData))
+                        {
+                            it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                        }
+                    };
+
+                    void UpdateSize()
+                    {
+                        var displayInfo = DeviceDisplay.MainDisplayInfo;
+                        var heightDp = displayInfo.Height / displayInfo.Density;
+
+                        if (DeviceInfo.Idiom == DeviceIdiom.Tablet || displayInfo.Orientation == DisplayOrientation.Landscape)
+                        {
+                            it.MaximumHeightRequest = 560;
+                        }
+                        else
+                        {
+                            it.MaximumHeightRequest = 420;
+                        }
+
+                        it.EnableAspectRatio = displayInfo.Orientation != DisplayOrientation.Landscape;
+
+                        if (heightDp >= 800)
+                        {
+                            it.AspectRatio = 1.0f;
+                        }
+                        else if (heightDp >= 720)
+                        {
+                            it.AspectRatio = 1.25f;
+                        }
+                        else
+                        {
+                            it.AspectRatio = 1.5f;
+                        }
+                    }
+
+                    MainGrid.SizeChanged += (s, e) =>
+                    {
+                        UpdateSize();
+                    };
+
+                    UpdateSize();
+                }),
+                // Condition Panel
+                new Grid()
+                {
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Auto),
+                        new ColumnDefinition(GridLength.Auto),
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Auto),
+                    },
+                    RowDefinitions =
+                    {
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Auto),
+                    },
+                    Children =
+                    {
+                        // CurTemp
+                        new Label()
+                        {
+                            Margin = new Thickness(16, 0),
+                            FontFamily = "OpenSansLight",
+                            FontSize = 60,
+                        }
+                        .Column(0)
+                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .Bind<Label, string, Color>(Label.TextColorProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
+                            BindingMode.OneWay, source: WNowViewModel, convert: (p) => GetTempColor()
+                        ),
+                        // HiLoPanel
+                        new Grid()
+                        {
+                            Padding = new Thickness(6,0,6,0),
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                            RowDefinitions =
+                            {
+                                new RowDefinition(GridLength.Star),
+                                new RowDefinition(GridLength.Star),
+                            },
+                            Children =
+                            {
+                                new HorizontalStackLayout()
+                                {
+                                    HorizontalOptions = LayoutOptions.End,
+                                    VerticalOptions = LayoutOptions.End,
+                                    Children =
+                                    {
+                                        new Label()
+                                            .Font(size: 20)
+                                            .Height(30)
+                                            .TextCenterHorizontal()
+                                            .CenterVertical()
+                                            .TextCenterVertical()
+                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.HiTemp)}",
+                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            )
+                                            .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                                        new IconControl()
+                                        {
+                                            IconColor = Colors.OrangeRed,
+                                            IconProvider = WeatherIconsEFProvider.KEY,
+                                            ShowAsMonochrome = true,
+                                            WeatherIcon = WeatherIcons.DIRECTION_UP,
+                                            IconWidth = 25,
+                                            IconHeight = 25,
+                                            WidthRequest = 25
+                                        }
+                                    },
+                                }.Row(0),
+                                new HorizontalStackLayout()
+                                {
+                                    HorizontalOptions = LayoutOptions.End,
+                                    VerticalOptions = LayoutOptions.Start,
+                                    Children =
+                                    {
+                                        new Label()
+                                            .Font(size: 20)
+                                            .Height(30)
+                                            .TextCenterHorizontal()
+                                            .CenterVertical()
+                                            .TextCenterVertical()
+                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.LoTemp)}",
+                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            )
+                                            .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                                        new IconControl()
+                                        {
+                                            IconColor = Colors.DeepSkyBlue,
+                                            IconProvider = WeatherIconsEFProvider.KEY,
+                                            ShowAsMonochrome = true,
+                                            WeatherIcon = WeatherIcons.DIRECTION_DOWN,
+                                            IconWidth = 25,
+                                            IconHeight = 25,
+                                            WidthRequest = 25
+                                        }
+                                    },
+                                }.Row(1),
+                            }
+                        }
+                        .Column(1)
+                        .Bind(VisualElement.HeightRequestProperty, nameof(Height), source: CurTemp),
+                        // WeatherBox
+                        new IconControl()
+                        {
+                            HeightRequest = 88,
+                            HorizontalOptions = LayoutOptions.End,
+                            VerticalOptions = LayoutOptions.Center,
+                            IconHeight = 88,
+                            IconWidth = 88,
+                            WidthRequest = 88
+                        }
+                        .Column(3)
+                        .Bind(IconControl.WeatherIconProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherIcon)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .AppThemeColorBinding(IconControl.IconColorProperty, Colors.Black, Colors.White),
+                        // CurCondition
+                        new Label()
+                            .Margins(16, 0, 16, 4)
+                            .Padding(4)
+                            .Font(size: 18)
+                            .Row(1)
+                            .ColumnSpan(4)
+                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurCondition)}",
+                                BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                        // Summary
+                        new Label()
+                        {
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            //MaxLines = 3,
+                        }
+                        .Row(2)
+                        .ColumnSpan(5)
+                        .Margin(16, 4)
+                        .Padding(4)
+                        .Font(size: 12)
+                        .Opacity(0.75)
+                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherSummary)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                        // Update time
+                        new Label()
+                        .Row(3)
+                        .ColumnSpan(5)
+                        .Margins(16, 4, 16, 8)
+                        .Padding(4)
+                        .Font(size: 12)
+                        .Opacity(0.75)
+                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UpdateDate)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                    }
+                }
+            }
+        };
+    }
+
+    private VerticalStackLayout CreateDesktopConditionPanel()
     {
         App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
         App.Current.Resources.TryGetValue("stringBooleanConverter", out var stringBooleanConverter);
@@ -139,56 +568,7 @@ public partial class WeatherNow
                         .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
                 },
                 // Alert Button
-                new Grid()
-                {
-                    Margin = new Thickness(0, 5),
-                    Padding = new Thickness(11, 5, 11, 6),
-                    BackgroundColor = Colors.OrangeRed,
-                    HorizontalOptions = LayoutOptions.FillAndExpand,
-                    BindingContext = AlertsView,
-                    ColumnDefinitions =
-                    {
-                        new ColumnDefinition(GridLength.Auto),
-                        new ColumnDefinition(GridLength.Star),
-                        new ColumnDefinition(new GridLength(50))
-                    },
-                    Children =
-                    {
-                        new Image()
-                        {
-                            Margin = new Thickness(5,2,5,0),
-                            Source = new MaterialIcon(MaterialSymbol.Error)
-                            {
-                                Size = 24,
-                                Color = Colors.White
-                            }
-                        }.Column(0),
-                        new Label()
-                        {
-                            TextColor = Colors.White,
-                            Padding = new Thickness(5, 0),
-                            FontSize = 12,
-                            Text = ResStrings.title_fragment_alerts,
-                            VerticalOptions = LayoutOptions.Center,
-                            VerticalTextAlignment = TextAlignment.Center
-                        }.Column(1),
-                        new Image()
-                        {
-                            Margin = new Thickness(5,0),
-                            HorizontalOptions = LayoutOptions.End,
-                            VerticalOptions = LayoutOptions.Center,
-                            Source = new MaterialIcon(MaterialSymbol.ChevronRight)
-                            {
-                                Size = 24,
-                                Color = Colors.White
-                            }
-                        }.Column(2)
-                    }
-                }
-                .Bind(VisualElement.IsVisibleProperty, $"{nameof(AlertsView.Alerts)}",
-                    BindingMode.OneWay, source: AlertsView, converter: collectionBooleanConverter as IValueConverter
-                )
-                .TapGesture(GotoAlertsPage),
+                CreateAlertButton(),
                 // Spacer
                 new Rectangle()
                 {
@@ -474,9 +854,6 @@ public partial class WeatherNow
                 .Row(0),
                 // Content
                 new RangeBarGraphPanel()
-                {
-
-                }
                 .Bind(RangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}",
                         BindingMode.OneWay, source: ForecastView
                 )
@@ -502,10 +879,14 @@ public partial class WeatherNow
                 })
             }
         }
-        .Margins(bottom: 25)
-        .Padding(16, 0)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0,0,0,25), Phone: new Thickness(0,0,0,12))
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             it.Loaded += (s, e) =>
             {
                 it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
@@ -514,6 +895,63 @@ public partial class WeatherNow
             };
             ResizeElements.Add(it);
         });
+    }
+
+    private VisualElement CreateAlertButton()
+    {
+        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
+
+        // Alert Button
+        return new Grid()
+        {
+            Margin = new Thickness(0, 5),
+            Padding = new Thickness(11, 5, 11, 6),
+            BackgroundColor = Colors.OrangeRed,
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            BindingContext = AlertsView,
+            ColumnDefinitions =
+            {
+                new ColumnDefinition(GridLength.Auto),
+                new ColumnDefinition(GridLength.Star),
+                new ColumnDefinition(new GridLength(50))
+            },
+            Children =
+            {
+                new Image()
+                {
+                    Margin = new Thickness(5,2,5,0),
+                    Source = new MaterialIcon(MaterialSymbol.Error)
+                    {
+                        Size = 24,
+                        Color = Colors.White
+                    }
+                }.Column(0),
+                new Label()
+                {
+                    TextColor = Colors.White,
+                    Padding = new Thickness(5, 0),
+                    FontSize = 12,
+                    Text = ResStrings.title_fragment_alerts,
+                    VerticalOptions = LayoutOptions.Center,
+                    VerticalTextAlignment = TextAlignment.Center
+                }.Column(1),
+                new Image()
+                {
+                    Margin = new Thickness(5,0),
+                    HorizontalOptions = LayoutOptions.End,
+                    VerticalOptions = LayoutOptions.Center,
+                    Source = new MaterialIcon(MaterialSymbol.ChevronRight)
+                    {
+                        Size = 24,
+                        Color = Colors.White
+                    }
+                }.Column(2)
+            }
+        }
+        .Bind(VisualElement.IsVisibleProperty, $"{nameof(AlertsView.Alerts)}",
+            BindingMode.OneWay, source: AlertsView, converter: collectionBooleanConverter as IValueConverter
+        )
+        .TapGesture(GotoAlertsPage);
     }
 
     private Grid CreateHourlyForecastPanel()
@@ -557,13 +995,10 @@ public partial class WeatherNow
                 .Row(0),
                 // Content
                 new HourlyForecastItemPanel()
-                {
-
-                }
                 .Bind(HourlyForecastItemPanel.ForecastDataProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                         BindingMode.OneWay, source: ForecastView
                 )
-                .Height(250)
+                .OnIdiom(VisualElement.HeightRequestProperty, Default: 250d, Phone: 175d)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
@@ -576,10 +1011,14 @@ public partial class WeatherNow
                 })
             }
         }
-        .Margins(bottom: 25)
-        .Padding(16, 0)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 25), Phone: new Thickness(0, 0, 0, 0))
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             it.Loaded += (s, e) =>
             {
                 it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
@@ -696,10 +1135,14 @@ public partial class WeatherNow
                 .ColumnSpan(2)
             }
         }
-        .Margins(bottom: 25)
-        .Padding(16, 0)
+        .Margins(bottom: 12)
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             it.Loaded += (s, e) =>
             {
                 it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView);
@@ -735,7 +1178,7 @@ public partial class WeatherNow
                 .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
             }
         }
-        .Margins(bottom: 25)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0,0,0,20), new Thickness(0))
         .Apply(grid =>
         {
             var detailsStackLayout = new VerticalStackLayout();
@@ -838,9 +1281,13 @@ public partial class WeatherNow
 
             grid.Add(detailsStackLayout, row: 1);
         })
-        .Padding(16, 0)
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             ResizeElements.Add(it);
         });
     }
@@ -875,28 +1322,32 @@ public partial class WeatherNow
                         VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
                         BindingMode.OneWay, source: WNowViewModel
                     )
-                    .CenterHorizontal()
+                    .FillHorizontal()
                     .Apply(it =>
                     {
                         it.PropertyChanged += (s, e) =>
                         {
-                            if (e.PropertyName == nameof(it.Height))
+                            if (e.PropertyName == nameof(it.Width))
                             {
-                                it.WidthRequest = it.Height * 2;
+                                it.HeightRequest = it.Width / 2;
                             }
                         };
-                        it.WidthRequest = it.Height * 2;
+                        it.HeightRequest = it.Width / 2;
                     })
             }
         }
         .Margins(bottom: 25)
-        .Padding(16, 0)
         .Bind(
             VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
             BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
         )
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             ResizeElements.Add(it);
         });
     }
@@ -944,9 +1395,9 @@ public partial class WeatherNow
                 {
                     BackgroundColor = Colors.Transparent,
                     Stroke = Colors.Transparent,
-                    HeightRequest = 360,
-                    MaximumWidthRequest = 640,
-                    ZIndex = 1,
+                    HeightRequest = 200,
+                    MaximumWidthRequest = 720,
+                    ZIndex = 16,
                 }
                 .Row(1)
                 .ColumnSpan(2)
@@ -957,8 +1408,8 @@ public partial class WeatherNow
                 }),
                 new Border()
                 {
-                    HeightRequest = 360,
-                    MaximumWidthRequest = 640,
+                    HeightRequest = 200,
+                    MaximumWidthRequest = 720,
                     BackgroundColor = Colors.Black
                 }
                 .Row(1)
@@ -980,10 +1431,14 @@ public partial class WeatherNow
                 })
             }
         }
-        .Margins(bottom: 25)
-        .Padding(16, 0)
+        .Margins(bottom: 16)
         .Apply(it =>
         {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
             ResizeElements.Add(it);
         });
     }

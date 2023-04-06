@@ -6,10 +6,10 @@
              xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              x:DataType="commonControls:DetailItemViewModel"
-             HeightRequest="{OnIdiom Default=150, Desktop=175}"
-             WidthRequest="{OnIdiom Default=150, Desktop=175}">
+             HeightRequest="{OnIdiom Default=150, Desktop=175, Phone=110}"
+             WidthRequest="{OnIdiom Default=150, Desktop=175, Phone=110}">
     <Border x:Name="ItemBorder"
-            Margin="15"
+            Margin="{OnIdiom Phone=4, Default=16}"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
             StrokeThickness="1"
             Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}">
@@ -18,40 +18,41 @@
         </Border.StrokeShape>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="{OnIdiom Phone='*', Default='Auto'}" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="{OnIdiom Phone='*', Default='Auto'}" />
             </Grid.RowDefinitions>
             <Label x:Name="DetailLabel"
                    Grid.Row="0"
-                   FontSize="{OnIdiom Default=13, Desktop=15}"
-                   Padding="8"
+                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=15}"
+                   Padding="{OnIdiom Phone=0, Default=8}"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   Text="{Binding Label, FallbackValue='Label'}" />
+                   Text="{Binding Label, FallbackValue='Label', Mode=OneWay}" />
             <controls:IconControl
                 x:Name="IconCtrl"
                 Grid.Row="1"
-                Margin="7.5"
+                Margin="{OnIdiom Phone='0', Default='7.5'}"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 ForceBitmapIcon="True"
                 IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
                 ShowAsMonochrome="False"
-                WeatherIcon="{Binding Icon}"
-                Rotation="{Binding IconRotation}"
-                IconHeight="50"
-                IconWidth="50" />
+                WeatherIcon="{Binding Icon, Mode=OneWay}"
+                Rotation="{Binding IconRotation, Mode=OneWay}"
+                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
+                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
+                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}" />
             <controls:ViewBox
                 Grid.Row="2"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 StretchDirection="DownOnly">
                 <Label x:Name="DetailValue"
-                       FontSize="{OnIdiom Default=15, Desktop=18}"
-                       Padding="8"
-                       Text="{Binding Value, FallbackValue='50.00 in'}"
-                       LineBreakMode="WordWrap" />
+                       FontSize="{OnIdiom Phone=12, Default=14, Desktop=15}"
+                       Padding="{OnIdiom Phone=0, Default=8}"
+                       Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
+                       MaxLines="1" />
             </controls:ViewBox>
         </Grid>
     </Border>

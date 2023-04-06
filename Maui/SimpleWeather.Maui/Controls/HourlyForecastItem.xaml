@@ -6,14 +6,15 @@
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              x:DataType="sharedControls:HourlyForecastNowViewModel"
-             WidthRequest="150"
-             HeightRequest="240"
+             WidthRequest="{OnIdiom Default=150, Phone=100, Tablet=110}"
+             HeightRequest="{OnIdiom Default=240, Phone=160, Tablet=192}"
              BindingContextChanged="HourlyForecastItem_BindingContextChanged">
-    <VerticalStackLayout>
+    <VerticalStackLayout VerticalOptions="Center">
         <Grid
             MinimumHeightRequest="20"
             Padding="5"
-            HorizontalOptions="Center">
+            HorizontalOptions="Center"
+            VerticalOptions="Start">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="*" />
@@ -31,32 +32,33 @@
             <Label
                 Grid.Column="1"
                 Margin="5,0,0,0"
-                FontSize="14"
+                FontSize="{OnIdiom Default=14, Phone=12}"
                 TextColor="{DynamicResource SimpleBlueLight}"
+                VerticalTextAlignment="Center"
                 MaxLines="1"
                 Text="{Binding PoPChance}"
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}" />
         </Grid>
         <Label
             x:Name="DateBlock"
-            Padding="10,5"
+            Padding="{OnIdiom Default='10,5', Phone='4'}"
             HorizontalOptions="Center"
-            FontSize="{OnIdiom Default=14, Desktop=16}"
+            FontSize="{OnIdiom Phone=14, Default=16}"
             FontFamily="OpenSansSemibold"
             MaxLines="1"
             Text="{Binding ShortDate}" />
         <controls:IconControl
-            HeightRequest="50"
-            WidthRequest="50"
-            IconHeight="50"
-            IconWidth="50"
+            HeightRequest="{OnIdiom Phone=36, Tablet=42, Default=50}"
+            WidthRequest="{OnIdiom Phone=36, Tablet=42, Default=50}"
+            IconHeight="{OnIdiom Phone=36, Tablet=42, Default=50}"
+            IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             Margin="5"
             HorizontalOptions="Center"
             WeatherIcon="{Binding Icon}" />
         <Label
-            Padding="10,0"
+            Padding="{OnIdiom Default='10,0', Phone='4'}"
             HorizontalOptions="Center"
-            FontSize="24"
+            FontSize="{OnIdiom Default=24, Phone=18}"
             FontFamily="OpenSansLight"
             MaxLines="1"
             Text="{Binding Temperature}" />
@@ -68,7 +70,8 @@
             FontSize="{OnIdiom Default=12, Desktop=14}"
             MaxLines="2"
             Text="{Binding Condition}"
-            LineBreakMode="TailTruncation" />
+            LineBreakMode="TailTruncation"
+            IsVisible="{OnIdiom Default=true, Phone=false}"/>
         <Grid
             MinimumHeightRequest="20"
             Padding="5"

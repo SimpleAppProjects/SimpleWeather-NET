@@ -7,168 +7,121 @@
              xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              x:Name="DetailPanel">
-    <toolkit:Expander
-        x:Name="DetailExpander"
-        BindingContext="{x:Bind ViewModel, Mode=OneWay}"
-        Direction="Down"
-        IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}"
-        IsExpanded="False"
-        ExpandedChanged="DetailExpander_ExpandedChanged">
-        <toolkit:Expander.Header>
-            <Grid MinimumHeightRequest="60" Padding="0,2">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <controls:IconControl
-                    x:Name="IconBox"
-                    Grid.Column="0"
-                    WidthRequest="50"
-                    HeightRequest="50"
-                    IconWidth="50"
-                    IconHeight="50"
-                    Margin="8,0"
+    <Grid MinimumHeightRequest="60"
+          Padding="0,2"
+          BindingContext="{x:Bind ViewModel, Mode=OneWay}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <controls:IconControl
+            x:Name="IconBox"
+            Grid.Column="0"
+            WidthRequest="50"
+            HeightRequest="50"
+            IconWidth="50"
+            IconHeight="50"
+            Margin="8,0"
+            VerticalOptions="Center"
+            WeatherIcon="{Binding Icon, Mode=OneWay}" />
+        <VerticalStackLayout
+            Grid.Column="1"
+            VerticalOptions="Center">
+            <Label
+                x:Name="Date"
+                Padding="2"
+                FontSize="14"
+                FontAttributes="Bold"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                MaxLines="1"
+                Text="{Binding Date, Mode=OneWay}"
+                LineBreakMode="TailTruncation" />
+            <Label
+                x:Name="Condition"
+                Padding="2"
+                VerticalOptions="Center"
+                FontSize="14"
+                TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                MaxLines="1"
+                Text="{Binding Condition, Mode=OneWay}"
+                LineBreakMode="TailTruncation" />
+            <HorizontalStackLayout
+                x:Name="Extras"
+                VerticalOptions="Center">
+                <HorizontalStackLayout
                     VerticalOptions="Center"
-                    WeatherIcon="{Binding Icon, Mode=OneWay}" />
-                <VerticalStackLayout
-                    Grid.Column="1"
-                    VerticalOptions="Center">
-                    <Label
-                        x:Name="Date"
-                        Padding="2"
-                        FontSize="14"
-                        FontAttributes="Bold"
-                        TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                        MaxLines="1"
-                        Text="{Binding Date, Mode=OneWay}"
-                        LineBreakMode="TailTruncation" />
-                    <Label
-                        x:Name="Condition"
-                        Padding="2"
+                    IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
+                    <controls:IconControl
+                        x:Name="PoPIcon"
+                        WidthRequest="20"
+                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
+                        IconWidth="20"
+                        IconHeight="20"
                         VerticalOptions="Center"
-                        FontSize="14"
-                        TextColor="{AppThemeBinding Light=Black, Dark=White}"
+                        ForceBitmapIcon="True"
+                        IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                        ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
+                        WeatherIcon="&#xf078;" />
+                    <Label
+                        Margin="5,0,5,0"
+                        VerticalOptions="Center"
+                        FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
+                        TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
                         MaxLines="1"
-                        Text="{Binding Condition, Mode=OneWay}"
+                        Text="{Binding PoPChance, Mode=OneWay}"
                         LineBreakMode="TailTruncation" />
-                    <HorizontalStackLayout
-                        x:Name="Extras"
-                        VerticalOptions="Center">
-                        <HorizontalStackLayout
-                            VerticalOptions="Center"
-                            IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
-                            <controls:IconControl
-                                x:Name="PoPIcon"
-                                WidthRequest="20"
-                                HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
-                                IconWidth="20"
-                                IconHeight="20"
-                                VerticalOptions="Center"
-                                ForceBitmapIcon="True"
-                                IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
-                                WeatherIcon="&#xf078;" />
-                            <Label
-                                Margin="5,0,5,0"
-                                VerticalOptions="Center"
-                                FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
-                                TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                MaxLines="1"
-                                Text="{Binding PoPChance, Mode=OneWay}"
-                                LineBreakMode="TailTruncation" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout
-                            Padding="5,0"
-                            VerticalOptions="Center"
-                            IsVisible="{Binding Cloudiness, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
-                            <controls:IconControl
-                                WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
-                                HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
-                                IconWidth="20"
-                                IconHeight="20"
-                                VerticalOptions="Center"
-                                ForceBitmapIcon="True"
-                                IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
-                                WeatherIcon="&#xf013;" />
-                            <Label
-                                Margin="5,0,5,0"
-                                VerticalOptions="Center"
-                                FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
-                                TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                MaxLines="1"
-                                Text="{Binding Cloudiness, Mode=OneWay}"
-                                LineBreakMode="TailTruncation" />
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout
-                            Padding="5,0"
-                            VerticalOptions="Center"
-                            IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
-                            <controls:IconControl
-                                WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
-                                HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
-                                IconWidth="20"
-                                IconHeight="20"
-                                VerticalOptions="Center"
-                                ForceBitmapIcon="True"
-                                IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
-                                WeatherIcon="&#xf050;" />
-                            <Label
-                                Margin="5,0,5,0"
-                                VerticalOptions="Center"
-                                FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
-                                TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
-                                MaxLines="1"
-                                Text="{Binding WindSpeed, Mode=OneWay}"
-                                LineBreakMode="TailTruncation" />
-                        </HorizontalStackLayout>
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
-                <Image
-                    x:Name="DetailExpanderIcon"
-                    Grid.Column="2"
-                    Margin="0,0,8,0"
-                    VerticalOptions="Center">
-                    <Image.Source>
-                        <matIcons:MaterialIcon Size="24" Symbol="ExpandMore" Color="{AppThemeBinding Light=Black, Dark=White}" />
-                    </Image.Source>
-                </Image>
-            </Grid>
-        </toolkit:Expander.Header>
-        <toolkit:Expander.Content>
-            <VerticalStackLayout Padding="10">
-                <Label
-                    x:Name="ConditionDescription"
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    Padding="5,0"
                     VerticalOptions="Center"
-                    FontSize="14"
-                    TextColor="{AppThemeBinding Light=Black, Dark=White}"
-                    Text="{Binding ConditionLongDesc, Mode=OneWay}"
-                    LineBreakMode="WordWrap" />
-                <VerticalStackLayout Padding="0,8" BindableLayout.ItemsSource="{Binding Extras, Mode=OneWay}">
-                    <BindableLayout.ItemTemplate>
-                        <DataTemplate x:DataType="{x:Type commonControls:DetailItemViewModel}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="150" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Label
-                                    Grid.Column="0"
-                                    TextColor="{AppThemeBinding Light='#FF5D5D5D', Dark='#FFB4B4B4'}"
-                                    Text="{Binding Label, Mode=OneWay}" />
-                                <Label
-                                    Grid.Column="1"
-                                    TextColor="{AppThemeBinding Light='Black', Dark='White'}"
-                                    Text="{Binding Value, Mode=OneWay}" />
-                            </Grid>
-                        </DataTemplate>
-                    </BindableLayout.ItemTemplate>
-                </VerticalStackLayout>
-            </VerticalStackLayout>
-        </toolkit:Expander.Content>
-    </toolkit:Expander>
+                    IsVisible="{Binding Cloudiness, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
+                    <controls:IconControl
+                        WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
+                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
+                        IconWidth="20"
+                        IconHeight="20"
+                        VerticalOptions="Center"
+                        ForceBitmapIcon="True"
+                        IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                        ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
+                        WeatherIcon="&#xf013;" />
+                    <Label
+                        Margin="5,0,5,0"
+                        VerticalOptions="Center"
+                        FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
+                        TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                        MaxLines="1"
+                        Text="{Binding Cloudiness, Mode=OneWay}"
+                        LineBreakMode="TailTruncation" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    Padding="5,0"
+                    VerticalOptions="Center"
+                    IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
+                    <controls:IconControl
+                        WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
+                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
+                        IconWidth="20"
+                        IconHeight="20"
+                        VerticalOptions="Center"
+                        ForceBitmapIcon="True"
+                        IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                        ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
+                        WeatherIcon="&#xf050;" />
+                    <Label
+                        Margin="5,0,5,0"
+                        VerticalOptions="Center"
+                        FontSize="{Binding Source={x:Reference Condition}, Path=FontSize}"
+                        TextColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
+                        MaxLines="1"
+                        Text="{Binding WindSpeed, Mode=OneWay}"
+                        LineBreakMode="TailTruncation" />
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </Grid>
 </ContentView>
 

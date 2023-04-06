@@ -587,7 +587,12 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                         {
                             await Permissions.RequestAsync<Permissions.LocationAlways>();
                         });
+                        ShowSnackbar(snackbar);
                     }
+                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    {
+                        sw.On = true;
+                    });
                     break;
                 case PermissionStatus.Denied:
                     await MainThread.InvokeOnMainThreadAsync(() =>
@@ -610,6 +615,13 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                     break;
             }
         }
+
+        // Update any widgets
+
+        await MainThread.InvokeOnMainThreadAsync(() =>
+        {
+            SettingsManager.FollowGPS = sw.On;
+        });
     }
 
     private async void TextCell_Tapped(object sender, EventArgs e)

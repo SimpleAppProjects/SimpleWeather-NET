@@ -94,7 +94,7 @@ namespace SimpleWeather.Maui.Preferences
                 {
                     new Label()
                     {
-                        FontSize = 16,
+                        FontSize = 18,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
@@ -111,9 +111,10 @@ namespace SimpleWeather.Maui.Preferences
                     .Row(0),
                     new Label()
                     {
-                        FontSize = 13,
+                        FontSize = 12,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
+                    .Paddings(top: 4)
                     .Bind(Label.TextProperty, nameof(Detail), BindingMode.OneWay, source: this)
                     .Bind(Label.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
                     .Bind<Label, string, bool>(Label.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,

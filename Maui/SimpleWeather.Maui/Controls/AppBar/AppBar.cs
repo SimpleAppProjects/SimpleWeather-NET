@@ -476,7 +476,8 @@ namespace SimpleWeather.Maui.Controls.AppBar
 
             Grid.SetColumn(_backContainer, 0);
             Grid.SetColumn(_leftItemsContainer, 1);
-            Grid.SetColumn(_titleLabel, 2);
+            Grid.SetColumn(_titleLabel, 0);
+            Grid.SetColumnSpan(_titleLabel, 4);
             Grid.SetColumn(rightItemsContent, 3);
 
             _mainContainer.Children.Add(_backgroundContainer);

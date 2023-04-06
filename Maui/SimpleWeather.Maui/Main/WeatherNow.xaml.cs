@@ -272,12 +272,59 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
             {
+                this.Title = null;
+                Shell.SetTitleView(this, CreateClockToolbar());
 
+                ListLayout.Add(
+                    CreateMobileConditionPanel()
+                    .Row(0)
+                );
             }
             else
             {
+                if (Utils.FeatureSettings.BackgroundImage)
+                {
+                    MainGrid.Children.Insert(0,
+                        new Image()
+                        {
+                            Aspect = Aspect.AspectFill,
+                            IsVisible = Utils.FeatureSettings.BackgroundImage
+                        }
+                        .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .Row(0)
+                        .RowSpan(3)
+                        .Apply(it =>
+                        {
+                            it.Loaded += BackgroundOverlay_Loaded;
+                            it.PropertyChanged += BackgroundOverlay_PropertyChanged;
+                            it.PropertyChanging += BackgroundOverlay_PropertyChanging;
+                        })
+                    );
+
+                    MainGrid.Insert(1,
+                        new Grid()
+                        {
+                            IsVisible = Utils.FeatureSettings.BackgroundImage,
+                            Background = new LinearGradientBrush(
+                                new GradientStopCollection()
+                                {
+                                    new GradientStop(Color.FromRgba(0, 0, 0, 0x50), 0),
+                                    new GradientStop(Color.FromRgba(0, 0, 0, 0xFF), 1),
+                                },
+                                new Point(0.5, 0),
+                                new Point(0.5, 1)
+                            )
+                        }
+                        .Row(0)
+                        .RowSpan(3)
+                        .Apply(it => GradientOverlay = it)
+                    );
+                }
+
                 ListLayout.Add(
-                    CreateConditionPanel()
+                    CreateDesktopConditionPanel()
                     .Row(0)
                 );
 
@@ -313,7 +360,13 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
                 // Credits
                 new RowDefinition(GridLength.Auto),
             }
-        }.Paddings(16, 4, 16, 0);
+        }.Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(0);
+            else
+                it.Paddings(16, 4, 16, 0);
+        });
         ListLayout.Add(GridLayout, row: 1);
 
         // Forecast Panel
@@ -686,7 +739,9 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
         }
     }
 
-    private Color GetTempColor()
+    private Color GetTempColor() => GetTempColor(ConditionPanelTextColor);
+
+    private Color GetTempColor(Color fallbackColor)
     {
         string temp = WNowViewModel?.Weather?.CurTemp;
         string temp_str = temp?.RemoveNonDigitChars();
@@ -708,7 +763,7 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
             }
         }
 
-        return ConditionPanelTextColor;
+        return fallbackColor;
     }
 
     private void BackgroundOverlay_Loaded(object sender, EventArgs e)

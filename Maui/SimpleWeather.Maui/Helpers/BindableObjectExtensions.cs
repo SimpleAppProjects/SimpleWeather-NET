@@ -21,5 +21,39 @@
 
             return bindableObject;
         }
+
+        public static T OnIdiom<T>(this T bindableObject, BindableProperty property,
+            object Default, object Desktop = null, object Phone = null, object Tablet = null, object TV = null, object Watch = null
+        ) where T : BindableObject
+        {
+            var idiom = DeviceInfo.Idiom;
+
+            if (idiom == DeviceIdiom.Desktop)
+            {
+                bindableObject.SetValue(property, Desktop ?? Default);
+            }
+            else if (idiom == DeviceIdiom.Phone)
+            {
+                bindableObject.SetValue(property, Phone ?? Default);
+            }
+            else if (idiom == DeviceIdiom.Tablet)
+            {
+                bindableObject.SetValue(property, Tablet ?? Default);
+            }
+            else if (idiom == DeviceIdiom.TV)
+            {
+                bindableObject.SetValue(property, TV ?? Default);
+            }
+            else if (idiom == DeviceIdiom.Watch)
+            {
+                bindableObject.SetValue(property, Watch ?? Default);
+            }
+            else
+            {
+                bindableObject.SetValue(property, Default);
+            }
+
+            return bindableObject;
+        }
     }
 }

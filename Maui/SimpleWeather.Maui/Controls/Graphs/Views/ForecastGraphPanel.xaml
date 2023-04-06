@@ -39,14 +39,13 @@
             DrawSeriesLabels="False"
             FontSize="{OnIdiom Phone=13,
                                Default=15}"
-            HeightRequest="275"
+            HeightRequest="{OnIdiom Default=275, Phone=225}"
             HorizontalOptions="FillAndExpand"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged">
             <graphs:LineView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                <ClickGestureRecognizer Clicked="ClickGestureRecognizer_Clicked" />
             </graphs:LineView.GestureRecognizers>
         </graphs:LineView>
     </Grid>

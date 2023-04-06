@@ -34,12 +34,12 @@
             DrawIconLabels="True"
             FontSize="{OnIdiom Phone=13,
                                Default=15}"
+            HeightRequest="{OnIdiom Default=275, Phone=225}"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged">
             <graphs:RangeBarGraphView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
-                <ClickGestureRecognizer Clicked="ClickGestureRecognizer_Clicked" />
             </graphs:RangeBarGraphView.GestureRecognizers>
         </graphs:RangeBarGraphView>
     </Grid>
