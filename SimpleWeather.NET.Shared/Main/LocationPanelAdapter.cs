@@ -98,7 +98,7 @@ namespace SimpleWeather.Maui.Main
 #if WINDOWS
         internal LocationPanelAdapter(ListViewBase listViewBase)
 #else
-        internal LocationPanelAdapter(CollectionView listViewBase)
+        internal LocationPanelAdapter(CollectionView listViewBase, IView SnackbarContainer = null)
 #endif
         {
             if (listViewBase == null)
@@ -110,7 +110,7 @@ namespace SimpleWeather.Maui.Main
 #if WINDOWS
                 SnackMgr = new SnackbarManager(VisualTreeHelperExtensions.GetParent<Panel>(ParentListView));
 #else
-                SnackMgr = new SnackbarManager(ParentListView);
+                SnackMgr = new SnackbarManager(SnackbarContainer ?? ParentListView);
 #endif
             };
 

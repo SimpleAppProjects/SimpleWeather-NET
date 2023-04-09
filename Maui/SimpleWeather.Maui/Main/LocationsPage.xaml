@@ -23,103 +23,142 @@
     </ContentPage.Resources>
 
     <Grid>
-        <CollectionView
-            x:Name="LocationsPanel"
-            IsGrouped="True"
-            CanReorderItems="False"
-            SelectionMode="None"
-            Margin="16,8,16,0"
-            SizeChanged="LocationsPanel_SizeChanged"
-            IsVisible="False">
-            <CollectionView.GroupHeaderTemplate>
-                <DataTemplate x:DataType="local:LocationPanelGroup">
-                    <Label
-                        Padding="8,0"
-                        FontSize="16"
-                        FontFamily="OpenSansSemibold"
-                        Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
-                        TextColor="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
-                </DataTemplate>
-            </CollectionView.GroupHeaderTemplate>
-            <CollectionView.ItemsLayout>
-                <GridItemsLayout
-                    x:Name="LocationsPanelLayout"
-                    Orientation="Vertical"
-                    Span="1"
-                    HorizontalItemSpacing="4"
-                    VerticalItemSpacing="4" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Border Stroke="Transparent" StrokeThickness="8">
-                        <VisualStateManager.VisualStateGroups>
-                            <VisualStateGroup x:Name="CommonStates">
-                                <VisualState x:Name="Normal" />
-                                <VisualState x:Name="Selected">
-                                    <VisualState.Setters>
-                                        <Setter
-                                            Property="BackgroundColor"
-                                            Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-                                        <Setter
-                                            Property="Stroke"
-                                            Value="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
-                                    </VisualState.Setters>
-                                </VisualState>
-                            </VisualStateGroup>
-                        </VisualStateManager.VisualStateGroups>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="LocationsPanel_ItemTapped" />
-                        </Border.GestureRecognizers>
-                        <SwipeView
-                            Margin="-4"
-                            RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay}"
-                            IsEnabled="True"
-                            ios:SwipeView.SwipeTransitionMode="Reveal">
-                            <SwipeView.LeftItems>
-                                <SwipeItems Mode="Reveal">
-                                    <SwipeItem
-                                        Text="{x:Static res_strings:Resources.delete}"
-                                        BackgroundColor="#FFDB4437"
-                                        Invoked="SwipeItem_Invoked">
-                                        <SwipeItem.IconImageSource>
-                                            <matIcons:MaterialIcon Symbol="Add" Size="24" Color="White" />
-                                        </SwipeItem.IconImageSource>
-                                    </SwipeItem>
-                                </SwipeItems>
-                            </SwipeView.LeftItems>
-                            <SwipeView.Content>
+        <ScrollView Orientation="Vertical" VerticalOptions="Start">
+            <Grid RowDefinitions="Auto,Auto,*">
+                <VerticalStackLayout
+                    x:Name="GPSPanelLayout"
+                    Grid.Row="0"
+                    Padding="20,4,20,8">
+                    <BindableLayout.ItemTemplate>                
+                        <DataTemplate>
+                            <VerticalStackLayout>
+                                <Label
+                                    Padding="0,8"
+                                    FontSize="16"
+                                    FontFamily="OpenSansSemibold"
+                                    Text="{x:Static res_strings:Resources.label_currentlocation}"
+                                    TextColor="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
                                 <localControls:LocationPanel
                                     MinimumWidthRequest="480"
                                     HeightRequest="{OnIdiom Phone=115, Default=135}"
                                     HorizontalOptions="Fill"
-                                    VerticalOptions="Fill"
-                                    LongPress="LocationPanel_LongPress" />
-                            </SwipeView.Content>
-                        </SwipeView>
-                    </Border>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-            <CollectionView.EmptyView>
-                <VerticalStackLayout
-                    x:Name="NoLocationsView"
-                    Margin="0,0,0,48"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
-                    <Image Margin="8" HorizontalOptions="Center">
-                        <Image.Source>
-                            <matIcons:MaterialIcon
-                                Symbol="Add"
-                                Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
-                        </Image.Source>
-                    </Image>
-                    <Label
-                        FontSize="Subtitle"
-                        HorizontalOptions="Center"
-                        Text="{x:Static res_strings:Resources.prompt_location_not_set}"
-                        LineBreakMode="WordWrap" />
+                                    VerticalOptions="Fill">
+                                    <localControls:LocationPanel.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="LocationsPanel_ItemTapped" />
+                                    </localControls:LocationPanel.GestureRecognizers>
+                                </localControls:LocationPanel>
+                            </VerticalStackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
                 </VerticalStackLayout>
-            </CollectionView.EmptyView>
-        </CollectionView>
+                <Label
+                    Grid.Row="1"
+                    Padding="20,8,20,4"
+                    FontSize="16"
+                    FontFamily="OpenSansSemibold"
+                    IsVisible="{Binding Source={x:Reference LocationsPanel}, Path=IsVisible, Mode=OneWay}"
+                    Text="{x:Static res_strings:Resources.label_favoritelocations}"
+                    TextColor="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                <CollectionView
+                    x:Name="LocationsPanel"
+                    Grid.Row="2"
+                    IsGrouped="False"
+                    CanReorderItems="False"
+                    SelectionMode="None"
+                    Margin="16,8,16,0"
+                    SizeChanged="LocationsPanel_SizeChanged"
+                    IsVisible="False">
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate x:DataType="local:LocationPanelGroup">
+                            <Label
+                                Padding="8,0"
+                                FontSize="16"
+                                FontFamily="OpenSansSemibold"
+                                Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
+                                TextColor="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
+                    <CollectionView.ItemsLayout>
+                        <GridItemsLayout
+                            x:Name="LocationsPanelLayout"
+                            Orientation="Vertical"
+                            Span="1"
+                            HorizontalItemSpacing="4"
+                            VerticalItemSpacing="4" />
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Stroke="Transparent" StrokeThickness="8">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal" />
+                                        <VisualState x:Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter
+                                                    Property="BackgroundColor"
+                                                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+                                                <Setter
+                                                    Property="Stroke"
+                                                    Value="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="LocationsPanel_ItemTapped" />
+                                </Border.GestureRecognizers>
+                                <SwipeView
+                                    Margin="-4"
+                                    RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay}"
+                                    IsEnabled="True"
+                                    ios:SwipeView.SwipeTransitionMode="Reveal">
+                                    <SwipeView.LeftItems>
+                                        <SwipeItems Mode="Reveal">
+                                            <SwipeItem
+                                                Text="{x:Static res_strings:Resources.delete}"
+                                                BackgroundColor="#FFDB4437"
+                                                Invoked="SwipeItem_Invoked">
+                                                <SwipeItem.IconImageSource>
+                                                    <matIcons:MaterialIcon Symbol="Add" Size="24" Color="White" />
+                                                </SwipeItem.IconImageSource>
+                                            </SwipeItem>
+                                        </SwipeItems>
+                                    </SwipeView.LeftItems>
+                                    <SwipeView.Content>
+                                        <localControls:LocationPanel
+                                            MinimumWidthRequest="480"
+                                            HeightRequest="{OnIdiom Phone=115, Default=135}"
+                                            HorizontalOptions="Fill"
+                                            VerticalOptions="Fill"
+                                            LongPress="LocationPanel_LongPress" />
+                                    </SwipeView.Content>
+                                </SwipeView>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout
+                            x:Name="NoLocationsView"
+                            Margin="0,0,0,48"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center">
+                            <Image Margin="8" HorizontalOptions="Center">
+                                <Image.Source>
+                                    <matIcons:MaterialIcon
+                                        Symbol="Add"
+                                        Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                                </Image.Source>
+                            </Image>
+                            <Label
+                                FontSize="Subtitle"
+                                HorizontalOptions="Center"
+                                Text="{x:Static res_strings:Resources.prompt_location_not_set}"
+                                LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </ScrollView>
         <ActivityIndicator
             x:Name="ContentIndicator"
             VerticalOptions="Center"
@@ -146,6 +185,6 @@
         <Grid
             x:Name="SnackbarContainer"
             VerticalOptions="End"
-            ZIndex="2" />
+            ZIndex="100" />
     </Grid>
 </viewModels:ViewModelPage>

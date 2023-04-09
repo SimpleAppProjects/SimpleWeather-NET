@@ -43,7 +43,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
 
         BindingContext = LocationsViewModel;
 
-        PanelAdapter = new LocationPanelAdapter(LocationsPanel);
+        PanelAdapter = new LocationPanelAdapter(LocationsPanel, SnackbarContainer);
         PanelAdapter.ListChanged += LocationPanels_CollectionChanged;
 
         // Toolbar
@@ -58,8 +58,10 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
             ToolbarItems.Clear();
         }
 
-        LocationsPanel.ItemsSource = PanelAdapter.ItemCount > 0 ? PanelAdapter.LocationPanelGroups : null;
+        BindableLayout.SetItemsSource(GPSPanelLayout, PanelAdapter?.GetDataset(LocationType.GPS));
+        LocationsPanel.ItemsSource = PanelAdapter?.GetDataset(LocationType.Search);
 
+        GPSPanelLayout.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
         LocationsPanel.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
         ContentIndicator.IsRunning = LocationsViewModel?.UiState?.IsLoading ?? true;
         AddLocationsButton.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
@@ -184,6 +186,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                 break;
             case nameof(LocationsViewModel.UiState):
                 {
+                    GPSPanelLayout.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
                     LocationsPanel.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
                     ContentIndicator.IsRunning = LocationsViewModel?.UiState?.IsLoading ?? true;
                     AddLocationsButton.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
@@ -270,7 +273,8 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
 
     private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-        LocationsPanel.ItemsSource = PanelAdapter.ItemCount > 0 ? PanelAdapter.LocationPanelGroups : null;
+        BindableLayout.SetItemsSource(GPSPanelLayout, PanelAdapter?.GetDataset(LocationType.GPS));
+        LocationsPanel.ItemsSource = PanelAdapter?.GetDataset(LocationType.Search);
 
         bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
         bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
