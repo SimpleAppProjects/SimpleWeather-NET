@@ -35,7 +35,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
     private bool HomeChanged = false;
 
     private readonly ToolbarItem EditButton;
-    private bool IsItemClickEnabled { get; set; }
+    private bool IsItemClickEnabled { get; set; } = true;
 
     public LocationsPage()
 	{
