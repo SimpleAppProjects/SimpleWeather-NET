@@ -652,9 +652,11 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     private void RefreshBtn_Clicked(object sender, EventArgs e)
     {
-        AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
-        if (SettingsManager.FollowGPS || WNowViewModel.UiState?.LocationData?.IsValid() == true)
+        if (!WNowViewModel.UiState.IsLoading)
+        {
+            AnalyticsLogger.LogEvent("WeatherNow: RefreshButton_Click");
             WNowViewModel.RefreshWeather(true);
+        }
     }
 
     private async void GotoAlertsPage()
