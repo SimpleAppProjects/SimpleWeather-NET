@@ -337,7 +337,7 @@ public partial class WeatherNow
                     {
                         new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Auto),
-                        new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Star),
                         new RowDefinition(GridLength.Auto),
                     },
                     Children =
