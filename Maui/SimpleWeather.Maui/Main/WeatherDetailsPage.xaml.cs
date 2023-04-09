@@ -16,7 +16,7 @@ using SimpleWeather.Weather_API.WeatherData;
 
 namespace SimpleWeather.Maui.Main;
 
-public partial class WeatherDetailsPage : ViewModelPage
+public partial class WeatherDetailsPage : ViewModelPage, IDisposable
 {
 	private LocationData.LocationData locationData { get; set; }
 	public WeatherNowViewModel WNowViewModel { get; } = AppShell.Instance.GetViewModel<WeatherNowViewModel>();
@@ -25,7 +25,11 @@ public partial class WeatherDetailsPage : ViewModelPage
 
 	private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
 
-	public WeatherDetailsPage()
+#if __IOS__
+    private IDisposable CollectionViewObserver = null;
+#endif
+
+    public WeatherDetailsPage()
 	{
 		InitializeComponent();
 		AnalyticsLogger.LogEvent("WeatherDetailsPage");
@@ -107,7 +111,30 @@ public partial class WeatherDetailsPage : ViewModelPage
                 IndeterminateProgressBar.IsActiveProperty, mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts,
                 path: "IsLoading");
 
-            ListControl.ScrollTo(scrollToPosition);
+#if __IOS__
+            // Scroll to item
+            if (scrollToPosition > 0 && ListControl.Handler is IPlatformViewHandler handler && handler.PlatformView?.ParentFocusEnvironment is UIKit.UICollectionViewController ctrlr)
+            {
+                CollectionViewObserver = ctrlr?.CollectionView?.AddObserver("contentSize", Foundation.NSKeyValueObservingOptions.New | Foundation.NSKeyValueObservingOptions.Initial, (c) =>
+                {
+                    try
+                    {
+                        var visibleItems = ctrlr?.CollectionView?.NumberOfItemsInSection(0);
+
+                        if (visibleItems >= scrollToPosition)
+                        {
+                            CollectionViewObserver?.Dispose();
+                            CollectionViewObserver = null;
+                            Dispatcher.Dispatch(() =>
+                            {
+                                ListControl?.ScrollTo(scrollToPosition);
+                            });
+                        }
+                    }
+                    catch { }
+                });
+            }
+#endif
         });
     }
 
@@ -160,6 +187,19 @@ public partial class WeatherDetailsPage : ViewModelPage
 
                 await this.Navigation.PushModalAsync(page);
             }
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        if (disposing)
+        {
+#if __IOS__
+            CollectionViewObserver?.Dispose();
+            CollectionViewObserver = null;
+#endif
         }
     }
 }
