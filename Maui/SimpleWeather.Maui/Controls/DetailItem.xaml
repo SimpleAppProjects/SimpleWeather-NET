@@ -40,8 +40,8 @@
                 ShowAsMonochrome="False"
                 WeatherIcon="{Binding Icon, Mode=OneWay}"
                 Rotation="{Binding IconRotation, Mode=OneWay}"
-                HeightRequest="50"
-                WidthRequest="50"
+                HeightRequest="{OnIdiom Default=50, Phone=35}"
+                WidthRequest="{OnIdiom Default=50, Phone=35}"
                 IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}" />
             <controls:ViewBox
