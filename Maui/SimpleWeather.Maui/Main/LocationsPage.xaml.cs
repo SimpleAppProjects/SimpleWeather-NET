@@ -310,16 +310,16 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
             {
                 try
                 {
-                    var newPage = new WeatherNow(new WeatherNowArgs()
+                    await AppShell.Current.GoToAsync("///root", new Dictionary<string, object>()
                     {
-                        IsHome = Equals(panel.LocationData, await SettingsManager.GetHomeData()),
-                        Location = panel.LocationData
-                    });
-                    await Navigation.PushAsync(newPage);
-                    // Remove all from backstack except home
-                    Navigation.NavigationStack.Where(p => p != null && p != newPage).ToList().ForEach(p =>
-                    {
-                        Navigation.RemovePage(p);
+                        {
+                            "args",
+                            new WeatherNowArgs()
+                            {
+                                IsHome = Equals(panel.LocationData, await SettingsManager.GetHomeData()),
+                                Location = panel.LocationData
+                            }
+                        }
                     });
                 }
                 catch (Exception ex)

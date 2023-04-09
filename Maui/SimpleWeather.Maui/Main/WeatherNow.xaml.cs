@@ -22,7 +22,7 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
-public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IBannerManager, IBannerPage
+public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManager, ISnackbarPage, IBannerManager, IBannerPage
 {
     private SnackbarManager SnackMgr { get; set; }
     private BannerManager BannerMgr { get; set; }
@@ -71,6 +71,11 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     internal WeatherNow(WeatherNowArgs args) : this()
     {
         this.args = args;
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        args = query["args"] as WeatherNowArgs;
     }
 
     public void InitSnackManager()

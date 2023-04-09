@@ -118,7 +118,7 @@
     </Shell.Resources>
 
     <!-- Default content -->
-    <ShellContent ContentTemplate="{DataTemplate local:WeatherNow}" />
+    <ShellContent ContentTemplate="{DataTemplate local:WeatherNow}" Route="root" />
 
     <simpleShell:SimpleShell.Content>
         <Grid x:Name="MainGrid">
