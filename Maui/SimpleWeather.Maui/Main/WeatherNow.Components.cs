@@ -1325,14 +1325,20 @@ public partial class WeatherNow
                     .FillHorizontal()
                     .Apply(it =>
                     {
-                        it.PropertyChanged += (s, e) =>
+                        var maxHeight = DeviceInfo.Idiom == DeviceIdiom.Phone ? 200 : 250;
+
+                        void ResizeSunView()
                         {
-                            if (e.PropertyName == nameof(it.Width))
-                            {
-                                it.HeightRequest = it.Width / 2;
-                            }
+                            it.HeightRequest = Math.Min(maxHeight, ListLayout.Width / 2);
+                            it.WidthRequest = it.HeightRequest * 2;
+                        }
+
+                        ListLayout.SizeChanged += (s, e) =>
+                        {
+                            ResizeSunView();
                         };
-                        it.HeightRequest = it.Width / 2;
+
+                        ResizeSunView();
                     })
             }
         }
@@ -1395,10 +1401,10 @@ public partial class WeatherNow
                 {
                     BackgroundColor = Colors.Transparent,
                     Stroke = Colors.Transparent,
-                    HeightRequest = 200,
                     MaximumWidthRequest = 720,
                     ZIndex = 16,
                 }
+                .OnIdiom(Border.HeightRequestProperty, Default: 350, Phone: 200)
                 .Row(1)
                 .ColumnSpan(2)
                 .TapGesture(async () =>
@@ -1408,10 +1414,10 @@ public partial class WeatherNow
                 }),
                 new Border()
                 {
-                    HeightRequest = 200,
                     MaximumWidthRequest = 720,
                     BackgroundColor = Colors.Black
                 }
+                .OnIdiom(Border.HeightRequestProperty, Default: 350, Phone: 200)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>

@@ -447,22 +447,20 @@ public partial class WeatherNow : ScopePage, ISnackbarManager, ISnackbarPage, IB
     {
         if (DeviceInfo.Idiom != DeviceIdiom.Phone)
         {
-            var maxWidth = 1280;
+            var maxWidth = 1280d;
             var requestedWidth = width ?? MainGrid.Width;
+            var requestedPadding = 0d;
+
+            if (requestedWidth > maxWidth)
+            {
+                requestedPadding = (requestedWidth - maxWidth) / 2;
+            }
 
             foreach (var element in ResizeElements)
             {
-                if (element.WidthRequest > requestedWidth)
+                if (element is View v)
                 {
-                    element.WidthRequest = requestedWidth;
-                }
-                else if (element.WidthRequest >= maxWidth)
-                {
-                    element.WidthRequest = maxWidth;
-                }
-                else if (element.WidthRequest != requestedWidth)
-                {
-                    element.WidthRequest = requestedWidth;
+                    v.Margins(left: requestedPadding, right: requestedPadding, top: v.Margin.Top, bottom: v.Margin.Bottom);
                 }
             }
         }
