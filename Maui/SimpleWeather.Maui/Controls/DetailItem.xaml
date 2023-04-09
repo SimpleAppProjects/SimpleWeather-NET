@@ -34,13 +34,14 @@
                 Grid.Row="1"
                 Margin="{OnIdiom Phone='0', Default='7.5'}"
                 HorizontalOptions="Center"
-                VerticalOptions="Center"
+                VerticalOptions="Fill"
                 ForceBitmapIcon="True"
                 IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
                 ShowAsMonochrome="False"
                 WeatherIcon="{Binding Icon, Mode=OneWay}"
                 Rotation="{Binding IconRotation, Mode=OneWay}"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
+                HeightRequest="50"
+                WidthRequest="50"
                 IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}" />
             <controls:ViewBox
