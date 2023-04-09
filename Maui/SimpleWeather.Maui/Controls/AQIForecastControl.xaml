@@ -32,11 +32,14 @@
         </Style>
     </ContentView.Resources>
 
-    <Grid RowDefinitions="Auto,Auto,*" ColumnDefinitions="Auto,*">
+    <Grid
+        RowDefinitions="Auto,16,*"
+        ColumnDefinitions="Auto,*"
+        VerticalOptions="FillAndExpand">
         <Grid
             Grid.Row="0"
             Grid.ColumnSpan="2"
-            RowDefinitions="Auto,Auto"
+            RowDefinitions="*,*"
             ColumnDefinitions="Auto,*">
             <Label
                 x:Name="AQIndex"
@@ -66,27 +69,27 @@
                 Grid.Row="1"
                 Grid.Column="1"
                 Padding="6"
-                VerticalOptions="Start"
+                Margin="0,0,0,12"
                 FontSize="14"
+                LineBreakMode="WordWrap"
                 MaxLines="3"
                 Text="{Binding Description}"
-                LineBreakMode="TailTruncation" />
+                VerticalOptions="Center" />
         </Grid>
         <ProgressBar
             x:Name="AQIProgressBar"
             Grid.Row="1"
             Grid.ColumnSpan="2"
             HeightRequest="4"
-            Margin="12,0,12,12"
+            Margin="12,0"
             BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
             ProgressColor="{Binding ProgressColor}"
             Progress="{x:Bind Progress / 100}" />
         <FlexLayout
             Grid.Row="2"
             Grid.ColumnSpan="2"
-            Padding="0,0"
             HorizontalOptions="Center"
-            VerticalOptions="Center"
+            VerticalOptions="Start"
             Wrap="Wrap"
             Direction="Row"
             JustifyContent="Center"
