@@ -30,20 +30,36 @@
 		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <CodesignProvision>SimpleWeather - Debug</CodesignProvision>
-	  <CodesignKey>iPhone Developer</CodesignKey>
+		<CreatePackage>false</CreatePackage>
+		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
+		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
+		<WarningLevel>4</WarningLevel>
+		<CreatePackage>false</CreatePackage>
+		<CodesignProvision>SimpleWeather - Release</CodesignProvision>
+		<CodesignKey>iPhone Distribution</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-	  <CreatePackage>false</CreatePackage>
-	  <UseHardenedRuntime>true</UseHardenedRuntime>
-	  <CodesignKey>Developer ID Application</CodesignKey>
-	  <CodesignProvision>Automatic</CodesignProvision>
-	  <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-	  <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+		<CreatePackage>false</CreatePackage>
+		<UseHardenedRuntime>true</UseHardenedRuntime>
+		<CodesignKey>Developer ID Application</CodesignKey>
+		<CodesignProvision>Automatic</CodesignProvision>
+		<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+		<RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
+		<WarningLevel>4</WarningLevel>
+		<UseHardenedRuntime>true</UseHardenedRuntime>
+		<RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
+		<MtouchLink>SdkOnly</MtouchLink>
+		<EnableCodeSigning>True</EnableCodeSigning>
+		<EnablePackageSigning>true</EnablePackageSigning>
+		<CreatePackage>true</CreatePackage>
+		<CodesignKey>Apple Distribution: DAVE ANTOINE (F5MCLX6AR8)</CodesignKey>
+		<CodesignProvision>SimpleWeather - Release (MacCatalyst)</CodesignProvision>
+		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
+		<PackageSigningKey>3rd Party Mac Developer Installer: DAVE ANTOINE (F5MCLX6AR8)</PackageSigningKey>
 	</PropertyGroup>
 	<ItemGroup>
 		<!-- App Icon -->
@@ -80,21 +96,20 @@
 		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.0" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
 	</ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-	  <PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
-	  <PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
-  </ItemGroup>
-  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-	  <PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
-	  <PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.9.0.4" />
-  </ItemGroup>
-  <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="WinUIEx" Version="2.1.0" />
-
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230313.1" />
-    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
-    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
-  </ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
+		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
+	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.9.0.4" />
+	</ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+		<PackageReference Include="WinUIEx" Version="2.1.0" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230313.1" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
+		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
+	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
@@ -109,7 +124,7 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Controls\KeyEntryPopup.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Controls\Snackbar\SnackbarContent.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -118,34 +133,34 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\DevSettingsPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\IconRadioPreference.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_About.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_Credits.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_Features.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_General.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_Icons.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_OSSLibs.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\Settings_Units.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Radar\RadarToolbar.xaml">
-		  <Generator>MSBuild:Compile</Generator>
+			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Resources\Styles\Controls.xaml">
 			<Generator>MSBuild:Compile</Generator>
@@ -169,79 +184,93 @@
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="Preferences\PreferenceListDialogPage.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\WeatherAlertPanel.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\DetailItem.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\UVControl.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\BeaufortControl.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\AQIControl.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\PollenCountControl.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\MoonPhaseControl.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\HourlyForecastItemPanel.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 		<MauiXaml Update="Controls\HourlyForecastItem.xaml">
-		  <SubType></SubType>
+			<SubType>
+			</SubType>
 		</MauiXaml>
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="**\*.xaml.cs" Exclude="@(Compile)">
-		  <DependentUpon>%(Filename)</DependentUpon>
+			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
-    </ItemGroup>
+	</ItemGroup>
 	<ItemGroup>
-	  <Compile Update="Preferences\Settings_Features.xaml.cs">
-	    <DependentUpon>Settings_Features.xaml</DependentUpon>
-	  </Compile>
-	  <Compile Update="Preferences\Settings_General.xaml.cs">
-	    <DependentUpon>Settings_General.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Preferences\Settings_Features.xaml.cs">
+			<DependentUpon>Settings_Features.xaml</DependentUpon>
+		</Compile>
+		<Compile Update="Preferences\Settings_General.xaml.cs">
+			<DependentUpon>Settings_General.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
 	<PropertyGroup Condition=" $([MSBuild]::IsOSPlatform('OSX')) ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-	        <externalConsole>True</externalConsole>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-	        <externalConsole>True</externalConsole>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-	        <externalConsole>True</externalConsole>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-	        <externalConsole>True</externalConsole>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
+		<CustomCommands>
+			<CustomCommands>
+				<Command>
+					<type>BeforeBuild</type>
+					<command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
+					<externalConsole>True</externalConsole>
+				</Command>
+				<Command>
+					<type>BeforeBuild</type>
+					<command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
+					<externalConsole>True</externalConsole>
+				</Command>
+				<Command>
+					<type>BeforeBuild</type>
+					<command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+					<externalConsole>True</externalConsole>
+				</Command>
+				<Command>
+					<type>BeforeBuild</type>
+					<command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
+					<externalConsole>True</externalConsole>
+				</Command>
+			</CustomCommands>
+		</CustomCommands>
 	</PropertyGroup>
-	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" /></VisualStudio></ProjectExtensions>
+	<ProjectExtensions>
+		<VisualStudio>
+			<UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" />
+		</VisualStudio>
+	</ProjectExtensions>
 	<Import Project="..\..\SimpleWeather.NET.Shared\SimpleWeather.NET.Shared.projitems" Label="Shared" />
 	<Import Project="..\..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />
 </Project>

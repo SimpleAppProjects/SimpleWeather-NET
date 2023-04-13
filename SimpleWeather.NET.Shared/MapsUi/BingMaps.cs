@@ -106,12 +106,8 @@ namespace SimpleWeather.NET.MapsUi
                         UseHTTPS = true,
                     };
 
-                    var response =
-#if WINDOWS || NETSTANDARD2_0
-                        await request.Execute().AsAsyncOperation().AsTask(cts.Token);
-#else
-                    await request.Execute().WaitAsync(cts.Token);
-#endif
+                    var response = await request.Execute().WaitAsync(cts.Token);
+
                     ImageryMetadataCache[ImageryType.CanvasGray] = metadata = response.StatusCode switch
                     {
                         // OK
@@ -176,12 +172,8 @@ namespace SimpleWeather.NET.MapsUi
                         UseHTTPS = true,
                     };
 
-                    var response =
-#if WINDOWS || NETSTANDARD2_0
-                        await request.Execute().AsAsyncOperation().AsTask(cts.Token);
-#else
-                    await request.Execute().WaitAsync(cts.Token);
-#endif
+                    var response = await request.Execute().WaitAsync(cts.Token);
+
                     ImageryMetadataCache[ImageryType.RoadOnDemand] = metadata = response.StatusCode switch
                     {
                         // OK

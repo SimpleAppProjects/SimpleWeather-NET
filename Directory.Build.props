@@ -1,28 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <Project>
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-  	<Version>5.8.1.0</Version>
-    <!-- Version Code Format (.NET Version, App Version, Build Number) -->
-    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">757200</VersionCode>
-    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
-  </PropertyGroup>
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<Version>5.8.1</Version>
+		<!-- Version Code Format (.NET Version, App Version, Build Number) -->
+		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">758103</VersionCode>
+		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
-    <_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
-  </PropertyGroup>
+	<PropertyGroup>
+		<_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
+		<_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
-  </PropertyGroup>
+	<PropertyGroup>
+		<DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
+	</PropertyGroup>
 
-  <!-- Build acceleration -->
-  <PropertyGroup>
-    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
-    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Release'">false</AccelerateBuildsInVisualStudio>
-  </PropertyGroup>
+	<!-- Build acceleration -->
+	<PropertyGroup>
+		<AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
+		<AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Release'">false</AccelerateBuildsInVisualStudio>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
-  </PropertyGroup>
+	<PropertyGroup>
+		<SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+	</PropertyGroup>
 </Project>

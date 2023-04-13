@@ -75,5 +75,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Localization\CustomStringLocalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localization\IResourceLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localization\ResourceLoaderImpl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MapsUi\BingMaps.cs" />
   </ItemGroup>
 </Project>

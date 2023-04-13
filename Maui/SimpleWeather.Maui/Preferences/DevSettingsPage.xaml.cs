@@ -15,7 +15,7 @@ public partial class DevSettingsPage : ContentPage
         DebugSwitch.On = Logger.IsDebugLoggerEnabled();
         DebugSwitch.IsEnabled = false;
 #else
-        DebugSwitch.IsOn = Logger.IsDebugLoggerEnabled();
+        DebugSwitch.On = Logger.IsDebugLoggerEnabled();
         DebugSwitch.IsEnabled = true;
 #endif
 

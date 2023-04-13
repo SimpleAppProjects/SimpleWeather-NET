@@ -2,7 +2,9 @@
 using BruTile.Cache;
 using Mapsui.Tiling;
 #if !DEBUG
+#if WINDOWS
 using Microsoft.UI.Xaml;
+#endif
 using SimpleWeather.Helpers;
 using SimpleWeather.NET.MapsUi;
 #endif

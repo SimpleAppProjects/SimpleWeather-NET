@@ -14,7 +14,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>SimpleWeather</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.thewizrd.simpleweather.debug</string>
+	<string>com.thewizrd.simpleweather</string>
 	<key>CFBundleName</key>
 	<string>SimpleWeather</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -33,7 +33,6 @@
 	</array>
 	<key>UIDeviceFamily</key>
 	<array>
-		<integer>1</integer>
 		<integer>2</integer>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -57,5 +56,9 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en-US</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.weather</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
