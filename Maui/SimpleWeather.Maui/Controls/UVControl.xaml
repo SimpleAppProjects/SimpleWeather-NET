@@ -18,10 +18,10 @@
             x:Name="UVIcon"
             Grid.Row="1"
             Grid.Column="0"
-            WidthRequest="85"
-            HeightRequest="72"
-            IconWidth="85"
-            IconHeight="72"
+            WidthRequest="{OnIdiom Default=85, Phone=76}"
+            HeightRequest="{OnIdiom Default=72, Phone=65}"
+            IconWidth="{OnIdiom Default=85, Phone=76}"
+            IconHeight="{OnIdiom Default=72, Phone=65}"
             Margin="12,0"
             VerticalOptions="Center"
             ForceBitmapIcon="True"
@@ -33,7 +33,7 @@
             Grid.Column="1"
             Padding="6"
             VerticalOptions="Center"
-            FontSize="18"
+            FontSize="{OnIdiom Default=18, Phone=16}"
             Text="{x:Bind $'{Index}, {Description}'}" />
         <ProgressBar
             x:Name="UVProgressBar"
