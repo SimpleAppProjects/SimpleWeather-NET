@@ -89,7 +89,7 @@ namespace SimpleWeather.Maui.Preferences
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto)
                 },
-                Padding = new Thickness(16, 8),
+                Padding = new Thickness(20, 8),
                 Children =
                 {
                     new Label()

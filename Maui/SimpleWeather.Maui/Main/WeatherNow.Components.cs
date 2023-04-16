@@ -23,7 +23,9 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Timers;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -1242,7 +1244,7 @@ public partial class WeatherNow
                                     )
                                     .TapGesture(async () =>
                                     {
-                                        await Navigation.PushAsync(new WeatherAQIPage());
+                                        await Navigation.PushAsync(new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData }));
                                     })
                                     .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                                             BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
@@ -1330,7 +1332,10 @@ public partial class WeatherNow
                         void ResizeSunView()
                         {
                             it.HeightRequest = Math.Min(maxHeight, ListLayout.Width / 2);
-                            it.WidthRequest = it.HeightRequest * 2;
+                            if (DeviceInfo.Idiom != DeviceIdiom.Phone || DeviceDisplay.MainDisplayInfo.Orientation != DisplayOrientation.Portrait)
+                            {
+                                it.WidthRequest = it.HeightRequest * 2;
+                            }
                         }
 
                         ListLayout.SizeChanged += (s, e) =>
@@ -1342,6 +1347,7 @@ public partial class WeatherNow
                     })
             }
         }
+        .FillHorizontal()
         .Margins(bottom: 25)
         .Bind(
             VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",

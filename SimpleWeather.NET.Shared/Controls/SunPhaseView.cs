@@ -656,31 +656,46 @@ namespace SimpleWeather.NET.Controls
             canvas.DrawText(SunsetLabel, sunsetX, y, bottomTextFont, bottomTextPaint);
         }
 
+#if !WINDOWS
+        protected double GetMeasurement(double constraint, double desiredSize, double measuredSize, double maxSize)
+        {
+            if (desiredSize > 0)
+            {
+                return maxSize > 0 ? Math.Min(desiredSize, maxSize) : desiredSize;
+            }
+
+            return measuredSize;
+        }
+#endif
+
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
         {
             Size size = base.MeasureOverride(availableSize);
+#else
+        private double MeasureWidth(double widthConstraint, double measuredWidth)
+        {
+            int MIN_HORIZONTAL_GRID_NUM = 2;
+            double preferred = backgroundGridWidth * MIN_HORIZONTAL_GRID_NUM + sideLineLength * 2;
+            return LayoutManager.ResolveConstraints(widthConstraint, this.Width, measuredWidth, min: preferred);
+        }
 
-            Canvas.Width = availableSize.Width;
-            Canvas.Height = availableSize.Height;
+        protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
+        {
+            Size size = base.MeasureOverride(widthConstraint, heightConstraint);
+            Size availableSize = new Size(MeasureWidth(widthConstraint, size.Width), size.Height);
+#endif
+
+            if (this.Canvas == null)
+            {
+                return size;
+            }
+
+            Canvas.WidthRequest = availableSize.Width;
+            Canvas.HeightRequest = availableSize.Height;
 
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
-#else
-        protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
-        {
-            Size availableSize = base.MeasureOverride(widthConstraint, heightConstraint);
-            availableSize.Width = MeasureWidth(widthConstraint, availableSize.Width);
-
-            if (Canvas != null)
-            {
-                Canvas.WidthRequest = availableSize.Width;
-                Canvas.HeightRequest = availableSize.Height;
-
-                ViewHeight = (float)Canvas.Height;
-                ViewWidth = (float)Canvas.Width;
-            }
-#endif
 
             RefreshXCoordinateList();
 
@@ -693,15 +708,6 @@ namespace SimpleWeather.NET.Controls
 
             return availableSize;
         }
-
-#if !WINDOWS
-        private double MeasureWidth(double widthConstraint, double measuredWidth)
-        {
-            int MIN_HORIZONTAL_GRID_NUM = 2;
-            double preferred = backgroundGridWidth * MIN_HORIZONTAL_GRID_NUM + sideLineLength * 2;
-            return LayoutManager.ResolveConstraints(widthConstraint, this.Width, measuredWidth, min: preferred);
-        }
-#endif
 
         public void Dispose()
         {

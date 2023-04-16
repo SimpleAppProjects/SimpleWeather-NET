@@ -11,6 +11,7 @@ using Windows.UI;
 using Windows.UI.Text;
 #else
 using Microsoft.Maui.Layouts;
+using Microsoft.Maui.Platform;
 using Microsoft.Maui.Primitives;
 using SimpleWeather.Maui;
 using SimpleWeather.Maui.Controls;
@@ -18,6 +19,7 @@ using SimpleWeather.Maui.Helpers;
 #endif
 using SimpleWeather.NET.Utils;
 using SimpleWeather.SkiaSharp;
+using SimpleWeather.Utils;
 using SkiaSharp;
 using RectF = System.Drawing.RectangleF;
 
@@ -406,7 +408,6 @@ namespace SimpleWeather.NET.Controls.Graphs
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
             Size size = base.MeasureOverride(widthConstraint, heightConstraint);
-            var availableSize = new Size(GetMeasurement(widthConstraint, GetPreferredWidth(), size.Width, MaxCanvasWidth), size.Height);
 #endif
 
             if (this.ScrollViewer == null || this.Canvas == null)
@@ -417,6 +418,9 @@ namespace SimpleWeather.NET.Controls.Graphs
 #if WINDOWS
             ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
             ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
+#else
+            ScrollViewer.HeightRequest = double.IsInfinity(heightConstraint) ? -1d : size.Height;
+            ScrollViewer.WidthRequest = double.IsInfinity(widthConstraint) ? -1d : widthConstraint;
 #endif
 
             OnPreMeasure();
@@ -430,11 +434,10 @@ namespace SimpleWeather.NET.Controls.Graphs
                     ? Math.Min(MaxCanvasWidth, GetPreferredWidth())
                     : GetPreferredWidth();
 #if WINDOWS
-            Canvas.Height = 
+            Canvas.Height = availableSize.Height;
 #else
-            Canvas.HeightRequest =
+            Canvas.HeightRequest = size.Height;
 #endif
-                availableSize.Height;
 
 #if WINDOWS
             ViewHeight = (float)Canvas.Height;

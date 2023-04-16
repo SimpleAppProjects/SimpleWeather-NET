@@ -32,21 +32,13 @@
         </Style>
     </ContentView.Resources>
 
-    <Grid
-        RowDefinitions="Auto,16,*"
-        ColumnDefinitions="Auto,*"
-        VerticalOptions="FillAndExpand">
-        <Grid
-            Grid.Row="0"
-            Grid.ColumnSpan="2"
-            RowDefinitions="*,*"
-            ColumnDefinitions="Auto,*">
+    <VerticalStackLayout>
+        <Grid ColumnDefinitions="Auto,*">
             <Label
                 x:Name="AQIndex"
                 Grid.Row="0"
                 Grid.Column="0"
                 Grid.RowSpan="2"
-                MinimumHeightRequest="72"
                 MinimumWidthRequest="85"
                 VerticalOptions="Center"
                 VerticalTextAlignment="Center"
@@ -60,34 +52,28 @@
                 Grid.Row="0"
                 Grid.Column="1"
                 Padding="6"
+                LineBreakMode="WordWrap"
                 VerticalOptions="Center"
                 FontSize="18"
                 FontFamily="OpenSansSemibold"
                 Text="{Binding Level}" />
-            <Label
-                x:Name="AQIBlock"
-                Grid.Row="1"
-                Grid.Column="1"
-                Padding="6"
-                Margin="0,0,0,12"
-                FontSize="14"
-                LineBreakMode="WordWrap"
-                MaxLines="3"
-                Text="{Binding Description}"
-                VerticalOptions="Center" />
         </Grid>
+        <Label
+            x:Name="AQIBlock"
+            Padding="12"
+            FontSize="14"
+            LineBreakMode="WordWrap"
+            Text="{Binding Description}"
+            HorizontalTextAlignment="Center"
+            VerticalOptions="Center" />
         <ProgressBar
             x:Name="AQIProgressBar"
-            Grid.Row="1"
-            Grid.ColumnSpan="2"
             HeightRequest="4"
             Margin="12,0"
             BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
             ProgressColor="{Binding ProgressColor}"
             Progress="{x:Bind Progress / 100}" />
         <FlexLayout
-            Grid.Row="2"
-            Grid.ColumnSpan="2"
             HorizontalOptions="Center"
             VerticalOptions="Start"
             Wrap="Wrap"
@@ -138,5 +124,5 @@
                     Text="{Binding SO2Index, Mode=OneWay}" />
             </HorizontalStackLayout>
         </FlexLayout>
-    </Grid>
+    </VerticalStackLayout>
 </ContentView>
