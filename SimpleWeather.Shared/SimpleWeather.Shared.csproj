@@ -15,9 +15,6 @@
     <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
-    <CreatePackage>false</CreatePackage>
-  </PropertyGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.230313.1" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
@@ -59,10 +56,8 @@
     <PackageReference Include="Svg.Skia" Version="0.5.18" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
+    <PackageReference Include="TimberLog" Version="1.0.0" />
     <PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Timber\Timber.csproj" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="5.0.0" />

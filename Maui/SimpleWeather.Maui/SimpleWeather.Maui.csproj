@@ -74,6 +74,7 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<ItemGroup>
+		<PackageReference Include="TimberLog" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.1.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
@@ -117,7 +118,6 @@
 		<ProjectReference Include="..\..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
 		<ProjectReference Include="..\..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
-		<ProjectReference Include="..\..\Timber\Timber.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 		<MauiXaml Update="Controls\Banner\BannerContent.xaml">

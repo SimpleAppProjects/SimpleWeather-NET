@@ -49,6 +49,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="TimberLog" Version="1.0.0" />
+
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="KeyedSemaphores" Version="4.1.0" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.1" />
@@ -167,7 +169,6 @@
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
     <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
     <ProjectReference Include="..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
-    <ProjectReference Include="..\Timber\Timber.csproj" />
   </ItemGroup>
 
   <ItemGroup>
