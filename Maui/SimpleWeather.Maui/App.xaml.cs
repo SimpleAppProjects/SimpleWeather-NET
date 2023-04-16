@@ -61,7 +61,7 @@ public partial class App : Application
 
 #if !MACCATALYST
         AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-        AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+        AppCenter.Start($"ios={APIKeys.GetiOSAppCenterSecret()}", typeof(Analytics), typeof(Crashes));
 #endif
 
         // Initialize depencies for library

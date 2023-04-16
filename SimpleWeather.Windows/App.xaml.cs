@@ -107,7 +107,7 @@ namespace SimpleWeather.NET
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
             AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-            AppCenter.Start(APIKeys.GetAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+            AppCenter.Start(APIKeys.GetUWPAppCenterSecret(), typeof(Analytics), typeof(Crashes));
 
             // Initialize depencies for library
             InitializeDependencies();
