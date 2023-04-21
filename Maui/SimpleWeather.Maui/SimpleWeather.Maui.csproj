@@ -10,12 +10,15 @@
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>
 		<ImplicitUsings>enable</ImplicitUsings>
+
 		<!-- Display name -->
 		<ApplicationTitle>SimpleWeather</ApplicationTitle>
+
 		<!-- App Identifier -->
 		<ApplicationId Condition="'$(Configuration)' == 'Debug'">com.thewizrd.simpleweather.debug</ApplicationId>
 		<ApplicationId Condition="'$(Configuration)' == 'Release'">com.thewizrd.simpleweather</ApplicationId>
 		<ApplicationIdGuid>640a2777-29ff-41b7-9b12-7325a1965902</ApplicationIdGuid>
+
 		<!-- Versions -->
 		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
 		<ApplicationVersion>$(VersionCode)</ApplicationVersion>
@@ -25,10 +28,12 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<DefaultLanguage>en-US</DefaultLanguage>
+
 		<!-- Distribution -->
 		<EnableMsixTooling Condition="$(TargetFramework.Contains('windows'))">true</EnableMsixTooling>
 		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win10-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
@@ -37,8 +42,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 		<WarningLevel>4</WarningLevel>
 		<CreatePackage>false</CreatePackage>
-		<CodesignProvision>SimpleWeather - Release</CodesignProvision>
-		<CodesignKey>iPhone Distribution</CodesignKey>
+		<CodesignProvision>SimpleWeather - Release (iOS - Debug)</CodesignProvision>
+		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
 		<UseHardenedRuntime>true</UseHardenedRuntime>
@@ -56,11 +61,12 @@
 		<EnableCodeSigning>True</EnableCodeSigning>
 		<EnablePackageSigning>true</EnablePackageSigning>
 		<CreatePackage>true</CreatePackage>
-		<CodesignKey>Apple Distribution: DAVE ANTOINE (F5MCLX6AR8)</CodesignKey>
-		<CodesignProvision>SimpleWeather - Release (MacCatalyst)</CodesignProvision>
+		<CodesignKey>Mac Developer</CodesignKey>
+		<CodesignProvision>SimpleWeather - Release (MacCatalyst - Dev)</CodesignProvision>
 		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
-		<PackageSigningKey>3rd Party Mac Developer Installer: DAVE ANTOINE (F5MCLX6AR8)</PackageSigningKey>
+		<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
 	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0070c0" />
@@ -73,6 +79,7 @@
 		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="TimberLog" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
@@ -242,28 +249,24 @@
 	</Target>
 	<PropertyGroup Condition=" $([MSBuild]::IsOSPlatform('OSX')) ">
 		<CustomCommands>
-			<CustomCommands>
-				<Command>
-					<type>BeforeBuild</type>
-					<command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-					<externalConsole>True</externalConsole>
-				</Command>
-				<Command>
-					<type>BeforeBuild</type>
-					<command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-					<externalConsole>True</externalConsole>
-				</Command>
-				<Command>
-					<type>BeforeBuild</type>
-					<command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-					<externalConsole>True</externalConsole>
-				</Command>
-				<Command>
-					<type>BeforeBuild</type>
-					<command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-					<externalConsole>True</externalConsole>
-				</Command>
-			</CustomCommands>
+		  <CustomCommands>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+		    </Command>
+		  </CustomCommands>
 		</CustomCommands>
 	</PropertyGroup>
 	<ProjectExtensions>
