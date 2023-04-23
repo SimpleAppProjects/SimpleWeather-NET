@@ -509,10 +509,11 @@ public partial class WeatherNow
                 {
                     Margin = new Thickness(5,10,5,5),
                     VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
                     ColumnDefinitions =
                     {
                         new ColumnDefinition(GridLength.Auto),
-                        new ColumnDefinition(GridLength.Star)
+                        new ColumnDefinition(GridLength.Auto)
                     },
                     Children =
                     {
