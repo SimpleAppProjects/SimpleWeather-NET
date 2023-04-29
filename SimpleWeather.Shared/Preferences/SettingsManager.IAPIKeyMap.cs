@@ -9,7 +9,7 @@
         }
     }
 
-    public interface IKeyVerifiedMap
+    public interface IProviderMap
     {
         bool this[string provider]
         {
@@ -33,7 +33,7 @@
             }
         }
 
-        private class KeyVerifiedMap : IKeyVerifiedMap
+        private class KeyVerifiedMap : IProviderMap
         {
             private readonly SettingsManager settingsMgr;
 
@@ -43,6 +43,19 @@
             {
                 get => settingsMgr.IsKeyVerified(provider);
                 set => settingsMgr.SetKeyVerified(provider, value);
+            }
+        }
+
+        private class UsePersonalKeyMap : IProviderMap
+        {
+            private readonly SettingsManager settingsMgr;
+
+            internal UsePersonalKeyMap(SettingsManager settingsManager) => this.settingsMgr = settingsManager;
+
+            public bool this[string provider]
+            {
+                get => settingsMgr.IsUsePersonalKey(provider);
+                set => settingsMgr.SetUsePersonalKey(provider, value);
             }
         }
     }

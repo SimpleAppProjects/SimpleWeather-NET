@@ -27,7 +27,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                     {
                         var SettingsManager = DI.Utils.SettingsManager;
 
-                        if (SettingsManager.UsePersonalKey)
+                        if (SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap])
                         {
                             return new OWMOneCallWeatherProvider();
                         }

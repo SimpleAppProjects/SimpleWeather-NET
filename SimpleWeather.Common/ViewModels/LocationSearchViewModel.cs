@@ -165,7 +165,7 @@ namespace SimpleWeather.Common.ViewModels
                         locQuery.UpdateWeatherSource(provider);
                     }
 
-                    if (SettingsManager.UsePersonalKey && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
+                    if (SettingsManager.UsePersonalKeys[SettingsManager.API] && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
                     {
                         PostErrorMessage(new ErrorMessage.String(ResStrings.werror_invalidkey));
                         UiState = UiState with { IsLoading = false };
@@ -241,7 +241,7 @@ namespace SimpleWeather.Common.ViewModels
                     return;
                 }
 
-                if (SettingsManager.UsePersonalKey && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
+                if (SettingsManager.UsePersonalKeys[SettingsManager.API] && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
                 {
                     PostErrorMessage(new ErrorMessage.String(ResStrings.werror_invalidkey));
                     UiState = UiState with { IsLoading = false };

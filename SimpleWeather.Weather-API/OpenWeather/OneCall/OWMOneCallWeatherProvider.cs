@@ -129,7 +129,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                 query = location_query;
             }
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WeatherAPI] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WeatherAPI] ? SettingsManager.APIKeys[WeatherAPI] : GetAPIKey();
 
             if (String.IsNullOrWhiteSpace(key))
             {
@@ -257,7 +257,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
         {
             AirQualityData aqiData = null;
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.OpenWeatherMap] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.OpenWeatherMap] ? SettingsManager.APIKeys[WAPI.OpenWeatherMap] : GetAPIKey();
 
             try
             {

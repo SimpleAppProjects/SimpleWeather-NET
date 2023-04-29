@@ -116,7 +116,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
             var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.WeatherBitIo] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.WeatherBitIo] ? SettingsManager.APIKeys[WAPI.WeatherBitIo] : GetAPIKey();
 
             if (String.IsNullOrWhiteSpace(key))
             {
@@ -199,7 +199,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.WeatherBitIo] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.WeatherBitIo] ? SettingsManager.APIKeys[WAPI.WeatherBitIo] : GetAPIKey();
 
             try
             {

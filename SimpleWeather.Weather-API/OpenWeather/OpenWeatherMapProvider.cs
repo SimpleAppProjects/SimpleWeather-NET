@@ -126,7 +126,7 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 query = location_query;
             }
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WeatherAPI] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WeatherAPI] ? SettingsManager.APIKeys[WeatherAPI] : GetAPIKey();
 
             if (String.IsNullOrWhiteSpace(key))
             {

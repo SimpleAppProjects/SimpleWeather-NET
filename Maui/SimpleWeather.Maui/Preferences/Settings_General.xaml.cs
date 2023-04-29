@@ -21,6 +21,7 @@ using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
+using System.Collections.Immutable;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -55,11 +56,20 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         new PreferenceListItem(ResStrings.refresh_12hrs, "720"),
     };
 
+    private Cell PremiumPref = null;
+
+    private bool SkipRestore = false;
+
     public Settings_General()
     {
         InitializeComponent();
 
         ActionQueue = new HashSet<string>();
+
+        if (ExtrasService.AreSubscriptionsSupported)
+        {
+            PremiumPref = CreatePremiumPreference();
+        }
 
         RestoreSettings();
 
@@ -72,14 +82,10 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         FollowGPS.OnChanged += FollowGPS_OnChanged;
+        PersonalKeyPref.OnChanged += PersonalKeyPref_OnChanged;
 
         AnalyticsLogger.LogEvent("Settings_General");
         WeakReferenceMessenger.Default.Register(this);
-
-        if (ExtrasService.AreSubscriptionsSupported)
-        {
-            CreatePremiumPreference();
-        }
     }
 
     public void InitSnackManager()
@@ -106,7 +112,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         SnackMgr = null;
     }
 
-    private void RestoreSettings()
+    private async void RestoreSettings()
     {
         // Location
         FollowGPS.On = SettingsManager.FollowGPS;
@@ -183,13 +189,29 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         });
         LanguagePref.SelectedItem = LocaleUtils.GetLocaleCode();
         LanguagePref.Detail = string.IsNullOrWhiteSpace(LanguagePref.SelectedItem?.ToString()) ? ResStrings.summary_default : LocaleUtils.GetLocaleDisplayName();
+
+        await Dispatcher.DispatchAsync(() =>
+        {
+            if (!ExtrasService.AreSubscriptionsSupported)
+            {
+                PremiumPref?.Let(AboutSection.Remove);
+            }
+            else if (PremiumPref != null && !AboutSection.Contains(PremiumPref))
+            {
+                AboutSection.Add(PremiumPref);
+            }
+        });
     }
 
     private void RestoreAPISettings()
     {
+        RestoreAPISettings(SettingsManager.API);
+    }
+
+    private async void RestoreAPISettings(string selectedProvider)
+    {
         // Weather Providers
         APIPref.Items = WeatherAPI.APIs.Select(entry => new PreferenceListItem(entry.Display, entry.Value));
-        var selectedProvider = SettingsManager.API;
         APIPref.SelectedItem = selectedProvider;
         APIPref.Detail = APIPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, APIPref.SelectedItem)).Display;
 
@@ -197,41 +219,65 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         if (selectedWProv.KeyRequired)
         {
+            KeyEntryPref.IsEnabled = true;
+
             if (!string.IsNullOrWhiteSpace(SettingsManager.APIKey) && !SettingsManager.KeysVerified[selectedProvider])
                 SettingsManager.KeysVerified[selectedProvider] = true;
 
-            PersonalKeyPref.On = SettingsManager.UsePersonalKey;
-
-            ShowKeyPreferences(true);
-
             if (string.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
             {
-                PersonalKeyPref.On = SettingsManager.UsePersonalKey = true;
+                PersonalKeyPref.On = SettingsManager.UsePersonalKeys[selectedProvider] = true;
                 PersonalKeyPref.IsEnabled = false;
                 KeyEntryPref.IsEnabled = false;
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    ProviderSection.Remove(KeyEntryPref);
+                    ProviderSection.Remove(APIRegisterPref);
+                });
             }
             else
             {
                 PersonalKeyPref.IsEnabled = true;
+                PersonalKeyPref.On = SettingsManager.UsePersonalKeys[selectedProvider];
             }
 
-            if (!SettingsManager.UsePersonalKey)
+            if (!SettingsManager.UsePersonalKeys[selectedProvider])
             {
                 // We're using our own (verified) keys
                 SettingsManager.KeysVerified[selectedProvider] = true;
                 KeyEntryPref.IsEnabled = false;
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    ProviderSection.Remove(KeyEntryPref);
+                    ProviderSection.Remove(APIRegisterPref);
+                });
             }
             else
             {
                 KeyEntryPref.IsEnabled = true;
+
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    if (!ProviderSection.Contains(APIRegisterPref))
+                        ProviderSection.Add(APIRegisterPref);
+                    if (!ProviderSection.Contains(KeyEntryPref))
+                        ProviderSection.Add(KeyEntryPref);
+                });
             }
         }
         else
         {
+            KeyEntryPref.IsEnabled = false;
+            PersonalKeyPref.IsEnabled = false;
+            await Dispatcher.DispatchAsync(() =>
+            {
+                ProviderSection.Remove(PersonalKeyPref);
+                ProviderSection.Remove(KeyEntryPref);
+                ProviderSection.Remove(APIRegisterPref);
+            });
             SettingsManager.KeysVerified[selectedProvider] = false;
             // Clear API KEY entry to avoid issues
             SettingsManager.APIKey = string.Empty;
-            ShowKeyPreferences(false);
         }
 
         KeyEntryPref.Detail = SettingsManager.APIKey;
@@ -246,7 +292,12 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         InitSnackManager();
         App.Current.UnregisterSettingsListener();
         SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
-        RestoreSettings();
+
+        if (!SkipRestore)
+        {
+            RestoreSettings();
+        }
+        SkipRestore = false;
     }
 
     protected override void OnNavigatingFrom(NavigatingFromEventArgs args)
@@ -262,15 +313,30 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
         base.OnNavigatedFrom(args);
+        AnalyticsLogger.LogEvent("Settings_General: OnNavigatedFrom");
         UnloadSnackManager();
+
+        var currentLocation = Shell.Current.CurrentState.Location?.ToString();
+
+        if (currentLocation?.ToLowerInvariant()?.Contains("dialog") != true && IsProviderAndKeyInvalid())
+        {
+            var API = RemoteConfigService.GetDefaultWeatherProvider();
+            APIPref.SelectedItem = API;
+            RestoreAPISettings(API);
+        }
+    }
+
+    private bool IsProviderAndKeyInvalid()
+    {
+        var provider = APIPref.SelectedItem.ToString();
+        return SettingsManager.UsePersonalKeys[provider] &&
+            String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) &&
+            wm.IsKeyRequired(provider);
     }
 
     public Task<bool> OnBackRequested()
     {
-        var provider = APIPref.SelectedItem.ToString();
-
-        if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) &&
-            wm.IsKeyRequired(provider))
+        if (IsProviderAndKeyInvalid())
         {
             UpdateKeySummary();
             ShowSnackbar(Snackbar.MakeWarning(ResStrings.message_enter_apikey, SnackbarDuration.Long));
@@ -318,12 +384,13 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
             {
                 case CommonActions.ACTION_SETTINGS_UPDATEAPI:
                     wm.UpdateAPI();
+                    var api = SettingsManager.API;
                     // Log event
                     AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
-                        {
-                            { "API", SettingsManager.API },
-                            { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
-                        });
+                    {
+                        { "API", api },
+                        { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[api]).ToString() }
+                    });
 #if __IOS__
                     WeatherUpdaterTask.UpdateWeather();
 #endif
@@ -344,22 +411,17 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         ActionQueue.Clear();
     }
 
-    private void ShowKeyPreferences(bool show)
-    {
-        PersonalKeyPref.IsEnabled = APIRegisterPref.IsEnabled = KeyEntryPref.IsEnabled = show;
-        if (!show) PersonalKeyPref.On = false;
-    }
-
     private void UpdateKeySummary()
     {
-        UpdateKeySummary(APIPref.SelectedItem?.ToString());
+        UpdateKeySummary(APIPref.Detail?.ToString());
     }
 
     private void UpdateKeySummary(string providerAPI)
     {
-        if (!string.IsNullOrWhiteSpace(SettingsManager.APIKeys[providerAPI]))
+        var value = APIPref.SelectedItem?.ToString();
+        if (!string.IsNullOrWhiteSpace(SettingsManager.APIKeys[value]))
         {
-            var keyVerified = SettingsManager.KeysVerified[providerAPI];
+            var keyVerified = SettingsManager.KeysVerified[value];
             var color = keyVerified ? Colors.Green : Colors.Red;
             var summary = keyVerified ? "Key Verified" : "Key Invalid";
             KeyEntryPref.Detail = summary;
@@ -409,6 +471,8 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
     public void Receive(SettingsChangedMessage message)
     {
+        SkipRestore = false;
+
         switch (message.Value.PreferenceKey)
         {
             case SettingsManager.KEY_REFRESHINTERVAL:
@@ -448,6 +512,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
             case SettingsManager.KEY_API:
                 {
                     OnWeatherProviderChanged(message.Value.NewValue);
+                    SkipRestore = true;
                 }
                 break;
             case SettingsManager.KEY_APIKEY:
@@ -487,8 +552,6 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                 }
                 break;
         }
-
-        RestoreSettings();
     }
 
     private async void OnWeatherProviderChanged(object newValue)
@@ -510,24 +573,33 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         if (selectedWProv.KeyRequired)
         {
-            ShowKeyPreferences(true);
-
             if (string.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
             {
-                PersonalKeyPref.On = SettingsManager.UsePersonalKey = true;
+                PersonalKeyPref.On = SettingsManager.UsePersonalKeys[selectedProvider] = true;
                 PersonalKeyPref.IsEnabled = Equals(selectedProvider, WeatherAPI.OpenWeatherMap);
                 KeyEntryPref.IsEnabled = false;
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    ProviderSection.Remove(KeyEntryPref);
+                    ProviderSection.Remove(APIRegisterPref);
+                });
             }
             else
             {
                 PersonalKeyPref.IsEnabled = true;
+                PersonalKeyPref.On = SettingsManager.UsePersonalKeys[selectedProvider];
             }
 
-            if (!SettingsManager.UsePersonalKey)
+            if (!SettingsManager.UsePersonalKeys[selectedProvider])
             {
                 // We're using our own (verified) keys
                 SettingsManager.KeysVerified[selectedProvider] = true;
                 KeyEntryPref.IsEnabled = false;
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    ProviderSection.Remove(KeyEntryPref);
+                    ProviderSection.Remove(APIRegisterPref);
+                });
             }
             else
             {
@@ -535,10 +607,27 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                 SettingsManager.KeysVerified[selectedProvider] = false;
 
                 // Show dialog to set key
-                ShowKeyEntryPopup();
+                if (string.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+                    ShowKeyEntryPopup();
 
                 KeyEntryPref.IsEnabled = true;
+
+                await Dispatcher.DispatchAsync(() =>
+                {
+                    if (!ProviderSection.Contains(APIRegisterPref))
+                        ProviderSection.Add(APIRegisterPref);
+                    if (!ProviderSection.Contains(KeyEntryPref))
+                        ProviderSection.Add(KeyEntryPref);
+                });
             }
+
+            await Dispatcher.DispatchAsync(() =>
+            {
+                if (!ProviderSection.Contains(PersonalKeyPref))
+                {
+                    ProviderSection.Insert(1, PersonalKeyPref);
+                }
+            });
 
             if (SettingsManager.KeysVerified[selectedProvider])
             {
@@ -548,17 +637,25 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         else
         {
             SettingsManager.KeysVerified[selectedProvider] = false;
+            KeyEntryPref.IsEnabled = false;
+            PersonalKeyPref.IsEnabled = false;
 
             SettingsManager.API = selectedProvider;
             // Clear API KEY entry to avoid issues
             SettingsManager.APIKeys[selectedProvider] = KeyEntryPref.Detail = String.Empty;
 
-            ShowKeyPreferences(false);
+            await Dispatcher.DispatchAsync(() =>
+            {
+                ProviderSection.Remove(PersonalKeyPref);
+                ProviderSection.Remove(KeyEntryPref);
+                ProviderSection.Remove(APIRegisterPref);
+            });
 
+            // Log event
             AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
             {
-                { "API", SettingsManager.API },
-                { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
+                { "API", selectedProvider },
+                { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[selectedProvider]).ToString() }
             });
         }
 
@@ -622,6 +719,47 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         {
             SettingsManager.FollowGPS = sw.On;
         });
+    }
+
+    private async void PersonalKeyPref_OnChanged(object sender, ToggledEventArgs e)
+    {
+        AnalyticsLogger.LogEvent("Settings_General: PersonalKeySwitch_Toggled");
+
+        SwitchCell sw = sender as SwitchCell;
+
+        string API = APIPref.SelectedItem?.ToString();
+        SettingsManager.UsePersonalKeys[API] = e.Value;
+
+        if (e.Value)
+        {
+            await Dispatcher.DispatchAsync(() =>
+            {
+                if (!ProviderSection.Contains(APIRegisterPref))
+                    ProviderSection.Add(APIRegisterPref);
+                if (!ProviderSection.Contains(KeyEntryPref))
+                    ProviderSection.Add(KeyEntryPref);
+            });
+
+            KeyEntryPref.IsEnabled = true;
+        }
+        else
+        {
+            var selectedWProv = wm.GetWeatherProvider(API);
+
+            if (!selectedWProv.KeyRequired || !String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
+            {
+                // We're using our own (verified) keys
+                SettingsManager.KeysVerified[API] = true;
+                SettingsManager.API = API;
+            }
+
+            KeyEntryPref.IsEnabled = false;
+            await Dispatcher.DispatchAsync(() =>
+            {
+                ProviderSection.Remove(KeyEntryPref);
+                ProviderSection.Remove(APIRegisterPref);
+            });
+        }
     }
 
     private async void TextCell_Tapped(object sender, EventArgs e)
@@ -727,28 +865,22 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         keyPopup.SecondaryButtonClick += (s, e) =>
         {
-            // Restore state from settings
-            RestoreAPISettings();
             keyPopup.Close(false);
         };
 
         this.ShowPopup(keyPopup);
     }
 
-    private void CreatePremiumPreference()
+    private Cell CreatePremiumPreference()
     {
-        PremiumSection.Clear();
-
-        PremiumSection.Add(
-            new TextCell()
-            {
-                CommandParameter = typeof(PremiumPage),
-                Text = ResExtras.pref_title_premium,
-                Detail = ResExtras.message_premium_prompt
-            }.Apply(it =>
-            {
-                it.Tapped += TextCell_Tapped;
-            })
-        );
+        return new TextCell()
+        {
+            CommandParameter = typeof(PremiumPage),
+            Text = ResExtras.pref_title_premium,
+            Detail = ResExtras.message_premium_prompt
+        }.Apply(it =>
+        {
+            it.Tapped += TextCell_Tapped;
+        });
     }
 }

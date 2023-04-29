@@ -48,13 +48,25 @@ namespace SimpleWeather.Preferences
             )]
 #endif
         public bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
-        public IKeyVerifiedMap KeysVerified { get; }
+        public IProviderMap KeysVerified { get; }
         public bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
         private string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
         public DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.IsUsePersonalKey(String) or SettingsManager.SetUsePersonalKey(String, Boolean)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5810)]
+#else
+            )]
+#endif
         public bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
+        public IProviderMap UsePersonalKeys { get; }
         public int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
         public bool DevSettingsEnabled { get { return IsDevSettingsEnabled(); } set { SetDevSettingsEnabled(value); } }
         public string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); } }
@@ -129,6 +141,7 @@ namespace SimpleWeather.Preferences
         {
             APIKeys = new APIKeyMap(this);
             KeysVerified = new KeyVerifiedMap(this);
+            UsePersonalKeys = new UsePersonalKeyMap(this);
         }
 
         public async Task LoadIfNeeded()
@@ -626,7 +639,7 @@ namespace SimpleWeather.Preferences
             }
             else
             {
-                return GetValue<string>(KEY_API, null);
+                return GetValue(KEY_API, DI.Utils.RemoteConfigService.GetDefaultWeatherProvider());
             }
         }
 
@@ -845,6 +858,17 @@ namespace SimpleWeather.Preferences
             if (!value) WUSharedSettings.Remove(key);
         }
 
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.IsUsePersonalKey(String)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5810)]
+#else
+            )]
+#endif
         private bool IsPersonalKey()
         {
             if (!ContainsKey(KEY_USEPERSONALKEY))
@@ -857,9 +881,44 @@ namespace SimpleWeather.Preferences
             }
         }
 
+#if WINDOWS
+        [Deprecated(
+#else
+        [Obsolete(
+#endif
+            "Replace with SettingsManager.SetUsePersonalKey(String, Boolean)"
+#if WINDOWS
+            , DeprecationType.Deprecate, 5810)]
+#else
+            )]
+#endif
         private void SetPersonalKey(bool value)
         {
             SetValue(KEY_USEPERSONALKEY, value);
+        }
+
+        private bool IsUsePersonalKey(string provider)
+        {
+            var key = $"{KEY_USEPERSONALKEY}_{provider}";
+
+            if (!WUSharedSettings.ContainsKey(key))
+            {
+                return false;
+            }
+            else
+            {
+                return WUSharedSettings.GetValue(key, false);
+            }
+        }
+
+        private void SetUsePersonalKey(string provider, bool value)
+        {
+            var key = $"{KEY_USEPERSONALKEY}_{provider}";
+
+            WUSharedSettings.SetValue(key, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = key, NewValue = value });
+
+            if (!value) WUSharedSettings.Remove(key);
         }
 
         private int GetVersionCode()

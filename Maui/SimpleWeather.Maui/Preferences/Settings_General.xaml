@@ -108,7 +108,7 @@
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_alerts}" />
                 </TableSection>
-                <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
+                <TableSection x:Name="ProviderSection" Title="{x:Static res_strings:Resources.pref_category_providers}">
                     <prefs:ListViewCell
                         x:Name="APIPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_API}"
@@ -116,7 +116,7 @@
                     <prefs:SwitchCell
                         x:Name="PersonalKeyPref"
                         Text="{x:Static res_strings:Resources.pref_title_personalkey}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_personalkey}"/>
+                        Detail="{x:Static res_strings:Resources.pref_summary_personalkey}" />
                     <TextCell
                         x:Name="APIRegisterPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
@@ -127,18 +127,19 @@
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_APIKEY}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.key_hint}" />
+                </TableSection>
+                <TableSection Title="{x:Static res_strings:Resources.pref_title_feature_radar}">
                     <prefs:ListViewCell
                         x:Name="RadarPref"
                         PreferenceKey="{x:Static radar:RadarProvider.KEY_RADARPROVIDER}"
                         Text="{x:Static res_strings:Resources.label_radar}" />
                 </TableSection>
-                <TableSection Title="{x:Static res_strings:Resources.pref_title_about}">
+                <TableSection x:Name="AboutSection" Title="{x:Static res_strings:Resources.pref_title_about}">
                     <TextCell
                         CommandParameter="{x:Type prefs:Settings_About}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_about_app}" />
                 </TableSection>
-                <TableSection x:Name="PremiumSection" />
             </TableRoot>
         </TableView>
     </Grid>

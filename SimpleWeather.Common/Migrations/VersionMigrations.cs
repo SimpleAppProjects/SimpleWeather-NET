@@ -113,12 +113,12 @@ namespace SimpleWeather.Common.Migrations
 #endif
                 }
                 AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
-                    {
-                        { "API", SettingsMgr.API },
-                        { "API_IsInternalKey", (!SettingsMgr.UsePersonalKey).ToString() },
-                        { "VersionCode", SettingsMgr.VersionCode.ToString() },
-                        { "CurrentVersionCode", CurrentVersionCode.ToString() }
-                    });
+                {
+                    { "API", SettingsMgr.API },
+                    { "API_IsInternalKey", (!SettingsMgr.UsePersonalKeys[SettingsMgr.API]).ToString() },
+                    { "VersionCode", SettingsMgr.VersionCode.ToString() },
+                    { "CurrentVersionCode", CurrentVersionCode.ToString() }
+                });
             }
             // TZ Refresh
             if (SettingsMgr.VersionCode < 5700)
@@ -172,6 +172,12 @@ namespace SimpleWeather.Common.Migrations
                 }
                 catch { }
 #endif
+            }
+            // v5.8.1
+            // Settings.UsePersonalKey
+            if (SettingsMgr.VersionCode < 5810)
+            {
+                SettingsMgr.UsePersonalKeys[SettingsMgr.API] = SettingsMgr.UsePersonalKey;
             }
 #if !UNIT_TEST
             if (SettingsMgr.VersionCode < CurrentVersionCode)

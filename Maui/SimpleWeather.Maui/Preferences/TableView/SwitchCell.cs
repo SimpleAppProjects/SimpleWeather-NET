@@ -3,6 +3,7 @@ using System.Globalization;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui;
 using Microsoft.Maui.Graphics.Text;
+using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Preferences
@@ -89,12 +90,12 @@ namespace SimpleWeather.Maui.Preferences
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto)
                 },
-                Padding = new Thickness(20, 8),
+                Padding = new Thickness(16, 8),
                 Children =
                 {
                     new Label()
                     {
-                        FontSize = 18,
+                        FontSize = 17,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
@@ -141,7 +142,8 @@ namespace SimpleWeather.Maui.Preferences
                         .Column(1)
                         .RowSpan(2)
                 }
-            };
+            }
+            .OnIdiom(Grid.PaddingProperty, Default: new Thickness(20, 8), Desktop: new Thickness(16, 8));
 		}
 
         protected override void OnTapped()

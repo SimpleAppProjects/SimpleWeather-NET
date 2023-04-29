@@ -117,7 +117,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
             var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.AccuWeather] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.AccuWeather] ? SettingsManager.APIKeys[WAPI.AccuWeather] : GetAPIKey();
 
             if (string.IsNullOrWhiteSpace(key))
             {

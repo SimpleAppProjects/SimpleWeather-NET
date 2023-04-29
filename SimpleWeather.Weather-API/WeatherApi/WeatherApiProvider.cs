@@ -115,7 +115,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.WeatherApi] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.WeatherApi] ? SettingsManager.APIKeys[WAPI.WeatherApi] : GetAPIKey();
 
             if (String.IsNullOrWhiteSpace(key))
             {
@@ -191,7 +191,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = SettingsManager.UsePersonalKey ? SettingsManager.APIKeys[WAPI.WeatherApi] : GetAPIKey();
+            var key = SettingsManager.UsePersonalKeys[WAPI.WeatherApi] ? SettingsManager.APIKeys[WAPI.WeatherApi] : GetAPIKey();
 
             try
             {
