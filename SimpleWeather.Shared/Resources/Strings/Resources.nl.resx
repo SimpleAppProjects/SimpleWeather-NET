@@ -771,4 +771,10 @@ Fuzzy</comment>
   <data name="hint_password" xml:space="preserve">
     <value>Wachtwoord</value>
   </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Privacybeleid</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Servicevoorwaarden</value>
+  </data>
 </root>

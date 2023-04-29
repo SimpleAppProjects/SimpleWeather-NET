@@ -12,6 +12,9 @@ public partial class Settings_About : ContentPage, ISnackbarManager
     private const string KEY_RATEREVIEW = "key_ratereview";
     private const string KEY_TRANSLATE = "key_translate";
 
+    private const string KEY_PRIVACYPOLICY = "key_privacypolicy";
+    private const string KEY_TERMSEULA = "key_termseula";
+
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
     private DevSettingsController devSettingsController;
 
@@ -133,6 +136,26 @@ public partial class Settings_About : ContentPage, ISnackbarManager
                         try
                         {
                             await Browser.Default.OpenAsync("https://poeditor.com/join/project?hash=x9AzamDQO8");
+                        }
+                        catch { }
+                    }
+                    break;
+                case KEY_PRIVACYPOLICY:
+                    {
+                        try
+                        {
+                            await Browser.Default.OpenAsync("https://simpleweather-91d01.web.app/privacy-policy");
+                        }
+                        catch { }
+                    }
+                    break;
+                case KEY_TERMSEULA:
+                    {
+                        try
+                        {
+#if __IOS__
+                            await Browser.Default.OpenAsync("http://www.apple.com/legal/itunes/appstore/dev/stdeula");
+#endif
                         }
                         catch { }
                     }

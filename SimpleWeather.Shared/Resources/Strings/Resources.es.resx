@@ -791,4 +791,10 @@ Fuzzy</comment>
   <data name="hint_password" xml:space="preserve">
     <value>Contraseña</value>
   </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Política de privacidad</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Zmluvné podmienky</value>
+  </data>
 </root>

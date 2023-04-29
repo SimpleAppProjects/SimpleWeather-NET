@@ -770,4 +770,10 @@
   <data name="hint_password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Privacy Policy</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Terms of Service</value>
+  </data>
 </root>

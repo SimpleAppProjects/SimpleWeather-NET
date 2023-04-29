@@ -777,4 +777,10 @@ Fuzzy</comment>
   <data name="hint_password" xml:space="preserve">
     <value>Hasło</value>
   </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Polityka prywatności</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Warunki korzystania z usługi</value>
+  </data>
 </root>

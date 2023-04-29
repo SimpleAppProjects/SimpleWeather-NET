@@ -76,6 +76,16 @@
                         Text="{x:Static res_strings:Resources.app_name}"
                         Detail="v0.00" />
                 </TableSection>
+                <TableSection>
+                    <prefs:DialogCell
+                        PreferenceKey="key_privacypolicy"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_privacypolicy}" />
+                    <prefs:DialogCell
+                        PreferenceKey="key_termseula"
+                        Tapped="TextCell_Tapped"
+                        Text="{x:Static res_strings:Resources.pref_title_termsofservice}" />
+                </TableSection>
                 <TableSection x:Name="DevSettingsSection" />
             </TableRoot>
         </TableView>
