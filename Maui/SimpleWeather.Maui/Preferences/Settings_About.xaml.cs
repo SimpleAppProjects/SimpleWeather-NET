@@ -119,8 +119,7 @@ public partial class Settings_About : ContentPage, ISnackbarManager
                         {
 #if __IOS__
                             var app = UIKit.UIApplication.SharedApplication;
-                            // TODO: replace with ID
-                            var reviewUrl = Foundation.NSUrl.FromString("https://apps.apple.com/app/id<#Your App Store ID#>?action=write-review");
+                            var reviewUrl = Foundation.NSUrl.FromString("https://apps.apple.com/app/id6447495788?action=write-review");
 
                             if (app.CanOpenUrl(reviewUrl))
                             {
