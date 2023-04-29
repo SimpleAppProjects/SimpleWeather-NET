@@ -1332,11 +1332,8 @@ public partial class WeatherNow
 
                         void ResizeSunView()
                         {
-                            it.HeightRequest = Math.Min(maxHeight, ListLayout.Width / 2);
-                            if (DeviceInfo.Idiom != DeviceIdiom.Phone || DeviceDisplay.MainDisplayInfo.Orientation != DisplayOrientation.Portrait)
-                            {
-                                it.WidthRequest = it.HeightRequest * 2;
-                            }
+                            it.HeightRequest = Math.Min(maxHeight, Math.Max(0, ListLayout.Width / 2));
+                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width);
                         }
 
                         ListLayout.SizeChanged += (s, e) =>

@@ -683,7 +683,7 @@ namespace SimpleWeather.NET.Controls
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
             Size size = base.MeasureOverride(widthConstraint, heightConstraint);
-            Size availableSize = new Size(MeasureWidth(widthConstraint, size.Width), size.Height);
+            Size availableSize = size;
 #endif
 
             if (this.Canvas == null)
