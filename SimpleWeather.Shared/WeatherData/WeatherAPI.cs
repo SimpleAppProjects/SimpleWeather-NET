@@ -23,6 +23,7 @@ namespace SimpleWeather.WeatherData
         // Location APIs
         public const string BingMaps = "Bing";
         public const string WeatherApi = "weatherapi";
+        public const string Apple = "apple";
 
         /*
          * Note to self: Common steps to adding a new weather provider
@@ -72,7 +73,9 @@ namespace SimpleWeather.WeatherData
                 "https://weatherapi.com", "https://weatherapi.com/api"),
             new ProviderEntry("Bing Maps", AccuWeather,
                 /* Uses BingMapsLocationProvider | accuweather is used for locationid only */
-                "https://bing.com/maps", "https://bing.com/maps")
+                "https://bing.com/maps", "https://bing.com/maps"),
+            new ProviderEntry("Apple", Apple,
+                "https://www.apple.com/maps/", "https://www.apple.com/maps/"),
         };
 
         private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(2)

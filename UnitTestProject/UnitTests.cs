@@ -381,7 +381,11 @@ namespace UnitTestProject
         public async Task RemoteConfigUpdateTest()
         {
             var db = await FirebaseDatabaseHelper.GetFirebaseDatabase();
+#if __IOS__
+            var uwpConfig = await db.Child("ios_remote_config").OnceAsync<object>();
+#else
             var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
+#endif
             if (uwpConfig?.Count > 0)
             {
                 foreach (var prop in uwpConfig)

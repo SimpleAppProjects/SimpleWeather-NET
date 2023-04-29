@@ -73,6 +73,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Beaufort.resx</DependentUpon>
     </Compile>
+    <Compile Update="Resources\Strings\ConfigiOS.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ConfigiOS.resx</DependentUpon>
+    </Compile>
     <Compile Update="Resources\Strings\Config.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -120,6 +125,10 @@
     <EmbeddedResource Update="Resources\Strings\Beaufort.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Beaufort.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings\ConfigiOS.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ConfigiOS.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Strings\Config.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

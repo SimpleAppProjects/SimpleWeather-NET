@@ -20,6 +20,7 @@ namespace SimpleWeather.NET
             AQIndex.Culture = locale;
             Beaufort.Culture = locale;
             Config.Culture = locale;
+            ConfigiOS.Culture = locale;
             MoonPhases.Culture = locale;
             Units.Culture = locale;
             UVIndex.Culture = locale;

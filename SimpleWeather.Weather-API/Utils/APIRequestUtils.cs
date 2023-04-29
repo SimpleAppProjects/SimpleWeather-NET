@@ -196,6 +196,14 @@ namespace SimpleWeather.Weather_API.Utils
             }
         }
 
+        public static bool IsRateLimited(string apiID)
+        {
+            var currentTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+            var nextRetryTime = GetNextRetryTime(apiID);
+
+            return currentTime < nextRetryTime;
+        }
+
         /// <summary>
         /// Check if API has been rate limited (HTTP Error 429 occurred recently).
         /// If so, deny API request until time passes

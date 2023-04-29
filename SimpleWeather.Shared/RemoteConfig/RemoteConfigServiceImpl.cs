@@ -18,10 +18,19 @@ namespace SimpleWeather.RemoteConfig
         {
             if (useFallback)
             {
+#if __IOS__
+                return ConfigiOS.ResourceManager.GetString(weatherAPI);
+#else
                 return Config.ResourceManager.GetString(weatherAPI);
+#endif
             }
 
-            return RemoteConfigContainer.GetValue<string>(weatherAPI) ?? Config.ResourceManager.GetString(weatherAPI);
+            return RemoteConfigContainer.GetValue<string>(weatherAPI) ??
+#if __IOS__
+                ConfigiOS.ResourceManager.GetString(weatherAPI);
+#else
+                Config.ResourceManager.GetString(weatherAPI);
+#endif
         }
 
         public void SetConfigString(String key, String value)
@@ -129,10 +138,14 @@ namespace SimpleWeather.RemoteConfig
             return Task.Run(async () =>
             {
                 var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
-                var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
-                if (uwpConfig?.Count > 0)
+#if __IOS__
+                var config = await db.Child("ios_remote_config").OnceAsync<object>();
+#else
+                var config = await db.Child("uwp_remote_config").OnceAsync<object>();
+#endif
+                if (config?.Count > 0)
                 {
-                    foreach (var prop in uwpConfig)
+                    foreach (var prop in config)
                     {
                         SetConfigString(prop.Key, prop.Object.ToString());
                     }

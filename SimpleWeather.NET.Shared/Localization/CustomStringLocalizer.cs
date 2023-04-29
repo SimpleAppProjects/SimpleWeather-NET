@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using SimpleWeather.Resources.Strings;
-using System.Collections.Generic;
-using System.Linq;
 using ResBackgrounds = SimpleWeather.Backgrounds.Resources.Strings.Backgrounds;
 using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
@@ -16,7 +14,11 @@ namespace SimpleWeather.NET.Localization
         private readonly IStringLocalizer<ResExtras> ResExtras = Ioc.Default.GetService<IStringLocalizer<ResExtras>>();
         private readonly IStringLocalizer<AQIndex> ResAQIndex = Ioc.Default.GetService<IStringLocalizer<AQIndex>>();
         private readonly IStringLocalizer<Beaufort> ResBeaufort = Ioc.Default.GetService<IStringLocalizer<Beaufort>>();
+#if __IOS__
+        private readonly IStringLocalizer<ConfigiOS> ResConfig = Ioc.Default.GetService<IStringLocalizer<ConfigiOS>>();
+#else
         private readonly IStringLocalizer<Config> ResConfig = Ioc.Default.GetService<IStringLocalizer<Config>>();
+#endif
         private readonly IStringLocalizer<MoonPhases> ResMoonPhases = Ioc.Default.GetService<IStringLocalizer<MoonPhases>>();
         private readonly IStringLocalizer<Units> ResUnits = Ioc.Default.GetService<IStringLocalizer<Units>>();
         private readonly IStringLocalizer<UVIndex> ResUVIndex = Ioc.Default.GetService<IStringLocalizer<UVIndex>>();
