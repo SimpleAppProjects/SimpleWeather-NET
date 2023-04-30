@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-		<!--<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>-->
+		<!-- <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks> -->
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
@@ -36,7 +36,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
 		<CreatePackage>false</CreatePackage>
-    <RuntimeIdentifiers>ios-arm64;iossimulator-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>ios-arm64</RuntimeIdentifiers>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
@@ -83,9 +83,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="TimberLog" Version="1.0.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="5.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.1.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.1.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.15" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.0" />
 		<PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
@@ -102,8 +102,8 @@
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.4" />
 		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.8" />
 		<PackageReference Include="SimpleToolkit.Core" Version="2.0.6" />
-		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.4" />
+		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
