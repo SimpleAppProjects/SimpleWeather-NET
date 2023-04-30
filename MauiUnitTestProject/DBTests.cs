@@ -4,18 +4,17 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using Xunit;
 
 namespace UnitTestProject
 {
-    [TestClass]
-    public class DBTests
+    public class DBTests : IDisposable
     {
         // App data files
         private static string LocalFolderPath = ApplicationDataHelper.GetLocalFolderPath();
         private SQLiteAsyncConnection weatherDB;
 
-        [TestInitialize]
-        public void InitDB()
+        public DBTests()
         {
             if (weatherDB == null)
             {
@@ -36,8 +35,7 @@ namespace UnitTestProject
             };
         }
 
-        [TestCleanup]
-        public async Task DestroyDB()
+        public async void Dispose()
         {
             if (weatherDB != null)
             {
@@ -45,7 +43,7 @@ namespace UnitTestProject
             }
         }
 
-        [TestMethod]
+        [Fact]
         public async Task DBMigrate_v510()
         {
             await weatherDB.DropTableAsync<Forecasts>();
