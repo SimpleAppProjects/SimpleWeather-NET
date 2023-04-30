@@ -1437,7 +1437,7 @@ public partial class WeatherNow
 
                     radarViewProvider?.OnDestroyView();
                     radarViewProvider = RadarProvider.GetRadarViewProvider(it);
-                    radarViewProvider.EnableInteractions(false);
+                    radarViewProvider?.EnableInteractions(false);
                 })
             }
         }

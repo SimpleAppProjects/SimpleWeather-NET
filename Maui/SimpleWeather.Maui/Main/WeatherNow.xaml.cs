@@ -680,6 +680,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         {
             radarViewProvider?.OnDestroyView();
             radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            radarViewProvider?.EnableInteractions(false);
         }
     }
 
