@@ -691,11 +691,20 @@ namespace SimpleWeather.NET.Controls
                 return size;
             }
 
-            Canvas.WidthRequest = availableSize.Width;
-            Canvas.HeightRequest = availableSize.Height;
+#if WINDOWS
+            Canvas.Width = availableSize.Width;
+            Canvas.Height = availableSize.Height;
 
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
+#else
+
+            Canvas.WidthRequest = availableSize.Width;
+            Canvas.HeightRequest = availableSize.Height;
+
+            ViewHeight = (float)Canvas.HeightRequest;
+            ViewWidth = (float)Canvas.WidthRequest;
+#endif
 
             RefreshXCoordinateList();
 
