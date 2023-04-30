@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Preferences;
+﻿using SimpleWeather.Firebase;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
@@ -27,8 +28,8 @@ namespace SimpleWeather.Weather_API.TZDB
             try
             {
                 // Get Firebase token
-                var authLink = await Firebase.FirebaseAuthHelper.GetAuthLink();
-                string userToken = authLink.FirebaseToken;
+                var userToken = await FirebaseHelper.GetAccessToken();
+
                 string tzAPI = APIKeys.GetTimeZoneAPI();
                 if (string.IsNullOrWhiteSpace(tzAPI) || string.IsNullOrWhiteSpace(userToken))
                     return null;

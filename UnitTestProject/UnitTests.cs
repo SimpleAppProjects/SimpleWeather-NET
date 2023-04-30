@@ -380,7 +380,7 @@ namespace UnitTestProject
         [TestMethod]
         public async Task RemoteConfigUpdateTest()
         {
-            var db = await FirebaseDatabaseHelper.GetFirebaseDatabase();
+            var db = await FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__
             var uwpConfig = await db.Child("ios_remote_config").OnceAsync<object>();
 #else

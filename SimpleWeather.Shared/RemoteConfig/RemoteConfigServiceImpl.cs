@@ -137,7 +137,7 @@ namespace SimpleWeather.RemoteConfig
         {
             return Task.Run(async () =>
             {
-                var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+                var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__
                 var config = await db.Child("ios_remote_config").OnceAsync<object>();
 #else

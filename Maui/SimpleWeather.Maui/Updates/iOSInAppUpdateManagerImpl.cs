@@ -106,7 +106,7 @@ namespace SimpleWeather.Maui.Updates
         {
             return Task.Run(async () =>
             {
-                var db = await Firebase.FirebaseDatabaseHelper.GetFirebaseDatabase();
+                var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
                 var config = await db.Child("ios_updates").OnceAsync<object>();
 
                 if (config?.Count > 0)
