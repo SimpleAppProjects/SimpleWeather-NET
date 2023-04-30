@@ -2,16 +2,20 @@
 {
     public static class LocationPermissionExtensions
     {
-        public static async Task<bool> LocationPermissionEnabled(this Page _)
+        public static Task<bool> LocationPermissionEnabled(this Page _)
         {
-            if (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() != PermissionStatus.Granted)
+            return MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                return await Permissions.RequestAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
-            }
-            else
-            {
-                return true;
-            }
+                if (await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() != PermissionStatus.Granted)
+                {
+                    var status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+                    return status == PermissionStatus.Granted || status == PermissionStatus.Limited;
+                }
+                else
+                {
+                    return true;
+                }
+            });
         }
 
         public static Task<bool> LaunchLocationSettings(this Page _)

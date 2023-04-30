@@ -56,6 +56,18 @@ namespace SimpleWeather.Common.Location
             return AndroidX.Core.Location.LocationManagerCompat.IsLocationEnabled(LocationMgr) &&
                 ((ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessFineLocation) == Android.Content.PM.Permission.Granted) ||
                 (ContextCompat.CheckSelfPermission(Platform.AppContext, Android.Manifest.Permission.AccessCoarseLocation) == Android.Content.PM.Permission.Granted));
+#elif __IOS__
+            var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+
+            Logger.WriteLine(LoggerLevel.Debug, $"LocationProvider: LocStatus - {status}");
+
+            if (status == PermissionStatus.Unknown)
+            {
+                status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+                Logger.WriteLine(LoggerLevel.Debug, $"LocationProvider: LocStatus2 - {status}");
+            }
+
+            return status == PermissionStatus.Granted || status == PermissionStatus.Limited;
 #else
             return await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>() == PermissionStatus.Granted;
 #endif
@@ -166,7 +178,7 @@ namespace SimpleWeather.Common.Location
                         location.Latitude, location.Longitude)
                         ) < 1600)
                 {
-                    return new LocationResult.NotChanged(previousLocation);
+                    return new LocationResult.NotChanged(lastGPSLocData);
                 }
 
                 var wm = WeatherModule.Instance.WeatherManager;

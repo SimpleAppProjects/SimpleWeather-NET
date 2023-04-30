@@ -142,6 +142,16 @@ namespace SimpleWeather.Common.ViewModels
                     case LocationResult.Changed:
                         currentLocation = result.Data;
                         break;
+                    case LocationResult.NotChanged:
+                        if (result.Data?.IsValid() == true)
+                        {
+                            currentLocation = result.Data;
+                        }
+                        else
+                        {
+                            PostErrorMessage(new ErrorMessage.String(ResStrings.error_retrieve_location));
+                        }
+                        break;
                     case LocationResult.PermissionDenied:
                         PostErrorMessage(new ErrorMessage.String(ResStrings.error_location_denied));
                         break;
