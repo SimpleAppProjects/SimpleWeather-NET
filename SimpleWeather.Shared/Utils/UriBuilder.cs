@@ -40,20 +40,22 @@ namespace SimpleWeather.Utils
             return this;
         }
 
-        public UriBuilderEx AppendPath(string path)
+        public UriBuilderEx AppendPath(string path, bool encode = true)
         {
+            string encodedPath = encode ? HttpUtility.UrlEncode(path) : path;
+
             // Path returns '/' if empty
             if (BaseUriBuilder.Path == "/" || BaseUriBuilder.Path.EndsWith("/"))
             {
-                BaseUriBuilder.Path += HttpUtility.UrlEncode(path);
+                BaseUriBuilder.Path += encodedPath;
             }
             else if (path.StartsWith("/"))
             {
-                BaseUriBuilder.Path += HttpUtility.UrlEncode(path);
+                BaseUriBuilder.Path += encodedPath;
             }
             else
             {
-                BaseUriBuilder.Path += "/" + HttpUtility.UrlEncode(path);
+                BaseUriBuilder.Path += "/" + encodedPath;
             }
 
             return this;

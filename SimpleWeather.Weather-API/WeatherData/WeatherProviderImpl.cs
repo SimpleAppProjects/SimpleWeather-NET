@@ -73,7 +73,7 @@ namespace SimpleWeather.Weather_API.WeatherData
             if (location == null || location.query == null)
                 throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new ArgumentNullException("location?.query"));
 
-            var weather = await GetWeather(location.query, location.country_code);
+            var weather = await GetWeather(UpdateLocationQuery(location), location.country_code);
 
             if (string.IsNullOrWhiteSpace(location.tz_long))
             {

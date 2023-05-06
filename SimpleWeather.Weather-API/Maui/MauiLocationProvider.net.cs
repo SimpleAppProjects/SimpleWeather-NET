@@ -1,4 +1,4 @@
-﻿#if !__IOS__
+﻿#if !(__IOS__ || WINDOWS)
 using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;

@@ -8,6 +8,7 @@ using SimpleWeather.Weather_API.OpenWeather.OneCall;
 using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.Weather_API.WeatherBit;
+using SimpleWeather.Weather_API.WeatherKit;
 using SimpleWeather.Weather_API.WeatherUnlocked;
 using SimpleWeather.WeatherData;
 using System;
@@ -60,6 +61,9 @@ namespace SimpleWeather.Weather_API.WeatherData
 
                 case WeatherAPI.WeatherBitIo:
                     return new WeatherBitIOProvider();
+
+                case WeatherAPI.Apple:
+                    return new WeatherKitProvider();
 
                 default:
                     {

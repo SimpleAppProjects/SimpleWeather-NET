@@ -105,7 +105,7 @@ namespace UnitTestProject
         private async Task<Weather> GetWeather(IWeatherProvider provider, WeatherUtils.Coordinate coordinate)
         {
             var location = await provider.GetLocation(coordinate);
-            Assert.NotNull(location);
+            Assert.True(location != null && !location.IsEmpty);
             if (string.IsNullOrWhiteSpace(location?.LocationTZLong) && location.LocationLat != 0 && location.LocationLong != 0)
             {
                 string tzId = await WeatherModule.Instance.TZDBService.GetTimeZone(location.LocationLat, location.LocationLong);
@@ -369,6 +369,15 @@ namespace UnitTestProject
         {
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherBitIo);
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [Fact]
+        public async Task GetWeatherKitWeather()
+        {
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.8589384, 2.264635)).ConfigureAwait(false); // ~ Paris, France
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
         }

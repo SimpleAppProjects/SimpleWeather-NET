@@ -263,6 +263,8 @@ API_KEY.txt
 /SimpleWeather.Weather-API/Keys/Keys.cs
 /SimpleWeather.Weather-API/Keys/Keys.cs.bak
 /SimpleWeather.Weather-API/Keys/Keys.7z
+/SimpleWeather.Weather-API/Keys/WeatherKitConfig.cs
+/SimpleWeather.Weather-API/Keys/WeatherKitConfig.cs.bak
 /Utf8Json.UniversalCodeGenerator
 /*.bat
 /*.bat.old

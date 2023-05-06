@@ -124,6 +124,13 @@
         "newWeatherSource": ""
 }</value>
   </data>
+  <data name="apple" xml:space="preserve">
+    <value>{
+        "enabled": true,
+        "locSource": "apple",
+        "newWeatherSource": ""
+}</value>
+  </data>
   <data name="default_weather_provider" xml:space="preserve">
     <value>weatherapi</value>
   </data>

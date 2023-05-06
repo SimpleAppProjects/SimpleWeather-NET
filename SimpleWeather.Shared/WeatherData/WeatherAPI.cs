@@ -47,6 +47,8 @@ namespace SimpleWeather.WeatherData
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
+            new ProviderEntry("Apple Weather", Apple,
+                "https://developer.apple.com/weatherkit/", "https://developer.apple.com/weatherkit/"),
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
             new ProviderEntry("U.S. National Weather Service (NOAA)", NWS,
@@ -74,7 +76,7 @@ namespace SimpleWeather.WeatherData
             new ProviderEntry("Bing Maps", AccuWeather,
                 /* Uses BingMapsLocationProvider | accuweather is used for locationid only */
                 "https://bing.com/maps", "https://bing.com/maps"),
-            new ProviderEntry("Apple", Apple,
+            new ProviderEntry("Apple Maps", Apple,
                 "https://www.apple.com/maps/", "https://www.apple.com/maps/"),
         };
 

@@ -155,8 +155,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.LocationData
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("longitude"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("tz_long"), 4},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("locationType"), 5},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("weatherSource"), 6},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("locationSource"), 7},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("source"), 6},
+                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("locsource"), 7},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -167,8 +167,8 @@ namespace SimpleWeather.Utf8JsonGen.Formatters.SimpleWeather.LocationData
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("longitude"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("tz_long"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("locationType"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("weatherSource"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("locationSource"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("source"),
+                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("locsource"),
                 
             };
         }

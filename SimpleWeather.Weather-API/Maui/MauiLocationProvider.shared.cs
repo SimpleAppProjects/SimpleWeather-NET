@@ -1,4 +1,5 @@
-﻿using SimpleWeather.LocationData;
+﻿#if !WINDOWS
+using SimpleWeather.LocationData;
 using SimpleWeather.Weather_API.Utils;
 using System.Threading.Tasks;
 
@@ -21,3 +22,4 @@ namespace SimpleWeather.Weather_API.Maui
         }
     }
 }
+#endif
