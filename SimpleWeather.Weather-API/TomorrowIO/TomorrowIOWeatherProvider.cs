@@ -113,7 +113,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
@@ -128,6 +128,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
             }
 
+            var query = UpdateLocationQuery(location);
+
             try
             {
                 this.CheckRateLimit();
@@ -138,7 +140,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
                 var requestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
-                    .AppendQueryParameter("location", location_query)
+                    .AppendQueryParameter("location", query)
                     .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
                     .AppendQueryParameter("timesteps", "current,1h,1d")
                     .AppendQueryParameter("units", "metric")
@@ -147,7 +149,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
                 var minutelyRequestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
-                    .AppendQueryParameter("location", location_query)
+                    .AppendQueryParameter("location", query)
                     .AppendQueryParameter("fields", "precipitationIntensity,precipitationProbability")
                     .AppendQueryParameter("timesteps", "1m")
                     .AppendQueryParameter("units", "metric")
@@ -156,7 +158,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
                 var alertsRequestUri = EVENTS_BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
-                    .AppendQueryParameter("location", location_query)
+                    .AppendQueryParameter("location", query)
                     .AppendQueryParameter("insights", "air")
                     .AppendQueryParameter("insights", "fires")
                     .AppendQueryParameter("insights", "wind")
@@ -263,7 +265,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

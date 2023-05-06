@@ -110,7 +110,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<SimpleWeather.WeatherData.Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
@@ -120,13 +120,13 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
             string query;
-            if (int.TryParse(location_query, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
+            if (int.TryParse(location.query, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
             {
                 query = string.Format("id={0}", id);
             }
             else
             {
-                query = location_query;
+                query = UpdateLocationQuery(location);
             }
 
             var key = SettingsManager.UsePersonalKeys[WeatherAPI] ? SettingsManager.APIKeys[WeatherAPI] : GetAPIKey();
@@ -188,7 +188,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = location.query;
             }
 
             if (wEx != null)

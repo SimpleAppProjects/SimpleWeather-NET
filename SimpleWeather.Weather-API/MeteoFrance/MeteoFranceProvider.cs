@@ -65,20 +65,21 @@ namespace SimpleWeather.Weather_API.MeteoFrance
         public override long GetRetryTime() => 60000;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<SimpleWeather.WeatherData.Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
 
             // MeteoFrance only supports locations in France
-            if (!LocationUtils.IsFrance(country_code))
+            if (!LocationUtils.IsFrance(location.country_code))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({country_code})"));
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }
 
             var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+            string query = UpdateLocationQuery(location);
 
             string key = GetAPIKey();
 
@@ -91,8 +92,8 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             {
                 this.CheckRateLimit();
 
-                Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, location_query, locale, key));
-                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query, locale, key));
+                Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, locale, key));
+                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, locale, key));
 
                 using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
@@ -167,7 +168,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

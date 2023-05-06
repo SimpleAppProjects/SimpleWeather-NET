@@ -61,7 +61,7 @@ namespace SimpleWeather.Weather_API.HERE
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
@@ -69,15 +69,16 @@ namespace SimpleWeather.Weather_API.HERE
             var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+            string query = UpdateLocationQuery(location);
 
             Uri queryURL;
-            if (LocationUtils.IsUSorCanada(country_code))
+            if (LocationUtils.IsUSorCanada(location.country_code))
             {
-                queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, location_query, locale));
+                queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, query, locale));
             }
             else
             {
-                queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, location_query, locale));
+                queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, query, locale));
             }
 
             try
@@ -158,7 +159,7 @@ namespace SimpleWeather.Weather_API.HERE
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

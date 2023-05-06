@@ -27,8 +27,6 @@ namespace SimpleWeather.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        Task<Weather> GetWeather(string location_query, string country_code);
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         Task<Weather> GetWeather(LocationData.LocationData location);
         Task<ICollection<WeatherAlert>> GetAlerts(LocationData.LocationData location);
         string GetWeatherIcon(string icon);

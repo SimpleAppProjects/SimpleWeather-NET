@@ -66,23 +66,25 @@ namespace SimpleWeather.Weather_API.NWS
         public override long GetRetryTime() => 30000;
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
 
             // NWS only supports locations in U.S.
-            if (!LocationUtils.IsUS(country_code))
+            if (!LocationUtils.IsUS(location.country_code))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({country_code})"));
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }
+
+            var query = UpdateLocationQuery(location);
 
             try
             {
                 this.CheckRateLimit();
 
-                Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
-                Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, location_query));
+                Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
+                Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, query));
 
                 using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
                 using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
@@ -147,7 +149,7 @@ namespace SimpleWeather.Weather_API.NWS
             }
             else if (weather != null)
             {
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

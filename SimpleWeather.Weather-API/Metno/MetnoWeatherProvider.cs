@@ -53,18 +53,20 @@ namespace SimpleWeather.Weather_API.Metno
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
+
+            var query = UpdateLocationQuery(location);
 
             try
             {
                 this.CheckRateLimit();
 
-                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, location_query));
+                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
-                Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, location_query, date));
+                Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, query, date));
 
                 using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
                 using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
@@ -130,7 +132,7 @@ namespace SimpleWeather.Weather_API.Metno
             }
             else if (weather != null)
             {
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

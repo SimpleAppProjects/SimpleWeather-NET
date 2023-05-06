@@ -108,7 +108,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
@@ -123,12 +123,14 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
             }
 
+            var query = UpdateLocationQuery(location);
+
             try
             {
                 this.CheckRateLimit();
 
-                Uri currentURL = new(string.Format(CURRENT_QUERY_URL, location_query, locale, key));
-                Uri forecastURL = new(string.Format(FORECAST_QUERY_URL, location_query, locale, key));
+                Uri currentURL = new(string.Format(CURRENT_QUERY_URL, query, locale, key));
+                Uri forecastURL = new(string.Format(FORECAST_QUERY_URL, query, locale, key));
 
                 using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL);
                 using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
@@ -182,7 +184,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = query;
             }
 
             if (wEx != null)

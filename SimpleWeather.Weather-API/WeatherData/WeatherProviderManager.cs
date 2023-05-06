@@ -105,12 +105,6 @@ namespace SimpleWeather.Weather_API.WeatherData
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<SimpleWeather.WeatherData.Weather> GetWeather(string query, string country_code)
-        {
-            return _weatherProvider.GetWeather(query, country_code);
-        }
-
-        /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public Task<SimpleWeather.WeatherData.Weather> GetWeather(SimpleWeather.LocationData.LocationData location)
         {
             return _weatherProvider.GetWeather(location);

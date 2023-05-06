@@ -66,14 +66,14 @@ namespace SimpleWeather.Weather_API.WeatherData
         }
         // Weather
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public abstract Task<Weather> GetWeather(string location_query, string country_code);
+        protected abstract Task<Weather> GetWeatherData(LocData location);
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public virtual async Task<Weather> GetWeather(LocData location)
+        public async Task<Weather> GetWeather(LocData location)
         {
             if (location == null || location.query == null)
                 throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new ArgumentNullException("location?.query"));
 
-            var weather = await GetWeather(UpdateLocationQuery(location), location.country_code);
+            var weather = await GetWeatherData(location);
 
             if (string.IsNullOrWhiteSpace(location.tz_long))
             {

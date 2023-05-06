@@ -109,7 +109,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
@@ -133,14 +133,14 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 CurrentRootobject currentRoot;
 
                 var requestCurrentUri = CURRENT_CONDITIONS_URL.ToUriBuilderEx()
-                    .AppendPath(location_query)
+                    .AppendPath(location.query)
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("language", locale)
                     .AppendQueryParameter("details", "true")
                     .BuildUri();
 
                 var request5dayUri = DAILY_5DAY_FORECAST_URL.ToUriBuilderEx()
-                    .AppendPath(location_query)
+                    .AppendPath(location.query)
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("language", locale)
                     .AppendQueryParameter("details", "true")
@@ -148,7 +148,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
                     .BuildUri();
 
                 var requestHourlyUri = HOURLY_12HR_FORECAST_URL.ToUriBuilderEx()
-                    .AppendPath(location_query)
+                    .AppendPath(location.query)
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("language", locale)
                     .AppendQueryParameter("details", "true")
@@ -242,7 +242,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = location.query;
             }
 
             if (wEx != null)

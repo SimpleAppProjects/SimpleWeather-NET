@@ -62,7 +62,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override async Task<SimpleWeather.WeatherData.Weather> GetWeather(string location_query, string country_code)
+        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
         {
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
@@ -78,10 +78,10 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 Uri weatherURL = BASE_URL.ToUriBuilderEx()
                     .AppendPath("weather")
                     .AppendPath(locale)
-                    .AppendPath(location_query)
-                    .AppendQueryParameter("countryCode", country_code)
+                    .AppendPath(UpdateLocationQuery(location), encode: false)
+                    .AppendQueryParameter("countryCode", location.country_code)
                     .AppendQueryParameter("dataSets", "currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts")
-                    .AppendQueryParameter("timezone", "UTC")
+                    .AppendQueryParameter("timezone", location.tz_long)
                     .BuildUri();
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, weatherURL);
@@ -138,7 +138,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 if (SupportsWeatherLocale)
                     weather.locale = locale;
 
-                weather.query = location_query;
+                weather.query = location.query;
             }
 
             if (wEx != null)
@@ -185,22 +185,22 @@ namespace SimpleWeather.Weather_API.WeatherKit
 
             if (weather.astronomy != null)
             {
-            // The time of day is set to max if the sun never sets/rises and
-            // DateTime is set to min if not found
-            // Don't change this if its set that way
-            if (weather.astronomy.sunrise > DateTime.MinValue &&
-                weather.astronomy.sunrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
-                weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
-            if (weather.astronomy.sunset > DateTime.MinValue &&
-                weather.astronomy.sunset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
-                weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
-            if (weather.astronomy.moonrise > DateTime.MinValue &&
-                weather.astronomy.moonrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
-                weather.astronomy.moonrise = weather.astronomy.moonrise.Add(offset);
-            if (weather.astronomy.moonset > DateTime.MinValue &&
-                weather.astronomy.moonset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
-                weather.astronomy.moonset = weather.astronomy.moonset.Add(offset);
-        }
+                // The time of day is set to max if the sun never sets/rises and
+                // DateTime is set to min if not found
+                // Don't change this if its set that way
+                if (weather.astronomy.sunrise > DateTime.MinValue &&
+                    weather.astronomy.sunrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    weather.astronomy.sunrise = weather.astronomy.sunrise.Add(offset);
+                if (weather.astronomy.sunset > DateTime.MinValue &&
+                    weather.astronomy.sunset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    weather.astronomy.sunset = weather.astronomy.sunset.Add(offset);
+                if (weather.astronomy.moonrise > DateTime.MinValue &&
+                    weather.astronomy.moonrise.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    weather.astronomy.moonrise = weather.astronomy.moonrise.Add(offset);
+                if (weather.astronomy.moonset > DateTime.MinValue &&
+                    weather.astronomy.moonset.TimeOfDay < DateTimeUtils.MaxTimeOfDay())
+                    weather.astronomy.moonset = weather.astronomy.moonset.Add(offset);
+            }
             else
             {
                 weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
