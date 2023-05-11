@@ -234,7 +234,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                         case "zh-Hant":
                         case "zh-HK":
                         case "zh-MO":
-                            code = "zh_TW";
+                            code = "zh_HK";
                             break;
                         // Mandarin
                         case "zh-cmn":

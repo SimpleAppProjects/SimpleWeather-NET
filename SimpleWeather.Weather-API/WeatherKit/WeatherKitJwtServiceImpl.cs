@@ -32,7 +32,9 @@ namespace SimpleWeather.Weather_API.WeatherKit
             {
                 try
                 {
-                    return GenerateBearerToken(handler);
+                    var token = GenerateBearerToken(handler);
+                    StoreToken(token);
+                    return token;
                 }
                 catch (Exception e)
                 {
@@ -58,9 +60,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                     // Add buffer before expiration to avoid any auth issues
                     if (jwtToken != null && jwtToken.ValidTo.AddMinutes(-1.5) > DateTime.UtcNow)
                     {
-                        var tokenStr = handler.WriteToken(jwtToken);
-                        StoreToken(tokenStr);
-                        return tokenStr;
+                        return token;
                     }
                 }
             }
