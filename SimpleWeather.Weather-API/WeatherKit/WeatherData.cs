@@ -135,7 +135,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
             hrf.high_f = ConversionMethods.CtoF(hour.temperature);
 
             hrf.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
-                .GetWeatherIcon(hour.daylight ?? false, hour.conditionCode);
+                .GetWeatherIcon(!hour.daylight.GetValueOrDefault(true), hour.conditionCode);
             hrf.condition = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
                 .GetWeatherCondition(hour.conditionCode);
 
@@ -235,7 +235,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 feelslike_f = ConversionMethods.CtoF(current.temperatureApparent),
 
                 icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
-                    .GetWeatherIcon(current.daylight ?? false, current.conditionCode),
+                    .GetWeatherIcon(!current.daylight.GetValueOrDefault(true), current.conditionCode),
 
                 beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(ConversionMethods.KphToMSec(current.windSpeed))),
                 uv = new UV(current.uvIndex),
