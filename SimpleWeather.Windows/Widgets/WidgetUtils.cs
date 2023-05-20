@@ -116,6 +116,21 @@ namespace SimpleWeather.NET.Widgets
             CleanupWidgetIds();
         }
 
+        public static void UpdateWidgetIds(string oldQuery, string newQuery)
+        {
+            var listJson = widgetContainer.Values.GetValueOrDefault(oldQuery, "")?.ToString();
+            widgetContainer.Values.Remove(oldQuery);
+            widgetContainer.Values[newQuery] = listJson;
+
+            foreach (string id in GetWidgetIds(newQuery))
+            {
+                SaveLocationData(id, null);
+            }
+
+            CleanupWidgetData();
+            CleanupWidgetIds();
+        }
+
         public static IList<string> GetWidgetIds(string query)
         {
             var listJson = widgetContainer.Values.GetValueOrDefault(query, "")?.ToString();

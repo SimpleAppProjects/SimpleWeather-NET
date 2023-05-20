@@ -4,6 +4,7 @@ using SimpleWeather.Common.WeatherData;
 using SimpleWeather.NET.Notifications;
 using SimpleWeather.NET.Tiles;
 using SimpleWeather.NET.WeatherAlerts;
+using SimpleWeather.NET.Widgets;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -309,7 +310,7 @@ namespace SimpleWeather.NET.BackgroundTasks
             {
                 foreach (var location in locations)
                 {
-                    if (SecondaryTileUtils.Exists(location.query))
+                    if (SecondaryTileUtils.Exists(location.query) || WidgetUtils.Exists(location.query))
                     {
                         cts.Token.ThrowIfCancellationRequested();
 

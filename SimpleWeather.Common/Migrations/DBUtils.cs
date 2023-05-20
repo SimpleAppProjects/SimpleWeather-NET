@@ -33,7 +33,7 @@ namespace SimpleWeather.Common.Migrations
                         new Dictionary<string, object>
                         {
                             { Constants.TILEKEY_OLDKEY, oldKey },
-                            { Constants.TILEKEY_LOCATION, location.query },
+                            { Constants.TILEKEY_LOCATION, location },
                         });
                 }
 #endif

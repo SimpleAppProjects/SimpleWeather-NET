@@ -170,7 +170,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                             await GetWeather(location, true);
                         }
 
-                        await WidgetUpdateHelper.RefreshWidgets(location.query);
+                        await WidgetUpdateHelper.RefreshWidgets(location.locationType == LocationData.LocationType.GPS ? Constants.KEY_GPS : location.query);
                     }
                 }
             }

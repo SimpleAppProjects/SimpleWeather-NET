@@ -12,6 +12,7 @@ using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Radar;
 using SimpleWeather.NET.Tiles;
+using SimpleWeather.NET.Widgets;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
@@ -686,14 +687,27 @@ namespace SimpleWeather.NET.Preferences
             if (await DispatcherQueue.EnqueueAsync(() => sw.IsOn))
             {
                 var prevLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
-                if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
+                if (prevLoc?.query != null)
                 {
-                    var gpsLoc = await SettingsManager.GetLastGPSLocData();
-                    if (gpsLoc?.query == null)
-                        await SettingsManager.SaveLastGPSLocData(prevLoc);
-                    else
+                    if (SecondaryTileUtils.Exists(prevLoc.query))
                     {
-                        SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
+                        var gpsLoc = await SettingsManager.GetLastGPSLocData();
+                        if (gpsLoc?.query == null)
+                            await SettingsManager.SaveLastGPSLocData(prevLoc);
+                        else
+                        {
+                            SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
+                        }
+                    }
+                    if (WidgetUtils.Exists(prevLoc.query))
+                    {
+                        var gpsLoc = await SettingsManager.GetLastGPSLocData();
+                        if (gpsLoc?.query == null)
+                            await SettingsManager.SaveLastGPSLocData(prevLoc);
+                        else
+                        {
+                            WidgetUtils.UpdateWidgetIds(prevLoc.query, Constants.KEY_GPS);
+                        }
                     }
                 }
             }
@@ -704,6 +718,12 @@ namespace SimpleWeather.NET.Preferences
                     var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                     if (favLoc?.IsValid() == true)
                         SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
+                }
+                if (WidgetUtils.Exists(Constants.KEY_GPS))
+                {
+                    var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
+                    if (favLoc?.IsValid() == true)
+                        WidgetUtils.UpdateWidgetIds(Constants.KEY_GPS, favLoc);
                 }
             }
 

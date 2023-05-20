@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.NET.Widgets;
 #if WINDOWS
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Tiles;
@@ -18,11 +19,29 @@ namespace SimpleWeather.NET
                 if (e.Extras?.ContainsKey(Constants.TILEKEY_OLDKEY) == true)
                 {
                     string oldKey = e.Extras?[Constants.TILEKEY_OLDKEY]?.ToString();
-                    string locationQuery = e.Extras?[Constants.TILEKEY_LOCATION]?.ToString();
+                    object locationQuery = e.Extras?[Constants.TILEKEY_LOCATION];
 
                     if (SecondaryTileUtils.Exists(oldKey))
                     {
-                        SecondaryTileUtils.UpdateTileId(oldKey, locationQuery);
+                        if (locationQuery is LocationData.LocationData locData)
+                        {
+                            SecondaryTileUtils.UpdateTileId(oldKey, locData.query);
+                        }
+                        else
+                        {
+                            SecondaryTileUtils.UpdateTileId(oldKey, Constants.KEY_GPS);
+                        }
+                    }
+                    if (WidgetUtils.Exists(oldKey))
+                    {
+                        if (locationQuery is LocationData.LocationData locData)
+                        {
+                            WidgetUtils.UpdateWidgetIds(oldKey, locData.query);
+                        }
+                        else
+                        {
+                            WidgetUtils.UpdateWidgetIds(oldKey, Constants.KEY_GPS);
+                        }
                     }
                 }
 #endif
@@ -54,16 +73,31 @@ namespace SimpleWeather.NET
                 if (SettingsManager.FollowGPS)
                 {
                     var prevLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
-                    if (prevLoc?.query != null && SecondaryTileUtils.Exists(prevLoc.query))
+                    if (prevLoc?.query != null)
                     {
-                        var gpsLoc = await SettingsManager.GetLastGPSLocData();
-                        if (gpsLoc?.query == null)
+                        if (SecondaryTileUtils.Exists(prevLoc.query))
                         {
-                            await SettingsManager.SaveLastGPSLocData(prevLoc);
+                            var gpsLoc = await SettingsManager.GetLastGPSLocData();
+                            if (gpsLoc?.query == null)
+                            {
+                                await SettingsManager.SaveLastGPSLocData(prevLoc);
+                            }
+                            else
+                            {
+                                SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
+                            }
                         }
-                        else
+                        if (WidgetUtils.Exists(prevLoc.query))
                         {
-                            SecondaryTileUtils.UpdateTileId(prevLoc.query, Constants.KEY_GPS);
+                            var gpsLoc = await SettingsManager.GetLastGPSLocData();
+                            if (gpsLoc?.query == null)
+                            {
+                                await SettingsManager.SaveLastGPSLocData(prevLoc);
+                            }
+                            else
+                            {
+                                WidgetUtils.UpdateWidgetIds(prevLoc.query, Constants.KEY_GPS);
+                            }
                         }
                     }
                 }
@@ -74,6 +108,12 @@ namespace SimpleWeather.NET
                         var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
                         if (favLoc?.IsValid() == true)
                             SecondaryTileUtils.UpdateTileId(Constants.KEY_GPS, favLoc.query);
+                    }
+                    if (WidgetUtils.Exists(Constants.KEY_GPS))
+                    {
+                        var favLoc = (await SettingsManager.GetFavorites()).FirstOrDefault();
+                        if (favLoc?.IsValid() == true)
+                            WidgetUtils.UpdateWidgetIds(Constants.KEY_GPS, favLoc);
                     }
                 }
 #endif
@@ -111,6 +151,7 @@ namespace SimpleWeather.NET
             {
                 // Update locale for string resources
                 UpdateAppLocale();
+                await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
             }
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }

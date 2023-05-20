@@ -10,6 +10,7 @@ using SimpleWeather.NET.Controls;
 #if WINDOWS
 using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.Tiles;
+using SimpleWeather.NET.Widgets;
 #else
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Controls;
@@ -322,6 +323,13 @@ namespace SimpleWeather.Maui.Main
                     {
                         await new SecondaryTile(
                             SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
+                    }
+                    if (WidgetUtils.Exists(data.query))
+                    {
+                        WidgetUtils.GetWidgetIds(data.query).ForEach(id =>
+                        {
+                            WidgetUtils.DeleteWidget(id);
+                        });
                     }
 #endif
                 }

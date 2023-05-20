@@ -365,8 +365,8 @@ namespace SimpleWeather.Common.WeatherData
                                             CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
                                             new Dictionary<string, object>
                                             {
-                                            { Constants.TILEKEY_OLDKEY, oldKey },
-                                            { Constants.TILEKEY_LOCATION, location.query },
+                                                { Constants.TILEKEY_OLDKEY, oldKey },
+                                                { Constants.TILEKEY_LOCATION, location },
                                             });
 #endif
                                     }

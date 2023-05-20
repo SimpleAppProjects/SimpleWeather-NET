@@ -22,6 +22,7 @@ using SimpleWeather.NET.Shared.Helpers;
 using SimpleWeather.NET.Tiles;
 using SimpleWeather.NET.Utils;
 using SimpleWeather.NET.WeatherAlerts;
+using SimpleWeather.NET.Widgets;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -237,9 +238,21 @@ namespace SimpleWeather.NET.Main
                             {
                                 await WeatherUpdateBackgroundTask.RequestAppTrigger();
                             }
-                            else if (isHome || SecondaryTileUtils.Exists(locationData?.query))
+                            else if (isHome)
                             {
                                 await WeatherTileCreator.TileUpdater(locationData);
+                                await WidgetUpdateHelper.RefreshWidgets(locationData.locationType == LocationType.GPS ? Constants.KEY_GPS : locationData.query);
+                            }
+                            else
+                            {
+                                if (SecondaryTileUtils.Exists(locationData?.query))
+                                {
+                                    await WeatherTileCreator.TileUpdater(locationData);
+                                }
+                                if (WidgetUtils.Exists(locationData?.query))
+                                {
+                                    await WidgetUpdateHelper.RefreshWidgets(locationData.query);
+                                }
                             }
                         });
                     });
