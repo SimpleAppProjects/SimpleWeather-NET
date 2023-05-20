@@ -778,4 +778,10 @@ Fuzzy</comment>
   <data name="pref_title_termsofservice" xml:space="preserve">
     <value>Conditions d&apos;utilisation</value>
   </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
 </root>

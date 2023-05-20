@@ -55,6 +55,20 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_apple_weather}" />
+                    <RichTextBlock Padding="0,10">
+                        <Paragraph>
+                            Apple Weather and (Apple) Weather are trademarks of Apple Inc.
+                        </Paragraph>
+                    </RichTextBlock>
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://weatherkit.apple.com/legal-attribution.html">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherkit.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_metno}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://www.met.no/en">
                         <Image

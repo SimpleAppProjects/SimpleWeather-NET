@@ -11,8 +11,8 @@
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons;assembly=SimpleWeather.Maui"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mext="clr-namespace:SimpleWeather.Maui.MarkupExtensions;assembly=SimpleWeather.Maui"
-    xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls;assembly=SimpleWeather.Maui"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls;assembly=SimpleWeather.Maui"
     xmlns:stepper="clr-namespace:SimpleWeather.Maui.Stepper;assembly=SimpleWeather.Maui"
     mc:Ignorable="d">
     <x:Double x:Key="AppBarThemeCompactHeight">40</x:Double>
@@ -240,13 +240,11 @@
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate>
-                    <Grid
-                        Background="{TemplateBinding Background}"
-                        BackgroundColor="{TemplateBinding BackgroundColor}">
+                    <Grid Background="{TemplateBinding Background}" BackgroundColor="{TemplateBinding BackgroundColor}">
                         <ScrollView
                             x:Name="InternalScrollViewer"
-                            Orientation="Horizontal"
                             HorizontalScrollBarVisibility="Never"
+                            Orientation="Horizontal"
                             VerticalScrollBarVisibility="Never">
                             <skiaSharp:SKCanvasView
                                 xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
@@ -296,13 +294,15 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <controls:TemplatedContentPresenter x:Name="HeaderPresenter"
-                                                            Data="{TemplateBinding Header}"
-                                                            DataTemplate="{TemplateBinding HeaderTemplate}"
-                                                            Grid.ColumnSpan="2" />
-                        <Grid x:Name="HostGrid"
-                              Grid.ColumnSpan="2"
-                              Grid.Row="1"/>
+                        <controls:TemplatedContentPresenter
+                            x:Name="HeaderPresenter"
+                            Grid.ColumnSpan="2"
+                            Data="{TemplateBinding Header}"
+                            DataTemplate="{TemplateBinding HeaderTemplate}" />
+                        <Grid
+                            x:Name="HostGrid"
+                            Grid.Row="1"
+                            Grid.ColumnSpan="2" />
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="OrientationStates">
                                 <VisualState x:Name="Vertical" />
@@ -340,8 +340,8 @@
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
-                        StrokeThickness="0"
-                        Stroke="Transparent">
+                        Stroke="Transparent"
+                        StrokeThickness="0">
                         <skiaSharp:SKCanvasView
                             xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
                             x:Name="Canvas"

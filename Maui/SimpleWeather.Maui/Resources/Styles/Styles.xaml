@@ -4,8 +4,8 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:mauictrls="clr-namespace:Microsoft.Maui.Controls"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:mauictrls="clr-namespace:Microsoft.Maui.Controls"
     xmlns:progBar="clr-namespace:epj.ProgressBar.Maui;assembly=epj.ProgressBar.Maui">
 
     <Style TargetType="ActivityIndicator">
@@ -600,8 +600,7 @@
         TargetType="ImageButton">
         <Setter Property="Source">
             <Setter.Value>
-                <matIcons:MaterialIcon Symbol="ChevronLeft"
-                                       Color="{AppThemeBinding Light='Black', Dark='White'}" />
+                <matIcons:MaterialIcon Symbol="ChevronLeft" Color="{AppThemeBinding Light='Black', Dark='White'}" />
             </Setter.Value>
         </Setter>
     </Style>
@@ -612,8 +611,7 @@
         TargetType="ImageButton">
         <Setter Property="Source">
             <Setter.Value>
-                <matIcons:MaterialIcon Symbol="ChevronRight"
-                                       Color="{AppThemeBinding Light='Black', Dark='White'}" />
+                <matIcons:MaterialIcon Symbol="ChevronRight" Color="{AppThemeBinding Light='Black', Dark='White'}" />
             </Setter.Value>
         </Setter>
     </Style>
