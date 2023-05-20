@@ -4,6 +4,11 @@
       "commandName": "MsixPackage",
       "doNotLaunchApp": true
     },
+    "SimpleWeather.Windows (Package - COMServer)": {
+      "commandName": "MsixPackage",
+      "commandLineArgs": "-RegisterProcessAsComServer",
+      "doNotLaunchApp": true
+    },
     "SimpleWeather.Windows (Unpackaged)": {
       "commandName": "Project",
       "doNotLaunchApp": true

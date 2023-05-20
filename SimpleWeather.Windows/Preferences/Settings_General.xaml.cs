@@ -836,6 +836,7 @@ namespace SimpleWeather.NET.Preferences
                 else
                 {
                     SettingsManager.PoPChanceNotificationEnabled = sw.IsOn = false;
+                    _ = Task.Run(WeatherTileUpdaterTask.UnregisterBackgroundTask);
                 }
             }
         }

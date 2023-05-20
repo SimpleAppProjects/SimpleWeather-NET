@@ -85,6 +85,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                         if (cts.IsCancellationRequested) return;
 
                         await WeatherTileUpdaterTask.UpdateTiles();
+                        await WeatherTileUpdaterTask.UpdateWidgets();
 
                         if (SettingsManager.PoPChanceNotificationEnabled)
                         {

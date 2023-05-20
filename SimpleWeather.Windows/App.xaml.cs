@@ -296,6 +296,7 @@ namespace SimpleWeather.NET
                     launchArgs.Arguments?.Contains("RegisterProcessAsComServer") == true)
                 {
                     RegisterCOMServer();
+                    RegisterWidgetProvider();
                 }
                 else
                 {

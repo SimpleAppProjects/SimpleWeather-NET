@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Windows.Widgets.Providers;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.NET.Tiles;
+using SimpleWeather.NET.Widgets;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using Windows.ApplicationModel;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
 using Windows.UI.StartScreen;
 
 namespace SimpleWeather.NET.BackgroundTasks
@@ -39,6 +43,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                     if (SettingsManager.WeatherLoaded)
                     {
                         await UpdateTiles();
+                        await UpdateWidgets();
 
                         if (SettingsManager.PoPChanceNotificationEnabled)
                         {
@@ -117,6 +122,55 @@ namespace SimpleWeather.NET.BackgroundTasks
                         }
 
                         await WeatherTileCreator.TileUpdater(location);
+                    }
+                }
+            }
+        }
+
+        public static async Task UpdateWidgets()
+        {
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Updating widgets...", taskName);
+
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            // Update widgets
+            var widgetManager = WidgetManager.GetDefault();
+            IReadOnlyList<WidgetInfo> widgets = null;
+
+            try
+            {
+                widgets = widgetManager.GetWidgetInfos();
+            }
+            catch { }
+
+            if (widgets?.Count > 0)
+            {
+                foreach (var widgetInfo in widgets)
+                {
+                    LocationData.LocationData location = null;
+
+                    var widgetId = widgetInfo.WidgetContext.Id;
+
+                    if (WidgetUtils.IsGPS(widgetId))
+                    {
+                        location = await SettingsManager.GetLastGPSLocData();
+                    }
+                    else
+                    {
+                        location = WidgetUtils.GetLocationData(widgetId);
+                    }
+
+                    Logger.WriteLine(LoggerLevel.Debug, "Location = " + location?.ToString());
+                    Logger.WriteLine(LoggerLevel.Debug, "WidgetID = " + widgetId);
+
+                    if (location != null)
+                    {
+                        if (await GetWeather(location) == null)
+                        {
+                            await GetWeather(location, true);
+                        }
+
+                        await WidgetUpdateHelper.RefreshWidgets(location.query);
                     }
                 }
             }
@@ -213,6 +267,10 @@ namespace SimpleWeather.NET.BackgroundTasks
             if (AppTrigger == null)
                 AppTrigger = new ApplicationTrigger();
 
+            // Enable task if dependent features are enabled
+            if (!await IsTaskFeaturesEnabled())
+                return;
+
             // Request access
             var backgroundAccessStatus = BackgroundAccessStatus.Unspecified;
 
@@ -262,13 +320,16 @@ namespace SimpleWeather.NET.BackgroundTasks
             }
         }
 
-        public static void UnregisterBackgroundTask()
+        public static async Task UnregisterBackgroundTask()
         {
-            foreach (var task in BackgroundTaskRegistration.AllTasks)
+            if (!await IsTaskFeaturesEnabled())
             {
-                if (task.Value.Name == taskName)
+                foreach (var task in BackgroundTaskRegistration.AllTasks)
                 {
-                    task.Value.Unregister(true);
+                    if (task.Value.Name == taskName)
+                    {
+                        task.Value.Unregister(true);
+                    }
                 }
             }
         }
@@ -278,6 +339,46 @@ namespace SimpleWeather.NET.BackgroundTasks
             return BackgroundTaskRegistration.AllTasks
                 .Where(t => t.Value.Name == taskName)
                 .Select(t => t.Value);
+        }
+
+        public static async Task<bool> IsTaskFeaturesEnabled()
+        {
+            var settingsManager = Ioc.Default.GetService<SettingsManager>();
+            return WidgetUpdateHelper.WidgetsExist() ||
+                await IsSecondaryTilePinned() ||
+                await IsPrimaryTilePinned() ||
+                settingsManager.PoPChanceNotificationEnabled;
+        }
+
+        private static async Task<bool> IsPrimaryTilePinned()
+        {
+            try
+            {
+                // Get your own app list entry
+                AppListEntry entry = (await Package.Current.GetAppListEntriesAsync())[0];
+
+                // Check if your app is currently pinned
+                bool isPinned = await StartScreenManager.GetDefault().ContainsAppListEntryAsync(entry);
+
+                return isPinned;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        private static async Task<bool> IsSecondaryTilePinned()
+        {
+            try
+            {
+                var tiles = await SecondaryTile.FindAllAsync();
+                return tiles.Any();
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

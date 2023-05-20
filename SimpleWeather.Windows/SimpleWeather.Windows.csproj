@@ -36,6 +36,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AdaptiveCards.ObjectModel.WinUI3" Version="0.4.0" />
     <PackageReference Include="Mapsui.WinUI" Version="4.0.0-beta.8" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.3.230331000" />
@@ -87,7 +88,6 @@
     <Content Include="Assets\BadgeLogo.scale-200.png" />
     <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\FullSun.png" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\LogoStroke.png" />
     <Content Include="Assets\outline_near_me_black_24dp.png" />
     <Content Include="Assets\SolarStroke.png" />

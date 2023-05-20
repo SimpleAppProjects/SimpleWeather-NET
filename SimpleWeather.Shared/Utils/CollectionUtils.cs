@@ -2,8 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+#if WINDOWS
+using Windows.Foundation.Collections;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -71,5 +72,22 @@ namespace SimpleWeather.Utils
 
             return -1;
         }
+
+#if WINDOWS
+#nullable enable
+        public static object? GetValueOrDefault(this IPropertySet dictionary, string key) =>
+            dictionary.GetValueOrDefault(key, default!);
+
+        public static object GetValueOrDefault(this IPropertySet dictionary, string key, object defaultValue)
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            return dictionary.TryGetValue(key, out object? value) ? value : defaultValue;
+        }
+#nullable restore
+#endif
     }
 }

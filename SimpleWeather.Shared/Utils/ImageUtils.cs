@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+#if WINDOWS
+using Windows.Graphics.Imaging;
+using Windows.Storage;
+using Windows.Storage.Streams;
+#endif
 
 namespace SimpleWeather.Utils
 {
@@ -103,5 +105,57 @@ namespace SimpleWeather.Utils
 
             return ImageType.Unknown;
         }
+
+#if WINDOWS
+        public static async Task<string> WeatherIconToBase64(string icon, bool isLight = false)
+        {
+            var wim = SharedModule.Instance.WeatherIconsManager;
+            var iconUri = new Uri(wim.GetWeatherIconURI(icon, true, isLight));
+
+            var file = await StorageFile.GetFileFromApplicationUriAsync(iconUri);
+            using var fs = await file.OpenStreamForReadAsync();
+            var imageType = GuessImageType(fs);
+
+            var bytes = new byte[fs.Length];
+            await fs.ReadAsync(bytes);
+
+            var base64Str = Convert.ToBase64String(bytes);
+
+            var prefix = imageType switch
+            {
+                ImageType.Jpeg => "data:image/jpeg;base64,",
+                ImageType.Gif => "data:image/gif;base64,",
+                ImageType.Bmp => "data:image/bmp;base64,",
+                ImageType.Webp => "data:image/webp;base64,",
+                _ => "data:image/png;base64,"
+            };
+
+            return prefix + base64Str;
+        }
+
+        public static async Task<string> ColorToBase64(Windows.UI.Color color)
+        {
+            var arr = new byte[1 * 1 * 4];
+            for (int i = 0; i < arr.Length; i += 4)
+            {
+                // BGRA format
+                arr[i] = color.B;
+                arr[i + 1] = color.G;
+                arr[i + 2] = color.R;
+                arr[i + 3] = color.A;
+            }
+
+            using var ms = new InMemoryRandomAccessStream();
+            var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, ms);
+            encoder.SetPixelData(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Straight, 1, 1, 96, 96, arr);
+            await encoder.FlushAsync();
+
+            var s = ms.AsStreamForRead();
+            var buffer = new byte[s.Length];
+            s.Read(buffer, 0, buffer.Length);
+
+            return "data:image/png;base64," + Convert.ToBase64String(buffer);
+        }
+#endif
     }
 }
