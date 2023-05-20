@@ -19,7 +19,6 @@ using SimpleWeather.Maui.Helpers;
 #endif
 using SimpleWeather.NET.Utils;
 using SimpleWeather.SkiaSharp;
-using SimpleWeather.Utils;
 using SkiaSharp;
 using RectF = System.Drawing.RectangleF;
 
@@ -126,12 +125,18 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         private void BaseGraphView_Loaded(object sender, EventArgs e)
         {
-            App.Current.RequestedThemeChanged += Current_RequestedThemeChanged;
+            if (App.Current != null)
+            {
+                App.Current.RequestedThemeChanged += Current_RequestedThemeChanged;
+            }
         }
 
         private void BaseGraphView_Unloaded(object sender, EventArgs e)
         {
-            App.Current.RequestedThemeChanged -= Current_RequestedThemeChanged;
+            if (App.Current != null)
+            {
+                App.Current.RequestedThemeChanged -= Current_RequestedThemeChanged;
+            }
         }
 
         private void Current_RequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
