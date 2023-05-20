@@ -55,7 +55,10 @@
                     Content="{helpers:StringRes Name='pref_title_about'}"
                     Tag="About" />
             </muxc:NavigationView.MenuItems>
-            <Frame x:Name="SettingsFrame" Navigated="SettingsFrame_Navigated" />
+            <Frame
+                x:Name="SettingsFrame"
+                Navigated="SettingsFrame_Navigated"
+                Navigating="SettingsFrame_Navigating" />
         </muxc:NavigationView>
     </Grid>
 </Page>

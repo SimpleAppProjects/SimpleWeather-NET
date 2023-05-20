@@ -1,15 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.NET.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.NET.Helpers;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using Windows.Foundation.Metadata;
 using muxc = Microsoft.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
@@ -153,6 +149,14 @@ namespace SimpleWeather.NET.Preferences
             if (!(_page is null) && !Type.Equals(preNavPageType, _page))
             {
                 SettingsFrame.Navigate(_page, null, transitionInfo);
+            }
+        }
+
+        private void SettingsFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            if (SettingsFrame?.Content is IFrameContentPage contentPage)
+            {
+                contentPage.OnNavigatingFromPage(e);
             }
         }
 
