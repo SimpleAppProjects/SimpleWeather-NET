@@ -77,8 +77,8 @@ namespace SimpleWeather.Common.Migrations
                             CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
                             new Dictionary<string, object>
                             {
-                                        { Constants.TILEKEY_OLDKEY, oldKey },
-                                        { Constants.TILEKEY_LOCATION, Constants.KEY_GPS },
+                                { Constants.TILEKEY_OLDKEY, oldKey },
+                                { Constants.TILEKEY_LOCATION, Constants.KEY_GPS },
                             });
 #endif
                     }
@@ -178,6 +178,32 @@ namespace SimpleWeather.Common.Migrations
             if (SettingsMgr.VersionCode < 5810)
             {
                 SettingsMgr.UsePersonalKeys[SettingsMgr.API] = SettingsMgr.UsePersonalKey;
+            }
+            // v5.8.6
+            if (SettingsMgr.VersionCode < 5860)
+            {
+                // Windows: unregister all bg tasks
+#if WINDOWS || WINUI
+                try
+                {
+                    var tasks = Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTasks;
+
+                    foreach (var task in tasks)
+                    {
+                        try
+                        {
+                            task.Value.Unregister(true);
+
+                            AnalyticsLogger.LogEvent("BGTasks: unregistered task", new Dictionary<string, string>()
+                            {
+                                { "task", task.Value.Name },
+                            });
+                        }
+                        catch { }
+                    }
+                }
+                catch { }
+#endif
             }
 #if !UNIT_TEST
             if (SettingsMgr.VersionCode < CurrentVersionCode)

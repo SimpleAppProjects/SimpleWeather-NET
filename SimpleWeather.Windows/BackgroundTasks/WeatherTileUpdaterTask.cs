@@ -298,6 +298,8 @@ namespace SimpleWeather.NET.BackgroundTasks
                     .Trigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
                 var tb4 = BackgroundTaskUtils.CreateTask(taskName)
                     .Trigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
+                var tb5 = BackgroundTaskUtils.CreateTask(taskName)
+                    .Trigger(AppTrigger);
 
                 try
                 {
@@ -305,6 +307,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                     tb2.Register();
                     tb3.Register();
                     tb4.Register();
+                    tb5.Register();
                 }
                 catch (Exception ex)
                 {
