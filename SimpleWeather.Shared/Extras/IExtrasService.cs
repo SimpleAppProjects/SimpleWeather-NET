@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleWeather.Extras
+﻿namespace SimpleWeather.Extras
 {
     public interface IExtrasService
     {
@@ -13,6 +7,7 @@ namespace SimpleWeather.Extras
         bool IsEnabled();
         bool IsIconPackSupported(string packKey);
         bool IsWeatherAPISupported(string api);
+        bool IsPremiumWeatherAPI(string api);
         void CheckPremiumStatus();
 
         bool AreSubscriptionsSupported { get; }

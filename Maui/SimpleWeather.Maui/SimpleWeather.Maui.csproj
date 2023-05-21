@@ -168,6 +168,9 @@
 		<MauiXaml Update="Preferences\Settings_Units.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Preferences\WeatherAPIPreferenceListDialogPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Radar\RadarToolbar.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

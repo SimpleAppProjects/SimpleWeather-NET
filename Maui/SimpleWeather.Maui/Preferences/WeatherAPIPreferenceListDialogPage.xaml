@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<local:PreferenceListDialogPage
+    x:Class="SimpleWeather.Maui.Preferences.WeatherAPIPreferenceListDialogPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    Title="{Binding Text}"
+    x:DataType="local:ListViewCell"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                      Dark={StaticResource DarkSurface}}"
+    Shell.NavBarIsVisible="True">
+
+    <local:PreferenceListDialogPage.Resources>
+        <converters:WeatherProviderPremiumVisibilityConverter x:Key="premiumApiConv" />
+    </local:PreferenceListDialogPage.Resources>
+
+    <Frame BackgroundColor="Transparent" BorderColor="Transparent">
+        <ListView
+            x:Name="PreferenceListView"
+            BackgroundColor="Transparent"
+            HasUnevenRows="True"
+            IsGroupingEnabled="False"
+            IsPullToRefreshEnabled="False"
+            SelectionMode="Single"
+            SeparatorColor="{AppThemeBinding Light='#2073777F',
+                                             Dark='#408D9199'}"
+            SeparatorVisibility="Default"
+            VerticalOptions="FillAndExpand">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:PreferenceListItemViewModel">
+                    <local:TransparentViewCell>
+                        <HorizontalStackLayout Margin="0,2">
+                            <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+                            <VerticalStackLayout VerticalOptions="Center">
+                                <Label
+                                    FontSize="Default"
+                                    Text="{Binding Display}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    FontSize="Caption"
+                                    IsVisible="{Binding Detail, Converter={StaticResource stringBooleanConverter}}"
+                                    Text="{Binding Detail}"
+                                    VerticalOptions="Center" />
+                            </VerticalStackLayout>
+                            <Image IsVisible="{Binding Value, Converter={StaticResource premiumApiConv}}" VerticalOptions="Center">
+                                <Image.Source>
+                                    <matIcons:MaterialIcon
+                                        Size="24"
+                                        Symbol="Star"
+                                        Color="Gold" />
+                                </Image.Source>
+                            </Image>
+                        </HorizontalStackLayout>
+                    </local:TransparentViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Frame>
+
+</local:PreferenceListDialogPage>

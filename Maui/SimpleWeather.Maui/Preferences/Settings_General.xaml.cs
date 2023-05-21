@@ -3,7 +3,6 @@ using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 #if IOS || MACCATALYST
-using CoreFoundation;
 #endif
 using SimpleWeather.Controls;
 using SimpleWeather.Extras;
@@ -465,7 +464,10 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
     {
         if (e.Data is ListViewCell listPref)
         {
-            await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
+            if (listPref.PreferenceKey == SettingsManager.KEY_API)
+                await Navigation.PushAsync(new WeatherAPIPreferenceListDialogPage(listPref));
+            else
+                await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
         }
     }
 
