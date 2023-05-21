@@ -14,14 +14,15 @@
     <Frame BackgroundColor="Transparent" BorderColor="Transparent">
         <ListView
             x:Name="PreferenceListView"
+            BackgroundColor="Transparent"
+            HasUnevenRows="True"
             IsGroupingEnabled="False"
             IsPullToRefreshEnabled="False"
-            HasUnevenRows="True"
             SelectionMode="Single"
-            VerticalOptions="FillAndExpand"
-            BackgroundColor="Transparent"
+            SeparatorColor="{AppThemeBinding Light='#2073777F',
+                                             Dark='#408D9199'}"
             SeparatorVisibility="Default"
-            SeparatorColor="{AppThemeBinding Light='#2073777F', Dark='#408D9199'}">
+            VerticalOptions="FillAndExpand">
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:PreferenceListItemViewModel">
                     <local:TransparentViewCell>
@@ -34,8 +35,8 @@
                                     VerticalOptions="Center" />
                                 <Label
                                     FontSize="Caption"
-                                    Text="{Binding Detail}"
                                     IsVisible="{Binding Detail, Converter={StaticResource stringBooleanConverter}}"
+                                    Text="{Binding Detail}"
                                     VerticalOptions="Center" />
                             </VerticalStackLayout>
                         </HorizontalStackLayout>

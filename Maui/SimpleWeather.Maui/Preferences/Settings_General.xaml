@@ -44,8 +44,8 @@
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_general}">
                     <prefs:SwitchCell
                         x:Name="FollowGPS"
-                        Text="{x:Static res_strings:Resources.label_currentlocation}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_currentlocation}" />
+                        Detail="{x:Static res_strings:Resources.pref_summary_currentlocation}"
+                        Text="{x:Static res_strings:Resources.label_currentlocation}" />
                     <prefs:ListViewCell
                         x:Name="IntervalPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
@@ -115,8 +115,8 @@
                         Text="{x:Static res_strings:Resources.api_label}" />
                     <prefs:SwitchCell
                         x:Name="PersonalKeyPref"
-                        Text="{x:Static res_strings:Resources.pref_title_personalkey}"
-                        Detail="{x:Static res_strings:Resources.pref_summary_personalkey}" />
+                        Detail="{x:Static res_strings:Resources.pref_summary_personalkey}"
+                        Text="{x:Static res_strings:Resources.pref_title_personalkey}" />
                     <TextCell
                         x:Name="APIRegisterPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
