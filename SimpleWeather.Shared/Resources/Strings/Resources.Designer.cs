@@ -94,6 +94,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apple Weather.
+        /// </summary>
+        public static string api_apple_weather {
+            get {
+                return ResourceManager.GetString("api_apple_weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Weather Provider.
         /// </summary>
         public static string API_Box_PlaceholderText {
@@ -225,6 +234,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string ConfirmDialog_PrimaryButtonText {
             get {
                 return ResourceManager.GetString("ConfirmDialog.PrimaryButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apple Weather and (Apple) Weather are trademarks of Apple Inc..
+        /// </summary>
+        public static string copyright_apple_weather {
+            get {
+                return ResourceManager.GetString("copyright_apple_weather", resourceCulture);
             }
         }
         

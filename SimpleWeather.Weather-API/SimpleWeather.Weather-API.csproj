@@ -22,7 +22,7 @@
   <ItemGroup>
     <PackageReference Include="BingMapsRESTToolkit" Version="1.1.5" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.30.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
