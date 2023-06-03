@@ -44,8 +44,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://here.com/en"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='here.png', Dark='here_dark.png'}" />
                         </ImageButton.Source>
@@ -62,8 +61,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://weatherkit.apple.com/legal-attribution.html"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="weatherkit.png" />
                         </ImageButton.Source>
@@ -75,8 +73,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://www.met.no/en"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="metno.png" />
                         </ImageButton.Source>
@@ -88,8 +85,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="http://www.weather.gov"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="nws.png" />
                         </ImageButton.Source>
@@ -101,8 +97,7 @@
                         Padding="0,20"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="http://openweathermap.org/"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="openweathermap.png" />
                         </ImageButton.Source>
@@ -114,8 +109,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://www.bing.com/maps"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='bingmaps.png', Dark='bingmaps_dark.png'}" />
                         </ImageButton.Source>
@@ -127,8 +121,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://aqicn.org/"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="waqi.png" />
                         </ImageButton.Source>
@@ -142,8 +135,7 @@
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://developer.weatherunlocked.com/"
                         HorizontalOptions="Center"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}"
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
                         VerticalOptions="Center">
                         <ImageButton.Source>
                             <FileImageSource File="wunlocked.png" />
@@ -156,8 +148,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://www.weatherapi.com/"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
                         </ImageButton.Source>
@@ -169,8 +160,7 @@
                         Padding="0,10"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://tomorrow.io"
-                        MaximumHeightRequest="{OnIdiom Phone=50,
-                                                       Default=75}">
+                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
                         <ImageButton.Source>
                             <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
                         </ImageButton.Source>

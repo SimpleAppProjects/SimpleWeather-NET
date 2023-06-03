@@ -15,6 +15,8 @@ namespace SimpleWeather.Maui.Preferences
 
         private SettingsChanged ChangedEvent = null;
 
+        protected MauiControls.ListView _PreferenceListView => this.PreferenceListView;
+
         public PreferenceListDialogPage(ListViewCell listPreference)
         {
             this.BindingContext = this.ListPreference = listPreference;

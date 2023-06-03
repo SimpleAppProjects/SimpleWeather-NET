@@ -71,8 +71,4 @@ public partial class Settings_Credits : ContentPage
             IconCreditsContainer.Children.Add(textBlock);
         }
     }
-
-    void ImageButton_Clicked(System.Object sender, System.EventArgs e)
-    {
-    }
 }

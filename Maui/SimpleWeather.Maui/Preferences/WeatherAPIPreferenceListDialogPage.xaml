@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <local:PreferenceListDialogPage
     x:Class="SimpleWeather.Maui.Preferences.WeatherAPIPreferenceListDialogPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -14,49 +14,37 @@
 
     <local:PreferenceListDialogPage.Resources>
         <converters:WeatherProviderPremiumVisibilityConverter x:Key="premiumApiConv" />
+        <DataTemplate x:DataType="local:PreferenceListItemViewModel" x:Key="WeatherAPIItemTemplate">
+            <local:TransparentViewCell>
+                <Grid Margin="0,2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <RadioButton Grid.Column="0" IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+                    <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                        <Label
+                            FontSize="Default"
+                            Text="{Binding Display}"
+                            VerticalOptions="Center" />
+                        <Label
+                            FontSize="Caption"
+                            IsVisible="{Binding Detail, Converter={StaticResource stringBooleanConverter}}"
+                            Text="{Binding Detail}"
+                            VerticalOptions="Center" />
+                    </VerticalStackLayout>
+                    <Image Grid.Column="2" IsVisible="{Binding Value, Converter={StaticResource premiumApiConv}}" VerticalOptions="Center">
+                        <Image.Source>
+                            <matIcons:MaterialIcon
+                                Size="24"
+                                Symbol="Star"
+                                Color="Gold" />
+                        </Image.Source>
+                    </Image>
+                </Grid>
+            </local:TransparentViewCell>
+        </DataTemplate>
     </local:PreferenceListDialogPage.Resources>
-
-    <Frame BackgroundColor="Transparent" BorderColor="Transparent">
-        <ListView
-            x:Name="PreferenceListView"
-            BackgroundColor="Transparent"
-            HasUnevenRows="True"
-            IsGroupingEnabled="False"
-            IsPullToRefreshEnabled="False"
-            SelectionMode="Single"
-            SeparatorColor="{AppThemeBinding Light='#2073777F',
-                                             Dark='#408D9199'}"
-            SeparatorVisibility="Default"
-            VerticalOptions="FillAndExpand">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="local:PreferenceListItemViewModel">
-                    <local:TransparentViewCell>
-                        <HorizontalStackLayout Margin="0,2">
-                            <RadioButton IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
-                            <VerticalStackLayout VerticalOptions="Center">
-                                <Label
-                                    FontSize="Default"
-                                    Text="{Binding Display}"
-                                    VerticalOptions="Center" />
-                                <Label
-                                    FontSize="Caption"
-                                    IsVisible="{Binding Detail, Converter={StaticResource stringBooleanConverter}}"
-                                    Text="{Binding Detail}"
-                                    VerticalOptions="Center" />
-                            </VerticalStackLayout>
-                            <Image IsVisible="{Binding Value, Converter={StaticResource premiumApiConv}}" VerticalOptions="Center">
-                                <Image.Source>
-                                    <matIcons:MaterialIcon
-                                        Size="24"
-                                        Symbol="Star"
-                                        Color="Gold" />
-                                </Image.Source>
-                            </Image>
-                        </HorizontalStackLayout>
-                    </local:TransparentViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Frame>
 
 </local:PreferenceListDialogPage>
