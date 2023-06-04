@@ -44,8 +44,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.0.2" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.1" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.1" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -60,7 +60,7 @@
     <PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="5.1.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="5.2.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings\AQIndex.Designer.cs">
