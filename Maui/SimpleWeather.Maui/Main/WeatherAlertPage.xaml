@@ -3,12 +3,13 @@
     x:Class="SimpleWeather.Maui.Main.WeatherAlertPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
     xmlns:viewModels="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     Title="{x:Static res_strings:Resources.title_fragment_alerts}"
-    Shell.NavBarIsVisible="True"
+    local:AppShell.AppBarIsVisible="True"
     x:Name="AlertsPage">
     <Grid>
         <Grid.RowDefinitions>

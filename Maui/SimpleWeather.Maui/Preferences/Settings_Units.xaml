@@ -3,11 +3,12 @@
     x:Class="SimpleWeather.Maui.Preferences.Settings_Units"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.pref_title_units}"
     BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
                                       Dark={StaticResource BlackBrush}}"
-    Shell.NavBarIsVisible="True">
+    main:AppShell.AppBarIsVisible="True">
 
     <Grid>
         <ScrollView Orientation="Vertical" Padding="16" HorizontalScrollBarVisibility="Never">

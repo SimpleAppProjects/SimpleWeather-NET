@@ -12,7 +12,7 @@
     xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     Title="{x:Static res_strings:Resources.pref_title_feature_charts}"
-    Shell.NavBarIsVisible="True"
+    local:AppShell.AppBarIsVisible="True"
     x:Name="ChartsPage">
 
     <ContentPage.Resources>

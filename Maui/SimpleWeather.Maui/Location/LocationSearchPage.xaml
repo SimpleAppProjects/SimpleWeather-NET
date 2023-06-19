@@ -9,6 +9,7 @@
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:m="http://compiledbindings.com/"
+    xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mx="http://compiledbindings.com/x"
@@ -21,8 +22,8 @@
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False"
     Shell.FlyoutItemIsVisible="False"
-    Shell.NavBarIsVisible="False"
-    Shell.TabBarIsVisible="False"
+    main:AppShell.AppBarIsVisible="False"
+    main:AppShell.TabBarIsVisible="False"
     mc:Ignorable="d m mx">
     <Grid x:Name="RootGrid">
         <Grid.RowDefinitions>

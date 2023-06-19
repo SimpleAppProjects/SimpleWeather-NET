@@ -5,12 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
+    xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     Title="{Binding Text}"
     x:DataType="local:ListViewCell"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
                                       Dark={StaticResource DarkSurface}}"
-    Shell.NavBarIsVisible="True">
+    main:AppShell.AppBarIsVisible="True">
 
     <local:PreferenceListDialogPage.Resources>
         <converters:WeatherProviderPremiumVisibilityConverter x:Key="premiumApiConv" />

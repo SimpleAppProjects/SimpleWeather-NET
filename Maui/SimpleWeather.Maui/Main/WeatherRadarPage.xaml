@@ -3,12 +3,13 @@
     x:Class="SimpleWeather.Maui.Main.WeatherRadarPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.label_radar}"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                       Dark={StaticResource DarkBackground}}"
-    Shell.NavBarIsVisible="True">
+    local:AppShell.AppBarIsVisible="True">
     <ContentPage.ToolbarItems>
         <ToolbarItem Clicked="RefreshBtn_Clicked" Text="{x:Static res_strings:Resources.action_refresh}">
             <ToolbarItem.IconImageSource>
