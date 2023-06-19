@@ -812,4 +812,9 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         var src = sender as ImageSource;
         UpdateControlTheme(!src.IsEmpty);
     }
+
+    private void ListLayout_SizeChanged(object sender, EventArgs e)
+    {
+        RefreshLayout?.ForceLayout();
+    }
 }

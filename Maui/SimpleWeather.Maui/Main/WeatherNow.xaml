@@ -11,7 +11,6 @@
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils"
     xmlns:viewModels="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
-    Shell.NavBarIsVisible="True"
     Title="{x:Static res_strings:Resources.label_nav_weathernow}"
     x:DataType="viewModels:WeatherNowViewModel"
     x:Name="WNowPage"
@@ -43,7 +42,7 @@
             <ScrollView x:Name="MainViewer" Orientation="Vertical"
                         x:DataType="{x:Null}"
                         IsVisible="{x:Bind WNowViewModel.Weather.Location ne null, Mode=OneWay}">
-                <Grid x:Name="ListLayout" RowDefinitions="Auto, Auto" />
+                <Grid x:Name="ListLayout" RowDefinitions="Auto, Auto" SizeChanged="ListLayout_SizeChanged" />
             </ScrollView>
         </RefreshView>
         <ActivityIndicator x:Name="ContentRing"
