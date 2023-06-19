@@ -22,18 +22,18 @@
                                             Dark={StaticResource DarkBackground}}"
     Shell.ForegroundColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                             Dark={StaticResource DarkOnBackground}}"
-    Shell.NavBarIsVisible="False"
     Shell.TabBarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
                                                   Dark={StaticResource DarkSurface}}"
     Shell.TabBarForegroundColor="{AppThemeBinding Light={StaticResource LightPrimary},
                                                   Dark={StaticResource DarkPrimary}}"
-    Shell.TabBarIsVisible="True"
     Shell.TabBarUnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                   Dark={StaticResource DarkOnSurface}}"
     Shell.TitleColor="{AppThemeBinding Light={StaticResource LightPrimary},
                                        Dark={StaticResource DarkPrimary}}"
     Shell.UnselectedColor="{AppThemeBinding Light={StaticResource LightOnSurface},
-                                            Dark={StaticResource DarkOnSurface}}">
+                                            Dark={StaticResource DarkOnSurface}}"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
 
     <Shell.Resources>
         <Style x:Key="MobileAppShellTabBarStyle" TargetType="simpleControls:TabBar">
@@ -142,7 +142,9 @@
                                           MacCatalyst=1,
                                           Default=0}" />
 
-            <simpleShell:SimpleNavigationHost Grid.Row="1" />
+            <Grid IsClippedToBounds="True" Grid.Row="1">
+                <simpleShell:SimpleNavigationHost />
+            </Grid>
 
             <simpleControls:TabBar
                 x:Name="ShellTabBar"

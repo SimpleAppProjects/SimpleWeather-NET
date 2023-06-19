@@ -26,6 +26,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
     {
         Instance = this;
         InitializeComponent();
+
         // TODO: add support for passing arguments
         AnalyticsLogger.LogEvent("AppShell");
 
@@ -166,7 +167,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
                 notifyProp.PropertyChanged += NotifyProp_PropertyChanged;
             }
 
-            ShellAppBar.IsVisible = Shell.GetNavBarIsVisible(currentPage);
+            ShellAppBar.IsVisible = GetAppBarIsVisible(currentPage);
         }
         else
         {
