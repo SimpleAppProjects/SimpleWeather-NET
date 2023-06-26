@@ -1237,7 +1237,6 @@ public partial class WeatherNow
 
                         if (Utils.FeatureSettings.AQIndex)
                         {
-                            // TODO: check why click doesn't work until window is resized
                             detailExtrasLayout.Add(
                                 new AQIControl()
                                     .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
@@ -1413,7 +1412,6 @@ public partial class WeatherNow
                 .ColumnSpan(2)
                 .TapGesture(async () =>
                 {
-                    // TODO: check why click doesn't work until window is resized
                     await Navigation.PushAsync(new WeatherRadarPage());
                 }),
                 new Border()

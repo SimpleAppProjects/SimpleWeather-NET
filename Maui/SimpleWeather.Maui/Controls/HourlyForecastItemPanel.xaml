@@ -15,31 +15,32 @@
             Clicked="LeftButton_Click"
             IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
-        <CollectionView
-            x:Name="HourlyForecastControl"
-            Grid.Column="1"
-            CanReorderItems="False"
-            CanMixGroups="False"
-            IsGrouped="False"
-            SelectionMode="None"
-            ItemsSource="{x:Bind ForecastData, Mode=OneWay}"
-            HorizontalScrollBarVisibility="Never"
-            VerticalScrollBarVisibility="Never"
-            Loaded="HourlyForecastControl_Loaded"
-            Unloaded="HourlyForecastControl_Unloaded">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" />
-            </CollectionView.ItemsLayout>
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <controls:HourlyForecastItem>
-                        <controls:HourlyForecastItem.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="HourlyItem_Tapped" />
-                        </controls:HourlyForecastItem.GestureRecognizers>
-                    </controls:HourlyForecastItem>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <Grid Grid.Column="1">
+            <CollectionView
+                x:Name="HourlyForecastControl"
+                CanReorderItems="False"
+                CanMixGroups="False"
+                IsGrouped="False"
+                SelectionMode="None"
+                ItemsSource="{x:Bind ForecastData, Mode=OneWay}"
+                HorizontalScrollBarVisibility="Never"
+                VerticalScrollBarVisibility="Never"
+                Loaded="HourlyForecastControl_Loaded"
+                Unloaded="HourlyForecastControl_Unloaded">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:HourlyForecastItem>
+                            <controls:HourlyForecastItem.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="HourlyItem_Tapped" />
+                            </controls:HourlyForecastItem.GestureRecognizers>
+                        </controls:HourlyForecastItem>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
         <ImageButton
             x:Name="RightButton"
             Grid.Column="2"
