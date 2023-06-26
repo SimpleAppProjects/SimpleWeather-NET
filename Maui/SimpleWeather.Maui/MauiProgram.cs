@@ -51,7 +51,9 @@ public static class MauiProgram
                 handlers.AddHandler<SelectableItemsView, SelectableItemsViewHandler<SelectableItemsView>>();
 #if __IOS__
                 handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
+                handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 SwitchHandler.Mapper.AppendToMapping(nameof(ISwitch.IsOn), MapSwitchIsOn);
+                //ScrollViewHandler.Mapper.AppendToMapping(nameof(IScrollView.ContentSize), OnScrollViewContentSizePropertyChanged);
 #endif
             })
             .UseProgressBar()
@@ -102,6 +104,17 @@ public static class MauiProgram
             uiSwitch.OnTintColor = view.TrackColor.ToPlatform();
             uIView.BackgroundColor = uiSwitch.OnTintColor;
         }
+    }
+
+    private static void OnScrollViewContentSizePropertyChanged(IScrollViewHandler handler, IScrollView view)
+    {
+        if (handler?.PlatformView is not UIKit.UIView platformUiView)
+            return;
+
+        if (platformUiView.Subviews.FirstOrDefault() is not UIKit.UIView contentView)
+            return;
+
+        contentView.SizeToFit();
     }
 #endif
 }
