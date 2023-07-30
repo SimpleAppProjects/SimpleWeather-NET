@@ -320,7 +320,10 @@ public partial class WeatherNow
 
                     MainGrid.SizeChanged += (s, e) =>
                     {
-                        UpdateSize();
+                        Dispatcher.Dispatch(() =>
+                        {
+                            UpdateSize();
+                        });
                     };
 
                     UpdateSize();
@@ -803,14 +806,17 @@ public partial class WeatherNow
 
                 if (Spacer != null)
                 {
-                    if (Utils.FeatureSettings.BackgroundImage && h > 0)
+                    Dispatcher.Dispatch(() =>
                     {
-                        Spacer.HeightRequest = h - (ConditionPanelLayout.Height - Spacer.Height);
-                    }
-                    else
-                    {
-                        Spacer.HeightRequest = 0;
-                    }
+                        if (Utils.FeatureSettings.BackgroundImage && h > 0)
+                        {
+                            Spacer.HeightRequest = h - (ConditionPanelLayout.Height - Spacer.Height);
+                        }
+                        else
+                        {
+                            Spacer.HeightRequest = 0;
+                        }
+                    });
                 }
             };
         });
@@ -827,7 +833,7 @@ public partial class WeatherNow
             RowDefinitions =
             {
                 new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Auto),
             },
             ColumnDefinitions =
             {
@@ -1337,7 +1343,10 @@ public partial class WeatherNow
 
                         ListLayout.SizeChanged += (s, e) =>
                         {
-                            ResizeSunView();
+                            Dispatcher.Dispatch(() =>
+                            {
+                                ResizeSunView();
+                            });
                         };
 
                         ResizeSunView();

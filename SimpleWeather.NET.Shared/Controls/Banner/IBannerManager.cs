@@ -4,8 +4,6 @@
     {
         void InitBannerManager();
 
-        void DismissBanner();
-
         void UnloadBannerManager();
     }
 }

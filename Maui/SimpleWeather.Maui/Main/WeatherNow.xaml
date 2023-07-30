@@ -39,10 +39,14 @@
             IsRefreshing="{Binding UiState.IsLoading, Mode=OneWay}"
             IsVisible="{x:Bind dataBinding:WeatherNowBinding.IsViewVisible(UiState), Mode=OneWay}"
             Refreshing="RefreshBtn_Clicked">
-            <ScrollView x:Name="MainViewer" Orientation="Vertical"
+            <ScrollView x:Name="MainViewer"
+                        Orientation="Vertical"
                         x:DataType="{x:Null}"
                         IsVisible="{x:Bind WNowViewModel.Weather.Location ne null, Mode=OneWay}">
-                <Grid x:Name="ListLayout" RowDefinitions="Auto, Auto" SizeChanged="ListLayout_SizeChanged" />
+                <Grid x:Name="ListLayout"
+                      HorizontalOptions="Center"
+                      RowDefinitions="Auto, Auto"
+                      SizeChanged="ListLayout_SizeChanged" />
             </ScrollView>
         </RefreshView>
         <ActivityIndicator x:Name="ContentRing"

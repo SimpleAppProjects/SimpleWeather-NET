@@ -260,13 +260,8 @@ namespace SimpleWeather.Maui.Controls.Flow
 
         public override Size ArrangeChildren(Rect bounds)
         {
-            if (FlowLayout.Count == 0)
-            {
-                // Do not re-layout when there are no children.
-                return bounds.Size;
-            }
-
-            if (Rows.Count > 0)
+            // Do not re-layout when there are no children.
+            if (FlowLayout.Count > 0 && Rows.Count > 0)
             {
                 Rows.ForEach<Row>(row =>
                 {
@@ -275,7 +270,16 @@ namespace SimpleWeather.Maui.Controls.Flow
                         if (child.Visibility is Visibility.Visible)
                         {
                             var lp = (FlowLayout as FlowLayout).GetRowItem(child);
-                            child.Arrange(lp.ToRect().Offset(bounds.Left, bounds.Top));
+                            var frame = lp.ToRect();
+
+                            if (double.IsNaN(frame.X)
+                                || double.IsNaN(frame.Y)
+                                || double.IsNaN(frame.Width)
+                                || double.IsNaN(frame.Height))
+                                throw new Exception("something is deeply wrong");
+
+                            frame = frame.Offset(bounds.Left, bounds.Top);
+                            child.Arrange(frame);
                         }
                     });
                 });
