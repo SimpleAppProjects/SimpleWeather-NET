@@ -10,7 +10,7 @@ namespace SimpleWeather.NET.Utils
     {
         public static void NavigateHome(this MapControl mapControl)
         {
-            mapControl?.Map?.Home?.Invoke(mapControl?.Navigator);
+            mapControl?.Map?.Home?.Invoke(mapControl?.Map?.Navigator);
         }
     }
 }

@@ -41,10 +41,10 @@ namespace SimpleWeather.NET.Radar
             mapControl.IsScrollEnabled = false;
             mapControl.IsTrafficEnabled = false;
 #else
-            mapControl.Map.ZoomLock = false;
-            mapControl.Map.PanLock = false;
-            mapControl.Map.RotationLock = true;
-            mapControl.Navigator.ZoomTo(6d.ToMapsuiResolution());
+            mapControl.Map.Navigator.ZoomLock = false;
+            mapControl.Map.Navigator.PanLock = false;
+            mapControl.Map.Navigator.RotationLock = true;
+            mapControl.Map.Navigator.ZoomTo(6d.ToMapsuiResolution());
 #endif
             return mapControl;
         }

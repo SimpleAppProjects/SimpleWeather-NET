@@ -38,6 +38,26 @@
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
+		<CustomCommands>
+		  <CustomCommands>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
+		    </Command>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+		    </Command>
+		  </CustomCommands>
+		</CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 		<WarningLevel>4</WarningLevel>
@@ -84,25 +104,26 @@
 		<PackageReference Include="TimberLog" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="3.2.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.15" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.0" />
 		<PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
-		<PackageReference Include="KeyedSemaphores" Version="4.1.0" />
+		<PackageReference Include="KeyedSemaphores" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
 		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
-		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="7.0.86" />
+		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="$(MauiVersion)" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.61" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.3" />
 		<PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.5" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.5" />
-		<PackageReference Include="Mapsui.Maui" Version="4.0.0-beta.8" />
-		<PackageReference Include="SimpleToolkit.Core" Version="2.0.6" />
-		<PackageReference Include="SimpleToolkit.SimpleShell" Version="2.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.5" />
+		<PackageReference Include="Mapsui.Maui" Version="4.0.0" />
+		<PackageReference Include="SimpleToolkit.Core" Version="3.0.0" />
+		<PackageReference Include="SimpleToolkit.SimpleShell" Version="3.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="7.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
@@ -272,6 +293,50 @@
 		    </Command>
 		  </CustomCommands>
 		</CustomCommands>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+	  <CustomCommands>
+	    <CustomCommands>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+	      </Command>
+	    </CustomCommands>
+	  </CustomCommands>
 	</PropertyGroup>
 	<ProjectExtensions>
 		<VisualStudio>

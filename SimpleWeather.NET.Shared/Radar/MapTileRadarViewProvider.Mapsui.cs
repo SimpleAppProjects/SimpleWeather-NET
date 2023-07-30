@@ -86,7 +86,7 @@ namespace SimpleWeather.NET.Radar
             }
             markerLayer.Opacity = InteractionsEnabled() ? 1 : 0;
 
-            mapControl.Map.PanLock = !InteractionsEnabled();
+            mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
 
 #if WINDOWS
             RadarMapContainer.ToolbarVisibility =
@@ -149,11 +149,11 @@ namespace SimpleWeather.NET.Radar
             var mapControl = MapControlCreator.Instance.Map;
             mapControl.Map.Home = n =>
             {
-                mapControl.Map.ZoomLock = false;
-                mapControl.Map.PanLock = false;
-                n.NavigateTo(MapCameraPosition, 6d.ToMapsuiResolution());
-                mapControl.Map.ZoomLock = true;
-                mapControl.Map.PanLock = !InteractionsEnabled();
+                n.ZoomLock = false;
+                n.PanLock = false;
+                n.CenterOnAndZoomTo(MapCameraPosition, 6d.ToMapsuiResolution());
+                n.ZoomLock = true;
+                n.PanLock = !InteractionsEnabled();
             };
             return mapControl;
         }
