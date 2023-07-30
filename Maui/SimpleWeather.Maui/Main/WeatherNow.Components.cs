@@ -851,7 +851,7 @@ public partial class WeatherNow
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
-                new Image()
+                new Image()     
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Source = new MaterialIcon(MaterialSymbol.ChevronRight)
@@ -888,7 +888,7 @@ public partial class WeatherNow
                 })
             }
         }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0,0,0,25), Phone: new Thickness(0,0,0,12))
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
@@ -1020,7 +1020,7 @@ public partial class WeatherNow
                 })
             }
         }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 25), Phone: new Thickness(0, 0, 0, 0))
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
@@ -1144,7 +1144,7 @@ public partial class WeatherNow
                 .ColumnSpan(2)
             }
         }
-        .Margins(bottom: 12)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
@@ -1173,7 +1173,8 @@ public partial class WeatherNow
             RowDefinitions =
             {
                 new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Auto),
+                new RowDefinition(GridLength.Auto),
             },
             Children =
             {
@@ -1187,13 +1188,12 @@ public partial class WeatherNow
                 .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
             }
         }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0,0,0,20), new Thickness(0))
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(grid =>
         {
-            var detailsStackLayout = new VerticalStackLayout();
             if (Utils.FeatureSettings.WeatherDetails)
             {
-                detailsStackLayout.Add(
+                grid.Add(
                     new FlexLayout()
                     {
                         HorizontalOptions = LayoutOptions.Center,
@@ -1207,12 +1207,15 @@ public partial class WeatherNow
                             BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: WNowViewModel
                     )
                     .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
+                    .Row(1)
                 );
             }
+
             if (Utils.FeatureSettings.ExtraDetailsEnabled)
             {
-                detailsStackLayout.Add(
+                grid.Add(
                     new FlowLayout()
+                    .Row(2)
                     .Apply(detailExtrasLayout =>
                     {
                         if (Utils.FeatureSettings.UV)
@@ -1285,9 +1288,7 @@ public partial class WeatherNow
                         }
                     })
                 );
-            }
-
-            grid.Add(detailsStackLayout, row: 1);
+            };
         })
         .Apply(it =>
         {
@@ -1337,8 +1338,10 @@ public partial class WeatherNow
 
                         void ResizeSunView()
                         {
+                            //var parentHorizMargin = (it.Parent as View)?.Margin.HorizontalThickness ?? 0;
+
                             it.HeightRequest = Math.Min(maxHeight, Math.Max(0, ListLayout.Width / 2));
-                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width);
+                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width)/* - parentHorizMargin*/;
                         }
 
                         ListLayout.SizeChanged += (s, e) =>
@@ -1354,7 +1357,7 @@ public partial class WeatherNow
             }
         }
         .FillHorizontal()
-        .Margins(bottom: 25)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Bind(
             VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
             BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
@@ -1448,7 +1451,7 @@ public partial class WeatherNow
                 })
             }
         }
-        .Margins(bottom: 16)
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)

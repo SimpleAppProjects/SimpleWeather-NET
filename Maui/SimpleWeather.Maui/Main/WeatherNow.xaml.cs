@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Maui.Controls.Shapes;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
@@ -332,16 +333,6 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                     CreateDesktopConditionPanel()
                     .Row(0)
                 );
-
-                // Overlay
-                ListLayout.Add(
-                    new BoxView()
-                    {
-                        CornerRadius = new CornerRadius(8, 8, 0, 0)
-                    }
-                    .DynamicResource(BoxView.ColorProperty, "RegionColor")
-                    .Row(1)
-                );
             }
         }
 
@@ -372,7 +363,27 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             else
                 it.Paddings(16, 4, 16, 0);
         });
-        ListLayout.Add(GridLayout, row: 1);
+        var GridContainer = new Border()
+        {
+            Content = GridLayout,
+            Stroke = null,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle()
+            {
+                CornerRadius = new CornerRadius(8, 8, 0, 0)
+            }
+        }.Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+            {
+                it.BackgroundColor = Colors.Transparent;
+            }
+            else
+            {
+                it.DynamicResource(Border.BackgroundColorProperty, "RegionColor");
+            }
+        });
+        ListLayout.Add(GridContainer, row: 1);
 
         // Forecast Panel
         if (Utils.FeatureSettings.Forecast)

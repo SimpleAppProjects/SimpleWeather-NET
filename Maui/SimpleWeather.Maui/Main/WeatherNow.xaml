@@ -45,6 +45,7 @@
                         IsVisible="{x:Bind WNowViewModel.Weather.Location ne null, Mode=OneWay}">
                 <Grid x:Name="ListLayout"
                       HorizontalOptions="Center"
+                      VerticalOptions="Center"
                       RowDefinitions="Auto, Auto"
                       SizeChanged="ListLayout_SizeChanged" />
             </ScrollView>

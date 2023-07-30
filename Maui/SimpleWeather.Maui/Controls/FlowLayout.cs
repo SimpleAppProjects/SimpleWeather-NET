@@ -37,7 +37,6 @@ namespace SimpleWeather.Maui.Controls.Flow
         {
             if (bindable is FlowLayout layout && oldValue != newValue)
             {
-                //layout.Layout(layout.Bounds);
                 layout.InvalidateMeasure();
             }
         }
