@@ -19,10 +19,14 @@ namespace SimpleWeather.Maui.ViewModels
             return this.GetViewModel<T>(DefaultKey + ":" + typeof(T).FullName);
         }
 
-        protected override void OnNavigatedFrom(NavigatedFromEventArgs e)
+        protected override void Dispose(bool disposing)
         {
-            base.OnNavigatedFrom(e);
-            ViewModelStore.Clear();
+            base.Dispose(disposing);
+
+            if (disposing)
+            {
+                ViewModelStore.Clear();
+            }
         }
     }
 }
