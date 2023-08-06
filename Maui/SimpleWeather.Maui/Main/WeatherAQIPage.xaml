@@ -35,7 +35,9 @@
                     FontSize="16"
                     FontFamily="OpenSansSemibold"
                     Text="{Binding GraphLabel}" />
-                <graphPanels:BarGraphPanel GraphData="{Binding}" />
+                <graphPanels:BarGraphPanel GraphData="{Binding}"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
             </VerticalStackLayout>
         </DataTemplate>
         <local:AQIDataTemplateSelector
@@ -57,7 +59,7 @@
             </localControls:ViewBox>
             <Rectangle HeightRequest="1" StrokeThickness="1" Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
         </VerticalStackLayout>
-        <ScrollView Grid.Row="1">
+        <ScrollView Grid.Row="1" Orientation="Vertical">
             <VerticalStackLayout x:Name="AQILayout" MaximumWidthRequest="1280">
                 <VerticalStackLayout>
                     <Label

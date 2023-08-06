@@ -161,7 +161,7 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
             {
                 var popover = new Popover()
                 {
-                    Content = content.MinHeight(this.Height / 2d).MinWidth(420).Apply(it => it.MaximumWidthRequest = 480)
+                    Content = content.MinHeight(this.Height / 2d).Width(420)
                 };
 
                 content.CloseButtonClicked += (s, e) =>

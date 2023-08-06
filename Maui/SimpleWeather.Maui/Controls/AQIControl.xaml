@@ -12,8 +12,7 @@
     MinimumWidthRequest="340">
     <Grid
         ColumnDefinitions="Auto,*"
-        RowDefinitions="Auto,*,Auto,Auto"
-        VerticalOptions="FillAndExpand">
+        RowDefinitions="Auto,*,Auto,Auto">
         <Label
             x:Name="AQILabel"
             Grid.Row="0"
@@ -37,7 +36,7 @@
             Grid.Row="1"
             Grid.ColumnSpan="2"
             ColumnDefinitions="Auto,*"
-            RowDefinitions="Auto,*">
+            RowDefinitions="Auto,Auto">
             <Label
                 x:Name="AQIndex"
                 Grid.Row="0"
@@ -45,9 +44,11 @@
                 Grid.Column="0"
                 FontFamily="OpenSansSemibold"
                 FontSize="32"
+                HorizontalOptions="Center"
                 HorizontalTextAlignment="Center"
                 MinimumHeightRequest="72"
                 MinimumWidthRequest="85"
+                Padding="8,0"
                 Text="{Binding Index}"
                 TextColor="{Binding ProgressColor}"
                 VerticalOptions="Center"
@@ -59,6 +60,7 @@
                 Padding="6"
                 FontFamily="OpenSansSemibold"
                 FontSize="18"
+                HorizontalOptions="Start"
                 Text="{Binding Level}"
                 VerticalOptions="Center" />
             <Label
@@ -67,6 +69,7 @@
                 Grid.Column="1"
                 Padding="6"
                 FontSize="14"
+                HorizontalOptions="Start"
                 LineBreakMode="WordWrap"
                 MaxLines="3"
                 Text="{Binding Description}"

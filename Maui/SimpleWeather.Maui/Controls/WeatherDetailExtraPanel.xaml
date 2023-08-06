@@ -67,12 +67,14 @@
                 Dark={OnIdiom Desktop={StaticResource DarkOnSurface}, Default={StaticResource DarkInverseOnSurface}}}"
             Text="{Binding Date, Mode=OneWay}" />
         <Rectangle Grid.Row="2" HeightRequest="1.5" Fill="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
-        <ScrollView Grid.Row="3" Orientation="Vertical" VerticalOptions="FillAndExpand">
+        <ScrollView Grid.Row="3" Orientation="Vertical">
             <VerticalStackLayout Padding="16,0">
                 <Grid ColumnDefinitions="Auto,Auto,Auto">
                     <Label
                         Grid.Column="0"
-                        FontSize="40"
+                        FontSize="32"
+                        MinimumHeightRequest="60"
+                        VerticalTextAlignment="Center"
                         Padding="0,0,8,0"
                         TextColor="{AppThemeBinding
                             Light={OnIdiom Desktop={StaticResource LightOnSurface}, Default={StaticResource LightInverseOnSurface}},
@@ -81,7 +83,9 @@
                         FontFamily="OpenSansSemibold" />
                     <Label
                         Grid.Column="1"
-                        FontSize="40"
+                        FontSize="32"
+                        MinimumHeightRequest="60"
+                        VerticalTextAlignment="Center"
                         TextColor="{AppThemeBinding
                             Light={OnIdiom Desktop={StaticResource LightOnSurface}, Default={StaticResource LightInverseOnSurface}},
                             Dark={OnIdiom Desktop={StaticResource DarkOnSurface}, Default={StaticResource DarkInverseOnSurface}}}"
@@ -100,6 +104,9 @@
                         ForceDarkTheme="{AppThemeBinding
                             Light={OnIdiom Desktop=false, Default=true},
                             Dark={OnIdiom Desktop=true, Default=false}}"
+                        IsLightTheme="{AppThemeBinding
+                            Light={OnIdiom Desktop=false, Default=false},
+                            Dark={OnIdiom Desktop=false, Default=true}}"
                         Margin="8,0"
                         VerticalOptions="Center"
                         WeatherIcon="{Binding Icon, Mode=OneWay}" />

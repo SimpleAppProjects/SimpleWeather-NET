@@ -44,7 +44,7 @@
             BarChartTemplate="{StaticResource BarChartDataTemplate}" />
     </ContentPage.Resources>
 
-    <Grid VerticalOptions="FillAndExpand">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
