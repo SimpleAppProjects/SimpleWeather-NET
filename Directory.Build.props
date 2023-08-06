@@ -11,6 +11,7 @@
 	<PropertyGroup>
 		<_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
 		<_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
+		<EnableWindowsTargeting>true</EnableWindowsTargeting>
 	</PropertyGroup>
 
 	<PropertyGroup>
