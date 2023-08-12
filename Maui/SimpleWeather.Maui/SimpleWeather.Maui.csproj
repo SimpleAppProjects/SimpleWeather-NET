@@ -38,26 +38,6 @@
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-		    </Command>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
 		<WarningLevel>4</WarningLevel>
@@ -293,50 +273,6 @@
 		    </Command>
 		  </CustomCommands>
 		</CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
 	</PropertyGroup>
 	<ProjectExtensions>
 		<VisualStudio>
