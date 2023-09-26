@@ -68,8 +68,8 @@
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Layout" Version="7.1.2" />
     <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
     <PackageReference Include="SkiaSharp.Extended" Version="1.60.0" />
-    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.3" />
-    <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.Skottie" Version="2.88.6" />
+    <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
     <PackageReference Include="WinUIEx" Version="2.1.0" />
     <PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
