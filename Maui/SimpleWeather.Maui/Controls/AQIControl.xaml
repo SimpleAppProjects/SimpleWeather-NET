@@ -83,7 +83,7 @@
             BackgroundColor="{AppThemeBinding Light='#B3616161',
                                               Dark='#8AF1F1F1'}"
             HeightRequest="4"
-            Progress="{x:Bind Progress / 100}"
+            Progress="{x:Bind Progress * 0.01}"
             ProgressColor="{Binding ProgressColor}" />
         <Label
             x:Name="Attribution"

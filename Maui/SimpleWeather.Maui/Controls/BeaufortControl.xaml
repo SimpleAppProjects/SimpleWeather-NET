@@ -43,6 +43,6 @@
             Margin="12,0,12,12"
             BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
             ProgressColor="{Binding BeaufortScaleProgressColor}"
-            Progress="{x:Bind BeaufortScaleProgress / 100}" />
+            Progress="{x:Bind BeaufortScaleProgress * 0.01}" />
     </Grid>
 </ContentView>
