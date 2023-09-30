@@ -1,0 +1,115 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "MauiBuildDebug",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"keyCheckShared",
+				"keyCheckWApi",
+				"editManifestiOSDebug",
+				"editManifestMacDebug",
+				"dotnet: restore",
+				"cleanDebug",
+				"maui: Build"
+			]
+		},
+		{
+			"label": "MauiBuildRelease",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"keyCheckShared",
+				"keyCheckWApi",
+				"editManifestiOSRelease",
+				"editManifestMacRelease",
+				"restore",
+				"cleanRelease",
+				"maui: Build"
+			]
+		},
+		{
+			"label": "keyCheckShared",
+			"type": "shell",
+			"command": "KeyCheck/bin/Release/net7.0/publish/KeyCheck SimpleWeather.Shared/Keys",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "keyCheckWApi",
+			"type": "shell",
+			"command": "KeyCheck/bin/Release/net7.0/publish/KeyCheck SimpleWeather.Weather-API/Keys",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "editManifestiOSDebug",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Info.plist \"Debug\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestMacDebug",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Info.plist \"Debug\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestiOSRelease",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Info.plist \"Release\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestMacRelease",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Info.plist \"Release\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "cleanDebug",
+			"type": "shell",
+			"command": "dotnet clean -c:Debug",
+			"problemMatcher": [ "$msCompile" ],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui"
+			}
+		},
+		{
+			"label": "cleanRelease",
+			"type": "shell",
+			"command": "dotnet clean -c:Release",
+			"problemMatcher": [ "$msCompile" ],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "restore",
+			"type": "shell",
+			"command": "dotnet restore",
+			"problemMatcher": [ "$msCompile" ],
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		}
+	]
+}
