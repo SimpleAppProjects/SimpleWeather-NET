@@ -13,3 +13,6 @@
 [submodule "TranslationImport"]
 	path = TranslationImport
 	url = git@bitbucket.org:bryan2894/simpleweather-translationsimport.git
+[submodule "SimpleToolkit"]
+	path = Maui/SimpleToolkit
+	url = git@bitbucket.org:bryan2894/simpletoolkit.git
