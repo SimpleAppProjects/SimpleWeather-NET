@@ -360,7 +360,11 @@ public partial class WeatherNow
                         )
                         .Bind<Label, string, Color>(Label.TextColorProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
                             BindingMode.OneWay, source: WNowViewModel, convert: (p) => GetTempColor()
-                        ),
+                        )
+                        .Apply(it =>
+                        {
+                            CurTemp = it;
+                        }),
                         // HiLoPanel
                         new Grid()
                         {
@@ -448,7 +452,11 @@ public partial class WeatherNow
                         .Bind(IconControl.WeatherIconProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherIcon)}",
                             BindingMode.OneWay, source: WNowViewModel
                         )
-                        .AppThemeColorBinding(IconControl.IconColorProperty, Colors.Black, Colors.White),
+                        .AppThemeColorBinding(IconControl.IconColorProperty, Colors.Black, Colors.White)
+                        .Apply(it =>
+                        {
+                            WeatherBox = it;
+                        }),
                         // CurCondition
                         new Label()
                             .Margins(16, 0, 16, 4)
@@ -530,7 +538,8 @@ public partial class WeatherNow
                                 WidthRequest = 24,
                                 Source = new MaterialIcon(MaterialSymbol.MyLocation)
                                     .Bind(FontImageSource.ColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
-                            }
+                            },
+                            Stroke = new SolidColorBrush(Colors.Transparent)
                         }
                         .Column(0)
                         .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",

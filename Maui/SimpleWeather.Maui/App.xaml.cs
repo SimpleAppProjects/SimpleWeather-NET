@@ -234,49 +234,25 @@ public partial class App : Application
             themeDictionary.Add(new LightTheme());
         }
 
-#if __IOS__ && (IOS13_0_OR_GREATER || MACCATALYST)
-#if IOS
-        if (OperatingSystem.IsIOSVersionAtLeast(13))
-#elif MACCATALYST
-        if (OperatingSystem.IsMacCatalystVersionAtLeast(11))
-#else
-        if (false)
-#endif
+        var currentViewController = WindowStateManager.Default.GetCurrentUIViewController();
+
+        if (currentViewController is null)
+            return;
+
+        switch (requestedTheme)
         {
-            UIKit.UIWindow uiWindow = null;
-
-#if IOS
-            if (OperatingSystem.IsIOSVersionAtLeast(15))
-#elif MACCATALYST
-            if (OperatingSystem.IsMacCatalystVersionAtLeast(15))
-#else
-            if (false)
-#endif
-            {
-                uiWindow = UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIScene>()
-                    .Select(s => (s as UIKit.UIWindowScene)?.KeyWindow)
-                    .FirstOrDefault();
-            }
-            else
-            {
-                uiWindow = UIKit.UIApplication.SharedApplication.ConnectedScenes.OfType<UIKit.UIScene>()
-                    .SelectMany(s => (s as UIKit.UIWindowScene)?.Windows ?? Array.Empty<UIKit.UIWindow>())
-                    .FirstOrDefault(w => w.IsKeyWindow);
-            }
-
-            if (uiWindow != null)
-            {
-                uiWindow.OverrideUserInterfaceStyle = requestedTheme switch
-                {
-                    AppTheme.Light => UIKit.UIUserInterfaceStyle.Light,
-                    AppTheme.Dark => UIKit.UIUserInterfaceStyle.Dark,
-                    _ => UIScreen.MainScreen.TraitCollection.UserInterfaceStyle
-                };
-
-                uiWindow.OverrideUserInterfaceStyle = UIKit.UIUserInterfaceStyle.Unspecified;
-            }
+            case AppTheme.Light:
+                currentViewController.OverrideUserInterfaceStyle = UIUserInterfaceStyle.Light;
+                break;
+            case AppTheme.Dark:
+                currentViewController.OverrideUserInterfaceStyle = UIUserInterfaceStyle.Dark;
+                break;
+            default:
+                currentViewController.OverrideUserInterfaceStyle = UIUserInterfaceStyle.Unspecified;
+                break;
         }
-#endif
+
+        currentViewController.SetNeedsStatusBarAppearanceUpdate();
     }
 
     private void App_OnSettingsChanged(SettingsChangedEventArgs e)

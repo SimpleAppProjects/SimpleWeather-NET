@@ -29,8 +29,7 @@
                 x:Name="AppLogo"
                 Grid.Row="0"
                 Margin="0,8,0,36"
-                MaximumHeightRequest="72"
-                MinimumHeightRequest="32">
+                HeightRequest="72">
                 <Image>
                     <Image.Source>
                         <maticons:MaterialIcon

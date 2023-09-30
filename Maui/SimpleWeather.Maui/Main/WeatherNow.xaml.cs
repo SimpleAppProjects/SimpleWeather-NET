@@ -721,6 +721,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         };
 
         ForecastView.IsLight = isLight;
+
+        UpdateControlTheme();
     }
 
     private void UpdateControlTheme()
@@ -736,7 +738,12 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             {
                 GradientOverlay.IsVisible = true;
             }
-            ConditionPanelTextColor = Colors.White;
+
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
+            else
+                ConditionPanelTextColor = Colors.White;
+
             if (CurTemp != null)
             {
                 CurTemp.TextColor = GetTempColor();

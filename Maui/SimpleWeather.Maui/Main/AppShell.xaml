@@ -118,7 +118,8 @@
     <ShellContent ContentTemplate="{DataTemplate local:WeatherNow}" Route="root" />
 
     <simpleShell:SimpleShell.Content>
-        <Grid x:Name="MainGrid">
+        <Grid x:Name="MainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                                                  Dark={StaticResource DarkBackground}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
