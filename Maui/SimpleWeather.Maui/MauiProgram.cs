@@ -14,6 +14,7 @@ using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Weather_API.Keys;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using UIKit;
 
 namespace SimpleWeather.Maui;
 
@@ -54,6 +55,8 @@ public static class MauiProgram
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 SwitchHandler.Mapper.AppendToMapping(nameof(ISwitch.IsOn), MapSwitchIsOn);
                 //ScrollViewHandler.Mapper.AppendToMapping(nameof(IScrollView.ContentSize), OnScrollViewContentSizePropertyChanged);
+                Label.ControlsLabelMapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
+                Label.ControlsLabelMapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
 #endif
             })
             .UseProgressBar()
@@ -115,6 +118,17 @@ public static class MauiProgram
             return;
 
         contentView.SizeToFit();
+    }
+
+    private static void UpdateMaxLines(LabelHandler handler, ILabel label)
+    {
+        if (handler?.PlatformView is not UILabel uiLabel)
+            return;
+
+        if (label is Label _label && uiLabel.LineBreakMode == UILineBreakMode.TailTruncation)
+        {
+            uiLabel.Lines = _label.MaxLines != -1 ? _label.MaxLines : (nint)1;
+        }
     }
 #endif
 }

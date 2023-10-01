@@ -16,7 +16,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Start">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <controls:IconControl
@@ -77,7 +77,7 @@
             Padding="5"
             HorizontalOptions="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <controls:IconControl
@@ -97,6 +97,7 @@
                 FontSize="14"
                 TextColor="LightSeaGreen"
                 MaxLines="1"
+                LineBreakMode="NoWrap"
                 Text="{Binding WindSpeed}"
                 IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}" />
         </Grid>

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Converters;
 using CommunityToolkit.Maui.Markup;
+using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
@@ -27,6 +28,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Timers;
+using UIKit;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
@@ -448,6 +450,7 @@ public partial class WeatherNow
                             IconWidth = 88,
                             WidthRequest = 88
                         }
+                        .Margins(right: 16)
                         .Column(3)
                         .Bind(IconControl.WeatherIconProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherIcon)}",
                             BindingMode.OneWay, source: WNowViewModel
@@ -471,8 +474,8 @@ public partial class WeatherNow
                         // Summary
                         new Label()
                         {
-                            LineBreakMode = LineBreakMode.WordWrap,
-                            //MaxLines = 3,
+                            LineBreakMode = LineBreakMode.TailTruncation,
+                            MaxLines = 3
                         }
                         .Row(2)
                         .ColumnSpan(5)
@@ -483,7 +486,20 @@ public partial class WeatherNow
                         .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherSummary)}",
                             BindingMode.OneWay, source: WNowViewModel
                         )
-                        .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                        .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White)
+                        .Apply(it =>
+                        {
+                            it.TapGesture(async () =>
+                            {
+                                if (it.IsTextTruncated())
+                                {
+                                    await this.DisplayAlert(
+                                        title: ResStrings.pref_title_feature_summary,
+                                        message: it.Text,
+                                        cancel: ResStrings.ConfirmDialog_PrimaryButtonText);
+                                }
+                            });
+                        }),
                         // Update time
                         new Label()
                         .Row(3)

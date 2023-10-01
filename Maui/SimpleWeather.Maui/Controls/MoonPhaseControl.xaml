@@ -37,7 +37,7 @@
             x:Name="MoonStack"
             Padding="{OnIdiom Default='15,0', Phone='4,0'}"
             HorizontalOptions="Center"
-            Wrap="Wrap" AlignContent="Center" JustifyContent="Center" AlignItems="Center">
+            Wrap="NoWrap" AlignContent="Center" JustifyContent="Center" AlignItems="Center">
             <!--  New Moon  -->
             <controls:IconControl
                 x:Name="NewMoonIcon"

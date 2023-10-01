@@ -22,8 +22,7 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
 	public WeatherNowViewModel WNowViewModel { get; } = AppShell.Instance.GetViewModel<WeatherNowViewModel>();
 	public ForecastsListViewModel ForecastsView { get; private set; }
 	private DetailsPageArgs Args { get; set; }
-
-	private readonly WeatherProviderManager wm = WeatherModule.Instance.WeatherManager;
+    private bool SuppressNavEvent = false;
 
 #if __IOS__
     private IDisposable CollectionViewObserver = null;
@@ -57,6 +56,8 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
     {
         base.OnNavigatedTo(args);
 
+        if (SuppressNavEvent) return;
+
         ForecastsView = this.GetViewModel<ForecastsListViewModel>();
 
         if (Args != null)
@@ -74,6 +75,9 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
     protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
     {
         base.OnNavigatedFrom(args);
+
+        if (SuppressNavEvent) return;
+
         WNowViewModel.PropertyChanged -= WNowViewModel_PropertyChanged;
     }
 
@@ -181,10 +185,19 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
                 content.CloseButtonClicked += async (s, e) =>
                 {
                     await this.Navigation.PopModalAsync(true);
+                    SuppressNavEvent = false;
                 };
 
                 page.On<iOS>().SetModalPresentationStyle(UIModalPresentationStyle.FormSheet);
 
+                if (deviceIdiom == DeviceIdiom.Phone)
+                {
+                    var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
+                    content.HeightRequest = displayInfo.Height / displayInfo.Density;
+                    content.VerticalOptions = LayoutOptions.StartAndExpand;
+                }
+
+                SuppressNavEvent = true;
                 await this.Navigation.PushModalAsync(page);
             }
         }

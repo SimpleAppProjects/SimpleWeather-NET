@@ -76,7 +76,7 @@ namespace SimpleWeather.NET.Radar
 
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
-                mapControl.NavigateHome();
+                mapControl.Dispatcher.Dispatch(mapControl.NavigateHome);
                 if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
                 {
                     markerFeature.Point.X = MapCameraPosition.X;

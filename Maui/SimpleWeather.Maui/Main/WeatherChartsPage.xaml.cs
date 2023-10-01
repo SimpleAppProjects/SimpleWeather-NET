@@ -84,6 +84,22 @@ public partial class WeatherChartsPage : ViewModelPage
                 path: "Count", converter: Resources["invValueBooleanConverter"] as IValueConverter);
         });
     }
+
+    private void ListControl_ChildAdded(object sender, ElementEventArgs e)
+    {
+#if __IOS__
+        if (e.Element is View v)
+        {
+            // NOTE: Toggle alignment to trigger resize
+            // Allows view to scroll on iOS
+            Dispatcher.DispatchDelayed(TimeSpan.FromMilliseconds(100), () =>
+            {
+                v.CenterHorizontal()
+                 .FillHorizontal();
+            });
+        }
+#endif
+    }
 }
 
 public class ChartsDataTemplateSelector : DataTemplateSelector

@@ -66,7 +66,8 @@
             ItemSizingStrategy="MeasureAllItems"
             SelectionMode="None"
             ItemsSource="{x:Bind ChartsView.GraphModels, Mode=OneWay}"
-            ItemTemplate="{StaticResource chartsDataTemplateSelector}">
+            ItemTemplate="{StaticResource chartsDataTemplateSelector}"
+            ChildAdded="ListControl_ChildAdded">
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
             </CollectionView.ItemsLayout>
