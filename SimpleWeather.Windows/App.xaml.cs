@@ -12,6 +12,7 @@ using Microsoft.Windows.AppLifecycle;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
+using SimpleWeather.Keys;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
@@ -107,7 +108,7 @@ namespace SimpleWeather.NET
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
             AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-            AppCenter.Start(APIKeys.GetUWPAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+            AppCenter.Start(AppCenterConfig.GetUWPAppCenterSecret(), typeof(Analytics), typeof(Crashes));
 
             // Initialize depencies for library
             InitializeDependencies();

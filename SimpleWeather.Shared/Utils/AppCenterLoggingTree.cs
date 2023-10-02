@@ -1,7 +1,5 @@
 ﻿#if !UNIT_TEST
-#if !__MACCATALYST__ && !__MACOS__
 using Microsoft.AppCenter.Crashes;
-#endif
 using System;
 using System.Collections.Generic;
 
@@ -28,19 +26,15 @@ namespace SimpleWeather.Utils
 
                 if (exception != null)
                 {
-#if !__MACCATALYST__ && !__MACOS__
                     Crashes.TrackError(exception, properties,
                         ErrorAttachmentLog.AttachmentWithText(message, "message.txt"),
                         ErrorAttachmentLog.AttachmentWithText(exception.ToString(), "exception.txt"),
                         ErrorAttachmentLog.AttachmentWithText(exception.InnerException?.ToString(), "inner_exception.txt"));
-#endif
                 }
                 else
                 {
-#if !__MACCATALYST__ && !__MACOS__
                     Crashes.TrackError(new Exception(message), properties,
                         ErrorAttachmentLog.AttachmentWithText(message, "message.txt"));
-#endif
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types

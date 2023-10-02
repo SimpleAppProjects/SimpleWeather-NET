@@ -24,16 +24,6 @@ namespace SimpleWeather.Weather_API.Keys
             return null;
         }
 
-        public static String GetUWPAppCenterSecret()
-        {
-            return null;
-        }
-
-        public static String GetiOSAppCenterSecret()
-        {
-            return null;
-        }
-
         public static String GetTimeZoneAPI()
         {
             return null;

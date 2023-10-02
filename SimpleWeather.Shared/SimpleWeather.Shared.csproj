@@ -47,8 +47,10 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2-SNAPSHOT" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2-SNAPSHOT" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NodaTime" Version="3.1.9" />

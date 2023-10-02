@@ -258,6 +258,8 @@ API_KEY.txt
 /SimpleWeather.Windows/_pkginfo.txt
 /Components
 /MigrationBackup
+/SimpleWeather.Shared/Keys/AppCenterConfig.cs
+/SimpleWeather.Shared/Keys/AppCenterConfig.cs.bak
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs.bak
 /SimpleWeather.Weather-API/Keys/Keys.cs

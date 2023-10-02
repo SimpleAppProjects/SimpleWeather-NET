@@ -90,8 +90,10 @@
 		<PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
 		<PackageReference Include="KeyedSemaphores" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
-		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
+		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
+		<PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
+		<PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2-SNAPSHOT" />
+		<PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2-SNAPSHOT" />
 		<PackageReference Include="Microsoft.Maui.Controls.Maps" Version="$(MauiVersion)" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.6" />

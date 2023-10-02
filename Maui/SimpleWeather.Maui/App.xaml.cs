@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
+using SimpleWeather.Keys;
 using SimpleWeather.Maui.Main;
 using SimpleWeather.Maui.Resources.Styles;
 using SimpleWeather.Maui.Setup;
@@ -16,13 +17,11 @@ using SimpleWeather.WeatherData.Images;
 using UIKit;
 using WebKit;
 #endif
-#if !MACCATALYST
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
-#endif
 
 namespace SimpleWeather.Maui;
 
@@ -59,10 +58,8 @@ public partial class App : Application
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();
 
-#if !MACCATALYST
         AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-        AppCenter.Start($"ios={APIKeys.GetiOSAppCenterSecret()}", typeof(Analytics), typeof(Crashes));
-#endif
+        AppCenter.Start($"ios={AppCenterConfig.GetiOSAppCenterSecret()};macos={AppCenterConfig.GetMacOSAppCenterSecret()}", typeof(Analytics), typeof(Crashes));
 
         // Initialize depencies for library
         InitializeDependencies();
