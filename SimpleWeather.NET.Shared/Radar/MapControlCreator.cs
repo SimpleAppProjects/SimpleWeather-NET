@@ -14,9 +14,13 @@ namespace SimpleWeather.NET.Radar
 
         public static MapControlCreator Instance => _instance ??= new MapControlCreator();
 
+#if __IOS__
+        public MapControl Map => CreateMapControl();
+#else
         private MapControl _mapControl;
 
         public MapControl Map => _mapControl ??= CreateMapControl();
+#endif
 
         private static MapControl CreateMapControl()
         {
@@ -51,6 +55,7 @@ namespace SimpleWeather.NET.Radar
 
         public void RemoveMapControl()
         {
+#if !__IOS__
 #if false //ANDROID || IOS || MACCATALYST
             _mapControl?.MapElements?.Clear();
             _mapControl?.Pins?.Clear();
@@ -59,6 +64,7 @@ namespace SimpleWeather.NET.Radar
             _mapControl?.Dispose();
 #endif
             _mapControl = null;
+#endif
         }
     }
 
