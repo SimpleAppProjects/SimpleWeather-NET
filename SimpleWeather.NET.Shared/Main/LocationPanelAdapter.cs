@@ -317,21 +317,11 @@ namespace SimpleWeather.Maui.Main
                     var SettingsManager = Ioc.Default.GetService<SettingsManager>();
                     await SettingsManager.DeleteLocation(data.query);
 
-#if WINDOWS
-                    // Remove secondary tile if it exists
-                    if (SecondaryTileUtils.Exists(data.query))
+                    // Notify location removed
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_LOCATIONREMOVED, new Dictionary<string, object>()
                     {
-                        await new SecondaryTile(
-                            SecondaryTileUtils.GetTileId(data.query)).RequestDeleteAsync();
-                    }
-                    if (WidgetUtils.Exists(data.query))
-                    {
-                        WidgetUtils.GetWidgetIds(data.query).ForEach(id =>
-                        {
-                            WidgetUtils.DeleteWidget(id);
-                        });
-                    }
-#endif
+                        { Constants.WIDGETKEY_LOCATIONQUERY, data.query }
+                    });
                 }
             });
         }

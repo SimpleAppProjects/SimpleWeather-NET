@@ -364,10 +364,10 @@ namespace SimpleWeather.NET.Preferences
                     EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
                     break;
                 case SettingsManager.KEY_FOLLOWGPS:
-                    EnqueueAction(CommonActions.ACTION_WEATHER_UPDATE);
+                    EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                     break;
                 case SettingsManager.KEY_REFRESHINTERVAL:
-                    EnqueueAction(CommonActions.ACTION_WEATHER_REREGISTERTASK);
+                    EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                     break;
             }
         }
@@ -388,11 +388,11 @@ namespace SimpleWeather.NET.Preferences
                         });
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                         break;
-                    case CommonActions.ACTION_WEATHER_REREGISTERTASK:
-                        Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
+                    case CommonActions.ACTION_SETTINGS_UPDATEREFRESH:
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                         break;
-                    case CommonActions.ACTION_WEATHER_UPDATE:
-                        Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
+                    case CommonActions.ACTION_SETTINGS_UPDATEGPS:
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                         break;
                 }
             }

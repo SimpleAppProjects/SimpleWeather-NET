@@ -190,7 +190,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                 },
                 Launch = new ToastArguments()
                 {
-                    { "action", "check-updates" }
+                    { Constants.KEY_ACTION, "check-updates" }
                 }
                 .ToString()
             };

@@ -11,17 +11,14 @@ using SimpleWeather.NET.Localization;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
-using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 #if IOS || MACCATALYST
 using UIKit;
-using WebKit;
 #endif
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace SimpleWeather.Maui;
 
@@ -269,7 +266,15 @@ public partial class App : Application
                 WeatherModule.Instance.WeatherManager.UpdateAPI();
                 break;
             case SettingsManager.KEY_FOLLOWGPS:
-                SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+                if (isWeatherLoaded)
+                {
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+
+                    if (Equals(e.NewValue, true))
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_WIDGET_REFRESHWIDGETS);
+                    else
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_WIDGET_RESETWIDGETS);
+                }
                 break;
             case SettingsManager.KEY_REFRESHINTERVAL:
                 SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);

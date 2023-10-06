@@ -359,14 +359,14 @@ namespace SimpleWeather.Common.WeatherData
                                     else
                                     {
                                         await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
-#if WINDOWS && !UNIT_TEST
-                                        // Update tile id for location
+#if (WINDOWS || __IOS__) && !UNIT_TEST
+                                        // Update widget id for location
                                         SharedModule.Instance.RequestAction(
-                                            CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
+                                            CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION,
                                             new Dictionary<string, object>
                                             {
-                                                { Constants.TILEKEY_OLDKEY, oldKey },
-                                                { Constants.TILEKEY_LOCATION, location },
+                                                { Constants.WIDGETKEY_OLDKEY, oldKey },
+                                                { Constants.WIDGETKEY_LOCATION, location },
                                             });
 #endif
                                     }

@@ -21,7 +21,6 @@ using SimpleWeather.NET.Setup;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
-using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData.Images;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
@@ -406,19 +405,19 @@ namespace SimpleWeather.NET
 
                 var args = ToastArguments.Parse(e.Argument);
 
-                if (!args.Contains("action"))
+                if (!args.Contains(Constants.KEY_ACTION))
                     return;
 
-                switch (args["action"])
+                switch (args[Constants.KEY_ACTION])
                 {
                     case "view-alerts":
                         if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
                             string? data = null;
 
-                            if (args.Contains("data"))
+                            if (args.Contains(Constants.KEY_DATA))
                             {
-                                data = args["data"];
+                                data = args[Constants.KEY_DATA];
                             }
 
                             // App loaded for first time
@@ -495,9 +494,9 @@ namespace SimpleWeather.NET
                         {
                             string? data = null;
 
-                            if (args.Contains("data"))
+                            if (args.Contains(Constants.KEY_DATA))
                             {
-                                data = args["data"];
+                                data = args[Constants.KEY_DATA];
                             }
 
                             LocationData.LocationData? locData = null;
@@ -756,7 +755,15 @@ namespace SimpleWeather.NET
                     WeatherModule.Instance.WeatherManager.UpdateAPI();
                     break;
                 case SettingsManager.KEY_FOLLOWGPS:
-                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+                    if (isWeatherLoaded)
+                    {
+                        SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
+
+                        if (Equals(e.NewValue, true))
+                            SharedModule.Instance.RequestAction(CommonActions.ACTION_WIDGET_REFRESHWIDGETS);
+                        else
+                            SharedModule.Instance.RequestAction(CommonActions.ACTION_WIDGET_RESETWIDGETS);
+                    }
                     break;
                 case SettingsManager.KEY_REFRESHINTERVAL:
                     SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);

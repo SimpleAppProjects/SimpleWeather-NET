@@ -1,5 +1,4 @@
-﻿using System;
-#if WINUI
+﻿#if WINUI
 using Windows.ApplicationModel;
 #else
 using Microsoft.Maui.ApplicationModel;
@@ -9,13 +8,19 @@ namespace SimpleWeather
 {
     public static class Constants
     {
-        public const String KEY_GPS = "GPS";
-        public const String KEY_SEARCH = "Search";
+        public const string KEY_DATA = "data";
+        public const string KEY_ACTION = "action";
 
-        public const String TILEKEY_OLDKEY = "oldKey";
-        public const String TILEKEY_LOCATION = "location";
+        public const string KEY_GPS = "GPS";
+        public const string KEY_SEARCH = "Search";
 
-        public const String TILE_CACHE_DIR = "TileCache";
+        public const string WIDGETKEY_OLDKEY = "oldKey";
+        public const string WIDGETKEY_LOCATION = "location";
+        public const string WIDGETKEY_LOCATIONQUERY = "locationQuery";
+        public const string WIDGETKEY_WEATHER = "weather";
+
+        // Mapsui
+        public const string TILE_CACHE_DIR = "TileCache";
 
         public static string GetUserAgentString()
         {

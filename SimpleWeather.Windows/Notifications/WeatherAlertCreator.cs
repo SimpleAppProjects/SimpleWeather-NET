@@ -4,9 +4,6 @@ using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Windows.UI.Notifications;
 
 namespace SimpleWeather.NET.Notifications
@@ -27,7 +24,7 @@ namespace SimpleWeather.NET.Notifications
             ToastCollection toastCollection = new ToastCollection(TAG, displayName,
                 new ToastArguments()
                 {
-                    { "action", "view-alerts" }
+                    { Constants.KEY_ACTION, "view-alerts" }
                 }.ToString(),
                 icon);
 
@@ -83,8 +80,8 @@ namespace SimpleWeather.NET.Notifications
                     },
                     Launch = new ToastArguments()
                     {
-                        { "action", "view-alerts" },
-                        { "data", await JSONParser.SerializerAsync(location) },
+                        { Constants.KEY_ACTION, "view-alerts" },
+                        { Constants.KEY_DATA, await JSONParser.SerializerAsync(location) },
                     }.ToString()
                 };
 

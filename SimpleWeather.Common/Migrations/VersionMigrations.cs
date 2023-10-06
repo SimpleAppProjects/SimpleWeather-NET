@@ -71,14 +71,14 @@ namespace SimpleWeather.Common.Migrations
                             .UpdateLocationQuery(locData);
                         await SettingsMgr.SaveLastGPSLocData(locData);
 
-#if WINDOWS && !UNIT_TEST
+#if (WINDOWS || __IOS__) && !UNIT_TEST
                         // Update tile id for location
                         SharedModule.Instance.RequestAction(
-                            CommonActions.ACTION_WEATHER_UPDATETILELOCATION,
+                            CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION,
                             new Dictionary<string, object>
                             {
-                                { Constants.TILEKEY_OLDKEY, oldKey },
-                                { Constants.TILEKEY_LOCATION, Constants.KEY_GPS },
+                                { Constants.WIDGETKEY_OLDKEY, oldKey },
+                                { Constants.WIDGETKEY_LOCATION, Constants.KEY_GPS },
                             });
 #endif
                     }

@@ -367,10 +367,10 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                 EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEAPI);
                 break;
             case SettingsManager.KEY_FOLLOWGPS:
-                EnqueueAction(CommonActions.ACTION_WEATHER_UPDATE);
+                EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                 break;
             case SettingsManager.KEY_REFRESHINTERVAL:
-                EnqueueAction(CommonActions.ACTION_WEATHER_REREGISTERTASK);
+                EnqueueAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                 break;
         }
     }
@@ -394,15 +394,11 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                     WeatherUpdaterTask.UpdateWeather();
 #endif
                     break;
-                case CommonActions.ACTION_WEATHER_REREGISTERTASK:
-#if __IOS__
-                    UpdaterTaskUtils.UpdateTasks();
-#endif
+                case CommonActions.ACTION_SETTINGS_UPDATEREFRESH:
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEREFRESH);
                     break;
-                case CommonActions.ACTION_WEATHER_UPDATE:
-#if __IOS__
-                    WeatherUpdaterTask.UpdateWeather();
-#endif
+                case CommonActions.ACTION_SETTINGS_UPDATEGPS:
+                    SharedModule.Instance.RequestAction(CommonActions.ACTION_SETTINGS_UPDATEGPS);
                     break;
             }
         }

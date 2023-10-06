@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.NET.Widgets;
+using Windows.UI.StartScreen;
 #if WINDOWS
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Tiles;
@@ -13,13 +14,13 @@ namespace SimpleWeather.NET
         private async void App_OnCommonActionChanged(object sender, CommonActionChangedEventArgs e)
         {
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            if (e.Action == CommonActions.ACTION_WEATHER_UPDATETILELOCATION)
+            if (e.Action == CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION)
             {
 #if WINDOWS
-                if (e.Extras?.ContainsKey(Constants.TILEKEY_OLDKEY) == true)
+                if (e.Extras?.ContainsKey(Constants.WIDGETKEY_OLDKEY) == true)
                 {
-                    string oldKey = e.Extras?[Constants.TILEKEY_OLDKEY]?.ToString();
-                    object locationQuery = e.Extras?[Constants.TILEKEY_LOCATION];
+                    string oldKey = e.Extras?[Constants.WIDGETKEY_OLDKEY]?.ToString();
+                    object locationQuery = e.Extras?[Constants.WIDGETKEY_LOCATION];
 
                     if (SecondaryTileUtils.Exists(oldKey))
                     {
@@ -46,8 +47,7 @@ namespace SimpleWeather.NET
                 }
 #endif
             }
-            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI ||
-                e.Action == CommonActions.ACTION_WEATHER_UPDATE)
+            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI)
             {
 #if WINDOWS
                 await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
@@ -59,8 +59,7 @@ namespace SimpleWeather.NET
                 await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
 #endif
             }
-            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH ||
-                e.Action == CommonActions.ACTION_WEATHER_REREGISTERTASK)
+            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH)
             {
 #if WINDOWS
                 await Task.Run(() => WeatherUpdateBackgroundTask.RegisterBackgroundTask(true));
@@ -120,6 +119,9 @@ namespace SimpleWeather.NET
 
                 // Reset notification time for new location
                 SettingsManager.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
+
+                // Update tiles and widgets
+                await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE)
             {
@@ -152,6 +154,25 @@ namespace SimpleWeather.NET
                 // Update locale for string resources
                 UpdateAppLocale();
                 await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
+            }
+            else if (e.Action == CommonActions.ACTION_WEATHER_LOCATIONREMOVED)
+            {
+                // Update widgets accordingly
+                var query = e.Extras[Constants.WIDGETKEY_LOCATIONQUERY] as string;
+
+                // Remove secondary tile if it exists
+                if (SecondaryTileUtils.Exists(query))
+                {
+                    await new SecondaryTile(
+                        SecondaryTileUtils.GetTileId(query)).RequestDeleteAsync();
+                }
+                if (WidgetUtils.Exists(query))
+                {
+                    WidgetUtils.GetWidgetIds(query).ForEach(id =>
+                    {
+                        WidgetUtils.DeleteWidget(id);
+                    });
+                }
             }
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }

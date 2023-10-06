@@ -10,11 +10,11 @@ namespace SimpleWeather.Maui
     {
         private void App_OnCommonActionChanged(object sender, CommonActionChangedEventArgs e)
         {
-            if (e.Action == CommonActions.ACTION_WEATHER_UPDATETILELOCATION)
+            if (e.Action == CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION)
             {
+                // no-op
             }
-            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI ||
-                e.Action == CommonActions.ACTION_WEATHER_UPDATE)
+            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI)
             {
 #if __IOS__
                 WeatherUpdaterTask.UpdateWeather();
@@ -26,18 +26,19 @@ namespace SimpleWeather.Maui
                 WidgetUpdaterTask.UpdateWidgets();
 #endif
             }
-            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH ||
-                e.Action == CommonActions.ACTION_WEATHER_REREGISTERTASK)
+            else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH)
             {
 #if __IOS__
-                WeatherUpdaterTask.CancelPendingTasks();
-                WeatherUpdaterTask.ScheduleTask();
+                UpdaterTaskUtils.UpdateTasks();
 #endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEGPS)
             {
                 // Reset notification time for new location
                 SettingsManager.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
+
+                // Update widgets
+                WidgetUpdaterTask.UpdateWidgets();
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE)
             {
@@ -69,6 +70,14 @@ namespace SimpleWeather.Maui
             {
                 // Update locale for string resources
                 UpdateAppLocale();
+            }
+            else if (e.Action == CommonActions.ACTION_WEATHER_LOCATIONREMOVED)
+            {
+                // Update widgets accordingly
+                var query = e.Extras[Constants.WIDGETKEY_LOCATIONQUERY] as string;
+#if __IOS__
+                // Remove query from weather json map
+#endif
             }
         }
     }
