@@ -12,7 +12,9 @@ namespace SimpleWeather.Maui
         {
             if (e.Action == CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION)
             {
-                // no-op
+#if __IOS__
+                WidgetUpdaterTask.UpdateWidgets();
+#endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEAPI)
             {
@@ -76,7 +78,7 @@ namespace SimpleWeather.Maui
                 // Update widgets accordingly
                 var query = e.Extras[Constants.WIDGETKEY_LOCATIONQUERY] as string;
 #if __IOS__
-                // Remove query from weather json map
+                WidgetUpdaterTask.UpdateWidgets();
 #endif
             }
         }

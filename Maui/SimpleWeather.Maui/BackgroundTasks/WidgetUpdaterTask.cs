@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Maui.Notifications;
+using SimpleWeather.Maui.Widget;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using UIKit;
@@ -48,18 +49,17 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                         if (result is WeatherResult.Success it && !it.IsSavedData)
                         {
-                            // do something??
+                            // ignore
                         }
                     }
 
                     // Update widgets
+                    await WeatherWidgetUpdater.UpdateWidgetData();
 
                     if (SettingsManager.PoPChanceNotificationEnabled)
                     {
                         await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData()).WaitAsync(cts.Token);
                     }
-
-                    // update shortcuts
                 }
 
                 Logger.WriteLine(LoggerLevel.Debug, "{0}: End of run...", taskName);

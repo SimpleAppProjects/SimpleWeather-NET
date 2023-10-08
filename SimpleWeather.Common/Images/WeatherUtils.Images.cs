@@ -19,13 +19,10 @@ namespace SimpleWeather.Common.Images
 {
     public static partial class WeatherUtils
     {
-        public static async Task<ImageDataViewModel> GetImageData(this Weather weather)
+        public static string GetBackgroundCodeFromIcon(string icon, bool isNight)
         {
-            String icon = weather.condition.icon;
-            String backgroundCode = null;
-            var wm = WeatherModule.Instance.WeatherManager;
+            string backgroundCode;
 
-            // Apply background based on weather condition
             switch (icon)
             {
                 // Rain
@@ -124,7 +121,7 @@ namespace SimpleWeather.Common.Images
                 case WeatherIcons.DAY_SUNNY_OVERCAST:
                 case WeatherIcons.NIGHT_OVERCAST:
                 case WeatherIcons.OVERCAST:
-                    if (wm.IsNight(weather))
+                    if (isNight)
                         backgroundCode = WeatherBackground.MOSTLYCLOUDY_NIGHT;
                     else
                         backgroundCode = WeatherBackground.MOSTLYCLOUDY_DAY;
@@ -133,7 +130,7 @@ namespace SimpleWeather.Common.Images
                 // Partly Cloudy
                 case WeatherIcons.DAY_PARTLY_CLOUDY:
                 case WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY:
-                    if (wm.IsNight(weather))
+                    if (isNight)
                         backgroundCode = WeatherBackground.PARTLYCLOUDY_NIGHT;
                     else
                         backgroundCode = WeatherBackground.PARTLYCLOUDY_DAY;
@@ -155,12 +152,30 @@ namespace SimpleWeather.Common.Images
                 case WeatherIcons.STRONG_WIND:
                 default:
                     // Set background based using sunset/rise times
-                    if (wm.IsNight(weather))
+                    if (isNight)
                         backgroundCode = WeatherBackground.NIGHT;
                     else
                         backgroundCode = WeatherBackground.DAY;
                     break;
             }
+
+            return backgroundCode;
+        }
+
+        public static string GetBackgroundCode(this Weather weather)
+        {
+            var wm = WeatherModule.Instance.WeatherManager;
+            return GetBackgroundCodeFromIcon(weather.condition.icon, wm.IsNight(weather));
+        }
+
+        public static async Task<ImageDataViewModel> GetImageData(this Weather weather)
+        {
+            String icon = weather.condition.icon;
+            String backgroundCode;
+            var wm = WeatherModule.Instance.WeatherManager;
+
+            // Apply background based on weather condition
+            backgroundCode = GetBackgroundCodeFromIcon(icon, wm.IsNight(weather));
 
             // Check cache for image data
             var imageHelper = SharedModule.Instance.Services.GetService<ImageDataHelperImpl>();

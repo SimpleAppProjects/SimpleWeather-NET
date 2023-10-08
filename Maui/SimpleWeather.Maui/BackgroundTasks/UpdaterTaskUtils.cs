@@ -1,4 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+#if __IOS__
+using SimpleWeather.Maui.Widget;
+#endif
 using SimpleWeather.Preferences;
 
 namespace SimpleWeather.Maui.BackgroundTasks
@@ -72,7 +75,10 @@ namespace SimpleWeather.Maui.BackgroundTasks
         private static bool IsTaskFeaturesEnabled()
         {
             var settingsMgr = Ioc.Default.GetService<SettingsManager>();
-            return // WidgetUpdaterHelper.widgetsExist()
+            return
+#if __IOS__
+                WeatherWidgetUpdater.WidgetsExist() ||
+#endif
                 settingsMgr.ShowAlerts ||
                 settingsMgr.DailyNotificationEnabled ||
                 settingsMgr.PoPChanceNotificationEnabled;

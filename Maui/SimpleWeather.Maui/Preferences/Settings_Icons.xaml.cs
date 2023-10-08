@@ -106,8 +106,7 @@ public partial class Settings_Icons : ContentPage
     {
         if (success)
         {
-            // TODO: Update for widgets
-            // WidgetUpdaterTask.UpdateWidgets();
+            // no-op
             // Refresh page
         }
     }

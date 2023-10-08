@@ -225,8 +225,9 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                         else
                         {
                             // Update widgets anyway
-                            // TODO: enqueue refresh widgets task
-                            // WidgetUpdaterTask.UpdateWidgets(locationData);
+#if __IOS__
+                            WidgetUpdaterTask.UpdateWidgets();
+#endif
                         }
                     });
                 });

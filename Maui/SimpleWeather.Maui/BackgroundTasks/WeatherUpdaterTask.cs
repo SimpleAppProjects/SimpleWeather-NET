@@ -4,9 +4,9 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.WeatherData;
-using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Notifications;
 using SimpleWeather.Maui.WeatherAlerts;
+using SimpleWeather.Maui.Widget;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
@@ -94,14 +94,13 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                     if (cts.IsCancellationRequested) return;
 
-                    // TODO: update widgets
+                    // Update widgets
+                    await WeatherWidgetUpdater.UpdateWidgetData();
 
                     if (SettingsManager.PoPChanceNotificationEnabled)
                     {
                         await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                     }
-
-                    // TODO: update shortcuts
 
                     if (weather != null)
                     {
@@ -179,8 +178,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
             foreach (var location in locations)
             {
-                // WidgetUtils.Exists(location.query)
-                if (false)
+                if (WeatherWidgetUpdater.WidgetsExist())
                 {
                     try
                     {
