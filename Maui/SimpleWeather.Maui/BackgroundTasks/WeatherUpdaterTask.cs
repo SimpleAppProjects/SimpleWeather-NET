@@ -288,7 +288,9 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
             var request = new BGProcessingTaskRequest(TASK_ID)
             {
-                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromMinutes(settingsMgr.RefreshInterval).TotalSeconds)
+                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromMinutes(settingsMgr.RefreshInterval).TotalSeconds),
+                RequiresNetworkConnectivity = true,
+                RequiresExternalPower = false
             };
 
             try

@@ -64,7 +64,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
             {
                 Registered = BGTaskScheduler.Shared.Register(TASK_ID, null, (task) =>
                 {
-                    HandleTaskRegistration(task as BGAppRefreshTask);
+                    HandleTaskRegistration(task as BGProcessingTask);
                 });
             }
             else
@@ -101,7 +101,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
             BGTaskScheduler.Shared.Cancel(TASK_ID);
         }
 
-        private static void HandleTaskRegistration(BGAppRefreshTask task)
+        private static void HandleTaskRegistration(BGProcessingTask task)
         {
             // Schedule a new refresh task.
             ScheduleTask();
@@ -120,7 +120,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
         public static void ScheduleTask()
         {
-            var request = new BGAppRefreshTaskRequest(TASK_ID)
+            var request = new BGProcessingTaskRequest(TASK_ID)
             {
                 EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(GetTaskDelayInSeconds())
             };

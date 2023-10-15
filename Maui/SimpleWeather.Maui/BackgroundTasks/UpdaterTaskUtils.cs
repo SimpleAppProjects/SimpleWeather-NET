@@ -22,7 +22,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                     if (settingsMgr.DailyNotificationEnabled)
                     {
-                        DailyNotificationTask.ScheduleTask();
+                        EnableDailyNotificationTask(true);
                     }
 #endif
                 }

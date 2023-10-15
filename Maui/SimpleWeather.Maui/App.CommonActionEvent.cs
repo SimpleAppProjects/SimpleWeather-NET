@@ -58,14 +58,7 @@ namespace SimpleWeather.Maui
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEDAILYNOTIFICATION)
             {
 #if __IOS__
-                if (SettingsManager.DailyNotificationEnabled)
-                {
-                    DailyNotificationTask.ScheduleTask();
-                }
-                else
-                {
-                    DailyNotificationTask.CancelPendingTasks();
-                }
+                UpdaterTaskUtils.EnableDailyNotificationTask(SettingsManager.DailyNotificationEnabled);
 #endif
             }
             else if (e.Action == CommonActions.ACTION_LOCALE_CHANGED)

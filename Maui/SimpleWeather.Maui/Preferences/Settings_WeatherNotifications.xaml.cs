@@ -144,15 +144,14 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
 
             SettingsManager.DailyNotificationEnabled = true;
 #if __IOS__
-            DailyNotificationTask.CancelPendingTasks();
-            DailyNotificationTask.ScheduleTask();
+            UpdaterTaskUtils.EnableDailyNotificationTask(true);
 #endif
         }
         else
         {
 #if __IOS__
             // Unregister task
-            DailyNotificationTask.CancelPendingTasks();
+            UpdaterTaskUtils.EnableDailyNotificationTask(false);
 #endif
         }
     }
@@ -166,8 +165,7 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
             if (SettingsManager.DailyNotificationEnabled)
             {
 #if __IOS__
-                DailyNotificationTask.CancelPendingTasks();
-                DailyNotificationTask.ScheduleTask();
+                UpdaterTaskUtils.RescheduleDailyNotificationTask();
 #endif
             }
         }
