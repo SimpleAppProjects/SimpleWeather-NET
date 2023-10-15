@@ -22,8 +22,8 @@
 		<!-- Versions -->
 		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
 		<ApplicationVersion>$(VersionCode)</ApplicationVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">16.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">16.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.19041.0</TargetPlatformMinVersion>
@@ -48,8 +48,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
 		<UseHardenedRuntime>true</UseHardenedRuntime>
 		<RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
-		<CodesignKey>Developer ID Application</CodesignKey>
-		<CodesignProvision>Automatic</CodesignProvision>
+		<CodesignKey>Mac Developer</CodesignKey>
+		<CodesignProvision>SimpleWeather - Debug (MacCatalyst)</CodesignProvision>
 		<CodesignEntitlements>Platforms\MacCatalyst\Entitlements.plist</CodesignEntitlements>
 		<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
 	</PropertyGroup>
@@ -251,6 +251,20 @@
 			<DependentUpon>Settings_General.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
+	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetExtension">
+			<Name Condition="'$(Configuration)' == 'Debug'">widgetExtensionDebug</Name>
+			<Name Condition="'$(Configuration)' == 'Release'">widgetExtension</Name>
+			<BuildOutput Condition="'$(Configuration)' == 'Debug'">../build/Debug</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Release'">../build/Release</BuildOutput>
+        </AdditionalAppExtensions>
+		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetintentExt">
+			<Name Condition="'$(Configuration)' == 'Debug'">widgetintentExtDebug</Name>
+			<Name Condition="'$(Configuration)' == 'Release'">widgetintentExt</Name>
+			<BuildOutput Condition="'$(Configuration)' == 'Debug'">../build/Debug</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Release'">../build/Release</BuildOutput>
+        </AdditionalAppExtensions>
+	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
@@ -265,13 +279,23 @@
 	        <type>BeforeBuild</type>
 	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
 	      </Command>
+		  <!-- iOS -->
 	      <Command>
 	        <type>BeforeBuild</type>
 	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
 	      </Command>
 	      <Command>
 	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Entitlements.plist "${ProjectConfig}"</command>
+	      </Command>
+		  <!-- MacCatalyst -->
+	      <Command>
+	        <type>BeforeBuild</type>
 	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
+	      </Command>
+	      <Command>
+	        <type>BeforeBuild</type>
+	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Entitlements.plist "${ProjectConfig}"</command>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>

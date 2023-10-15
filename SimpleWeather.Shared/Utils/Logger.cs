@@ -25,7 +25,11 @@ namespace SimpleWeather.Utils
         public static void Init()
         {
 #if DEBUG
+#if __IOS__
+            Timber.Plant(new ConsoleTree());
+#else
             Timber.Plant(new Timber.DebugTree());
+#endif
             Timber.Plant(new FileLoggingTree());
 #elif !UNIT_TEST
             CleanupLogs();

@@ -14,7 +14,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>SimpleWeather</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.thewizrd.simpleweather</string>
+	<string>com.thewizrd.simpleweather.debug</string>
 	<key>CFBundleName</key>
 	<string>SimpleWeather</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -60,5 +60,13 @@
 	<string>public.app-category.weather</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>INIntentsSupported</key>
+	<array>
+		<string>WeatherWidgetConfigurationIntent</string>
+	</array>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>WeatherWidgetConfigurationIntent</string>
+	</array>
 </dict>
 </plist>

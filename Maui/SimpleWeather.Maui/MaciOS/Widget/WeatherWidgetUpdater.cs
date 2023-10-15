@@ -45,14 +45,20 @@ namespace SimpleWeather.Maui.Widget
 
                     if (result?.Data != null)
                     {
-                        weatherMap[result.Data.query] = result.Data.ToiOSWidgetWeather(location);
+                        if (location.locationType == LocationData.LocationType.GPS)
+                            weatherMap["GPS"] = result.Data.ToiOSWidgetWeather(location);
+                        else
+                            weatherMap[result.Data.query] = result.Data.ToiOSWidgetWeather(location);
                     }
                 }
 
                 try
                 {
-                    var containerUrl = NSFileManager.DefaultManager.GetContainerUrl(GROUP_IDENTIFIER);
-                    containerUrl.Append("widget", true).Append("weatherData.json", false);
+                    var containerUrl = NSFileManager.DefaultManager.GetContainerUrl(GROUP_IDENTIFIER)
+                        .Append("widget", true)
+                        .Append("weatherData.json", false);
+                    var directory = Path.GetDirectoryName(containerUrl.Path);
+                    if (!Directory.Exists(directory)) Directory.CreateDirectory(directory);
                     await File.WriteAllTextAsync(containerUrl.Path, JSONParser.Serializer(weatherMap), Encoding.UTF8);
                 }
                 catch (Exception ex)

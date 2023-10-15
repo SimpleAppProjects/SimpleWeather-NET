@@ -32,6 +32,7 @@ namespace SimpleWeather.Maui.Widget
         public string chance;
 
         public string backgroundColor;
+        public string backgroundCode;
     }
 
     public class Forecast
@@ -56,7 +57,8 @@ namespace SimpleWeather.Maui.Widget
         {
             var uiModel = weather.ToUiModel();
             var isFahrenheit = Units.FAHRENHEIT.Equals(DI.Utils.SettingsManager.TemperatureUnit);
-            var imageData = new ImageDataHelperDefault().GetDefaultImageData(weather.GetBackgroundCode());
+            var backgroundCode = weather.GetBackgroundCode();
+            var imageData = new ImageDataHelperDefault().GetDefaultImageData(backgroundCode);
 
             return new WeatherData()
             {
@@ -66,7 +68,7 @@ namespace SimpleWeather.Maui.Widget
                     tz_long = location.tz_long,
                     isGPS = location.locationType == LocationType.GPS,
 
-                    temp = uiModel.CurTemp,
+                    temp = uiModel.CurTemp.RemoveNonDigitChars() + "º",
                     condition = uiModel.CurCondition,
                     icon = uiModel.WeatherIcon,
                     hi = uiModel.HiTemp,
@@ -75,9 +77,10 @@ namespace SimpleWeather.Maui.Widget
 
                     chance = uiModel.WeatherDetailsMap[WeatherDetailsType.PoPRain]?.Value,
 
-                    backgroundColor = imageData.HexColor
+                    backgroundColor = imageData.HexColor,
+                    backgroundCode = backgroundCode
                 },
-                forecasts = weather.forecast?.Select(f =>
+                forecasts = weather.forecast?.Take(10)?.Select(f =>
                 {
                     var model = new ForecastItemViewModel(f);
 
@@ -90,7 +93,7 @@ namespace SimpleWeather.Maui.Widget
                         chance = model.DetailExtras[WeatherDetailsType.PoPRain]?.Value
                     };
                 }).ToArray(),
-                hr_forecasts = weather.hr_forecast?.Select(f =>
+                hr_forecasts = weather.hr_forecast?.Take(10)?.Select(f =>
                 {
                     var model = new HourlyForecastItemViewModel(f);
 

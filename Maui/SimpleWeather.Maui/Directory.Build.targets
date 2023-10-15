@@ -1,0 +1,7 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="_PlaceAppExtensionsFixMacCatalyst" AfterTargets="_PlaceAppExtensions">
+        <PropertyGroup>
+            <_AppExtensionRoot Condition="'$(_PlatformName)' == 'macOS' Or '$(_PlatformName)' == 'MacCatalyst'">$(_AppBundlePath)Contents\</_AppExtensionRoot>
+        </PropertyGroup>
+    </Target>
+</Project>

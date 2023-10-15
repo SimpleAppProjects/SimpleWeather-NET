@@ -244,8 +244,10 @@ ModelManifest.xml
 # FAKE - F# Make
 .fake/
 
-# MacOS
+# MaciOS
 .DS_Store
+*.xcuserstate
+/Maui/SimpleWeather.Maui.AppWidget/DerivedData
 
 # SimpleWeather
 API_KEY.txt

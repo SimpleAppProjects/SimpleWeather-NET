@@ -40,7 +40,8 @@ namespace EditManifest
                 {
                     OSVersion = OSVersion.UWP;
                 }
-                else if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase))
+                else if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase) ||
+                    FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))
                 {
                     OSVersion = OSVersion.MaciOS;
                 }
@@ -80,13 +81,27 @@ namespace EditManifest
                         }
                         else if (OSVersion == OSVersion.MaciOS)
                         {
-                            if (ConfigMode?.StartsWith("Debug") == true)
+                            if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                line = line.Replace("<string>com.thewizrd.simpleweather</string>", "<string>com.thewizrd.simpleweather.debug</string>");
+                                if (ConfigMode?.StartsWith("Debug") == true)
+                                {
+                                    line = line.Replace("<string>com.thewizrd.simpleweather</string>", "<string>com.thewizrd.simpleweather.debug</string>");
+                                }
+                                else
+                                {
+                                    line = line.Replace("<string>com.thewizrd.simpleweather.debug</string>", "<string>com.thewizrd.simpleweather</string>");
+                                }
                             }
-                            else
+                            else if (FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                line = line.Replace("<string>com.thewizrd.simpleweather.debug</string>", "<string>com.thewizrd.simpleweather</string>");
+                                if (ConfigMode?.StartsWith("Debug") == true)
+                                {
+                                    line = line.Replace("<string>group.com.thewizrd.simpleweather</string>", "<string>group.com.thewizrd.simpleweather.debug</string>");
+                                }
+                                else
+                                {
+                                    line = line.Replace("<string>group.com.thewizrd.simpleweather.debug</string>", "<string>group.com.thewizrd.simpleweather</string>");
+                                }
                             }
                         }
 

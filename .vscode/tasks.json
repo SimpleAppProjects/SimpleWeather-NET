@@ -7,8 +7,10 @@
 			"dependsOn": [
 				"keyCheckShared",
 				"keyCheckWApi",
-				"editManifestiOSDebug",
-				"editManifestMacDebug",
+				"editManifestInfoiOSDebug",
+				"editManifestEntitlementsiOSDebug",
+				"editManifestInfoMacDebug",
+				"editManifestEntitlementsMacDebug",
 				"dotnet: restore",
 				"cleanDebug",
 				"maui: Build"
@@ -20,8 +22,10 @@
 			"dependsOn": [
 				"keyCheckShared",
 				"keyCheckWApi",
-				"editManifestiOSRelease",
-				"editManifestMacRelease",
+				"editManifestInfoiOSRelease",
+				"editManifestEntitlementsiOSRelease",
+				"editManifestInfoMacRelease",
+				"editManifestEntitlementsMacRelease",
 				"restore",
 				"cleanRelease",
 				"maui: Build"
@@ -46,7 +50,7 @@
 			}
 		},
 		{
-			"label": "editManifestiOSDebug",
+			"label": "editManifestInfoiOSDebug",
 			"type": "shell",
 			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Info.plist \"Debug\"",
 			"group": "build",
@@ -55,7 +59,7 @@
 			}
 		},
 		{
-			"label": "editManifestMacDebug",
+			"label": "editManifestInfoMacDebug",
 			"type": "shell",
 			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Info.plist \"Debug\"",
 			"group": "build",
@@ -64,7 +68,25 @@
 			}
 		},
 		{
-			"label": "editManifestiOSRelease",
+			"label": "editManifestEntitlementsiOSDebug",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Entitlements.plist \"Debug\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestEntitlementsMacDebug",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Entitlements.plist \"Debug\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestInfoiOSRelease",
 			"type": "shell",
 			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Info.plist \"Release\"",
 			"group": "build",
@@ -73,9 +95,27 @@
 			}
 		},
 		{
-			"label": "editManifestMacRelease",
+			"label": "editManifestInfoMacRelease",
 			"type": "shell",
 			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Info.plist \"Release\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestEntitlementsiOSRelease",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Entitlements.plist \"Release\"",
+			"group": "build",
+			"options": {
+				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
+			}
+		},
+		{
+			"label": "editManifestEntitlementsMacRelease",
+			"type": "shell",
+			"command": "../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Entitlements.plist \"Release\"",
 			"group": "build",
 			"options": {
 				"cwd": "${workspaceFolder}/Maui/SimpleWeather.Maui/"
