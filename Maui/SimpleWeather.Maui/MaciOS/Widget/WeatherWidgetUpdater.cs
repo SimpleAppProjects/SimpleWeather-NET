@@ -3,6 +3,7 @@ using Foundation;
 using SimpleWeather.Common.WeatherData;
 using SimpleWeather.Utils;
 using System.Text;
+using WidgetKitProxy;
 
 namespace SimpleWeather.Maui.Widget
 {
@@ -13,6 +14,12 @@ namespace SimpleWeather.Maui.Widget
 #else
         private const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather";
 #endif
+
+        private static Lazy<WidgetCenterProxy> widgetCenterProxyLazy = new(() => {
+            return new WidgetCenterProxy();
+        });
+
+        private static WidgetCenterProxy WidgetCenter => widgetCenterProxyLazy.Value;
 
         public static async Task UpdateWidgetData()
         {
@@ -88,15 +95,20 @@ namespace SimpleWeather.Maui.Widget
             });
         }
 
-        public static bool WidgetsExist()
+        public static Task<bool> WidgetsExist()
         {
-            // TODO: Implement
-            return false;
+            var tcs = new TaskCompletionSource<bool>();
+
+            WidgetCenter.GetCurrentConfigurationsWithCompletion((widgets) => {
+                tcs.SetResult(widgets.Count > 0);
+            });
+
+            return tcs.Task;
         }
 
         public static void ReloadWidgets()
         {
-            // TODO: implement
+            WidgetCenter.ReloadAllTimeLines();
         }
     }
 }

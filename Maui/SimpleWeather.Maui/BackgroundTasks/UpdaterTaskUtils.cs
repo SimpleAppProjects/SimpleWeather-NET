@@ -12,30 +12,36 @@ namespace SimpleWeather.Maui.BackgroundTasks
         {
             var settingsMgr = Ioc.Default.GetService<SettingsManager>();
             // Queue tasks if dependent features are enabled
-            if (IsTaskFeaturesEnabled())
+            Task.Run(async () =>
             {
-#if __IOS__
-                WidgetUpdaterTask.ScheduleTask();
-                WeatherUpdaterTask.ScheduleTask();
-
-                if (settingsMgr.DailyNotificationEnabled)
+                if (await IsTaskFeaturesEnabled())
                 {
-                    DailyNotificationTask.ScheduleTask();
-                }
+#if __IOS__
+                    WidgetUpdaterTask.ScheduleTask();
+                    WeatherUpdaterTask.ScheduleTask();
+
+                    if (settingsMgr.DailyNotificationEnabled)
+                    {
+                        DailyNotificationTask.ScheduleTask();
+                    }
 #endif
-            }
+                }
+            });
         }
 
         public static void CancelTasks()
         {
             // Cancel tasks if dependent features are disabled
-            if (!IsTaskFeaturesEnabled())
+            Task.Run(async () =>
             {
+                if (!await IsTaskFeaturesEnabled())
+                {
 #if __IOS__
-                WidgetUpdaterTask.CancelPendingTasks();
-                WeatherUpdaterTask.CancelPendingTasks();
+                    WidgetUpdaterTask.CancelPendingTasks();
+                    WeatherUpdaterTask.CancelPendingTasks();
 #endif
-            }
+                }
+            });
         }
 
         public static void UpdateTasks()
@@ -72,12 +78,12 @@ namespace SimpleWeather.Maui.BackgroundTasks
 #endif
         }
 
-        private static bool IsTaskFeaturesEnabled()
+        private static async Task<bool> IsTaskFeaturesEnabled()
         {
             var settingsMgr = Ioc.Default.GetService<SettingsManager>();
             return
 #if __IOS__
-                WeatherWidgetUpdater.WidgetsExist() ||
+                await WeatherWidgetUpdater.WidgetsExist() ||
 #endif
                 settingsMgr.ShowAlerts ||
                 settingsMgr.DailyNotificationEnabled ||

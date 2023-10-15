@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
@@ -110,10 +110,12 @@
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
 		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
 		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
+		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.9.0.4" />
+		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
 		<PackageReference Include="WinUIEx" Version="2.1.0" />
@@ -281,29 +283,8 @@
 	    <CustomCommands>
 	      <Command>
 	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Shared/Keys</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/KeyCheck/bin/Release/net7.0/publish/KeyCheck ${SolutionDir}/SimpleWeather.Weather-API/Keys</command>
-	      </Command>
-		  <!-- iOS -->
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/iOS/Entitlements.plist "${ProjectConfig}"</command>
-	      </Command>
-		  <!-- MacCatalyst -->
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Info.plist "${ProjectConfig}"</command>
-	      </Command>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>${SolutionDir}/EditManifest/bin/Release/net7.0/publish/EditManifest ${ProjectDir}/Platforms/MacCatalyst/Entitlements.plist "${ProjectConfig}"</command>
+	        <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
+	        <workingdir>${SolutionDir}</workingdir>
 	      </Command>
 	    </CustomCommands>
 	  </CustomCommands>

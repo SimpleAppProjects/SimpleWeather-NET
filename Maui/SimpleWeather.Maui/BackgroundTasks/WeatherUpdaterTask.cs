@@ -96,6 +96,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                     // Update widgets
                     await WeatherWidgetUpdater.UpdateWidgetData();
+                    WeatherWidgetUpdater.ReloadWidgets();
 
                     if (SettingsManager.PoPChanceNotificationEnabled)
                     {
@@ -178,7 +179,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
             foreach (var location in locations)
             {
-                if (WeatherWidgetUpdater.WidgetsExist())
+                if (await WeatherWidgetUpdater.WidgetsExist())
                 {
                     try
                     {

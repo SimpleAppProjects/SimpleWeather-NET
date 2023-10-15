@@ -248,6 +248,7 @@ ModelManifest.xml
 .DS_Store
 *.xcuserstate
 /Maui/SimpleWeather.Maui.AppWidget/DerivedData
+/Maui/WidgetCenterProxy
 
 # SimpleWeather
 API_KEY.txt
@@ -275,4 +276,5 @@ API_KEY.txt
 /*.bat.old
 /*.bat.old.*
 /*.sh
+!/maui-preparebuild.sh
 listingData-*.csv

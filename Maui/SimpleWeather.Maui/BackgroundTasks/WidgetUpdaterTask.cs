@@ -55,6 +55,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                     // Update widgets
                     await WeatherWidgetUpdater.UpdateWidgetData();
+                    WeatherWidgetUpdater.ReloadWidgets();
 
                     if (SettingsManager.PoPChanceNotificationEnabled)
                     {
