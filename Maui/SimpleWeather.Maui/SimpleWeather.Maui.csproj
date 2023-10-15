@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
@@ -255,14 +255,22 @@
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetExtension">
 			<Name Condition="'$(Configuration)' == 'Debug'">widgetExtensionDebug</Name>
 			<Name Condition="'$(Configuration)' == 'Release'">widgetExtension</Name>
-			<BuildOutput Condition="'$(Configuration)' == 'Debug'">../build/Debug</BuildOutput>
-			<BuildOutput Condition="'$(Configuration)' == 'Release'">../build/Release</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Debug|iPhone'">../DerivedData/SimpleWeather/Build/Products/Debug-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Debug|iPhoneSimulator'">../DerivedData/SimpleWeather/Build/Products/Debug-iphonesimulator</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">../DerivedData/SimpleWeather/Build/Products/Debug-maccatalyst</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhone'">../DerivedData/SimpleWeather/Build/Products/Release-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhoneSimulator'">../DerivedData/SimpleWeather/Build/Products/Release-iphonesimulator</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">../DerivedData/SimpleWeather/Build/Products/Release-maccatalyst</BuildOutput>
         </AdditionalAppExtensions>
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetintentExt">
 			<Name Condition="'$(Configuration)' == 'Debug'">widgetintentExtDebug</Name>
 			<Name Condition="'$(Configuration)' == 'Release'">widgetintentExt</Name>
-			<BuildOutput Condition="'$(Configuration)' == 'Debug'">../build/Debug</BuildOutput>
-			<BuildOutput Condition="'$(Configuration)' == 'Release'">../build/Release</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Debug|iPhone'">../DerivedData/SimpleWeather/Build/Products/Debug-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Debug|iPhoneSimulator'">../DerivedData/SimpleWeather/Build/Products/Debug-iphonesimulator</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Debug' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">../DerivedData/SimpleWeather/Build/Products/Debug-maccatalyst</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhone'">../DerivedData/SimpleWeather/Build/Products/Release-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhoneSimulator'">../DerivedData/SimpleWeather/Build/Products/Release-iphonesimulator</BuildOutput>
+			<BuildOutput Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">../DerivedData/SimpleWeather/Build/Products/Release-maccatalyst</BuildOutput>
         </AdditionalAppExtensions>
 	</ItemGroup>
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
