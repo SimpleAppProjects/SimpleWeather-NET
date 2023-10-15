@@ -9,9 +9,9 @@ import SwiftUI
 
 // Text Sizes
 #if targetEnvironment(macCatalyst) || os(macOS)
-private let locationFont: Font = .title3
-private let textFont: Font = .callout
-private let forecastFont: Font = .headline
+private let locationFont: Font = .footnote
+private let textFont: Font = .caption2
+private let forecastFont: Font = .caption
 private let tempFont: Font = .largeTitle
 #else
 private let locationFont: Font = .footnote
