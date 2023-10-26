@@ -46,7 +46,8 @@
 		<CodesignKey>iPhone Developer</CodesignKey>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
-		<UseHardenedRuntime>true</UseHardenedRuntime>
+		<MtouchDebug>true</MtouchDebug>
+		<UseHardenedRuntime>false</UseHardenedRuntime>
 		<RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
 		<CodesignKey>Mac Developer</CodesignKey>
 		<CodesignProvision>SimpleWeather - Debug (MacCatalyst)</CodesignProvision>
