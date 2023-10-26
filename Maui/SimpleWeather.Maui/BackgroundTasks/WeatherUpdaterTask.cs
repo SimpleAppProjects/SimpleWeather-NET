@@ -22,6 +22,14 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(WeatherUpdaterTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        public static TimeSpan INTERVAL
+        {
+            get
+            {
+                var settingsMgr = Ioc.Default.GetService<SettingsManager>();
+                return TimeSpan.FromMinutes(settingsMgr.RefreshInterval);
+            }
+        }
         private static bool Registered = false;
 
         private readonly CancellationTokenSource cts = new();
@@ -284,11 +292,9 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
         public static void ScheduleTask()
         {
-            var settingsMgr = Ioc.Default.GetService<SettingsManager>();
-
             var request = new BGProcessingTaskRequest(TASK_ID)
             {
-                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromMinutes(settingsMgr.RefreshInterval).TotalSeconds),
+                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(INTERVAL.TotalSeconds),
                 RequiresNetworkConnectivity = true,
                 RequiresExternalPower = false
             };

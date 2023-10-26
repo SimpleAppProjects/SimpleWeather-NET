@@ -14,6 +14,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(AppUpdaterTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        public static readonly TimeSpan INTERVAL = TimeSpan.FromDays(1);
         private static bool Registered = false;
 
         private readonly CancellationTokenSource cts = new();
@@ -83,7 +84,10 @@ namespace SimpleWeather.Maui.BackgroundTasks
                         {
                             await notificationCenter.AddNotificationRequestAsync(request);
                         }
-                        catch (Exception ex) { }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e, "Error requesting updater notification");
+                        }
                     }
                 }
             }
@@ -126,11 +130,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
             Task.Run(taskOp.Run);
         }
 
-        private static void ScheduleTask()
+        public static void ScheduleTask()
         {
             var request = new BGProcessingTaskRequest(TASK_ID)
             {
-                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromDays(1).TotalSeconds),
+                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(INTERVAL.TotalSeconds),
                 RequiresNetworkConnectivity = true
             };
 

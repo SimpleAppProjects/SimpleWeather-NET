@@ -15,6 +15,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(WidgetUpdaterTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        public static readonly TimeSpan INTERVAL = TimeSpan.FromHours(1);
         private static bool Registered = false;
 
         private readonly CancellationTokenSource cts = new();
@@ -170,7 +171,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
         {
             var request = new BGAppRefreshTaskRequest(TASK_ID)
             {
-                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromHours(1).TotalSeconds)
+                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(INTERVAL.TotalSeconds)
             };
 
             try

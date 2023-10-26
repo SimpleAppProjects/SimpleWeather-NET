@@ -1,5 +1,6 @@
 ﻿#if __IOS__ || __MACCATALYST__
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Foundation;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
@@ -14,7 +15,7 @@ namespace SimpleWeather.Maui.Notifications
     {
         private const string TAG = "DailyNotfication";
 
-        public static async Task CreateNotification(LocationData.LocationData location)
+        public static async Task CreateNotification(LocationData.LocationData location, UNNotificationTrigger notificationTrigger = null)
         {
             var SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -37,19 +38,26 @@ namespace SimpleWeather.Maui.Notifications
             var notID = location.query;
 
             // Create the toast notification
+            var identifier = $"{TAG}:{notID}";
             var notificationCenter = UNUserNotificationCenter.Current;
             var request = UNNotificationRequest.FromIdentifier(
-                $"{TAG}:{notID}", toastContent, null
+                identifier, toastContent, notificationTrigger
             );
 
             try
             {
+                notificationCenter.RemovePendingNotificationRequests(new string[] { identifier });
                 await notificationCenter.AddNotificationRequestAsync(request);
             }
             catch (Exception e)
             {
-
+                Logger.WriteLine(LoggerLevel.Error, e, "Error requesting daily notification");
             }
+        }
+
+        public static Task ScheduleNotification(LocationData.LocationData location, double timeIntervalInSeconds)
+        {
+            return CreateNotification(location, UNTimeIntervalNotificationTrigger.CreateTrigger(timeIntervalInSeconds, false));
         }
 
         private static UNNotificationContent CreateToastContent(LocationData.LocationData location, Forecast forecast)

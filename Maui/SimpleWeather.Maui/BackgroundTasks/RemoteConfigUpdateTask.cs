@@ -11,6 +11,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
     {
         private const string taskName = nameof(RemoteConfigUpdateTask);
         public const string TASK_ID = $"SimpleWeather.{taskName}";
+        public static readonly TimeSpan INTERVAL = TimeSpan.FromDays(1);
         private static bool Registered = false;
 
         private readonly CancellationTokenSource cts = new();
@@ -81,11 +82,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
             Task.Run(taskOp.Run);
         }
 
-        private static void ScheduleTask()
+        public static void ScheduleTask()
         {
             var request = new BGProcessingTaskRequest(TASK_ID)
             {
-                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(TimeSpan.FromDays(1).TotalSeconds),
+                EarliestBeginDate = Foundation.NSDate.FromTimeIntervalSinceNow(INTERVAL.TotalSeconds),
                 RequiresNetworkConnectivity = true
             };
 
