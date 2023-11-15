@@ -44,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CacheCow.Client" Version="2.12.1" />
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
     <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
@@ -65,7 +65,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="6.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="6.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings\AQIndex.Designer.cs">
