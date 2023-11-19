@@ -1,9 +1,9 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+    <!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
     <UseMaui Condition="!$(TargetFramework.Contains('windows'))">true</UseMaui>
@@ -15,7 +15,7 @@
     <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
     <CreatePackage>false</CreatePackage>
   </PropertyGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
@@ -47,10 +47,10 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Include="FirebaseAuthentication.net" Version="4.1.0" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.2.0" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net7.0-maccatalyst' And '$(TargetFramework)' != 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
-    <PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2-SNAPSHOT" />
-    <PackageReference Condition="'$(TargetFramework)' == 'net7.0-maccatalyst' Or '$(TargetFramework)' == 'net7.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2-SNAPSHOT" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net8.0-maccatalyst' And '$(TargetFramework)' != 'net8.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' != 'net8.0-maccatalyst' And '$(TargetFramework)' != 'net8.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.2-SNAPSHOT" />
+    <PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.2-SNAPSHOT" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NodaTime" Version="3.1.9" />
@@ -59,10 +59,10 @@
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.1" />
     <PackageReference Include="Svg.Skia" Version="1.0.0.3" />
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
     <PackageReference Include="TimberLog" Version="1.0.0" />
     <PackageReference Include="ZCS.Utf8Json" Version="1.4.4" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
     <PackageReference Include="CommunityToolkit.Maui.Core" Version="6.1.0" />

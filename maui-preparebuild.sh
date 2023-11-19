@@ -3,8 +3,8 @@
 config=$1
 cleanWidgets=$2
 
-KeyCheck/bin/Release/net7.0/publish/KeyCheck SimpleWeather.Shared/Keys
-KeyCheck/bin/Release/net7.0/publish/KeyCheck SimpleWeather.Weather-API/Keys
+KeyCheck/bin/Release/net8.0/publish/KeyCheck SimpleWeather.Shared/Keys
+KeyCheck/bin/Release/net8.0/publish/KeyCheck SimpleWeather.Weather-API/Keys
 
 cd Maui/SimpleWeather.Maui.AppWidget
 
@@ -18,7 +18,7 @@ xcodebuild build -configuration $config -scheme "SimpleWeather-Extensions" -sdk 
 
 cd ../SimpleWeather.Maui
 
-../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Info.plist "$config"
-../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/iOS/Entitlements.plist "$config"
-../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Info.plist "$config"
-../../EditManifest/bin/Release/net7.0/publish/EditManifest Platforms/MacCatalyst/Entitlements.plist "$config"
+../../EditManifest/bin/Release/net8.0/publish/EditManifest Platforms/iOS/Info.plist "$config"
+../../EditManifest/bin/Release/net8.0/publish/EditManifest Platforms/iOS/Entitlements.plist "$config"
+../../EditManifest/bin/Release/net8.0/publish/EditManifest Platforms/MacCatalyst/Info.plist "$config"
+../../EditManifest/bin/Release/net8.0/publish/EditManifest Platforms/MacCatalyst/Entitlements.plist "$config"
