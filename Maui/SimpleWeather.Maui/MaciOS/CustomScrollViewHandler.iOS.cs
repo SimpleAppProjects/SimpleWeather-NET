@@ -1,26 +1,17 @@
 ﻿#if __IOS__
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
 using CoreGraphics;
 using Microsoft.Maui.Graphics;
-using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Layouts;
+using Microsoft.Maui.Handlers;
 using Microsoft.Maui.Platform;
-using ObjCRuntime;
+using Microsoft.Maui.Primitives;
 using UIKit;
 using Size = Microsoft.Maui.Graphics.Size;
-using ContentView = SimpleWeather.Maui.CustomContentView;
-using CoreAnimation;
-using Microsoft.Maui.Controls.Shapes;
-using Microsoft.Maui.Graphics.Platform;
-using Microsoft.Maui.Primitives;
+using ContentView = Microsoft.Maui.Platform.ContentView;
 
 namespace SimpleWeather.Maui
 {
-    /* NOTE: Temporary until .NET 8 */
     public partial class CustomScrollViewHandler : ViewHandler<IScrollView, UIScrollView>, ICrossPlatformLayout
     {
         const nint ContentPanelTag = 0x845fed;
@@ -41,9 +32,11 @@ namespace SimpleWeather.Maui
             }
         }
 
+        internal ScrollToRequest? PendingScrollToRequest { get; private set; }
+
         protected override UIScrollView CreatePlatformView()
         {
-            return new UIScrollView();
+            return new MauiScrollView();
         }
 
         protected override void ConnectHandler(UIScrollView platformView)
@@ -108,9 +101,11 @@ namespace SimpleWeather.Maui
             // without having to re-layout the ScrollView
 
             var fullContentSize = scrollView.PresentedContent?.DesiredSize ?? Size.Zero;
-            var viewportBounds = uiScrollView.Bounds;
-            var viewportWidth = viewportBounds.Width;
-            var viewportHeight = viewportBounds.Height;
+
+            var viewportSize = GetViewportSize(uiScrollView);
+            var viewportWidth = viewportSize.Width;
+            var viewportHeight = viewportSize.Height;
+
             SetContentSizeForOrientation(uiScrollView, viewportWidth, viewportHeight, scrollView.Orientation, fullContentSize);
         }
 
@@ -119,6 +114,15 @@ namespace SimpleWeather.Maui
             if (args is ScrollToRequest request)
             {
                 var uiScrollView = handler.PlatformView;
+
+                if (uiScrollView.ContentSize == CGSize.Empty && handler is CustomScrollViewHandler scrollViewHandler)
+                {
+                    // If the ContentSize of the UIScrollView has not yet been defined,
+                    // we create a pending scroll request that we will launch after performing the Layout and sizing process.
+                    scrollViewHandler.PendingScrollToRequest = request;
+                    return;
+                }
+
                 var availableScrollHeight = uiScrollView.ContentSize.Height - uiScrollView.Frame.Height;
                 var availableScrollWidth = uiScrollView.ContentSize.Width - uiScrollView.Frame.Width;
                 var minScrollHorizontal = Math.Min(request.HorizontalOffset, availableScrollWidth);
@@ -181,7 +185,7 @@ namespace SimpleWeather.Maui
                 return;
             }
 
-            var contentContainer = new CustomContentView()
+            var contentContainer = new ContentView()
             {
                 View = scrollView.PresentedContent,
                 Tag = ContentPanelTag
@@ -196,39 +200,10 @@ namespace SimpleWeather.Maui
             platformScrollView.AddSubview(contentContainer);
         }
 
-        static Size MeasureScrollViewContent(double widthConstraint, double heightConstraint, Func<double, double, Size> internalMeasure, UIScrollView platformScrollView, IScrollView scrollView)
-        {
-            var presentedContent = scrollView.PresentedContent;
-            if (presentedContent == null)
-            {
-                return Size.Zero;
-            }
-
-            var scrollViewBounds = platformScrollView.Bounds;
-            var padding = scrollView.Padding;
-
-            if (widthConstraint == 0)
-            {
-                widthConstraint = scrollViewBounds.Width;
-            }
-
-            if (heightConstraint == 0)
-            {
-                heightConstraint = scrollViewBounds.Height;
-            }
-
-            // Account for the ScrollView Padding before measuring the content
-            widthConstraint = AccountForPadding(widthConstraint, padding.HorizontalThickness);
-            heightConstraint = AccountForPadding(heightConstraint, padding.VerticalThickness);
-
-            var result = internalMeasure.Invoke(widthConstraint, heightConstraint);
-
-            return result.AdjustForFill(new Rect(0, 0, widthConstraint, heightConstraint), presentedContent);
-        }
-
         public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
         {
             var virtualView = VirtualView;
+            var crossPlatformLayout = virtualView as ICrossPlatformLayout;
             var platformView = PlatformView;
 
             if (platformView == null || virtualView == null)
@@ -242,7 +217,7 @@ namespace SimpleWeather.Maui
             widthConstraint = AccountForPadding(widthConstraint, padding.HorizontalThickness);
             heightConstraint = AccountForPadding(heightConstraint, padding.VerticalThickness);
 
-            var crossPlatformContentSize = virtualView.CrossPlatformMeasure(widthConstraint, heightConstraint);
+            var crossPlatformContentSize = crossPlatformLayout.CrossPlatformMeasure(widthConstraint, heightConstraint);
 
             // Add the padding back in for the final size
             crossPlatformContentSize.Width += padding.HorizontalThickness;
@@ -285,6 +260,12 @@ namespace SimpleWeather.Maui
 
             contentView.Bounds = contentBounds;
             contentView.Center = new CGPoint(contentBounds.GetMidX(), contentBounds.GetMidY());
+
+            if (PendingScrollToRequest != null)
+            {
+                VirtualView.RequestScrollTo(PendingScrollToRequest.HorizontalOffset, PendingScrollToRequest.VerticalOffset, PendingScrollToRequest.Instant);
+                PendingScrollToRequest = null;
+            }
         }
 
         static double AccountForPadding(double constraint, double padding)
@@ -308,9 +289,15 @@ namespace SimpleWeather.Maui
             uiScrollView.ContentSize = contentSize;
         }
 
+        static CGSize GetViewportSize(UIScrollView platformScrollView)
+        {
+            return platformScrollView.AdjustedContentInset.InsetRect(platformScrollView.Bounds).Size;
+        }
+
         Size ICrossPlatformLayout.CrossPlatformMeasure(double widthConstraint, double heightConstraint)
         {
             var scrollView = VirtualView;
+            var crossPlatformLayout = scrollView as ICrossPlatformLayout;
             var platformScrollView = PlatformView;
 
             var presentedContent = scrollView.PresentedContent;
@@ -319,17 +306,18 @@ namespace SimpleWeather.Maui
                 return Size.Zero;
             }
 
-            var scrollViewBounds = platformScrollView.Bounds;
+            var viewportSize = GetViewportSize(platformScrollView);
+
             var padding = scrollView.Padding;
 
             if (widthConstraint == 0)
             {
-                widthConstraint = scrollViewBounds.Width;
+                widthConstraint = viewportSize.Width;
             }
 
             if (heightConstraint == 0)
             {
-                heightConstraint = scrollViewBounds.Height;
+                heightConstraint = viewportSize.Height;
             }
 
             // Account for the ScrollView Padding before measuring the content
@@ -337,7 +325,7 @@ namespace SimpleWeather.Maui
             heightConstraint = AccountForPadding(heightConstraint, padding.VerticalThickness);
 
             // Now handle the actual cross-platform measurement of the ScrollView's content
-            var result = scrollView.CrossPlatformMeasure(widthConstraint, heightConstraint);
+            var result = crossPlatformLayout.CrossPlatformMeasure(widthConstraint, heightConstraint);
 
             return result.AdjustForFill(new Rect(0, 0, widthConstraint, heightConstraint), presentedContent);
         }
@@ -345,7 +333,22 @@ namespace SimpleWeather.Maui
         Size ICrossPlatformLayout.CrossPlatformArrange(Rect bounds)
         {
             var scrollView = VirtualView;
+            var crossPlatformLayout = scrollView as ICrossPlatformLayout;
             var platformScrollView = PlatformView;
+
+            // The UIScrollView's bounds are available, so we can use them to make sure the ContentSize makes sense
+            // for the ScrollView orientation
+            var viewportSize = GetViewportSize(platformScrollView);
+
+            // Get a Rect for doing the CrossPlatformArrange of the Content
+            var viewportRect = new Rect(Point.Zero, viewportSize.ToSize());
+
+            var contentSize = crossPlatformLayout.CrossPlatformArrange(viewportRect);
+
+            var viewportHeight = viewportSize.Height;
+            var viewportWidth = viewportSize.Width;
+            SetContentSizeForOrientation(platformScrollView, viewportWidth, viewportHeight, scrollView.Orientation, contentSize);
+
             var container = GetContentView(platformScrollView);
 
             if (container?.Superview is UIScrollView uiScrollView)
@@ -353,24 +356,14 @@ namespace SimpleWeather.Maui
                 // Ensure the container is at least the size of the UIScrollView itself, so that the 
                 // cross-platform layout logic makes sense and the contents don't arrange outside the 
                 // container. (Everything will look correct if they do, but hit testing won't work properly.)
-
-                var scrollViewBounds = uiScrollView.Bounds;
-                var containerBounds = container.Bounds;
+                var containerBounds = contentSize;
 
                 container.Bounds = new CGRect(0, 0,
-                    Math.Max(containerBounds.Width, scrollViewBounds.Width),
-                    Math.Max(containerBounds.Height, scrollViewBounds.Height));
+                    Math.Max(containerBounds.Width, viewportSize.Width),
+                    Math.Max(containerBounds.Height, viewportSize.Height));
+
                 container.Center = new CGPoint(container.Bounds.GetMidX(), container.Bounds.GetMidY());
             }
-
-            var contentSize = scrollView.CrossPlatformArrange(bounds);
-
-            // The UIScrollView's bounds are available, so we can use them to make sure the ContentSize makes sense
-            // for the ScrollView orientation
-            var viewportBounds = platformScrollView.Bounds;
-            var viewportHeight = viewportBounds.Height;
-            var viewportWidth = viewportBounds.Width;
-            SetContentSizeForOrientation(platformScrollView, viewportWidth, viewportHeight, scrollView.Orientation, contentSize);
 
             return contentSize;
         }
@@ -426,281 +419,6 @@ namespace SimpleWeather.Maui
                 VirtualView.HorizontalOffset = platformView.ContentOffset.X;
                 VirtualView.VerticalOffset = platformView.ContentOffset.Y;
             }
-        }
-    }
-
-    public interface ICrossPlatformLayout
-    {
-        /// <summary>
-        /// Measures the desired size of the ICrossPlatformLayout within the given constraints.
-        /// </summary>
-        /// <param name="widthConstraint">The width limit for measuring the ICrossPlatformLayout.</param>
-        /// <param name="heightConstraint">The height limit for measuring the ICrossPlatformLayout.</param>
-        /// <returns>The desired size of the ILayout.</returns>
-        Size CrossPlatformMeasure(double widthConstraint, double heightConstraint);
-
-        /// <summary>
-        /// Arranges the children of the ICrossPlatformLayout within the given bounds.
-        /// </summary>
-        /// <param name="bounds">The bounds in which the ICrossPlatformLayout's children should be arranged.</param>
-        /// <returns>The actual size of the arranged ICrossPlatformLayout.</returns>
-        Size CrossPlatformArrange(Rect bounds);
-    }
-
-    /// <summary>
-	/// Indicates a control which supports cross-platform layout operations
-	/// </summary>
-	public interface ICrossPlatformLayoutBacking
-    {
-        /// <summary>
-        /// Gets or sets the implementation of cross-platform layout operations to be carried out by this control
-        /// </summary>
-        /// <remarks>
-        /// This property is the bridge between the platform-level backing control and the cross-platform-level
-        /// layout. It is typically connected by the handler, which may add additional logic to normalize layout
-        /// and content behaviors across the various platforms. 
-        /// </remarks>
-        public ICrossPlatformLayout? CrossPlatformLayout { get; set; }
-    }
-
-    public abstract class MauiView : UIView, ICrossPlatformLayoutBacking
-    {
-        static bool? _respondsToSafeArea;
-
-        double _lastMeasureHeight = double.NaN;
-        double _lastMeasureWidth = double.NaN;
-
-        WeakReference<IView>? _reference;
-        WeakReference<ICrossPlatformLayout>? _crossPlatformLayoutReference;
-
-        public IView? View
-        {
-            get => _reference != null && _reference.TryGetTarget(out var v) ? v : null;
-            set => _reference = value == null ? null : new(value);
-        }
-
-        bool RespondsToSafeArea()
-        {
-            if (_respondsToSafeArea.HasValue)
-                return _respondsToSafeArea.Value;
-            return (bool)(_respondsToSafeArea = RespondsToSelector(new Selector("safeAreaInsets")));
-        }
-
-        protected CGRect AdjustForSafeArea(CGRect bounds)
-        {
-            if (View is not ISafeAreaView sav || sav.IgnoreSafeArea || !RespondsToSafeArea())
-            {
-                return bounds;
-            }
-
-#pragma warning disable CA1416 // TODO 'UIView.SafeAreaInsets' is only supported on: 'ios' 11.0 and later, 'maccatalyst' 11.0 and later, 'tvos' 11.0 and later.
-            return SafeAreaInsets.InsetRect(bounds);
-#pragma warning restore CA1416
-        }
-
-        protected bool IsMeasureValid(double widthConstraint, double heightConstraint)
-        {
-            // Check the last constraints this View was measured with; if they're the same,
-            // then the current measure info is already correct and we don't need to repeat it
-            return heightConstraint == _lastMeasureHeight && widthConstraint == _lastMeasureWidth;
-        }
-
-        protected void InvalidateConstraintsCache()
-        {
-            _lastMeasureWidth = double.NaN;
-            _lastMeasureHeight = double.NaN;
-        }
-
-        protected void CacheMeasureConstraints(double widthConstraint, double heightConstraint)
-        {
-            _lastMeasureWidth = widthConstraint;
-            _lastMeasureHeight = heightConstraint;
-        }
-
-        public ICrossPlatformLayout? CrossPlatformLayout
-        {
-            get => _crossPlatformLayoutReference != null && _crossPlatformLayoutReference.TryGetTarget(out var v) ? v : null;
-            set => _crossPlatformLayoutReference = value == null ? null : new WeakReference<ICrossPlatformLayout>(value);
-        }
-
-        Size CrossPlatformMeasure(double widthConstraint, double heightConstraint)
-        {
-            return CrossPlatformLayout?.CrossPlatformMeasure(widthConstraint, heightConstraint) ?? Size.Zero;
-        }
-
-        Size CrossPlatformArrange(Rect bounds)
-        {
-            return CrossPlatformLayout?.CrossPlatformArrange(bounds) ?? Size.Zero;
-        }
-
-        public override CGSize SizeThatFits(CGSize size)
-        {
-            if (_crossPlatformLayoutReference == null)
-            {
-                return base.SizeThatFits(size);
-            }
-
-            var widthConstraint = size.Width;
-            var heightConstraint = size.Height;
-
-            var crossPlatformSize = CrossPlatformMeasure(widthConstraint, heightConstraint);
-
-            CacheMeasureConstraints(widthConstraint, heightConstraint);
-
-            return crossPlatformSize.ToCGSize();
-        }
-
-        // TODO: Possibly reconcile this code with ViewHandlerExtensions.LayoutVirtualView
-        // If you make changes here please review if those changes should also
-        // apply to ViewHandlerExtensions.LayoutVirtualView
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-
-            if (_crossPlatformLayoutReference == null)
-            {
-                return;
-            }
-
-            var bounds = AdjustForSafeArea(Bounds).ToRectangle();
-
-            var widthConstraint = bounds.Width;
-            var heightConstraint = bounds.Height;
-
-            // If the SuperView is a MauiView (backing a cross-platform ContentView or Layout), then measurement
-            // has already happened via SizeThatFits and doesn't need to be repeated in LayoutSubviews. But we
-            // _do_ need LayoutSubviews to make a measurement pass if the parent is something else (for example,
-            // the window); there's no guarantee that SizeThatFits has been called in that case.
-
-            if (!IsMeasureValid(widthConstraint, heightConstraint) && Superview is not MauiView)
-            {
-                CrossPlatformMeasure(widthConstraint, heightConstraint);
-                CacheMeasureConstraints(widthConstraint, heightConstraint);
-            }
-
-            CrossPlatformArrange(bounds);
-        }
-
-        public override void SetNeedsLayout()
-        {
-            InvalidateConstraintsCache();
-            base.SetNeedsLayout();
-            Superview?.SetNeedsLayout();
-        }
-    }
-
-    public class CustomContentView : MauiView
-    {
-        WeakReference<IBorderStroke>? _clip;
-        CAShapeLayer? _childMaskLayer;
-        internal event EventHandler? LayoutSubviewsChanged;
-
-        public CustomContentView()
-        {
-            Layer.CornerCurve = CACornerCurve.Continuous;
-        }
-
-        public override void LayoutSubviews()
-        {
-            base.LayoutSubviews();
-
-            var bounds = AdjustForSafeArea(Bounds).ToRectangle();
-
-            if (ChildMaskLayer != null)
-                ChildMaskLayer.Frame = bounds;
-
-            SetClip();
-
-            LayoutSubviewsChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        internal IBorderStroke? Clip
-        {
-            get
-            {
-                if (_clip?.TryGetTarget(out IBorderStroke? target) == true)
-                    return target;
-
-                return null;
-            }
-            set
-            {
-                _clip = null;
-
-                if (value != null)
-                    _clip = new WeakReference<IBorderStroke>(value);
-
-                SetClip();
-            }
-        }
-
-        internal CAShapeLayer? ChildMaskLayer
-        {
-            get => _childMaskLayer;
-            set
-            {
-                var layer = GetChildLayer();
-
-                if (layer != null && _childMaskLayer != null)
-                    layer.Mask = null;
-
-                _childMaskLayer = value;
-
-                if (layer != null)
-                    layer.Mask = value;
-            }
-        }
-
-        CALayer? GetChildLayer()
-        {
-            if (Subviews.Length == 0)
-                return null;
-
-            var child = Subviews[0];
-
-            if (child.Layer is null)
-                return null;
-
-            return child.Layer;
-        }
-
-        void SetClip()
-        {
-            if (Subviews.Length == 0)
-                return;
-
-            var maskLayer = ChildMaskLayer;
-
-            if (maskLayer is null && Clip is null)
-                return;
-
-            maskLayer ??= ChildMaskLayer = new CAShapeLayer();
-
-            var frame = Frame;
-
-            if (frame == CGRect.Empty)
-                return;
-
-            var strokeThickness = (float)(Clip?.StrokeThickness ?? 0);
-
-            // In the MauiCALayer class, the Stroke is inner and we are clipping the outer, for that reason,
-            // we use the double to get the correct value. Here, again, we use the double to get the correct clip shape size values.
-            var strokeWidth = 2 * strokeThickness;
-
-            var bounds = new RectF(0, 0, (float)frame.Width - strokeWidth, (float)frame.Height - strokeWidth);
-
-            IShape? clipShape = Clip?.Shape;
-            PathF? path;
-
-            /*
-            if (clipShape is IRoundRectangle roundRectangle)
-                path = roundRectangle.InnerPathForBounds(bounds, strokeThickness);
-            else*/
-                path = clipShape?.PathForBounds(bounds);
-
-            var nativePath = path?.AsCGPath();
-
-            maskLayer.Path = nativePath;
         }
     }
 
