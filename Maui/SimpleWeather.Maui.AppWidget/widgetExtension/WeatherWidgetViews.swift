@@ -31,7 +31,6 @@ struct WeatherWidgetSmall: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            WeatherBackgroundOverlay(current: model.current)
             VStack(alignment: .leading) {
                 HStack {
                     Text(model.current.location)
@@ -56,11 +55,10 @@ struct WeatherWidgetSmall: View {
                     .truncationMode(.tail)
                     .font(textFont)
                     .fontWeight(.medium)
-            }
-            .padding(16)
+            }.frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
-        )
+        ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
     }
 }
 
@@ -69,7 +67,6 @@ struct WeatherWidgetSmallForecast: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            WeatherBackgroundOverlay(current: model.current)
             VStack(alignment: .leading) {
                 HStack(alignment: .center) {
                     VStack(alignment: .leading) {
@@ -104,10 +101,9 @@ struct WeatherWidgetSmallForecast: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-            .padding(16)
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
-        )
+        ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
     }
 }
 
@@ -116,7 +112,6 @@ struct WeatherWidgetMedium: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            WeatherBackgroundOverlay(current: model.current)
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center) {
                     // Location & Temp
@@ -158,7 +153,6 @@ struct WeatherWidgetMedium: View {
                         }
                     }
                 }
-                Spacer().frame(height: 16)
                 if (model.showHourlyForecast) {
                     HStack(alignment: .center) {
                         ForEach(0 ..< min(model.hourlyForecasts.count, 6)) { i in
@@ -175,10 +169,9 @@ struct WeatherWidgetMedium: View {
                     }
                 }
             }
-            .padding(16)
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
-        )
+        ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
     }
 }
 
@@ -187,7 +180,6 @@ struct WeatherWidgetLarge: View {
     
     var body: some View {
         ZStack(alignment: .topLeading) {
-            WeatherBackgroundOverlay(current: model.current)
             VStack(alignment: .leading) {
                 HStack(alignment: .center) {
                     // Location & Temp
@@ -261,10 +253,10 @@ struct WeatherWidgetLarge: View {
                         }
                     }
                 }
-            }.padding(16)
+            }
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
-        )
+        ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
     }
 }
 
@@ -562,4 +554,14 @@ func backgroundCodeToGradientOverlay(backgroundCode: String) -> GradientOverlay 
     }
     
     return GradientOverlay(stops: stops)
+}
+
+extension View {
+    func widgetBackground(view: some View) -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return containerBackground(for: .widget) { view }
+        } else {
+            return background { view }
+        }
+    }
 }

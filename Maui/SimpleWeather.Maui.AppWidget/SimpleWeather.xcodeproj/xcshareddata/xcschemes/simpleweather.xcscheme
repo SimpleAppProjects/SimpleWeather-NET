@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EA5C90F02ACBA39000FE8FAF"
-               BuildableName = "widgetExtension.appex"
-               BlueprintName = "widgetExtension"
-               ReferencedContainer = "container:SimpleWeather.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EA5C91152ACFBF0500FE8FAF"
-               BuildableName = "widgetintentExt.appex"
-               BlueprintName = "widgetintentExt"
+               BlueprintIdentifier = "EA2C17202B0D135B00ABDECE"
+               BuildableName = "simpleweather.app"
+               BlueprintName = "simpleweather"
                ReferencedContainer = "container:SimpleWeather.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -53,6 +39,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "EA2C17202B0D135B00ABDECE"
+            BuildableName = "simpleweather.app"
+            BlueprintName = "simpleweather"
+            ReferencedContainer = "container:SimpleWeather.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -60,15 +56,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EA5C90F02ACBA39000FE8FAF"
-            BuildableName = "widgetExtension.appex"
-            BlueprintName = "widgetExtension"
+            BlueprintIdentifier = "EA2C17202B0D135B00ABDECE"
+            BuildableName = "simpleweather.app"
+            BlueprintName = "simpleweather"
             ReferencedContainer = "container:SimpleWeather.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

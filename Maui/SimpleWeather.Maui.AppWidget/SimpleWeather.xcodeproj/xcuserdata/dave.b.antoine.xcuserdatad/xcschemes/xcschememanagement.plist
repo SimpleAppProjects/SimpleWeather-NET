@@ -14,6 +14,11 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>simpleweather.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
 		<key>widgetExtension.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -27,6 +32,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>EA2C17202B0D135B00ABDECE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>EA5C90F02ACBA39000FE8FAF</key>
 		<dict>
 			<key>primary</key>
