@@ -69,6 +69,7 @@ namespace SimpleWeather.Maui
 #if DEBUG
         private static void TestLaunchTask()
         {
+            // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateExpirationForTaskWithIdentifier:@"TASK_IDENTIFIER"]
             using var taskId = new NSString(WidgetUpdaterTask.TASK_ID);
             var method = new Selector("_simulateLaunchForTaskWithIdentifier:");
             void_objc_msgSend_IntPtr(BGTaskScheduler.Shared.Handle, method.Handle, taskId.Handle);
