@@ -30,7 +30,7 @@ struct WeatherWidgetSmall: View {
     let model: WeatherModel
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .center) {
             VStack(alignment: .leading) {
                 HStack {
                     Text(model.current.location)
@@ -55,7 +55,9 @@ struct WeatherWidgetSmall: View {
                     .truncationMode(.tail)
                     .font(textFont)
                     .fontWeight(.medium)
-            }.frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+            }
+            .frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, alignment: .leading)
+            .widgetContentPaddingCompat()
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
         ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
@@ -66,7 +68,7 @@ struct WeatherWidgetSmallForecast: View {
     let model: WeatherModel
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .center) {
             VStack(alignment: .leading) {
                 HStack(alignment: .center) {
                     VStack(alignment: .leading) {
@@ -101,6 +103,7 @@ struct WeatherWidgetSmallForecast: View {
                     }.frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .widgetContentPaddingCompat()
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
         ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
@@ -111,7 +114,7 @@ struct WeatherWidgetMedium: View {
     let model: WeatherModel
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
+        ZStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .center) {
                     // Location & Temp
@@ -169,6 +172,7 @@ struct WeatherWidgetMedium: View {
                     }
                 }
             }
+            .widgetContentPaddingCompat()
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
         ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
@@ -179,8 +183,8 @@ struct WeatherWidgetLarge: View {
     let model: WeatherModel
     
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            VStack(alignment: .leading) {
+        ZStack(alignment: .center) {
+            VStack(alignment: .center) {
                 HStack(alignment: .center) {
                     // Location & Temp
                     VStack(alignment: .leading) {
@@ -254,6 +258,7 @@ struct WeatherWidgetLarge: View {
                     }
                 }
             }
+            .widgetContentPaddingCompat()
         }.foregroundColor(
             (model.current.backgroundColor != nil || model.current.backgroundCode != nil) ? Color.white : nil
         ).widgetBackground(view: WeatherBackgroundOverlay(current: model.current))
@@ -561,7 +566,15 @@ extension View {
         if #available(iOSApplicationExtension 17.0, *) {
             return containerBackground(for: .widget) { view }
         } else {
-            return background { view }
+            return self.background { view }
+        }
+    }
+    
+    func widgetContentPaddingCompat() -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            return self
+        } else {
+            return self.frame(maxWidth: /*@START_MENU_TOKEN@*/.infinity/*@END_MENU_TOKEN@*/, maxHeight: .infinity).padding(16)
         }
     }
 }
