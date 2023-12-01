@@ -50,6 +50,7 @@
 		</CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
+		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 		<WarningLevel>4</WarningLevel>
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Release (iOS - Debug)</CodesignProvision>
