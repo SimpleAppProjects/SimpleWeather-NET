@@ -5,6 +5,7 @@ using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Projections;
 #if WINDOWS
+using CommunityToolkit.WinUI;
 using Mapsui.UI.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -76,7 +77,11 @@ namespace SimpleWeather.NET.Radar
 
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
+#if WINDOWS
+                mapControl.DispatcherQueue.EnqueueAsync(mapControl.NavigateHome);
+#else
                 mapControl.Dispatcher.Dispatch(mapControl.NavigateHome);
+#endif
                 if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
                 {
                     markerFeature.Point.X = MapCameraPosition.X;
