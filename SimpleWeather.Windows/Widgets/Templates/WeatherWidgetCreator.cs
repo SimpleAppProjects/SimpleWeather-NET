@@ -1,13 +1,12 @@
-﻿using AdaptiveCards.ObjectModel.WinUI3;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Windows.Widgets.Providers;
+using Newtonsoft.Json;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.NET.Widgets.Model;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
-using Windows.Data.Json;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.NET.Widgets.Templates
@@ -20,55 +19,59 @@ namespace SimpleWeather.NET.Widgets.Templates
         {
             if (widgetId == null || info == null || !(WidgetUtils.IdExists(widgetId) || WidgetUtils.IsGPS(widgetId))) return Task.FromResult<string>(null);
 
-            return Task.FromResult(new AdaptiveCard()
+            return Task.Run(() =>
             {
-                VerticalContentAlignment = VerticalContentAlignment.Top,
-                Version = "1.5",
-                BackgroundImage = GenerateContentBackground(),
-                Body =
+                try
                 {
-                    // Condition
-                    GenerateCondition(),
-                    // Spacer
-                    new AdaptiveTextBlock()
-                    {
-                        Size = TextSize.Small,
-                        HorizontalAlignment = HAlignment.Center,
-                        Spacing = Spacing.None,
-                        Text = "&#8201;",
-                        AdditionalProperties =
-                        {
-                            ["$when"] = JsonValue.CreateStringValue("${$host.widgetSize==\"medium\" || $host.widgetSize==\"large\"}")
-                        }
-                    },
-                    // Daily Forecast
-                    GenerateForecast(),
-                    // Spacer
-                    new AdaptiveTextBlock()
-                    {
-                        Size = TextSize.Small,
-                        HorizontalAlignment = HAlignment.Center,
-                        Spacing = Spacing.None,
-                        Text = "&#8201;",
-                        AdditionalProperties =
-                        {
-                            ["$when"] = JsonValue.CreateStringValue("${$host.widgetSize==\"large\"}")
-                        }
-                    },
-                    // Hourly Forecast
-                    GenerateHourlyForecast(),
-                    // Location name
-                    new AdaptiveTextBlock()
-                    {
-                        Size = TextSize.Default,
-                        Weight = TextWeight.Bolder,
-                        Text = "${current.location}",
-                        HorizontalAlignment = HAlignment.Center,
-                        FontType = FontType.Default,
-                        Spacing = Spacing.Medium
-                    }
+                    var str = Minify($@"
+                        {{
+                            ""$schema"": ""http://adaptivecards.io/schemas/adaptive-card.json"",
+                            ""type"": ""AdaptiveCard"",
+                            ""verticalContentAlignment"": ""Top"",
+                            ""version"": ""1.5"",
+                            ""backgroundImage"": {GenerateContentBackground()},
+                            ""body"": [
+                                {GenerateCondition()},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""size"": ""Small"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""None"",
+                                    ""text"": ""&#8201;"",
+                                    ""$when"": ""${{$host.widgetSize==\""medium\"" || $host.widgetSize==\""large\""}}""
+                                }},
+                                {GenerateForecast()},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""size"": ""Small"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""None"",
+                                    ""text"": ""&#8201;"",
+                                    ""$when"": ""${{$host.widgetSize==\""large\""}}""
+                                }},
+                                {GenerateHourlyForecast()},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""size"": ""Default"",
+                                    ""weight"": ""Bolder"",
+                                    ""text"": ""${{current.location}}"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""fontType"": ""Default"",
+                                    ""spacing"": ""Medium"",
+                                }},
+                            ]
+                        }}
+                    ");
+
+                    return str;
                 }
-            }.ToJson().ToString());
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e);
+                }
+
+                return null;
+            });
         }
 
         public override async Task<string> BuildWidgetData(string widgetId, WidgetInfo info)
@@ -86,7 +89,7 @@ namespace SimpleWeather.NET.Widgets.Templates
             return await BuildWidgetData(widgetId, viewModel, locData, info);
         }
 
-        private async Task<string> BuildWidgetData(
+        private static async Task<string> BuildWidgetData(
             string widgetId, WeatherUiModel weather,
             LocationData.LocationData location, WidgetInfo info)
         {
@@ -103,369 +106,321 @@ namespace SimpleWeather.NET.Widgets.Templates
                 chanceIcon = await WeatherWidgetDataExtensions.GetWeatherIcon(WeatherIcons.RAINDROP)
             };
 
-            return System.Text.Json.JsonSerializer.Serialize(widgetData, new System.Text.Json.JsonSerializerOptions()
+            var json = System.Text.Json.JsonSerializer.Serialize(widgetData, new System.Text.Json.JsonSerializerOptions()
             {
                 IncludeFields = true
             });
+
+            return json;
         }
 
-        private IAdaptiveCardElement GenerateCondition()
+        private static string GenerateCondition()
         {
-            return new AdaptiveColumnSet()
-            {
-                Columns =
+            return $@"
+                {{
+                    ""type"": ""ColumnSet"",
+                    ""columns"": [
+                        {{
+                            ""type"": ""Column"",
+                            ""width"": ""auto"",
+                            ""items"": [
+                                {{
+                                    ""type"": ""Image"",
+                                    ""style"": ""Default"",
+                                    ""size"": ""Medium"",
+                                    ""url"": ""${{current.weatherIcon.light}}"",
+                                    ""$when"": ""${{$host.hostTheme==\""light\""}}""
+                                }},
+                                {{
+                                    ""type"": ""Image"",
+                                    ""style"": ""Default"",
+                                    ""size"": ""Medium"",
+                                    ""url"": ""${{current.weatherIcon.dark}}"",
+                                    ""$when"": ""${{$host.hostTheme==\""dark\""}}""
+                                }}
+                            ]
+                        }},
+                        {{
+                            ""type"": ""Column"",
+                            ""width"": ""stretch"",
+                            ""verticalContentAlignment"": ""Center"",
+                            ""height"": ""stretch"",
+                            ""items"": [
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""weight"": ""Default"",
+                                    ""text"": ""${{current.temp}}"",
+                                    ""size"": ""ExtraLarge"",
+                                    ""fontType"": ""Default"",
+                                    ""style"": ""heading"",
+                                    ""horizontalAlignment"": ""Left"",
+                                    ""wrap"": true,
+                                    ""isSubtle"": true,
+                                    ""spacing"": ""None""
+                                }}
+                            ]
+                        }},
+                        {{
+                            ""type"": ""Column"",
+                            ""width"": ""auto"",
+                            ""verticalContentAlignment"": ""Center"",
+                            ""spacing"": ""Small"",
+                            ""items"": [
+                                {{
+                                    ""type"": ""RichTextBlock"",
+                                    ""inlines"": [
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""{ResStrings.label_feelslike}: "",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Bolder""
+                                        }},
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""${{current.feelsLike}}"",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Default""
+                                        }}
+                                    ],
+                                    ""spacing"": ""None""
+                                }},
+                                {{
+                                    ""type"": ""RichTextBlock"",
+                                    ""inlines"": [
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""{ResStrings.label_wind}: "",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Bolder""
+                                        }},
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""${{current.windSpeed}}"",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Default""
+                                        }}
+                                    ],
+                                    ""spacing"": ""None""
+                                }},
+                                {{
+                                    ""type"": ""RichTextBlock"",
+                                    ""inlines"": [
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""{ResStrings.label_chance}: "",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Bolder""
+                                        }},
+                                        {{
+                                            ""type"": ""TextRun"",
+                                            ""text"": ""${{current.chance}}"",
+                                            ""size"": ""Small"",
+                                            ""weight"": ""Default""
+                                        }}
+                                    ],
+                                    ""spacing"": ""None""
+                                }},
+                            ]
+                        }}
+                    ]
+                }}
+            ";
+        }
+
+        private static string GenerateContentBackground()
+        {
+            return @"
                 {
-                    new AdaptiveColumn()
-                    {
-                        Width = "auto",
-                        Items =
-                        {
-                            new AdaptiveImage()
-                            {
-                                Style = ImageStyle.Default,
-                                Size = ImageSize.Medium,
-                                // Weather icon
-                                Url = "${current.weatherIcon.light}",
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"light\"}")
-                                }
-                            },
-                            new AdaptiveImage()
-                            {
-                                Style = ImageStyle.Default,
-                                Size = ImageSize.Medium,
-                                // Weather icon
-                                Url = "${current.weatherIcon.dark}",
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"dark\"}")
-                                }
-                            },
-                        }
-                    },
-                    new AdaptiveColumn()
-                    {
-                        Width = "stretch",
-                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                        Height = HeightType.Stretch,
-                        Items =
-                        {
-                            new AdaptiveTextBlock()
-                            {
-                                Weight = TextWeight.Default,
-                                Text = "${current.temp}",
-                                Size = TextSize.ExtraLarge,
-                                FontType = FontType.Default,
-                                Style = TextStyle.Heading,
-                                HorizontalAlignment = HAlignment.Left,
-                                Wrap = true,
-                                IsSubtle = true,
-                                Spacing = Spacing.None
-                            }
-                        }
-                    },
-                    new AdaptiveColumn()
-                    {
-                        Width = "auto",
-                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                        Spacing = Spacing.Small,
-                        Items =
-                        {
-                            new AdaptiveRichTextBlock()
-                            {
-                                Inlines =
-                                {
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = $"{ResStrings.label_feelslike}: ",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Bolder,
-                                    },
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = "${current.feelsLike}",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Default
-                                    }
-                                },
-                                Spacing = Spacing.None
-                            },
-                            new AdaptiveRichTextBlock()
-                            {
-                                Inlines =
-                                {
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = $"{ResStrings.label_wind}: ",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Bolder,
-                                    },
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = "${current.windSpeed}",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Default
-                                    }
-                                },
-                                Spacing = Spacing.None
-                            },
-                            new AdaptiveRichTextBlock()
-                            {
-                                Inlines =
-                                {
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = $"{ResStrings.label_chance}: ",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Bolder,
-                                    },
-                                    new AdaptiveTextRun()
-                                    {
-                                        Text = "${current.chance}",
-                                        Size = TextSize.Small,
-                                        Weight = TextWeight.Default
-                                    }
-                                },
-                                Spacing = Spacing.None
-                            },
-                        }
-                    }
+                    ""fillMode"": ""Cover"",
+                    ""horizontalAlignment"": ""Center"",
+                    ""verticalAlignment"": ""Center"",
+                    ""url"": ""${current.background}""
                 }
-            };
+            ";
         }
 
-        private AdaptiveBackgroundImage GenerateContentBackground()
+        private static string GenerateForecast()
         {
-            return new AdaptiveBackgroundImage()
-            {
-                FillMode = BackgroundImageFillMode.Cover,
-                HorizontalAlignment = HAlignment.Center,
-                VerticalAlignment = VAlignment.Center,
-                Url = "${current.background}",
-            };
+            return $@"
+                {{
+                    ""type"": ""ColumnSet"",
+                    ""columns"": [
+                        {{
+                            ""type"": ""Column"",
+                            ""width"": 1,
+                            ""items"": [
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""text"": ""${{date}}"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""size"": ""Default"",
+                                    ""spacing"": ""None"",
+                                    ""weight"": ""Bolder""
+                                }},
+                                {{
+                                    ""type"": ""Image"",
+                                    ""url"": ""${{weatherIcon.light}}"",
+                                    ""width"": ""40px"",
+                                    ""height"": ""40px"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""Medium"",
+                                    ""size"": ""Medium"",
+                                    ""$when"": ""${{$host.hostTheme==\""light\""}}""
+                                }},
+                                {{
+                                    ""type"": ""Image"",
+                                    ""url"": ""${{weatherIcon.dark}}"",
+                                    ""width"": ""40px"",
+                                    ""height"": ""40px"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""Medium"",
+                                    ""size"": ""Medium"",
+                                    ""$when"": ""${{$host.hostTheme==\""dark\""}}""
+                                }},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""size"": ""Small"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""None"",
+                                    ""text"": ""&#8201;""
+                                }},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""text"": ""${{hi}}"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""None"",
+                                    ""weight"": ""Bolder"",
+                                    ""size"": ""Default"",
+                                    ""height"": ""Stretch"",
+                                }},
+                                {{
+                                    ""type"": ""TextBlock"",
+                                    ""text"": ""${{lo}}"",
+                                    ""horizontalAlignment"": ""Center"",
+                                    ""spacing"": ""None"",
+                                    ""weight"": ""Bolder"",
+                                    ""size"": ""Default"",
+                                    ""height"": ""Stretch"",
+                                    ""isSubtle"": true
+                                }},
+                            ],
+                            ""spacing"": ""None"",
+                            ""verticalContentAlignment"": ""Center"",
+                            ""$data"": ""${{forecast}}""
+                        }}
+                    ],
+                    ""$when"": ""${{($host.widgetSize==\""medium\"" || $host.widgetSize==\""large\"") && showForecast == true}}""
+                }}
+            ";
         }
 
-        private IAdaptiveCardElement GenerateForecast()
+        private static string GenerateHourlyForecast()
         {
-            return new AdaptiveColumnSet()
+            return @"
             {
-                Columns =
-                {
-                    new AdaptiveColumn()
+                ""type"": ""ColumnSet"",
+                ""columns"": [
                     {
-                        Width = "1",
-                        Items =
-                        {
-                            new AdaptiveTextBlock()
+                        ""type"": ""Column"",
+                        ""width"": 1,
+                        ""items"": [
                             {
-                                Text = "${date}",
-                                HorizontalAlignment = HAlignment.Center,
-                                Size = TextSize.Default,
-                                Spacing = Spacing.None,
-                                Weight = TextWeight.Bolder
+                                ""type"": ""TextBlock"",
+                                ""text"": ""${date}"",
+                                ""horizontalAlignment"": ""Center"",
+                                ""size"": ""Default"",
+                                ""spacing"": ""None"",
+                                ""weight"": ""Bolder""
                             },
-                            new AdaptiveImage()
                             {
-                                // Weather icon
-                                Url = "${weatherIcon.light}",
-                                PixelHeight = 40,
-                                PixelWidth = 40,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.Medium,
-                                Size = ImageSize.Medium,
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"light\"}")
-                                }
+                                ""type"": ""Image"",
+                                ""url"": ""${weatherIcon.light}"",
+                                ""width"": ""40px"",
+                                ""height"": ""40px"",
+                                ""horizontalAlignment"": ""Center"",
+                                ""spacing"": ""Medium"",
+                                ""size"": ""Medium"",
+                                ""$when"": ""${$host.hostTheme==\""light\""}""
                             },
-                            new AdaptiveImage()
                             {
-                                // Weather icon
-                                Url = "${weatherIcon.dark}",
-                                PixelHeight = 40,
-                                PixelWidth = 40,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.Medium,
-                                Size = ImageSize.Medium,
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"dark\"}")
-                                }
+                                ""type"": ""Image"",
+                                ""url"": ""${weatherIcon.dark}"",
+                                ""width"": ""40px"",
+                                ""height"": ""40px"",
+                                ""horizontalAlignment"": ""Center"",
+                                ""spacing"": ""Medium"",
+                                ""size"": ""Medium"",
+                                ""$when"": ""${$host.hostTheme==\""dark\""}""
                             },
-                            new AdaptiveTextBlock()
                             {
-                                Size = TextSize.Small,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.None,
-                                Text = "&#8201;"
+                                ""type"": ""TextBlock"",
+                                ""size"": ""Small"",
+                                ""horizontalAlignment"": ""Center"",
+                                ""spacing"": ""None"",
+                                ""text"": ""&#8201;""
                             },
-                            new AdaptiveTextBlock()
                             {
-                                Text = "${hi}",
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.None,
-                                Weight = TextWeight.Bolder,
-                                Size = TextSize.Default,
-                                Height = HeightType.Stretch
+                                ""type"": ""TextBlock"",
+                                ""text"": ""${hi}"",
+                                ""horizontalAlignment"": ""Center"",
+                                ""spacing"": ""None"",
+                                ""weight"": ""Bolder"",
+                                ""size"": ""Default"",
+                                ""height"": ""stretch""
                             },
-                            new AdaptiveTextBlock()
                             {
-                                Text = "${lo}",
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.None,
-                                Weight = TextWeight.Bolder,
-                                Size = TextSize.Default,
-                                Height = HeightType.Stretch,
-                                IsSubtle = true,
-                            }
-                        },
-                        Spacing = Spacing.None,
-                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                        AdditionalProperties =
-                        {
-                            ["$data"] = JsonValue.CreateStringValue("${forecast}")
-                        }
-                    }
-                },
-                AdditionalProperties =
-                {
-                    ["$when"] = JsonValue.CreateStringValue("${($host.widgetSize==\"medium\" || $host.widgetSize==\"large\") && showForecast == true}")
-                }
-            };
-        }
-
-        private IAdaptiveCardElement GenerateHourlyForecast()
-        {
-            return new AdaptiveColumnSet()
-            {
-                Columns =
-                {
-                    new AdaptiveColumn()
-                    {
-                        Width = "1",
-                        Items =
-                        {
-                            new AdaptiveTextBlock()
-                            {
-                                Text = "${date}",
-                                HorizontalAlignment = HAlignment.Center,
-                                Size = TextSize.Default,
-                                Spacing = Spacing.None,
-                                Weight = TextWeight.Bolder
-                            },
-                            new AdaptiveImage()
-                            {
-                                // Weather icon
-                                Url = "${weatherIcon.light}",
-                                PixelHeight = 40,
-                                PixelWidth = 40,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.Medium,
-                                Size = ImageSize.Medium,
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"light\"}")
-                                }
-                            },
-                            new AdaptiveImage()
-                            {
-                                // Weather icon
-                                Url = "${weatherIcon.dark}",
-                                PixelHeight = 40,
-                                PixelWidth = 40,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.Medium,
-                                Size = ImageSize.Medium,
-                                AdditionalProperties =
-                                {
-                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"dark\"}")
-                                }
-                            },
-                            new AdaptiveTextBlock()
-                            {
-                                Size = TextSize.Small,
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.None,
-                                Text = "&#8201;"
-                            },
-                            new AdaptiveTextBlock()
-                            {
-                                Text = "${hi}",
-                                HorizontalAlignment = HAlignment.Center,
-                                Spacing = Spacing.None,
-                                Weight = TextWeight.Bolder,
-                                Size = TextSize.Default,
-                                Height = HeightType.Stretch
-                            },
-                            new AdaptiveColumnSet()
-                            {
-                                Spacing = Spacing.Small,
-                                Columns =
-                                {
-                                    new AdaptiveColumn()
+                                ""type"": ""ColumnSet"",
+                                ""spacing"": ""Small"",
+                                ""columns"": [
                                     {
-                                        Width = "1",
-                                        Spacing = Spacing.None,
-                                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                                        Items =
-                                        {
-                                            new AdaptiveImage()
+                                        ""type"": ""Column"",
+                                        ""width"": 1,
+                                        ""spacing"": ""None"",
+                                        ""verticalContentAlignment"": ""Center"",
+                                        ""items"": [
                                             {
-                                                HorizontalAlignment = HAlignment.Center,
-                                                Spacing = Spacing.None,
-                                                Size = ImageSize.Small,
-                                                Url = "${chanceIcon.light}",
-                                                AdditionalProperties =
-                                                {
-                                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"light\"}")
-                                                }
+                                                ""type"": ""Image"",
+                                                ""horizontalAlignment"": ""Center"",
+                                                ""spacing"": ""None"",
+                                                ""size"": ""Small"",
+                                                ""url"": ""${chanceIcon.light}"",
+                                                ""$when"": ""${$host.hostTheme==\""light\""}""
                                             },
-                                            new AdaptiveImage()
                                             {
-                                                HorizontalAlignment = HAlignment.Center,
-                                                Spacing = Spacing.None,
-                                                Size = ImageSize.Small,
-                                                Url = "${chanceIcon.dark}",
-                                                AdditionalProperties =
-                                                {
-                                                    ["$when"] = JsonValue.CreateStringValue("${$host.hostTheme==\"dark\"}")
-                                                }
+                                                ""type"": ""Image"",
+                                                ""horizontalAlignment"": ""Center"",
+                                                ""spacing"": ""None"",
+                                                ""size"": ""Small"",
+                                                ""url"": ""${chanceIcon.dark}"",
+                                                ""$when"": ""${$host.hostTheme==\""dark\""}""
                                             }
-                                        }
+                                        ]
                                     },
-                                    new AdaptiveColumn()
                                     {
-                                        Width = "2",
-                                        Spacing = Spacing.None,
-                                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                                        Items =
-                                        {
-                                            new AdaptiveTextBlock()
+                                        ""type"": ""Column"",
+                                        ""width"": 2,
+                                        ""spacing"": ""None"",
+                                        ""verticalContentAlignment"": ""Center"",
+                                        ""items"": [
                                             {
-                                                Text = "${chance}",
-                                                HorizontalAlignment = HAlignment.Center,
-                                                Spacing = Spacing.None,
-                                                Size = TextSize.Small
+                                                ""type"": ""TextBlock"",
+                                                ""text"": ""${chance}"",
+                                                ""horizontalAlignment"": ""Center"",
+                                                ""spacing"": ""None"",
+                                                ""size"": ""Small""
                                             }
-                                        }
+                                        ]
                                     }
-                                }
-                            }
-                        },
-                        Spacing = Spacing.None,
-                        VerticalContentAlignment = VerticalContentAlignment.Center,
-                        AdditionalProperties =
-                        {
-                            ["$data"] = JsonValue.CreateStringValue("${hr_forecast}")
-                        }
+                                ]
+                            },
+                        ],
+                        ""spacing"": ""None"",
+                        ""verticalContentAlignment"": ""Center"",
+                        ""$data"": ""${hr_forecast}""
                     }
-                },
-                AdditionalProperties =
-                {
-                    ["$when"] = JsonValue.CreateStringValue("${$host.widgetSize==\"large\" && showHrForecast == true}")
-                }
-            };
+                ],
+                ""$when"": ""${$host.widgetSize==\""large\"" && showHrForecast == true}""
+            }";
         }
 
         private static async Task<List<ForecastItemViewModel>> GetForecasts(LocationData.LocationData location)
@@ -507,6 +462,16 @@ namespace SimpleWeather.NET.Widgets.Templates
             }
 
             return result;
+        }
+
+        private static string Minify(string json)
+        {
+            using var jsonReader = new JsonTextReader(new StringReader(json));
+            using var stringWriter = new StringWriter();
+            using var jsonWriter = new JsonTextWriter(stringWriter);
+            jsonWriter.Formatting = Formatting.None;
+            jsonWriter.WriteToken(jsonReader);
+            return stringWriter.ToString();
         }
     }
 }

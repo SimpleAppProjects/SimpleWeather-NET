@@ -8,7 +8,7 @@ namespace SimpleWeather.NET.Widgets
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
     [Guid("1D453922-87B3-41AB-9D61-1A73C4360E71")]
-    internal partial class WidgetProvider : IWidgetProvider
+    internal partial class WidgetProvider : IWidgetProvider, IWidgetProvider2, IWidgetProviderAnalytics, IWidgetProviderErrors
     {
         private static bool HaveRecoveredWidgets { get; set; } = false;
 
@@ -31,7 +31,12 @@ namespace SimpleWeather.NET.Widgets
                 try
                 {
                     var widgetManager = WidgetManager.GetDefault();
-                    foreach (var widgetInfo in widgetManager.GetWidgetInfos())
+
+                    var widgetInfos = widgetManager.GetWidgetInfos();
+
+                    if (widgetInfos == null) return;
+
+                    foreach (var widgetInfo in widgetInfos)
                     {
                         var context = widgetInfo.WidgetContext;
                         if (!WidgetInstances.ContainsKey(context.Id))
@@ -135,12 +140,12 @@ namespace SimpleWeather.NET.Widgets
         // until Deactivate function was called.
         public void Activate(WidgetContext widgetContext)
         {
-            if (!WidgetInstances.ContainsKey(widgetContext.Id))
+            if (!WidgetInstances.TryGetValue(widgetContext.Id, out WidgetImplBase widgetImpl))
             {
                 throw new Exception($"Activate called for unknown ");
             }
 
-            WidgetInstances[widgetContext.Id].Activate(widgetContext);
+            widgetImpl.Activate(widgetContext);
         }
 
         // Handle the Deactivate call. This function is called when widgets host stops listening
@@ -150,6 +155,21 @@ namespace SimpleWeather.NET.Widgets
         public void Deactivate(string widgetId)
         {
             WidgetInstances[widgetId].Deactivate();
+        }
+
+        public void OnCustomizationRequested(WidgetCustomizationRequestedArgs customizationRequestedArgs)
+        {
+
+        }
+
+        public void OnAnalyticsInfoReported(WidgetAnalyticsInfoReportedArgs args)
+        {
+
+        }
+
+        public void OnErrorInfoReported(WidgetErrorInfoReportedArgs args)
+        {
+            Logger.WriteLine(LoggerLevel.Debug, $"{nameof(WidgetProvider)} - Widget Error: ${args.ErrorJson}");
         }
     }
 }

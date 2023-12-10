@@ -86,7 +86,7 @@
             <uap3:Properties>
               <WidgetProvider>
                 <ProviderIcons>
-                  <Icon Path="Assets\StoreLogo.png" />
+                  <Icon Path="Assets\Square44x44Logo.png" />
                 </ProviderIcons>
                 <Activation>
                   <!-- Apps exports COM interface which implements IWidgetProvider -->
@@ -96,7 +96,7 @@
                   <TrustedPackageFamilyName>Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe</TrustedPackageFamilyName>
                 </TrustedPackageFamilyNames>
                 <Definitions>
-                  <Definition Id="Weather_Widget" DisplayName="SimpleWeather" Description="SimpleWeather Widget" AllowMultiple="false">
+                  <Definition Id="Weather_Widget" DisplayName="SimpleWeather" Description="SimpleWeather Widget" AllowMultiple="false" IsCustomizable="false">
                     <Capabilities>
                       <Capability>
                         <Size Name="small" />
@@ -110,7 +110,7 @@
                     </Capabilities>
                     <ThemeResources>
                       <Icons>
-                        <Icon Path="Assets\Square44x44Logo.png" />
+                        <Icon Path="Assets\AppLogo.png" />
                       </Icons>
                       <Screenshots>
                         <Screenshot Path="Assets\WeatherWidget_Screenshot_light.png" DisplayAltText="SimpleWeather Weather Widget"  />
