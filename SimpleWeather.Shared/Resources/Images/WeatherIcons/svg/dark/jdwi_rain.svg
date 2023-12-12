@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg16" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs6">
+    <style id="style1">.ac2a3b66-3f00-44b8-ae97-116687c11638{fill:none;}.a2433b04-e791-4336-adc7-b79715c30a98{fill:#eee;}.a236f47b-a7b7-4f54-af56-e039175888e9{opacity:0.1;}.bae98e8a-b1ea-401b-be34-705cfd4107b9{fill:#212121;}.f688ca1c-7419-47b3-b862-8cbdde32fa73{opacity:0.4;}.abf8e685-f0d9-4b94-9c34-a70bee1532d3{fill:#fff;}.f8152cbb-78ce-4b67-9520-62624f50b6b6{fill:#29b6f6;}.f36735da-ff96-4b0d-a73a-a595f81b5bd6{opacity:0.2;}.fb2f0db7-f596-43a6-808f-080f41eda8d1{fill:#263238;}.ad4356fd-7e9e-4ef1-8332-4ffa7679e6f6{clip-path:url(#bcf40269-b007-4899-bc73-63efa8437c7f);}.fa074a13-45bf-4176-902d-31140e668e2a{fill:url(#ee44d07d-88c0-49b7-98dd-971caa66cddd);}.e46c07c7-0af6-487b-9102-9f63ead8b63a{clip-path:url(#b48169dd-4be4-48dc-8be6-d34e0ff99c16);}.aaba6525-acc2-4f15-bacc-a5901636b8c1{fill:url(#fec2ffce-b9d6-4572-9f51-95f175d84293);}.b54e2744-235e-4409-970b-871fd9f7a6ba{clip-path:url(#ad553557-75a2-4419-b5f2-84bef63cb78d);}.b5d95ff7-14a2-483e-b8c9-599d9d1ffbe1{fill:url(#b0b62b9d-6fd3-4128-b0cf-87ae58623ce4);}.fe3c4672-d5e9-4b4b-baec-9ae802c96d01{clip-path:url(#a125440f-e8aa-4429-81cd-7b7d4e9f9898);}.f9cae227-17ff-43f8-8a04-4054a77e0422{fill:url(#a44311fb-9066-48f5-ad0b-bfed9dd3ee68);}</style>
+    <clipPath id="bcf40269-b007-4899-bc73-63efa8437c7f">
+      <path class="ac2a3b66-3f00-44b8-ae97-116687c11638" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z M 72,152 a 8,8 0 0 0 -8,8 v 8 a 8,8 0 0 0 16,0 v -8 a 8,8 0 0 0 -8,-8 z m 48,0 a 8,8 0 0 0 -8,8 v 8 a 8,8 0 0 0 16,0 v -8 a 8,8 0 0 0 -8,-8 z m -24,0 a 8,8 0 0 0 -8,8 v 8 a 8,8 0 0 0 16,0 v -8 a 8,8 0 0 0 -8,-8 z" id="path1" />
+    </clipPath>
+    <radialGradient id="ee44d07d-88c0-49b7-98dd-971caa66cddd" cx="8" cy="0" r="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.1" id="stop1" />
+      <stop offset="0.143" stop-color="#c3c3c3" stop-opacity="0.077" id="stop2" />
+      <stop offset="0.609" stop-color="#323232" stop-opacity="0.02" id="stop3" />
+      <stop offset="1" stop-opacity="0" id="stop4" />
+    </radialGradient>
+    <radialGradient xlink:href="#ee44d07d-88c0-49b7-98dd-971caa66cddd" id="radialGradient16" gradientUnits="userSpaceOnUse" cx="8" cy="0" r="192" />
+  </defs>
+  <g id="b48d246c-8ff9-44cf-bd49-ec7531ea5085" data-name="rain" transform="matrix(0.75,0,0,0.75,24,24)">
+    <rect class="ac2a3b66-3f00-44b8-ae97-116687c11638" width="192" height="192" id="rect6" x="0" y="0" />
+    <path class="a2433b04-e791-4336-adc7-b79715c30a98" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z" id="path7" />
+    <g class="a236f47b-a7b7-4f54-af56-e039175888e9" id="g8">
+      <path class="bae98e8a-b1ea-401b-be34-705cfd4107b9" d="M 152,143 H 48 A 47.994,47.994 0 0 1 0.012,95.483 C 0.01,95.656 0,95.827 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 c 0,-0.171 -0.01,-0.34 -0.012,-0.511 A 40,40 0 0 1 152,143 Z" id="path8" />
+    </g>
+    <g class="f688ca1c-7419-47b3-b862-8cbdde32fa73" id="g9">
+      <path class="abf8e685-f0d9-4b94-9c34-a70bee1532d3" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 c 0,0.162 0.011,0.321 0.012,0.483 a 48,48 0 0 1 42.776,-47.2 60,60 0 0 1 112.029,15.827 39.989,39.989 0 0 1 37.171,39.379 c 0,-0.163 0.012,-0.325 0.012,-0.489 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z" id="path9" />
+    </g>
+    <rect class="f8152cbb-78ce-4b67-9520-62624f50b6b6" x="64" y="152" width="16" height="24" rx="8" id="rect9" />
+    <rect class="f8152cbb-78ce-4b67-9520-62624f50b6b6" x="88" y="152" width="16" height="24" rx="8" id="rect10" />
+    <rect class="f8152cbb-78ce-4b67-9520-62624f50b6b6" x="112" y="152" width="16" height="24" rx="8" id="rect11" />
+    <g class="f36735da-ff96-4b0d-a73a-a595f81b5bd6" id="g11">
+      <path class="fb2f0db7-f596-43a6-808f-080f41eda8d1" d="m 96,175 a 8,8 0 0 1 -8,-8 v 1 a 8,8 0 0 0 16,0 v -1 a 8,8 0 0 1 -8,8 z m -24,0 a 8,8 0 0 1 -8,-8 v 1 a 8,8 0 0 0 16,0 v -1 a 8,8 0 0 1 -8,8 z m 48,0 a 8,8 0 0 1 -8,-8 v 1 a 8,8 0 0 0 16,0 v -1 a 8,8 0 0 1 -8,8 z" id="path11" />
+    </g>
+    <g class="f36735da-ff96-4b0d-a73a-a595f81b5bd6" id="g12">
+      <path class="abf8e685-f0d9-4b94-9c34-a70bee1532d3" d="m 72,152 a 8,8 0 0 0 -8,8 v 1 a 8,8 0 0 1 16,0 v -1 a 8,8 0 0 0 -8,-8 z m 24,0 a 8,8 0 0 0 -8,8 v 1 a 8,8 0 0 1 16,0 v -1 a 8,8 0 0 0 -8,-8 z m 24,0 a 8,8 0 0 0 -8,8 v 1 a 8,8 0 0 1 16,0 v -1 a 8,8 0 0 0 -8,-8 z" id="path12" />
+    </g>
+    <g class="ad4356fd-7e9e-4ef1-8332-4ffa7679e6f6" clip-path="url(#bcf40269-b007-4899-bc73-63efa8437c7f)" id="g13">
+      <circle class="fa074a13-45bf-4176-902d-31140e668e2a" cx="8" r="192" id="circle12" style="fill:url(#radialGradient16)" cy="0" />
+    </g>
+  </g>
+</svg>

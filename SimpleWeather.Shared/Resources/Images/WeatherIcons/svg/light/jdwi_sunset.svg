@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="192"
+   height="192"
+   viewBox="0 0 192 192"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <style
+       id="style1">.a9cf1bb2-4c4b-45d6-873a-3dc6850d34f1{fill:none;}</style>
+  </defs>
+  <g
+     id="a0be0d06-e5b0-4d6e-a087-f2fd04f4df2f"
+     data-name="sunset"
+     transform="matrix(6,0,0,6,24,24)">
+    <rect
+       class="a9cf1bb2-4c4b-45d6-873a-3dc6850d34f1"
+       width="24"
+       height="24"
+       id="rect1"
+       x="0"
+       y="0" />
+    <path
+       d="M 20.485,4.929 19.071,3.515 16.95,5.636 18.364,7.05 Z M 13,1 h -2 v 3 h 2 z M 7.05,5.636 4.929,3.515 3.515,4.929 5.636,7.05 Z M 4,11 H 1 v 2 h 3 z m 16,0 v 2 h 3 v -2 z m -2,1 A 6,6 0 1 0 6.812,15 H 2 v 2 H 22 V 15 H 17.188 A 5.95,5.95 0 0 0 18,12 Z m -3.38,3 H 9.38 a 4,4 0 1 1 5.24,0 z"
+       id="path1"
+       style="fill:#000000" />
+    <polygon
+       points="13.414,18 12,19.414 10.586,18 9.172,19.414 10.586,20.828 12,22.243 13.414,20.828 14.828,19.414 "
+       id="polygon1"
+       style="fill:#000000" />
+  </g>
+</svg>

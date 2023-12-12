@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg13" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs6">
+    <style id="style1">.a8dbfe1a-655b-4727-89e6-e39571d31ec2{fill:none;}.b6920f7f-e53c-4166-9f9f-a00604e7468b{fill:#eee;}.bf73c3f5-68f8-4298-ba8f-dd49ee6ba5ef{opacity:0.1;}.baa46d6d-9e1d-4a98-9d69-7fa677e4e379{fill:#212121;}.f41513cd-dd08-434d-8643-6eccbb679b39{opacity:0.4;}.b9b03957-da29-476e-8350-7cb48c90a9d0{fill:#fff;}.a64b1144-9959-4c11-b8e4-d400f5f9791e{clip-path:url(#b5aae732-a374-4ac3-b45a-59a9fa73cf06);}.a3b7110e-3589-48b6-8525-de440a2b66f8{fill:url(#bec06d1b-db8b-49ee-88dd-067e3a980c61);}.af3cc8c1-371b-4394-a915-b8ef3d5cc6f9{clip-path:url(#a98f12f7-a5e7-43e2-b170-4083a3f33f21);}.bee6e703-6c94-4e27-9887-1f4873671be6{fill:url(#f7179d39-e096-4039-90ae-baf118ded8aa);}.a7c40354-aabf-4e6d-b7f2-65a0136f1e93{clip-path:url(#a84ce545-c1b5-4865-939f-91a06a3b9042);}.b936108b-03d0-4a1d-a55a-909610660dfd{fill:url(#beed4a27-b251-415d-9bd5-b0750a7661b0);}.e965c7ef-17d3-43b0-87a2-e6c250d31671{clip-path:url(#b0aaa523-2d2a-44f2-840f-9c3dc1793de6);}.aceff841-82ec-4901-b585-321163a96ed3{fill:url(#b4776419-69d0-4ca9-8085-07647335dc8e);}</style>
+    <clipPath id="b5aae732-a374-4ac3-b45a-59a9fa73cf06">
+      <path class="a8dbfe1a-655b-4727-89e6-e39571d31ec2" d="M 154.817,80.11 A 60,60 0 0 0 42.788,64.286 48,48 0 0 0 0,112 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.995,39.995 0 0 0 154.817,80.11 Z" id="path1" />
+    </clipPath>
+    <radialGradient id="bec06d1b-db8b-49ee-88dd-067e3a980c61" cx="0" cy="0" r="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.1" id="stop1" />
+      <stop offset="0.143" stop-color="#c3c3c3" stop-opacity="0.077" id="stop2" />
+      <stop offset="0.609" stop-color="#323232" stop-opacity="0.02" id="stop3" />
+      <stop offset="1" stop-opacity="0" id="stop4" />
+    </radialGradient>
+    <radialGradient xlink:href="#bec06d1b-db8b-49ee-88dd-067e3a980c61" id="radialGradient13" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="192" />
+  </defs>
+  <g id="bd6186bc-1f75-4a12-a1c1-0ecaf4b61251" data-name="cloudy" transform="matrix(0.75,0,0,0.75,24,24)">
+    <rect class="a8dbfe1a-655b-4727-89e6-e39571d31ec2" width="192" height="192" id="rect6" x="0" y="0" />
+    <path class="b6920f7f-e53c-4166-9f9f-a00604e7468b" d="M 154.817,80.11 A 60,60 0 0 0 42.788,64.286 48,48 0 0 0 0,112 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.995,39.995 0 0 0 154.817,80.11 Z" id="path7" />
+    <g class="bf73c3f5-68f8-4298-ba8f-dd49ee6ba5ef" id="g8">
+      <path class="baa46d6d-9e1d-4a98-9d69-7fa677e4e379" d="M 152,159 H 48 A 47.994,47.994 0 0 1 0.012,111.483 C 0.012,111.656 0,111.827 0,112 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 c 0,-0.171 -0.01,-0.34 -0.012,-0.511 A 40,40 0 0 1 152,159 Z" id="path8" />
+    </g>
+    <g class="f41513cd-dd08-434d-8643-6eccbb679b39" id="g9">
+      <path class="b9b03957-da29-476e-8350-7cb48c90a9d0" d="M 154.817,80.11 A 60,60 0 0 0 42.788,64.286 48,48 0 0 0 0,112 v 0 c 0,0.162 0.011,0.321 0.012,0.483 a 48,48 0 0 1 42.776,-47.2 60,60 0 0 1 112.029,15.827 39.989,39.989 0 0 1 37.171,39.379 c 0,-0.163 0.012,-0.325 0.012,-0.489 v 0 A 39.995,39.995 0 0 0 154.817,80.11 Z" id="path9" />
+    </g>
+    <g class="a64b1144-9959-4c11-b8e4-d400f5f9791e" clip-path="url(#b5aae732-a374-4ac3-b45a-59a9fa73cf06)" id="g10">
+      <circle class="a3b7110e-3589-48b6-8525-de440a2b66f8" r="192" id="circle9" style="fill:url(#radialGradient13)" cx="0" cy="0" />
+    </g>
+  </g>
+</svg>

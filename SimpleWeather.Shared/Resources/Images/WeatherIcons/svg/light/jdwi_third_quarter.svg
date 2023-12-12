@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="192"
+   height="192"
+   viewBox="0 0 192 192"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <style
+       id="style1">.b8e029e6-ab7e-45b6-8a63-26451046b9b4{fill:none;}</style>
+  </defs>
+  <g
+     id="b4075c34-9fec-43f7-8054-d4eed0e259dd"
+     data-name="third-quarter"
+     transform="matrix(6,0,0,6,24,24)">
+    <rect
+       class="b8e029e6-ab7e-45b6-8a63-26451046b9b4"
+       width="24"
+       height="24"
+       id="rect1"
+       x="0"
+       y="0" />
+    <path
+       d="M 12,2 A 10,10 0 1 0 22,12 10,10 0 0 0 12,2 Z m 0,18 V 4 a 8,8 0 0 1 0,16 z"
+       id="path1"
+       style="fill:#000000" />
+  </g>
+</svg>

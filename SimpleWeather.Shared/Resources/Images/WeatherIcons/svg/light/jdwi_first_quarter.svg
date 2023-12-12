@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs1">
+    <style id="style1">.a377d816-6d12-4ee9-ae5b-a407150a8dbe{fill:none;}</style>
+  </defs>
+  <g id="b512fb3d-167a-4eb6-a2a7-fe64b7ebd64c" data-name="first-quarter" transform="matrix(6,0,0,6,24,24)">
+    <rect class="a377d816-6d12-4ee9-ae5b-a407150a8dbe" width="24" height="24" id="rect1" x="0" y="0" />
+    <path d="M 12,2 A 10,10 0 1 0 22,12 10,10 0 0 0 12,2 Z m 0,18 A 8,8 0 0 1 12,4 Z" id="path1" style="fill:#000000" />
+  </g>
+</svg>

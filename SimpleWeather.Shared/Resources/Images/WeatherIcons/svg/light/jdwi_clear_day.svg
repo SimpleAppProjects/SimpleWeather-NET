@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style>.b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a{fill:none;}.ab4ab074-7dc6-47b9-b306-a7f99fd9aca6{fill:#fdd835;}.f7658526-e6c0-4f3b-bd08-857e6b90397e{opacity:0.2;}.bd8a9820-80d3-4209-8e8b-c995c8167dbe{fill:#bf360c;}.be7c23fd-ad3b-459e-b33a-66f3d9818d09{fill:#fff;}.b45bf3d0-3e61-40b1-8fdd-16dd3accc07c{clip-path:url(#ab5291fb-84b0-4900-a4c3-4dc8f743e78d);}.b343e481-5f9b-4355-9657-ff53f66793ad{fill:url(#bb8f3f99-04b5-4caf-8d38-9436392c8235);}.acb6a1aa-9c20-40a5-baa2-f62f291b586b{clip-path:url(#e520bd6f-3551-4bf5-b9cf-1a3ff0de2ccb);}.aab7faa2-f565-4a58-9cfd-5bb7f78c889b{fill:url(#a17815f7-20f2-45ab-ab67-83341144b19f);}.f9fbc226-eb86-4af6-99e1-a8bb21407879{clip-path:url(#afd0c062-6e0d-41f4-9808-f78ae6973eeb);}.f2e3762f-a3ce-4fdd-aaae-05d9e0ceaffb{fill:url(#b24c4921-a8bd-4155-bb2a-0b91060a305d);}.bec002a8-efab-440f-8052-3a1dd21488c3{clip-path:url(#e3ed6aac-90c1-46fd-a425-ac9004574001);}.a7da7288-8977-4b3c-9bee-bfc20bf25f05{fill:url(#aaf5da5c-9eab-46a2-88a1-68702b1c2011);}</style>
+  <clipPath id="ab5291fb-84b0-4900-a4c3-4dc8f743e78d">
+   <circle class="b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a" cx="96" cy="96" r="80"/>
+  </clipPath>
+  <radialGradient id="bb8f3f99-04b5-4caf-8d38-9436392c8235" cx="0" cy="0" r="192" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#fff" stop-opacity=".1" offset="0"/>
+   <stop stop-color="#c3c3c3" stop-opacity=".077" offset=".14"/>
+   <stop stop-color="#323232" stop-opacity=".02" offset=".61"/>
+   <stop stop-opacity="0" offset="1"/>
+  </radialGradient>
+  <clipPath id="e520bd6f-3551-4bf5-b9cf-1a3ff0de2ccb">
+   <path class="b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a" d="m376 16a80 80 0 1088 88 88 88 0 01-88-88z"/>
+  </clipPath>
+  <radialGradient id="a17815f7-20f2-45ab-ab67-83341144b19f" cx="288" xlink:href="#bb8f3f99-04b5-4caf-8d38-9436392c8235"/>
+  <clipPath id="afd0c062-6e0d-41f4-9808-f78ae6973eeb">
+   <path class="b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a" d="m176 384a80 80 0 10-151 36 8 8 0 007.2 12 80 80 0 0016 16 8 8 0 000 16h96a8 8 0 000-16 80 80 0 0016-16 8 8 0 007.2-12 80 80 0 008.8-36z"/>
+  </clipPath>
+  <radialGradient id="b24c4921-a8bd-4155-bb2a-0b91060a305d" cy="288" xlink:href="#bb8f3f99-04b5-4caf-8d38-9436392c8235"/>
+  <clipPath id="e3ed6aac-90c1-46fd-a425-ac9004574001">
+   <path class="b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a" d="m464 392a88 88 0 01-88-88 80 80 0 00-63 116 8 8 0 007.2 12 80 80 0 0016 16 8 8 0 000 16h96a8 8 0 000-16h-.008a80 80 0 0016-16h.008a8 8 0 007.2-11 79 79 0 008.4-29z"/>
+  </clipPath>
+  <radialGradient id="aaf5da5c-9eab-46a2-88a1-68702b1c2011" cx="288" cy="288" xlink:href="#bb8f3f99-04b5-4caf-8d38-9436392c8235"/>
+  <radialGradient id="radialGradient12" cx="0" cy="0" r="192" gradientUnits="userSpaceOnUse" xlink:href="#bb8f3f99-04b5-4caf-8d38-9436392c8235"/>
+ </defs>
+ <g id="aff73447-4597-4535-9007-45f56b08e26c" transform="matrix(.75 0 0 .75 24 24)" data-name="clear-day">
+  <rect class="b6a84e7e-c8d6-4b32-9c1f-f4ec3775464a" width="192" height="192"/>
+  <circle class="ab4ab074-7dc6-47b9-b306-a7f99fd9aca6" cx="96" cy="96" r="80"/>
+  <g class="f7658526-e6c0-4f3b-bd08-857e6b90397e">
+   <path class="bd8a9820-80d3-4209-8e8b-c995c8167dbe" d="m96 175a80 80 0 01-80-80c0 .17-.013.33-.013.5a80 80 0 00160 0c0-.17-.012-.33-.013-.5a80 80 0 01-80 80z"/>
+   <path class="be7c23fd-ad3b-459e-b33a-66f3d9818d09" d="m96 17a80 80 0 0180 80c0-.17.013-.33.013-.5a80 80 0 00-160 0c0 .17.012.33.013.5a80 80 0 0180-80z"/>
+  </g>
+  <g class="b45bf3d0-3e61-40b1-8fdd-16dd3accc07c" clip-path="url(#ab5291fb-84b0-4900-a4c3-4dc8f743e78d)">
+   <circle class="b343e481-5f9b-4355-9657-ff53f66793ad" r="192" style="fill:url(#radialGradient12)"/>
+  </g>
+ </g>
+</svg>

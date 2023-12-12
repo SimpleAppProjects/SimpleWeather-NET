@@ -1,10 +1,7 @@
 ﻿using SimpleWeather.Preferences;
-using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Icons
 {
@@ -22,6 +19,7 @@ namespace SimpleWeather.Icons
             AddIconProvider(defaultIcons, new WeatherIconsEFProvider());
             AddIconProvider(defaultIcons, new WUndergroundIconsProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider());
+            AddIconProvider(defaultIcons, new JDWIIconsProvider());
             DefaultIcons = defaultIcons;
 
             // Register default icon providers

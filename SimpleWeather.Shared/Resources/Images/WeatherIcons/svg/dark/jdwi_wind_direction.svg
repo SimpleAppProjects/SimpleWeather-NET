@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs1">
+    <style id="style1">.a5dd60b3-7ac1-4f29-8858-e12d51390f4e{fill:none;}</style>
+  </defs>
+  <g id="a742cc8a-377e-4e73-a2b3-b602b064b788" data-name="toward-0" transform="matrix(6,0,0,6,24,24)">
+    <rect class="a5dd60b3-7ac1-4f29-8858-e12d51390f4e" width="24" height="24" id="rect1" x="0" y="0" />
+    <path d="M 12,2 A 10,10 0 1 0 22,12 10,10 0 0 0 12,2 Z m 0,18 a 8,8 0 1 1 8,-8 8,8 0 0 1 -8,8 z" id="path1" style="fill:#ffffff" />
+    <polygon points="12,15 17,17 12,6 7,17 " id="polygon1" style="fill:#ffffff" />
+  </g>
+</svg>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg9" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs1">
+    <style id="style1">.b16ef605-92c1-4e93-96da-d0699548d226{fill:none;}</style>
+  </defs>
+  <g id="b200e20b-076c-40c2-8583-a15a5e178e2a" data-name="uv-index" transform="matrix(6,0,0,6,24,24)">
+    <rect class="b16ef605-92c1-4e93-96da-d0699548d226" width="24" height="24" id="rect1" x="0" y="0" />
+    <rect x="11" y="20" width="2" height="3" id="rect2" style="fill:#ffffff" />
+    <rect x="20" y="11" width="3" height="2" id="rect3" style="fill:#ffffff" />
+    <rect x="11" y="1" width="2" height="3" id="rect4" style="fill:#ffffff" />
+    <rect x="1" y="11" width="3" height="2" id="rect5" style="fill:#ffffff" />
+    <rect x="4.2820001" y="17.218" width="2" height="3" transform="rotate(45,5.2821845,18.716952)" id="rect6" style="fill:#ffffff" />
+    <rect x="17.218" y="17.718" width="3" height="2" transform="rotate(45,18.717699,18.718125)" id="rect7" style="fill:#ffffff" />
+    <rect x="17.718" y="3.7820001" width="2" height="3" transform="rotate(45,18.717664,5.2831103)" id="rect8" style="fill:#ffffff" />
+    <rect x="3.7820001" y="4.2820001" width="3" height="2" transform="rotate(45,5.2821496,5.281938)" id="rect9" style="fill:#ffffff" />
+    <path d="m 12,6 a 6,6 0 1 0 6,6 6,6 0 0 0 -6,-6 z m 0,10 a 4,4 0 1 1 4,-4 4,4 0 0 1 -4,4 z" id="path9" style="fill:#ffffff" />
+  </g>
+</svg>

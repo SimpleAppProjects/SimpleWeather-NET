@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg9" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs5">
+    <style id="style1">.b655419c-18fb-4edb-9e07-5dd6f1ad1af1,.bca7bd2a-d942-41d5-ac54-16f6820d9c59{fill:none;}.bca7bd2a-d942-41d5-ac54-16f6820d9c59{clip-path:url(#ee9426d8-2644-4847-97ed-c4bc391c7b6b);}.fbf38aae-f250-4106-9083-33ce7d7b3e9f{fill:#eee;}.a3323a1f-d6b2-4156-895d-83520a9d987c{opacity:0.1;}.bd65aa80-a561-45bf-962c-c1252a69033a{fill:#212121;}.a35bdd25-adb1-430f-bbc2-354dce2c70a7{opacity:0.4;}.b23a03a8-fce3-417e-91d2-db16e41a2ea5{fill:#fff;}.a3115fae-d2b3-47d9-87dc-824c8240f2aa{clip-path:url(#b849aa49-f491-4561-9c0a-a5fe7a6cbeb0);}.b3b94d8b-2848-438c-924b-ba0d438844a3{fill:url(#e7e37427-cfa7-49b5-9c8d-fbf118750645);}</style>
+    <clipPath id="ee9426d8-2644-4847-97ed-c4bc391c7b6b">
+      <path class="b655419c-18fb-4edb-9e07-5dd6f1ad1af1" d="M 104,112 H 24 v 16 h 80 a 8,8 0 1 1 -8,8 H 80 a 24,24 0 1 0 24,-24 z" id="path1" />
+    </clipPath>
+    <clipPath id="b849aa49-f491-4561-9c0a-a5fe7a6cbeb0">
+      <path class="bca7bd2a-d942-41d5-ac54-16f6820d9c59" d="m 136,32 v 16 a 16,16 0 0 1 0,32 H 24 v 16 h 112 a 32,32 0 0 0 0,-64 z" clip-path="url(#ee9426d8-2644-4847-97ed-c4bc391c7b6b)" id="path2" />
+    </clipPath>
+    <radialGradient id="e7e37427-cfa7-49b5-9c8d-fbf118750645" cx="0" cy="0" r="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.1" id="stop2" />
+      <stop offset="0.143" stop-color="#c3c3c3" stop-opacity="0.077" id="stop3" />
+      <stop offset="0.609" stop-color="#323232" stop-opacity="0.02" id="stop4" />
+      <stop offset="1" stop-opacity="0" id="stop5" />
+    </radialGradient>
+  </defs>
+  <g id="b9f535d1-9f81-4d8d-9451-663319a545e3" data-name="windy" transform="matrix(0.75,0,0,0.75,24,24)">
+    <rect class="b655419c-18fb-4edb-9e07-5dd6f1ad1af1" width="192" height="192" id="rect5" x="0" y="0" />
+    <path class="fbf38aae-f250-4106-9083-33ce7d7b3e9f" d="M 104,112 H 24 v 16 h 80 a 8,8 0 1 1 -8,8 H 80 a 24,24 0 1 0 24,-24 z" id="path5" />
+    <path class="fbf38aae-f250-4106-9083-33ce7d7b3e9f" d="m 136,32 v 16 a 16,16 0 0 1 0,32 H 24 v 16 h 112 a 32,32 0 0 0 0,-64 z" id="path6" />
+    <g class="a3323a1f-d6b2-4156-895d-83520a9d987c" id="g7">
+      <path class="bd65aa80-a561-45bf-962c-c1252a69033a" d="m 111.975,135.5 c 0.01,-0.166 0.025,-0.331 0.025,-0.5 a 8,8 0 0 0 -8,-8 H 24 v 1 h 80 a 8,8 0 0 1 7.975,7.5 z m 40,-72 C 151.975,63.332 152,63.169 152,63 A 16,16 0 0 0 136,47 v 1 a 15.989,15.989 0 0 1 15.975,15.5 z M 104,159 A 24.119,24.119 0 0 1 80.026,136 H 80 a 24,24 0 0 0 48,0 c 0,-0.168 -0.009,-0.333 -0.013,-0.5 A 24.114,24.114 0 0 1 104,159 Z M 167.987,63.5 A 32.151,32.151 0 0 1 136,95 H 24 v 1 h 112 a 32.152,32.152 0 0 0 32,-32 c 0,-0.168 -0.01,-0.333 -0.013,-0.5 z" id="path7" />
+    </g>
+    <g class="a35bdd25-adb1-430f-bbc2-354dce2c70a7" id="g8">
+      <path class="b23a03a8-fce3-417e-91d2-db16e41a2ea5" d="M 136,80 H 24 v 1 h 112 a 16,16 0 0 0 16,-16 c 0,-0.169 -0.02,-0.332 -0.025,-0.5 A 15.989,15.989 0 0 1 136,80 Z m 0,-48 v 1 a 32.151,32.151 0 0 1 31.987,31.5 C 167.987,64.333 168,64.168 168,64 A 32.152,32.152 0 0 0 136,32 Z m -32,80 H 24 v 1 h 80 a 24.114,24.114 0 0 1 23.987,23.5 c 0,-0.167 0.013,-0.332 0.013,-0.5 a 24.115,24.115 0 0 0 -24,-24 z m 0,32 a 8,8 0 0 1 -8,-8 H 80 c 0,0.335 0.012,0.668 0.026,1 H 96 a 8,8 0 0 0 16,0 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 104,144 Z" id="path8" />
+    </g>
+    <g class="a3115fae-d2b3-47d9-87dc-824c8240f2aa" clip-path="url(#b849aa49-f491-4561-9c0a-a5fe7a6cbeb0)" id="g9">
+      <circle class="b3b94d8b-2848-438c-924b-ba0d438844a3" r="192" id="circle8" style="fill:url(#e7e37427-cfa7-49b5-9c8d-fbf118750645)" cx="0" cy="0" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg16" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs8">
+    <style id="style1">.a19f80b4-890e-4ef2-b12a-3f558e29b49c,.b382118d-d4cd-42c7-8770-be5d796b658d,.f32df2b7-864f-4550-a395-0bbe079a434f,.f915fb23-dd2d-479d-80ab-877643857b0f,.f9edc158-8dc6-44fe-b179-c8b9b07b116e{fill:none;}.f9edc158-8dc6-44fe-b179-c8b9b07b116e{clip-path:url(#b9e6aeb8-9b2e-46f8-83d7-69b043f920cd);}.b382118d-d4cd-42c7-8770-be5d796b658d{clip-path:url(#a27c66ef-b6bc-407f-a45e-91520c3968dd);}.f32df2b7-864f-4550-a395-0bbe079a434f{clip-path:url(#fc31cee3-f283-4f02-b108-11550f1dd746);}.a19f80b4-890e-4ef2-b12a-3f558e29b49c{clip-path:url(#a99e8846-b5c6-447e-9a31-3a775eed4fad);}.b3b4696c-aa57-4e89-9036-686dcfed172b{fill:#eee;}.fc4d951d-a1eb-492d-8870-cbee587f5e2b{opacity:0.1;}.af272b6e-2aad-4e91-be1d-053de12416c3{fill:#212121;}.a5a0b9b0-9d43-46fc-b1db-a061285e4f08{opacity:0.4;}.ff02ccb6-9210-4cf1-85e9-38e18de6a959{fill:#fff;}.e6e371e1-84a8-44f0-812d-ff6408c27952{clip-path:url(#b522c5cc-8308-4a42-adcf-4ace349ab0f9);}.ab439c57-868e-4326-ad29-78b4dc597059{fill:url(#ad65957b-6b4a-4c05-aece-90c7de2668ff);}.a03d5aad-ce2c-466e-bb8c-40602fc8b9c7{clip-path:url(#eee510df-8921-45d6-9b1b-7bb7e1653562);}.bb1063a0-5290-4d3a-9310-d534ed881270{fill:url(#eb895b57-39b3-4db8-83e3-d5b8f948c8bb);}</style>
+    <clipPath id="b9e6aeb8-9b2e-46f8-83d7-69b043f920cd">
+      <rect class="f915fb23-dd2d-479d-80ab-877643857b0f" x="16" y="40" width="96" height="16" rx="8" id="rect1" />
+    </clipPath>
+    <clipPath id="a27c66ef-b6bc-407f-a45e-91520c3968dd">
+      <rect class="f9edc158-8dc6-44fe-b179-c8b9b07b116e" x="96" y="72" width="80" height="16" rx="8" clip-path="url(#b9e6aeb8-9b2e-46f8-83d7-69b043f920cd)" id="rect2" />
+    </clipPath>
+    <clipPath id="fc31cee3-f283-4f02-b108-11550f1dd746">
+      <rect class="b382118d-d4cd-42c7-8770-be5d796b658d" x="40" y="72" width="40" height="16" rx="8" clip-path="url(#a27c66ef-b6bc-407f-a45e-91520c3968dd)" id="rect3" />
+    </clipPath>
+    <clipPath id="a99e8846-b5c6-447e-9a31-3a775eed4fad">
+      <rect class="f32df2b7-864f-4550-a395-0bbe079a434f" x="24" y="104" width="112" height="16" rx="8" clip-path="url(#fc31cee3-f283-4f02-b108-11550f1dd746)" id="rect4" />
+    </clipPath>
+    <clipPath id="b522c5cc-8308-4a42-adcf-4ace349ab0f9">
+      <rect class="a19f80b4-890e-4ef2-b12a-3f558e29b49c" x="56" y="136" width="104" height="16" rx="8" clip-path="url(#a99e8846-b5c6-447e-9a31-3a775eed4fad)" id="rect5" />
+    </clipPath>
+    <radialGradient id="ad65957b-6b4a-4c05-aece-90c7de2668ff" cx="0" cy="0" r="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.1" id="stop5" />
+      <stop offset="0.143" stop-color="#c3c3c3" stop-opacity="0.077" id="stop6" />
+      <stop offset="0.609" stop-color="#323232" stop-opacity="0.02" id="stop7" />
+      <stop offset="1" stop-opacity="0" id="stop8" />
+    </radialGradient>
+    <radialGradient xlink:href="#ad65957b-6b4a-4c05-aece-90c7de2668ff" id="radialGradient16" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="192" />
+  </defs>
+  <g id="a8e2a002-1d68-4c5b-9922-797b3a36e000" data-name="fog" transform="matrix(0.75,0,0,0.75,24,24)">
+    <rect class="f915fb23-dd2d-479d-80ab-877643857b0f" width="192" height="192" id="rect8" x="0" y="0" />
+    <rect class="b3b4696c-aa57-4e89-9036-686dcfed172b" x="16" y="40" width="96" height="16" rx="8" id="rect9" />
+    <rect class="b3b4696c-aa57-4e89-9036-686dcfed172b" x="96" y="72" width="80" height="16" rx="8" id="rect10" />
+    <rect class="b3b4696c-aa57-4e89-9036-686dcfed172b" x="40" y="72" width="40" height="16" rx="8" id="rect11" />
+    <rect class="b3b4696c-aa57-4e89-9036-686dcfed172b" x="24" y="104" width="112" height="16" rx="8" id="rect12" />
+    <rect class="b3b4696c-aa57-4e89-9036-686dcfed172b" x="56" y="136" width="104" height="16" rx="8" id="rect13" />
+    <g class="fc4d951d-a1eb-492d-8870-cbee587f5e2b" id="g13">
+      <path class="af272b6e-2aad-4e91-be1d-053de12416c3" d="M 72,87 H 48 A 8,8 0 0 1 40.025,79.5 C 40.015,79.666 40,79.831 40,80 a 8,8 0 0 0 8,8 h 24 a 8,8 0 0 0 8,-8 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 72,87 Z M 175.975,79.5 A 8,8 0 0 1 168,87 H 104 A 8,8 0 0 1 96.025,79.5 C 96.015,79.666 96,79.831 96,80 a 8,8 0 0 0 8,8 h 64 a 8,8 0 0 0 8,-8 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 z M 104,56 a 8,8 0 0 0 8,-8 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 104,55 H 24 A 8,8 0 0 1 16.025,47.5 C 16.015,47.666 16,47.831 16,48 a 8,8 0 0 0 8,8 z m 32,56 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 128,119 H 32 a 8,8 0 0 1 -7.975,-7.5 C 24.015,111.666 24,111.831 24,112 a 8,8 0 0 0 8,8 h 96 a 8,8 0 0 0 8,-8 z m 16,39 H 64 a 8,8 0 0 1 -7.975,-7.5 C 56.015,143.666 56,143.831 56,144 a 8,8 0 0 0 8,8 h 88 a 8,8 0 0 0 8,-8 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 152,151 Z" id="path13" />
+    </g>
+    <g class="a5a0b9b0-9d43-46fc-b1db-a061285e4f08" id="g14">
+      <path class="ff02ccb6-9210-4cf1-85e9-38e18de6a959" d="m 168,72 h -64 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 A 8,8 0 0 1 104,73 h 64 a 8,8 0 0 1 7.975,7.5 C 175.985,80.334 176,80.169 176,80 a 8,8 0 0 0 -8,-8 z m -32.025,40.5 c 0.01,-0.166 0.025,-0.331 0.025,-0.5 a 8,8 0 0 0 -8,-8 H 32 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 A 8,8 0 0 1 32,105 h 96 a 8,8 0 0 1 7.975,7.5 z M 104,41 a 8,8 0 0 1 7.975,7.5 C 111.985,48.334 112,48.169 112,48 a 8,8 0 0 0 -8,-8 H 24 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 A 8,8 0 0 1 24,41 Z m 48,95 H 64 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 A 8,8 0 0 1 64,137 h 88 a 8,8 0 0 1 7.975,7.5 c 0.01,-0.166 0.025,-0.331 0.025,-0.5 a 8,8 0 0 0 -8,-8 z M 48,72 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 A 8,8 0 0 1 48,73 h 24 a 8,8 0 0 1 7.975,7.5 C 79.985,80.334 80,80.169 80,80 a 8,8 0 0 0 -8,-8 z" id="path14" />
+    </g>
+    <g class="e6e371e1-84a8-44f0-812d-ff6408c27952" clip-path="url(#b522c5cc-8308-4a42-adcf-4ace349ab0f9)" id="g15">
+      <circle class="ab439c57-868e-4326-ad29-78b4dc597059" r="192" id="circle14" style="fill:url(#radialGradient16)" cx="0" cy="0" />
+    </g>
+  </g>
+</svg>

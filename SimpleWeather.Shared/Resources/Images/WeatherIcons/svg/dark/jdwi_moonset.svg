@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg1" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs1">
+    <style id="style1">.b3c3be96-278d-4b43-a375-4a2a9f85402f{fill:none;}</style>
+  </defs>
+  <g id="a24172bb-feb3-4806-880a-d01166524fa7" data-name="moonset" transform="matrix(6,0,0,6,24,24)">
+    <rect class="b3c3be96-278d-4b43-a375-4a2a9f85402f" width="24" height="24" id="rect1" x="0" y="0" />
+    <path d="M 21.531,15 A 9.749,9.749 0 0 0 21.95,13 11,11 0 0 1 11,2.05 10,10 0 0 0 2,12 9.857,9.857 0 0 0 2.482,15 H 2 v 2 H 22 V 15 Z M 4.592,15 A 7.969,7.969 0 0 1 9.245,4.5 13.009,13.009 0 0 0 19.5,14.755 C 19.468,14.84 19.419,14.916 19.385,15 Z" id="path1" style="fill:#ffffff" />
+    <polygon points="13.414,18 12,19.414 10.586,18 9.172,19.414 12,22.243 14.828,19.414 " id="polygon1" style="fill:#ffffff" />
+  </g>
+</svg>

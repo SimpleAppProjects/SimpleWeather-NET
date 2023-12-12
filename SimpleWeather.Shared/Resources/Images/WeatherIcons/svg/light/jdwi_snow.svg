@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="192" height="192" viewBox="0 0 192 192" version="1.1" id="svg16" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+  <defs id="defs6">
+    <style id="style1">.ac9d62d9-aa50-4e89-a1b9-86d38e565bb2,.bf72228d-0af2-4ad9-8876-0b2598c8bd19{fill:none;}.ac9d62d9-aa50-4e89-a1b9-86d38e565bb2{clip-path:url(#bbfb053b-5907-4411-9288-bf6a10bd6490);}.f148c1db-d192-4e2a-bbb4-8c572c17798d{fill:#ddd;}.e88b4575-e5fe-4342-8d36-3cdb580b8883{opacity:0.1;}.b11bb52e-f2a0-48b6-84be-838003a1b233{fill:#212121;}.af7eee34-2cb5-4c96-bb8b-9fc4c3d7ef4c{opacity:0.4;}.b65ce02d-00f8-43d9-bf15-280610aa95ed{fill:#fff;}.f82212a7-3667-4935-b0f2-4e3b926c80fa{fill:#fafafa;}.a6c97f01-1ed2-4587-b585-daeac2b017c8{clip-path:url(#ab96d853-9442-492b-8b6e-4286f414d362);}.beabe3cd-11bb-45f4-b637-c6a0d50e3d40{fill:url(#b255743d-1bfd-4e28-9184-ace5287228f3);}.b4eb9c1f-a3b8-46ea-9bd7-3691df201188{clip-path:url(#eda23f6e-43e9-4d58-981a-b6b1965fc2e0);}.b9b4a452-fa30-4f44-848e-113e5f3dd42d{fill:url(#a1247d75-6ca3-4c56-afd5-ca7cb12982e0);}.b26e4ebf-aa40-442d-9b71-8706d17ec44f{clip-path:url(#eb3eb78a-8876-4c44-8d9a-ab95f3b2ccf3);}.b0b5d6ec-bd94-4b41-9260-f02602da90d2{fill:url(#e902f850-23a5-43ec-a5fa-d39744f30e79);}.a62a6146-3f1d-47bc-9fe8-62e7d0546d24{clip-path:url(#b6f602b4-b0ca-4cac-81b2-dd2ec099466c);}.a7dc0d22-15b1-4b4d-8b8f-7f12071615e7{fill:url(#f403ae52-5eb1-4743-af9e-a123513f9b0a);}</style>
+    <clipPath id="ab96d853-9442-492b-8b6e-4286f414d362">
+      <path class="bf72228d-0af2-4ad9-8876-0b2598c8bd19" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z M 72,152 a 8,8 0 1 0 8,8 8,8 0 0 0 -8,-8 z m 24,8 a 8,8 0 1 0 8,8 8,8 0 0 0 -8,-8 z m 24,-8 a 8,8 0 1 0 8,8 8,8 0 0 0 -8,-8 z" id="path2" />
+    </clipPath>
+    <radialGradient id="b255743d-1bfd-4e28-9184-ace5287228f3" cx="8" cy="0" r="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.1" id="stop2" />
+      <stop offset="0.143" stop-color="#c3c3c3" stop-opacity="0.077" id="stop3" />
+      <stop offset="0.609" stop-color="#323232" stop-opacity="0.02" id="stop4" />
+      <stop offset="1" stop-opacity="0" id="stop5" />
+    </radialGradient>
+    <radialGradient xlink:href="#b255743d-1bfd-4e28-9184-ace5287228f3" id="radialGradient16" gradientUnits="userSpaceOnUse" cx="8" cy="0" r="192" />
+  </defs>
+  <g id="b2d34add-b4eb-4e78-af12-7c0c977cfbe2" data-name="snow" transform="matrix(0.75,0,0,0.75,24,24)">
+    <rect class="bf72228d-0af2-4ad9-8876-0b2598c8bd19" width="192" height="192" id="rect6" x="0" y="0" />
+    <path class="f148c1db-d192-4e2a-bbb4-8c572c17798d" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z" id="path7" />
+    <g class="e88b4575-e5fe-4342-8d36-3cdb580b8883" id="g8">
+      <path class="b11bb52e-f2a0-48b6-84be-838003a1b233" d="M 152,143 H 48 A 47.994,47.994 0 0 1 0.012,95.483 C 0.01,95.656 0,95.827 0,96 v 0 a 48,48 0 0 0 48,48 h 104 a 40,40 0 0 0 40,-40 v 0 c 0,-0.171 -0.01,-0.34 -0.012,-0.511 A 40,40 0 0 1 152,143 Z" id="path8" />
+    </g>
+    <g class="af7eee34-2cb5-4c96-bb8b-9fc4c3d7ef4c" id="g9">
+      <path class="b65ce02d-00f8-43d9-bf15-280610aa95ed" d="M 154.817,64.11 A 60,60 0 0 0 42.788,48.286 48,48 0 0 0 0,96 v 0 c 0,0.162 0.011,0.321 0.012,0.483 a 48,48 0 0 1 42.776,-47.2 60,60 0 0 1 112.029,15.827 39.989,39.989 0 0 1 37.171,39.379 c 0,-0.163 0.012,-0.325 0.012,-0.489 v 0 A 39.994,39.994 0 0 0 154.817,64.11 Z" id="path9" />
+    </g>
+    <rect class="f82212a7-3667-4935-b0f2-4e3b926c80fa" x="88" y="160" width="16" height="16" rx="8" id="rect9" />
+    <rect class="f82212a7-3667-4935-b0f2-4e3b926c80fa" x="64" y="152" width="16" height="16" rx="8" id="rect10" />
+    <rect class="f82212a7-3667-4935-b0f2-4e3b926c80fa" x="112" y="152" width="16" height="16" rx="8" id="rect11" />
+    <g class="e88b4575-e5fe-4342-8d36-3cdb580b8883" id="g11">
+      <path class="b11bb52e-f2a0-48b6-84be-838003a1b233" d="m 72,167 a 8,8 0 0 1 -7.975,-7.5 C 64.015,159.666 64,159.831 64,160 a 8,8 0 0 0 16,0 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 72,167 Z m 55.975,-7.5 a 7.99,7.99 0 0 1 -15.95,0 c -0.01,0.166 -0.025,0.331 -0.025,0.5 a 8,8 0 0 0 16,0 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 z M 96,175 a 8,8 0 0 1 -7.975,-7.5 C 88.015,167.666 88,167.831 88,168 a 8,8 0 0 0 16,0 c 0,-0.169 -0.015,-0.334 -0.025,-0.5 A 8,8 0 0 1 96,175 Z" id="path11" />
+    </g>
+    <g class="af7eee34-2cb5-4c96-bb8b-9fc4c3d7ef4c" id="g12">
+      <path class="b65ce02d-00f8-43d9-bf15-280610aa95ed" d="m 72,152 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 a 7.99,7.99 0 0 1 15.95,0 C 79.985,160.334 80,160.169 80,160 a 8,8 0 0 0 -8,-8 z m 48,0 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 a 7.99,7.99 0 0 1 15.95,0 c 0.01,-0.166 0.025,-0.331 0.025,-0.5 a 8,8 0 0 0 -8,-8 z m -24,8 a 8,8 0 0 0 -8,8 c 0,0.169 0.015,0.334 0.025,0.5 a 7.99,7.99 0 0 1 15.95,0 c 0.01,-0.166 0.025,-0.331 0.025,-0.5 a 8,8 0 0 0 -8,-8 z" id="path12" />
+    </g>
+    <g class="a6c97f01-1ed2-4587-b585-daeac2b017c8" clip-path="url(#ab96d853-9442-492b-8b6e-4286f414d362)" id="g13">
+      <circle class="beabe3cd-11bb-45f4-b637-c6a0d50e3d40" cx="8" r="192" id="circle12" style="fill:url(#radialGradient16)" cy="0" />
+    </g>
+  </g>
+</svg>
