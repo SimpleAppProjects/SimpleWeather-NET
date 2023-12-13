@@ -26,6 +26,7 @@
                 <local:IconControl
                     x:Name="BeaufortIcon"
                     Width="55"
+                    Height="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource BeaufortPaintColorBrush}"

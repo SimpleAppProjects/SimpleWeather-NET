@@ -182,6 +182,7 @@
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
+                    Height="20"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
@@ -208,6 +209,7 @@
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
+                    Height="20"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf044;" />

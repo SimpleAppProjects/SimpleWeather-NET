@@ -261,6 +261,7 @@
                                 </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
+                                    Height="25"
                                     Foreground="OrangeRed"
                                     IconProvider="wi-erik-flowers"
                                     ShowAsMonochrome="True"
@@ -280,6 +281,7 @@
                                 </toolkitControls:DropShadowPanel>
                                 <localcontrols:IconControl
                                     Width="25"
+                                    Height="25"
                                     Foreground="DeepSkyBlue"
                                     IconProvider="wi-erik-flowers"
                                     ShowAsMonochrome="True"

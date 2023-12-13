@@ -6,15 +6,12 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Imaging;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Windows;
-using System;
-using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI;
 
@@ -109,6 +106,7 @@ namespace SimpleWeather.NET.Controls
             if (IconBox == null) return;
 
             UIElement iconElement;
+            var wicon = WeatherIcon;
 
             // Remove any animatable drawables
             RemoveAnimatedDrawables();
@@ -117,14 +115,14 @@ namespace SimpleWeather.NET.Controls
 
             if (ForceBitmapIcon)
             {
-                iconElement = CreateBitmapIcon(wip);
+                iconElement = CreateBitmapIcon(wip, wicon);
             }
             else if (wip is IXamlWeatherIconProvider xamlProvider)
             {
-                var iconUri = xamlProvider.GetXamlIconUri(WeatherIcon);
+                var iconUri = xamlProvider.GetXamlIconUri(wicon);
                 if (iconUri == null || !iconUri.EndsWith(".xaml"))
                 {
-                    iconElement = CreateBitmapIcon(wip);
+                    iconElement = CreateBitmapIcon(wip, wicon);
                 }
                 else
                 {
@@ -136,22 +134,22 @@ namespace SimpleWeather.NET.Controls
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                         Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
-                        iconElement = CreateBitmapIcon(wip);
+                        iconElement = CreateBitmapIcon(wip, wicon);
                     }
                 }
             }
             else if (wip is ILottieWeatherIconProvider lottieProvider)
             {
-                var iconUri = lottieProvider.GetLottieIconURI(WeatherIcon);
+                var iconUri = lottieProvider.GetLottieIconURI(wicon);
                 if (iconUri == null || !iconUri.EndsWith(".json"))
                 {
-                    iconElement = CreateBitmapIcon(wip);
+                    iconElement = CreateBitmapIcon(wip, wicon);
                 }
                 else
                 {
                     try
                     {
-                        var drawable = await wip.GetDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                        var drawable = await wip.GetDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
                         var canvas = new SKXamlCanvas();
                         canvas.PaintSurface += (s, e) =>
                         {
@@ -183,14 +181,57 @@ namespace SimpleWeather.NET.Controls
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                         Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
-                        iconElement = CreateBitmapIcon(wip);
+                        iconElement = CreateBitmapIcon(wip, wicon);
                     }
+                }
+            }
+            else if (wip is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
+            {
+                try
+                {
+                    var drawable = await wip.GetSVGDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                    var canvas = new SKXamlCanvas();
+                    canvas.PaintSurface += (s, e) =>
+                    {
+                        e.Surface.Canvas.Clear();
+                        var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+                        /*
+                        if (drawable is SKSvgDrawable svgDrawable)
+                        {
+                            svgDrawable.TintColor = ShowAsMonochrome && Foreground is SolidColorBrush colorBrush ? colorBrush.Color.ToSKColor() : null;
+                        }
+                        */
+                        drawable.Bounds = bounds;
+                        drawable.Draw(e.Surface.Canvas);
+                        e.Surface.Flush(true);
+                    };
+                    canvas.SetBinding(HeightProperty, new Binding()
+                    {
+                        Source = this,
+                        Path = new PropertyPath(nameof(ActualHeight)),
+                        Mode = BindingMode.OneWay,
+                    });
+                    canvas.SetBinding(WidthProperty, new Binding()
+                    {
+                        Source = this,
+                        Path = new PropertyPath(nameof(ActualWidth)),
+                        Mode = BindingMode.OneWay,
+                    });
+                    iconElement = canvas;
+                }
+                catch (Exception e)
+                {
+                    Logger.WriteLine(LoggerLevel.Error, e);
+                    Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
+                    iconElement = CreateBitmapIcon(wip, wicon);
                 }
             }
             else
             {
-                iconElement = CreateBitmapIcon(wip);
+                iconElement = CreateBitmapIcon(wip, wicon);
             }
+
+            IconBox.StretchDirection = iconElement is SKXamlCanvas ? StretchDirection.UpOnly : StretchDirection.Both;
 
             IconBox.Child = iconElement;
         }
@@ -207,31 +248,26 @@ namespace SimpleWeather.NET.Controls
 
         private IconElement CreateBitmapIcon(IWeatherIconsProvider provider)
         {
-            if (provider is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
+            return CreateBitmapIcon(provider, WeatherIcon);
+        }
+
+        private IconElement CreateBitmapIcon(IWeatherIconsProvider provider, string wicon)
+        {
+            var bmpIcon = new BitmapIcon()
             {
-                return new ImageIcon()
-                {
-                    Source = new SvgImageSource(new Uri(svgProvider.GetSVGIconUri(WeatherIcon, ForceDarkTheme ? false : IsLightTheme)))
-                };
-            }
-            else
+                UriSource = new Uri(provider.GetWeatherIconURI(wicon, true, ForceDarkTheme ? false : IsLightTheme))
+            };
+            bmpIcon.SetBinding(BitmapIcon.ForegroundProperty, new Binding()
             {
-                var bmpIcon = new BitmapIcon()
-                {
-                    UriSource = new Uri(provider.GetWeatherIconURI(WeatherIcon, true, ForceDarkTheme ? false : IsLightTheme))
-                };
-                bmpIcon.SetBinding(BitmapIcon.ForegroundProperty, new Binding()
-                {
-                    Mode = BindingMode.OneWay,
-                    Source = Foreground
-                });
-                bmpIcon.SetBinding(BitmapIcon.ShowAsMonochromeProperty, new Binding()
-                {
-                    Mode = BindingMode.OneWay,
-                    Source = ShowAsMonochrome
-                });
-                return bmpIcon;
-            }
+                Mode = BindingMode.OneWay,
+                Source = Foreground
+            });
+            bmpIcon.SetBinding(BitmapIcon.ShowAsMonochromeProperty, new Binding()
+            {
+                Mode = BindingMode.OneWay,
+                Source = ShowAsMonochrome
+            });
+            return bmpIcon;
         }
 
         private async Task<UIElement> CreateXAMLIconElement(string uri)

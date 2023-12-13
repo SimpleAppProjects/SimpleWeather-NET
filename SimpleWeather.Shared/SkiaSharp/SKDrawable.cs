@@ -54,6 +54,7 @@ namespace SimpleWeather.SkiaSharp
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
+                    _paint?.Dispose();
                     _bitmap?.Dispose();
                 }
 
@@ -81,11 +82,36 @@ namespace SimpleWeather.SkiaSharp
     public class SKSvgDrawable : SKDrawable, IDisposable
     {
         private readonly SKSvg svg;
+        private readonly SKPaint _paint;
         private bool disposedValue;
+
+        private SKColor? _tintColor = null;
+        public SKColor? TintColor
+        {
+            get => _tintColor;
+            set
+            {
+                _tintColor = value;
+                UpdateColorFilter();
+            }
+        }
 
         public SKSvgDrawable(SKSvg svg)
         {
             this.svg = svg;
+            _paint = new SKPaint()
+            {
+                IsAntialias = true,
+                FilterQuality = SKFilterQuality.High,
+                IsDither = true
+            };
+
+            UpdateColorFilter();
+        }
+
+        private void UpdateColorFilter()
+        {
+            _paint.ColorFilter = TintColor != null ? SKColorFilter.CreateBlendMode(TintColor.Value, SKBlendMode.SrcIn) : null;
         }
 
         public override void Draw(SKCanvas canvas)
@@ -95,7 +121,7 @@ namespace SimpleWeather.SkiaSharp
             {
                 scaleMatrix = SKMatrix.CreateScale(Bounds.Width / rect.Width, Bounds.Height / rect.Height);
             }
-            canvas.DrawPicture(svg.Picture, ref scaleMatrix);
+            canvas.DrawPicture(svg.Picture, ref scaleMatrix, _paint);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -105,6 +131,7 @@ namespace SimpleWeather.SkiaSharp
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
+                    _paint?.Dispose();
                     svg?.Dispose();
                 }
 

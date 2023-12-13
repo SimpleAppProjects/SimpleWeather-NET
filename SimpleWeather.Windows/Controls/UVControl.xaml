@@ -23,6 +23,7 @@
                 <local:IconControl
                     x:Name="UVIcon"
                     Width="55"
+                    Height="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
                     ForceBitmapIcon="True"
