@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.NET.Helpers;
-using System.Collections.Generic;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -105,6 +104,35 @@ namespace SimpleWeather.NET.Controls
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
             ScrollViewerHelper.ScrollRight(HorizontalScroller);
+        }
+
+        private void HourlyForecastControl_ContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            args.RegisterUpdateCallback(HourlyForecastControl_Phase1);
+            args.Handled = true;
+        }
+
+        private void HourlyForecastControl_Phase1(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            args.RegisterUpdateCallback(HourlyForecastControl_Phase2);
+        }
+
+        private void HourlyForecastControl_Phase2(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (args.Phase == 2 && args.ItemContainer?.ContentTemplateRoot is HourlyForecastItem forecastItem && args.Item is HourlyForecastNowViewModel model)
+            {
+                forecastItem.DataContext = model;
+            }
+            args.RegisterUpdateCallback(HourlyForecastControl_Phase3);
+        }
+
+        private void HourlyForecastControl_Phase3(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            // Phase 3, icon update time
+            if (args.Phase == 3 && args.ItemContainer?.ContentTemplateRoot is HourlyForecastItem forecastItem && args.Item is HourlyForecastNowViewModel model)
+            {
+                forecastItem.WeatherIcon = model.Icon;
+            }
         }
     }
 }

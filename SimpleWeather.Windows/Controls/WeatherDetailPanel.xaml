@@ -20,18 +20,11 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SimpleBlueLight}" />
-                    <Color x:Key="ForegroundColor">White</Color>
-                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="ExtraTextForegroundBrush" Color="{ThemeResource SystemAccentColor}" />
-                    <Color x:Key="ForegroundColor">Black</Color>
-                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
-            <helpers:ObjectContainer x:Key="Foreground" Value="{ThemeResource ForegroundColor}" />
-            <converters:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource Foreground}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -61,7 +54,7 @@
                         Margin="8,0"
                         VerticalAlignment="Center"
                         d:WeatherIcon="&#xf00d;"
-                        WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
+                        WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
                     <StackPanel
                         Grid.Column="1"
                         VerticalAlignment="Center"
@@ -74,7 +67,7 @@
                             FontWeight="Bold"
                             Foreground="{ThemeResource ExpanderHeaderForeground}"
                             MaxLines="1"
-                            Text="{x:Bind ViewModel.Date, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.Date, Mode=OneWay, TargetNullValue='&#x2014;'}"
                             TextTrimming="CharacterEllipsis" />
                         <TextBlock
                             x:Name="Condition"
@@ -84,7 +77,7 @@
                             FontSize="14"
                             Foreground="{ThemeResource ExpanderHeaderForeground}"
                             MaxLines="1"
-                            Text="{x:Bind ViewModel.Condition, Mode=OneWay}"
+                            Text="{x:Bind ViewModel.Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
                             TextTrimming="CharacterEllipsis" />
                         <StackPanel
                             x:Name="Extras"

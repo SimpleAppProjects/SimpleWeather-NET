@@ -105,8 +105,12 @@
             SelectionMode="None"
             ShowsScrollingPlaceholders="True">
             <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <localcontrols:WeatherDetailPanel x:Name="DetailItem" />
+                <DataTemplate x:DataType="controls:BaseForecastItemViewModel">
+                    <localcontrols:WeatherDetailPanel
+                        x:Name="DetailItem"
+                        x:Phase="3"
+                        DataContext="{Binding}"
+                        WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
             <ItemsControl.ItemsPanel>

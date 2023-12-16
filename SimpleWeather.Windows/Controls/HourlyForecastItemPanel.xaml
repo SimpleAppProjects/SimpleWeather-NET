@@ -29,6 +29,7 @@
             CanDrag="False"
             CanDragItems="False"
             CanReorderItems="False"
+            ContainerContentChanging="HourlyForecastControl_ContainerContentChanging"
             IsItemClickEnabled="True"
             ItemsSource="{x:Bind ForecastData, Mode=OneWay}"
             Loaded="HourlyForecastControl_Loaded"
@@ -38,8 +39,11 @@
             ScrollViewer.VerticalScrollMode="Disabled"
             SelectionMode="None">
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="controls:HourlyForecastItemViewModel">
-                    <local:HourlyForecastItem />
+                <DataTemplate x:DataType="local:HourlyForecastNowViewModel">
+                    <local:HourlyForecastItem
+                        x:Phase="3"
+                        DataContext="{Binding}"
+                        WeatherIcon="{x:Bind Icon, Mode=OneWay}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemsPanel>

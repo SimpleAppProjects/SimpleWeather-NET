@@ -1,11 +1,10 @@
-﻿using SimpleWeather.Common.Controls;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
-using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -24,7 +23,17 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for UseMonochrome.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UseMonochromeProperty =
-            DependencyProperty.Register("UseMonochrome", typeof(bool), typeof(WeatherDetailPanel), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(UseMonochrome), typeof(bool), typeof(WeatherDetailPanel), new PropertyMetadata(false));
+
+        public string WeatherIcon
+        {
+            get { return (string)GetValue(WeatherIconProperty); }
+            set { SetValue(WeatherIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for WeatherIcon.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty WeatherIconProperty =
+            DependencyProperty.Register(nameof(WeatherIcon), typeof(string), typeof(WeatherDetailPanel), new PropertyMetadata(null));
 
         public WeatherDetailPanel()
         {

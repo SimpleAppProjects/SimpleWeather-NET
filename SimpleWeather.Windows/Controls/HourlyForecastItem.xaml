@@ -65,15 +65,16 @@
             FontWeight="Medium"
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding ShortDate, Mode=OneWay}" />
+            Text="{Binding ShortDate, Mode=OneWay, TargetNullValue='&#x2014;'}" />
         <Border Style="{ThemeResource Divider}" Visibility="Collapsed" />
         <local:IconControl
+            x:Name="WeatherIconControl"
             Width="50"
             Height="50"
             Margin="5"
             HorizontalAlignment="Center"
             d:WeatherIcon="&#xf00d;"
-            WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
+            WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
         <TextBlock
             Padding="10,0"
             HorizontalAlignment="Center"
@@ -82,7 +83,7 @@
             FontWeight="SemiLight"
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding Temperature, Mode=OneWay}" />
+            Text="{Binding Temperature, Mode=OneWay, TargetNullValue='&#x2022;'}" />
         <TextBlock
             x:Name="ConditionBlock"
             MinHeight="52"
@@ -92,7 +93,7 @@
             FontSize="14"
             MaxLines="2"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding Condition, Mode=OneWay}"
+            Text="{Binding Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
             TextTrimming="CharacterEllipsis" />
         <Grid
             MinHeight="20"

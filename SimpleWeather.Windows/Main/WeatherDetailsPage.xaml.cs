@@ -9,9 +9,6 @@ using SimpleWeather.NET.ViewModels;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -180,6 +177,32 @@ namespace SimpleWeather.NET.Main
                 {
                     headerToggle.IsChecked = false;
                 }
+            }
+
+            args.RegisterUpdateCallback(ListControl_Phase1);
+            args.Handled = true;
+        }
+
+        private void ListControl_Phase1(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            args.RegisterUpdateCallback(ListControl_Phase2);
+        }
+
+        private void ListControl_Phase2(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            if (args.Phase == 2 && args.ItemContainer?.ContentTemplateRoot is WeatherDetailPanel panel)
+            {
+                panel.DataContext = args.Item;
+            }
+            args.RegisterUpdateCallback(ListControl_Phase3);
+        }
+
+        private void ListControl_Phase3(ListViewBase sender, ContainerContentChangingEventArgs args)
+        {
+            // Phase 3, icon update time
+            if (args.Phase == 3 && args.ItemContainer?.ContentTemplateRoot is WeatherDetailPanel panel && args.Item is BaseForecastItemViewModel model)
+            {
+                panel.WeatherIcon = model.WeatherIcon;
             }
         }
     }

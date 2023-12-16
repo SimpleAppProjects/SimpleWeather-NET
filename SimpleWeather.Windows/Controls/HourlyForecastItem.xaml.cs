@@ -1,20 +1,5 @@
-﻿using SimpleWeather.Icons;
-using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,6 +11,16 @@ namespace SimpleWeather.NET.Controls
         {
             get => DataContext as HourlyForecastNowViewModel;
         }
+
+        public string WeatherIcon
+        {
+            get { return (string)GetValue(WeatherIconProperty); }
+            set { SetValue(WeatherIconProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for WeatherIcon.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty WeatherIconProperty =
+            DependencyProperty.Register(nameof(WeatherIcon), typeof(string), typeof(HourlyForecastItem), new PropertyMetadata(null));
 
         public HourlyForecastItem()
         {
