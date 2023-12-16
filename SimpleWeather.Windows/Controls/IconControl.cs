@@ -231,8 +231,6 @@ namespace SimpleWeather.NET.Controls
                 iconElement = CreateBitmapIcon(wip, wicon);
             }
 
-            IconBox.StretchDirection = iconElement is SKXamlCanvas ? StretchDirection.UpOnly : StretchDirection.Both;
-
             IconBox.Child = iconElement;
         }
 
