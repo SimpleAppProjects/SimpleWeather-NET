@@ -9,7 +9,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 {
     public static partial class WeatherBitIOProviderExtensions
     {
-        public static Weather CreateWeatherData(this WeatherBitIOProvider _, WeatherBit.CurrentRootobject currRoot, WeatherBit.ForecastRootobject foreRoot)
+        public static Weather CreateWeatherData(this WeatherBitIOProvider _, WeatherBit.CurrentRootobject currRoot, WeatherBit.ForecastRootobject foreRoot, WeatherBit.HourlyRootobject hourlyRoot)
         {
             var weather = new Weather();
 
@@ -28,6 +28,19 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 var fcast = _.CreateForecast(day);
                 weather.forecast.Add(fcast);
             }
+
+            hourlyRoot?.data?.Let(it =>
+            {
+                weather.hr_forecast = new List<HourlyForecast>(it.Length);
+
+                it.ForEach(hourly =>
+                {
+                    weather.hr_forecast.Add(_.CreateHourlyForecast(hourly).Apply(hrfcast =>
+                    {
+                        hrfcast.date = hrfcast.date.ToOffset(tzOffset);
+                    }));
+                });
+            });
 
             currRoot.minutely?.Let(it =>
             {
@@ -105,6 +118,50 @@ namespace SimpleWeather.Weather_API.WeatherBit
                     dewpoint_f = ConversionMethods.CtoF(forecast.dewpt),
                     feelslike_c = forecast.app_max_temp,
                     feelslike_f = ConversionMethods.CtoF(forecast.app_max_temp),
+                    pop = forecast.pop,
+                    visibility_km = forecast.vis,
+                    visibility_mi = ConversionMethods.KmToMi(forecast.vis),
+                    windgust_mph = ConversionMethods.MSecToMph(forecast.wind_gust_spd),
+                    windgust_kph = ConversionMethods.MSecToKph(forecast.wind_gust_spd),
+                    qpf_rain_mm = forecast.precip,
+                    qpf_rain_in = ConversionMethods.MMToIn(forecast.precip),
+                    qpf_snow_cm = forecast.snow / 10,
+                    qpf_snow_in = ConversionMethods.MMToIn(forecast.snow),
+                    uv_index = forecast.uv
+                }
+            };
+        }
+
+        public static HourlyForecast CreateHourlyForecast(this WeatherBitIOProvider _, WeatherBit.HourlyDatum forecast)
+        {
+            return new HourlyForecast
+            {
+                date = DateTimeOffset.FromUnixTimeSeconds(forecast.ts),
+                high_c = forecast.temp,
+                high_f = ConversionMethods.CtoF(forecast.temp),
+                condition = forecast.weather?.description?.ToUpperCase(),
+                icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherBitIo)
+                   .GetWeatherIcon(forecast.weather?.icon),
+
+                wind_degrees = forecast.wind_dir,
+                wind_kph = ConversionMethods.MSecToKph(forecast.wind_spd),
+                wind_mph = ConversionMethods.MSecToMph(forecast.wind_spd),
+
+                // Extras
+                extras = new ForecastExtras()
+                {
+                    humidity = forecast.rh,
+                    cloudiness = forecast.clouds,
+                    // 1hPA = 1mbar
+                    pressure_mb = forecast.slp,
+                    pressure_in = ConversionMethods.MBToInHg(forecast.slp),
+                    wind_degrees = forecast.wind_dir,
+                    wind_mph = ConversionMethods.MSecToMph(forecast.wind_spd),
+                    wind_kph = ConversionMethods.MSecToKph(forecast.wind_spd),
+                    dewpoint_c = forecast.dewpt,
+                    dewpoint_f = ConversionMethods.CtoF(forecast.dewpt),
+                    feelslike_c = forecast.app_temp,
+                    feelslike_f = ConversionMethods.CtoF(forecast.app_temp),
                     pop = forecast.pop,
                     visibility_km = forecast.vis,
                     visibility_mi = ConversionMethods.KmToMi(forecast.vis),

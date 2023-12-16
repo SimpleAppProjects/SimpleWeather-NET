@@ -154,10 +154,10 @@ namespace SimpleWeather.Common.Location
         {
             if (!await CheckPermissions()) return new LocationResult.PermissionDenied();
 
-            var location = await this.RunCatching(async () =>
+            var location = (await this.RunCatching(async () =>
             {
                 return await GetLastLocation();
-            }).GetOrNull();
+            })).GetOrNull();
 
             location ??= await GetCurrentLocation();
 

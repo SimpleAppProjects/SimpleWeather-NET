@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Utils
 {
@@ -27,6 +28,19 @@ namespace SimpleWeather.Utils
             try
             {
                 return Result<TInput>.success(action());
+            }
+            catch (Exception e)
+            {
+                return Result<TInput>.failure(e);
+            }
+        }
+
+        public static async Task<Result<TInput>> RunCatching<TInput>(this object _, Func<Task<TInput>> action)
+        {
+            try
+            {
+                var result = await action();
+                return Result<TInput>.success(result);
             }
             catch (Exception e)
             {

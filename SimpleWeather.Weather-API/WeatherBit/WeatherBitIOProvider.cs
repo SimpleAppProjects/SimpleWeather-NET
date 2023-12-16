@@ -25,6 +25,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
         private const String KEYCHECK_QUERY_URL = BASE_URL + "current?key={0}";
         private const String CURRENT_QUERY_URL = BASE_URL + "current?{0}&lang={1}&units=M&include=minutely,alerts&key={2}";
         private const String FORECAST_QUERY_URL = BASE_URL + "forecast/daily?{0}&lang={1}&units=M&key={2}";
+        private const String HRFORECAST_QUERY_URL = BASE_URL + "forecast/hourly?{0}&lang={1}&units=M&key={2}";
         private const String ALERTS_QUERY_URL = BASE_URL + "alerts?{0}&key={1}";
 
         public WeatherBitIOProvider() : base()
@@ -131,11 +132,14 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
                 Uri currentURL = new(string.Format(CURRENT_QUERY_URL, query, locale, key));
                 Uri forecastURL = new(string.Format(FORECAST_QUERY_URL, query, locale, key));
+                Uri hrForecastURL = new(string.Format(HRFORECAST_QUERY_URL, query, locale, key));
 
                 using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL);
                 using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
+                using var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrForecastURL);
                 currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(20));
                 forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+                hrForecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                 var webClient = SharedModule.Instance.WebClient;
 
@@ -156,8 +160,18 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 // Load weather
                 CurrentRootobject currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream);
                 ForecastRootobject foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
+                HourlyRootobject hourlyRoot = (await this.RunCatching(async () =>
+                {
+                    using var ctsH = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                    using var hourlyResponse = await webClient.SendAsync(hrForecastRequest, ctsH.Token);
+                    await this.CheckForErrors(hourlyResponse);
+                    hourlyResponse.EnsureSuccessStatusCode();
 
-                weather = this.CreateWeatherData(currRoot, foreRoot);
+                    using var hourlyStream = await hourlyResponse.Content.ReadAsStreamAsync();
+                    return await JSONParser.DeserializerAsync<HourlyRootobject>(hourlyStream);
+                })).GetOrNull();
+
+                weather = this.CreateWeatherData(currRoot, foreRoot, hourlyRoot);
             }
             catch (Exception ex)
             {
