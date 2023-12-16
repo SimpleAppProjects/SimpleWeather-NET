@@ -25,17 +25,11 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <Color x:Key="DropShadowColor">Black</Color>
-                    <Color x:Key="ForegroundColor">White</Color>
-                    <x:Boolean x:Key="IsLightValue">false</x:Boolean>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <Color x:Key="DropShadowColor">Gray</Color>
-                    <Color x:Key="ForegroundColor">Black</Color>
-                    <x:Boolean x:Key="IsLightValue">true</x:Boolean>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
-            <converters:IconForegroundConverter x:Key="iconForegroundConverter" ConverterParameter="{ThemeResource ForegroundColor}" />
-            <helpers:ObjectContainer x:Key="IsLight" Value="{ThemeResource IsLightValue}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -183,6 +177,7 @@
                     Grid.Column="1"
                     Width="20"
                     Height="20"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
@@ -210,6 +205,7 @@
                     Grid.Column="1"
                     Width="20"
                     Height="20"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf044;" />
@@ -232,6 +228,7 @@
                     Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                     Height="{Binding ElementName=PoPCondition, Path=ActualHeight}"
                     d:WeatherIcon="&#xf084;"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="{x:Bind ViewModel.PoPIcon, Mode=OneWay}" />
@@ -258,11 +255,11 @@
                 <local:IconControl
                     Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
                     Height="{Binding ElementName=WindCondition, Path=ActualHeight}"
-                    d:WeatherIcon="&#xf0b1;"
+                    Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     RenderTransformOrigin="0.5,0.5"
                     ShowAsMonochrome="True"
-                    WeatherIcon="{x:Bind ViewModel.WindIcon, Mode=OneWay}">
+                    WeatherIcon="&#xf0b1;">
                     <local:IconControl.RenderTransform>
                         <RotateTransform d:Angle="90" Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay}" />
                     </local:IconControl.RenderTransform>
