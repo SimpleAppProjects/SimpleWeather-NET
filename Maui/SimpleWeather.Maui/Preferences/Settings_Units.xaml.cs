@@ -12,13 +12,13 @@ public partial class Settings_Units : ContentPage
 
     private bool UnitsChanged = false;
 
-	public Settings_Units()
-	{
-		InitializeComponent();
+    public Settings_Units()
+    {
+        InitializeComponent();
         AddUnits();
         RestoreSettings();
         RegisterListeners();
-	}
+    }
 
     protected override void OnNavigatedTo(NavigatedToEventArgs args)
     {
@@ -188,6 +188,15 @@ public partial class Settings_Units : ContentPage
                     PressureUnits.Children.Add(new RadioButton()
                     {
                         Content = "mb",
+                        Value = pressureUnit.GetStringValue(),
+                        GroupName = nameof(PressureUnits),
+                        MinimumWidthRequest = 85
+                    });
+                    break;
+                case Units.PressureUnits.MmHg:
+                    PressureUnits.Children.Add(new RadioButton()
+                    {
+                        Content = "mmHg",
                         Value = pressureUnit.GetStringValue(),
                         GroupName = nameof(PressureUnits),
                         MinimumWidthRequest = 85

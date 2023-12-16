@@ -165,4 +165,8 @@
     <value>摄氏度</value>
     <comment>Fuzzy</comment>
   </data>
+  <data name="unit_mmHg" xml:space="preserve">
+    <value>mmHg</value>
+    <comment>Pressure: mm</comment>
+  </data>
 </root>

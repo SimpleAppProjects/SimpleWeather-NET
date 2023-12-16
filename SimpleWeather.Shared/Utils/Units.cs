@@ -1,8 +1,4 @@
 ﻿using Microsoft.Toolkit.Parsers.Core;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Text;
 
 namespace SimpleWeather.Utils
 {
@@ -31,7 +27,9 @@ namespace SimpleWeather.Utils
             [StringValue(INHG)]
             InHg,
             [StringValue(MILLIBAR)]
-            Millibar
+            Millibar,
+            [StringValue(MMHG)]
+            MmHg
         }
 
         public enum DistanceUnits
@@ -57,6 +55,7 @@ namespace SimpleWeather.Utils
         public const string METERS_PER_SECOND = "MSEC";
         public const string INHG = "INMERCURY";
         public const string MILLIBAR = "MILLIBAR";
+        public const string MMHG = "MMMERCURY";
         public const string MILES = "MILES";
         public const string KILOMETERS = "KILOMETERS";
         public const string INCHES = "INCHES";

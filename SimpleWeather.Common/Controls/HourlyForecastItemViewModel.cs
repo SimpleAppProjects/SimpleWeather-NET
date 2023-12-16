@@ -185,6 +185,10 @@ namespace SimpleWeather.Common.Controls
                             pressureVal = forecast.extras.pressure_mb.Value;
                             pressureUnit = ResUnits.unit_mBar;
                             break;
+                        case Units.MMHG:
+                            pressureVal = ConversionMethods.InHgToMmHg(forecast.extras.pressure_in.Value);
+                            pressureUnit = ResUnits.unit_mmHg;
+                            break;
                     }
 
                     DetailExtras.Add(WeatherDetailsType.Pressure, new DetailItemViewModel(WeatherDetailsType.Pressure,

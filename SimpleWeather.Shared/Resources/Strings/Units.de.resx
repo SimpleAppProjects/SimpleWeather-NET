@@ -163,4 +163,8 @@
   <data name="unit_celsius" xml:space="preserve">
     <value>Celsius</value>
   </data>
+  <data name="unit_mmHg" xml:space="preserve">
+    <value>mmHg</value>
+    <comment>Pressure: mm</comment>
+  </data>
 </root>

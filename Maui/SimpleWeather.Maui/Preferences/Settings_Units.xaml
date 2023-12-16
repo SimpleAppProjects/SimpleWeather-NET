@@ -6,12 +6,15 @@
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.pref_title_units}"
+    main:AppShell.AppBarIsVisible="True"
     BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
-                                      Dark={StaticResource BlackBrush}}"
-    main:AppShell.AppBarIsVisible="True">
+                                      Dark={StaticResource BlackBrush}}">
 
     <Grid>
-        <ScrollView Orientation="Vertical" Padding="16" HorizontalScrollBarVisibility="Never">
+        <ScrollView
+            Padding="16"
+            HorizontalScrollBarVisibility="Never"
+            Orientation="Vertical">
             <VerticalStackLayout>
                 <Label
                     Padding="0,5"
