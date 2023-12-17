@@ -8,9 +8,18 @@
     xmlns:local="using:SimpleWeather.NET.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:stor="using:Windows.Storage"
     xmlns:weather="using:SimpleWeather.WeatherData"
     d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <DataTemplate x:Name="LogFileTemplate" x:DataType="stor:StorageFile">
+                <TextBlock Padding="8,4" Text="{Binding Name}" />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Page.Resources>
 
     <Grid>
         <ScrollViewer
@@ -36,6 +45,11 @@
                     <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Tomorrow.io Key" />
                     <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
                 </StackPanel>
+                <Rectangle Height="8" Fill="Transparent" />
+                <TextBlock
+                    FontSize="16"
+                    Style="{StaticResource SettingTitleStyle}"
+                    Text="Misc" />
                 <Rectangle
                     Height="1"
                     Margin="0,-4,0,15"
@@ -43,6 +57,12 @@
                 <StackPanel Padding="0,8">
                     <TextBlock Style="{StaticResource PrefTitleStyle}" Text="Enable Debug Logger" />
                     <ToggleSwitch x:Name="DebugSwitch" />
+                </StackPanel>
+                <StackPanel Padding="0,8">
+                    <Button
+                        x:Name="SaveLogsBtn"
+                        Content="Save Logs"
+                        Style="{StaticResource PrefTitleStyle}" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
