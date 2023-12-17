@@ -695,8 +695,7 @@
   </data>
   <data name="pref_title_feature_summary" xml:space="preserve">
     <value>Przegląd pogody</value>
-    <comment>Weather Summary or Weather Overview
-Fuzzy</comment>
+    <comment>Weather Summary or Weather Overview</comment>
   </data>
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
     <value>Odmowa dostępu w tle. Proszę włączyć w Ustawieniach.</value>

@@ -206,7 +206,7 @@
     <value>Gorąco</value>
   </data>
   <data name="weather_isotstorms" xml:space="preserve">
-    <value>Lokalne burze z piorunami</value>
+    <value>Pojedyncze burze z piorunami</value>
   </data>
   <data name="weather_scatteredtstorms" xml:space="preserve">
     <value>Rozproszone burze z piorunami</value>
