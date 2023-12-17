@@ -239,7 +239,7 @@ namespace SimpleWeather.NET.Widgets
             {
                 try
                 {
-                    var currentIds = WidgetManager.GetDefault().GetWidgetIds();
+                    var currentIds = WidgetManager.GetDefault().GetWidgetIds() ?? [];
 
                     var widgetPrefs = widgetContainer.Containers.Keys
                         .Where(s => s.StartsWith("AppWidget_"))

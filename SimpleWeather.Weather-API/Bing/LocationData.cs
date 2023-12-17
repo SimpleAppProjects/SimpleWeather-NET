@@ -158,9 +158,9 @@ namespace SimpleWeather.Weather_API.Bing
 
             var model = new LocationQuery();
 
-            if (!string.IsNullOrWhiteSpace(result?.Name))
+            if (!string.IsNullOrWhiteSpace(result?.Name) || !string.IsNullOrWhiteSpace(result?.Address?.Neighborhood))
             {
-                model.LocationName = result.Name;
+                model.LocationName = result?.Address?.Neighborhood ?? result.Name;
 
                 if (!string.IsNullOrWhiteSpace(result?.Address?.AdminDistrict) && !model.LocationName.EndsWith(result.Address.AdminDistrict))
                 {
