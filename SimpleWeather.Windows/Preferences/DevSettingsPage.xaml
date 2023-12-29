@@ -59,10 +59,7 @@
                     <ToggleSwitch x:Name="DebugSwitch" />
                 </StackPanel>
                 <StackPanel Padding="0,8">
-                    <Button
-                        x:Name="SaveLogsBtn"
-                        Content="Save Logs"
-                        Style="{StaticResource PrefTitleStyle}" />
+                    <Button x:Name="SaveLogsBtn" Content="Save Logs" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
