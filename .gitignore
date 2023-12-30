@@ -250,6 +250,10 @@ ModelManifest.xml
 /Maui/SimpleWeather.Maui.AppWidget/DerivedData
 /Maui/WidgetCenterProxy
 
+# XCode
+**/*.xcodeproj/xcuserdata
+**/*.xcworkspace/xcuserdata/
+
 # SimpleWeather
 API_KEY.txt
 /SimpleWeather.Windows/Package.StoreAssociation.xml
