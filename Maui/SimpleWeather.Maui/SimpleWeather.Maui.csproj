@@ -100,7 +100,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="TimberLog" Version="1.0.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.17.6" />
@@ -113,13 +113,13 @@
 		<PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.3-SNAPSHOT" />
 		<PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.3-SNAPSHOT" />
 		<PackageReference Include="SkiaSharp.Extended.UI.Maui" Version="2.0.0-preview.86" />
-		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.6" />
-		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.6" />
+		<PackageReference Include="SkiaSharp.Skottie" Version="2.88.7" />
+		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.7" />
 		<PackageReference Include="ZCS.Utf8Json" Version="1.4.5" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.7" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.7" />
-		<PackageReference Include="Mapsui.Maui" Version="4.1.1" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0" />
+		<PackageReference Include="Mapsui.Maui" Version="4.1.2" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
@@ -134,8 +134,8 @@
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
 		<PackageReference Include="WinUIEx" Version="2.1.0" />
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231115000" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.756" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231219000" />
+		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.2428" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
 	</ItemGroup>

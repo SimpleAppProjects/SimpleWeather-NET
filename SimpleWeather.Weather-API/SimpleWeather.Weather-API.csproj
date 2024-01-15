@@ -18,14 +18,14 @@
     <CreatePackage>false</CreatePackage>
   </PropertyGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231115000" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.231219000" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.22621.28" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BingMapsRESTToolkit" Version="1.1.5" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.3" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.2.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>

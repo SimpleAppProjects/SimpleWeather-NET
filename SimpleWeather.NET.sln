@@ -43,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWeather.Windows", "Si
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleWeather.BackgroundTasks", "SimpleWeather.BackgroundTasks\SimpleWeather.BackgroundTasks.csproj", "{17D44ED3-2F58-4069-9398-5C7A16A8F704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiUnitTestProject", "MauiUnitTestProject\MauiUnitTestProject.csproj", "{B435C77D-23B3-4198-B443-C4F90EEC302B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MauiUnitTestProject", "MauiUnitTestProject\MauiUnitTestProject.csproj", "{B435C77D-23B3-4198-B443-C4F90EEC302B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
