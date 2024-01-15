@@ -80,7 +80,7 @@ namespace SimpleWeather.Maui.Widget
                     backgroundColor = imageData.HexColor,
                     backgroundCode = backgroundCode
                 },
-                forecasts = weather.forecast?.Take(10)?.Select(f =>
+                forecasts = weather.forecast?.Select(f =>
                 {
                     var model = new ForecastItemViewModel(f);
 
@@ -93,7 +93,7 @@ namespace SimpleWeather.Maui.Widget
                         chance = model.DetailExtras[WeatherDetailsType.PoPRain]?.Value
                     };
                 }).ToArray(),
-                hr_forecasts = weather.hr_forecast?.Take(10)?.Select(f =>
+                hr_forecasts = weather.hr_forecast?.Select(f =>
                 {
                     var model = new HourlyForecastItemViewModel(f);
 

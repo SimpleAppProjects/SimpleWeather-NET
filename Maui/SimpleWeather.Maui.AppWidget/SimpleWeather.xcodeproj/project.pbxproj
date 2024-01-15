@@ -39,6 +39,10 @@
 		EA5C912A2ACFC15D00FE8FAF /* WeatherData.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C910C2ACBAA5E00FE8FAF /* WeatherData.swift */; };
 		EA5C912B2ACFC16800FE8FAF /* WeatherIcons.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C910F2ACFB00900FE8FAF /* WeatherIcons.swift */; };
 		EA5C91322AD106C900FE8FAF /* WeatherIconsToSFSymbols.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5C91302AD106C900FE8FAF /* WeatherIconsToSFSymbols.swift */; };
+		EAD52AFB2B3F6B1F009072CA /* WeatherUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD52AFA2B3F6B1F009072CA /* WeatherUtils.swift */; };
+		EAD52AFC2B3F6B1F009072CA /* WeatherUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD52AFA2B3F6B1F009072CA /* WeatherUtils.swift */; };
+		EAD52AFE2B3FBB66009072CA /* WeatherConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD52AFD2B3FBB66009072CA /* WeatherConditions.swift */; };
+		EAD52AFF2B3FBB66009072CA /* WeatherConditions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD52AFD2B3FBB66009072CA /* WeatherConditions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +110,8 @@
 		EA5C912D2AD0F05E00FE8FAF /* UIColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		EA5C91302AD106C900FE8FAF /* WeatherIconsToSFSymbols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherIconsToSFSymbols.swift; sourceTree = "<group>"; };
 		EAB6F5062B19722600EF261C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		EAD52AFA2B3F6B1F009072CA /* WeatherUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherUtils.swift; sourceTree = "<group>"; };
+		EAD52AFD2B3FBB66009072CA /* WeatherConditions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherConditions.swift; sourceTree = "<group>"; };
 		EAD75CB22AD3C39C002CF752 /* widgetintentExtDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetintentExtDebug.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -217,6 +223,8 @@
 				EA072A912ADA450300A49239 /* WeatherBackground.swift */,
 				EA072A9C2ADB575200A49239 /* FileLogger.swift */,
 				EA072A9E2ADB579D00A49239 /* GroupIdentifier.swift */,
+				EAD52AFA2B3F6B1F009072CA /* WeatherUtils.swift */,
+				EAD52AFD2B3FBB66009072CA /* WeatherConditions.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -379,8 +387,10 @@
 				EA5C90FD2ACBA39200FE8FAF /* widget.intentdefinition in Sources */,
 				EA5C910D2ACBAA5E00FE8FAF /* WeatherData.swift in Sources */,
 				EA5C90F62ACBA39000FE8FAF /* WeatherWidgetBundle.swift in Sources */,
+				EAD52AFE2B3FBB66009072CA /* WeatherConditions.swift in Sources */,
 				EA072A952ADA85BE00A49239 /* UIColorExtensions.swift in Sources */,
 				EA5C910B2ACBAA3300FE8FAF /* WeatherDataReader.swift in Sources */,
+				EAD52AFB2B3F6B1F009072CA /* WeatherUtils.swift in Sources */,
 				EA5C91322AD106C900FE8FAF /* WeatherIconsToSFSymbols.swift in Sources */,
 				EA5C90F82ACBA39000FE8FAF /* WeatherWidget.swift in Sources */,
 				EA5C91092ACBA8D000FE8FAF /* WeatherModel.swift in Sources */,
@@ -394,11 +404,13 @@
 				EA5C91262ACFC13C00FE8FAF /* WeatherDataReader.swift in Sources */,
 				EA072A942ADA46B400A49239 /* WeatherBackground.swift in Sources */,
 				EA5C912A2ACFC15D00FE8FAF /* WeatherData.swift in Sources */,
+				EAD52AFF2B3FBB66009072CA /* WeatherConditions.swift in Sources */,
 				EA072AA12ADB57B500A49239 /* FileLogger.swift in Sources */,
 				EA072AA32ADB57B700A49239 /* GroupIdentifier.swift in Sources */,
 				EA5C91242ACFC07B00FE8FAF /* widget.intentdefinition in Sources */,
 				EA5C91272ACFC15800FE8FAF /* WeatherModel.swift in Sources */,
 				EA5C911B2ACFBF0500FE8FAF /* IntentHandler.swift in Sources */,
+				EAD52AFC2B3F6B1F009072CA /* WeatherUtils.swift in Sources */,
 				EA5C912B2ACFC16800FE8FAF /* WeatherIcons.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

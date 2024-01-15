@@ -53,6 +53,57 @@ extension Locale {
 }
 
 extension WeatherData {
+    func checkForOutdatedObservation() -> WeatherData {
+        var now = Date()
+        guard let tz = TimeZone(identifier: current.tz_long) else {
+            return self
+        }
+        
+        let tzDiffFromUTCinSecs = tz.secondsFromGMT(for: now)
+        
+        now = now.addingTimeInterval(Double(tzDiffFromUTCinSecs))
+
+        let _forecasts = forecasts?.filter { f in
+            let date = Date(timeIntervalSince1970: f.epochTime)
+            
+            // ex) from 12PM - to 3PM
+            let daysDiff = Calendar.current.dateComponents([.day], from: now, to: date).day ?? 0
+            
+            return daysDiff >= 0
+        }
+        
+        var _current = self.current
+
+        let hrForecasts = hr_forecasts?.filter { f in
+            let date = Date(timeIntervalSince1970: f.epochTime)
+            
+            // ex) from 12PM - to 3PM
+            let hoursDiff = Calendar.current.dateComponents([.hour], from: now, to: date).hour ?? 0
+            
+            // Update current condition if needed
+            if (f.epochTime == hr_forecasts!.first!.epochTime && hoursDiff > 1) {
+                _current = _Current(
+                    locationName: current.locationName,
+                    tz_long: current.tz_long,
+                    isGPS: current.isGPS,
+                    temp: f.temp,
+                    condition: WeatherUtils.getWeatherCondition(forIcon: f.icon),
+                    icon: f.icon,
+                    showHiLo: false
+                )
+                _current.backgroundCode = WeatherUtils.getBackgroundCodeFromIcon(icon: f.icon)
+            }
+            
+            return hoursDiff > 1
+        }
+        
+        return WeatherData(
+            current: _current,
+            forecasts: _forecasts,
+            hr_forecasts: hrForecasts
+        )
+    }
+    
     func toModel() -> WeatherModel {
         let tzStr = current.tz_long
         let tz = TimeZone(identifier: tzStr)

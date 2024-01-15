@@ -43,7 +43,8 @@ struct Provider: IntentTimelineProvider {
             return
         }
         
-        let model = weatherMap?[locationKey]?.toModel()
+        let data = weatherMap?[locationKey]?.checkForOutdatedObservation()
+        let model = data?.toModel()
         
         guard model != nil else {
             let timeline = createTimeline(entry: createTimelineEntry(model: nil, status: .noWeather, config: configuration))
