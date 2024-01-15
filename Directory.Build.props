@@ -2,9 +2,9 @@
 <Project>
 	<PropertyGroup>
 		<LangVersion>latest</LangVersion>
-		<Version>5.8.3</Version>
+		<Version>5.8.4</Version>
 		<!-- Version Code Format (.NET Version, App Version, Build Number) -->
-		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858300</VersionCode>
+		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858400</VersionCode>
 		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
 	</PropertyGroup>
 
