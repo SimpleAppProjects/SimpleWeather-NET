@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
+using Mapsui.Providers;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -154,11 +155,11 @@ namespace SimpleWeather.NET.Preferences
                 if (!string.IsNullOrWhiteSpace(SettingsManager.APIKey) && !SettingsManager.KeysVerified[selectedProvider])
                     SettingsManager.KeysVerified[selectedProvider] = true;
 
-                PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey;
+                PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKeys[selectedProvider];
 
                 if (string.IsNullOrWhiteSpace(wm.GetAPIKey()))
                 {
-                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey = true;
+                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKeys[selectedProvider] = true;
                     PersonalKeySwitch.IsEnabled = false;
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
@@ -167,7 +168,7 @@ namespace SimpleWeather.NET.Preferences
                     PersonalKeySwitch.IsEnabled = true;
                 }
 
-                if (!SettingsManager.UsePersonalKey)
+                if (!SettingsManager.UsePersonalKeys[selectedProvider])
                 {
                     // We're using our own (verified) keys
                     SettingsManager.KeysVerified[selectedProvider] = true;
@@ -274,7 +275,7 @@ namespace SimpleWeather.NET.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) &&
+            if (SettingsManager.UsePersonalKeys[provider] && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) &&
                 wm.IsKeyRequired(provider))
             {
                 KeyBorder.BorderBrush = new SolidColorBrush(Colors.Red);
@@ -305,7 +306,7 @@ namespace SimpleWeather.NET.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
+            if (SettingsManager.UsePersonalKeys[provider] && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
             {
                 e.Cancel = true;
             }
@@ -323,7 +324,7 @@ namespace SimpleWeather.NET.Preferences
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
-            if (SettingsManager.UsePersonalKey && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
+            if (SettingsManager.UsePersonalKeys[provider] && String.IsNullOrWhiteSpace(SettingsManager.APIKeys[provider]) && wm.IsKeyRequired(provider))
             {
                 // Fallback to supported weather provider
                 string API = RemoteConfigService.GetDefaultWeatherProvider();
@@ -332,7 +333,7 @@ namespace SimpleWeather.NET.Preferences
                 wm.UpdateAPI();
 
                 // If key exists, go ahead
-                SettingsManager.UsePersonalKey = false;
+                SettingsManager.UsePersonalKeys[provider] = false;
                 SettingsManager.KeysVerified[API] = true;
             }
 
@@ -380,12 +381,15 @@ namespace SimpleWeather.NET.Preferences
                 {
                     case CommonActions.ACTION_SETTINGS_UPDATEAPI:
                         wm.UpdateAPI();
-                        // Log event
-                        AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                         {
-                            { "API", SettingsManager.API },
-                            { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
-                        });
+                            var api = SettingsManager.API;
+                            // Log event
+                            AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
+                            {
+                                { "API", api },
+                                { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[api]).ToString() }
+                            });
+                        }
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                         break;
                     case CommonActions.ACTION_SETTINGS_UPDATEREFRESH:
@@ -441,6 +445,7 @@ namespace SimpleWeather.NET.Preferences
                                 SettingsManager.APIKeys[provider] = key;
                                 SettingsManager.API = provider;
                                 SettingsManager.KeysVerified[provider] = true;
+                                SettingsManager.UsePersonalKeys[provider] = true;
 
                                 KeyEntry.Text = key;
                                 UpdateKeyBorder();
@@ -506,7 +511,7 @@ namespace SimpleWeather.NET.Preferences
             {
                 if (String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
                 {
-                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKey = true;
+                    PersonalKeySwitch.IsOn = SettingsManager.UsePersonalKeys[selectedProvider] = true;
                     PersonalKeySwitch.IsEnabled = Equals(selectedProvider, WeatherAPI.OpenWeatherMap);
                     KeyEntry.Visibility = Visibility.Collapsed;
                 }
@@ -515,7 +520,7 @@ namespace SimpleWeather.NET.Preferences
                     PersonalKeySwitch.IsEnabled = true;
                 }
 
-                if (!SettingsManager.UsePersonalKey)
+                if (!SettingsManager.UsePersonalKeys[selectedProvider])
                 {
                     // We're using our own (verified) keys
                     SettingsManager.KeysVerified[selectedProvider] = true;
@@ -553,8 +558,8 @@ namespace SimpleWeather.NET.Preferences
 
                 AnalyticsLogger.LogEvent("Update API", new Dictionary<string, string>()
                 {
-                    { "API", SettingsManager.API },
-                    { "API_IsInternalKey", (!SettingsManager.UsePersonalKey).ToString() }
+                    { "API", selectedProvider },
+                    { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[selectedProvider]).ToString() }
                 });
             }
 
@@ -572,11 +577,12 @@ namespace SimpleWeather.NET.Preferences
             AnalyticsLogger.LogEvent("Settings_General: PersonalKeySwitch_Toggled");
 
             ToggleSwitch sw = sender as ToggleSwitch;
-            SettingsManager.UsePersonalKey = sw.IsOn;
+
+            string API = APIComboBox.SelectedValue.ToString();
+            SettingsManager.UsePersonalKeys[API] = sw.IsOn;
 
             if (!sw.IsOn)
             {
-                string API = APIComboBox.SelectedValue.ToString();
                 var selectedWProv = wm.GetWeatherProvider(API);
 
                 if (!selectedWProv.KeyRequired || !String.IsNullOrWhiteSpace(selectedWProv.GetAPIKey()))
