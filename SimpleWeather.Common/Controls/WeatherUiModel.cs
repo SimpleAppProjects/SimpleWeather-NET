@@ -349,35 +349,38 @@ namespace SimpleWeather.Common.Controls
             // Astronomy
             if (WeatherData.astronomy != null)
             {
-                SunPhase = new SunPhaseViewModel(WeatherData.astronomy, WeatherData.location.tz_offset);
-
                 if (WeatherData.astronomy.sunrise > DateTime.MinValue && WeatherData.astronomy.sunset > DateTime.MinValue)
+                {
+                    SunPhase = new SunPhaseViewModel(WeatherData.astronomy, WeatherData.location.tz_offset);
+                }
+
+                if (WeatherData.astronomy.sunrise > DateTime.MinValue)
                 {
                     WeatherDetailsMap.Add(WeatherDetailsType.Sunrise, new DetailItemViewModel(WeatherDetailsType.Sunrise,
                            WeatherData.astronomy.sunrise.ToString("t", culture)));
+                }
+
+                if (WeatherData.astronomy.sunset > DateTime.MinValue)
+                {
                     WeatherDetailsMap.Add(WeatherDetailsType.Sunset, new DetailItemViewModel(WeatherDetailsType.Sunset,
                            WeatherData.astronomy.sunset.ToString("t", culture)));
                 }
 
-                MoonPhase = new MoonPhaseViewModel(WeatherData.astronomy);
-
-                if (WeatherData.astronomy.moonrise != null && WeatherData.astronomy.moonset != null)
+                if (WeatherData.astronomy.moonrise > DateTime.MinValue)
                 {
-                    if (WeatherData.astronomy.moonrise > DateTime.MinValue)
-                    {
-                        WeatherDetailsMap.Add(WeatherDetailsType.Moonrise, new DetailItemViewModel(WeatherDetailsType.Moonrise,
-                           WeatherData.astronomy.moonrise.ToString("t", culture)));
-                    }
+                    WeatherDetailsMap.Add(WeatherDetailsType.Moonrise, new DetailItemViewModel(WeatherDetailsType.Moonrise,
+                       WeatherData.astronomy.moonrise.ToString("t", culture)));
+                }
 
-                    if (WeatherData.astronomy.moonset > DateTime.MinValue)
-                    {
-                        WeatherDetailsMap.Add(WeatherDetailsType.Moonset, new DetailItemViewModel(WeatherDetailsType.Moonset,
-                           WeatherData.astronomy.moonset.ToString("t", culture)));
-                    }
+                if (WeatherData.astronomy.moonset > DateTime.MinValue)
+                {
+                    WeatherDetailsMap.Add(WeatherDetailsType.Moonset, new DetailItemViewModel(WeatherDetailsType.Moonset,
+                       WeatherData.astronomy.moonset.ToString("t", culture)));
                 }
 
                 if (WeatherData.astronomy.moonphase != null)
                 {
+                    MoonPhase = new MoonPhaseViewModel(WeatherData.astronomy);
                     WeatherDetailsMap.Add(WeatherDetailsType.MoonPhase, new DetailItemViewModel(WeatherData.astronomy.moonphase.phase));
                 }
             }

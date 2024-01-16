@@ -67,6 +67,11 @@ namespace SimpleWeather.Utils
             return date.ToString(ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture);
         }
 
+        public static bool IsMinValue(this DateTime value)
+        {
+            return value == DateTime.MinValue;
+        }
+
         /// <summary>
         /// Outputs TimeSpan to the following format: "hh:mm:ss"
         /// </summary>

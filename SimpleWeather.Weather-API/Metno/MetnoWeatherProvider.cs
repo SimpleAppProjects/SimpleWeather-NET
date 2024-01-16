@@ -24,7 +24,8 @@ namespace SimpleWeather.Weather_API.Metno
     public partial class MetnoWeatherProvider : WeatherProviderImpl
     {
         private const string FORECAST_QUERY_URL = "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
-        private const string ASTRONOMY_QUERY_URL = "https://api.met.no/weatherapi/sunrise/2.0/.json?{0}&date={1}&offset=+00:00";
+        private const string SUN_QUERY_URL = "https://api.met.no/weatherapi/sunrise/3.0/sun?{0}&date={1}&offset=+00:00";
+        private const string MOON_QUERY_URL = "https://api.met.no/weatherapi/sunrise/3.0/moon?{0}&date={1}&offset=+00:00";
 
         public MetnoWeatherProvider() : base()
         {
@@ -66,49 +67,61 @@ namespace SimpleWeather.Weather_API.Metno
 
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
                 string date = DateTime.Now.ToString("yyyy-MM-dd");
-                Uri sunrisesetURL = new Uri(string.Format(ASTRONOMY_QUERY_URL, query, date));
+                Uri sunURL = new Uri(string.Format(SUN_QUERY_URL, query, date));
+                Uri moonURL = new Uri(string.Format(MOON_QUERY_URL, query, date));
 
-                using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
-                using (var astronomyRequest = new HttpRequestMessage(HttpMethod.Get, sunrisesetURL))
-                {
-                    // Add headers
-                    forecastRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-                    forecastRequest.Headers.UserAgent.AddAppUserAgent();
+                using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
+                using var sunRequest = new HttpRequestMessage(HttpMethod.Get, sunURL);
+                using var moonRequest = new HttpRequestMessage(HttpMethod.Get, moonURL);
 
-                    astronomyRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
-                    astronomyRequest.Headers.UserAgent.AddAppUserAgent();
+                // Add headers
+                forecastRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                forecastRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
-                    astronomyRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+                sunRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                sunRequest.Headers.UserAgent.AddAppUserAgent();
 
-                    // Get response
-                    var webClient = SharedModule.Instance.WebClient;
-                    using (var ctsF = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                    using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
-                    {
-                        await this.CheckForErrors(forecastResponse);
-                        forecastResponse.EnsureSuccessStatusCode();
+                moonRequest.Headers.AcceptEncoding.Add(new StringWithQualityHeaderValue("gzip"));
+                moonRequest.Headers.UserAgent.AddAppUserAgent();
 
-                        using (var ctsA = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                        using (var sunrisesetResponse = await webClient.SendAsync(astronomyRequest, ctsA.Token))
-                        {
-                            await this.CheckForErrors(sunrisesetResponse);
-                            sunrisesetResponse.EnsureSuccessStatusCode();
+                forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                sunRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+                moonRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
 
-                            Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
-                            Stream sunrisesetStream = await sunrisesetResponse.Content.ReadAsStreamAsync();
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
 
-                            // Reset exception
-                            wEx = null;
+                using var ctsF = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token);
 
-                            // Load weather
-                            Rootobject foreRoot = await JSONParser.DeserializerAsync<Rootobject>(forecastStream);
-                            AstroRootobject astroRoot = await JSONParser.DeserializerAsync<AstroRootobject>(sunrisesetStream);
+                await this.CheckForErrors(forecastResponse);
+                forecastResponse.EnsureSuccessStatusCode();
 
-                            weather = this.CreateWeatherData(foreRoot, astroRoot);
-                        }
-                    }
-                }
+                using var ctsS = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var sunResponse = await webClient.SendAsync(sunRequest, ctsS.Token);
+
+                await this.CheckForErrors(sunResponse);
+                sunResponse.EnsureSuccessStatusCode();
+
+                using var ctsM = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var moonResponse = await webClient.SendAsync(moonRequest, ctsM.Token);
+
+                await this.CheckForErrors(moonResponse);
+                moonResponse.EnsureSuccessStatusCode();
+
+                Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
+                Stream sunStream = await sunResponse.Content.ReadAsStreamAsync();
+                Stream moonStream = await moonResponse.Content.ReadAsStreamAsync();
+
+                // Reset exception
+                wEx = null;
+
+                // Load weather
+                Rootobject foreRoot = await JSONParser.DeserializerAsync<Rootobject>(forecastStream);
+                SunRootobject sunRoot = await JSONParser.DeserializerAsync<SunRootobject>(sunStream);
+                MoonRootobject moonRoot = await JSONParser.DeserializerAsync<MoonRootobject>(moonStream);
+
+                weather = this.CreateWeatherData(foreRoot, sunRoot, moonRoot);
             }
             catch (Exception ex)
             {

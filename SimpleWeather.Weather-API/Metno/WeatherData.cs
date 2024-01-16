@@ -9,7 +9,9 @@ namespace SimpleWeather.Weather_API.Metno
 {
     public static partial class MetnoWeatherProviderExtensions
     {
-        public static Weather CreateWeatherData(this MetnoWeatherProvider _, Rootobject foreRoot, AstroRootobject astroRoot)
+        private const string ASTRO_DATETIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mmK";
+
+        public static Weather CreateWeatherData(this MetnoWeatherProvider _, Rootobject foreRoot, SunRootobject sunRoot, MoonRootobject moonRoot)
         {
             var weather = new Weather();
 
@@ -99,7 +101,10 @@ namespace SimpleWeather.Weather_API.Metno
                 weather.hr_forecast.RemoveAt(weather.hr_forecast.Count - 1);
             }
 
-            weather.astronomy = _.CreateAstronomy(astroRoot);
+            if (sunRoot != null && moonRoot != null)
+            {
+                weather.astronomy = _.CreateAstronomy(sunRoot, moonRoot);
+            }
             weather.ttl = 120;
 
             weather.query = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
@@ -298,36 +303,68 @@ namespace SimpleWeather.Weather_API.Metno
             return atmosphere;
         }
 
-        public static Astronomy CreateAstronomy(this MetnoWeatherProvider _, AstroRootobject astroRoot)
+        public static Astronomy CreateAstronomy(this MetnoWeatherProvider _, SunRootobject sunRoot, MoonRootobject moonRoot)
         {
             var astronomy = new Astronomy();
 
-            int moonPhaseValue = -1;
-
-            foreach (Time time in astroRoot.location.time)
+            if (DateTimeOffset.TryParseExact(sunRoot?.properties?.sunrise?.time, ASTRO_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var sunrise))
             {
-                if (time.sunrise != null)
+                astronomy.sunrise = sunrise.UtcDateTime;
+            }
+            if (DateTimeOffset.TryParseExact(sunRoot?.properties?.sunset?.time, ASTRO_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var sunset))
+            {
+                astronomy.sunset = sunset.UtcDateTime;
+            }
+
+            if (DateTimeOffset.TryParseExact(moonRoot?.properties?.moonrise?.time, ASTRO_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var moonrise))
+            {
+                astronomy.moonrise = moonrise.UtcDateTime;
+            }
+            if (DateTimeOffset.TryParseExact(moonRoot?.properties?.moonset?.time, ASTRO_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out var moonset))
+            {
+                astronomy.moonset = moonset.UtcDateTime;
+            }
+
+            if (moonRoot?.properties?.moonphase != null)
+            {
+                float moonPhaseValue = moonRoot.properties.moonphase;
+
+                MoonPhase.MoonPhaseType moonPhaseType;
+                if (moonPhaseValue >= 0.1f && moonPhaseValue < 89.9)
                 {
-                    astronomy.sunrise = time.sunrise.time.UtcDateTime;
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
                 }
-                if (time.sunset != null)
+                else if (moonPhaseValue >= 89.9 && moonPhaseValue < 90.1)
                 {
-                    astronomy.sunset = time.sunset.time.UtcDateTime;
+                    moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
+                }
+                else if (moonPhaseValue >= 90.1 && moonPhaseValue < 179.9)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
+                }
+                else if (moonPhaseValue >= 179.9 && moonPhaseValue < 180.1)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
+                }
+                else if (moonPhaseValue >= 180.1 && moonPhaseValue < 269.9)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
+                }
+                else if (moonPhaseValue >= 269.9 && moonPhaseValue < 270.1)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
+                }
+                else if (moonPhaseValue >= 270.1 && moonPhaseValue < 359.9)
+                {
+                    moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
+                }
+                else
+                {
+                    // 0
+                    moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
                 }
 
-                if (time.moonrise != null)
-                {
-                    astronomy.moonrise = time.moonrise.time.UtcDateTime;
-                }
-                if (time.moonset != null)
-                {
-                    astronomy.moonset = time.moonset.time.UtcDateTime;
-                }
-
-                if (time.moonphase != null)
-                {
-                    moonPhaseValue = (int)Math.Round(double.Parse(time.moonphase.value, CultureInfo.InvariantCulture));
-                }
+                astronomy.moonphase = new MoonPhase(moonPhaseType);
             }
 
             // If the sun won't set/rise, set time to the future
@@ -347,43 +384,6 @@ namespace SimpleWeather.Weather_API.Metno
             {
                 astronomy.moonset = DateTime.MinValue;
             }
-
-            MoonPhase.MoonPhaseType moonPhaseType;
-            if (moonPhaseValue >= 2 && moonPhaseValue < 23)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.WaxingCrescent;
-            }
-            else if (moonPhaseValue >= 23 && moonPhaseValue < 26)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.FirstQtr;
-            }
-            else if (moonPhaseValue >= 26 && moonPhaseValue < 48)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.WaxingGibbous;
-            }
-            else if (moonPhaseValue >= 48 && moonPhaseValue < 52)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.FullMoon;
-            }
-            else if (moonPhaseValue >= 52 && moonPhaseValue < 73)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.WaningGibbous;
-            }
-            else if (moonPhaseValue >= 73 && moonPhaseValue < 76)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.LastQtr;
-            }
-            else if (moonPhaseValue >= 76 && moonPhaseValue < 98)
-            {
-                moonPhaseType = MoonPhase.MoonPhaseType.WaningCrescent;
-            }
-            else
-            {
-                // 0, 1, 98, 99, 100
-                moonPhaseType = MoonPhase.MoonPhaseType.NewMoon;
-            }
-
-            astronomy.moonphase = new MoonPhase(moonPhaseType);
 
             return astronomy;
         }
