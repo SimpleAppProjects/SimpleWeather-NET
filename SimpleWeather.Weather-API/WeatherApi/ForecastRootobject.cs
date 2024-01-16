@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace SimpleWeather.Weather_API.WeatherApi
 {
@@ -114,7 +113,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public string moonrise { get; set; }
         public string moonset { get; set; }
         public string moon_phase { get; set; }
-        public string moon_illumination { get; set; }
+        //public string moon_illumination { get; set; }
     }
 
     public class Hour
@@ -171,8 +170,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
         [DataMember(Name = "event")]
         public string _event { get; set; }
         public string note { get; set; }
-        public DateTimeOffset effective { get; set; }
-        public DateTimeOffset expires { get; set; }
+        public string effective { get; set; }
+        public string expires { get; set; }
         public string desc { get; set; }
         public string instruction { get; set; }
     }

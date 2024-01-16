@@ -1,5 +1,7 @@
 ﻿using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -89,8 +91,14 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
             weatherAlert.Attribution = alert.note;
 
-            weatherAlert.Date = alert.effective;
-            weatherAlert.ExpiresDate = alert.expires;
+            if (DateTimeOffset.TryParse(alert.effective, CultureInfo.InvariantCulture, out var effective))
+            {
+                weatherAlert.Date = effective;
+            }
+            if (DateTimeOffset.TryParse(alert.expires, CultureInfo.InvariantCulture, out var expires))
+            {
+                weatherAlert.ExpiresDate = expires;
+            }
 
             return weatherAlert;
         }

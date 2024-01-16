@@ -32210,7 +32210,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moonrise"), 2},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moonset"), 3},
                 { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moon_phase"), 4},
-                { JsonWriter.GetEncodedPropertyNameWithoutQuotation("moon_illumination"), 5},
             };
 
             this.____stringByteKeys = new byte[][]
@@ -32220,7 +32219,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moonrise"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moonset"),
                 JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moon_phase"),
-                JsonWriter.GetEncodedPropertyNameWithPrefixValueSeparator("moon_illumination"),
                 
             };
         }
@@ -32244,8 +32242,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteString(value.moonset);
             writer.WriteRaw(this.____stringByteKeys[4]);
             writer.WriteString(value.moon_phase);
-            writer.WriteRaw(this.____stringByteKeys[5]);
-            writer.WriteString(value.moon_illumination);
             
             writer.WriteEndObject();
         }
@@ -32268,8 +32264,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var __moonset__b__ = false;
             var __moon_phase__ = default(string);
             var __moon_phase__b__ = false;
-            var __moon_illumination__ = default(string);
-            var __moon_illumination__b__ = false;
 
             var ____count = 0;
             reader.ReadIsBeginObjectWithVerify();
@@ -32305,10 +32299,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __moon_phase__ = reader.ReadString();
                         __moon_phase__b__ = true;
                         break;
-                    case 5:
-                        __moon_illumination__ = reader.ReadString();
-                        __moon_illumination__b__ = true;
-                        break;
                     default:
                         reader.ReadNextBlock();
                         break;
@@ -32324,7 +32314,6 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             if(__moonrise__b__) ____result.moonrise = __moonrise__;
             if(__moonset__b__) ____result.moonset = __moonset__;
             if(__moon_phase__b__) ____result.moon_phase = __moon_phase__;
-            if(__moon_illumination__b__) ____result.moon_illumination = __moon_illumination__;
 
             return ____result;
         }
@@ -33038,9 +33027,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             writer.WriteRaw(this.____stringByteKeys[8]);
             writer.WriteString(value.note);
             writer.WriteRaw(this.____stringByteKeys[9]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.effective, formatterResolver);
+            writer.WriteString(value.effective);
             writer.WriteRaw(this.____stringByteKeys[10]);
-            formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Serialize(ref writer, value.expires, formatterResolver);
+            writer.WriteString(value.expires);
             writer.WriteRaw(this.____stringByteKeys[11]);
             writer.WriteString(value.desc);
             writer.WriteRaw(this.____stringByteKeys[12]);
@@ -33075,9 +33064,9 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
             var ___event__b__ = false;
             var __note__ = default(string);
             var __note__b__ = false;
-            var __effective__ = default(global::System.DateTimeOffset);
+            var __effective__ = default(string);
             var __effective__b__ = false;
-            var __expires__ = default(global::System.DateTimeOffset);
+            var __expires__ = default(string);
             var __expires__b__ = false;
             var __desc__ = default(string);
             var __desc__b__ = false;
@@ -33135,11 +33124,11 @@ namespace SimpleWeather.Weather_API.Utf8JsonGen.Formatters.SimpleWeather.Weather
                         __note__b__ = true;
                         break;
                     case 9:
-                        __effective__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __effective__ = reader.ReadString();
                         __effective__b__ = true;
                         break;
                     case 10:
-                        __expires__ = formatterResolver.GetFormatterWithVerify<global::System.DateTimeOffset>().Deserialize(ref reader, formatterResolver);
+                        __expires__ = reader.ReadString();
                         __expires__b__ = true;
                         break;
                     case 11:
