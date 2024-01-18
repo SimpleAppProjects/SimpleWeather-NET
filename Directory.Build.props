@@ -4,7 +4,7 @@
 		<LangVersion>latest</LangVersion>
 		<Version>5.8.4</Version>
 		<!-- Version Code Format (.NET Version, App Version, Build Number) -->
-		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858401</VersionCode>
+		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858403</VersionCode>
 		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
 	</PropertyGroup>
 
