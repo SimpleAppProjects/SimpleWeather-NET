@@ -37,6 +37,7 @@ public partial class WeatherRadarPage : ContentPage
     {
         if (radarViewProvider == null)
         {
+            RadarWebViewContainer.SetAppTheme(ClassIdProperty, "light", "dark");
             radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
         }
         radarViewProvider.EnableInteractions(true);

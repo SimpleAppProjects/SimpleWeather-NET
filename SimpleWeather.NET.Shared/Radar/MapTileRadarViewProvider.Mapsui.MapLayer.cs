@@ -5,6 +5,7 @@ using Mapsui.Tiling;
 #if WINDOWS
 using Microsoft.UI.Xaml;
 #endif
+using Mapsui.Layers;
 using SimpleWeather.Helpers;
 using SimpleWeather.NET.MapsUi;
 #endif
@@ -30,16 +31,15 @@ namespace SimpleWeather.NET.Radar
                     mapControl?.Map?.Layers?.Insert(0, OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString())); // Default map layer
                 }
 #else
-                if (mapControl.Map.Layers.FindLayer("Root").FirstOrDefault() is null)
-                {
-                    mapControl?.Map?.Layers?.Insert(0, await BingMaps.CreateBingCanvasGrayLayer(Constants.GetUserAgentString())); // Default map layer
-                }
-                /*
                 bool changeMap = false;
 
                 if (mapControl.Map.Layers.FindLayer("Root").FirstOrDefault() is ILayer mapLayer)
                 {
+#if WINDOWS
                     if (!Equals(mapLayer.Tag, RadarContainer.ActualTheme))
+#else
+                    if (!Equals(mapLayer.Tag, RadarContainer.ClassId))
+#endif
                     {
                         mapControl.Map.Layers.Remove(mapLayer);
                         changeMap = true;
@@ -52,13 +52,29 @@ namespace SimpleWeather.NET.Radar
 
                 if (changeMap)
                 {
-                    mapControl?.Map?.Layers?.Insert(0, await BingMaps.CreateBingRoadsDynamicLayer(
-                        RadarContainer.ActualTheme == ElementTheme.Dark, Constants.GetUserAgentString()
-                        ));
-                }
-                */
+#if WINDOWS
+                    var isDarkMode = RadarContainer.ActualTheme == ElementTheme.Dark;
+#else
+                    var isDarkMode = Equals(RadarContainer.ClassId, "dark");
 #endif
-            });
+
+                    var imageryType = isDarkMode switch
+                    {
+                        true => BingMapsRESTToolkit.ImageryType.CanvasDark,
+                        false => BingMapsRESTToolkit.ImageryType.CanvasLight
+                    };
+
+                    mapLayer = await BingMaps.CreateBingMapsLayer(imageryType, isDarkMode, userAgent: Constants.GetUserAgentString());
+#if WINDOWS
+                    mapLayer.Tag = RadarContainer.ActualTheme;
+#else
+                    mapLayer.Tag = RadarContainer.ClassId;
+#endif
+
+                    mapControl?.Map?.Layers?.Insert(0, mapLayer);
+                }
+#endif
+                });
         }
     }
 }

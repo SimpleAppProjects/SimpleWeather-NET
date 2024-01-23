@@ -16,31 +16,9 @@ namespace SimpleWeather.NET.MapsUi
     {
         private static readonly Dictionary<ImageryType, ImageryMetadata> ImageryMetadataCache = new();
 
-        public static TileLayer CreateBingRoadsLayer(string? userAgent = null)
+        public static async Task<TileLayer> CreateBingMapsLayer(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false, string? userAgent = null)
         {
-            return new TileLayer(
-                tileSource: KnownTileSources.Create(KnownTileSource.BingRoads, APIKeys.GetBingMapsKey(), new FileCache(
-                    Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, nameof(KnownTileSource.BingRoads)), "tile.png")
-                ))
-            {
-                Name = "Root"
-            };
-        }
-
-        public static TileLayer CreateBingAerialLayer(string? userAgent = null)
-        {
-            return new TileLayer(
-                tileSource: KnownTileSources.Create(KnownTileSource.BingAerial, APIKeys.GetBingMapsKey(), new FileCache(
-                    Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, nameof(KnownTileSource.BingAerial)), "tile.png")
-                ))
-            {
-                Name = "Root"
-            };
-        }
-
-        public static async Task<TileLayer> CreateBingRoadsOnDemandLayer(bool isDarkMode = false, string? userAgent = null)
-        {
-            var dynamicTileSource = await GetBingMapsRoadOnDemandTileSource(isDarkMode, userAgent);
+            var dynamicTileSource = await GetBingMapsTileSource(imageryType, isDarkMode, userAgent);
 
             if (dynamicTileSource != null)
             {
@@ -61,37 +39,14 @@ namespace SimpleWeather.NET.MapsUi
             }
         }
 
-        public static async Task<TileLayer> CreateBingCanvasGrayLayer(string? userAgent = null)
-        {
-            var dynamicTileSource = await GetBingMapsCanvasGrayTileSource(userAgent);
-
-            if (dynamicTileSource != null)
-            {
-                return new TileLayer(dynamicTileSource)
-                {
-                    Name = "Root"
-                };
-            }
-            else
-            {
-                return new TileLayer(
-                    tileSource: KnownTileSources.Create(KnownTileSource.BingRoads, APIKeys.GetBingMapsKey(), new FileCache(
-                        Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, nameof(KnownTileSource.BingRoads)), "tile.png")
-                    ))
-                {
-                    Name = "Root"
-                };
-            }
-        }
-
-        public static async Task<ITileSource> GetBingMapsCanvasGrayTileSource(string? userAgent = null)
+        public static async Task<ITileSource> GetBingMapsTileSource(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false, string? userAgent = null)
         {
             var key = APIKeys.GetBingMapsKey();
             var culture = LocaleUtils.GetLocale();
 
             try
             {
-                var metadata = ImageryMetadataCache.GetValueOrDefault(ImageryType.CanvasGray);
+                var metadata = ImageryMetadataCache.GetValueOrDefault(imageryType);
 
                 if (metadata == null)
                 {
@@ -101,80 +56,14 @@ namespace SimpleWeather.NET.MapsUi
                     {
                         BingMapsKey = key,
                         Culture = culture.Name,
-                        ImagerySet = ImageryType.CanvasGray,
+                        ImagerySet = imageryType,
                         IncludeImageryProviders = true,
                         UseHTTPS = true,
                     };
 
                     var response = await request.Execute().WaitAsync(cts.Token);
 
-                    ImageryMetadataCache[ImageryType.CanvasGray] = metadata = response.StatusCode switch
-                    {
-                        // OK
-                        200 or 201 or 202 => response?.ResourceSets?.FirstOrDefault()?.Resources?.FirstOrDefault() as ImageryMetadata,
-                        _ => null,
-                    };
-                }
-
-                if (metadata != null)
-                {
-                    // Format tile url
-                    var tileUrl = metadata.ImageUrl.ReplaceFirst("http:", "https:")
-                        .ReplaceFirst("{subdomain}", "{s}")
-                        .AppendQuery("token={k}");
-
-                    Attribution attribution;
-                    if (metadata?.ImageryProviders?.FirstOrDefault() is ImageryProvider provider)
-                    {
-                        attribution = new Attribution(provider.Attribution);
-                    }
-                    else
-                    {
-                        attribution = new Attribution("© Microsoft");
-                    }
-
-                    return new HttpTileSource(
-                        tileSchema: new GlobalSphericalMercator(Math.Max(1, metadata.ZoomMin), Math.Min(19, metadata.ZoomMax)),
-                        urlFormatter: tileUrl, serverNodes: metadata.ImageUrlSubdomains, apiKey: key, attribution: attribution,
-                        userAgent: userAgent, name: "BingCanvasGray",
-                        persistentCache: new FileCache(
-                            Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "BingCanvasGray"), "tile.png")
-                        );
-                }
-            }
-            catch (Exception ex)
-            {
-
-            }
-
-            return null;
-        }
-
-        public static async Task<ITileSource> GetBingMapsRoadOnDemandTileSource(bool isDarkMode = false, string? userAgent = null)
-        {
-            var key = APIKeys.GetBingMapsKey();
-            var culture = LocaleUtils.GetLocale();
-
-            try
-            {
-                var metadata = ImageryMetadataCache.GetValueOrDefault(ImageryType.RoadOnDemand);
-
-                if (metadata == null)
-                {
-                    using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
-
-                    var request = new ImageryMetadataRequest()
-                    {
-                        BingMapsKey = key,
-                        Culture = culture.Name,
-                        ImagerySet = ImageryType.RoadOnDemand,
-                        IncludeImageryProviders = true,
-                        UseHTTPS = true,
-                    };
-
-                    var response = await request.Execute().WaitAsync(cts.Token);
-
-                    ImageryMetadataCache[ImageryType.RoadOnDemand] = metadata = response.StatusCode switch
+                    ImageryMetadataCache[imageryType] = metadata = response.StatusCode switch
                     {
                         // OK
                         200 or 201 or 202 => response?.ResourceSets?.FirstOrDefault()?.Resources?.FirstOrDefault() as ImageryMetadata,
@@ -191,7 +80,7 @@ namespace SimpleWeather.NET.MapsUi
 
                     if (isDarkMode)
                     {
-                        tileUrl = tileUrl.AppendQuery(BingMapsRoadDarkStyleQuery);
+                        tileUrl = tileUrl.AppendQuery(BingMapsCanvasDarkStyleQuery);
                     }
 
                     Attribution attribution;
@@ -204,11 +93,7 @@ namespace SimpleWeather.NET.MapsUi
                         attribution = new Attribution("© Microsoft");
                     }
 
-                    string name = isDarkMode switch
-                    {
-                        true => "BingRoadOnDemandDark",
-                        false => "BingRoadOnDemand"
-                    };
+                    string name = $"Bing{imageryType}";
 
                     return new HttpTileSource(
                         tileSchema: new GlobalSphericalMercator(Math.Max(1, metadata.ZoomMin), Math.Min(19, metadata.ZoomMax)),
@@ -227,6 +112,6 @@ namespace SimpleWeather.NET.MapsUi
             return null;
         }
 
-        private const string BingMapsRoadDarkStyleQuery = "&st=g|lc:FF0B334D_me|lbc:FFFFFFFF;loc:FF000000_ar|fc:FF115166_pt|fc:FF000000;ic:FF0C4152;sc:FF0C4152_pl|boc:00000000;bsc:FF144B53_str|fc:FF115166_trs|fc:FF000000;sc:FF000000_rl|fc:FF000000;sc:FF146474_ard|fc:FF000000;sc:FF995002_cah|fc:FF000000;sc:FF995002_hg|fc:FF000000;sc:FF995002_mr|fc:FF000000;sc:FF995002_wt|fc:FF021019";
+        private const string BingMapsCanvasDarkStyleQuery = "st=g|lc:FF353F54_me|lbc:CCFFFFFF;loc:40000000_rd|fc:66FF7903;sc:66FF7903_wt|fc:FF162439;lbc:FF567D98;loc:33162439";
     }
 }

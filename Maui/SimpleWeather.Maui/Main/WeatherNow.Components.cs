@@ -1469,6 +1469,7 @@ public partial class WeatherNow
                             it.WidthRequest = it.MaximumWidthRequest;
                         }
                     };
+                    it.SetAppTheme(ClassIdProperty, "light", "dark");
 
                     radarViewProvider?.OnDestroyView();
                     radarViewProvider = RadarProvider.GetRadarViewProvider(it);
