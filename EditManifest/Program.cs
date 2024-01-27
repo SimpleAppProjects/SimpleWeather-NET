@@ -88,10 +88,12 @@ namespace EditManifest
                                 if (ConfigMode?.StartsWith("Debug") == true)
                                 {
                                     line = line.Replace("<string>com.thewizrd.simpleweather</string>", "<string>com.thewizrd.simpleweather.debug</string>");
+                                    line = line.Replace("<string>SimpleWeather</string>", "<string>SimpleWeather (Debug)</string>");
                                 }
                                 else
                                 {
                                     line = line.Replace("<string>com.thewizrd.simpleweather.debug</string>", "<string>com.thewizrd.simpleweather</string>");
+                                    line = line.Replace("<string>SimpleWeather (Debug)</string>", "<string>SimpleWeather</string>");
                                 }
                             }
                             else if (FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))

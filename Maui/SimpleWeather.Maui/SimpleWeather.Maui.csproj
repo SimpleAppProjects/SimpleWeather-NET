@@ -12,7 +12,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<!-- Display name -->
-		<ApplicationTitle>SimpleWeather</ApplicationTitle>
+		<ApplicationTitle Condition="'$(Configuration)' == 'Debug'">SimpleWeather (Debug)</ApplicationTitle>
+		<ApplicationTitle Condition="'$(Configuration)' == 'Release'">SimpleWeather</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId Condition="'$(Configuration)' == 'Debug'">com.thewizrd.simpleweather.debug</ApplicationId>
@@ -274,6 +275,7 @@
 			<DependentUpon>Settings_General.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
+	<!--
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetExtension">
 			<Name Condition="'$(Configuration)' == 'Debug'">widgetExtensionDebug</Name>
@@ -296,6 +298,7 @@
 			<BuildOutput Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">../DerivedData/SimpleWeather/Build/Products/Release-maccatalyst</BuildOutput>
         </AdditionalAppExtensions>
 	</ItemGroup>
+	-->
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>

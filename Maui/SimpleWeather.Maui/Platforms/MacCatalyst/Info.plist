@@ -12,11 +12,11 @@
 		<string>SimpleWeather.AppUpdaterTask</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>SimpleWeather</string>
+	<string>SimpleWeather (Debug)</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.thewizrd.simpleweather</string>
+	<string>com.thewizrd.simpleweather.debug</string>
 	<key>CFBundleName</key>
-	<string>SimpleWeather</string>
+	<string>SimpleWeather (Debug)</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Optional. Allows access to current location to retrieve weather data.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
