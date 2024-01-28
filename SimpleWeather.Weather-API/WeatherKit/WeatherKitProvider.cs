@@ -104,12 +104,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 Stream stream = await response.Content.ReadAsStreamAsync();
 
                 // Load weather
-                var root = await JsonSerializer.DeserializeAsync<Weather>(stream,
-                    CompositeResolver.Create(
-                        Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
-                        Utf8Json.Resolvers.StandardResolver.Default
-                    )
-                );
+                var root = await JSONParser.DeserializerAsync<Weather>(stream);
 
                 weather = this.CreateWeatherData(root);
             }
