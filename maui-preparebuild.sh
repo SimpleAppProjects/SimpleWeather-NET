@@ -2,6 +2,7 @@
 
 config=$1
 cleanWidgets=$2
+publish=$3
 
 KeyCheck/bin/Release/net8.0/publish/KeyCheck SimpleWeather.Shared/Keys
 KeyCheck/bin/Release/net8.0/publish/KeyCheck SimpleWeather.Weather-API/Keys
@@ -12,9 +13,15 @@ if [ "$cleanWidgets" = "clean"  ]; then
     xcodebuild clean; rm -rf DerivedData
 fi
 
-xcodebuild build -configuration $config -scheme "SimpleWeather-Extensions" -sdk iphonesimulator
-xcodebuild build -configuration $config -scheme "SimpleWeather-Extensions" -sdk iphoneos
-xcodebuild build -configuration $config -scheme "SimpleWeather-Extensions" -sdk macosx -destination 'platform=macOS,variant=Mac Catalyst' SUPPORTS_MACCATALYST=YES SKIP_INSTALL=NO
+scheme="SimpleWeather-Extensions-Dev"
+
+if [ "$publish" = "publish" ]; then
+    scheme="SimpleWeather-Extensions"
+fi
+
+xcodebuild build -configuration $config -scheme "$scheme" -sdk iphonesimulator
+xcodebuild build -configuration $config -scheme "$scheme" -sdk iphoneos
+xcodebuild build -configuration $config -scheme "$scheme" -sdk macosx -destination 'platform=macOS,variant=Mac Catalyst' SUPPORTS_MACCATALYST=YES SKIP_INSTALL=NO
 
 cd ../SimpleWeather.Maui
 
