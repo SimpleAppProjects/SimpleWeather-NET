@@ -4,6 +4,7 @@ using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using Xunit;
 
 namespace UnitTestProject
@@ -102,10 +103,10 @@ namespace UnitTestProject
         [TextBlob(nameof(txtforecastblob))]
         public IList<TextForecast> txt_forecast { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string forecastblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string txtforecastblob { get; set; }
 
         public Forecasts_Pre_v510()

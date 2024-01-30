@@ -3,14 +3,15 @@ using System;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData.Auth
 {
     public class BasicAuthProviderKey : ProviderKey
     {
-        [DataMember(Name = "username")]
+        [JsonPropertyName("username")]
         public string UserName { get; set; } = string.Empty;
-        [DataMember(Name = "password")]
+        [JsonPropertyName("password")]
         public string Password { get; set; } = string.Empty;
 
         public BasicAuthProviderKey() : base() { }

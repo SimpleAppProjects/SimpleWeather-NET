@@ -1,32 +1,32 @@
 ﻿using NodaTime;
-using SimpleWeather.Utf8JsonGen;
+using SimpleWeather.Json;
 using SimpleWeather.Utils;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Text;
-using Utf8Json;
-using Utf8Json.Formatters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData
 {
-    [JsonFormatter(typeof(CustomJsonConverter<Weather>))]
+    [JsonConverter(typeof(CustomJsonConverter<Weather>))]
     [Table("weatherdata")]
     public partial class Weather : CustomJsonObject
     {
-        [IgnoreDataMember]
+        [JsonIgnore]
         public const string NA = "N/A";
 
         [TextBlob(nameof(locationblob))]
         public Location location { get; set; }
 
         [Ignore]
-        [IgnoreDataMember]
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        [JsonIgnore]
+        [JsonConverter(typeof(DateTimeOffsetFormatter))]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
         // Store as string (blob) instead
@@ -81,24 +81,24 @@ namespace SimpleWeather.WeatherData
 
         public string locale { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string locationblob { get; set; }
 
         [Column("update_time")]
-        [DataMember(Name = "update_time")]
+        [JsonPropertyName("update_time")]
         // Keep DateTimeOffset column name to get data as string
         public string updatetimeblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string conditionblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string atmosphereblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string astronomyblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string precipitationblob { get; set; }
 
         public Weather()
@@ -106,15 +106,16 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
-        public override void FromJson(ref JsonReader reader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
@@ -124,9 +125,9 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(update_time):
-                        bool parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result);
+                        bool parsed = DateTimeOffset.TryParseExact(reader.GetString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out DateTimeOffset result);
                         if (!parsed) // If we can't parse as DateTimeOffset try DateTime (data could be old)
-                            result = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                            result = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture);
                         else
                         {
                             // DateTimeOffset date stored in SQLite.NET doesn't store offset
@@ -141,18 +142,15 @@ namespace SimpleWeather.WeatherData
                         // Set initial cap to 10
                         // Most provider forecasts are <= 10
                         var forecasts = new List<Forecast>(10);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var forecast = new Forecast();
                                 forecast.FromJson(ref reader);
                                 forecasts.Add(forecast);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.forecast = forecasts;
                         break;
 
@@ -161,18 +159,15 @@ namespace SimpleWeather.WeatherData
                         // MetNo contains ~90 items, but HERE contains ~165
                         // If 90+ is needed, let the List impl allocate more
                         var hr_forecasts = new List<HourlyForecast>(90);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var hrf = new HourlyForecast();
                                 hrf.FromJson(ref reader);
                                 hr_forecasts.Add(hrf);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.hr_forecast = hr_forecasts;
                         break;
 
@@ -180,18 +175,15 @@ namespace SimpleWeather.WeatherData
                         // Set initial cap to 20
                         // Most provider forecasts are <= 10 (x2 for day & nt)
                         var txt_forecasts = new List<TextForecast>(20);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var txtf = new TextForecast();
                                 txtf.FromJson(ref reader);
                                 txt_forecasts.Add(txtf);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.txt_forecast = txt_forecasts;
                         break;
 
@@ -199,36 +191,30 @@ namespace SimpleWeather.WeatherData
                         // Set initial cap to 60
                         // Minutely forecasts are usually only for an hour
                         var min_forecasts = new List<MinutelyForecast>(60);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var minF = new MinutelyForecast();
                                 minF.FromJson(ref reader);
                                 min_forecasts.Add(minF);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.min_forecast = min_forecasts;
                         break;
 
                     case nameof(aqi_forecast):
                         // Set initial cap to 10
                         var aqi_forecasts = new List<AirQuality>(10);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var fcast = new AirQuality();
                                 fcast.FromJson(ref reader);
                                 aqi_forecasts.Add(fcast);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.aqi_forecast = aqi_forecasts;
                         break;
 
@@ -255,39 +241,36 @@ namespace SimpleWeather.WeatherData
                     case nameof(weather_alerts):
                         // Set initial cap to 5
                         var alerts = new List<WeatherAlert>(5);
-                        count = 0;
-                        reader.ReadIsBeginArrayWithVerify();
-                        while (!reader.ReadIsEndArrayWithSkipValueSeparator(ref count))
+                        while (reader.Read() && reader.TokenType != JsonTokenType.EndArray)
                         {
-                            if (reader.GetCurrentJsonToken() == JsonToken.String)
+                            if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.StartObject)
                             {
                                 var alert = new WeatherAlert();
                                 alert.FromJson(ref reader);
                                 alerts.Add(alert);
                             }
                         }
-                        if (count == 0) reader.ReadIsValueSeparator();
                         this.weather_alerts = alerts;
                         break;
 
                     case nameof(ttl):
-                        this.ttl = int.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                        this.ttl = int.Parse(reader.GetString(), CultureInfo.InvariantCulture);
                         break;
 
                     case nameof(source):
-                        this.source = reader.ReadString();
+                        this.source = reader.GetString();
                         break;
 
                     case nameof(query):
-                        this.query = reader.ReadString();
+                        this.query = reader.GetString();
                         break;
 
                     case nameof(locale):
-                        this.locale = reader.ReadString();
+                        this.locale = reader.GetString();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -295,184 +278,116 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "location" : ""
-            writer.WritePropertyName(nameof(location));
-            writer.WriteString(location?.ToJson());
-
-            writer.WriteValueSeparator();
+            writer.WriteRawValueSafe(nameof(location), location?.ToJson());
 
             // "update_time" : ""
-            writer.WritePropertyName(nameof(update_time));
-            writer.WriteString(update_time.ToDateTimeOffsetFormat());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(update_time), update_time.ToDateTimeOffsetFormat());
 
             // "forecast" : ""
             if (forecast != null)
             {
-                writer.WritePropertyName(nameof(forecast));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(forecast));
                 foreach (Forecast cast in forecast)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(cast?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(cast?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "hr_forecast" : ""
             if (hr_forecast != null)
             {
-                writer.WritePropertyName(nameof(hr_forecast));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(hr_forecast));
                 foreach (HourlyForecast hr_cast in hr_forecast)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(hr_cast?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(hr_cast?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "txt_forecast" : ""
             if (txt_forecast != null)
             {
-                writer.WritePropertyName(nameof(txt_forecast));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(txt_forecast));
                 foreach (TextForecast txt_cast in txt_forecast)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(txt_cast?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(txt_cast?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "min_forecast" : ""
             if (min_forecast != null)
             {
-                writer.WritePropertyName(nameof(min_forecast));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(min_forecast));
                 foreach (MinutelyForecast min_cast in min_forecast)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(min_cast?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(min_cast?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "aqi_forecast" : ""
             if (aqi_forecast != null)
             {
-                writer.WritePropertyName(nameof(aqi_forecast));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(aqi_forecast));
                 foreach (AirQuality aqi_cast in aqi_forecast)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(aqi_cast?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(aqi_cast?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "condition" : ""
-            writer.WritePropertyName(nameof(condition));
-            writer.WriteString(condition?.ToJson());
-
-            writer.WriteValueSeparator();
+            writer.WriteRawValueSafe(nameof(condition), condition?.ToJson());
 
             // "atmosphere" : ""
-            writer.WritePropertyName(nameof(atmosphere));
-            writer.WriteString(atmosphere?.ToJson());
-
-            writer.WriteValueSeparator();
+            writer.WriteRawValueSafe(nameof(atmosphere), atmosphere?.ToJson());
 
             // "astronomy" : ""
-            writer.WritePropertyName(nameof(astronomy));
-            writer.WriteString(astronomy?.ToJson());
-
-            writer.WriteValueSeparator();
+            writer.WriteRawValueSafe(nameof(astronomy), astronomy?.ToJson());
 
             // "precipitation" : ""
             if (precipitation != null)
             {
-                writer.WritePropertyName(nameof(precipitation));
-                writer.WriteString(precipitation?.ToJson());
-
-                writer.WriteValueSeparator();
+                writer.WriteRawValueSafe(nameof(precipitation), precipitation?.ToJson());
             }
 
             // "weather_alerts" : ""
             if (weather_alerts != null)
             {
-                writer.WritePropertyName(nameof(weather_alerts));
-                writer.WriteBeginArray();
-                var itemCount = 0;
+                writer.WriteStartArray(nameof(weather_alerts));
                 foreach (WeatherAlert alert in weather_alerts)
                 {
-                    if (itemCount > 0)
-                        writer.WriteValueSeparator();
-                    writer.WriteString(alert?.ToJson());
-                    itemCount++;
+                    writer.WriteRawValue(alert?.ToJson());
                 }
                 writer.WriteEndArray();
-
-                writer.WriteValueSeparator();
             }
 
             // "ttl" : ""
-            writer.WritePropertyName(nameof(ttl));
-            writer.WriteString(ttl.ToInvariantString());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(ttl), ttl.ToInvariantString());
 
             // "source" : ""
-            writer.WritePropertyName(nameof(source));
-            writer.WriteString(source);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(source), source);
 
             // "query" : ""
-            writer.WritePropertyName(nameof(query));
-            writer.WriteString(query);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(query), query);
 
             // "locale" : ""
-            writer.WritePropertyName(nameof(locale));
-            writer.WriteString(locale);
+            writer.WriteString(nameof(locale), locale);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public bool IsValid()
@@ -529,7 +444,7 @@ namespace SimpleWeather.WeatherData
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Location>))]
+    [JsonConverter(typeof(CustomJsonConverter<Location>))]
     public partial class Location : CustomJsonObject
     {
         public string name { get; set; }
@@ -537,7 +452,7 @@ namespace SimpleWeather.WeatherData
         public float? longitude { get; set; }
         public string tz_long { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         public TimeSpan tz_offset
         {
@@ -553,7 +468,7 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         public string tz_short
         {
@@ -592,53 +507,48 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(name, latitude, longitude, tz_long);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(name):
-                        this.name = reader.ReadString();
+                        this.name = reader.GetString();
                         break;
 
                     case nameof(latitude):
-                        this.latitude = reader.TryReadSingle();
+                        this.latitude = reader.TryGetSingle();
                         break;
 
                     case nameof(longitude):
-                        this.longitude = reader.TryReadSingle();
+                        this.longitude = reader.TryGetSingle();
                         break;
 
                     case nameof(tz_long):
-                        this.tz_long = reader.ReadString();
+                        this.tz_long = reader.GetString();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -646,40 +556,34 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "name" : ""
-            writer.WritePropertyName(nameof(name));
-            writer.WriteString(name);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(name), name);
 
             // "latitude" : ""
-            writer.WritePropertyName(nameof(latitude));
-            writer.WriteSingle(latitude);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(latitude), latitude);
 
             // "longitude" : ""
-            writer.WritePropertyName(nameof(longitude));
-            writer.WriteSingle(longitude);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(longitude), longitude);
 
             // "tz_long" : ""
-            writer.WritePropertyName(nameof(tz_long));
-            writer.WriteString(tz_long);
+            writer.WriteString(nameof(tz_long), tz_long);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
+    [JsonDerivedType(typeof(Forecast))]
+    [JsonDerivedType(typeof(HourlyForecast))]
     public abstract class BaseForecast : CustomJsonObject
     {
         public float? high_f { get; set; }
@@ -689,10 +593,10 @@ namespace SimpleWeather.WeatherData
         public ForecastExtras extras { get; set; }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Forecast>))]
+    [JsonConverter(typeof(CustomJsonConverter<Forecast>))]
     public partial class Forecast : BaseForecast
     {
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeFormatter))]
         public DateTime date { get; set; }
 
         public float? low_f { get; set; }
@@ -721,61 +625,56 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(date, high_f, high_c, low_f, low_c, condition, icon, extras);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.date = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(high_f):
-                        this.high_f = reader.TryReadSingle();
+                        this.high_f = reader.TryGetSingle();
                         break;
 
                     case nameof(high_c):
-                        this.high_c = reader.TryReadSingle();
+                        this.high_c = reader.TryGetSingle();
                         break;
 
                     case nameof(low_f):
-                        this.low_f = reader.TryReadSingle();
+                        this.low_f = reader.TryGetSingle();
                         break;
 
                     case nameof(low_c):
-                        this.low_c = reader.TryReadSingle();
+                        this.low_c = reader.TryGetSingle();
                         break;
 
                     case nameof(condition):
-                        this.condition = reader.ReadString();
+                        this.condition = reader.GetString();
                         break;
 
                     case nameof(icon):
-                        this.icon = reader.ReadString();
+                        this.icon = reader.GetString();
                         break;
 
                     case nameof(extras):
@@ -784,7 +683,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -792,72 +691,52 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "date" : ""
-            writer.WritePropertyName(nameof(date));
-            writer.WriteString(date.ToISO8601Format());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(date), date.ToISO8601Format());
 
             // "high_f" : ""
-            writer.WritePropertyName(nameof(high_f));
-            writer.WriteSingle(high_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_f), high_f);
 
             // "high_c" : ""
-            writer.WritePropertyName(nameof(high_c));
-            writer.WriteSingle(high_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_c), high_c);
 
             // "low_f" : ""
-            writer.WritePropertyName(nameof(low_f));
-            writer.WriteSingle(low_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(low_f), low_f);
 
             // "low_c" : ""
-            writer.WritePropertyName(nameof(low_c));
-            writer.WriteSingle(low_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(low_c), low_c);
 
             // "condition" : ""
-            writer.WritePropertyName(nameof(condition));
-            writer.WriteString(condition);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(condition), condition);
 
             // "icon" : ""
-            writer.WritePropertyName(nameof(icon));
-            writer.WriteString(icon);
+            writer.WriteString(nameof(icon), icon);
 
             // "extras" : ""
             if (extras != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(extras));
-                writer.WriteString(extras?.ToJson());
+                writer.WriteRawValueSafe(nameof(extras), extras?.ToJson());
             }
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<HourlyForecast>))]
+    [JsonConverter(typeof(CustomJsonConverter<HourlyForecast>))]
     public partial class HourlyForecast : BaseForecast
     {
-        [DataMember(Name = "date")]
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        [JsonPropertyName("date")]
+        [JsonConverter(typeof(DateTimeOffsetFormatter))]
         public DateTimeOffset date { get; set; }
 
         public int? wind_degrees { get; set; }
@@ -898,65 +777,60 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.DATETIMEOFFSET_FORMAT);
+                        this.date = reader.TryGetDateTimeOffset(DateTimeUtils.DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(high_f):
-                        this.high_f = reader.TryReadSingle();
+                        this.high_f = reader.TryGetSingle();
                         break;
 
                     case nameof(high_c):
-                        this.high_c = reader.TryReadSingle();
+                        this.high_c = reader.TryGetSingle();
                         break;
 
                     case nameof(condition):
-                        this.condition = reader.ReadString();
+                        this.condition = reader.GetString();
                         break;
 
                     case nameof(icon):
-                        this.icon = reader.ReadString();
+                        this.icon = reader.GetString();
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.TryReadInt32();
+                        this.wind_degrees = reader.TryGetInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.TryReadSingle();
+                        this.wind_mph = reader.TryGetSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.TryReadSingle();
+                        this.wind_kph = reader.TryGetSingle();
                         break;
 
                     case nameof(extras):
@@ -965,7 +839,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -973,77 +847,54 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "date" : ""
-            writer.WritePropertyName(nameof(date));
-            writer.WriteString(date.ToDateTimeOffsetFormat());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(date), date.ToDateTimeOffsetFormat());
 
             // "high_f" : ""
-            writer.WritePropertyName(nameof(high_f));
-            writer.WriteSingle(high_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_f), high_f);
 
             // "high_c" : ""
-            writer.WritePropertyName(nameof(high_c));
-            writer.WriteSingle(high_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_c), high_c);
 
             // "condition" : ""
-            writer.WritePropertyName(nameof(condition));
-            writer.WriteString(condition);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(condition), condition);
 
             // "icon" : ""
-            writer.WritePropertyName(nameof(icon));
-            writer.WriteString(icon);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(icon), icon);
 
             // "wind_degrees" : ""
-            writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(wind_degrees), wind_degrees);
 
             // "wind_mph" : ""
-            writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(wind_mph), wind_mph);
 
             // "wind_kph" : ""
-            writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph);
+            writer.WriteSingle(nameof(wind_kph), wind_kph);
 
             // "extras" : ""
             if (extras != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(extras));
-                writer.WriteString(extras?.ToJson());
+                writer.WriteRawValueSafe(nameof(extras), extras?.ToJson());
             }
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<MinutelyForecast>))]
+    [JsonConverter(typeof(CustomJsonConverter<MinutelyForecast>))]
     public partial class MinutelyForecast : CustomJsonObject
     {
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeOffsetFormatter))]
         public DateTimeOffset date { get; set; }
 
         public float? rain_mm { get; set; }
@@ -1068,45 +919,40 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
+                        this.date = reader.TryGetDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(rain_mm):
-                        this.rain_mm = reader.TryReadSingle();
+                        this.rain_mm = reader.TryGetSingle();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -1114,32 +960,30 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "date" : ""
-            writer.WritePropertyName(nameof(date));
-            writer.WriteString(date.ToISO8601Format());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(date), date.ToISO8601Format());
 
             // "rain_mm" : ""
-            writer.WritePropertyName(nameof(rain_mm));
-            writer.WriteSingle(rain_mm);
+            writer.WriteSingle(nameof(rain_mm), rain_mm);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<TextForecast>))]
+    [JsonConverter(typeof(CustomJsonConverter<TextForecast>))]
     public partial class TextForecast : CustomJsonObject
     {
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeOffsetFormatter))]
         public DateTimeOffset date { get; set; }
 
         public string fcttext { get; set; }
@@ -1167,49 +1011,44 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(date):
-                        this.date = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
+                        this.date = reader.TryGetDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(fcttext):
-                        this.fcttext = reader.ReadString();
+                        this.fcttext = reader.GetString();
                         break;
 
                     case nameof(fcttext_metric):
-                        this.fcttext_metric = reader.ReadString();
+                        this.fcttext_metric = reader.GetString();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -1217,35 +1056,30 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "date" : ""
-            writer.WritePropertyName(nameof(date));
-            writer.WriteString(date.ToISO8601Format());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(date), date.ToISO8601Format());
 
             // "fcttext" : ""
-            writer.WritePropertyName(nameof(fcttext));
-            writer.WriteString(fcttext);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(fcttext), fcttext);
 
             // "fcttext_metric" : ""
-            writer.WritePropertyName(nameof(fcttext_metric));
-            writer.WriteString(fcttext_metric);
+            writer.WriteString(nameof(fcttext_metric), fcttext_metric);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<ForecastExtras>))]
+    [JsonConverter(typeof(CustomJsonConverter<ForecastExtras>))]
     public class ForecastExtras : CustomJsonObject
     {
         public float? feelslike_f { get; set; }
@@ -1328,121 +1162,116 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(feelslike_f):
-                        this.feelslike_f = reader.TryReadSingle();
+                        this.feelslike_f = reader.TryGetSingle();
                         break;
 
                     case nameof(feelslike_c):
-                        this.feelslike_c = reader.TryReadSingle();
+                        this.feelslike_c = reader.TryGetSingle();
                         break;
 
                     case nameof(humidity):
-                        this.humidity = reader.TryReadInt32();
+                        this.humidity = reader.TryGetInt32();
                         break;
 
                     case nameof(dewpoint_f):
-                        this.dewpoint_f = reader.TryReadSingle();
+                        this.dewpoint_f = reader.TryGetSingle();
                         break;
 
                     case nameof(dewpoint_c):
-                        this.dewpoint_c = reader.TryReadSingle();
+                        this.dewpoint_c = reader.TryGetSingle();
                         break;
 
                     case nameof(uv_index):
-                        this.uv_index = reader.TryReadSingle();
+                        this.uv_index = reader.TryGetSingle();
                         break;
 
                     case nameof(pop):
-                        this.pop = reader.TryReadInt32();
+                        this.pop = reader.TryGetInt32();
                         break;
 
                     case nameof(cloudiness):
-                        this.cloudiness = reader.TryReadInt32();
+                        this.cloudiness = reader.TryGetInt32();
                         break;
 
                     case nameof(qpf_rain_in):
-                        this.qpf_rain_in = reader.TryReadSingle();
+                        this.qpf_rain_in = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_rain_mm):
-                        this.qpf_rain_mm = reader.TryReadSingle();
+                        this.qpf_rain_mm = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_snow_in):
-                        this.qpf_snow_in = reader.TryReadSingle();
+                        this.qpf_snow_in = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_snow_cm):
-                        this.qpf_snow_cm = reader.TryReadSingle();
+                        this.qpf_snow_cm = reader.TryGetSingle();
                         break;
 
                     case nameof(pressure_mb):
-                        this.pressure_mb = reader.TryReadSingle();
+                        this.pressure_mb = reader.TryGetSingle();
                         break;
 
                     case nameof(pressure_in):
-                        this.pressure_in = reader.TryReadSingle();
+                        this.pressure_in = reader.TryGetSingle();
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.TryReadInt32();
+                        this.wind_degrees = reader.TryGetInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.TryReadSingle();
+                        this.wind_mph = reader.TryGetSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.TryReadSingle();
+                        this.wind_kph = reader.TryGetSingle();
                         break;
 
                     case nameof(visibility_mi):
-                        this.visibility_mi = reader.TryReadSingle();
+                        this.visibility_mi = reader.TryGetSingle();
                         break;
 
                     case nameof(visibility_km):
-                        this.visibility_km = reader.TryReadSingle();
+                        this.visibility_km = reader.TryGetSingle();
                         break;
 
                     case nameof(windgust_mph):
-                        this.windgust_mph = reader.TryReadSingle();
+                        this.windgust_mph = reader.TryGetSingle();
                         break;
 
                     case nameof(windgust_kph):
-                        this.windgust_kph = reader.TryReadSingle();
+                        this.windgust_kph = reader.TryGetSingle();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -1450,142 +1279,84 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
+
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "feelslike_f" : ""
-            writer.WritePropertyName(nameof(feelslike_f));
-            writer.WriteSingle(feelslike_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(feelslike_f), feelslike_f);
 
             // "feelslike_c" : ""
-            writer.WritePropertyName(nameof(feelslike_c));
-            writer.WriteSingle(feelslike_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(feelslike_c), feelslike_c);
 
             // "humidity" : ""
-            writer.WritePropertyName(nameof(humidity));
-            writer.WriteInt32(humidity);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(humidity), humidity);
 
             // "dewpoint_f" : ""
-            writer.WritePropertyName(nameof(dewpoint_f));
-            writer.WriteSingle(dewpoint_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(dewpoint_f), dewpoint_f);
 
             // "dewpoint_c" : ""
-            writer.WritePropertyName(nameof(dewpoint_c));
-            writer.WriteSingle(dewpoint_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(dewpoint_c), dewpoint_c);
 
             // "uv_index" : ""
-            writer.WritePropertyName(nameof(uv_index));
-            writer.WriteSingle(uv_index);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(uv_index), uv_index);
 
             // "pop" : ""
-            writer.WritePropertyName(nameof(pop));
-            writer.WriteInt32(pop);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(pop), pop);
 
             // "cloudiness" : ""
-            writer.WritePropertyName(nameof(cloudiness));
-            writer.WriteInt32(cloudiness);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(cloudiness), cloudiness);
 
             // "qpf_rain_in" : ""
-            writer.WritePropertyName(nameof(qpf_rain_in));
-            writer.WriteSingle(qpf_rain_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_rain_in), qpf_rain_in);
 
             // "qpf_rain_mm" : ""
-            writer.WritePropertyName(nameof(qpf_rain_mm));
-            writer.WriteSingle(qpf_rain_mm);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_rain_mm), qpf_rain_mm);
 
             // "qpf_snow_in" : ""
-            writer.WritePropertyName(nameof(qpf_snow_in));
-            writer.WriteSingle(qpf_snow_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_snow_in), qpf_snow_in);
 
             // "qpf_snow_cm" : ""
-            writer.WritePropertyName(nameof(qpf_snow_cm));
-            writer.WriteSingle(qpf_snow_cm);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_snow_cm), qpf_snow_cm);
 
             // "pressure_mb" : ""
-            writer.WritePropertyName(nameof(pressure_mb));
-            writer.WriteSingle(pressure_mb);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(pressure_mb), pressure_mb);
 
             // "pressure_in" : ""
-            writer.WritePropertyName(nameof(pressure_in));
-            writer.WriteSingle(pressure_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(pressure_in), pressure_in);
 
             // "wind_degrees" : ""
-            writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(wind_degrees), wind_degrees);
 
             // "wind_mph" : ""
-            writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(wind_mph), wind_mph);
 
             // "wind_kph" : ""
-            writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(wind_kph), wind_kph);
 
             // "visibility_mi" : ""
-            writer.WritePropertyName(nameof(visibility_mi));
-            writer.WriteSingle(visibility_mi);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(visibility_mi), visibility_mi);
 
             // "visibility_km" : ""
-            writer.WritePropertyName(nameof(visibility_km));
-            writer.WriteSingle(visibility_km);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(visibility_km), visibility_km);
 
             // "windgust_mph" : ""
-            writer.WritePropertyName(nameof(windgust_mph));
-            writer.WriteSingle(windgust_mph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(windgust_mph), windgust_mph);
 
             // "windgust_kph" : ""
-            writer.WritePropertyName(nameof(windgust_kph));
-            writer.WriteSingle(windgust_kph);
+            writer.WriteSingle(nameof(windgust_kph), windgust_kph);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Condition>))]
+    [JsonConverter(typeof(CustomJsonConverter<Condition>))]
     public partial class Condition : CustomJsonObject
     {
         public string weather { get; set; }
@@ -1607,7 +1378,7 @@ namespace SimpleWeather.WeatherData
         public float? low_c { get; set; }
         public AirQuality airQuality { get; set; }
         public Pollen pollen { get; set; }
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeOffsetFormatter))]
         public DateTimeOffset observation_time { get; set; }
         public string summary { get; set; }
 
@@ -1665,77 +1436,72 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(weather):
-                        this.weather = reader.ReadString();
+                        this.weather = reader.GetString();
                         break;
 
                     case nameof(temp_f):
-                        this.temp_f = reader.TryReadSingle();
+                        this.temp_f = reader.TryGetSingle();
                         break;
 
                     case nameof(temp_c):
-                        this.temp_c = reader.TryReadSingle();
+                        this.temp_c = reader.TryGetSingle();
                         break;
 
                     case nameof(wind_degrees):
-                        this.wind_degrees = reader.TryReadInt32();
+                        this.wind_degrees = reader.TryGetInt32();
                         break;
 
                     case nameof(wind_mph):
-                        this.wind_mph = reader.TryReadSingle();
+                        this.wind_mph = reader.TryGetSingle();
                         break;
 
                     case nameof(wind_kph):
-                        this.wind_kph = reader.TryReadSingle();
+                        this.wind_kph = reader.TryGetSingle();
                         break;
 
                     case nameof(windgust_mph):
-                        this.windgust_mph = reader.TryReadSingle();
+                        this.windgust_mph = reader.TryGetSingle();
                         break;
 
                     case nameof(windgust_kph):
-                        this.windgust_kph = reader.TryReadSingle();
+                        this.windgust_kph = reader.TryGetSingle();
                         break;
 
                     case nameof(feelslike_f):
-                        this.feelslike_f = reader.TryReadSingle();
+                        this.feelslike_f = reader.TryGetSingle();
                         break;
 
                     case nameof(feelslike_c):
-                        this.feelslike_c = reader.TryReadSingle();
+                        this.feelslike_c = reader.TryGetSingle();
                         break;
 
                     case nameof(icon):
-                        this.icon = reader.ReadString();
+                        this.icon = reader.GetString();
                         break;
 
                     case nameof(beaufort):
@@ -1749,19 +1515,19 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(high_f):
-                        this.high_f = reader.TryReadSingle();
+                        this.high_f = reader.TryGetSingle();
                         break;
 
                     case nameof(high_c):
-                        this.high_c = reader.TryReadSingle();
+                        this.high_c = reader.TryGetSingle();
                         break;
 
                     case nameof(low_f):
-                        this.low_f = reader.TryReadSingle();
+                        this.low_f = reader.TryGetSingle();
                         break;
 
                     case nameof(low_c):
-                        this.low_c = reader.TryReadSingle();
+                        this.low_c = reader.TryGetSingle();
                         break;
 
                     case nameof(airQuality):
@@ -1775,15 +1541,15 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     case nameof(observation_time):
-                        this.observation_time = reader.TryReadDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
+                        this.observation_time = reader.TryGetDateTimeOffset(DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT);
                         break;
 
                     case nameof(summary):
-                        this.summary = reader.ReadString();
+                        this.summary = reader.GetString();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -1791,155 +1557,96 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "weather" : ""
-            writer.WritePropertyName(nameof(weather));
-            writer.WriteString(weather);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(weather), weather);
 
             // "temp_f" : ""
-            writer.WritePropertyName(nameof(temp_f));
-            writer.WriteSingle(temp_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(temp_f), temp_f);
 
             // "temp_c" : ""
-            writer.WritePropertyName(nameof(temp_c));
-            writer.WriteSingle(temp_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(temp_c), temp_c);
 
             // "wind_degrees" : ""
-            writer.WritePropertyName(nameof(wind_degrees));
-            writer.WriteInt32(wind_degrees);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(wind_degrees), wind_degrees);
 
             // "wind_mph" : ""
-            writer.WritePropertyName(nameof(wind_mph));
-            writer.WriteSingle(wind_mph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(wind_mph), wind_mph);
 
             // "wind_kph" : ""
-            writer.WritePropertyName(nameof(wind_kph));
-            writer.WriteSingle(wind_kph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(wind_kph), wind_kph);
 
             // "windgust_mph" : ""
-            writer.WritePropertyName(nameof(windgust_mph));
-            writer.WriteSingle(windgust_mph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(windgust_mph), windgust_mph);
 
             // "windgust_kph" : ""
-            writer.WritePropertyName(nameof(windgust_kph));
-            writer.WriteSingle(windgust_kph);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(windgust_kph), windgust_kph);
 
             // "feelslike_f" : ""
-            writer.WritePropertyName(nameof(feelslike_f));
-            writer.WriteSingle(feelslike_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(feelslike_f), feelslike_f);
 
             // "feelslike_c" : ""
-            writer.WritePropertyName(nameof(feelslike_c));
-            writer.WriteSingle(feelslike_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(feelslike_c), feelslike_c);
 
             // "icon" : ""
-            writer.WritePropertyName(nameof(icon));
-            writer.WriteString(icon);
+            writer.WriteString(nameof(icon), icon);
 
             // "beaufort" : ""
             if (beaufort != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(beaufort));
-                writer.WriteString(beaufort?.ToJson());
+                writer.WriteRawValueSafe(nameof(beaufort), beaufort?.ToJson());
             }
 
             // "uv" : ""
             if (uv != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(uv));
-                writer.WriteString(uv?.ToJson());
+                writer.WriteRawValueSafe(nameof(uv), uv?.ToJson());
             }
 
-            writer.WriteValueSeparator();
-
             // "high_f" : ""
-            writer.WritePropertyName(nameof(high_f));
-            writer.WriteSingle(high_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_f), high_f);
 
             // "high_c" : ""
-            writer.WritePropertyName(nameof(high_c));
-            writer.WriteSingle(high_c);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(high_c), high_c);
 
             // "low_f" : ""
-            writer.WritePropertyName(nameof(low_f));
-            writer.WriteSingle(low_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(low_f), low_f);
 
             // "low_c" : ""
-            writer.WritePropertyName(nameof(low_c));
-            writer.WriteSingle(low_c);
+            writer.WriteSingle(nameof(low_c), low_c);
 
             // "airQuality" : ""
             if (airQuality != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(airQuality));
-                writer.WriteString(airQuality?.ToJson());
+                writer.WriteRawValueSafe(nameof(airQuality), airQuality?.ToJson());
             }
 
             // "pollen" : ""
             if (pollen != null)
             {
-                writer.WriteValueSeparator();
-
-                writer.WritePropertyName(nameof(pollen));
-                writer.WriteString(pollen?.ToJson());
+                writer.WriteRawValueSafe(nameof(pollen), pollen?.ToJson());
             }
 
-            writer.WriteValueSeparator();
-
             // "observation_time" : ""
-            writer.WritePropertyName(nameof(observation_time));
-            writer.WriteString(observation_time.ToISO8601Format());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(observation_time), observation_time.ToISO8601Format());
 
             // "summary" : ""
-            writer.WritePropertyName(nameof(summary));
-            writer.WriteString(summary);
+            writer.WriteString(nameof(summary), summary);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Atmosphere>))]
+    [JsonConverter(typeof(CustomJsonConverter<Atmosphere>))]
     public partial class Atmosphere : CustomJsonObject
     {
         public int? humidity { get; set; }
@@ -1974,69 +1681,64 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(humidity, pressure_mb, pressure_in, pressure_trend, visibility_mi, visibility_km, dewpoint_f, dewpoint_c);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(humidity):
-                        this.humidity = reader.TryReadInt32();
+                        this.humidity = reader.TryGetInt32();
                         break;
 
                     case nameof(pressure_mb):
-                        this.pressure_mb = reader.TryReadSingle();
+                        this.pressure_mb = reader.TryGetSingle();
                         break;
 
                     case nameof(pressure_in):
-                        this.pressure_in = reader.TryReadSingle();
+                        this.pressure_in = reader.TryGetSingle();
                         break;
 
                     case nameof(pressure_trend):
-                        this.pressure_trend = reader.ReadString();
+                        this.pressure_trend = reader.GetString();
                         break;
 
                     case nameof(visibility_mi):
-                        this.visibility_mi = reader.TryReadSingle();
+                        this.visibility_mi = reader.TryGetSingle();
                         break;
 
                     case nameof(visibility_km):
-                        this.visibility_km = reader.TryReadSingle();
+                        this.visibility_km = reader.TryGetSingle();
                         break;
 
                     case nameof(dewpoint_f):
-                        this.dewpoint_f = reader.TryReadSingle();
+                        this.dewpoint_f = reader.TryGetSingle();
                         break;
 
                     case nameof(dewpoint_c):
-                        this.dewpoint_c = reader.TryReadSingle();
+                        this.dewpoint_c = reader.TryGetSingle();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2044,77 +1746,57 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "humidity" : ""
-            writer.WritePropertyName(nameof(humidity));
-            writer.WriteInt32(humidity);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(humidity), humidity);
 
             // "pressure_mb" : ""
-            writer.WritePropertyName(nameof(pressure_mb));
-            writer.WriteSingle(pressure_mb);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(pressure_mb), pressure_mb);
 
             // "pressure_in" : ""
-            writer.WritePropertyName(nameof(pressure_in));
-            writer.WriteSingle(pressure_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(pressure_in), pressure_in);
 
             // "pressure_trend" : ""
-            writer.WritePropertyName(nameof(pressure_trend));
-            writer.WriteString(pressure_trend);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(pressure_trend), pressure_trend);
 
             // "visibility_mi" : ""
-            writer.WritePropertyName(nameof(visibility_mi));
-            writer.WriteSingle(visibility_mi);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(visibility_mi), visibility_mi);
 
             // "visibility_km" : ""
-            writer.WritePropertyName(nameof(visibility_km));
-            writer.WriteSingle(visibility_km);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(visibility_km), visibility_km);
 
             // "dewpoint_f" : ""
-            writer.WritePropertyName(nameof(dewpoint_f));
-            writer.WriteSingle(dewpoint_f);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(dewpoint_f), dewpoint_f);
 
             // "dewpoint_c" : ""
-            writer.WritePropertyName(nameof(dewpoint_c));
-            writer.WriteSingle(dewpoint_c);
+            writer.WriteSingle(nameof(dewpoint_c), dewpoint_c);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Astronomy>))]
+    [JsonConverter(typeof(CustomJsonConverter<Astronomy>))]
     public partial class Astronomy : CustomJsonObject
     {
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeFormatter))]
         public DateTime sunrise { get; set; }
 
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeFormatter))]
         public DateTime sunset { get; set; }
 
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeFormatter))]
         public DateTime moonrise { get; set; }
 
-        [JsonFormatter(typeof(DateTimeFormatter), DateTimeUtils.ISO8601_DATETIME_FORMAT)]
+        [JsonConverter(typeof(ISO8601DateTimeFormatter))]
         public DateTime moonset { get; set; }
 
         public MoonPhase moonphase { get; set; }
@@ -2139,49 +1821,44 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(sunrise, sunset, moonrise, moonset, moonphase);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(sunrise):
-                        this.sunrise = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunrise = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(sunset):
-                        this.sunset = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunset = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonrise):
-                        this.moonrise = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonrise = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonset):
-                        this.moonset = DateTime.Parse(reader.ReadString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonset = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
                         break;
 
                     case nameof(moonphase):
@@ -2190,7 +1867,7 @@ namespace SimpleWeather.WeatherData
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2198,86 +1875,51 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
-
-            int offset = writer.CurrentOffset;
+            writer.WriteStartObject();
 
             // "sunrise" : ""
             if (sunrise != null)
             {
-                if (offset != writer.CurrentOffset)
-                {
-                    writer.WriteValueSeparator();
-                    offset = writer.CurrentOffset;
-                }
-
-                writer.WritePropertyName(nameof(sunrise));
-                writer.WriteString(sunrise.ToISO8601Format());
+                writer.WriteString(nameof(sunrise), sunrise.ToISO8601Format());
             }
 
             // "sunset" : ""
             if (sunset != null)
             {
-                if (offset != writer.CurrentOffset)
-                {
-                    writer.WriteValueSeparator();
-                    offset = writer.CurrentOffset;
-                }
-
-                writer.WritePropertyName(nameof(sunset));
-                writer.WriteString(sunset.ToISO8601Format());
+                writer.WriteString(nameof(sunset), sunset.ToISO8601Format());
             }
 
             // "moonrise" : ""
             if (moonrise != null)
             {
-                if (offset != writer.CurrentOffset)
-                {
-                    writer.WriteValueSeparator();
-                    offset = writer.CurrentOffset;
-                }
-
-                writer.WritePropertyName(nameof(moonrise));
-                writer.WriteString(moonrise.ToISO8601Format());
+                writer.WriteString(nameof(moonrise), moonrise.ToISO8601Format());
             }
 
             // "moonset" : ""
             if (moonset != null)
             {
-                if (offset != writer.CurrentOffset)
-                {
-                    writer.WriteValueSeparator();
-                    offset = writer.CurrentOffset;
-                }
-
-                writer.WritePropertyName(nameof(moonset));
-                writer.WriteString(moonset.ToISO8601Format());
+                writer.WriteString(nameof(moonset), moonset.ToISO8601Format());
             }
 
             // "moonphase" : ""
             if (moonphase != null)
             {
-                if (offset != writer.CurrentOffset)
-                {
-                    writer.WriteValueSeparator();
-                    offset = writer.CurrentOffset;
-                }
-
-                writer.WritePropertyName(nameof(moonphase));
-                writer.WriteString(moonphase.ToJson());
+                writer.WriteRawValueSafe(nameof(moonphase), moonphase.ToJson());
             }
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Precipitation>))]
+    [JsonConverter(typeof(CustomJsonConverter<Precipitation>))]
     public partial class Precipitation : CustomJsonObject
     {
         public int? pop { get; set; }
@@ -2308,61 +1950,56 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(pop, cloudiness, qpf_rain_in, qpf_rain_mm, qpf_snow_in, qpf_snow_cm);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(pop):
-                        this.pop = reader.TryReadInt32();
+                        this.pop = reader.TryGetInt32();
                         break;
 
                     case nameof(cloudiness):
-                        this.cloudiness = reader.TryReadInt32();
+                        this.cloudiness = reader.TryGetInt32();
                         break;
 
                     case nameof(qpf_rain_in):
-                        this.qpf_rain_in = reader.TryReadSingle();
+                        this.qpf_rain_in = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_rain_mm):
-                        this.qpf_rain_mm = reader.TryReadSingle();
+                        this.qpf_rain_mm = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_snow_in):
-                        this.qpf_snow_in = reader.TryReadSingle();
+                        this.qpf_snow_in = reader.TryGetSingle();
                         break;
 
                     case nameof(qpf_snow_cm):
-                        this.qpf_snow_cm = reader.TryReadSingle();
+                        this.qpf_snow_cm = reader.TryGetSingle();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2370,53 +2007,39 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "pop" : ""
-            writer.WritePropertyName(nameof(pop));
-            writer.WriteInt32(pop);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(pop), pop);
 
             // "cloudiness" : ""
-            writer.WritePropertyName(nameof(cloudiness));
-            writer.WriteInt32(cloudiness);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(cloudiness), cloudiness);
 
             // "qpf_rain_in" : ""
-            writer.WritePropertyName(nameof(qpf_rain_in));
-            writer.WriteSingle(qpf_rain_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_rain_in), qpf_rain_in);
 
             // "qpf_rain_mm" : ""
-            writer.WritePropertyName(nameof(qpf_rain_mm));
-            writer.WriteSingle(qpf_rain_mm);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_rain_mm), qpf_rain_mm);
 
             // "qpf_snow_in" : ""
-            writer.WritePropertyName(nameof(qpf_snow_in));
-            writer.WriteSingle(qpf_snow_in);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(qpf_snow_in), qpf_snow_in);
 
             // "qpf_snow_cm" : ""
-            writer.WritePropertyName(nameof(qpf_snow_cm));
-            writer.WriteSingle(qpf_snow_cm);
+            writer.WriteSingle(nameof(qpf_snow_cm), qpf_snow_cm);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Beaufort>))]
+    [JsonConverter(typeof(CustomJsonConverter<Beaufort>))]
     public partial class Beaufort : CustomJsonObject
     {
         public enum BeaufortScale
@@ -2459,41 +2082,36 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(scale);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(scale):
-                        this.scale = (BeaufortScale)reader.ReadInt32();
+                        this.scale = (BeaufortScale)reader.GetInt32();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2501,23 +2119,24 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "scale" : ""
-            writer.WritePropertyName(nameof(scale));
-            writer.WriteInt32((int)scale);
+            writer.WriteInt32(nameof(scale), (int)scale);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<MoonPhase>))]
+    [JsonConverter(typeof(CustomJsonConverter<MoonPhase>))]
     public partial class MoonPhase : CustomJsonObject
     {
         public enum MoonPhaseType
@@ -2555,41 +2174,36 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(phase);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(phase):
-                        this.phase = (MoonPhaseType)reader.ReadInt32();
+                        this.phase = (MoonPhaseType)reader.GetInt32();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2597,23 +2211,24 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "phase" : ""
-            writer.WritePropertyName(nameof(phase));
-            writer.WriteInt32((int)phase);
+            writer.WriteInt32(nameof(phase), (int)phase);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<UV>))]
+    [JsonConverter(typeof(CustomJsonConverter<UV>))]
     public partial class UV : CustomJsonObject
     {
         public float? index { get; set; }
@@ -2639,41 +2254,36 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(index);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(index):
-                        this.index = reader.TryReadSingle();
+                        this.index = reader.TryGetSingle();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2681,23 +2291,24 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "scale" : ""
-            writer.WritePropertyName(nameof(index));
-            writer.WriteSingle(index);
+            writer.WriteSingle(nameof(index), index);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<AirQuality>))]
+    [JsonConverter(typeof(CustomJsonConverter<AirQuality>))]
     public partial class AirQuality : CustomJsonObject
     {
         public int? index { get; set; }
@@ -2708,7 +2319,7 @@ namespace SimpleWeather.WeatherData
         public int? pm25 { get; set; }
         public int? pm10 { get; set; }
         public int? co { get; set; }
-        [JsonFormatter(typeof(NullableDateTimeFormatter), "yyyy-MM-dd")]
+        [JsonConverter(typeof(SimpleNullableDateTimeFormatter))]
         public DateTime? date { get; set; }
 
         public AirQuality()
@@ -2745,73 +2356,68 @@ namespace SimpleWeather.WeatherData
             return hash.ToHashCode();
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(index):
-                        this.index = reader.TryReadInt32();
+                        this.index = reader.TryGetInt32();
                         break;
 
                     case nameof(attribution):
-                        this.attribution = reader.ReadString();
+                        this.attribution = reader.GetString();
                         break;
 
                     case nameof(no2):
-                        this.no2 = reader.TryReadInt32();
+                        this.no2 = reader.TryGetInt32();
                         break;
 
                     case nameof(o3):
-                        this.o3 = reader.TryReadInt32();
+                        this.o3 = reader.TryGetInt32();
                         break;
 
                     case nameof(so2):
-                        this.so2 = reader.TryReadInt32();
+                        this.so2 = reader.TryGetInt32();
                         break;
 
                     case nameof(pm25):
-                        this.pm25 = reader.TryReadInt32();
+                        this.pm25 = reader.TryGetInt32();
                         break;
 
                     case nameof(pm10):
-                        this.pm10 = reader.TryReadInt32();
+                        this.pm10 = reader.TryGetInt32();
                         break;
 
                     case nameof(co):
-                        this.co = reader.TryReadInt32();
+                        this.co = reader.TryGetInt32();
                         break;
 
                     case nameof(date):
-                        this.date = reader.TryReadDateTime("yyyy-MM-dd");
+                        this.date = reader.TryGetDateTime("yyyy-MM-dd");
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2819,92 +2425,69 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "index" : ""
-            writer.WritePropertyName(nameof(index));
-            writer.WriteSingle(index);
-
-            writer.WriteValueSeparator();
+            writer.WriteSingle(nameof(index), index);
 
             // "attribution" : ""
-            writer.WritePropertyName(nameof(attribution));
-            writer.WriteString(attribution);
+            writer.WriteString(nameof(attribution), attribution);
 
             if (no2.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "no2" : ""
-                writer.WritePropertyName(nameof(no2));
-                writer.WriteSingle(no2.Value);
+                writer.WriteSingle(nameof(no2), no2.Value);
             }
 
             if (o3.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "o3" : ""
-                writer.WritePropertyName(nameof(o3));
-                writer.WriteSingle(o3.Value);
+                writer.WriteSingle(nameof(o3), o3.Value);
             }
 
             if (so2.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "so2" : ""
-                writer.WritePropertyName(nameof(so2));
-                writer.WriteSingle(so2.Value);
+                writer.WriteSingle(nameof(so2), so2.Value);
             }
 
             if (pm25.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "no2" : ""
-                writer.WritePropertyName(nameof(pm25));
-                writer.WriteSingle(pm25.Value);
+                writer.WriteSingle(nameof(pm25), pm25.Value);
             }
 
             if (pm10.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "pm10" : ""
-                writer.WritePropertyName(nameof(pm10));
-                writer.WriteSingle(pm10.Value);
+                writer.WriteSingle(nameof(pm10), pm10.Value);
             }
 
             if (co.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "co" : ""
-                writer.WritePropertyName(nameof(co));
-                writer.WriteSingle(co.Value);
+                writer.WriteSingle(nameof(co), co.Value);
             }
 
             if (date.HasValue)
             {
-                writer.WriteValueSeparator();
-
                 // "date" : ""
-                writer.WritePropertyName(nameof(date));
-                writer.WriteString(date.Value.ToInvariantString("yyyy-MM-dd"));
+                writer.WriteString(nameof(date), date.Value.ToInvariantString("yyyy-MM-dd"));
             }
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<Pollen>))]
+    [JsonConverter(typeof(CustomJsonConverter<Pollen>))]
     public partial class Pollen : CustomJsonObject
     {
         public enum PollenCount
@@ -2938,49 +2521,44 @@ namespace SimpleWeather.WeatherData
             return HashCode.Combine(treePollenCount, grassPollenCount, ragweedPollenCount);
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-            string jsonValue;
-
-            if (extReader.GetCurrentJsonToken() == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.ReadNext(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(treePollenCount):
-                        this.treePollenCount = (PollenCount)reader.ReadInt32();
+                        this.treePollenCount = (PollenCount)reader.GetInt32();
                         break;
 
                     case nameof(grassPollenCount):
-                        this.grassPollenCount = (PollenCount)reader.ReadInt32();
+                        this.grassPollenCount = (PollenCount)reader.GetInt32();
                         break;
 
                     case nameof(ragweedPollenCount):
-                        this.ragweedPollenCount = (PollenCount)reader.ReadInt32();
+                        this.ragweedPollenCount = (PollenCount)reader.GetInt32();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -2988,31 +2566,26 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "treePollenCount" : ""
-            writer.WritePropertyName(nameof(treePollenCount));
-            writer.WriteInt32((int)(treePollenCount ?? PollenCount.Unknown));
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(treePollenCount), (int)(treePollenCount ?? PollenCount.Unknown));
 
             // "grassPollenCount" : ""
-            writer.WritePropertyName(nameof(grassPollenCount));
-            writer.WriteInt32((int)(grassPollenCount ?? PollenCount.Unknown));
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(grassPollenCount), (int)(grassPollenCount ?? PollenCount.Unknown));
 
             // "ragweedPollenCount" : ""
-            writer.WritePropertyName(nameof(ragweedPollenCount));
-            writer.WriteInt32((int)(ragweedPollenCount ?? PollenCount.Unknown));
+            writer.WriteInt32(nameof(ragweedPollenCount), (int)(ragweedPollenCount ?? PollenCount.Unknown));
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
     }
 
@@ -3036,16 +2609,16 @@ namespace SimpleWeather.WeatherData
         [TextBlob(nameof(aqiforecastblob))]
         public IList<AirQuality> aqi_forecast { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string forecastblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string txtforecastblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string minforecastblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string aqiforecastblob { get; set; }
 
         public Forecasts()
@@ -3073,7 +2646,7 @@ namespace SimpleWeather.WeatherData
         [Indexed(Name = "queryIdx", Order = 1)]
         public string query { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         // Doesn't store this in db
         // For DateTimeOffset, offset isn't stored when saving to db
@@ -3096,12 +2669,12 @@ namespace SimpleWeather.WeatherData
         public HourlyForecast hr_forecast { get; set; }
 
         [Indexed(Name = "dateIdx", Order = 2)]
-        [DataMember(Name = "date")]
+        [JsonPropertyName("date")]
         [NotNull]
         // Keep DateTimeOffset column name to get data as string
         public string dateblob { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string hrforecastblob { get; set; }
 
         public HourlyForecasts()

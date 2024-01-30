@@ -16,6 +16,7 @@ using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.HERE;
+using SimpleWeather.Weather_API.Json;
 using SimpleWeather.Weather_API.NWS;
 using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.TomorrowIO;
@@ -23,6 +24,7 @@ using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
 using System.Diagnostics;
 using System.Text;
+using System.Text.Json;
 using Xunit;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
 
@@ -45,11 +47,8 @@ namespace UnitTestProject
         {
             SharedModule.Instance.Initialize();
 
-            // Set UTF8Json Resolver
-            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-                JSONParser.Resolver,
-                SimpleWeather.Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
-            );
+            // Add Json Resolvers
+            JSONParser.DefaultSettings.AddWeatherAPIContexts();
 
             CommonModule.Instance.Initialize();
             ExtrasModule.Instance.Initialize();
@@ -118,21 +117,56 @@ namespace UnitTestProject
 
         private async Task<bool> SerializerTest(Weather weather)
         {
+            // Serialize weather object
             var serialStr = await JSONParser.SerializerAsync(weather);
             var deserialWeather = await JSONParser.DeserializerAsync<Weather>(serialStr);
-            var fcast = new Forecasts(weather);
-            var serialFcast = await JSONParser.SerializerAsync(fcast);
-            var deserialfcast = await JSONParser.DeserializerAsync<Forecasts>(serialFcast);
-            bool testSuccess = Equals(weather, deserialWeather) && string.Equals(fcast?.query, deserialfcast?.query) &&
-                fcast?.forecast?.Count == deserialfcast?.forecast?.Count && fcast?.txt_forecast?.Count == deserialfcast?.txt_forecast?.Count;
+
+            // Serialize forecasts
+            {
+                var fcast = new Forecasts(weather);
+                var serialFcast = await JSONParser.SerializerAsync(fcast);
+                var deserialfcast = await JSONParser.DeserializerAsync<Forecasts>(serialFcast);
+
+                deserialWeather.forecast = deserialfcast.forecast;
+                deserialWeather.aqi_forecast = deserialfcast.aqi_forecast;
+                deserialWeather.min_forecast = deserialfcast.min_forecast;
+                deserialWeather.txt_forecast = deserialfcast.txt_forecast;
+            }
+
+            // Serialize hourly forecasts
             if (weather.hr_forecast?.Count > 0)
             {
-                var hfcast = new HourlyForecasts(weather.query, weather.hr_forecast?[0]);
-                var serialHr = await JSONParser.SerializerAsync(hfcast);
-                var deserialHr = await JSONParser.DeserializerAsync<HourlyForecasts>(serialHr);
-                testSuccess = testSuccess && string.Equals(fcast?.query, deserialfcast?.query) &&
-                    Equals(hfcast?.hr_forecast, deserialHr?.hr_forecast) && hfcast?.date == deserialHr?.date;
+                var hrfcasts = weather.hr_forecast?.Select(hrf =>
+                {
+                    return new HourlyForecasts(weather.query, hrf);
+                }).ToList();
+
+                var serialHrfcasts = await JSONParser.SerializerAsync(hrfcasts);
+                var deserialHrfcasts = await JSONParser.DeserializerAsync<IList<HourlyForecasts>>(serialHrfcasts);
+                deserialWeather.hr_forecast = deserialHrfcasts.Select(hrfs =>
+                {
+                    return hrfs.hr_forecast;
+                }).ToList();
             }
+
+            // Serialize alerts
+            if (weather.weather_alerts?.Count > 0)
+            {
+                var alerts = new WeatherAlerts(weather.query, weather.weather_alerts);
+
+                var serialAlerts = await JSONParser.SerializerAsync(alerts);
+                var deserialAlerts = await JSONParser.DeserializerAsync<WeatherAlerts>(serialAlerts);
+
+                deserialWeather.weather_alerts = deserialAlerts.alerts;
+            }
+
+            bool testSuccess = Equals(weather, deserialWeather) &&
+                weather?.forecast?.Count == deserialWeather?.forecast?.Count &&
+                weather?.aqi_forecast?.Count == deserialWeather?.aqi_forecast?.Count &&
+                weather?.min_forecast?.Count == deserialWeather?.min_forecast?.Count &&
+                weather?.txt_forecast?.Count == deserialWeather?.txt_forecast?.Count &&
+                weather?.hr_forecast?.Count == deserialWeather?.hr_forecast?.Count;
+
             return testSuccess;
         }
 
@@ -149,7 +183,7 @@ namespace UnitTestProject
 
                 watch1 = Stopwatch.StartNew();
                 var customWeather = new Weather();
-                var customReader = new Utf8Json.JsonReader(Encoding.UTF8.GetBytes(customJson));
+                var customReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(customJson));
                 customWeather.FromJson(ref customReader);
                 watch1.Stop();
                 Debug.WriteLine("Deserialize #{2}: Weather - {0} (Custom): {1}", customWeather.source, watch1.Elapsed, i + 1);

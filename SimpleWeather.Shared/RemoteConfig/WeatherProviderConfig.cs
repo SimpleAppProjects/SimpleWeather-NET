@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SimpleWeather.RemoteConfig
+﻿namespace SimpleWeather.RemoteConfig
 {
     public sealed class WeatherProviderConfig
     {

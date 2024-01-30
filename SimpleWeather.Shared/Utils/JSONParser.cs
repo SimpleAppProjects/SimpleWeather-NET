@@ -1,7 +1,10 @@
-﻿using System;
+﻿using SimpleWeather.Json;
+using System;
 using System.IO;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.Json.Serialization.Metadata;
 using System.Threading.Tasks;
-using Utf8Json;
 #if WINDOWS
 using Windows.Storage;
 #endif
@@ -10,24 +13,43 @@ namespace SimpleWeather.Utils
 {
     public static partial class JSONParser
     {
-        // CompositeResolver is singleton helper for use custom resolver.
-        // Ofcourse you can also make custom resolver.
-        public readonly static IJsonFormatterResolver Resolver =
-            new SimpleWeather.Utf8JsonGen.Utf8JsonResolver();
-        private static Newtonsoft.Json.JsonSerializerSettings DefaultSettings;
-
-        static JSONParser()
+        public static readonly JsonSerializerOptions DefaultSettings = new JsonSerializerOptions(JsonSerializerDefaults.General).Apply(opts =>
         {
-            JsonSerializer.SetDefaultResolver(Resolver);
-        }
+            opts.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
+            opts.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+            opts.WriteIndented = false;
+
+            opts.Converters.Add(new CustomJsonConverter<LocationData.LocationData>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Weather>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Location>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Forecast>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.HourlyForecast>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.MinutelyForecast>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.TextForecast>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.ForecastExtras>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Condition>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Atmosphere>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Astronomy>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Precipitation>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Beaufort>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.MoonPhase>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.UV>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.AirQuality>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.Pollen>());
+            opts.Converters.Add(new CustomJsonConverter<WeatherData.WeatherAlert>());
+
+            opts.TypeInfoResolverChain.Insert(0, DataContractResolver.Default);
+            opts.TypeInfoResolverChain.Add(SharedJsonContext.Default);
+        });
+        private static Newtonsoft.Json.JsonSerializerSettings JSONNETDefaultSettings;
 
         public static T Deserializer<T>(String response)
         {
             try
             {
-                return JsonSerializer.Deserialize<T>(response);
+                return JsonSerializer.Deserialize<T>(response, options: DefaultSettings);
             }
-            catch (FormatterNotRegisteredException formatEx)
+            catch (JsonException formatEx)
             {
                 Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
                 return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(response, GetNewtonsoftSettings());
@@ -42,16 +64,14 @@ namespace SimpleWeather.Utils
             {
                 try
                 {
-                    obj = JsonSerializer.Deserialize<T>(stream);
+                    obj = JsonSerializer.Deserialize<T>(stream, options: DefaultSettings);
                 }
-                catch (FormatterNotRegisteredException formatEx)
+                catch (JsonException formatEx)
                 {
                     Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
-                    using (var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(stream)))
-                    {
-                        var serializer = Newtonsoft.Json.JsonSerializer.Create(DefaultSettings);
-                        obj = serializer.Deserialize<T>(reader);
-                    }
+                    using var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(stream));
+                    var serializer = Newtonsoft.Json.JsonSerializer.Create(GetNewtonsoftSettings());
+                    obj = serializer.Deserialize<T>(reader);
                 }
             }
             catch (Exception ex)
@@ -85,21 +105,18 @@ namespace SimpleWeather.Utils
 
             try
             {
-                using (var fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read))
+                using var fStream = new FileStream(file.Path, FileMode.Open, FileAccess.Read);
+
+                try
                 {
-                    try
-                    {
-                        obj = JsonSerializer.Deserialize<T>(fStream);
-                    }
-                    catch (FormatterNotRegisteredException formatEx)
-                    {
-                        Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
-                        using (var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(fStream)))
-                        {
-                            var serializer = Newtonsoft.Json.JsonSerializer.Create(DefaultSettings);
-                            obj = serializer.Deserialize<T>(reader);
-                        }
-                    }
+                    obj = JsonSerializer.Deserialize<T>(fStream, options: DefaultSettings);
+                }
+                catch (JsonException formatEx)
+                {
+                    Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
+                    using var reader = new Newtonsoft.Json.JsonTextReader(new StreamReader(fStream));
+                    var serializer = Newtonsoft.Json.JsonSerializer.Create(GetNewtonsoftSettings());
+                    obj = serializer.Deserialize<T>(reader);
                 }
             }
             catch (Exception ex)
@@ -126,28 +143,26 @@ namespace SimpleWeather.Utils
                     await Task.Delay(100).ConfigureAwait(false);
                 }
 
-                using (var transaction = await file.OpenTransactedWriteAsync())
-                using (var fStream = transaction.Stream.AsStreamForWrite())
+                using var transaction = await file.OpenTransactedWriteAsync();
+                using var fStream = transaction.Stream.AsStreamForWrite();
+                // Clear file before writing
+                fStream.SetLength(0);
+
+                try
                 {
-                    // Clear file before writing
+                    await JsonSerializer.SerializeAsync(fStream, obj, options: DefaultSettings);
+                }
+                catch (JsonException formatEx)
+                {
+                    Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
+
+                    using var writer = new Newtonsoft.Json.JsonTextWriter(new StreamWriter(fStream));
                     fStream.SetLength(0);
 
-                    try
-                    {
-                        await JsonSerializer.SerializeAsync(fStream, obj);
-                    }
-                    catch (FormatterNotRegisteredException formatEx)
-                    {
-                        Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
-                        using (var writer = new Newtonsoft.Json.JsonTextWriter(new StreamWriter(fStream)))
-                        {
-                            fStream.SetLength(0);
-                            var serializer = Newtonsoft.Json.JsonSerializer.Create(DefaultSettings);
-                            serializer.Serialize(writer, obj);
-                        }
-                    }
-                    await transaction.CommitAsync();
+                    var serializer = Newtonsoft.Json.JsonSerializer.Create(GetNewtonsoftSettings());
+                    serializer.Serialize(writer, obj);
                 }
+                await transaction.CommitAsync();
             }).ConfigureAwait(false);
         }
 
@@ -161,9 +176,9 @@ namespace SimpleWeather.Utils
         {
             try
             {
-                return JsonSerializer.ToJsonString(obj);
+                return JsonSerializer.Serialize(obj, options: DefaultSettings);
             }
-            catch (FormatterNotRegisteredException formatEx)
+            catch (JsonException formatEx)
             {
                 Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
                 return Newtonsoft.Json.JsonConvert.SerializeObject(obj, obj.GetType(), GetNewtonsoftSettings());
@@ -177,16 +192,13 @@ namespace SimpleWeather.Utils
 
         private static Newtonsoft.Json.JsonSerializerSettings GetNewtonsoftSettings()
         {
-            if (DefaultSettings == null)
+            JSONNETDefaultSettings ??= new Newtonsoft.Json.JsonSerializerSettings
             {
-                DefaultSettings = new Newtonsoft.Json.JsonSerializerSettings
-                {
-                    TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None,
-                    ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
-                };
-            }
+                TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None,
+                ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver()
+            };
 
-            return DefaultSettings;
+            return JSONNETDefaultSettings;
         }
     }
 }

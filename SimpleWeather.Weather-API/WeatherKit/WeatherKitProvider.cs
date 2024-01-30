@@ -18,8 +18,6 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Utf8Json;
-using Utf8Json.Resolvers;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherKit

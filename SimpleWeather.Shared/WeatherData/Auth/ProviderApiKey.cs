@@ -1,10 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData.Auth
 {
     public class ProviderApiKey : ProviderKey
     {
-        [DataMember(Name = "key")]
+        [JsonPropertyName("key")]
         public string Key { get; set; } = string.Empty;
 
         public ProviderApiKey() : base() { }

@@ -19,6 +19,8 @@ using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
+using SimpleWeather.Weather_API.Json;
+using SimpleWeather.NET.Json;
 
 namespace SimpleWeather.Maui;
 
@@ -97,12 +99,10 @@ public partial class App : Application
         SharedModule.Instance.OnCommonActionChanged += App_OnCommonActionChanged;
         SharedModule.Instance.Initialize();
 
-        // Set UTF8Json Resolver
-        Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-            JSONParser.Resolver,
-            Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
-            NET.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
-        );
+        // Add Json Resolvers
+        JSONParser.DefaultSettings
+            .AddWeatherAPIContexts()
+            .AddJsonContexts();
 
         // Build DI Services
         SharedModule.Instance.GetServiceCollection().Apply(collection =>

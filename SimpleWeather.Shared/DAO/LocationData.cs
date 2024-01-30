@@ -2,9 +2,11 @@
 using SQLite;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using Utf8Json;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.LocationData
 {
@@ -14,7 +16,7 @@ namespace SimpleWeather.LocationData
         Search
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<LocationData>))]
+    [JsonConverter(typeof(CustomJsonConverter<LocationData>))]
     [Table("locations")]
     public partial class LocationData : CustomJsonObject
     {
@@ -27,7 +29,7 @@ namespace SimpleWeather.LocationData
 
         public double longitude { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         public TimeSpan tz_offset
         {
@@ -37,7 +39,7 @@ namespace SimpleWeather.LocationData
             }
         }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         public string tz_short
         {
@@ -49,7 +51,7 @@ namespace SimpleWeather.LocationData
 
         public string tz_long { get; set; }
 
-        [IgnoreDataMember]
+        [JsonIgnore]
         [Ignore]
         public string country_code
         {
@@ -72,11 +74,11 @@ namespace SimpleWeather.LocationData
         public LocationType locationType { get; set; } = LocationType.Search;
 
         [Column("source")]
-        [DataMember(Name = "source")]
+        [JsonPropertyName("source")]
         public string weatherSource { get; set; }
 
         [Column("locsource")]
-        [DataMember(Name = "locsource")]
+        [JsonPropertyName("locsource")]
         public string locationSource { get; set; }
 
         public override bool Equals(System.Object obj)
@@ -106,53 +108,55 @@ namespace SimpleWeather.LocationData
             return hashCode;
         }
 
-        public override void FromJson(ref JsonReader reader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            var count = 0; // managing array-count state in outer(this is count, not index(index is always count - 1)
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case "query":
-                        this.query = reader.ReadString();
+                        this.query = reader.GetString();
                         break;
 
                     case "name":
-                        this.name = reader.ReadString();
+                        this.name = reader.GetString();
                         break;
 
                     case "latitude":
-                        this.latitude = reader.ReadDouble();
+                        this.latitude = reader.GetDouble();
                         break;
 
                     case "longitude":
-                        this.longitude = reader.ReadDouble();
+                        this.longitude = reader.GetDouble();
                         break;
 
                     case "tz_long":
-                        this.tz_long = reader.ReadString();
+                        this.tz_long = reader.GetString();
                         break;
 
                     case "locationType":
-                        this.locationType = (LocationType)reader.ReadInt32();
+                        this.locationType = (LocationType)reader.GetInt32();
                         break;
 
                     case "source":
                     case "weatherSource":
-                        this.weatherSource = reader.ReadString();
+                        this.weatherSource = reader.GetString();
                         break;
 
                     case "locsource":
                     case "locationSource":
-                        this.locationSource = reader.ReadString();
+                        this.locationSource = reader.GetString();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -160,61 +164,41 @@ namespace SimpleWeather.LocationData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "query" : ""
-            writer.WritePropertyName("query");
-            writer.WriteString(query);
-
-            writer.WriteValueSeparator();
+            writer.WriteString("query", query);
 
             // "name" : ""
-            writer.WritePropertyName("name");
-            writer.WriteString(name);
-
-            writer.WriteValueSeparator();
+            writer.WriteString("name", name);
 
             // "latitude" : ""
-            writer.WritePropertyName("latitude");
-            writer.WriteDouble(latitude);
-
-            writer.WriteValueSeparator();
+            writer.WriteNumber("latitude", latitude);
 
             // "longitude" : ""
-            writer.WritePropertyName("longitude");
-            writer.WriteDouble(longitude);
-
-            writer.WriteValueSeparator();
+            writer.WriteNumber("longitude", longitude);
 
             // "tz_long" : ""
-            writer.WritePropertyName("tz_long");
-            writer.WriteString(tz_long);
-
-            writer.WriteValueSeparator();
+            writer.WriteString("tz_long", tz_long);
 
             // "locationType" : ""
-            writer.WritePropertyName("locationType");
-            writer.WriteInt32((int)locationType);
-
-            writer.WriteValueSeparator();
+            writer.WriteNumber("locationType", (int)locationType);
 
             // "source" : ""
-            writer.WritePropertyName("source");
-            writer.WriteString(weatherSource);
-
-            writer.WriteValueSeparator();
+            writer.WriteString("source", weatherSource);
 
             // "locsource" : ""
-            writer.WritePropertyName("locsource");
-            writer.WriteString(locationSource);
+            writer.WriteString("locsource", locationSource);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public bool IsValid()

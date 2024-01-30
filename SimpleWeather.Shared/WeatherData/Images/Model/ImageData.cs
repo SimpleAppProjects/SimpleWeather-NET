@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SimpleWeather.Utils;
 using System;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.WeatherData.Images.Model
@@ -16,18 +17,25 @@ namespace SimpleWeather.WeatherData.Images.Model
         internal string DocumentId { get; set; }
 
         [JsonProperty("artistName")]
+        [JsonPropertyName("artistName")]
         public string ArtistName { get; set; }
         [JsonProperty("color")]
+        [JsonPropertyName("color")]
         public string HexColor { get; set; }
         [JsonProperty("condition")]
+        [JsonPropertyName("condition")]
         public string Condition { get; set; }
         [JsonProperty("imageURL")]
+        [JsonPropertyName("imageURL")]
         public string ImageUrl { get; set; }
         [JsonProperty("location")]
+        [JsonPropertyName("location")]
         public string Location { get; set; }
         [JsonProperty("originalLink")]
+        [JsonPropertyName("originalLink")]
         public string OriginalLink { get; set; }
         [JsonProperty("siteName")]
+        [JsonPropertyName("siteName")]
         public string SiteName { get; set; }
 
 #if WINUI

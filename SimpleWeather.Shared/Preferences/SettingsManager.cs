@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 #if WINDOWS
 using Windows.Foundation.Metadata;
@@ -159,10 +161,10 @@ namespace SimpleWeather.Preferences
             {
                 try
                 {
-                    var jsonTextReader = new Utf8Json.JsonReader(System.Text.Encoding.UTF8.GetBytes(LastGPSLocation));
                     lastGPSLocData = new LocationData.LocationData();
                     await Task.Run(() =>
                     {
+                        var jsonTextReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(LastGPSLocation));
                         lastGPSLocData.FromJson(ref jsonTextReader);
                     });
                 }

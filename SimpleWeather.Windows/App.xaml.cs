@@ -14,6 +14,7 @@ using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
 using SimpleWeather.NET.BackgroundTasks;
+using SimpleWeather.NET.Json;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Preferences;
@@ -21,6 +22,7 @@ using SimpleWeather.NET.Setup;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
@@ -126,12 +128,10 @@ namespace SimpleWeather.NET
             SharedModule.Instance.OnCommonActionChanged += App_OnCommonActionChanged;
             SharedModule.Instance.Initialize();
 
-            // Set UTF8Json Resolver
-            Utf8Json.Resolvers.CompositeResolver.RegisterAndSetAsDefault(
-                JSONParser.Resolver,
-                Weather_API.Utf8JsonGen.Resolvers.GeneratedResolver.Instance,
-                NET.Utf8JsonGen.Resolvers.GeneratedResolver.Instance
-            );
+            // Add Json Resolvers
+            JSONParser.DefaultSettings
+                .AddWeatherAPIContexts()
+                .AddJsonContexts();
 
             // Build DI Services
             SharedModule.Instance.GetServiceCollection().Apply(collection =>

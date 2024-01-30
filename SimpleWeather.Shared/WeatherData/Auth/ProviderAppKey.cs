@@ -1,14 +1,14 @@
 ﻿using SimpleWeather.Utils;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData.Auth
 {
     public class ProviderAppKey : ProviderKey
     {
-        [DataMember(Name = "app_id")]
+        [JsonPropertyName("app_id")]
         public string AppID { get; set; } = string.Empty;
-        [DataMember(Name = "app_code")]
+        [JsonPropertyName("app_code")]
         public string AppCode { get; set; } = string.Empty;
 
         public ProviderAppKey() : base() { }

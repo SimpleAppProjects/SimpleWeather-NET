@@ -47,6 +47,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\GraphTemperature.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\HourlyForecastNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\LocationPanelUiModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\JsonContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.MapLayer.cs" />
@@ -57,10 +58,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProviderChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarViewProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerJsonContext.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\WeatherMapsResponse.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utf8JsonGen\Utf8JsonGenerated.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MapControlExtensions.cs" />

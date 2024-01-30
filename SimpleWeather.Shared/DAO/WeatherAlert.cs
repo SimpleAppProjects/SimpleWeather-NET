@@ -1,14 +1,14 @@
-﻿using SimpleWeather.Utils;
+﻿using SimpleWeather.Json;
+using SimpleWeather.Utils;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 using System.Collections.Generic;
-using SQLite;
 using System.Globalization;
-using System.Linq;
+using System.IO;
 using System.Text;
-using Utf8Json;
-using SQLiteNetExtensions.Attributes;
-using System.Runtime.Serialization;
-using Utf8Json.Formatters;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.WeatherData
 {
@@ -49,7 +49,7 @@ namespace SimpleWeather.WeatherData
         TsunamiWarning,
     }
 
-    [JsonFormatter(typeof(CustomJsonConverter<WeatherAlert>))]
+    [JsonConverter(typeof(CustomJsonConverter<WeatherAlert>))]
     public partial class WeatherAlert : CustomJsonObject
     {
         public WeatherAlertType Type { get; set; } = WeatherAlertType.SpecialWeatherAlert;
@@ -57,9 +57,9 @@ namespace SimpleWeather.WeatherData
         public string Title { get; set; }
         public string Message { get; set; }
         public string Attribution { get; set; }
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        [JsonConverter(typeof(DateTimeOffsetFormatter))]
         public DateTimeOffset Date { get; set; }
-        [JsonFormatter(typeof(DateTimeOffsetFormatter), DateTimeUtils.DATETIMEOFFSET_FORMAT)]
+        [JsonConverter(typeof(DateTimeOffsetFormatter))]
         public DateTimeOffset ExpiresDate { get; set; }
         public bool Notified { get; set; } = false;
 
@@ -68,74 +68,66 @@ namespace SimpleWeather.WeatherData
             // Needed for deserialization
         }
 
-        public override void FromJson(ref JsonReader extReader)
+        public override void FromJson(ref Utf8JsonReader reader)
         {
-            JsonReader reader;
-
-            string jsonValue;
-
-            var token = extReader.GetCurrentJsonToken();
-            if (token == JsonToken.String)
-                jsonValue = extReader.ReadString();
-            else
-                jsonValue = null;
-
-            if (jsonValue == null)
-                reader = extReader;
-            else
+            if (reader.TokenType == JsonTokenType.String)
             {
-#pragma warning disable CA2000 // Dispose objects before losing scope
-                reader = new JsonReader(Encoding.UTF8.GetBytes(jsonValue));
-#pragma warning restore CA2000 // Dispose objects before losing scope
-                reader.ReadNext(); // StartObject
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
             }
 
-            var count = 0;
-            while (!reader.ReadIsEndObjectWithSkipValueSeparator(ref count))
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
             {
-                reader.ReadIsBeginObject(); // StartObject
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
 
-                string property = reader.ReadPropertyName();
-                //reader.Read(); // prop value
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
 
                 switch (property)
                 {
                     case nameof(Type):
-                        this.Type = (WeatherAlertType)reader.ReadInt32();
+                        this.Type = (WeatherAlertType)reader.GetInt32();
                         break;
 
                     case nameof(Title):
-                        this.Title = reader.ReadString();
+                        this.Title = reader.GetString();
                         break;
 
                     case nameof(Message):
-                        this.Message = reader.ReadString();
+                        this.Message = reader.GetString();
                         break;
 
                     case nameof(Attribution):
-                        this.Attribution = reader.ReadString();
+                        this.Attribution = reader.GetString();
                         break;
 
                     case nameof(Date):
-                        bool parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
+                        bool parsed = DateTimeOffset.TryParseExact(reader.GetString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTimeOffset result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                            result = DateTimeOffset.Parse(reader.GetString(), CultureInfo.InvariantCulture);
                         this.Date = result;
                         break;
 
                     case nameof(ExpiresDate):
-                        parsed = DateTimeOffset.TryParseExact(reader.ReadString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
+                        parsed = DateTimeOffset.TryParseExact(reader.GetString(), DateTimeUtils.DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out result);
                         if (!parsed) // If we can't parse try without format
-                            result = DateTimeOffset.Parse(reader.ReadString(), CultureInfo.InvariantCulture);
+                            result = DateTimeOffset.Parse(reader.GetString(), CultureInfo.InvariantCulture);
                         this.ExpiresDate = result;
                         break;
 
                     case nameof(Notified):
-                        this.Notified = reader.ReadBoolean();
+                        this.Notified = reader.GetBoolean();
                         break;
 
                     default:
-                        reader.ReadNextBlock();
+                        // ignore
                         break;
                 }
             }
@@ -143,55 +135,38 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var writer = new JsonWriter();
+            using var stream = new MemoryStream();
+            var writer = new Utf8JsonWriter(stream);
 
             // {
-            writer.WriteBeginObject();
+            writer.WriteStartObject();
 
             // "Type" : ""
-            writer.WritePropertyName(nameof(Type));
-            writer.WriteInt32((int)Type);
-
-            writer.WriteValueSeparator();
+            writer.WriteInt32(nameof(Type), (int)Type);
 
             // "Title" : ""
-            writer.WritePropertyName(nameof(Title));
-            writer.WriteString(Title);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(Title), Title);
 
             // "Message" : ""
-            writer.WritePropertyName(nameof(Message));
-            writer.WriteString(Message);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(Message), Message);
 
             // "Attribution" : ""
-            writer.WritePropertyName(nameof(Attribution));
-            writer.WriteString(Attribution);
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(Attribution), Attribution);
 
             // "Date" : ""
-            writer.WritePropertyName(nameof(Date));
-            writer.WriteString(Date.ToDateTimeOffsetFormat());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(Date), Date.ToDateTimeOffsetFormat());
 
             // "ExpiresDate" : ""
-            writer.WritePropertyName(nameof(ExpiresDate));
-            writer.WriteString(ExpiresDate.ToDateTimeOffsetFormat());
-
-            writer.WriteValueSeparator();
+            writer.WriteString(nameof(ExpiresDate), ExpiresDate.ToDateTimeOffsetFormat());
 
             // "Notified" : ""
-            writer.WritePropertyName(nameof(Notified));
-            writer.WriteBoolean(Notified);
+            writer.WriteBoolean(nameof(Notified), Notified);
 
             // }
             writer.WriteEndObject();
+            writer.Flush();
 
-            return writer.ToString();
+            return Encoding.UTF8.GetString(stream.ToArray());
         }
 
         public override bool Equals(object obj)
@@ -231,7 +206,7 @@ namespace SimpleWeather.WeatherData
         [TextBlob("alertsblob")]
         public ICollection<WeatherAlert> alerts { get; set; }
         [Column("weather_alerts")]
-        [IgnoreDataMember]
+        [JsonIgnore]
         public string alertsblob { get; set; }
 
         public WeatherAlerts()

@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.Firebase;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Json;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using System;
@@ -58,7 +59,7 @@ namespace SimpleWeather.Weather_API.TZDB
                         Stream contentStream = await response.Content.ReadAsStreamAsync();
 
                         // Load weather
-                        var root = await JsonSerializer.DeserializeAsync<TimeZoneData>(contentStream);
+                        var root = await JsonSerializer.DeserializeAsync(contentStream, TZDBJsonContext.Default.TimeZoneData);
 
                         tzLong = root.TZLong;
                     }

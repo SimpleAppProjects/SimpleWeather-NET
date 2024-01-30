@@ -1,32 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-	<PropertyGroup>
-		<LangVersion>latest</LangVersion>
-		<Version>5.8.4</Version>
-		<!-- Version Code Format (.NET Version, App Version, Build Number) -->
-		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858403</VersionCode>
-		<VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
-	</PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Version>5.8.4</Version>
+    <!-- Version Code Format (.NET Version, App Version, Build Number) -->
+    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">858403</VersionCode>
+    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
-		<_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
-		<EnableWindowsTargeting>true</EnableWindowsTargeting>
-	</PropertyGroup>
+  <PropertyGroup>
+    <_TargetPlatformIdentifier>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_TargetPlatformIdentifier>
+    <_TargetPlatformIsWindows Condition="$(_TargetPlatformIdentifier.Contains('windows')) == 'True'">True</_TargetPlatformIsWindows>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
+  <PropertyGroup>
+    <DefineConstants Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(DefineConstants);WINDOWS</DefineConstants>
     <UseRidGraph Condition="'$(_TargetPlatformIsWindows)' == 'True'">true</UseRidGraph>
     <RuntimeIdentifiers Condition="'$(_TargetPlatformIsWindows)' == 'True'">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
-	</PropertyGroup>
+  </PropertyGroup>
 
-	<!-- Build acceleration -->
-	<PropertyGroup>
-		<AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
-		<AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Release'">false</AccelerateBuildsInVisualStudio>
-	</PropertyGroup>
+  <!-- Build acceleration -->
+  <PropertyGroup>
+    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
+    <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Release'">false</AccelerateBuildsInVisualStudio>
+  </PropertyGroup>
 
-	<PropertyGroup>
-		<SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
-	</PropertyGroup>
+  <!-- System.Text.Json -->
+  <PropertyGroup>
+    <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
+  </PropertyGroup>
 </Project>

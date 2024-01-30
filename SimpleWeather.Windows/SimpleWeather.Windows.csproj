@@ -71,7 +71,6 @@
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.7" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
     <PackageReference Include="WinUIEx" Version="2.3.3" />
-    <PackageReference Include="ZCS.Utf8Json" Version="1.4.5" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
