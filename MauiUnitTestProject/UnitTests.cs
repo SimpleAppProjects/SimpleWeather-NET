@@ -392,19 +392,35 @@ namespace UnitTestProject
         [Fact]
         public async Task GetTomorrowIOWeather()
         {
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.TomorrowIo] = true;
+
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.TomorrowIo);
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = "TomorrowIo_REPLACE_VALUE";
+
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = null;
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.TomorrowIo] = false;
         }
 
         [Fact]
         public async Task GetWeatherBitIOWeather()
         {
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.WeatherBitIo] = true;
+
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherBitIo);
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.WeatherBitIo] = "WeatherBitIo_REPLACE_VALUE";
+
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.WeatherBitIo] = null;
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.WeatherBitIo] = false;
         }
 
         [Fact]
@@ -424,12 +440,18 @@ namespace UnitTestProject
         [Fact]
         public async Task GetPollenData()
         {
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.TomorrowIo] = true;
+            Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = "TomorrowIo_REPLACE_VALUE";
+
             var provider = new TomorrowIOWeatherProvider();
             var location = await provider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
             var locData = location.ToLocationData();
             Assert.NotNull(locData);
             var pollenData = await provider.GetPollenData(locData);
             Assert.NotNull(pollenData);
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = null;
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.TomorrowIo] = false;
         }
 
         [Fact]
