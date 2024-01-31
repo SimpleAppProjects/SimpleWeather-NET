@@ -96,6 +96,10 @@ namespace SimpleWeather.WeatherData
                         this.Type = (WeatherAlertType)reader.GetInt32();
                         break;
 
+                    case nameof(Severity):
+                        this.Severity = (WeatherAlertSeverity)reader.GetInt32();
+                        break;
+
                     case nameof(Title):
                         this.Title = reader.GetString();
                         break;
@@ -143,6 +147,9 @@ namespace SimpleWeather.WeatherData
 
             // "Type" : ""
             writer.WriteInt32(nameof(Type), (int)Type);
+
+            // "Severity" : ""
+            writer.WriteInt32(nameof(Severity), (int)Severity);
 
             // "Title" : ""
             writer.WriteString(nameof(Title), Title);

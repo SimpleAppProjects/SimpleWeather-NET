@@ -1808,11 +1808,12 @@ namespace SimpleWeather.WeatherData
 
         public override bool Equals(object obj)
         {
+            // Only compare times by the second
             return obj is Astronomy astronomy &&
-                   sunrise == astronomy.sunrise &&
-                   sunset == astronomy.sunset &&
-                   moonrise == astronomy.moonrise &&
-                   moonset == astronomy.moonset &&
+                   sunrise.Trim(TimeSpan.TicksPerSecond) == astronomy.sunrise.Trim(TimeSpan.TicksPerSecond) &&
+                   sunset.Trim(TimeSpan.TicksPerSecond) == astronomy.sunset.Trim(TimeSpan.TicksPerSecond) &&
+                   moonrise.Trim(TimeSpan.TicksPerSecond) == astronomy.moonrise.Trim(TimeSpan.TicksPerSecond) &&
+                   moonset.Trim(TimeSpan.TicksPerSecond) == astronomy.moonset.Trim(TimeSpan.TicksPerSecond) &&
                    Object.Equals(moonphase, astronomy.moonphase);
         }
 
@@ -1846,19 +1847,19 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(sunrise):
-                        this.sunrise = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunrise = reader.TryGetDateTime(DateTimeUtils.ISO8601_DATETIME_FORMAT);
                         break;
 
                     case nameof(sunset):
-                        this.sunset = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.sunset = reader.TryGetDateTime(DateTimeUtils.ISO8601_DATETIME_FORMAT);
                         break;
 
                     case nameof(moonrise):
-                        this.moonrise = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonrise = reader.TryGetDateTime(DateTimeUtils.ISO8601_DATETIME_FORMAT);
                         break;
 
                     case nameof(moonset):
-                        this.moonset = DateTime.Parse(reader.GetString(), CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                        this.moonset = reader.TryGetDateTime(DateTimeUtils.ISO8601_DATETIME_FORMAT);
                         break;
 
                     case nameof(moonphase):
