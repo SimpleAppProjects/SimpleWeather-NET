@@ -110,29 +110,30 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 forecast.low_f = ConversionMethods.CtoF(forecast.low_c.Value);
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+            if (!string.IsNullOrWhiteSpace(day?.weather12H?.desc) &&
+                culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
-                forecast.condition = day.weather12H.desc;
+                forecast.condition = day.weather12H?.desc;
             }
             else
             {
-                forecast.condition = provider.GetWeatherCondition(day.weather12H.icon);
+                forecast.condition = provider.GetWeatherCondition(day.weather12H?.icon);
             }
-            forecast.icon = provider.GetWeatherIcon(false, day.weather12H.icon);
+            forecast.icon = provider.GetWeatherIcon(false, day.weather12H?.icon);
 
             forecast.extras = new ForecastExtras();
-            if (day.humidity.max.HasValue && day.humidity.min.HasValue)
+            if (day.humidity?.max.HasValue == true && day.humidity?.min.HasValue == true)
             {
                 forecast.extras.humidity = (int)Math.Round((day.humidity.min.Value + day.humidity.max.Value) / 2f);
             }
-            if (day.T.sea.HasValue)
+            if (day.T?.sea.HasValue == true)
             {
                 forecast.extras.pressure_mb = day.T.sea;
                 forecast.extras.pressure_in = ConversionMethods.MBToInHg(day.T.sea.Value);
             }
-            if (day.precipitation._24h.HasValue)
+            if (day.precipitation?._24h.HasValue == true)
             {
                 forecast.extras.qpf_rain_mm = day.precipitation._24h;
                 forecast.extras.qpf_rain_in = ConversionMethods.MMToIn(day.precipitation._24h.Value);
@@ -157,7 +158,8 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 hrf.high_f = ConversionMethods.CtoF(forecast.T.value.Value);
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+            if (!string.IsNullOrWhiteSpace(forecast?.weather?.desc) &&
+                culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
@@ -165,14 +167,14 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
             else
             {
-                hrf.condition = provider.GetWeatherCondition(forecast.weather.icon);
+                hrf.condition = provider.GetWeatherCondition(forecast.weather?.icon);
             }
-            hrf.icon = forecast.weather.icon;
+            hrf.icon = forecast.weather?.icon;
 
             // Extras
             hrf.extras = new ForecastExtras();
 
-            if (forecast.T.windchill.HasValue)
+            if (forecast.T?.windchill.HasValue == true)
             {
                 hrf.extras.feelslike_c = forecast.T.windchill;
                 hrf.extras.feelslike_f = ConversionMethods.CtoF(forecast.T.windchill.Value);
@@ -329,7 +331,8 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 condition.temp_f = ConversionMethods.CtoF(condition.temp_c.Value);
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+            if (!string.IsNullOrWhiteSpace(currRoot?.observation?.weather?.desc) &&
+                culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
@@ -337,11 +340,11 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
             else
             {
-                condition.weather = provider.GetWeatherCondition(currRoot.observation.weather.icon);
+                condition.weather = provider.GetWeatherCondition(currRoot.observation?.weather?.icon);
             }
-            condition.icon = currRoot.observation.weather.icon;
+            condition.icon = currRoot.observation?.weather?.icon;
 
-            if (currRoot.observation.wind != null)
+            if (currRoot.observation?.wind != null)
             {
                 condition.wind_degrees = currRoot.observation.wind.direction;
                 if (currRoot.observation.wind.speed.HasValue)
