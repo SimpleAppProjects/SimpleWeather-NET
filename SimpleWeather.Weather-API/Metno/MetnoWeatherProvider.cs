@@ -135,6 +135,10 @@ namespace SimpleWeather.Weather_API.Metno
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "MetnoWeatherProvider: error getting weather data");
             }

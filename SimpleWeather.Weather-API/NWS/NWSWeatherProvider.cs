@@ -139,6 +139,10 @@ namespace SimpleWeather.Weather_API.NWS
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "NWSWeatherProvider: error getting weather data");
             }

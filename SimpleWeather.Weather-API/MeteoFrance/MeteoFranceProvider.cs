@@ -155,6 +155,10 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "MeteoFranceProvider: error getting weather data");
             }

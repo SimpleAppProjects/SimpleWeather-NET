@@ -118,6 +118,10 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherKitProvider: error getting weather data");
             }

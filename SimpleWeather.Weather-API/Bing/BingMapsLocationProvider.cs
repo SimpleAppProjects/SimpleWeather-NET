@@ -125,6 +125,11 @@ namespace SimpleWeather.Weather_API.Bing
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
+                }
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "BingMapsLocationProvider: error getting locations");
             }
 

@@ -185,6 +185,10 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherBitIOProvider: error getting weather data");
             }

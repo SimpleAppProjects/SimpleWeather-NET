@@ -252,6 +252,10 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "TomorrowIOWeatherProvider: error getting weather data");
             }

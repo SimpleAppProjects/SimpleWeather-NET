@@ -93,6 +93,10 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
             }
 
             if (wEx != null && wEx.ErrorStatus != WeatherUtils.ErrorStatus.InvalidAPIKey)
@@ -228,6 +232,10 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
+                }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "AccuWeatherProvider: error getting weather data");

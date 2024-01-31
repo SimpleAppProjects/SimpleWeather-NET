@@ -99,6 +99,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiLocationProvider: error getting locations");
             }
@@ -192,6 +196,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
+                }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiLocationProvider: error getting location");

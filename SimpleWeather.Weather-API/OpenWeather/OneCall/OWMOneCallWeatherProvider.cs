@@ -175,6 +175,10 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "OWMOneCallWeatherProvider: error getting weather data");
             }

@@ -7,11 +7,14 @@ namespace SimpleWeather.Weather_API.NWS
     {
         public static ICollection<WeatherAlert> CreateWeatherAlerts(this NWSAlertProvider _, AlertRootobject root)
         {
-            var alerts = new List<WeatherAlert>(root.graph.Length);
+            var alerts = new List<WeatherAlert>(root?.graph?.Length ?? 0);
 
-            foreach (AlertGraph result in root.graph)
+            if (root?.graph != null)
             {
-                alerts.Add(_.CreateWeatherAlert(result));
+                foreach (AlertGraph result in root.graph)
+                {
+                    alerts.Add(_.CreateWeatherAlert(result));
+                }
             }
 
             return alerts;

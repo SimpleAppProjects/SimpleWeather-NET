@@ -95,6 +95,10 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
+                }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "AccuWeatherLocationProvider: error getting location");
             }
@@ -171,6 +175,10 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
+                }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "AccuWeatherLocationProvider: error getting location");

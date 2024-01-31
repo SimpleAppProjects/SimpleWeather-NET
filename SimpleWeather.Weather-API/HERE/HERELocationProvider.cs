@@ -115,6 +115,11 @@ namespace SimpleWeather.Weather_API.HERE
                 {
                     wEx = ex as WeatherException;
                 }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
+                }
+
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting locations");
             }
 
@@ -190,6 +195,10 @@ namespace SimpleWeather.Weather_API.HERE
                 else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
+                }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
@@ -267,6 +276,10 @@ namespace SimpleWeather.Weather_API.HERE
                 else if (ex is WeatherException)
                 {
                     wEx = ex as WeatherException;
+                }
+                else
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, ex);
                 }
 
                 Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting location");
