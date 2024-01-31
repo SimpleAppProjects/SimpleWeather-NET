@@ -46,7 +46,12 @@ namespace SimpleWeather.Weather_API.WeatherData
 
         public virtual long GetRetryTime() => 5000;
 
-        public virtual bool IsRegionSupported(string countryCode)
+        public virtual bool IsRegionSupported(LocData location)
+        {
+            return true;
+        }
+
+        public virtual bool IsRegionSupported(LocationQuery location)
         {
             return true;
         }
@@ -215,7 +220,7 @@ namespace SimpleWeather.Weather_API.WeatherData
         // Alerts
         public virtual Task<ICollection<WeatherAlert>> GetAlerts(LocData location)
         {
-            if (LocationUtils.IsUS(location.country_code))
+            if (LocationUtils.IsUS(location))
             {
                 return new NWS.NWSAlertProvider().GetAlerts(location);
             }

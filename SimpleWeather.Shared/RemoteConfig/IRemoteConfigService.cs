@@ -10,7 +10,9 @@ namespace SimpleWeather.RemoteConfig
 
         string GetDefaultWeatherProvider();
 
-        string GetDefaultWeatherProvider(string countryCode);
+        string GetDefaultWeatherProvider(LocationData.LocationData location);
+
+        string GetDefaultWeatherProvider(LocationData.LocationQuery location);
 
         Task CheckConfig();
     }

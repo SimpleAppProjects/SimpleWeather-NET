@@ -39,37 +39,6 @@ namespace SimpleWeather.NET.Main
             AnalyticsLogger.LogEvent("WeatherDetailsPage");
         }
 
-        private void OnWeatherError(WeatherException wEx)
-        {
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                switch (wEx.ErrorStatus)
-                {
-                    case WeatherUtils.ErrorStatus.NetworkError:
-                    case WeatherUtils.ErrorStatus.NoWeather:
-                        // Show error message and prompt to refresh
-                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        break;
-
-                    case WeatherUtils.ErrorStatus.QueryNotFound:
-                        if (locationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
-                        {
-                            ShowSnackbar(Snackbar.MakeError(App.Current.ResLoader.GetString("error_message_weather_region_unsupported"), SnackbarDuration.Long));
-                        }
-                        else
-                        {
-                            ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        }
-                        break;
-
-                    default:
-                        // Show error message
-                        ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
-                        break;
-                }
-            });
-        }
-
         public Task<bool> OnBackRequested()
         {
             if (Frame.CanGoBack)

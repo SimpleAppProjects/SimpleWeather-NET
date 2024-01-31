@@ -170,9 +170,10 @@ namespace SimpleWeather.Common.ViewModels
                     if (!SettingsManager.WeatherLoaded)
                     {
                         // Set default provider based on location
-                        var provider = RemoteConfigService.GetDefaultWeatherProvider(locQuery.LocationCountry);
+                        var provider = RemoteConfigService.GetDefaultWeatherProvider(locQuery);
                         SettingsManager.API = provider;
                         locQuery.UpdateWeatherSource(provider);
+                        wm.UpdateAPI();
                     }
 
                     if (SettingsManager.UsePersonalKeys[SettingsManager.API] && string.IsNullOrWhiteSpace(SettingsManager.APIKey) && wm.KeyRequired)
@@ -182,14 +183,14 @@ namespace SimpleWeather.Common.ViewModels
                         return;
                     }
 
-                    if (!wm.IsRegionSupported(locQuery.LocationCountry))
+                    if (!wm.IsRegionSupported(locQuery))
                     {
                         PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
                         UiState = UiState with { IsLoading = false };
                         return;
                     }
 
-                    UiState = UiState with { CurrentLocation = currentLocation };
+                    UiState = UiState with { CurrentLocation = locQuery.ToLocationData(LocationType.GPS) };
                 }
 
                 UiState = UiState with { IsLoading = false };
@@ -310,12 +311,13 @@ namespace SimpleWeather.Common.ViewModels
                 if (!SettingsManager.WeatherLoaded)
                 {
                     // Set default provider based on location
-                    var provider = RemoteConfigService.GetDefaultWeatherProvider(queryResult.LocationCountry);
+                    var provider = RemoteConfigService.GetDefaultWeatherProvider(queryResult);
                     SettingsManager.API = provider;
                     queryResult.UpdateWeatherSource(provider);
+                    wm.UpdateAPI();
                 }
 
-                if (!wm.IsRegionSupported(queryResult.LocationCountry))
+                if (!wm.IsRegionSupported(queryResult))
                 {
                     PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
                     UiState = UiState with { IsLoading = false };

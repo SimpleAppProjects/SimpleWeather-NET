@@ -16,7 +16,8 @@ namespace SimpleWeather.WeatherData
         bool SupportsAlerts { get; }
         bool NeedsExternalAlertData { get; }
 
-        bool IsRegionSupported(string countryCode);
+        bool IsRegionSupported(LocationData.LocationData location);
+        bool IsRegionSupported(LocationData.LocationQuery location);
 
         int HourlyForecastInterval { get; }
 

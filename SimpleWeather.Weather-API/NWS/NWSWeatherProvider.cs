@@ -48,9 +48,14 @@ namespace SimpleWeather.Weather_API.NWS
         public override bool SupportsWeatherLocale => false;
         public override bool KeyRequired => false;
 
-        public override bool IsRegionSupported(string countryCode)
+        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationData location)
         {
-            return LocationUtils.IsUS(countryCode);
+            return LocationUtils.IsUS(location);
+        }
+
+        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        {
+            return LocationUtils.IsUS(location);
         }
 
         public override Task<bool> IsKeyValid(string key)
@@ -72,7 +77,7 @@ namespace SimpleWeather.Weather_API.NWS
             WeatherException wEx = null;
 
             // NWS only supports locations in U.S.
-            if (!LocationUtils.IsUS(location.country_code))
+            if (!LocationUtils.IsUS(location))
             {
                 throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }

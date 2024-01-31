@@ -92,13 +92,29 @@ namespace SimpleWeather.RemoteConfig
             return GetConfigString(DEFAULT_WEATHERPROVIDER_KEY) ?? WeatherAPI.WeatherApi;
         }
 
-        public string GetDefaultWeatherProvider(string countryCode)
+        public string GetDefaultWeatherProvider(LocationData.LocationData location)
         {
-            if (LocationUtils.IsUS(countryCode))
+            if (LocationUtils.IsUS(location))
             {
                 return WeatherAPI.NWS;
             }
-            else if (LocationUtils.IsFrance(countryCode))
+            else if (LocationUtils.IsFrance(location))
+            {
+                return WeatherAPI.MeteoFrance;
+            }
+            else
+            {
+                return GetDefaultWeatherProvider();
+            }
+        }
+
+        public string GetDefaultWeatherProvider(LocationData.LocationQuery location)
+        {
+            if (LocationUtils.IsUS(location))
+            {
+                return WeatherAPI.NWS;
+            }
+            else if (LocationUtils.IsFrance(location))
             {
                 return WeatherAPI.MeteoFrance;
             }

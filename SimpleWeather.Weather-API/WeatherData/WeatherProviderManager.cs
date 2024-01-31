@@ -66,9 +66,14 @@ namespace SimpleWeather.Weather_API.WeatherData
 
         public AuthType AuthType => _weatherProvider.AuthType;
 
-        public bool IsRegionSupported(string countryCode)
+        public bool IsRegionSupported(SimpleWeather.LocationData.LocationData location)
         {
-            return _weatherProvider.IsRegionSupported(countryCode);
+            return _weatherProvider.IsRegionSupported(location);
+        }
+
+        public bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        {
+            return _weatherProvider.IsRegionSupported(location);
         }
 
         public Task UpdateLocationData(SimpleWeather.LocationData.LocationData location)

@@ -156,7 +156,7 @@ namespace SimpleWeather.Common.WeatherData
                 request.ThrowIfCancellationRequested();
 
                 // Is the timezone valid? If not try to fetch a valid zone id
-                if (!wm.IsRegionSupported(location.country_code) && (Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
+                if (!wm.IsRegionSupported(location) && (Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
                 {
                     if (location.latitude != 0 && location.longitude != 0)
                     {
@@ -170,13 +170,13 @@ namespace SimpleWeather.Common.WeatherData
                     }
                 }
 
-                if (!wm.IsRegionSupported(location.country_code))
+                if (!wm.IsRegionSupported(location))
                 {
                     // If location data hasn't been updated, try loading weather from the previous provider
                     if (!String.IsNullOrWhiteSpace(location.weatherSource))
                     {
                         var provider = wm.GetWeatherProvider(location.weatherSource);
-                        if (provider.IsRegionSupported(location.country_code))
+                        if (provider.IsRegionSupported(location))
                         {
                             weather = await provider.GetWeather(location).ConfigureAwait(false);
                         }
@@ -325,7 +325,7 @@ namespace SimpleWeather.Common.WeatherData
                             {
                                 // Only update location data if location region is supported by new API
                                 // If not don't update so we can use fallback (previously used API)
-                                if (wm.IsRegionSupported(location.country_code))
+                                if (wm.IsRegionSupported(location))
                                 {
                                     // Update location query and source for new API
                                     string oldKey = location.query;

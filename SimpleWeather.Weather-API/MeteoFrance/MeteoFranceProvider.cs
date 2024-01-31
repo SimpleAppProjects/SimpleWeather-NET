@@ -47,9 +47,14 @@ namespace SimpleWeather.Weather_API.MeteoFrance
         public override int HourlyForecastInterval => 1;
         public override AuthType AuthType => AuthType.ApiKey;
 
-        public override bool IsRegionSupported(string countryCode)
+        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationData location)
         {
-            return LocationUtils.IsFrance(countryCode);
+            return LocationUtils.IsFrance(location);
+        }
+
+        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        {
+            return LocationUtils.IsFrance(location);
         }
 
         public override Task<bool> IsKeyValid(string key)
@@ -71,7 +76,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             WeatherException wEx = null;
 
             // MeteoFrance only supports locations in France
-            if (!LocationUtils.IsFrance(location.country_code))
+            if (!LocationUtils.IsFrance(location))
             {
                 throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }

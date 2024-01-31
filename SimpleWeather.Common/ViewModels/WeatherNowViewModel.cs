@@ -156,7 +156,7 @@ namespace SimpleWeather.Common.ViewModels
                     {
                         var state = UiState;
 
-                        if (state.LocationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
+                        if (state.LocationData?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
                             Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
                             Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));
@@ -224,7 +224,7 @@ namespace SimpleWeather.Common.ViewModels
 
                         var state = UiState;
 
-                        if (state.LocationData?.country_code?.Let(it => !wm.IsRegionSupported(it)) == true)
+                        if (state.LocationData?.Let(it => !wm.IsRegionSupported(it)) == true)
                         {
                             Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
                             Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));

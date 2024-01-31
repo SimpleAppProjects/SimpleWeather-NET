@@ -72,7 +72,7 @@ namespace SimpleWeather.Weather_API.HERE
             string query = UpdateLocationQuery(location);
 
             Uri queryURL;
-            if (LocationUtils.IsUSorCanada(location.country_code))
+            if (LocationUtils.IsUSorCanada(location))
             {
                 queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, query, locale));
             }
@@ -224,7 +224,7 @@ namespace SimpleWeather.Weather_API.HERE
                 this.CheckRateLimit();
 
                 Uri queryURL;
-                if (LocationUtils.IsUSorCanada(location.country_code))
+                if (LocationUtils.IsUSorCanada(location))
                 {
                     queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
                 }
