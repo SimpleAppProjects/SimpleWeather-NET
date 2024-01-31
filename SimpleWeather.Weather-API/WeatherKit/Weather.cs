@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SimpleWeather.Json;
+using System;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -593,43 +594,33 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// How likely the event is to occur.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<Certainty>))]
     [DataContract]
     public enum Certainty
     {
         /// <summary>
         /// The event has already occurred or is ongoing.
         /// </summary>
-        [JsonPropertyName("observed")]
-        [DataMember(Name = "observed")]
         [EnumMember(Value = "observed")]
         Observed,
         /// <summary>
         /// The event is likely to occur (greater than 50% probability).
         /// </summary>
-        [JsonPropertyName("likely")]
-        [DataMember(Name = "likely")]
         [EnumMember(Value = "likely")]
         Likely,
         /// <summary>
         /// The event is unlikley to occur (less than 50% probability).
         /// </summary>
-        [JsonPropertyName("possible")]
-        [DataMember(Name = "possible")]
         [EnumMember(Value = "possible")]
         Possible,
         /// <summary>
         /// The event is not expected to occur (approximately 0% probability).
         /// </summary>
-        [JsonPropertyName("unlikely")]
-        [DataMember(Name = "unlikely")]
         [EnumMember(Value = "unlikely")]
         Unlikely,
         /// <summary>
         /// It is unknown if the event will occur.
         /// </summary>
-        [JsonPropertyName("unknown")]
-        [DataMember(Name = "unknown")]
         [EnumMember(Value = "unknown")]
         Unknown,
     }
@@ -637,71 +628,53 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The recommended action from a reporting agency.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<ResponseType>))]
     [DataContract]
     public enum ResponseType
     {
         /// <summary>
         /// Take shelter in place.
         /// </summary>
-        [JsonPropertyName("shelter")]
-        [DataMember(Name = "shelter")]
         [EnumMember(Value = "shelter")]
         Shelter,
         /// <summary>
         /// Relocate.
         /// </summary>
-        [JsonPropertyName("evacuate")]
-        [DataMember(Name = "evacuate")]
         [EnumMember(Value = "evacuate")]
         Evacuate,
         /// <summary>
         /// Make preparations.
         /// </summary>
-        [JsonPropertyName("prepare")]
-        [DataMember(Name = "prepare")]
         [EnumMember(Value = "prepare")]
         Prepare,
         /// <summary>
         /// Execute a pre-planned activity.
         /// </summary>
-        [JsonPropertyName("execute")]
-        [DataMember(Name = "execute")]
         [EnumMember(Value = "execute")]
         Execute,
         /// <summary>
         /// Avoid the event.
         /// </summary>
-        [JsonPropertyName("avoid")]
-        [DataMember(Name = "avoid")]
         [EnumMember(Value = "avoid")]
         Avoid,
         /// <summary>
         /// Monitor the situation.
         /// </summary>
-        [JsonPropertyName("monitor")]
-        [DataMember(Name = "monitor")]
         [EnumMember(Value = "monitor")]
         Monitor,
         /// <summary>
         /// Assess the situation.
         /// </summary>
-        [JsonPropertyName("assess")]
-        [DataMember(Name = "assess")]
         [EnumMember(Value = "assess")]
         Assess,
         /// <summary>
         /// The event no longer poses a threat.
         /// </summary>
-        [JsonPropertyName("allClear")]
-        [DataMember(Name = "allClear")]
         [EnumMember(Value = "allClear")]
         AllClear,
         /// <summary>
         /// No action recommended.
         /// </summary>
-        [JsonPropertyName("none")]
-        [DataMember(Name = "none")]
         [EnumMember(Value = "none")]
         None,
     }
@@ -709,43 +682,33 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The level of danger to life and property.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<Severity>))]
     [DataContract]
     public enum Severity
     {
         /// <summary>
         /// Extraordinary threat.
         /// </summary>
-        [JsonPropertyName("extreme")]
-        [DataMember(Name = "extreme")]
         [EnumMember(Value = "extreme")]
         Extreme,
         /// <summary>
         /// Significant threat.
         /// </summary>
-        [JsonPropertyName("severe")]
-        [DataMember(Name = "severe")]
         [EnumMember(Value = "severe")]
         Severe,
         /// <summary>
         /// Possible threat.
         /// </summary>
-        [JsonPropertyName("moderate")]
-        [DataMember(Name = "moderate")]
         [EnumMember(Value = "moderate")]
         Moderate,
         /// <summary>
         /// Minimal or no known threat.
         /// </summary>
-        [JsonPropertyName("minor")]
-        [DataMember(Name = "minor")]
         [EnumMember(Value = "minor")]
         Minor,
         /// <summary>
         /// Unknown threat.
         /// </summary>
-        [JsonPropertyName("unknown")]
-        [DataMember(Name = "unknown")]
         [EnumMember(Value = "unknown")]
         Unknown,
     }
@@ -753,43 +716,33 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// An indication of urgency of action from the reporting agency.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<Urgency>))]
     [DataContract]
     public enum Urgency
     {
         /// <summary>
         /// Take responsive action immediately.
         /// </summary>
-        [JsonPropertyName("immediate")]
-        [DataMember(Name = "immediate")]
         [EnumMember(Value = "immediate")]
         Immediate,
         /// <summary>
         /// Take responsive action in the next hour.
         /// </summary>
-        [JsonPropertyName("expected")]
-        [DataMember(Name = "expected")]
         [EnumMember(Value = "expected")]
         Expected,
         /// <summary>
         /// Take responsive action in the near future.
         /// </summary>
-        [JsonPropertyName("future")]
-        [DataMember(Name = "future")]
         [EnumMember(Value = "future")]
         Future,
         /// <summary>
         /// Responsive action is no longer required.
         /// </summary>
-        [JsonPropertyName("past")]
-        [DataMember(Name = "past")]
         [EnumMember(Value = "past")]
         Minor,
         /// <summary>
         /// The urgency is unknown.
         /// </summary>
-        [JsonPropertyName("unknown")]
-        [DataMember(Name = "unknown")]
         [EnumMember(Value = "unknown")]
         Unknown,
     }
@@ -797,15 +750,13 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The system of units that the weather data is reported in.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<UnitsSystem>))]
     [DataContract]
     public enum UnitsSystem
     {
         /// <summary>
         /// The metric system.
         /// </summary>
-        [JsonPropertyName("m")]
-        [DataMember(Name = "m")]
         [EnumMember(Value = "m")]
         Metric
     }
@@ -813,64 +764,48 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The shape of the moon as seen by an observer on the ground at a given time.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<MoonPhase>))]
     [DataContract]
     public enum MoonPhase
     {
         /// <summary>
         /// The moon isn’t visible.
         /// </summary>
-        [JsonPropertyName("new")]
-        [DataMember(Name = "new")]
         [EnumMember(Value = "new")]
         New,
         /// <summary>
         /// A crescent-shaped sliver of the moon is visible, and increasing in size.
         /// </summary>
-        [JsonPropertyName("waxingCrescent")]
-        [DataMember(Name = "waxingCrescent")]
         [EnumMember(Value = "waxingCrescent")]
         WaxingCrescent,
         /// <summary>
         /// Approximately half of the moon is visible, and increasing in size.
         /// </summary>
-        [JsonPropertyName("firstQuarter")]
-        [DataMember(Name = "firstQuarter")]
         [EnumMember(Value = "firstQuarter")]
         FirstQuarter,
         /// <summary>
         /// The entire disc of the moon is visible.
         /// </summary>
-        [JsonPropertyName("full")]
-        [DataMember(Name = "full")]
         [EnumMember(Value = "full")]
         Full,
         /// <summary>
         /// More than half of the moon is visible, and increasing in size.
         /// </summary>
-        [JsonPropertyName("waxingGibbous")]
-        [DataMember(Name = "waxingGibbous")]
         [EnumMember(Value = "waxingGibbous")]
         WaxingGibbous,
         /// <summary>
         /// More than half of the moon is visible, and decreasing in size.
         /// </summary>
-        [JsonPropertyName("waningGibbous")]
-        [DataMember(Name = "waningGibbous")]
         [EnumMember(Value = "waningGibbous")]
         WaningGibbous,
         /// <summary>
         /// Approximately half of the moon is visible, and decreasing in size.
         /// </summary>
-        [JsonPropertyName("thirdQuarter")]
-        [DataMember(Name = "thirdQuarter")]
         [EnumMember(Value = "thirdQuarter")]
         ThirdQuarter,
         /// <summary>
         /// A crescent-shaped sliver of the moon is visible, and decreasing in size.
         /// </summary>
-        [JsonPropertyName("waningCrescent")]
-        [DataMember(Name = "waningCrescent")]
         [EnumMember(Value = "waningCrescent")]
         WaningCrescent,
     }
@@ -878,57 +813,43 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The type of precipitation forecasted to occur during the day.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<PrecipitationType>))]
     [DataContract]
     public enum PrecipitationType
     {
         /// <summary>
         /// No precipitation is occurring.
         /// </summary>
-        [JsonPropertyName("clear")]
-        [DataMember(Name = "clear")]
         [EnumMember(Value = "clear")]
         Clear,
         /// <summary>
         /// An unknown type of precipitation is occuring.
         /// </summary>
-        [JsonPropertyName("precipitation")]
-        [DataMember(Name = "precipitation")]
         [EnumMember(Value = "precipitation")]
         Precipitation,
         /// <summary>
         /// Rain or freezing rain is falling.
         /// </summary>
-        [JsonPropertyName("rain")]
-        [DataMember(Name = "rain")]
         [EnumMember(Value = "rain")]
         Rain,
         /// <summary>
         /// Snow is falling.
         /// </summary>
-        [JsonPropertyName("snow")]
-        [DataMember(Name = "snow")]
         [EnumMember(Value = "snow")]
         Snow,
         /// <summary>
         /// Sleet or ice pellets are falling.
         /// </summary>
-        [JsonPropertyName("sleet")]
-        [DataMember(Name = "sleet")]
         [EnumMember(Value = "sleet")]
         Sleet,
         /// <summary>
         /// Hail is falling.
         /// </summary>
-        [JsonPropertyName("hail")]
-        [DataMember(Name = "hail")]
         [EnumMember(Value = "hail")]
         Hail,
         /// <summary>
         /// Winter weather (wintery mix or wintery showers) is falling.
         /// </summary>
-        [JsonPropertyName("mixed")]
-        [DataMember(Name = "mixed")]
         [EnumMember(Value = "mixed")]
         Mixed,
     }
@@ -936,29 +857,23 @@ namespace SimpleWeather.Weather_API.WeatherKit
     /// <summary>
     /// The direction of change of the sea level air pressure.
     /// </summary>
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumMemberConverter<PressureTrend>))]
     [DataContract]
     public enum PressureTrend
     {
         /// <summary>
         /// The sea level air pressure is increasing.
         /// </summary>
-        [JsonPropertyName("rising")]
-        [DataMember(Name = "rising")]
         [EnumMember(Value = "rising")]
         Rising,
         /// <summary>
         /// The sea level air pressure is decreasing.
         /// </summary>
-        [JsonPropertyName("falling")]
-        [DataMember(Name = "falling")]
         [EnumMember(Value = "falling")]
         Falling,
         /// <summary>
         /// The sea level air pressure is remaining about the same.
         /// </summary>
-        [JsonPropertyName("steady")]
-        [DataMember(Name = "steady")]
         [EnumMember(Value = "steady")]
         Steady
     }

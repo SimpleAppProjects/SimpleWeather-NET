@@ -21,13 +21,37 @@ namespace SimpleWeather.Weather_API.WeatherKit
             weather.location = _.CreateLocation(root.currentWeather);
             weather.update_time = now;
 
-            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(root.forecastDaily.days.Length);
-            weather.txt_forecast = new List<SimpleWeather.WeatherData.TextForecast>(root.forecastDaily.days.Length);
-            weather.hr_forecast = new List<SimpleWeather.WeatherData.HourlyForecast>(root.forecastHourly.hours.Length);
-            weather.min_forecast = new List<SimpleWeather.WeatherData.MinutelyForecast>(root.forecastNextHour.minutes.Length);
+            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>().Apply(l =>
+            {
+                (root?.forecastDaily?.days?.Length ?? 0).Let(sz =>
+                {
+                    l.EnsureCapacity(sz);
+                });
+            });
+            weather.txt_forecast = new List<SimpleWeather.WeatherData.TextForecast>().Apply(l =>
+            {
+                (root?.forecastDaily?.days?.Length ?? 0).Let(sz =>
+                {
+                    l.EnsureCapacity(sz);
+                });
+            });
+            weather.hr_forecast = new List<SimpleWeather.WeatherData.HourlyForecast>().Apply(l =>
+            {
+                (root?.forecastHourly?.hours?.Length ?? 0).Let(sz =>
+                {
+                    l.EnsureCapacity(sz);
+                });
+            });
+            weather.min_forecast = new List<SimpleWeather.WeatherData.MinutelyForecast>().Apply(l =>
+            {
+                (root?.forecastNextHour?.minutes?.Length ?? 0).Let(sz =>
+                {
+                    l.EnsureCapacity(sz);
+                });
+            });
 
             // Forecast
-            foreach (var day in root.forecastDaily.days)
+            root?.forecastDaily?.days?.ForEach(day =>
             {
                 var dailyFcast = _.CreateForecast(day);
                 var txtFcast = _.CreateTextForecast(day);
@@ -40,24 +64,24 @@ namespace SimpleWeather.Weather_API.WeatherKit
                     todaysForecast = dailyFcast;
                     todaysTxtForecast = txtFcast;
                 }
-            }
+            });
 
             // Hourly Forecast
-            foreach (var hour in root.forecastHourly.hours)
+            root?.forecastHourly?.hours?.ForEach(hour =>
             {
                 weather.hr_forecast.Add(_.CreateHourlyForecast(hour));
-            }
+            });
 
             // Minutely Forecast
-            foreach (var minute in root.forecastNextHour.minutes)
+            root?.forecastNextHour?.minutes?.ForEach(minute =>
             {
                 weather.min_forecast.Add(_.CreateMinutelyForecast(minute));
-            }
+            });
 
             weather.condition = _.CreateCondition(root.currentWeather, todaysForecast, todaysTxtForecast);
             weather.atmosphere = _.CreateAtmosphere(root.currentWeather);
 
-            if (root.forecastDaily.days.FirstOrDefault(it => it.forecastStart.UtcDateTime.Date == weather.condition.observation_time.UtcDateTime.Date) is DayWeatherConditions today)
+            if (root?.forecastDaily?.days?.FirstOrDefault(it => it.forecastStart.UtcDateTime.Date == weather.condition.observation_time.UtcDateTime.Date) is DayWeatherConditions today)
             {
                 weather.astronomy = _.CreateAstronomy(today);
             }
@@ -242,12 +266,12 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 observation_time = current.asOf,
 
                 // fcttext & fcttextMetric are the same
-                summary = todaysTxtForecast.fcttext,
+                summary = todaysTxtForecast?.fcttext,
 
-                high_c = todaysForecast.high_c,
-                high_f = todaysForecast.high_f,
-                low_c = todaysForecast.low_c,
-                low_f = todaysForecast.low_f,
+                high_c = todaysForecast?.high_c,
+                high_f = todaysForecast?.high_f,
+                low_c = todaysForecast?.low_c,
+                low_f = todaysForecast?.low_f,
             };
         }
 
