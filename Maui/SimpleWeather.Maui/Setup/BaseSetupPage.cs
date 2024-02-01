@@ -1,4 +1,6 @@
-﻿using SimpleWeather.Maui.Stepper;
+﻿using CommunityToolkit.Maui.Markup;
+using SimpleWeather.Maui.Helpers;
+using SimpleWeather.Maui.Stepper;
 
 namespace SimpleWeather.Maui.Setup
 {
@@ -16,13 +18,14 @@ namespace SimpleWeather.Maui.Setup
             {
                 ControlTemplate = _controlTemplate as ControlTemplate;
             }
+            this.Loaded += BaseSetupPage_Loaded;
+            this.Unloaded += BaseSetupPage_Unloaded;
         }
 
         protected override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             BottomNavBar = GetTemplateChild("BottomNavBar") as BottomStepperNavigationBar;
-            BindNavBar(true);
         }
 
         private void BindNavBar(bool bind)
@@ -33,8 +36,6 @@ namespace SimpleWeather.Maui.Setup
                 {
                     BottomNavBar.OnBackButtonClicked += BottomNavBar_OnBackButtonClicked;
                     BottomNavBar.OnNextButtonClicked += BottomNavBar_OnNextButtonClicked;
-                    BottomNavBar.Unloaded += BottomNavBar_Unloaded;
-                    ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
                     BottomNavBar.ItemCount = ViewModel.ItemCount;
                     BottomNavBar.SelectedIndex = ViewModel.SelectedIndex;
@@ -43,29 +44,7 @@ namespace SimpleWeather.Maui.Setup
                 {
                     BottomNavBar.OnBackButtonClicked -= BottomNavBar_OnBackButtonClicked;
                     BottomNavBar.OnNextButtonClicked -= BottomNavBar_OnNextButtonClicked;
-                    BottomNavBar.Unloaded -= BottomNavBar_Unloaded;
-                    ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
                 }
-            }
-        }
-
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(ViewModel.IsNavBarNextButtonVisible))
-            {
-                BottomNavBar?.ShowNextButton(ViewModel.IsNavBarNextButtonVisible);
-            }
-            else if (e.PropertyName == nameof(ViewModel.IsNavBarBackButtonVisible))
-            {
-                BottomNavBar?.ShowBackButton(ViewModel.IsNavBarBackButtonVisible);
-            }
-            else if (e.PropertyName == nameof(ViewModel.ItemCount))
-            {
-                BottomNavBar.ItemCount = ViewModel.ItemCount;
-            }
-            else if (e.PropertyName == nameof(ViewModel.SelectedIndex))
-            {
-                BottomNavBar.SelectedIndex = ViewModel.SelectedIndex;
             }
         }
 
@@ -79,7 +58,12 @@ namespace SimpleWeather.Maui.Setup
             ViewModel.Next();
         }
 
-        private void BottomNavBar_Unloaded(object sender, EventArgs e)
+        private void BaseSetupPage_Loaded(object sender, EventArgs e)
+        {
+            BindNavBar(true);
+        }
+
+        private void BaseSetupPage_Unloaded(object sender, EventArgs e)
         {
             BindNavBar(false);
         }
@@ -88,6 +72,17 @@ namespace SimpleWeather.Maui.Setup
         {
             base.OnNavigatedTo(args);
             ViewModel.OnNavigated();
+            UpdateBottomNavBarState();
+        }
+
+        private void UpdateBottomNavBarState()
+        {
+            if (BottomNavBar != null)
+            {
+                BottomNavBar.SelectedIndex = ViewModel.SelectedIndex;
+                BottomNavBar.ShowBackButton(ViewModel.IsNavBarBackButtonVisible);
+                BottomNavBar.ShowNextButton(ViewModel.IsNavBarNextButtonVisible);
+            }
         }
     }
 }

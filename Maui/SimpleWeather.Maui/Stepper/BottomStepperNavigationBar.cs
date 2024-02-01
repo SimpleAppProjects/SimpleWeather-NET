@@ -11,9 +11,6 @@ public partial class BottomStepperNavigationBar : TemplatedView
     private HorizontalStackLayout IndicatorBox;
     private Button NextBtn;
 
-    private int SelectedIdx;
-    private int ItemCnt;
-
     public Color ForegroundColor
     {
         get { return (Color)GetValue(ForegroundColorProperty); }
@@ -88,34 +85,57 @@ public partial class BottomStepperNavigationBar : TemplatedView
 
     public int SelectedIndex
     {
-        get => SelectedIdx;
-        set
-        {
-            if (value < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(SelectedIndex), "value must be >= 0");
-            }
+        get => (int)GetValue(SelectedIndexProperty);
+        set => SetValue(SelectedIndexProperty, value);
+    }
 
-            SelectedIdx = value;
-            SetSelectedItem(value, true);
+    public static readonly BindableProperty SelectedIndexProperty =
+        BindableProperty.Create(nameof(SelectedIndex), typeof(int), typeof(BottomStepperNavigationBar), 0,
+            validateValue: OnValidateSelectedIndex, propertyChanged: OnSelectedIndexChanged);
+
+    private static bool OnValidateSelectedIndex(BindableObject bindable, object newValue)
+    {
+        if (newValue is int value && value < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(SelectedIndex), "value must be >= 0");
+        }
+
+        return true;
+    }
+
+    private static void OnSelectedIndexChanged(BindableObject obj, object oldValue, object newValue)
+    {
+        if (obj is BottomStepperNavigationBar bar)
+        {
+            bar.SetSelectedItem((int)newValue, true);
         }
     }
 
     public int ItemCount
     {
-        get => ItemCnt;
-        set
-        {
-            if (value < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(ItemCount), "value must be >= 0");
-            }
+        get => (int)GetValue(ItemCountProperty);
+        set => SetValue(ItemCountProperty, value);
+    }
 
-            if (ItemCnt != value)
-            {
-                ItemCnt = value;
-                SetItemCount(value, true);
-            }
+    public static readonly BindableProperty ItemCountProperty =
+        BindableProperty.Create(nameof(ItemCount), typeof(int), typeof(BottomStepperNavigationBar), 0,
+            validateValue: OnValidateItemCount, propertyChanged: OnItemCountChanged);
+
+    private static bool OnValidateItemCount(BindableObject bindable, object newValue)
+    {
+        if (newValue is int value && value < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ItemCount), "value must be >= 0");
+        }
+
+        return true;
+    }
+
+    private static void OnItemCountChanged(BindableObject obj, object oldValue, object newValue)
+    {
+        if (oldValue != newValue && obj is BottomStepperNavigationBar bar)
+        {
+            bar.SetItemCount((int)newValue, true);
         }
     }
 
@@ -231,10 +251,10 @@ public partial class BottomStepperNavigationBar : TemplatedView
     {
         if (IndicatorBox != null)
         {
-            for (int i = 0; i < ItemCnt; i++)
+            for (int i = 0; i < ItemCount; i++)
             {
                 var dot = IndicatorBox.Children[i] as VisualElement;
-                if (i == SelectedIdx)
+                if (i == SelectedIndex)
                 {
                     dot.Opacity = 1;
                 }
