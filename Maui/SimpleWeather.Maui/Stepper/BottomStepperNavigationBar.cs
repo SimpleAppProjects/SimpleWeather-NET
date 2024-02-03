@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls.Shapes;
+using SimpleToolkit.Core;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
 
@@ -7,9 +8,13 @@ namespace SimpleWeather.Maui.Stepper;
 public partial class BottomStepperNavigationBar : TemplatedView
 {
     private Grid RootGrid;
-    private Button BackBtn;
+    private ContentButton BackBtn;
+    private Image BackBtnIcon;
+    private Label BackBtnLabel;
     private HorizontalStackLayout IndicatorBox;
-    private Button NextBtn;
+    private ContentButton NextBtn;
+    private Image NextBtnIcon;
+    private Label NextBtnLabel;
 
     public Color ForegroundColor
     {
@@ -153,9 +158,13 @@ public partial class BottomStepperNavigationBar : TemplatedView
         base.OnApplyTemplate();
 
         this.RootGrid = this.GetTemplateChild(nameof(RootGrid)) as Grid;
-        this.BackBtn = this.GetTemplateChild(nameof(BackBtn)) as Button;
+        this.BackBtn = this.GetTemplateChild(nameof(BackBtn)) as ContentButton;
+        this.BackBtnIcon = this.GetTemplateChild(nameof(BackBtnIcon)) as Image;
+        this.BackBtnLabel = this.GetTemplateChild(nameof(BackBtnLabel)) as Label;
         this.IndicatorBox = this.GetTemplateChild(nameof(IndicatorBox)) as HorizontalStackLayout;
-        this.NextBtn = this.GetTemplateChild(nameof(NextBtn)) as Button;
+        this.NextBtn = this.GetTemplateChild(nameof(NextBtn)) as ContentButton;
+        this.NextBtnIcon = this.GetTemplateChild(nameof(NextBtnIcon)) as Image;
+        this.NextBtnLabel = this.GetTemplateChild(nameof(NextBtnLabel)) as Label;
     }
 
     private void BindButtons(bool bind)
@@ -218,11 +227,8 @@ public partial class BottomStepperNavigationBar : TemplatedView
         BindIndicator(false);
 
         // Clear bindings
-        if (NextBtn != null)
-        {
-            NextBtn.ClearValue(Button.ImageSourceProperty);
-            NextBtn.ClearValue(Button.TextProperty);
-        }
+        NextBtnIcon?.ClearValue(Image.SourceProperty);
+        NextBtnLabel?.ClearValue(Label.TextProperty);
     }
 
     private void SetItemCount(int count, bool useTransitions = false)
@@ -274,49 +280,34 @@ public partial class BottomStepperNavigationBar : TemplatedView
             ShowBackButton(false);
             ShowNextButton(true);
 
-            if (NextBtn != null)
-            {
-                NextBtn.SetOneWayBinding(Button.ImageSourceProperty, NextButtonIcon);
-                NextBtn.SetOneWayBinding(Button.TextProperty, StartButtonText);
-            }
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, NextButtonIcon);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, StartButtonText);
         }
         else if (SelectedIndex == (ItemCount - 1))
         {
             ShowBackButton(true);
             ShowNextButton(true);
 
-            if (NextBtn != null)
-            {
-                NextBtn.SetOneWayBinding(Button.ImageSourceProperty, CompleteButtonIcon);
-                NextBtn.SetOneWayBinding(Button.TextProperty, CompleteButtonText);
-            }
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, CompleteButtonIcon);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, CompleteButtonText);
         }
         else
         {
             ShowBackButton(true);
             ShowNextButton(true);
 
-            if (NextBtn != null)
-            {
-                NextBtn.SetOneWayBinding(Button.ImageSourceProperty, NextButtonIcon);
-                NextBtn.SetOneWayBinding(Button.TextProperty, NextButtonText);
-            }
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, NextButtonIcon);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, NextButtonText);
         }
     }
 
     public void ShowBackButton(bool show)
     {
-        if (BackBtn != null)
-        {
-            BackBtn.SetVisibility(show ? Visibility.Visible : Visibility.Hidden);
-        }
+        BackBtn?.SetVisibility(show ? Visibility.Visible : Visibility.Hidden);
     }
 
     public void ShowNextButton(bool show)
     {
-        if (NextBtn != null)
-        {
-            NextBtn.SetVisibility(show ? Visibility.Visible : Visibility.Hidden);
-        }
+        NextBtn?.SetVisibility(show ? Visibility.Visible : Visibility.Hidden);
     }
 }

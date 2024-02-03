@@ -7,11 +7,19 @@
     xmlns:helpers="clr-namespace:SimpleWeather.Maui.Helpers"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Setup"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     Background="{DynamicResource PrimarySurfaceColorBrush}"
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False">
+    <local:BaseSetupPage.Resources>
+        <Style x:Key="SettingsDividerStyle" TargetType="Rectangle">
+            <Setter Property="HeightRequest" Value="2" />
+            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" />
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
+    </local:BaseSetupPage.Resources>
     <ScrollView x:Name="Scroller" Orientation="Vertical"
                 SizeChanged="Scroller_SizeChanged">
         <VerticalStackLayout VerticalOptions="Center">
@@ -29,7 +37,7 @@
                 Text="{x:Static res_strings:Resources.setup_preferences_prompt}"
                 TextColor="{DynamicResource White}" />
             <Border HorizontalOptions="{OnIdiom Phone=Fill, Default=Center}" Stroke="Transparent"
-                    VerticalOptions="Start">
+                    VerticalOptions="Start" Margin="0,16,0,0">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="{OnIdiom Default='8,8,8,8', Phone='0'}" />
                 </Border.StrokeShape>
@@ -38,17 +46,16 @@
                 </Border.Background>
                 <VerticalStackLayout
                     x:Name="StackContainer"
-                    Margin="0,16,0,0"
-                    Padding="{OnIdiom Default=16, Phone=0}"
-                    MinimumHeightRequest="{OnIdiom Default=360, Phone=240}"
-                    VerticalOptions="Start">
+                    Padding="{OnIdiom Default='16,8', Phone='0,0,0,4'}"
+                    VerticalOptions="CenterAndExpand">
                     <Border Stroke="Transparent" Margin="0" Padding="0">
                         <Border.Content>
                             <OnIdiom x:TypeArguments="View">
                                 <OnIdiom.Default>
-                                    <VerticalStackLayout>
-                                        <Label Padding="10,5" Text="{x:Static res_strings:Resources.Pref_SummaryUnits_Text}" />
-                                        <HorizontalStackLayout Padding="10,5">
+                                    <VerticalStackLayout Padding="16, 8">
+                                        <Label Text="{x:Static res_strings:Resources.Pref_SummaryUnits_Text}"
+                                               FontSize="17" />
+                                        <HorizontalStackLayout>
                                             <RadioButton
                                                 x:Name="Fahrenheit"
                                                 Margin="0,0,10,0"
@@ -72,24 +79,24 @@
                                 </OnIdiom.Default>
                                 <OnIdiom.Phone>
                                     <Grid RowDefinitions="*,*" ColumnDefinitions="*,Auto"
-                                          Padding="10,0,10,5">
+                                          Padding="20, 8">
                                         <Grid.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="UnitSwitch_Tapped" />
                                         </Grid.GestureRecognizers>
-                                        <Label Padding="4"
-                                               VerticalOptions="Center"
+                                        <Label VerticalOptions="Center"
                                                VerticalTextAlignment="Center"
+                                               FontSize="17"
                                                MaxLines="1"
                                                LineBreakMode="TailTruncation"
                                                Text="{x:Static res_strings:Resources.pref_title_units}"
                                                Grid.Row="0" />
                                         <Label x:Name="TempSummary"
-                                               Padding="4"
+                                               Padding="0,4,0,0"
                                                VerticalOptions="Center"
                                                VerticalTextAlignment="Center"
                                                MaxLines="1"
                                                LineBreakMode="TailTruncation"
-                                               FontSize="Caption"
+                                               FontSize="12"
                                                Text="{x:Static res_strings:Resources.pref_summary_fahrenheit}"
                                                Grid.Row="1" />
                                         <Switch x:Name="TempSwitch"
@@ -102,9 +109,10 @@
                             </OnIdiom>
                         </Border.Content>
                     </Border>
-                    <VerticalStackLayout Padding="{OnIdiom Default='10,5', Phone='15,5'}"
-                                         HorizontalOptions="{OnIdiom Default=Start, Phone=Fill}">
-                        <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
+                    <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
+                    <VerticalStackLayout Padding="{OnIdiom Default='16,8', Phone='20,8'}">
+                        <Label Text="{x:Static res_strings:Resources.pref_title_refreshinterval}"
+                               FontSize="17" />
                         <Picker
                             x:Name="RefreshComboBox"
                             Margin="0,10"
@@ -113,36 +121,33 @@
                             HandlerChanged="RefreshComboBox_HandlerChanged"
                             ios:Picker.UpdateMode="WhenFinished" />
                     </VerticalStackLayout>
-                    <Grid Padding="{OnIdiom Default='10,5', Phone='15,5'}"
-                          RowDefinitions="{OnIdiom Default='Auto,Auto,Auto', Phone='*,*'}" ColumnDefinitions="*,Auto">
+                    <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
+                    <Grid Padding="{OnIdiom Default='16,8', Phone='20,8'}"
+                          RowDefinitions="*,*" ColumnDefinitions="*,Auto">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="AlertSwitch_Tapped" />
                         </Grid.GestureRecognizers>
-                        <Label Padding="0,5"
-                               Grid.Column="0"
+                        <Label Grid.Column="0"
                                Grid.Row="0"
                                VerticalOptions="Center"
                                VerticalTextAlignment="Center"
+                               FontSize="17"
                                MaxLines="1"
                                LineBreakMode="TailTruncation"
-                               IsVisible="{OnIdiom Default=false, Phone=true}"
                                Text="{x:Static res_strings:Resources.pref_title_alerts}" />
-                        <Label Padding="0,5"
-                               Margin="{OnIdiom Default='0,0,0,10', Phone='0'}"
+                        <Label Padding="0,4,0,0"
                                Grid.Column="0"
                                Grid.Row="1"
                                VerticalOptions="Center"
                                VerticalTextAlignment="Center"
                                MaxLines="1"
                                LineBreakMode="TailTruncation"
-                               FontSize="{OnIdiom Default=14, Phone=Caption}"
+                               FontSize="12"
                                Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
                         <Switch x:Name="AlertSwitch"
-                                Grid.Column="{OnIdiom Default=0, Phone=1}"
-                                Grid.Row="{OnIdiom Default=2, Phone=0}"
-                                Grid.RowSpan="{OnIdiom Default=1, Phone=2}"
-                                Margin="0,2"
-                                IsToggled="False"
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                Grid.RowSpan="2"
                                 VerticalOptions="Center" />
                     </Grid>
                 </VerticalStackLayout>

@@ -50,6 +50,7 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
         // Temperature
         Fahrenheit.IsChecked = SettingsManager.TemperatureUnit == Units.FAHRENHEIT;
         Celsius.IsChecked = SettingsManager.TemperatureUnit == Units.CELSIUS;
+        TempSwitch.IsToggled = SettingsManager.TemperatureUnit == Units.CELSIUS;
 
         wm.UpdateAPI();
 

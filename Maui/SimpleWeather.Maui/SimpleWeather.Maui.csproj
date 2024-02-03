@@ -40,15 +40,6 @@
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
-		      <workingdir>${SolutionDir}</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>

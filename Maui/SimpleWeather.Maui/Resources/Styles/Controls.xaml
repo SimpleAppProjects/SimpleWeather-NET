@@ -14,11 +14,11 @@
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls;assembly=SimpleWeather.Maui"
     xmlns:stepper="clr-namespace:SimpleWeather.Maui.Stepper;assembly=SimpleWeather.Maui"
+    xmlns:stk="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
     mc:Ignorable="d">
     <x:Double x:Key="AppBarThemeCompactHeight">40</x:Double>
     <x:Double x:Key="TextButtonFontSize">16</x:Double>
     <x:Double x:Key="BottomStepperIconSize">14</x:Double>
-    <x:Double x:Key="BottomStepperButtonPadding">12</x:Double>
 
     <Style x:Key="DefaultBottomStepperNavigationBarStyle" TargetType="stepper:BottomStepperNavigationBar">
         <Setter Property="MinimumHeightRequest" Value="{DynamicResource AppBarThemeCompactHeight}" />
@@ -29,52 +29,92 @@
         <Setter Property="CompleteButtonIcon" Value="{mext:MaterialIcon Symbol=Done, Size=24}" />
         <Setter Property="ControlTemplate">
             <ControlTemplate>
-                <Grid
+                <AbsoluteLayout
                     x:Name="RootGrid"
                     Background="{TemplateBinding Background}"
                     BackgroundColor="{TemplateBinding BackgroundColor}"
                     HorizontalOptions="{TemplateBinding HorizontalOptions}"
                     MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Button
+                    <stk:ContentButton
                         x:Name="BackBtn"
-                        Grid.Column="0"
-                        Margin="8,0,0,0"
-                        Padding="{StaticResource BottomStepperButtonPadding}"
-                        Background="Transparent"
-                        BorderColor="Transparent"
-                        ContentLayout="{OnPlatform WinUI='Left,8',
-                                                   Default='Left,4'}"
-                        HorizontalOptions="Start"
-                        ImageSource="{TemplateBinding BackButtonIcon}"
-                        Text="{TemplateBinding BackButtonText}"
-                        TextColor="{TemplateBinding ForegroundColor}"
-                        VerticalOptions="Center" />
+                        AbsoluteLayout.LayoutBounds="0.0,0.5"
+                        AbsoluteLayout.LayoutFlags="PositionProportional"
+                        Padding="{OnIdiom Default='12', Phone='12,7'}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup>
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter TargetName="BackBtnLabel" Property="Opacity" Value="0.5" />
+                                            <Setter TargetName="BackBtnIcon" Property="Opacity" Value="0.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                        <stk:ContentButton.Content>
+                            <HorizontalStackLayout Spacing="{OnPlatform WinUI=8, Default=4}">
+                                <Image
+                                    x:Name="BackBtnIcon"
+                                    Source="{TemplateBinding BackButtonIcon}"
+                                    VerticalOptions="Center" />
+                                <Label
+                                    x:Name="BackBtnLabel"
+                                    FontAutoScalingEnabled="True"
+                                    LineBreakMode="NoWrap"
+                                    MaxLines="1"
+                                    Text="{TemplateBinding BackButtonText}"
+                                    TextColor="{TemplateBinding ForegroundColor}"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                            </HorizontalStackLayout>
+                        </stk:ContentButton.Content>
+                    </stk:ContentButton>
                     <HorizontalStackLayout
                         x:Name="IndicatorBox"
-                        Grid.Column="1"
+                        AbsoluteLayout.LayoutBounds="0.5,0.5"
+                        AbsoluteLayout.LayoutFlags="PositionProportional"
                         Background="Transparent"
                         HorizontalOptions="Center"
                         VerticalOptions="Center" />
-                    <Button
+                    <stk:ContentButton
                         x:Name="NextBtn"
-                        Grid.Column="2"
-                        Margin="0,0,8,0"
-                        Padding="{StaticResource BottomStepperButtonPadding}"
-                        Background="Transparent"
-                        BorderColor="Transparent"
-                        ContentLayout="{OnPlatform WinUI='Right,8',
-                                                   Default='Right,4'}"
-                        HorizontalOptions="End"
-                        ImageSource="{TemplateBinding BackButtonIcon}"
-                        Text="{TemplateBinding BackButtonText}"
-                        TextColor="{TemplateBinding ForegroundColor}"
-                        VerticalOptions="Center" />
-                </Grid>
+                        AbsoluteLayout.LayoutBounds="1.0,0.5"
+                        AbsoluteLayout.LayoutFlags="PositionProportional"
+                        Padding="{OnIdiom Default='12', Phone='12,7'}">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup>
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Pressed">
+                                        <VisualState.Setters>
+                                            <Setter TargetName="NextBtnLabel" Property="Opacity" Value="0.5" />
+                                            <Setter TargetName="NextBtnIcon" Property="Opacity" Value="0.5" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                        <stk:ContentButton.Content>
+                            <HorizontalStackLayout Spacing="{OnPlatform WinUI=8, Default=4}">
+                                <Label
+                                    x:Name="NextBtnLabel"
+                                    FontAutoScalingEnabled="True"
+                                    LineBreakMode="NoWrap"
+                                    MaxLines="1"
+                                    Text="{TemplateBinding NextButtonText}"
+                                    TextColor="{TemplateBinding ForegroundColor}"
+                                    VerticalOptions="Center"
+                                    VerticalTextAlignment="Center" />
+                                <Image
+                                    x:Name="NextBtnIcon"
+                                    Source="{TemplateBinding NextButtonIcon}"
+                                    VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </stk:ContentButton.Content>
+                    </stk:ContentButton>
+                </AbsoluteLayout>
             </ControlTemplate>
         </Setter>
     </Style>
