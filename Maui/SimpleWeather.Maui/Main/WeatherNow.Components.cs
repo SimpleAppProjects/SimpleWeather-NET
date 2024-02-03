@@ -71,22 +71,9 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("LightOnSurface", out var LightOnSurface);
         App.Current.Resources.TryGetValue("DarkOnSurface", out var DarkOnSurface);
 
-        return new Grid()
+        return new AbsoluteLayout()
         {
-            ColumnDefinitions =
-            {
-                new ColumnDefinition(GridLength.Auto),
-                new ColumnDefinition(GridLength.Star),
-            },
-            RowDefinitions =
-            {
-                new RowDefinition(GridLength.Star),
-                new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Star),
-            },
             HeightRequest = 64,
-            VerticalOptions = LayoutOptions.Start,
             Children =
             {
                 new Image()
@@ -101,115 +88,126 @@ public partial class WeatherNow
                 .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
                     BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
                 )
-                .Column(0)
-                .RowSpan(4),
-                new Label()
+                .LayoutFlags(AbsoluteLayoutFlags.PositionProportional)
+                .LayoutBounds(0, 0.5),
+                new VerticalStackLayout()
                 {
-                    HorizontalOptions = LayoutOptions.Fill,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.End,
-                    VerticalTextAlignment = TextAlignment.End,
-                    MaxLines = 1,
-                    LineBreakMode = LineBreakMode.TailTruncation,
-                    FontSize = 22,
-                    CharacterSpacing = 0,
-                    Padding = new Thickness(8, 0)
+                    Margin = new Thickness(40, 0),
+                    Children =
+                    {
+                        // Location Name
+                        new Label()
+                        {
+                            HorizontalOptions = LayoutOptions.Fill,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalOptions = LayoutOptions.End,
+                            VerticalTextAlignment = TextAlignment.End,
+                            MaxLines = 1,
+                            LineBreakMode = LineBreakMode.TailTruncation,
+                            FontSize = 22,
+                            CharacterSpacing = 0,
+                            Padding = new Thickness(8, 0)
+                        }
+                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
+                            BindingMode.OneWay, source: WNowViewModel, fallbackValue: ResStrings.label_nav_weathernow, targetNullValue: ResStrings.label_nav_weathernow
+                        )
+                        .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color),
+                        // Clock
+                        new Label()
+                        {
+                            HorizontalOptions = LayoutOptions.Center,
+                            HorizontalTextAlignment = TextAlignment.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            MaxLines = 1,
+                            LineBreakMode = LineBreakMode.TailTruncation,
+                            FontFamily = "OpenSansSemibold",
+                            FontSize = 14,
+                            CharacterSpacing = 0.00714286,
+                            Text = DateTime.Now.ToString("t")
+                        }
+                        .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color)
+                        .Apply(it =>
+                        {
+                            var timer = new System.Timers.Timer();
+                            timer.AutoReset = false;
+
+                            double GetInterval()
+                            {
+                                DateTime now = DateTime.Now;
+                                return (60 - now.Second) * 1000 - now.Millisecond;
+                            }
+
+                            void UpdateClock()
+                            {
+                                var locale = LocaleUtils.GetLocale();
+                                var tz = WNowViewModel?.UiState?.LocationData?.tz_offset;
+                                var now = DateTimeOffset.Now;
+                                string tzs;
+
+                                if (tz.HasValue)
+                                {
+                                    now = now.ToOffset(tz.Value);
+                                    tzs = WNowViewModel.UiState.LocationData.tz_short;
+                                }
+                                else
+                                {
+                                    tzs = now.ToString("zzz", locale);
+                                }
+
+                                it.Dispatcher.Dispatch(() =>
+                                {
+                                    it.Text = $"{now.ToString("t", locale)} {tzs}";
+                                });
+                            }
+
+                            timer.Elapsed += (s, e) =>
+                            {
+                                timer.Interval = GetInterval();
+                                timer.Start();
+                                UpdateClock();
+                            };
+
+                            void WNow_PropertyChanged(object s, PropertyChangedEventArgs e)
+                            {
+                                if (e.PropertyName == nameof(WNowViewModel.Weather))
+                                {
+                                    UpdateClock();
+                                }
+                            }
+
+                            it.ParentChanged += (s, e) =>
+                            {
+                                if (it.Parent != null && !timer.Enabled)
+                                {
+                                    timer.Interval = GetInterval();
+                                    timer.Start();
+                                    WNowViewModel.PropertyChanged += WNow_PropertyChanged;
+                                }
+                                else if (it.Parent == null)
+                                {
+                                    timer.Stop();
+                                    WNowViewModel.PropertyChanged -= WNow_PropertyChanged;
+                                }
+                            };
+
+                            if (it.IsLoaded)
+                            {
+                                timer.Interval = GetInterval();
+                                timer.Start();
+                            }
+                        })
+                    }
                 }
-                .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
-                    BindingMode.OneWay, source: WNowViewModel, fallbackValue: ResStrings.label_nav_weathernow, targetNullValue: ResStrings.label_nav_weathernow
-                )
-                .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color)
-                .Column(1)
-                .Row(1),
-                new Label()
-                {
-                    HorizontalOptions = LayoutOptions.Center,
-                    HorizontalTextAlignment = TextAlignment.Center,
-                    VerticalOptions = LayoutOptions.Center,
-                    VerticalTextAlignment = TextAlignment.Center,
-                    MaxLines = 1,
-                    LineBreakMode = LineBreakMode.TailTruncation,
-                    FontFamily = "OpenSansSemibold",
-                    FontSize = 14,
-                    CharacterSpacing = 0.00714286,
-                    Text = DateTime.Now.ToString("t")
-                }
-                .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color)
-                .Column(0)
-                .ColumnSpan(2)
-                .Row(2)
-                .Apply(it =>
-                {
-                    var timer = new System.Timers.Timer();
-                    timer.AutoReset = false;
-
-                    double GetInterval()
+                .LayoutFlags(AbsoluteLayoutFlags.PositionProportional)
+                .LayoutBounds(0.5, 0.5)
+                .Bind<VerticalStackLayout, bool, Thickness>(
+                    VerticalStackLayout.MarginProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
+                    BindingMode.OneWay, convert: (isGPS) =>
                     {
-                        DateTime now = DateTime.Now;
-                        return (60 - now.Second) * 1000 - now.Millisecond;
-                    }
-
-                    void UpdateClock()
-                    {
-                        var locale = LocaleUtils.GetLocale();
-                        var tz = WNowViewModel?.UiState?.LocationData?.tz_offset;
-                        var now = DateTimeOffset.Now;
-                        string tzs;
-
-                        if (tz.HasValue)
-                        {
-                            now = now.ToOffset(tz.Value);
-                            tzs = WNowViewModel.UiState.LocationData.tz_short;
-                        }
-                        else
-                        {
-                            tzs = now.ToString("zzz", locale);
-                        }
-
-                        it.Dispatcher.Dispatch(() =>
-                        {
-                            it.Text = $"{now.ToString("t", locale)} {tzs}";
-                        });
-                    }
-
-                    timer.Elapsed += (s, e) =>
-                    {
-                        timer.Interval = GetInterval();
-                        timer.Start();
-                        UpdateClock();
-                    };
-
-                    void WNow_PropertyChanged(object s, PropertyChangedEventArgs e)
-                    {
-                        if (e.PropertyName == nameof(WNowViewModel.Weather))
-                        {
-                            UpdateClock();
-                        }
-                    }
-
-                    it.ParentChanged += (s, e) =>
-                    {
-                        if (it.Parent != null && !timer.Enabled)
-                        {
-                            timer.Interval = GetInterval();
-                            timer.Start();
-                            WNowViewModel.PropertyChanged += WNow_PropertyChanged;
-                        }
-                        else if (it.Parent == null)
-                        {
-                            timer.Stop();
-                            WNowViewModel.PropertyChanged -= WNow_PropertyChanged;
-                        }
-                    };
-
-                    if (it.IsLoaded)
-                    {
-                        timer.Interval = GetInterval();
-                        timer.Start();
-                    }
-                })
-            },
-            ZIndex = 1
+                        return isGPS ? new Thickness(40, 0) : Thickness.Zero;
+                    }, source: WNowViewModel, targetNullValue: new Thickness(40, 0), fallbackValue: new Thickness(40, 0))
+            }
         };
     }
 
