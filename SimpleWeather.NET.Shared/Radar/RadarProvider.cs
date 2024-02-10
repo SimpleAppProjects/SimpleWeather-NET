@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #endif
 using SimpleWeather.Controls;
-using SimpleWeather.NET.Radar.NullSchool;
 using SimpleWeather.NET.Radar.OpenWeather;
 using SimpleWeather.NET.Radar.RainViewer;
 using SimpleWeather.Preferences;
@@ -21,7 +20,6 @@ namespace SimpleWeather.NET.Radar
         private static readonly SettingsContainer localSettings = new SettingsContainer();
         internal const string KEY_RADARPROVIDER = "key_radarprovider";
 
-        private const string EARTHWINDMAP = "nullschool";
         private const string RAINVIEWER = "rainviewer";
         private const string OPENWEATHERMAP = "openweather";
 
@@ -29,8 +27,6 @@ namespace SimpleWeather.NET.Radar
 
         public enum RadarProviders
         {
-            [StringValue(EARTHWINDMAP)]
-            EarthWindMap,
             [StringValue(RAINVIEWER)]
             RainViewer,
             [StringValue(OPENWEATHERMAP)]
@@ -39,8 +35,6 @@ namespace SimpleWeather.NET.Radar
 
         private static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders = new List<ProviderEntry>
         {
-            new ProviderEntry("EarthWindMap Project", EARTHWINDMAP,
-                    "https://earth.nullschool.net/", "https://earth.nullschool.net/"),
             new ProviderEntry("RainViewer", RAINVIEWER,
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
             new ProviderEntry("OpenWeatherMap", OPENWEATHERMAP,
@@ -76,13 +70,11 @@ namespace SimpleWeather.NET.Radar
         {
             switch (RadarAPIProvider)
             {
+                default:
                 case RadarProviders.RainViewer:
                     return new RainViewerViewProvider(radarContainer);
                 case RadarProviders.OpenWeatherMap:
                     return new OWMRadarViewProvider(radarContainer);
-                default:
-                case RadarProviders.EarthWindMap:
-                    return new EarthWindMapViewProvider(radarContainer);
             }
         }
 
@@ -96,7 +88,7 @@ namespace SimpleWeather.NET.Radar
             }
             else
             {
-                provider = EARTHWINDMAP;
+                provider = RAINVIEWER;
             }
 
             if (provider == WeatherAPI.OpenWeatherMap)
@@ -107,7 +99,7 @@ namespace SimpleWeather.NET.Radar
                 // Fallback to default since API KEY is unavailable
                 if ((SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] == null)
                 {
-                    return EARTHWINDMAP;
+                    return RAINVIEWER;
                 }
             }
 

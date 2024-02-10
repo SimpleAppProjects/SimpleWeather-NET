@@ -51,8 +51,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.MapLayer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.maui.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\NullSchool\EarthWindMapViewProvider.windows.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\OpenWeather\OWMRadarViewProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\OpenWeather\OWMRadarViewProvider.HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RadarProvider.cs" />
