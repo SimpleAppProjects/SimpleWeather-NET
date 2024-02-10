@@ -96,4 +96,9 @@
     <Color x:Key="Error">#BA1B1B</Color>
     <!--  Material Colors End  -->
 
+    <!-- iOS Colors Start -->
+    <Color x:Key="LightPopoverBackground">#EAEAEA</Color>
+    <Color x:Key="DarkPopoverBackground">#272727</Color>
+    <!-- iOS Colors End -->
+
 </ResourceDictionary>

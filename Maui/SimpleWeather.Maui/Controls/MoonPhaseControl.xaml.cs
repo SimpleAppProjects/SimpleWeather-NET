@@ -108,5 +108,22 @@ public partial class MoonPhaseControl : ContentView
                 MoonsetIcon.UpdateWeatherIcon();
             }
         };
+        this.SizeChanged += (sender, args) =>
+        {
+            var margins = 0;
+            var size = 36;
+
+            if (this.Width >= 480)
+            {
+                margins = 5;
+                size = 48;
+            }
+
+            foreach (View view in MoonStack.Children)
+            {
+                view.HeightRequest = view.WidthRequest = size;
+                view.Margin = new Thickness(margins);
+            }
+        };
     }
 }

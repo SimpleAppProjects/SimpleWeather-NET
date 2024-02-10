@@ -425,7 +425,7 @@ namespace SimpleWeather.NET.Controls.Graphs
             ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
 #else
             ScrollViewer.HeightRequest = double.IsInfinity(heightConstraint) ? -1d : size.Height;
-            ScrollViewer.WidthRequest = double.IsInfinity(widthConstraint) ? -1d : widthConstraint;
+            ScrollViewer.WidthRequest = double.IsInfinity(widthConstraint) ? -1d : double.NaN;
 #endif
 
             OnPreMeasure();
@@ -536,7 +536,7 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         protected void RemoveAnimatedDrawables()
         {
-            while (animatedDrawables.Any())
+            while (animatedDrawables.Count != 0)
             {
                 var drw = animatedDrawables.Pop();
                 drw.Stop();

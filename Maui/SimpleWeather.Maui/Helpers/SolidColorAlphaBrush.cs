@@ -1,24 +1,29 @@
 ﻿namespace SimpleWeather.Maui.Helpers
 {
+    [ContentProperty(nameof(Color))]
     public class SolidColorAlphaBrush : SolidColorBrush
     {
-        public double Opacity
+        public float Opacity
         {
-            get { return (double)GetValue(OpacityProperty); }
+            get { return (float)GetValue(OpacityProperty); }
             set { SetValue(OpacityProperty, value); }
         }
 
         public static readonly BindableProperty OpacityProperty =
-            BindableProperty.Create(nameof(Opacity), typeof(double), typeof(SolidColorAlphaBrush), 1.0, propertyChanged: OnOpacityChanged);
+            BindableProperty.Create(nameof(Opacity), typeof(float), typeof(SolidColorAlphaBrush), 1.0f, propertyChanged: OnOpacityChanged);
 
         private static void OnOpacityChanged(BindableObject bindable, object oldValue, object newValue)
         {
             if (bindable is SolidColorAlphaBrush brush)
             {
-                brush.Color = brush.Color; // This will be corrected in the setter
+                brush.Color = brush.Color?.WithAlpha((float)newValue);
             }
         }
 
-        public override Color Color { get => base.Color; set => base.Color = value?.WithAlpha((float)Opacity); }
+        public override Color Color
+        {
+            get => (Color)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value?.WithAlpha(Opacity));
+        }
     }
 }

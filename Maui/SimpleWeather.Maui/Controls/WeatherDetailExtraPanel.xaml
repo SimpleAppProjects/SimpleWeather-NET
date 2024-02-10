@@ -10,8 +10,8 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
              BackgroundColor="{AppThemeBinding
-                Light={OnIdiom Desktop=Transparent, Default={StaticResource LightInverseSurface}},
-                Dark={OnIdiom Desktop=Transparent, Default={StaticResource DarkInverseSurface}}}"
+                Light={OnIdiom Desktop={StaticResource LightPopoverBackground}, Default={StaticResource LightInverseSurface}},
+                Dark={OnIdiom Desktop={StaticResource DarkPopoverBackground}, Default={StaticResource DarkInverseSurface}}}"
              x:Name="DetailPanel">
     <Grid BindingContext="{x:Bind ViewModel, Mode=OneWay}"
           RowDefinitions="Auto,Auto,Auto,*">
@@ -105,7 +105,7 @@
                             Light={OnIdiom Desktop=false, Default=true},
                             Dark={OnIdiom Desktop=true, Default=false}}"
                         IsLightTheme="{AppThemeBinding
-                            Light={OnIdiom Desktop=false, Default=false},
+                            Light={OnIdiom Desktop=true, Default=false},
                             Dark={OnIdiom Desktop=false, Default=true}}"
                         Margin="8,0"
                         VerticalOptions="Center"

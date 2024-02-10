@@ -6,20 +6,22 @@
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              x:DataType="sharedControls:HourlyForecastNowViewModel"
-             WidthRequest="{OnIdiom Default=150, Phone=100, Tablet=110}"
-             HeightRequest="{OnIdiom Default=240, Phone=160, Tablet=192}"
+             xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+             WidthRequest="{OnIdiom Default=150, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=75, GreaterThanEq=100}, Tablet=110}"
+             HeightRequest="{OnIdiom Default=250, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=200, GreaterThanEq=175}, Tablet=192}"
              BindingContextChanged="HourlyForecastItem_BindingContextChanged">
     <VerticalStackLayout VerticalOptions="Center">
         <Grid
             MinimumHeightRequest="20"
             Padding="5"
             HorizontalOptions="Center"
-            VerticalOptions="Start">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            VerticalOptions="Start"
+            ColumnDefinitions="Auto,*"
+            RowDefinitions="Auto,Auto">
             <controls:IconControl
+                Grid.Column="0"
+                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
+                Grid.Row="0"
                 WidthRequest="20"
                 HeightRequest="20"
                 IconWidth="20"
@@ -30,7 +32,9 @@
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
             <Label
-                Grid.Column="1"
+                Grid.Column="{mrkup:OnDeviceWidth MinWidth=828, Default=0, GreaterThanEq=1}"
+                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
+                Grid.Row="{mrkup:OnDeviceWidth MinWidth=828, Default=1, GreaterThanEq=0}"
                 Margin="5,0,0,0"
                 FontSize="{OnIdiom Default=14, Phone=12}"
                 TextColor="{DynamicResource SimpleBlueLight}"
@@ -54,6 +58,7 @@
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             Margin="5"
             HorizontalOptions="Center"
+            IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItem}}, Path=IconProvider}"
             WeatherIcon="{Binding Icon}" />
         <Label
             Padding="{OnIdiom Default='10,0', Phone='4'}"
@@ -75,12 +80,13 @@
         <Grid
             MinimumHeightRequest="20"
             Padding="5"
-            HorizontalOptions="Center">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+            HorizontalOptions="Center"
+            ColumnDefinitions="Auto,*"
+            RowDefinitions="Auto,Auto">
             <controls:IconControl
+                Grid.Column="0"
+                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
+                Grid.Row="0"
                 WidthRequest="20"
                 HeightRequest="20"
                 IconWidth="20"
@@ -92,9 +98,11 @@
                 IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}" />
             <Label
-                Grid.Column="1"
+                Grid.Column="{mrkup:OnDeviceWidth MinWidth=828, Default=0, GreaterThanEq=1}"
+                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
+                Grid.Row="{mrkup:OnDeviceWidth MinWidth=828, Default=1, GreaterThanEq=0}"
                 Margin="5,0,0,0"
-                FontSize="14"
+                FontSize="{OnIdiom Default=14, Phone=12}"
                 TextColor="LightSeaGreen"
                 MaxLines="1"
                 LineBreakMode="NoWrap"

@@ -40,6 +40,7 @@ public partial class WeatherNow
     private IconControl WeatherBox { get; set; }
     private Border RadarWebViewContainer { get; set; }
     private VisualElement GradientOverlay { get; set; }
+    private VisualElement HourlyForecastPanel { get; set; }
 
     private readonly HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
 
@@ -236,6 +237,8 @@ public partial class WeatherNow
                     HasShadow = false,
                     CornerRadius = 8,
                     IsClippedToBounds = true,
+                    BorderColor = Colors.Transparent,
+                    Background = Colors.Transparent,
                     Content = new Grid()
                     {
                         Children =
@@ -1030,16 +1033,28 @@ public partial class WeatherNow
                 .Bind(HourlyForecastItemPanel.ForecastDataProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                         BindingMode.OneWay, source: ForecastView
                 )
-                .OnIdiom(VisualElement.HeightRequestProperty, Default: 250d, Phone: 175d)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
                 {
+                    if (DeviceInfo.Idiom == DeviceIdiom.Phone)
+                    {
+                        it.OnDeviceWidth(VisualElement.HeightRequestProperty, 828d, Default: 200d, GreaterThanEq: 175d);
+                    }
+                    else
+                    {
+                        it.OnIdiom(VisualElement.HeightRequestProperty, Default: 250d, Phone: 175d);
+                    }
+
                     it.ItemClick += (s, e) =>
                     {
                         AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
                         GotoDetailsPage(true, e.ItemIndex);
                     };
+
+                    it.IconProvider = SettingsManager.IconProvider;
+
+                    HourlyForecastPanel = it;
                 })
             }
         }

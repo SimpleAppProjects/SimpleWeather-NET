@@ -55,5 +55,21 @@
 
             return bindableObject;
         }
+
+        public static T OnDeviceWidth<T>(this T bindableObject, BindableProperty property, double MinWidth,
+            object Default, object GreaterThanEq = null
+        ) where T : BindableObject
+        {
+            if (DeviceDisplay.Current.MainDisplayInfo.Width >= MinWidth)
+            {
+                bindableObject.SetValue(property, GreaterThanEq ?? Default);
+            }
+            else
+            {
+                bindableObject.SetValue(property, Default);
+            }
+
+            return bindableObject;
+        }
     }
 }

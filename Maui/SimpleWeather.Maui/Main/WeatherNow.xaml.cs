@@ -518,6 +518,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         if (ClearGraphIconCache)
         {
             WeatherBox?.UpdateWeatherIcon();
+            HourlyForecastPanel?.SetValue(HourlyForecastItemPanel.IconProviderProperty, SettingsManager.IconProvider);
+
             ClearGraphIconCache = false;
         }
 

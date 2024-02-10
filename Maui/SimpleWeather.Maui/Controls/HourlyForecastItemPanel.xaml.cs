@@ -6,6 +6,7 @@ using SimpleWeather.NET.Controls;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Utils;
 using SimpleWeather.Helpers;
+using SimpleWeather.Icons;
 #if IOS || MACCATALYST
 using Foundation;
 using UIKit;
@@ -23,6 +24,15 @@ public partial class HourlyForecastItemPanel : ContentView
 
 	public static readonly BindableProperty ForecastDataProperty =
 		BindableProperty.Create(nameof(ForecastData), typeof(ICollection<HourlyForecastNowViewModel>), typeof(HourlyForecastItemPanel), null);
+
+    public string IconProvider
+    {
+        get => (string)GetValue(IconProviderProperty);
+        set => SetValue(IconProviderProperty, value);
+    }
+
+    public static readonly BindableProperty IconProviderProperty =
+        BindableProperty.Create(nameof(IconProvider), typeof(string), typeof(HourlyForecastItemPanel), null);
 
     // Hooks
 #if IOS || MACCATALYST

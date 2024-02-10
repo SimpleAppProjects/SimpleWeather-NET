@@ -5,16 +5,18 @@
              xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
              xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:helpers="clr-namespace:SimpleWeather.Maui.Helpers"
+             xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
              x:DataType="commonControls:DetailItemViewModel"
              HeightRequest="{OnIdiom Default=150, Desktop=175, Phone=110}"
              WidthRequest="{OnIdiom Default=150, Desktop=175, Phone=110}">
     <Border x:Name="ItemBorder"
-            Margin="{OnIdiom Phone=4, Default=16}"
-            BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
+            Margin="{OnIdiom Phone=4, Default=8}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
             StrokeThickness="1"
-            Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}">
+            Stroke="{mrkup:SolidColorBrush Alpha=0.1, Color={AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}}">
         <Border.StrokeShape>
-            <RoundRectangle CornerRadius="2" />
+            <RoundRectangle CornerRadius="8" />
         </Border.StrokeShape>
         <Grid>
             <Grid.RowDefinitions>
@@ -24,7 +26,8 @@
             </Grid.RowDefinitions>
             <Label x:Name="DetailLabel"
                    Grid.Row="0"
-                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=15}"
+                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=16}"
+                   FontAttributes="Bold"
                    Padding="{OnIdiom Phone=0, Default=8}"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"

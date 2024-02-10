@@ -131,7 +131,11 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             // Reset the grid width
             backgroundGridWidth = longestTextWidth;
+#if __MACCATALYST__
+            var defaultPadding = 32f; // 32dp
+#else
             var defaultPadding = 8f; // 8dp
+#endif
 
             if (GetGraphExtentWidth() < ScrollViewer.Width)
             {

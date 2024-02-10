@@ -23,9 +23,9 @@
         <converters:LocationTypeConverter x:Key="locTypeConverter" />
     </ContentPage.Resources>
 
-    <Grid>
+    <Grid x:Name="RootView">
         <ScrollView Orientation="Vertical" VerticalOptions="Start">
-            <Grid RowDefinitions="Auto,Auto,*">
+            <Grid x:Name="MainGrid" RowDefinitions="Auto,Auto,*">
                 <VerticalStackLayout
                     x:Name="GPSPanelLayout"
                     Grid.Row="0"
@@ -66,16 +66,15 @@
                 <CollectionView
                     x:Name="LocationsPanel"
                     Grid.Row="2"
-                    Margin="16,8,16,0"
+                    Margin="0,4,0,8"
                     CanReorderItems="False"
                     IsGrouped="False"
                     IsVisible="False"
-                    SelectionMode="None"
-                    SizeChanged="LocationsPanel_SizeChanged">
+                    SelectionMode="None">
                     <CollectionView.GroupHeaderTemplate>
                         <DataTemplate x:DataType="local:LocationPanelGroup">
                             <Label
-                                Padding="8,0"
+                                Padding="0,8"
                                 FontFamily="OpenSansSemibold"
                                 FontSize="16"
                                 Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}"
@@ -85,7 +84,6 @@
                     </CollectionView.GroupHeaderTemplate>
                     <CollectionView.ItemsLayout>
                         <GridItemsLayout
-                            x:Name="LocationsPanelLayout"
                             HorizontalItemSpacing="4"
                             Orientation="Vertical"
                             Span="1"
@@ -93,12 +91,11 @@
                     </CollectionView.ItemsLayout>
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border Stroke="Transparent" StrokeThickness="8">
+                            <Border Stroke="Transparent" Padding="19,0">
                                 <Border.GestureRecognizers>
                                     <TapGestureRecognizer Tapped="LocationsPanel_ItemTapped" />
                                 </Border.GestureRecognizers>
                                 <SwipeView
-                                    Margin="-4"
                                     ios:SwipeView.SwipeTransitionMode="Reveal"
                                     IsEnabled="True"
                                     RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay}">
@@ -172,12 +169,13 @@
         <Button
             x:Name="AddLocationsButton"
             Margin="16,0,20,20"
+            MaximumWidthRequest="1280"
             BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary},
                                               Dark={StaticResource DarkPrimary}}"
             Clicked="AddLocationButton_Clicked"
             ContentLayout="Left, 7.5"
-            CornerRadius="20"
-            HorizontalOptions="End"
+            CornerRadius="{OnIdiom Phone=20, Default=8}"
+            HorizontalOptions="{OnIdiom Phone=End, Default=Fill}"
             IsVisible="False"
             Text="{x:Static res_strings:Resources.label_btn_add_location}"
             VerticalOptions="End">

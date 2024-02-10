@@ -37,6 +37,8 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
     private readonly ToolbarItem EditButton;
     private bool IsItemClickEnabled { get; set; } = true;
 
+    private readonly HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
+
     public LocationsPage()
 	{
 		InitializeComponent();
@@ -66,6 +68,13 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         ContentIndicator.IsRunning = LocationsViewModel?.UiState?.IsLoading ?? true;
         AddLocationsButton.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true);
         NoLocationsView.IsVisible = !(LocationsViewModel?.UiState?.IsLoading ?? true) && (LocationsViewModel?.Locations?.Any() == false);
+
+        MainGrid.Bind<Grid, double, Thickness>(Grid.MarginProperty, nameof(AddLocationsButton.Height), BindingMode.OneWay,
+            source: AddLocationsButton, convert: (height) => new Thickness(0, 0, 0, height));
+
+        MainGrid.Children.Cast<VisualElement>().ForEach(v => ResizeElements.Add(v));
+
+        AdjustViewsLayout(0);
 
         AnalyticsLogger.LogEvent("LocationsPage");
     }
@@ -447,36 +456,73 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         }
     }
 
-    private void LocationsPanel_SizeChanged(object sender, EventArgs e)
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        Dispatcher.Dispatch(() =>
+        {
+            AdjustViewsLayout(width);
+        });
+    }
+
+    private void AdjustViewsLayout(double? width = null)
     {
         // Resize StackControl items
-        double StackWidth = LocationsPanel.Width;
+        double maxWidth = 1280;
+        double requestedWidth = width ?? RootView.Width;
+        double requestedPadding = 0;
 
-        if (StackWidth <= 0)
+        if (requestedWidth <= 0)
             return;
+
+        if (requestedWidth > maxWidth)
+        {
+            requestedPadding = (requestedWidth - maxWidth) / 2;
+        }
 
         try
         {
-            if (StackWidth >= 1280)
+            foreach (var element in ResizeElements)
             {
-                LocationsPanel.WidthRequest = 1280;
+                if (element is View v)
+                {
+                    v.Margins(
+                        left: requestedPadding, right: requestedPadding,
+                        top: v.Margin.Top, bottom: v.Margin.Bottom);
+                }
             }
 
             if (DeviceInfo.Idiom == DeviceIdiom.Phone)
             {
-                LocationsPanelLayout.Span = 1;
+                if (LocationsPanel.ItemsLayout is not GridItemsLayout layout || layout.Span != 1)
+                {
+                    LocationsPanel.ItemsLayout = new GridItemsLayout(1, ItemsLayoutOrientation.Vertical)
+                    {
+                        HorizontalItemSpacing = 4,
+                        VerticalItemSpacing = 4
+                    };
+                }
             }
             else
             {
-                var isLandscape = DeviceDisplay.Current.MainDisplayInfo.Orientation == DisplayOrientation.Landscape;
-                var minColumns = isLandscape ? 2 : 1;
+                var StackWidth = requestedWidth - LocationsPanel.Margin.HorizontalThickness;
+
+                var minColumns = 1;
 
                 // Min width for ea. card
                 var minWidth = 480;
                 // Available columns based on min card width
                 var availColumns = (int)(StackWidth / minWidth) <= 1 ? minColumns : (int)(StackWidth / minWidth);
 
-                LocationsPanelLayout.Span = availColumns;
+                if (LocationsPanel.ItemsLayout is not GridItemsLayout layout || layout.Span != availColumns)
+                {
+                    LocationsPanel.ItemsLayout = new GridItemsLayout(availColumns, ItemsLayoutOrientation.Vertical)
+                    {
+                        HorizontalItemSpacing = 4,
+                        VerticalItemSpacing = 4
+                    };
+                }
             }
         }
         catch { }

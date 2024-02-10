@@ -137,6 +137,10 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         }
 
         UpdateAppBar();
+
+        // NOTE: Added due to LocationsPage issue
+        // FAB ends up below BottomNavBar
+        (NavHostContainer as IView)?.InvalidateMeasure();
     }
 
     private async void ShellTabBar_ItemSelected(object sender, SimpleToolkit.SimpleShell.Controls.TabItemSelectedEventArgs e)

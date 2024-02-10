@@ -144,7 +144,7 @@
                                           Default=0}" />
 
             <Grid IsClippedToBounds="True" Grid.Row="1">
-                <simpleShell:SimpleNavigationHost />
+                <simpleShell:SimpleNavigationHost x:Name="NavHostContainer" />
             </Grid>
 
             <simpleControls:TabBar

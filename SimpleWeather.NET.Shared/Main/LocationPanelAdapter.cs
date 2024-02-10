@@ -341,6 +341,10 @@ namespace SimpleWeather.Maui.Main
                 {
                     var collection = GetDataset((LocationType)panel.LocationType);
 
+#if !WINDOWS
+                    collection ??= CreateLocationPanelGroup((LocationType)panel.LocationType);
+#endif
+
                     if (!collection.Contains(panel))
                     {
                         if (dataPosition >= collection.Count)
