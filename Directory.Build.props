@@ -31,6 +31,11 @@
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
   </PropertyGroup>
 
+  <!-- Maui -->
+  <PropertyGroup>
+      <MauiVersion>8.0.6</MauiVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
   </PropertyGroup>
