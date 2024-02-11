@@ -568,7 +568,7 @@
     </Style>
 
     <Style x:Key="PrefTitleStyle" TargetType="Label">
-        <Setter Property="FontSize" Value="Subtitle" />
+        <Setter Property="FontSize" Value="Header" />
         <Setter Property="FontAttributes" Value="Bold" />
     </Style>
 

@@ -7,8 +7,16 @@
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.pref_title_units}"
     main:AppShell.AppBarIsVisible="True"
-    BackgroundColor="{AppThemeBinding Light={DynamicResource WhiteBrush},
-                                      Dark={StaticResource BlackBrush}}">
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
+                                      Dark={StaticResource DarkBackground}}">
+
+    <ContentPage.Resources>
+        <Style x:Key="SettingsDividerStyle" TargetType="Rectangle">
+            <Setter Property="HeightRequest" Value="2" />
+            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" />
+            <Setter Property="Opacity" Value="0.1" />
+        </Style>
+    </ContentPage.Resources>
 
     <Grid>
         <ScrollView
@@ -42,22 +50,28 @@
                     Text="{x:Static res_strings:Resources.label_pressure}" />
                 <HorizontalStackLayout x:Name="PressureUnits" />
                 <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <Label
-                    x:Name="ResetTitle"
-                    FontSize="Header"
-                    Text="{x:Static res_strings:Resources.pref_title_resetunits}" />
-                <HorizontalStackLayout Padding="0,5">
-                    <Button
-                        x:Name="ResetImperialUnits"
-                        Margin="0,5,5,5"
-                        Clicked="ResetImperialUnits_Clicked"
-                        Text="°F, mph, in, inHg, mi" />
-                    <Button
-                        x:Name="ResetMetricUnits"
-                        Margin="5"
-                        Clicked="ResetMetricUnits_Clicked"
-                        Text="°C, km/h, mm, mb, km" />
-                </HorizontalStackLayout>
+                <VerticalStackLayout Margin="0,8,0,0">
+                    <Label
+                        x:Name="ResetTitle"
+                        FontSize="Header"
+                        Text="{x:Static res_strings:Resources.pref_title_resetunits}" />
+                    <HorizontalStackLayout Padding="0,5">
+                        <Button
+                            x:Name="ResetImperialUnits"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+                            Margin="0,5,5,5"
+                            Clicked="ResetImperialUnits_Clicked"
+                            Text="°F, mph, in, inHg, mi" />
+                        <Button
+                            x:Name="ResetMetricUnits"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
+                            TextColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+                            Margin="5"
+                            Clicked="ResetMetricUnits_Clicked"
+                            Text="°C, km/h, mm, mb, km" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

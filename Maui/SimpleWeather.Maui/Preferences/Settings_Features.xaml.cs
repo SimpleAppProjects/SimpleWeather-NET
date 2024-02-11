@@ -1,3 +1,5 @@
+using SimpleWeather.Utils;
+
 namespace SimpleWeather.Maui.Preferences;
 
 public partial class Settings_Features : ContentPage
@@ -5,15 +7,23 @@ public partial class Settings_Features : ContentPage
 	public Settings_Features()
 	{
 		InitializeComponent();
-	}
 
-    private void FeatureSetting_Tapped(object sender, TappedEventArgs e)
-    {
-		var view = sender as VisualElement;
-		var checkboxElement = view.GetVisualTreeDescendants()?.FirstOrDefault(e => e.GetType() == typeof(CheckBox));
-		if (checkboxElement is CheckBox checkbox)
-		{
-			checkbox.IsChecked = !checkbox.IsChecked;
-		}
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+
+        SettingsTable.UpdateCellColors(
+            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            LightPrimary as Color, DarkPrimary as Color);
+
+        SettingsTable.Root
+            .SelectMany(s => s)
+            .Where(c => c is CheckBoxCell)
+            .ForEach(c =>
+            {
+                if (c is CheckBoxCell chk)
+                {
+                    chk.IsCompact = true;
+                }
+            });
     }
 }

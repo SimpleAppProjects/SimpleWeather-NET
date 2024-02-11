@@ -8,29 +8,29 @@ using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Preferences
 {
-	public class SwitchCell : ViewCell
-	{
-        public bool On
+    public class CheckBoxCell : ViewCell
+    {
+        public bool IsChecked
         {
-            get { return (bool)GetValue(OnProperty); }
-            set { SetValue(OnProperty, value); }
+            get { return (bool)GetValue(IsCheckedProperty); }
+            set { SetValue(IsCheckedProperty, value); }
         }
 
-        public static readonly BindableProperty OnProperty =
-            BindableProperty.Create(nameof(On), typeof(bool), typeof(SwitchCell), false, propertyChanged: (obj, oldValue, newValue) =>
-        {
-            var switchCell = (SwitchCell)obj;
-            switchCell.OnChanged?.Invoke(obj, new ToggledEventArgs((bool)newValue));
-        }, defaultBindingMode: BindingMode.TwoWay);
+        public static readonly BindableProperty IsCheckedProperty =
+            BindableProperty.Create(nameof(IsChecked), typeof(bool), typeof(CheckBoxCell), false, propertyChanged: (obj, oldValue, newValue) =>
+            {
+                var checkboxCell = (CheckBoxCell)obj;
+                checkboxCell.OnChanged?.Invoke(obj, new ToggledEventArgs((bool)newValue));
+            }, defaultBindingMode: BindingMode.TwoWay);
 
-        public Color OnColor
+        public Color Color
         {
-            get { return (Color)GetValue(OnColorProperty); }
-            set { SetValue(OnColorProperty, value); }
+            get { return (Color)GetValue(ColorProperty); }
+            set { SetValue(ColorProperty, value); }
         }
 
-        public static readonly BindableProperty OnColorProperty =
-            BindableProperty.Create(nameof(OnColor), typeof(Color), typeof(SwitchCell), null);
+        public static readonly BindableProperty ColorProperty =
+            BindableProperty.Create(nameof(Color), typeof(Color), typeof(CheckBoxCell), null);
 
         public string Text
         {
@@ -39,7 +39,7 @@ namespace SimpleWeather.Maui.Preferences
         }
 
         public static readonly BindableProperty TextProperty =
-            BindableProperty.Create(nameof(Text), typeof(string), typeof(SwitchCell), default(string));
+            BindableProperty.Create(nameof(Text), typeof(string), typeof(CheckBoxCell), default(string));
 
         public Color TextColor
         {
@@ -48,7 +48,7 @@ namespace SimpleWeather.Maui.Preferences
         }
 
         public static readonly BindableProperty TextColorProperty =
-            BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(SwitchCell), null);
+            BindableProperty.Create(nameof(TextColor), typeof(Color), typeof(CheckBoxCell), null);
 
         public string Detail
         {
@@ -57,7 +57,7 @@ namespace SimpleWeather.Maui.Preferences
         }
 
         public static readonly BindableProperty DetailProperty =
-            BindableProperty.Create(nameof(Detail), typeof(string), typeof(SwitchCell), default(string));
+            BindableProperty.Create(nameof(Detail), typeof(string), typeof(CheckBoxCell), default(string));
 
         public Color DetailColor
         {
@@ -66,12 +66,21 @@ namespace SimpleWeather.Maui.Preferences
         }
 
         public static readonly BindableProperty DetailColorProperty =
-            BindableProperty.Create(nameof(DetailColor), typeof(Color), typeof(SwitchCell), null);
+            BindableProperty.Create(nameof(DetailColor), typeof(Color), typeof(CheckBoxCell), null);
+
+        public bool IsCompact
+        {
+            get => (bool)GetValue(IsCompactProperty);
+            set => SetValue(IsCompactProperty, value);
+        }
+
+        public static readonly BindableProperty IsCompactProperty =
+            BindableProperty.Create(nameof(IsCompact), typeof(bool), typeof(CheckBoxCell), false);
 
         public event EventHandler<ToggledEventArgs> OnChanged;
 
-        public SwitchCell()
-		{
+        public CheckBoxCell()
+        {
             this.View = new Grid()
             {
                 RowDefinitions =
@@ -134,21 +143,26 @@ namespace SimpleWeather.Maui.Preferences
                     .CenterVertical()
                     .Column(0)
                     .Row(1),
-                    new Switch()
-                        .Bind(Switch.OnColorProperty, nameof(OnColor), BindingMode.OneWay, source: this)
-                        .Bind(Switch.IsToggledProperty, nameof(On), BindingMode.TwoWay, source: this)
-                        .Bind(Switch.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                    new CheckBox()
+                        .Bind(CheckBox.ColorProperty, nameof(Color), BindingMode.OneWay, source: this)
+                        .Bind(CheckBox.IsCheckedProperty, nameof(IsChecked), BindingMode.TwoWay, source: this)
+                        .Bind(CheckBox.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)
                         .RowSpan(2)
                 }
-            };
-		}
+            }.Bind<Grid, bool, Thickness>(Grid.PaddingProperty, nameof(IsCompact), BindingMode.OneWay, source: this,
+                convert: (isCompact) =>
+                {
+                    return new Thickness(16, isCompact ? 0 : 8);
+                }
+            );
+        }
 
         protected override void OnTapped()
         {
             base.OnTapped();
-            this.On = !this.On;
+            this.IsChecked = !this.IsChecked;
         }
 
         private class DetailValueVisibleConverter : IValueConverter
@@ -165,4 +179,3 @@ namespace SimpleWeather.Maui.Preferences
         }
     }
 }
-

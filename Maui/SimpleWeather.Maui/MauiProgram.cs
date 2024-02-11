@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Markup;
 using epj.ProgressBar.Maui;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Compatibility.Hosting;
+using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Embedding;
 using Microsoft.Maui.Handlers;
@@ -52,6 +53,7 @@ public static class MauiProgram
                 handlers.AddHandler<SelectableItemsView, SelectableItemsViewHandler<SelectableItemsView>>();
 #if __IOS__
                 handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
+                handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);

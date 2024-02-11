@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences;assembly=SimpleWeather.Maui"
     xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils"
     Title="{x:Static res_strings:Resources.pref_title_features}"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
@@ -15,118 +16,67 @@
     </Shell.BackButtonBehavior>
 
     <ContentPage.Resources>
-        <Style x:Key="FeaturePrefLabel" TargetType="Label">
-            <Setter Property="VerticalTextAlignment" Value="Center" />
-            <Setter Property="FontSize" Value="Default" />
+        <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
+            <Setter Property="HasUnevenRows" Value="True" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+        <Style TargetType="prefs:CheckBoxCell">
+            <Setter Property="IsCompact" Value="True" />
         </Style>
     </ContentPage.Resources>
 
     <Grid>
-        <ScrollView Orientation="Vertical" Padding="16,0" HorizontalScrollBarVisibility="Never">
-            <VerticalStackLayout>
-                <Label
-                    Padding="0,10"
-                    Style="{DynamicResource PrefTitleStyle}"
-                    Text="{x:Static res_strings:Resources.pref_summary_features}" />
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_bgimage}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_forecast}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_hrforecast}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_charts}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_summary}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_details}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_uv}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_beaufort}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_aqindex}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.label_pollen_count}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_moonphase}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_sunphase}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_radar}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-                <HorizontalStackLayout>
-                    <HorizontalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="FeatureSetting_Tapped" />
-                    </HorizontalStackLayout.GestureRecognizers>
-                    <CheckBox IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
-                    <Label Text="{x:Static res_strings:Resources.pref_title_feature_locpanelimg}" Style="{DynamicResource FeaturePrefLabel}" />
-                </HorizontalStackLayout>
-            </VerticalStackLayout>
-        </ScrollView>
+        <TableView
+            x:Name="SettingsTable"
+            Intent="Settings"
+            Style="{DynamicResource SettingsTableViewStyle}">
+            <TableRoot>
+                <TableSection Title="{x:Static res_strings:Resources.pref_summary_features}">
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_bgimage}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_forecast}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_hrforecast}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_charts}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_summary}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_details}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_uv}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_beaufort}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_aqindex}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.label_pollen_count}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_moonphase}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_sunphase}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_radar}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
+                    <prefs:CheckBoxCell
+                        Text="{x:Static res_strings:Resources.pref_title_feature_locpanelimg}"
+                        IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
+                </TableSection>
+            </TableRoot>
+        </TableView>
     </Grid>
 </ContentPage>

@@ -34,8 +34,14 @@ namespace SimpleWeather.Maui.Preferences
                 {
                     entry.SetAppThemeColor(EntryCell.LabelColorProperty, lightTextColor, darkTextColor);
                 }
+                else if (element is CheckBoxCell chk)
+                {
+                    chk.SetAppThemeColor(CheckBoxCell.ColorProperty, lightPrimaryColor, darkPrimaryColor);
+                    chk.SetAppThemeColor(CheckBoxCell.TextColorProperty, lightTextColor, darkTextColor);
+                    chk.SetAppThemeColor(CheckBoxCell.DetailColorProperty, lightDetailColor, darkDetailColor);
+                }
             }
-		}
+        }
 	}
 }
 
