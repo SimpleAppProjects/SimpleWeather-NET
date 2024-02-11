@@ -137,8 +137,8 @@
                                                      Dark={StaticResource DarkSurface}}"
                 BarTextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                Dark={StaticResource DarkOnSurface}}"
-                BorderColor="{AppThemeBinding Light={StaticResource LightOutline},
-                                              Dark={StaticResource DarkOutline}}"
+                BorderColor="{AppThemeBinding Light={StaticResource LightAppBarBorder},
+                                              Dark={StaticResource DarkAppBarBorder}}"
                 BorderHeight="{OnPlatform iOS=1,
                                           MacCatalyst=1,
                                           Default=0}" />

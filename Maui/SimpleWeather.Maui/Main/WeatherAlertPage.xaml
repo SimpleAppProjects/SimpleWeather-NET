@@ -22,7 +22,7 @@
                 <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
                        Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </localControls:ViewBox>
-            <Rectangle HeightRequest="1" StrokeThickness="1" Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}" />
+            <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
         </VerticalStackLayout>
 
         <ScrollView Grid.Row="1" Orientation="Vertical" Padding="8"

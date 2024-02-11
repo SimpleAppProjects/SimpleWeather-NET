@@ -99,6 +99,8 @@
     <!-- iOS Colors Start -->
     <Color x:Key="LightPopoverBackground">#EAEAEA</Color>
     <Color x:Key="DarkPopoverBackground">#272727</Color>
+    <Color x:Key="LightAppBarBorder">#E1E1E1</Color>
+    <Color x:Key="DarkAppBarBorder">#404040</Color>
     <!-- iOS Colors End -->
 
 </ResourceDictionary>
