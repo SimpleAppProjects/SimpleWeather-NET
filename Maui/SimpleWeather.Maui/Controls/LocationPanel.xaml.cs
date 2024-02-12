@@ -79,19 +79,15 @@ public partial class LocationPanel : ContentView
     {
         if (backgroundEnabled)
         {
-            if (GradientOverlay != null)
-            {
-                GradientOverlay.IsVisible = true;
-            }
+            BackgroundOverlay?.SetValue(VisualElement.IsVisibleProperty, true);
+            GradientOverlay?.SetValue(VisualElement.IsVisibleProperty, true);
             ConditionPanelTextColor = Colors.White;
             ForceIconDarkTheme = true;
         }
         else
         {
-            if (GradientOverlay != null)
-            {
-                GradientOverlay.IsVisible = false;
-            }
+            BackgroundOverlay?.SetValue(VisualElement.IsVisibleProperty, false);
+            GradientOverlay?.SetValue(VisualElement.IsVisibleProperty, false);
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             ForceIconDarkTheme = false;
         }
@@ -102,7 +98,7 @@ public partial class LocationPanel : ContentView
     {
         var bgImage = sender as Image;
         bgImage.PropertyChanged += BgImage_PropertyChanged;
-        UpdateControlTheme(bgImage.Source != null);
+        UpdateControlTheme(Utils.FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
     }
 
     private void BackgroundOverlay_Unloaded(object sender, EventArgs e)
@@ -116,7 +112,7 @@ public partial class LocationPanel : ContentView
         var bgImage = sender as Image;
         if (e.PropertyName == nameof(bgImage.Source))
         {
-            UpdateControlTheme(bgImage.Source != null);
+            UpdateControlTheme(Utils.FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
         }
     }
 

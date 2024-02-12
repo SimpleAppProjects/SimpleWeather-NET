@@ -503,7 +503,7 @@
 
     <Style ApplyToDerivedTypes="True" TargetType="Page">
         <Setter Property="Padding" Value="0" />
-        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}" />
     </Style>
 
     <Style ApplyToDerivedTypes="True" TargetType="Shell">
@@ -618,6 +618,7 @@
 
     <Style x:Key="AppBarBorderStyle" TargetType="Rectangle">
         <Setter Property="HeightRequest" Value="1" />
+        <Setter Property="Fill" Value="Transparent" />
         <Setter Property="StrokeThickness" Value="1" />
         <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightAppBarBorder}, Dark={StaticResource DarkAppBarBorder}}" />
     </Style>

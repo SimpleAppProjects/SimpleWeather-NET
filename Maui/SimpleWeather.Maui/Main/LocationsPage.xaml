@@ -108,7 +108,7 @@
                                                 <SwipeItem.IconImageSource>
                                                     <matIcons:MaterialIcon
                                                         Size="24"
-                                                        Symbol="Add"
+                                                        Symbol="Delete"
                                                         Color="White" />
                                                 </SwipeItem.IconImageSource>
                                             </SwipeItem>

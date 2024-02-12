@@ -14,221 +14,223 @@
              x:DataType="sharedControls:LocationPanelUiModel"
              x:Name="Control">
 
-    <Grid x:Name="MainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <Image
-            x:Name="BackgroundOverlay"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            Aspect="AspectFill"
-            Loaded="BackgroundOverlay_Loaded"
-            Unloaded="BackgroundOverlay_Unloaded"
-            IsVisible="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
-            Source="{Binding ImageData.ImageSource}"/>
-        <Grid
-            x:Name="GradientOverlay"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            IsVisible="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}">
-            <Grid.Background>
-                <!-- TEMP: Remove as gradient spills outside of view
-                https://github.com/dotnet/maui/issues/18664
-                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
-                    <LinearGradientBrush.GradientStops>
-                        <GradientStop Offset="0" Color="#83121212" />
-                        <GradientStop Offset="0.5" Color="#70121212" />
-                        <GradientStop Offset="1" Color="#83121212" />
-                    </LinearGradientBrush.GradientStops>
-                </LinearGradientBrush>
-                -->
-                <SolidColorBrush Color="#83121212" />
-            </Grid.Background>
-        </Grid>
-        <ActivityIndicator
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-            IsRunning="{Binding IsLoading}" />
-        <HorizontalStackLayout
-            Grid.Row="0"
-            Grid.ColumnSpan="3"
-            Margin="10,5,10,0"
-            VerticalOptions="Center">
+    <Border BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
+            StrokeThickness="1"
+            Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}">
+        <Grid x:Name="MainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Image
-                x:Name="GPSIcon"
-                WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                HeightRequest="20"
-                Aspect="AspectFit"
-                Margin="0,0,8,0"
-                VerticalOptions="Center"
-                IsVisible="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(LocationType), TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
-                <Image.Source>
-                    <matIcons:MaterialIcon Symbol="MyLocation" Size="24"
-                                           Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
-                </Image.Source>
-            </Image>
-            <Label
-                x:Name="LocationName"
-                FontSize="{OnIdiom Phone=14, Default=15}"
-                FontFamily="OpenSansSemibold"
-                MaxLines="1"
-                Text="{Binding LocationName}"
-                TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-                LineBreakMode="TailTruncation" />
-        </HorizontalStackLayout>
-        <VerticalStackLayout
-            Grid.Row="1"
-            Grid.Column="0"
-            Margin="5,0"
-            HorizontalOptions="Start"
-            VerticalOptions="Center"
-            IsVisible="{Binding IsWeatherValid}">
-            <Label
-                x:Name="CurrentTemp"
-                Padding="5,0"
-                FontSize="{OnIdiom Phone=32, Default=36}"
-                FontFamily="OpenSansSemibold"
-                VerticalOptions="Center"
-                Text="{Binding CurrTemp}"
-                TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
-            <Label
-                x:Name="CurWeather"
-                Padding="5,0"
-                FontSize="{OnIdiom Phone=14, Default=16}"
-                FontFamily="OpenSansSemibold"
-                MaxLines="1"
-                Text="{Binding CurrWeather}"
-                TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-                LineBreakMode="TailTruncation" />
-        </VerticalStackLayout>
-        <VerticalStackLayout
-            Grid.Row="1"
-            Grid.Column="1"
-            Margin="10,0"
-            HorizontalOptions="End"
-            VerticalOptions="Center">
-            <Grid HorizontalOptions="End" IsVisible="{x:Bind IsShowHiLo and IsWeatherValid, TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    x:Name="HiTemp"
-                    HorizontalOptions="End"
-                    FontSize="18"
-                    FontFamily="OpenSansSemibold"
-                    HorizontalTextAlignment="End"
-                    Text="{Binding HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-                    VerticalOptions="End" />
-                <local:IconControl
-                    Grid.Column="1"
-                    WidthRequest="20"
-                    ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                    IconProvider="wi-erik-flowers"
-                    IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
-                    ShowAsMonochrome="True"
-                    WeatherIcon="&#xf058;" />
+                x:Name="BackgroundOverlay"
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="3"
+                Aspect="AspectFill"
+                Loaded="BackgroundOverlay_Loaded"
+                Unloaded="BackgroundOverlay_Unloaded"
+                Source="{Binding ImageData.ImageSource}"/>
+            <Grid
+                x:Name="GradientOverlay"
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="3">
+                <Grid.Background>
+                    <!-- TEMP: Remove as gradient spills outside of view
+                    https://github.com/dotnet/maui/issues/18664
+                    <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0" Color="#83121212" />
+                            <GradientStop Offset="0.5" Color="#70121212" />
+                            <GradientStop Offset="1" Color="#83121212" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                    -->
+                    <SolidColorBrush Color="#83121212" />
+                </Grid.Background>
             </Grid>
-            <Grid HorizontalOptions="End" IsVisible="{x:Bind IsShowHiLo and IsWeatherValid, TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Label
-                    x:Name="LoTemp"
-                    HorizontalOptions="End"
-                    FontSize="18"
-                    FontFamily="OpenSansSemibold"
-                    HorizontalTextAlignment="End"
-                    Text="{Binding LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-                    VerticalOptions="End" />
-                <local:IconControl
-                    Grid.Column="1"
-                    WidthRequest="20"
-                    ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                    IconProvider="wi-erik-flowers"
-                    IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
-                    ShowAsMonochrome="True"
-                    WeatherIcon="&#xf044;" />
-            </Grid>
-        </VerticalStackLayout>
-        <VerticalStackLayout
-            Grid.Row="1"
-            Grid.Column="2"
-            Margin="10,0"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            IsVisible="{Binding IsWeatherValid}">
+            <ActivityIndicator
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="3"
+                Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                IsRunning="{Binding IsLoading}" />
             <HorizontalStackLayout
-                Grid.Column="1"
+                Grid.Row="0"
+                Grid.ColumnSpan="3"
+                Margin="10,5,10,0"
+                VerticalOptions="Center">
+                <Image
+                    x:Name="GPSIcon"
+                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                    HeightRequest="20"
+                    Aspect="AspectFit"
+                    Margin="0,0,8,0"
+                    VerticalOptions="Center"
+                    IsVisible="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(LocationType), TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
+                    <Image.Source>
+                        <matIcons:MaterialIcon Symbol="MyLocation" Size="24"
+                                               Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
+                    </Image.Source>
+                </Image>
+                <Label
+                    x:Name="LocationName"
+                    FontSize="{OnIdiom Phone=14, Default=15}"
+                    FontFamily="OpenSansSemibold"
+                    MaxLines="1"
+                    Text="{Binding LocationName}"
+                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                    LineBreakMode="TailTruncation" />
+            </HorizontalStackLayout>
+            <VerticalStackLayout
+                Grid.Row="1"
+                Grid.Column="0"
+                Margin="5,0"
                 HorizontalOptions="Start"
                 VerticalOptions="Center"
-                IsVisible="{Binding PoP, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
-                <local:IconControl
-                    ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="{Binding Source={x:Reference PoPCondition}, Path=Height}"
-                    IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                    IconProvider="wi-erik-flowers"
-                    IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
-                    ShowAsMonochrome="True"
-                    WeatherIcon="{Binding PoPIcon, Mode=OneWay}" />
+                IsVisible="{Binding IsWeatherValid}">
                 <Label
-                    x:Name="PoPCondition"
+                    x:Name="CurrentTemp"
                     Padding="5,0"
-                    VerticalOptions="Center"
-                    FontSize="16"
+                    FontSize="{OnIdiom Phone=32, Default=36}"
                     FontFamily="OpenSansSemibold"
-                    Text="{Binding PoP, TargetNullValue='&#x2022;'}"
+                    VerticalOptions="Center"
+                    Text="{Binding CurrTemp}"
                     TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
-            </HorizontalStackLayout>
-            <HorizontalStackLayout
+                <Label
+                    x:Name="CurWeather"
+                    Padding="5,0"
+                    FontSize="{OnIdiom Phone=14, Default=16}"
+                    FontFamily="OpenSansSemibold"
+                    MaxLines="1"
+                    Text="{Binding CurrWeather}"
+                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                    LineBreakMode="TailTruncation" />
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Row="1"
                 Grid.Column="1"
-                HorizontalOptions="Start"
+                Margin="10,0"
+                HorizontalOptions="End"
+                VerticalOptions="Center">
+                <Grid HorizontalOptions="End" IsVisible="{x:Bind IsShowHiLo and IsWeatherValid, TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        x:Name="HiTemp"
+                        HorizontalOptions="End"
+                        FontSize="18"
+                        FontFamily="OpenSansSemibold"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                        VerticalOptions="End" />
+                    <local:IconControl
+                        Grid.Column="1"
+                        WidthRequest="20"
+                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        IconProvider="wi-erik-flowers"
+                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        ShowAsMonochrome="True"
+                        WeatherIcon="&#xf058;" />
+                </Grid>
+                <Grid HorizontalOptions="End" IsVisible="{x:Bind IsShowHiLo and IsWeatherValid, TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Label
+                        x:Name="LoTemp"
+                        HorizontalOptions="End"
+                        FontSize="18"
+                        FontFamily="OpenSansSemibold"
+                        HorizontalTextAlignment="End"
+                        Text="{Binding LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                        VerticalOptions="End" />
+                    <local:IconControl
+                        Grid.Column="1"
+                        WidthRequest="20"
+                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        IconProvider="wi-erik-flowers"
+                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        ShowAsMonochrome="True"
+                        WeatherIcon="&#xf044;" />
+                </Grid>
+            </VerticalStackLayout>
+            <VerticalStackLayout
+                Grid.Row="1"
+                Grid.Column="2"
+                Margin="10,0"
+                HorizontalOptions="Center"
                 VerticalOptions="Center"
-                IsVisible="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
-                <local:IconControl
-                    ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="{Binding Source={x:Reference WindCondition}, Path=Height}"
-                    IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                    IconProvider="wi-erik-flowers"
-                    IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
-                    ShowAsMonochrome="True"
-                    Rotation="{Binding WindDirection}"
-                    WeatherIcon="{Binding WindIcon, Mode=OneWay}" />
-                <Label
-                    x:Name="WindCondition"
-                    Padding="5,0"
+                IsVisible="{Binding IsWeatherValid}">
+                <HorizontalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Start"
                     VerticalOptions="Center"
-                    FontSize="16"
-                    FontFamily="OpenSansSemibold"
-                    Text="{Binding WindSpeed, TargetNullValue='&#x2022;'}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-        <Label
-            Grid.Row="0"
-            Grid.RowSpan="2"
-            Grid.ColumnSpan="3"
-            HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontSize="Title"
-            Text="{x:Static res_strings:Resources.label_nodata}"
-            TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
-            IsVisible="{x:Bind (not IsWeatherValid) and (not IsLoading)}"/>
-    </Grid>
+                    IsVisible="{Binding PoP, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
+                    <local:IconControl
+                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                        HeightRequest="{Binding Source={x:Reference PoPCondition}, Path=Height}"
+                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconProvider="wi-erik-flowers"
+                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        ShowAsMonochrome="True"
+                        WeatherIcon="{Binding PoPIcon, Mode=OneWay}" />
+                    <Label
+                        x:Name="PoPCondition"
+                        Padding="5,0"
+                        VerticalOptions="Center"
+                        FontSize="16"
+                        FontFamily="OpenSansSemibold"
+                        Text="{Binding PoP, TargetNullValue='&#x2022;'}"
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout
+                    Grid.Column="1"
+                    HorizontalOptions="Start"
+                    VerticalOptions="Center"
+                    IsVisible="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
+                    <local:IconControl
+                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                        HeightRequest="{Binding Source={x:Reference WindCondition}, Path=Height}"
+                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconProvider="wi-erik-flowers"
+                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        ShowAsMonochrome="True"
+                        Rotation="{Binding WindDirection}"
+                        WeatherIcon="{Binding WindIcon, Mode=OneWay}" />
+                    <Label
+                        x:Name="WindCondition"
+                        Padding="5,0"
+                        VerticalOptions="Center"
+                        FontSize="16"
+                        FontFamily="OpenSansSemibold"
+                        Text="{Binding WindSpeed, TargetNullValue='&#x2022;'}"
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+            <Label
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.ColumnSpan="3"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                FontSize="Title"
+                Text="{x:Static res_strings:Resources.label_nodata}"
+                TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}"
+                IsVisible="{x:Bind (not IsWeatherValid) and (not IsLoading)}"/>
+        </Grid>
+    </Border>
 </ContentView>
 

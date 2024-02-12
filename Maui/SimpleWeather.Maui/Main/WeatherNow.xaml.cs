@@ -356,6 +356,30 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 new RowDefinition(GridLength.Auto),
                 // Credits
                 new RowDefinition(GridLength.Auto),
+            },
+            Children =
+            {
+                // Forecast Panel
+                CreateForecastPanel()
+                    .Row(0),
+                // HourlyForecast Panel
+                CreateHourlyForecastPanel()
+                    .Row(1),
+                // Charts
+                CreateChartsPanel()
+                    .Row(2),
+                // Details
+                CreateDetailsPanel()
+                    .Row(3),
+                // Sun Phase
+                CreateSunPhasePanel()
+                    .Row(4),
+                // Radar
+                CreateRadarPanel()
+                    .Row(5),
+                // Weather Credit
+                CreateWeatherCredit()
+                    .Row(6)
             }
         }.Apply(it =>
         {
@@ -385,65 +409,6 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             }
         });
         ListLayout.Add(GridContainer, row: 1);
-
-        // Forecast Panel
-        if (Utils.FeatureSettings.Forecast)
-        {
-            GridLayout.Add(
-                CreateForecastPanel()
-                .Row(0)
-            );
-        }
-
-        // HourlyForecast Panel
-        if (Utils.FeatureSettings.HourlyForecast)
-        {
-            GridLayout.Add(
-                CreateHourlyForecastPanel()
-                .Row(1)
-            );
-        }
-
-        // Charts
-        if (Utils.FeatureSettings.Charts)
-        {
-            GridLayout.Add(
-                CreateChartsPanel()
-                .Row(2)
-            );
-        }
-
-        // Details
-        if (Utils.FeatureSettings.DetailsEnabled)
-        {
-            GridLayout.Add(
-                CreateDetailsPanel()
-                .Row(3)
-            );
-        }
-
-        // Sun Phase
-        if (Utils.FeatureSettings.SunPhase)
-        {
-            GridLayout.Add(
-                CreateSunPhasePanel()
-                .Row(4)
-            );
-        }
-
-        if (Utils.FeatureSettings.WeatherRadar)
-        {
-            GridLayout.Add(
-                CreateRadarPanel()
-                .Row(5)
-            );
-        }
-
-        // Weather Credit
-        GridLayout.Add(
-            CreateWeatherCredit()
-            .Row(6)
-        );
 
         AdjustViewsLayout(0);
     }

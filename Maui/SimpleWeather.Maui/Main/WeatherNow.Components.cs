@@ -25,8 +25,10 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using System;
+using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Timers;
 using UIKit;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
@@ -233,7 +235,6 @@ public partial class WeatherNow
                     HorizontalOptions = LayoutOptions.FillAndExpand,
                     VerticalOptions = LayoutOptions.Center,
                     Padding = 0,
-                    IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null,
                     HasShadow = false,
                     CornerRadius = 8,
                     IsClippedToBounds = true,
@@ -245,8 +246,7 @@ public partial class WeatherNow
                         {
                             new Image()
                             {
-                                Aspect = Aspect.AspectFill,
-                                IsVisible = Utils.FeatureSettings.BackgroundImage
+                                Aspect = Aspect.AspectFill
                             }
                             .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
                                 BindingMode.OneWay, source: WNowViewModel
@@ -283,6 +283,11 @@ public partial class WeatherNow
                 }
                 .Apply(it =>
                 {
+                    it.Loaded += (s, e) =>
+                    {
+                        it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                    };
+
                     WNowViewModel.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == nameof(WNowViewModel.ImageData))
@@ -490,6 +495,11 @@ public partial class WeatherNow
                         .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White)
                         .Apply(it =>
                         {
+                            it.Loaded += (s, e) =>
+                            {
+                                it.IsVisible = Utils.FeatureSettings.WeatherSummary;
+                            };
+
                             it.TapGesture(async () =>
                             {
                                 if (it.IsTextTruncated())
@@ -603,10 +613,8 @@ public partial class WeatherNow
                 CreateAlertButton(),
                 // Spacer
                 new Rectangle()
-                {
-                    Margin = new Thickness(8),
-                    IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null
-                }.Apply(it =>
+                .Margin(new Thickness(8))
+                .Apply(it =>
                 {
                     Spacer = it;
 
@@ -616,6 +624,11 @@ public partial class WeatherNow
                         {
                             it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                         }
+                    };
+
+                    it.Loaded += (s, e) =>
+                    {
+                        it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                     };
                 }),
                 // Condition Panel
@@ -771,48 +784,53 @@ public partial class WeatherNow
                         .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherSummary)}",
                             BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
-                    }
-                }.Apply(it =>
-                {
-                    // Attribution
-                    if (Utils.FeatureSettings.BackgroundImage)
-                    {
-                        it.Add(
-                            new Button()
-                                .Row(3)
-                                .ColumnSpan(4)
-                                .End()
-                                .Margin(16,0)
-                                .Padding(5)
-                                .BackgroundColor(Colors.Transparent)
-                                .Font(size: 11)
-                                .Bind(Button.IsVisibleProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.OriginalLink)}",
-                                    BindingMode.OneWay, source: WNowViewModel, converter: objectBooleanConverter as IValueConverter
-                                )
-                                .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
-                                .Apply(it =>
+                        .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                        .Apply(it =>
+                        {
+                            it.Loaded += (s, e) =>
+                            {
+                                it.IsVisible = Utils.FeatureSettings.WeatherSummary;
+                            };
+                        }),
+                        // Attribution
+                        new Button()
+                            .Row(3)
+                            .ColumnSpan(4)
+                            .End()
+                            .Margin(16,0)
+                            .Padding(5)
+                            .BackgroundColor(Colors.Transparent)
+                            .Font(size: 11)
+                            .Bind(Button.IsVisibleProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.OriginalLink)}",
+                                BindingMode.OneWay, source: WNowViewModel, converter: objectBooleanConverter as IValueConverter
+                            )
+                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
                                 {
-                                    it.Clicked += (s, e) =>
-                                    {
-                                        WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
-                                        {
-                                            await Browser.Default.OpenAsync(uri);
-                                        });
-                                    };
+                                     it.IsVisible = Utils.FeatureSettings.BackgroundImage;
+                                };
 
-                                    it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
-                                    WNowViewModel.PropertyChanged += (s, e) =>
+                                it.Clicked += (s, e) =>
+                                {
+                                    WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
                                     {
-                                        if (e.PropertyName == nameof(WNowViewModel.ImageData))
-                                        {
-                                            it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
-                                        }
-                                    };
-                                })
-                        );
+                                        await Browser.Default.OpenAsync(uri);
+                                    });
+                                };
+
+                                it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                WNowViewModel.PropertyChanged += (s, e) =>
+                                {
+                                    if (e.PropertyName == nameof(WNowViewModel.ImageData))
+                                    {
+                                        it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+                                    }
+                                };
+                            })
                     }
-                })
+                }
             }
         }
         .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
@@ -889,9 +907,7 @@ public partial class WeatherNow
                 .Row(0),
                 // Content
                 new RangeBarGraphPanel()
-                .Bind(RangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}",
-                        BindingMode.OneWay, source: ForecastView
-                )
+                .Bind(RangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
@@ -917,17 +933,22 @@ public partial class WeatherNow
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind<Grid, object, bool>(
+                    VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView,
+                    convert: (data) =>
+                    {
+                        return Utils.FeatureSettings.Forecast && (bool)(graphDataConv as IValueConverter).Convert(data, typeof(bool), null, CultureInfo.InvariantCulture);
+                    }
+                 );
+            };
+
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
                 it.Padding(16, 0);
 
-            it.Loaded += (s, e) =>
-            {
-                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}",
-                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
-                );
-            };
             ResizeElements.Add(it);
         });
     }
@@ -1061,17 +1082,21 @@ public partial class WeatherNow
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind<Grid, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
+                    BindingMode.OneWay, source: ForecastView, convert: (collection) =>
+                    {
+                        return Utils.FeatureSettings.HourlyForecast && (bool)((IValueConverter)collectionBooleanConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
+                    }
+                );
+            };
+
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
                 it.Padding(16, 0);
 
-            it.Loaded += (s, e) =>
-            {
-                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
-                    BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: ForecastView
-                );
-            };
             ResizeElements.Add(it);
         });
     }
@@ -1185,15 +1210,22 @@ public partial class WeatherNow
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind<Grid, bool, bool>(
+                    VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView,
+                    convert: (isPresent) =>
+                    {
+                        return Utils.FeatureSettings.Charts && isPresent;
+                    }
+                 );
+            };
+
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
                 it.Padding(16, 0);
 
-            it.Loaded += (s, e) =>
-            {
-                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView);
-            };
             ResizeElements.Add(it);
         });
     }
@@ -1223,117 +1255,156 @@ public partial class WeatherNow
                 }
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
-                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
+                .Apply(it =>
+                {
+                    it.Loaded += (s, e) =>
+                    {
+                        it.IsVisible = Utils.FeatureSettings.DetailsEnabled;
+                    };
+                }),
+                // WeatherDetails
+                new FlexLayout()
+                {
+                    HorizontalOptions = LayoutOptions.Center,
+                    Wrap = FlexWrap.Wrap,
+                    JustifyContent = FlexJustify.Center,
+                }
+                .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
+                        BindingMode.OneWay, detailsFilter as IValueConverter, source: WNowViewModel
+                )                
+                .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
+                .Row(1)
+                .Apply(it =>
+                {
+                    it.Loaded += (s, e) =>
+                    {
+                        it.Bind<VisualElement, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
+                            BindingMode.OneWay, source: WNowViewModel, convert: (collection) =>
+                            {
+                                return Utils.FeatureSettings.WeatherDetails && (bool)(collectionBooleanConverter as IValueConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
+                            }
+                        );
+                    };
+                }),
+                // ExtraDetailsEnabled
+                new FlowLayout()
+                {
+                    Children =
+                    {
+                        // UV
+                        new UVControl()
+                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                                    BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
+                                {
+                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                                        {
+                                            return Utils.FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
+                                        }
+                                    );
+                                };
+                            }),
+                        // Beaufort
+                        new BeaufortControl()
+                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                                    BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
+                                {
+                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                                        {
+                                            return Utils.FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
+                                        }
+                                    );
+                                };
+                            }),
+                        // AQIndex
+                        new AQIControl()
+                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                                    BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .TapGesture(async () =>
+                            {
+                                await Navigation.PushAsync(new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData }));
+                            })
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
+                                {
+                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                                        {
+                                            return Utils.FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
+                                        }
+                                    );
+                                };
+                            }),
+                        // PollenEnabled
+                        new PollenCountControl()
+                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                                    BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
+                                {
+                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                                        {
+                                            return Utils.FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
+                                        }
+                                    );
+                                };
+                            }),
+                        // MoonPhase
+                        new MoonPhaseControl()
+                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                                    BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Apply(it =>
+                            {
+                                it.Loaded += (s, e) =>
+                                {
+                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                                        {
+                                            return Utils.FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                                        }
+                                    );
+                                };
+                            }),
+                    }
+                }
+                .Row(2)
+                .Apply(it =>
+                {
+                    it.Loaded += (s, e) =>
+                    {
+                        it.IsVisible = Utils.FeatureSettings.ExtraDetailsEnabled;
+                    };
+                })
             }
         }
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
-        .Apply(grid =>
-        {
-            if (Utils.FeatureSettings.WeatherDetails)
-            {
-                grid.Add(
-                    new FlexLayout()
-                    {
-                        HorizontalOptions = LayoutOptions.Center,
-                        Wrap = FlexWrap.Wrap,
-                        JustifyContent = FlexJustify.Center,
-                    }
-                    .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
-                            BindingMode.OneWay, detailsFilter as IValueConverter, source: WNowViewModel
-                    )
-                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
-                            BindingMode.OneWay, collectionBooleanConverter as IValueConverter, source: WNowViewModel
-                    )
-                    .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
-                    .Row(1)
-                );
-            }
-
-            if (Utils.FeatureSettings.ExtraDetailsEnabled)
-            {
-                grid.Add(
-                    new FlowLayout()
-                    .Row(2)
-                    .Apply(detailExtrasLayout =>
-                    {
-                        if (Utils.FeatureSettings.UV)
-                        {
-                            detailExtrasLayout.Add(
-                                new UVControl()
-                                    .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                                            BindingMode.OneWay, source: WNowViewModel
-                                    )
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
-                            );
-                        }
-
-                        if (Utils.FeatureSettings.Beaufort)
-                        {
-                            detailExtrasLayout.Add(
-                                new BeaufortControl()
-                                    .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                                            BindingMode.OneWay, source: WNowViewModel
-                                    )
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
-                            );
-                        }
-
-                        if (Utils.FeatureSettings.AQIndex)
-                        {
-                            detailExtrasLayout.Add(
-                                new AQIControl()
-                                    .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                                            BindingMode.OneWay, source: WNowViewModel
-                                    )
-                                    .TapGesture(async () =>
-                                    {
-                                        await Navigation.PushAsync(new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData }));
-                                    })
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
-                            );
-                        }
-
-                        if (Utils.FeatureSettings.PollenEnabled)
-                        {
-                            detailExtrasLayout.Add(
-                                new PollenCountControl()
-                                    .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                                            BindingMode.OneWay, source: WNowViewModel
-                                    )
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
-                            );
-                        }
-
-                        if (Utils.FeatureSettings.MoonPhase)
-                        {
-                            detailExtrasLayout.Add(
-                                new MoonPhaseControl()
-                                    .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                                            BindingMode.OneWay, source: WNowViewModel
-                                    )
-                                    .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                                            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-                                    )
-                            );
-                        }
-                    })
-                );
-            };
-        })
         .Apply(it =>
         {
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
                 it.Padding(16, 0);
+
+            it.Loaded += (s, e) =>
+            {
+                it.IsVisible = Utils.FeatureSettings.DetailsEnabled;
+            };
 
             ResizeElements.Add(it);
         });
@@ -1396,12 +1467,19 @@ public partial class WeatherNow
         }
         .FillHorizontal()
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
-        .Bind(
-            VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
-            BindingMode.OneWay, objectBooleanConverter as IValueConverter, source: WNowViewModel
-        )
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.Bind<Grid, object, bool>(
+                    VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
+                    BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    {
+                        return Utils.FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                    }
+                );
+            };
+
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
@@ -1493,6 +1571,11 @@ public partial class WeatherNow
         .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
         .Apply(it =>
         {
+            it.Loaded += (s, e) =>
+            {
+                it.IsVisible = Utils.FeatureSettings.WeatherRadar;
+            };
+
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 it.Padding(8, 0);
             else
