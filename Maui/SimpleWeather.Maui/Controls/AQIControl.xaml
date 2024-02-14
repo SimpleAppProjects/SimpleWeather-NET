@@ -12,7 +12,7 @@
     MinimumWidthRequest="340">
     <Grid
         ColumnDefinitions="Auto,*"
-        RowDefinitions="Auto,*,Auto,Auto">
+        RowDefinitions="Auto,Auto,Auto,Auto">
         <Label
             x:Name="AQILabel"
             Grid.Row="0"

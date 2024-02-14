@@ -7,7 +7,7 @@
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              x:DataType="commonControls:BeaufortViewModel"
              MinimumWidthRequest="340">
-    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*" VerticalOptions="FillAndExpand">
+    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*" VerticalOptions="FillAndExpand">
         <Label
             Grid.Row="0"
             Grid.ColumnSpan="2"
@@ -23,6 +23,7 @@
             IconWidth="{OnIdiom Default=85, Phone=76}"
             IconHeight="{OnIdiom Default=72, Phone=65}"
             Margin="12,0"
+            MinimumHeightRequest="85"
             VerticalOptions="Center"
             ForceBitmapIcon="True"
             IconColor="{AppThemeBinding Light=Purple, Dark=DodgerBlue}"

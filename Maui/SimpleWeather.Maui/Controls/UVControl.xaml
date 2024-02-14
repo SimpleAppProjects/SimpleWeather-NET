@@ -23,6 +23,7 @@
             IconWidth="{OnIdiom Default=85, Phone=76}"
             IconHeight="{OnIdiom Default=72, Phone=65}"
             Margin="12,0"
+            MinimumHeightRequest="85"
             VerticalOptions="Center"
             ForceBitmapIcon="True"
             IconColor="{AppThemeBinding Light=Orange, Dark=Yellow}"

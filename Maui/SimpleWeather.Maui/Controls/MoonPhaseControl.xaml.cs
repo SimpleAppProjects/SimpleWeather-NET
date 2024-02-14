@@ -113,7 +113,7 @@ public partial class MoonPhaseControl : ContentView
             var margins = 0;
             var size = 36;
 
-            if (this.Width >= 480)
+            if (this.Width >= 560)
             {
                 margins = 5;
                 size = 48;

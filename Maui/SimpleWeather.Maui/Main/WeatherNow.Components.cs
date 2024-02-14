@@ -1288,11 +1288,16 @@ public partial class WeatherNow
                     };
                 }),
                 // ExtraDetailsEnabled
-                new FlowLayout()
+                new WrapGrid()
                 {
-                    Children =
-                    {
-                        // UV
+                    MaxColumns = 3,
+                    MinItemWidth = 340
+                }
+                .OnIdiom(WrapGrid.MaxColumnsProperty, Phone: 1, Default: 3)
+                .Apply(wrapLayout =>
+                {
+                    // UV
+                    wrapLayout.Add(
                         new UVControl()
                             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
                                     BindingMode.OneWay, source: WNowViewModel
@@ -1308,8 +1313,10 @@ public partial class WeatherNow
                                         }
                                     );
                                 };
-                            }),
-                        // Beaufort
+                            })
+                    );
+                    // Beaufort
+                    wrapLayout.Add(
                         new BeaufortControl()
                             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
                                     BindingMode.OneWay, source: WNowViewModel
@@ -1325,8 +1332,10 @@ public partial class WeatherNow
                                         }
                                     );
                                 };
-                            }),
-                        // AQIndex
+                            })
+                    );
+                    // AQIndex
+                    wrapLayout.Add(
                         new AQIControl()
                             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                                     BindingMode.OneWay, source: WNowViewModel
@@ -1346,8 +1355,10 @@ public partial class WeatherNow
                                         }
                                     );
                                 };
-                            }),
-                        // PollenEnabled
+                            })
+                    );
+                    // PollenEnabled
+                    wrapLayout.Add(
                         new PollenCountControl()
                             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
                                     BindingMode.OneWay, source: WNowViewModel
@@ -1363,8 +1374,10 @@ public partial class WeatherNow
                                         }
                                     );
                                 };
-                            }),
-                        // MoonPhase
+                            })
+                    );
+                    // MoonPhase
+                    wrapLayout.Add(
                         new MoonPhaseControl()
                             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
                                     BindingMode.OneWay, source: WNowViewModel
@@ -1380,9 +1393,9 @@ public partial class WeatherNow
                                         }
                                     );
                                 };
-                            }),
-                    }
-                }
+                            })
+                    );
+                })
                 .Row(2)
                 .Apply(it =>
                 {
