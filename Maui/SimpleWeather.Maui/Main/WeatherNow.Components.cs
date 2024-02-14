@@ -1460,10 +1460,19 @@ public partial class WeatherNow
 
                         void ResizeSunView()
                         {
-                            //var parentHorizMargin = (it.Parent as View)?.Margin.HorizontalThickness ?? 0;
+                            Thickness parentHorizMargin;
 
-                            it.HeightRequest = Math.Min(maxHeight, Math.Max(0, ListLayout.Width / 2));
-                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width)/* - parentHorizMargin*/;
+                            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                            {
+                                parentHorizMargin = new Thickness(4, 0);
+                            }
+                            else
+                            {
+                                parentHorizMargin = new Thickness(0);
+                            }
+
+                            it.HeightRequest = Math.Min(maxHeight, Math.Max(0, ListLayout.Width / 2)) - parentHorizMargin.HorizontalThickness;
+                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width);
                         }
 
                         ListLayout.SizeChanged += (s, e) =>
