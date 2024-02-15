@@ -64,7 +64,7 @@
             FontSize="14"
             LineBreakMode="WordWrap"
             Text="{Binding Description}"
-            HorizontalTextAlignment="Center"
+            HorizontalTextAlignment="Start"
             VerticalOptions="Center" />
         <ProgressBar
             x:Name="AQIProgressBar"
