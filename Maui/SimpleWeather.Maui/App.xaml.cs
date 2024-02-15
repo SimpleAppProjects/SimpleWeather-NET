@@ -54,6 +54,16 @@ public partial class App : Application
 
     public App()
     {
+#if __IOS__
+        ObjCRuntime.Runtime.MarshalManagedException += (_, args) =>
+        {
+            args.ExceptionMode = ObjCRuntime.MarshalManagedExceptionMode.UnwindNativeCode;
+        };
+#endif
+        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+        {
+            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "UnhandledException: {0}", e);
+        };
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();
 
