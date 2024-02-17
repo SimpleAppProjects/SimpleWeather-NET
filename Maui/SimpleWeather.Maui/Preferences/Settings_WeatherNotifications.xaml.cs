@@ -166,6 +166,9 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
             {
 #if __IOS__
                 UpdaterTaskUtils.RescheduleDailyNotificationTask();
+
+                // Schedule notification anyway as task is not guaranteed
+                DailyNotificationTask.ScheduleDailyNotification();
 #endif
             }
         }

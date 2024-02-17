@@ -2,6 +2,9 @@
 using CoreLocation;
 using Foundation;
 using SimpleWeather.Common.Helpers;
+using SimpleWeather.Extras.BackgroundTasks;
+using SimpleWeather.Maui.BackgroundTasks;
+using SimpleWeather.Maui.Widget;
 using SimpleWeather.Utils;
 using UIKit;
 
@@ -42,6 +45,12 @@ public partial class AppDelegate
                 break;
         }
 
+#if false
+#pragma warning disable CA1422 // Validate platform compatibility
+        UIApplication.SharedApplication.SetMinimumBackgroundFetchInterval(TimeSpan.FromHours(1).TotalSeconds);
+#pragma warning restore CA1422 // Validate platform compatibility
+#endif
+
         Logger.WriteLine(LoggerLevel.Info, $"{nameof(AppDelegate)}: BackgroundTimeRemaining - {UIApplication.SharedApplication.BackgroundTimeRemaining}");
 #endif
 
@@ -60,5 +69,68 @@ public partial class AppDelegate
 
         BGTaskRegistrar.ScheduleBGTasks();
     }
+
+#if false
+    public override void PerformFetch(UIApplication application, Action<UIBackgroundFetchResult> completionHandler)
+    {
+        base.PerformFetch(application, completionHandler);
+        Logger.WriteLine(LoggerLevel.Info, "AppDelegate: PerformFetch");
+
+        Task.Run(async () =>
+        {
+            var now = DateTime.UtcNow;
+
+            if (TaskShouldRun(WeatherUpdaterTask.TASK_ID, WeatherUpdaterTask.INTERVAL, now))
+            {
+                WeatherUpdaterTask.UpdateWeather();
+                SetLastTaskRunTime(WeatherUpdaterTask.TASK_ID, now);
+            }
+            else if (await WeatherWidgetUpdater.WidgetsExist())
+            {
+                WidgetUpdaterTask.UpdateWidgets();
+            }
+
+            // Re-schedule daily notification
+            DailyNotificationTask.ScheduleDailyNotification();
+
+            if (TaskShouldRun(RemoteConfigUpdateTask.TASK_ID, RemoteConfigUpdateTask.INTERVAL, now))
+            {
+                RemoteConfigUpdateTask.CheckConfig();
+                SetLastTaskRunTime(RemoteConfigUpdateTask.TASK_ID, now);
+            }
+
+            if (TaskShouldRun(PremiumStatusTask.TASK_ID, PremiumStatusTask.INTERVAL, now))
+            {
+                PremiumStatusTask.CheckPremiumStatus();
+                SetLastTaskRunTime(PremiumStatusTask.TASK_ID, now);
+            }
+
+            if (TaskShouldRun(AppUpdaterTask.TASK_ID, AppUpdaterTask.INTERVAL, now))
+            {
+                AppUpdaterTask.CheckForAppUpdates();
+                SetLastTaskRunTime(AppUpdaterTask.TASK_ID, now);
+            }
+
+            completionHandler.Invoke(UIBackgroundFetchResult.NewData);
+        });
+    }
+
+    private static bool TaskShouldRun(string taskID, TimeSpan interval, DateTime now)
+    {
+        var lastTime = GetLastTaskRunTime(taskID);
+
+        return (now - lastTime) >= interval;
+    }
+
+    private static DateTime GetLastTaskRunTime(string taskID)
+    {
+        return Microsoft.Maui.Storage.Preferences.Get($"{taskID}_lastruntime", DateTime.MinValue);
+    }
+
+    private static void SetLastTaskRunTime(string taskID, DateTime value)
+    {
+        Microsoft.Maui.Storage.Preferences.Set($"{taskID}_lastruntime", value);
+    }
+#endif
 }
 #endif

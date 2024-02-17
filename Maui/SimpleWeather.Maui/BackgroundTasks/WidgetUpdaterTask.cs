@@ -62,6 +62,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
                     {
                         await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData()).WaitAsync(cts.Token);
                     }
+
+                    if (SettingsManager.DailyNotificationEnabled)
+                    {
+                        DailyNotificationTask.ScheduleDailyNotification();
+                    }
                 }
 
                 Logger.WriteLine(LoggerLevel.Debug, "{0}: End of run...", taskName);

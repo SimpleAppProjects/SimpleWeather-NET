@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.BackgroundTasks;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
+using UIKit;
 
 namespace SimpleWeather.Maui.BackgroundTasks
 {
@@ -57,6 +58,29 @@ namespace SimpleWeather.Maui.BackgroundTasks
             else
             {
                 ScheduleTask();
+            }
+        }
+
+        public static void CheckConfig()
+        {
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Requesting to start work immediately", taskName);
+
+            try
+            {
+                var cts = new CancellationTokenSource();
+                var id = UIKit.UIApplication.SharedApplication.BeginBackgroundTask($"{TASK_ID}.immediate", cts.Cancel);
+
+                if (id != UIApplication.BackgroundTaskInvalid)
+                {
+                    Task.Run(new RemoteConfigUpdateTask().Run, cts.Token).ContinueWith(t =>
+                    {
+                        UIApplication.SharedApplication.EndBackgroundTask(id);
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e);
             }
         }
 

@@ -5,6 +5,7 @@ using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Common.Helpers;
 using SimpleWeather.Maui.Updates;
 using SimpleWeather.Utils;
+using UIKit;
 using UserNotifications;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -105,6 +106,29 @@ namespace SimpleWeather.Maui.BackgroundTasks
             else
             {
                 ScheduleTask();
+            }
+        }
+
+        public static void CheckForAppUpdates()
+        {
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Requesting to start work immediately", taskName);
+
+            try
+            {
+                var cts = new CancellationTokenSource();
+                var id = UIApplication.SharedApplication.BeginBackgroundTask($"{TASK_ID}.immediate", cts.Cancel);
+
+                if (id != UIApplication.BackgroundTaskInvalid)
+                {
+                    Task.Run(new AppUpdaterTask().Run, cts.Token).ContinueWith(t =>
+                    {
+                        UIApplication.SharedApplication.EndBackgroundTask(id);
+                    });
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(LoggerLevel.Error, e);
             }
         }
 

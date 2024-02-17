@@ -111,6 +111,11 @@ namespace SimpleWeather.Maui.BackgroundTasks
                         await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                     }
 
+                    if (SettingsManager.DailyNotificationEnabled)
+                    {
+                        DailyNotificationTask.ScheduleDailyNotification();
+                    }
+
                     if (weather != null)
                     {
                         // Post alerts if setting is on

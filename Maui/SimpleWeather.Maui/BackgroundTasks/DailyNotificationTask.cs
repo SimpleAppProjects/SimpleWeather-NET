@@ -29,7 +29,12 @@ namespace SimpleWeather.Maui.BackgroundTasks
             cts.Cancel();
         }
 
-        public async Task Run()
+        public Task Run()
+        {
+            return Run(false);
+        }
+
+        public async Task Run(bool scheduleOnly)
         {
             try
             {
@@ -44,11 +49,19 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                     if (settingsMgr.WeatherLoaded && settingsMgr.DailyNotificationEnabled)
                     {
-                        // Create toast notification
-                        await DailyNotificationCreator.CreateNotification(await settingsMgr.GetHomeData());
+                        if (scheduleOnly)
+                        {
+                            // Schedule toast notification
+                            await DailyNotificationCreator.ScheduleNotification(await settingsMgr.GetHomeData(), GetTaskDelayInSeconds());
+                        }
+                        else
+                        {
+                            // Create toast notification
+                            await DailyNotificationCreator.CreateNotification(await settingsMgr.GetHomeData());
 
-                        // Register task for next time
-                        ScheduleTask();
+                            // Register task for next time
+                            ScheduleTask();
+                        }
                     }
                 }
             }
@@ -73,7 +86,7 @@ namespace SimpleWeather.Maui.BackgroundTasks
             }
         }
 
-        public static void SendDailyNotification()
+        public static void ScheduleDailyNotification()
         {
             Logger.WriteLine(LoggerLevel.Debug, "{0}: Requesting to start work immediately", taskName);
 
@@ -84,7 +97,10 @@ namespace SimpleWeather.Maui.BackgroundTasks
 
                 if (id != UIApplication.BackgroundTaskInvalid)
                 {
-                    Task.Run(new DailyNotificationTask().Run, cts.Token).ContinueWith(t =>
+                    Task.Run(() =>
+                    {
+                        return new DailyNotificationTask().Run(scheduleOnly: true);
+                    }, cts.Token).ContinueWith(t =>
                     {
                         UIApplication.SharedApplication.EndBackgroundTask(id);
                     });
