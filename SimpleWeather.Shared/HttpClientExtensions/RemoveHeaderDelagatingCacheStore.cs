@@ -28,6 +28,7 @@ namespace SimpleWeather.HttpClientExtensions
         {
             // Issue: https://github.com/aliostad/CacheCow/issues/213
             response.Headers.Server.Clear();
+            response.Headers.ETag = null;
 
             // Handle invalid "Expires" header values
             if (response.Content.Headers.Contains(HttpHeaderNames.Expires))
