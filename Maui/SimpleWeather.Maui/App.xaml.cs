@@ -62,7 +62,7 @@ public partial class App : Application
 #endif
         AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
         {
-            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "UnhandledException: {0}", e);
+            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "UnhandledException: {0}", e.ExceptionObject);
         };
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();

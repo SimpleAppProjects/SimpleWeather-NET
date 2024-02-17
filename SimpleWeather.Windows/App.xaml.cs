@@ -85,6 +85,8 @@ namespace SimpleWeather.NET
         public static new App Current => (App)Application.Current;
         //public static IApplication Instance { get; private set; }
 
+        private static Exception LastFirstChanceException;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -93,7 +95,10 @@ namespace SimpleWeather.NET
         {
             this.syncContext = SynchronizationContext.Current;
             this.UnhandledException += OnUnhandledException;
+            // Handle exceptions on background threads
             TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
+            AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+            AppDomain.CurrentDomain.FirstChanceException += OnDomainFirstChanceException;
             CoreApplication.EnablePrelaunch(true);
             this.InitializeComponent();
             //Instance = this;
@@ -664,16 +669,53 @@ namespace SimpleWeather.NET
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        /* 
+         * Source: https://gist.github.com/mattjohnsonpint/7b385b7a2da7059c4a16562bc5ddb3b7
+         * Exceptions on background threads are caught by AppDomain.CurrentDomain.UnhandledException,
+         *   not by Microsoft.UI.Xaml.Application.Current.UnhandledException
+         *   See: https://github.com/microsoft/microsoft-ui-xaml/issues/5221
+         */
+        private void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
         {
-            Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unhandled Exception: {0}", e.Message);
+            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "Unhandled Exception: {0}", e.ExceptionObject);
 
             // Log inner exceptions
-            if (e.Exception is AggregateException agg)
+            if (e.ExceptionObject is AggregateException agg)
             {
                 foreach (Exception inner in agg.InnerExceptions)
                 {
-                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Exception: {0}", inner.Message);
+                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
+                }
+            }
+        }
+
+        private void OnDomainFirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        {
+            LastFirstChanceException = e.Exception;
+        }
+
+        /*
+         * Exceptions caught by Microsoft.UI.Xaml.Application.Current.UnhandledException have details removed,
+         *   but that can be worked around by saved by trapping first chance exceptions
+         *   See: https://github.com/microsoft/microsoft-ui-xaml/issues/7160
+         */
+        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = e.Exception;
+
+            if (exception?.StackTrace is null)
+            {
+                exception = LastFirstChanceException;
+            }
+
+            Logger.WriteLine(LoggerLevel.Fatal, exception, "Unhandled Exception: {0}", exception.Message);
+
+            // Log inner exceptions
+            if (exception is AggregateException agg)
+            {
+                foreach (Exception inner in agg.InnerExceptions)
+                {
+                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
                 }
             }
         }
@@ -685,7 +727,7 @@ namespace SimpleWeather.NET
             // Log inner exceptions
             foreach (Exception inner in e.Exception.InnerExceptions)
             {
-                Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Exception: {0}", inner.Message);
+                Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Inner Exception: {0}", inner.Message);
             }
         }
 
