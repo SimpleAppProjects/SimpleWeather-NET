@@ -185,7 +185,8 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             // get the screen density for scaling
 #if WINDOWS
-            var scale = (float)XamlRoot.RasterizationScale;
+            var scale = 1f;
+            //var scale = (float)XamlRoot.RasterizationScale;
 #elif __IOS__
             var scale = 1f;
             /*
