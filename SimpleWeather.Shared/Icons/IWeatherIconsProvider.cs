@@ -18,7 +18,7 @@ namespace SimpleWeather.Icons
 
     public interface ILottieWeatherIconProvider
     {
-        public abstract String GetLottieIconURI(string icon);
+        public abstract String GetLottieIconURI(string icon, bool isLight = false);
     }
 
     public interface IXamlWeatherIconProvider

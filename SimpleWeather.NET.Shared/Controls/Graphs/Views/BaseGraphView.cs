@@ -572,6 +572,7 @@ namespace SimpleWeather.NET.Controls.Graphs
                     // TODO: dispose managed state (managed objects)
                     bottomTextFont?.Dispose();
                     bottomTextPaint?.Dispose();
+                    RemoveAnimatedDrawables();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

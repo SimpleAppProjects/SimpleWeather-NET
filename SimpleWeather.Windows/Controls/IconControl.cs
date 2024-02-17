@@ -140,7 +140,8 @@ namespace SimpleWeather.NET.Controls
             }
             else if (wip is ILottieWeatherIconProvider lottieProvider)
             {
-                var iconUri = lottieProvider.GetLottieIconURI(wicon);
+                var isLight = ForceDarkTheme ? false : IsLightTheme;
+                var iconUri = lottieProvider.GetLottieIconURI(wicon, isLight);
                 if (iconUri == null || !iconUri.EndsWith(".json"))
                 {
                     iconElement = CreateBitmapIcon(wip, wicon);
@@ -149,7 +150,7 @@ namespace SimpleWeather.NET.Controls
                 {
                     try
                     {
-                        var drawable = await wip.GetDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                        var drawable = await wip.GetDrawable(wicon, isLight: isLight);
                         var canvas = new SKXamlCanvas();
                         canvas.PaintSurface += (s, e) =>
                         {

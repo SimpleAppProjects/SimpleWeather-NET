@@ -34,10 +34,15 @@ namespace SimpleWeather.Icons
                 if (this is ILottieWeatherIconProvider lottieProvider)
                 {
 #if WINUI
-                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon)));
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon, isLight)));
                     var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+#elif __ANDROID__
+                    var filename = Path.GetFileName(lottieProvider.GetLottieIconURI(icon, isLight));
+                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
+                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #else
-                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(lottieProvider.GetLottieIconURI(icon));
+                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(lottieProvider.GetLottieIconURI(icon, isLight));
 #endif
 
                     drawable = Animation.Create(fStream)?.ToDrawable();
