@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Windows.Foundation;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 
 namespace SimpleWeather.NET.Controls
 {
@@ -143,12 +140,8 @@ namespace SimpleWeather.NET.Controls
                             child = Children[childIndex++];
                         }
 
-                        // Only re-measure last item
-                        // This seems to be the only item that gets cut off
-                        if (rectIdx == rectCount - 1)
-                        {
-                            child.Measure(rect.Size.ToSize(Orientation));
-                        }
+                        // Re-measure child with desired size
+                        child.Measure(rect.Size.ToSize(Orientation));
 
                         rectIdx++;
                     }
