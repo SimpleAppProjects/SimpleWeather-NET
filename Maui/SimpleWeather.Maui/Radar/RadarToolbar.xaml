@@ -13,7 +13,8 @@
         <Border
             x:Name="MapContainer"
             Grid.Row="0"
-            Background="Snow" />
+            Background="Snow"
+            Stroke="Transparent" />
         <Grid
             x:Name="AnimationToolbar"
             Grid.Row="1"
@@ -32,7 +33,11 @@
                 Clicked="PlayButton_Clicked"
                 VerticalOptions="Center">
                 <ImageButton.Source>
-                    <matIcons:MaterialIcon Symbol="Play" Size="24" />
+                    <matIcons:MaterialIcon
+                        x:Name="PlayIcon"
+                        Symbol="Play"
+                        Size="24"
+                        Color="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}" />
                 </ImageButton.Source>
             </ImageButton>
             <Slider
@@ -41,6 +46,8 @@
                 Margin="5,0"
                 Maximum="10"
                 Minimum="0"
+                MinimumTrackColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+                ThumbColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
                 ValueChanged="AnimationSlider_ValueChanged"
                 VerticalOptions="Center"
                 Value="0" />

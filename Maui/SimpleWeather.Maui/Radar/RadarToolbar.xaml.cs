@@ -1,29 +1,44 @@
+using CommunityToolkit.Maui.Markup;
 using SimpleWeather.Maui.MaterialIcons;
 
 namespace SimpleWeather.Maui.Radar;
 
 public partial class RadarToolbar : ContentView
 {
-    private bool isButtonChecked = false;
+    public bool IsPlaying
+    {
+        get => (bool)GetValue(IsPlayingProperty);
+        set => SetValue(IsPlayingProperty, value);
+    }
+
+    public static readonly BindableProperty IsPlayingProperty =
+        BindableProperty.Create(nameof(IsPlaying), typeof(bool), typeof(RadarToolbar), false);
 
     public RadarToolbar()
     {
         this.InitializeComponent();
+        PlayIcon.Bind<MaterialIcon, bool, MaterialSymbol>(
+            MaterialIcon.SymbolProperty, path: nameof(IsPlaying), BindingMode.OneWay, source: this,
+            convert: (isPlaying) =>
+            {
+                return isPlaying ? MaterialSymbol.Pause : MaterialSymbol.Play;
+            },
+            targetNullValue: MaterialSymbol.Play,
+            fallbackValue: MaterialSymbol.Play
+        );
     }
 
     private void PlayButton_Clicked(object sender, EventArgs e)
     {
         var button = sender as ImageButton;
-        isButtonChecked = !isButtonChecked;
+        IsPlaying = !IsPlaying;
 
-        if (isButtonChecked)
+        if (IsPlaying)
         {
-            button.Source = new MaterialIcon(MaterialSymbol.Pause) { Size = 24 };
             OnPlayAnimation?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            button.Source = new MaterialIcon(MaterialSymbol.Play) { Size = 24 };
             OnPauseAnimation?.Invoke(this, EventArgs.Empty);
         }
     }
