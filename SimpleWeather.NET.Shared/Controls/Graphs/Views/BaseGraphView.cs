@@ -431,7 +431,7 @@ namespace SimpleWeather.NET.Controls.Graphs
             OnPreMeasure();
 
 #if WINDOWS
-            Canvas.Width = 
+            Canvas.Width =
 #else
             Canvas.WidthRequest =
 #endif
@@ -541,6 +541,11 @@ namespace SimpleWeather.NET.Controls.Graphs
                 var drw = animatedDrawables.Pop();
                 drw.Stop();
                 drw.InvalidateDrawable -= BaseGraphView_InvalidateDrawable;
+                try
+                {
+                    drw.Dispose();
+                }
+                catch { }
             }
         }
 
@@ -556,11 +561,19 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         private void BaseGraphView_InvalidateDrawable(object sender, EventArgs e)
         {
+            try
+            {
 #if WINDOWS
-            Canvas?.Invalidate();
+                Canvas?.Invalidate();
 #else
-            Canvas?.InvalidateSurface();
+                Canvas?.InvalidateSurface();
 #endif
+            }
+            // Note: May occur if window is closed and canvas not disposed?
+            catch (NullReferenceException)
+            {
+                RemoveAnimatedDrawables();
+            }
         }
 
         protected virtual void Dispose(bool disposing)
