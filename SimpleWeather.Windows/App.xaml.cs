@@ -19,6 +19,7 @@ using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Preferences;
 using SimpleWeather.NET.Setup;
+using SimpleWeather.NET.Widgets.Json;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -131,7 +132,8 @@ namespace SimpleWeather.NET
             // Add Json Resolvers
             JSONParser.DefaultSettings
                 .AddWeatherAPIContexts()
-                .AddJsonContexts();
+                .AddJsonContexts()
+                .AddWeatherWidgetContexts();
 
             // Build DI Services
             SharedModule.Instance.GetServiceCollection().Apply(collection =>

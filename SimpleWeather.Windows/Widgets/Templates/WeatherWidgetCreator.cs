@@ -106,10 +106,7 @@ namespace SimpleWeather.NET.Widgets.Templates
                 chanceIcon = await WeatherWidgetDataExtensions.GetWeatherIcon(WeatherIcons.RAINDROP)
             };
 
-            var json = System.Text.Json.JsonSerializer.Serialize(widgetData, new System.Text.Json.JsonSerializerOptions()
-            {
-                IncludeFields = true
-            });
+            var json = JSONParser.Serializer(widgetData);
 
             return json;
         }
