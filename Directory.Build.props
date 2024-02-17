@@ -37,6 +37,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <WinAppSDKVersion>1.4.240211001</WinAppSDKVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <SolutionDir Condition="'$(SolutionDir)' == ''">$(MSBuildThisFileDirectory)</SolutionDir>
   </PropertyGroup>
 </Project>
