@@ -13,5 +13,7 @@ struct WeatherWidgetBundle: WidgetBundle {
     @WidgetBundleBuilder
     var body: some Widget {
         WeatherWidget()
+        WeatherLocationWidget()
+        WeatherPrecipitationWidget()
     }
 }

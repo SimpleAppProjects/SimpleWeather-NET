@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import WidgetKit
 
 // Text Sizes
 #if targetEnvironment(macCatalyst) || os(macOS)
@@ -414,6 +415,97 @@ struct WeatherWidgetDailyForecastLarge: View {
                 .opacity(0.8)
                 .frame(minWidth: 26, alignment: .leading)
         }
+    }
+}
+
+struct WeatherWidgetInline: View {
+    let model: WeatherModel
+    
+    var body: some View {
+        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 4) {
+            Image(systemName: iconToSFSymbol(icon: model.current.weatherIcon))
+                .symbolRenderingMode(.multicolor)
+                .font(smallIconSize)
+            Text(model.current.temp)
+        }
+    }
+}
+
+struct WeatherLocationWidgetInline: View {
+    let model: WeatherModel
+    
+    var body: some View {
+        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 4) {
+            Image(systemName: iconToSFSymbol(icon: model.current.weatherIcon))
+                .symbolRenderingMode(.multicolor)
+                .font(smallIconSize)
+            Text(model.current.location)
+        }
+    }
+}
+
+struct WeatherPrecipitationWidgetInline: View {
+    let model: WeatherModel
+    
+    var body: some View {
+        HStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/, spacing: 4) {
+            Image(systemName: iconToSFSymbol(icon: WeatherIcons.UMBRELLA))
+                .symbolRenderingMode(.multicolor)
+                .font(smallIconSize)
+            Text(model.current.chance ?? WeatherIcons.EM_DASH)
+        }
+    }
+}
+
+struct WeatherPrecipitationWidgetCircular: View {
+    let model: WeatherModel
+    
+    var body: some View {
+        let value = if (model.current.chance != nil) {
+            Double(model.current.chance!.trimmingCharacters(in: CharacterSet(charactersIn: "0123456789.").inverted))
+        } else {
+            0.0
+        }
+
+        ZStack {
+            Gauge(
+                value: value ?? 0.0,
+                in: 0...100,
+                label: {
+                    Image(systemName: iconToSFSymbol(icon: WeatherIcons.UMBRELLA))
+                        .symbolRenderingMode(.multicolor)
+                }
+            ) {
+                Text(model.current.chance ?? WeatherIcons.EM_DASH)
+                    .font(smallIconSize)
+            }
+            .gaugeStyle(.accessoryCircular)
+        }.widgetBackground(view: Rectangle().foregroundColor(.clear))
+    }
+}
+
+struct WeatherWidgetRectangular: View {
+    let model: WeatherModel
+    
+    var body: some View {
+        ZStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(model.current.location)
+                    .lineLimit(1)
+                    .fontWeight(.bold)
+                Text(model.current.temp + " " + model.current.condition)
+                    .lineLimit(1)
+                if (model.current.showHiLo) {
+                    Text(
+                        (model.current.hi ?? WeatherIcons.PLACEHOLDER) +
+                        " / " +
+                        (model.current.lo ?? WeatherIcons.PLACEHOLDER)
+                    )
+                        .lineLimit(1)
+                        .opacity(0.75)
+                }
+            }
+        }.widgetBackground(view: Rectangle().foregroundColor(.clear))
     }
 }
 

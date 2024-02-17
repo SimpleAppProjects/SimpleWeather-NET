@@ -32,7 +32,7 @@ struct Provider: IntentTimelineProvider {
         completion(entry)
     }
 
-    func getTimeline(for configuration: WeatherWidgetConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+    func getTimeline(for configuration: WeatherWidgetConfigurationIntent, in context: Context, completion: @escaping (Timeline<WeatherTimelineEntry>) -> ()) {
         let locationKey = configuration.location?.identifier ?? "GPS"
         
         let weatherMap = readWeatherData()
@@ -91,6 +91,10 @@ struct WeatherWidgetEntryView : View {
                 }
             case .systemLarge:
                 WeatherWidgetLarge(model: entry.model!)
+            case .accessoryRectangular:
+                WeatherWidgetRectangular(model: entry.model!)
+            case .accessoryInline:
+                WeatherWidgetInline(model: entry.model!)
             @unknown default:
                 fatalError("Should not happen")
             }
@@ -120,7 +124,14 @@ struct WeatherWidget: Widget {
         }
         .configurationDisplayName("Weather")
         .description("Check the current weather conditions and forecast for a location")
-        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
+        .supportedFamilies([
+            .systemSmall,
+            .systemMedium,
+            .systemLarge,
+            // Lock Screen Widgets
+            .accessoryInline,
+            .accessoryRectangular
+        ])
     }
 }
 
@@ -134,5 +145,9 @@ struct WeatherWidgetPreviews: PreviewProvider {
             .previewContext(WidgetPreviewContext(family: .systemMedium))
         WeatherWidgetEntryView(entry: entry)
             .previewContext(WidgetPreviewContext(family: .systemLarge))
+        WeatherWidgetEntryView(entry: entry)
+            .previewContext(WidgetPreviewContext(family: .accessoryInline))
+        WeatherWidgetEntryView(entry: entry)
+            .previewContext(WidgetPreviewContext(family: .accessoryRectangular))
     }
 }
