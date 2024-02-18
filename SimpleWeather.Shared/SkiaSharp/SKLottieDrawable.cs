@@ -57,17 +57,21 @@ namespace SimpleWeather.SkiaSharp
 
         public override void Draw(SKCanvas canvas)
         {
-            if (animation != null)
+            try
             {
-                animation?.SeekFrameTime(watch.Elapsed.TotalSeconds);
-
-                if (watch.Elapsed > animation.Duration)
+                if (animation != null)
                 {
-                    watch.Restart();
-                }
+                    animation?.SeekFrameTime(watch.Elapsed.TotalSeconds);
 
-                animation?.Render(canvas, Bounds);
+                    if (watch.Elapsed > animation.Duration)
+                    {
+                        watch.Restart();
+                    }
+
+                    animation?.Render(canvas, Bounds);
+                }
             }
+            catch { }
         }
 
         protected virtual void Dispose(bool disposing)
@@ -77,6 +81,7 @@ namespace SimpleWeather.SkiaSharp
                 if (disposing)
                 {
                     // TODO: dispose managed state (managed objects)
+                    Stop();
                     animation?.Dispose();
                 }
 
