@@ -57,21 +57,17 @@ namespace SimpleWeather.SkiaSharp
 
         public override void Draw(SKCanvas canvas)
         {
-            try
+            if (animation != null)
             {
-                if (animation != null)
+                animation?.SeekFrameTime(watch.Elapsed.TotalSeconds);
+
+                if (watch.Elapsed > animation.Duration)
                 {
-                    animation?.SeekFrameTime(watch.Elapsed.TotalSeconds);
-
-                    if (watch.Elapsed > animation.Duration)
-                    {
-                        watch.Restart();
-                    }
-
-                    animation?.Render(canvas, Bounds);
+                    watch.Restart();
                 }
+
+                animation?.Render(canvas, Bounds);
             }
-            catch { }
         }
 
         protected virtual void Dispose(bool disposing)

@@ -541,11 +541,6 @@ namespace SimpleWeather.NET.Controls.Graphs
                 var drw = animatedDrawables.Pop();
                 drw.Stop();
                 drw.InvalidateDrawable -= BaseGraphView_InvalidateDrawable;
-                try
-                {
-                    drw.Dispose();
-                }
-                catch { }
             }
         }
 
