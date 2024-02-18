@@ -93,6 +93,11 @@ namespace SimpleWeather.NET.BackgroundTasks
                             await PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                         }
 
+                        if (SettingsManager.DailyNotificationEnabled)
+                        {
+                            await DailyNotificationTask.ScheduleDailyNotification();
+                        }
+
                         if (weather != null)
                         {
                             // Post alerts if setting is on

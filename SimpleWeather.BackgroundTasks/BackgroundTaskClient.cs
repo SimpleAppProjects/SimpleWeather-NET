@@ -9,7 +9,7 @@ namespace SimpleWeather.BackgroundTasks
 {
     internal class BackgroundTaskClient
     {
-        private static Guid inProcBackgroundTaskHostGuid = new Guid("148C5627-665B-4DAC-AB27-64397E80335A");
+        private static Guid inProcBackgroundTaskHostGuid = new Guid("E3E44B22-74AE-47CE-A507-6EBE2F832B8F");
 
         private readonly IBackgroundTask backgroundTask;
 

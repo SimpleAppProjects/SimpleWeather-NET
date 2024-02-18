@@ -340,6 +340,11 @@ namespace SimpleWeather.NET
                 await UpdateTask.RegisterBackgroundTask();
                 await AppUpdaterTask.RegisterBackgroundTask();
                 await RemoteConfigUpdateTask.RegisterBackgroundTask();
+                if (SettingsManager.DailyNotificationEnabled)
+                {
+                    await DailyNotificationTask.RegisterBackgroundTask();
+                }
+                await PremiumStatusTask.RegisterBackgroundTask();
             });
 
             var prelaunchActivated = args?.PrelaunchActivated ?? false;

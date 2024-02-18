@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
@@ -74,7 +74,7 @@
                 Executable="SimpleWeather.Windows.exe"
                 Arguments="-RegisterProcessAsComServer"
                 LaunchAndActivationPermission="O:PSG:BUD:(A;;11;;;IU)(A;;11;;;S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756)S:(ML;;NX;;;LW)">
-              <com:Class Id="148C5627-665B-4DAC-AB27-64397E80335A" />
+              <com:Class Id="E3E44B22-74AE-47CE-A507-6EBE2F832B8F" />
               <!-- Widget Provider -->
               <com:Class Id="1D453922-87B3-41AB-9D61-1A73C4360E71" DisplayName="Widget provider" />
             </com:ExeServer>

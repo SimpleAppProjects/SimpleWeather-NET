@@ -184,7 +184,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName)&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0    " />
+    <Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)InProcBackgroundTask\InProcBackgroundTask.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0    " />
   </Target>
 
   <Import Project="..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />

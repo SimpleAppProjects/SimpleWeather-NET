@@ -36,7 +36,7 @@ namespace SimpleWeather.NET.Notifications
                 .SaveToastCollectionAsync(toastCollection);
         }
 
-        public static async Task CreateNotification(LocationData.LocationData location)
+        public static async Task CreateNotification(LocationData.LocationData location, DateTimeOffset? deliveryTime = null)
         {
             var SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -62,16 +62,51 @@ namespace SimpleWeather.NET.Notifications
             // Set a unique ID for the notification
             var notID = location.query;
 
-            // Create the toast notification
-            var toastNotif = new ToastNotification(toastContent.GetXml())
+            // Remove any pending notifications
+            try
             {
-                Group = TAG,
-                Tag = notID,
-                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
-            };
+                var pendingNotifications = toastNotifier.GetScheduledToastNotifications();
 
-            // And send the notification
-            toastNotifier.Show(toastNotif);
+                if (pendingNotifications?.Count > 0)
+                {
+                    pendingNotifications
+                        ?.Where(t => t.Group == TAG)
+                        ?.ForEach(toastNotifier.RemoveFromSchedule);
+                }
+            }
+            catch { }
+
+            if (deliveryTime == null)
+            {
+                // Create the toast notification
+                var toastNotif = new ToastNotification(toastContent.GetXml())
+                {
+                    Group = TAG,
+                    Tag = notID,
+                    ExpirationTime = DateTime.Now.AddDays(0.99), // Expires the next day
+                };
+
+                // And send the notification
+                toastNotifier.Show(toastNotif);
+            }
+            else
+            {
+                // Create the toast notification
+                var toastNotif = new ScheduledToastNotification(toastContent.GetXml(), deliveryTime.Value)
+                {
+                    Group = TAG,
+                    Tag = notID,
+                    ExpirationTime = deliveryTime.Value.AddDays(0.99), // Expires the next day
+                };
+
+                // And schedule the notification
+                toastNotifier.AddToSchedule(toastNotif);
+            }
+        }
+
+        public static Task ScheduleNotification(LocationData.LocationData location, DateTimeOffset deliveryTime)
+        {
+            return CreateNotification(location, deliveryTime);
         }
 
         private static async Task<ToastContent> CreateToastContent(LocationData.LocationData location, Forecast forecast)

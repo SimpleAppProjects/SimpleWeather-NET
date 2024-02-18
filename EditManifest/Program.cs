@@ -32,19 +32,34 @@ namespace EditManifest
                 {
                     ConfigMode = args[1];
                 }
+                if (args.Length > 2)
+                {
+                    var osVersion = args[2];
+                    OSVersion = osVersion switch
+                    {
+                        "WinUI" or "UWP" => OSVersion.UWP,
+                        "Mac" or "iOS" or "MaciOS" => OSVersion.MaciOS,
+                        _ => OSVersion.Unknown
+                    };
+                }
 
                 Console.WriteLine("File path: {0}", FilePath);
                 Console.WriteLine("Config mode: {0}", ConfigMode);
 
-                if (FilePath.EndsWith("Package.appxmanifest", StringComparison.InvariantCultureIgnoreCase))
+                if (OSVersion == OSVersion.Unknown)
                 {
-                    OSVersion = OSVersion.UWP;
+                    if (FilePath.EndsWith("Package.appxmanifest", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OSVersion = OSVersion.UWP;
+                    }
+                    else if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase) ||
+                        FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        OSVersion = OSVersion.MaciOS;
+                    }
                 }
-                else if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase) ||
-                    FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    OSVersion = OSVersion.MaciOS;
-                }
+
+                Console.WriteLine("OSVersion: {0}", OSVersion);
 
                 if (OSVersion == OSVersion.Unknown)
                 {
@@ -61,7 +76,7 @@ namespace EditManifest
                     var sBuilder = new StringBuilder();
                     var fStream = File.Open(FilePath, FileMode.Open, FileAccess.ReadWrite);
                     sReader = new StreamReader(fStream);
-                    sWriter = new StreamWriter(fStream);
+                    sWriter = new StreamWriter(fStream, Encoding.UTF8);
 
                     while (!sReader.EndOfStream)
                     {
@@ -73,12 +88,14 @@ namespace EditManifest
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeatherDebug\"");
                                 line = line.Replace("S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756", "S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191");
                                 line = line.Replace("DisplayName=\"SimpleWeather\"", "DisplayName=\"SimpleWeather (Debug)\"");
+                                line = line.Replace("E3E44B22-74AE-47CE-A507-6EBE2F832B8F", "148C5627-665B-4DAC-AB27-64397E80335A");
                             }
                             else
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeatherDebug\"", "Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"");
                                 line = line.Replace("S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191", "S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756");
                                 line = line.Replace("DisplayName=\"SimpleWeather (Debug)\"", "DisplayName=\"SimpleWeather\"");
+                                line = line.Replace("148C5627-665B-4DAC-AB27-64397E80335A", "E3E44B22-74AE-47CE-A507-6EBE2F832B8F");
                             }
                         }
                         else if (OSVersion == OSVersion.MaciOS)

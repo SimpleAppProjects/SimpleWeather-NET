@@ -821,7 +821,12 @@ namespace SimpleWeather.NET.Preferences
             SettingsManager.DailyNotificationTime = args.NewTime ?? SettingsManager.DEFAULT_DAILYNOTIFICATION_TIME;
             if (SettingsManager.DailyNotificationEnabled)
             {
-                Task.Run(() => DailyNotificationTask.RegisterBackgroundTask(true));
+                Task.Run(async () =>
+                {
+                    await DailyNotificationTask.RegisterBackgroundTask(true);
+                    // Schedule notification anyway as task is not guaranteed
+                    await DailyNotificationTask.ScheduleDailyNotification();
+                });
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using Windows.ApplicationModel.Background;
@@ -33,6 +34,16 @@ namespace SimpleWeather.NET.BackgroundTasks
                     // Check if WeatherTask is registered
                     // If not register
                     await WeatherUpdateBackgroundTask.RegisterBackgroundTask(false);
+
+                    // Register tasks if not already registered
+                    if (SettingsManager.DailyNotificationEnabled)
+                    {
+                        await DailyNotificationTask.RegisterBackgroundTask(false);
+                    }
+
+                    await RemoteConfigUpdateTask.RegisterBackgroundTask(false);
+                    await PremiumStatusTask.RegisterBackgroundTask(false);
+                    await AppUpdaterTask.RegisterBackgroundTask(false);
                 }
             });
 

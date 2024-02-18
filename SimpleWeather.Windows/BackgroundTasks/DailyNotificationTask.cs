@@ -39,6 +39,25 @@ namespace SimpleWeather.NET.BackgroundTasks
             deferral.Complete();
         }
 
+        public static async Task ScheduleDailyNotification()
+        {
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Requesting to start work immediately", taskName);
+
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+            await SettingsManager.LoadIfNeeded();
+
+            if (SettingsManager.WeatherLoaded && SettingsManager.DailyNotificationEnabled)
+            {
+                // Create toast notification
+                var now = DateTimeOffset.Now;
+                var delay = GetTaskDelayInMinutes();
+                var deliveryTime = now.AddMinutes(delay);
+
+                await DailyNotificationCreator.ScheduleNotification(await SettingsManager.GetHomeData(), deliveryTime);
+            }
+        }
+
         public static async Task RegisterBackgroundTask(bool reregister = false)
         {
             var taskRegistration = GetTaskRegistration();

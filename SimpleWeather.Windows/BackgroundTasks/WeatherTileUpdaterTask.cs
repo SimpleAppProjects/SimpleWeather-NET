@@ -49,6 +49,11 @@ namespace SimpleWeather.NET.BackgroundTasks
                         {
                             await Notifications.PoPNotificationCreator.CreateNotification(await SettingsManager.GetHomeData());
                         }
+
+                        if (SettingsManager.DailyNotificationEnabled)
+                        {
+                            await DailyNotificationTask.ScheduleDailyNotification();
+                        }
                     }
 
                     Logger.WriteLine(LoggerLevel.Debug, "{0}: End of run...", taskName);
