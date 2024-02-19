@@ -35,6 +35,11 @@
 		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
 	</PropertyGroup>
 
+    <PropertyGroup>
+		<!-- Note: Workaround for MacCatalyst application name issue -->
+        <AssemblyName>SimpleWeather</AssemblyName>
+    </PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 		<CreatePackage>false</CreatePackage>
