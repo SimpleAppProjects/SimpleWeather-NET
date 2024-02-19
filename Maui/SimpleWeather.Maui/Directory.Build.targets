@@ -28,7 +28,7 @@
        <Exec Condition="'$(Configuration)|$(_PlatformName)' == 'Debug|MacCatalyst'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Debug-maccatalyst/widgetintentExtDebug.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExtDebug.appex" />
 
        <Exec Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhone'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-iphoneos/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExt.appex" />
-       <Exec Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhoneSimulator'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-iphonesimulator/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppBundlePath)widgetintentExt.appex" />
+       <Exec Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhoneSimulator'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-iphonesimulator/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExt.appex" />
        <Exec Condition="'$(Configuration)|$(_PlatformName)' == 'Release|MacCatalyst'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-maccatalyst/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExt.appex" />
     </Target>
 </Project>
