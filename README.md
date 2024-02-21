@@ -1,18 +1,26 @@
-# SimpleWeather
+<div align="center">
+<br>
+<img src="SimpleWeather.Windows/Assets/AppLogo.png" width="250" />
+</div>
 
-A simple weather application
+<h1 align="center">SimpleWeather</h1>
+<p align="center">A simple weather application</p>
+<div align="center">
+Available for <a href='https://github.com/SimpleAppProjects/SimpleWeather-NET'>Windows, iOS, Mac</a> & <a href='https://github.com/SimpleAppProjects/SimpleWeather-Android'>Android</a> devices
+</div>
 
-Available for <a href='https://github.com/SimpleAppProjects/SimpleWeather-Windows'>Windows 10</a> & <a href='https://github.com/SimpleAppProjects/SimpleWeather-Android'>Android</a> devices
+<br>
 
-## Release
+<h1 align="center">Download</h1>
 
-<a href='//www.microsoft.com/store/apps/9NKC37BC8SRX?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/en-us/store/badges/images/English_get-it-from-MS.png' alt='English badge' width='284px' height='104px'/></a>
+<div align="center">
+<a href="http://www.microsoft.com/store/apps/9NKC37BC8SRX?cid=storebadge&amp;ocid=badge"><img src="https://developer.microsoft.com/en-us/store/badges/images/English_get-it-from-MS.png" alt="Download on the Microsoft Store" height="70" /></a>
+<a href="https://testflight.apple.com/join/YIe5cYGy?itsct=apps_box_badge&amp;itscg=30200"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1366243200" alt="Download on the App Store" height="70" /></a>
+</div>
 
-<b>OR</b>
+<br>
 
-Download the package (.appxbundle) to sideload from <a href="https://github.com/SimpleAppProjects/SimpleWeather-Windows/releases">HERE</a>
-
-## License
+<h1 align="center">License</h1>
 
     Copyright 2017 Dave Antoine
 
@@ -27,3 +35,4 @@ Download the package (.appxbundle) to sideload from <a href="https://github.com/
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
