@@ -32,6 +32,8 @@
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <!-- Images -->
     <Content Include="Resources\Images\**" />
+    <!-- Custom Fonts -->
+    <Content Include="Resources\Fonts\**" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
     <!-- Images -->

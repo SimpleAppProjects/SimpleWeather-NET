@@ -53,6 +53,7 @@
                 VerticalOptions="Center"
                 StretchDirection="DownOnly">
                 <Label x:Name="DetailValue"
+                       FontFamily="WeatherIcons"
                        FontSize="{OnIdiom Phone=12, Default=14, Desktop=15}"
                        Padding="{OnIdiom Phone=0, Default=8}"
                        Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"

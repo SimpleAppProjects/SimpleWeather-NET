@@ -37,6 +37,7 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 fonts.AddFont("OpenSans-Light.ttf", "OpenSansLight");
                 fonts.AddFont("MaterialIcons-Regular.ttf", MaterialIcon.FONT_ALIAS);
+                fonts.AddFont("weathericons-regular-webfont.ttf", "WeatherIcons");
             })
             .ConfigureEssentials(essentials =>
             {

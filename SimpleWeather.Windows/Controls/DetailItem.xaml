@@ -75,6 +75,7 @@
                 <TextBlock
                     Name="DetailValue"
                     Padding="8"
+                    FontFamily="{StaticResource WeatherIconsFontFamily}"
                     Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
                     TextWrapping="WrapWholeWords" />
             </Viewbox>

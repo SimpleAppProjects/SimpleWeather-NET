@@ -344,5 +344,6 @@
         <Setter Property="Height" Value="1" />
         <Setter Property="Fill" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
     </Style>
+    <FontFamily x:Key="WeatherIconsFontFamily">ms-appx:///SimpleWeather.Shared/Resources/Fonts/weathericons-regular-webfont.ttf#Weather Icons</FontFamily>
     <!--  Custom Styles End  -->
 </ResourceDictionary>
