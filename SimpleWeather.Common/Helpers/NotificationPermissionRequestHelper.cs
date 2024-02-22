@@ -16,7 +16,11 @@ namespace SimpleWeather.Common.Helpers
 {
     public static class NotificationPermissionRequestHelper
     {
-        public static async Task<bool> NotificationPermissionEnabled()
+        public static async Task<bool> NotificationPermissionEnabled(
+#if __IOS__
+            bool requestProvisional = true
+#endif
+            )
         {
 #if WINDOWS
             return true;
@@ -31,13 +35,26 @@ namespace SimpleWeather.Common.Helpers
             }
 #elif __IOS__ || __MACCATALYST__
             var notificationSettings = await UNUserNotificationCenter.Current.GetNotificationSettingsAsync();
-            return notificationSettings.AuthorizationStatus == UNAuthorizationStatus.Authorized || notificationSettings.AuthorizationStatus == UNAuthorizationStatus.Provisional;
+
+            if (requestProvisional)
+            {
+                return notificationSettings.AuthorizationStatus == UNAuthorizationStatus.Authorized ||
+                    notificationSettings.AuthorizationStatus == UNAuthorizationStatus.Provisional;
+            }
+            else
+            {
+                return notificationSettings.AuthorizationStatus == UNAuthorizationStatus.Authorized;
+            }
 #else
             return true;
 #endif
         }
 
-        public static async Task<bool> RequestNotificationPermission()
+        public static async Task<bool> RequestNotificationPermission(
+#if __IOS__
+            bool requestProvisional = true
+#endif
+            )
         {
 #if WINDOWS
             return true;
@@ -53,7 +70,15 @@ namespace SimpleWeather.Common.Helpers
             }
 #elif __IOS__ || __MACCATALYST__
             var notificationCenter = UNUserNotificationCenter.Current;
-            var result = await notificationCenter.RequestAuthorizationAsync(UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound | UNAuthorizationOptions.Badge | UNAuthorizationOptions.Provisional);
+
+            var notificationOptions = UNAuthorizationOptions.Alert | UNAuthorizationOptions.Sound | UNAuthorizationOptions.Badge;
+
+            if (requestProvisional)
+            {
+                notificationOptions |= UNAuthorizationOptions.Provisional;
+            }
+
+            var result = await notificationCenter.RequestAuthorizationAsync(notificationOptions);
             if (result.Item2 != null)
             {
                 Logger.WriteLine(LoggerLevel.Debug, $"NotificationPermission: error - {result.Item2.Description}");

@@ -134,11 +134,17 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
         if (sw.On)
         {
 #if __IOS__
-            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled())
+            if (!await NotificationPermissionRequestHelper.NotificationPermissionEnabled(false))
             {
                 sw.On = false;
-                await NotificationPermissionRequestHelper.RequestNotificationPermission();
-                return;
+                var result = await NotificationPermissionRequestHelper.RequestNotificationPermission(false);
+
+                if (!result)
+                {
+                    return;
+                }
+
+                sw.On = result;
             }
 #endif
 
