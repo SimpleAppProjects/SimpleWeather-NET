@@ -248,6 +248,7 @@ ModelManifest.xml
 .DS_Store
 *.xcuserstate
 /Maui/SimpleWeather.Maui.AppWidget/DerivedData
+/Maui/StoreKit2Proxy
 /Maui/WidgetCenterProxy
 
 # XCode

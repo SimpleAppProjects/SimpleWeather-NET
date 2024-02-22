@@ -42,6 +42,8 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
+		<Registrar>static</Registrar>
+		<MtouchExtraArgs>--require-pinvoke-wrappers=true</MtouchExtraArgs>
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
@@ -49,6 +51,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
 		<WarningLevel>4</WarningLevel>
+		<Registrar>static</Registrar>
+		<MtouchExtraArgs>--require-pinvoke-wrappers=true</MtouchExtraArgs>
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Release (iOS - Debug)</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
@@ -122,6 +126,7 @@
 		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
 		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
+		<PackageReference Include="com.thewizrd.StoreKit2Proxy.Maui" Version="1.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
