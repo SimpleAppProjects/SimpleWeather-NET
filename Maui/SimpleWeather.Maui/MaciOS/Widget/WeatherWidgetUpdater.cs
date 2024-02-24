@@ -9,11 +9,7 @@ namespace SimpleWeather.Maui.Widget
 {
     public static class WeatherWidgetUpdater
     {
-#if DEBUG
-        private const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather.debug";
-#else
-        private const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather";
-#endif
+        private const string GROUP_IDENTIFIER = AppDelegate.GROUP_IDENTIFIER;
 
         private static Lazy<WidgetCenterProxy> widgetCenterProxyLazy = new(() => {
             return new WidgetCenterProxy();

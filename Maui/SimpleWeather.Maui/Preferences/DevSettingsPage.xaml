@@ -50,6 +50,7 @@
                 </TableSection>
                 <TableSection Title="Misc">
                     <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />
+                    <TextCell x:Name="LogsCell" Text="Save Logs" />
                 </TableSection>
             </TableRoot>
         </TableView>

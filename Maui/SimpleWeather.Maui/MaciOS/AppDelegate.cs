@@ -12,6 +12,12 @@ namespace SimpleWeather.Maui;
 
 public partial class AppDelegate
 {
+#if DEBUG
+    public const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather.debug";
+#else
+    public const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather";
+#endif
+
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
     private CLLocationManager cLLocationManager;

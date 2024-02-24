@@ -14,5 +14,7 @@
 	<array>
 		<string>group.com.thewizrd.simpleweather</string>
 	</array>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
 </dict>
 </plist>
