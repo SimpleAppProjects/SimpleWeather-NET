@@ -75,7 +75,7 @@ namespace SimpleWeather.Maui.Widget
                     lo = uiModel.LoTemp,
                     showHiLo = uiModel.ShowHiLo,
 
-                    chance = uiModel.WeatherDetailsMap[WeatherDetailsType.PoPRain]?.Value,
+                    chance = uiModel.WeatherDetailsMap[WeatherDetailsType.PoPChance]?.Value,
 
                     backgroundColor = imageData.HexColor,
                     backgroundCode = backgroundCode
@@ -90,7 +90,7 @@ namespace SimpleWeather.Maui.Widget
                         icon = model.WeatherIcon,
                         hi = model.HiTemp,
                         lo = model.LoTemp,
-                        chance = model.DetailExtras[WeatherDetailsType.PoPRain]?.Value
+                        chance = model.DetailExtras[WeatherDetailsType.PoPChance]?.Value
                     };
                 }).ToArray(),
                 hr_forecasts = weather.hr_forecast?.Select(f =>

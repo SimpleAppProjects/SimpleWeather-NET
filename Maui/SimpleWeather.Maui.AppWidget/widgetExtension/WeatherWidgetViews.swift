@@ -338,7 +338,7 @@ struct WeatherWidgetDailyForecastSmall: View {
                 .symbolRenderingMode(.multicolor)
                 .font(smallIconSize)
             Spacer().frame(width: 8)
-            if (model.chance != nil && Int(model.chance!.replacing("%", with: ""))! >= 30) {
+            if (model.chance != nil && (Int(model.chance?.replacing("%", with: "") ?? "") ?? 0) >= 30) {
                 Text(model.chance!)
                     .lineLimit(1)
                     .font(textFont)
@@ -382,7 +382,7 @@ struct WeatherWidgetDailyForecastLarge: View {
             Image(systemName: iconToSFSymbol(icon: model.weatherIcon))
                 .symbolRenderingMode(.multicolor)
                 .font(mediumIconSize)
-            if (model.chance != nil && Int(model.chance!.replacing("%", with: ""))! >= 30) {
+            if (model.chance != nil && (Int(model.chance?.replacing("%", with: "") ?? "") ?? 0) >= 30) {
                 HStack(alignment: .center, spacing: 0) {
                     Image(systemName: "umbrella.percent.fill")
                         .symbolRenderingMode(.multicolor)
