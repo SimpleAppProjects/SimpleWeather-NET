@@ -37,7 +37,15 @@ namespace SimpleWeather.Utils
 #endif
         }
 
-        public static bool IsDebugLoggerEnabled() => Timber.Forest.Any(it => it is FileLoggingTree);
+        public static bool IsDebugLoggerEnabled() => Timber.Forest.Any(it =>
+        {
+            return it is FileLoggingTree
+#if __IOS__
+                || it is ConsoleTree;
+#else
+                || it is Timber.DebugTree;
+#endif
+        });
 
         public static void EnableDebugLogger(bool enable)
         {
@@ -47,12 +55,31 @@ namespace SimpleWeather.Utils
                 {
                     Timber.Plant(new FileLoggingTree());
                 }
+#if __IOS__
+                if (!Timber.Forest.Any(it => it is ConsoleTree))
+                {
+                    Timber.Plant(new ConsoleTree());
+                }
+#else
+                if (!Timber.Forest.Any(it => it is Timber.DebugTree))
+                {
+                    Timber.Plant(new Timber.DebugTree());
+                }
+#endif
             }
             else
             {
                 Timber.Forest.ForEach(tree =>
                 {
                     if (tree is FileLoggingTree)
+                    {
+                        Timber.Uproot(tree);
+                    }
+#if __IOS__
+                    if (tree is ConsoleTree)
+#else
+                    if (tree is Timber.DebugTree)
+#endif
                     {
                         Timber.Uproot(tree);
                     }
@@ -94,13 +121,14 @@ namespace SimpleWeather.Utils
         private static void CleanupLogs()
         {
 #if !UNIT_TEST
-            Task.Run(async () =>
+            Task.Run(() =>
             {
 #if WINUI
-                await FileUtils.DeleteDirectory(Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs"));
+                var logsDirectory = Path.Combine(ApplicationData.Current.LocalFolder.Path, "logs");
 #else
-                await FileUtils.DeleteDirectory(Path.Combine(ApplicationDataHelper.GetLocalFolderPath(), "logs"));
+                var logsDirectory = Path.Combine(ApplicationDataHelper.GetLocalFolderPath(), "logs");
 #endif
+                FileLoggingTree.CleanupLogs(logsDirectory);
             });
 #endif
         }
