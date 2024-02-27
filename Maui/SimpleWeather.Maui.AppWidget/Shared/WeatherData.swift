@@ -109,7 +109,7 @@ extension WeatherData {
         let tz = TimeZone(identifier: tzStr)
 
         let fcastDateFmt = DateFormatter()
-        fcastDateFmt.timeZone = tz
+        fcastDateFmt.timeZone = TimeZone(secondsFromGMT: 0) // use date as is
         fcastDateFmt.dateFormat = "EEE"
         
         let hrfcastDateFmt = DateFormatter()
