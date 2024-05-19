@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
+using Sentry.Protocol;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
@@ -25,12 +26,15 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
+using System.Security;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
+using FirebaseAuth = Firebase.Auth;
+using FirebaseDb = Firebase.Database;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace SimpleWeather.NET
@@ -114,8 +118,21 @@ namespace SimpleWeather.NET
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
 
+            // AppCenter
             AppCenter.LogLevel = AppCenterLogLevel.Verbose;
             AppCenter.Start(AppCenterConfig.GetUWPAppCenterSecret(), typeof(Analytics), typeof(Crashes));
+
+            // Sentry
+            SentrySdk.Init(options =>
+            {
+                options.Dsn = SentryConfig.GetDsn();
+                options.IsGlobalModeEnabled = true;
+                // Disable Sentry's built in UnhandledException handler as this won't work with AOT compilation
+                options.DisableWinUiUnhandledExceptionIntegration();
+
+                // Limit exceptions captured
+                options.AddExceptionFilter(new ExceptionFilter());
+            });
 
             // Initialize depencies for library
             InitializeDependencies();
@@ -680,16 +697,26 @@ namespace SimpleWeather.NET
          *   not by Microsoft.UI.Xaml.Application.Current.UnhandledException
          *   See: https://github.com/microsoft/microsoft-ui-xaml/issues/5221
          */
+        [SecurityCritical]
         private void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
         {
-            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "Unhandled Exception: {0}", e.ExceptionObject);
+            var exception = e.ExceptionObject as Exception;
 
-            // Log inner exceptions
-            if (e.ExceptionObject is AggregateException agg)
+            if (exception is not null)
             {
-                foreach (Exception inner in agg.InnerExceptions)
+                // Tell Sentry this was an unhandled exception
+                exception.Data[Mechanism.HandledKey] = false;
+                exception.Data[Mechanism.MechanismKey] = "AppDomain.CurrentDomain.UnhandledException";
+
+                Logger.WriteLine(LoggerLevel.Fatal, exception, "Unhandled Exception: {0}", exception);
+
+                // Log inner exceptions
+                if (exception is AggregateException agg)
                 {
-                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
+                    foreach (Exception inner in agg.InnerExceptions)
+                    {
+                        Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
+                    }
                 }
             }
         }
@@ -704,35 +731,56 @@ namespace SimpleWeather.NET
          *   but that can be worked around by saved by trapping first chance exceptions
          *   See: https://github.com/microsoft/microsoft-ui-xaml/issues/7160
          */
+        [SecurityCritical]
         private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = e.Exception;
 
-            if (exception?.StackTrace is null)
+            if (exception is not null)
             {
-                exception = LastFirstChanceException;
-            }
-
-            Logger.WriteLine(LoggerLevel.Fatal, exception, "Unhandled Exception: {0}", exception.Message);
-
-            // Log inner exceptions
-            if (exception is AggregateException agg)
-            {
-                foreach (Exception inner in agg.InnerExceptions)
+                if (exception?.StackTrace is null && LastFirstChanceException != null)
                 {
-                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
+                    exception = LastFirstChanceException;
                 }
+
+                // Tell Sentry this was an unhandled exception
+                exception.Data[Mechanism.HandledKey] = false;
+                exception.Data[Mechanism.MechanismKey] = "Application.UnhandledException";
+
+                Logger.WriteLine(LoggerLevel.Fatal, exception, $"Unhandled Exception: {exception?.Message}");
+
+                // Log inner exceptions
+                if (exception is AggregateException agg)
+                {
+                    foreach (Exception inner in agg.InnerExceptions)
+                    {
+                        Logger.WriteLine(LoggerLevel.Fatal, inner, $"Unhandled Inner Exception: {inner.Message}");
+                    }
+                }
+
+                // Flush the event immediately
+                SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
             }
         }
 
+        [SecurityCritical]
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
         {
-            Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
+            var exception = e.Exception;
 
-            // Log inner exceptions
-            foreach (Exception inner in e.Exception.InnerExceptions)
+            if (exception is not null)
             {
-                Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Inner Exception: {0}", inner.Message);
+                // Tell Sentry this was an unhandled exception
+                exception.Data[Mechanism.HandledKey] = false;
+                exception.Data[Mechanism.MechanismKey] = "TaskScheduler.UnobservedTaskException";
+
+                Logger.WriteLine(LoggerLevel.Fatal, exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
+
+                // Log inner exceptions
+                foreach (Exception inner in exception.InnerExceptions)
+                {
+                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Inner Exception: {0}", inner.Message);
+                }
             }
         }
 
@@ -860,6 +908,51 @@ namespace SimpleWeather.NET
             else
             {
                 UISettings.ColorValuesChanged -= DefaultTheme_ColorValuesChanged;
+            }
+        }
+
+        private class ExceptionFilter : Sentry.Extensibility.IExceptionFilter
+        {
+            public bool Filter(Exception ex)
+            {
+                // Don't filter unhandled exceptions of any type
+                if (ex.Data is not null && ex.Data.Contains(Mechanism.HandledKey) && ex.Data[Mechanism.HandledKey] is false)
+                {
+                    return false;
+                }
+
+                if (ex is IOException && ex.Message?.Contains("HTTP") == true)
+                {
+                    return true;
+                }
+
+                if (ex is ArgumentNullException && (ex.StackTrace?.Contains("FromJson") == true || ex.StackTrace?.Contains("JSONParser") == true))
+                {
+                    return true;
+                }
+
+                if (ex is NullReferenceException && (ex.StackTrace?.Contains("SKXamlCanvas") == true || ex.StackTrace?.Contains("SQLite") == true))
+                {
+                    return true;
+                }
+
+                if (ex is not null && ex.Message?.Contains("tz_long") == true)
+                {
+                    return true;
+                }
+
+                if (ex is System.Text.Json.JsonException || ex is System.Net.Http.HttpRequestException ||
+                    ex is System.Net.WebException || ex is System.Runtime.InteropServices.COMException ||
+                    ex is SimpleWeather.Utils.WeatherException || ex is System.IO.FileNotFoundException ||
+                    ex is System.Threading.Tasks.TaskCanceledException || ex is System.TimeoutException ||
+                    ex is FirebaseAuth.FirebaseAuthException || ex is FirebaseAuth.FirebaseAuthHttpException ||
+                    ex is FirebaseDb.FirebaseException || ex is SQLite.SQLiteException ||
+                    ex is Newtonsoft.Json.JsonReaderException)
+                {
+                    return true;
+                }
+
+                return false;
             }
         }
     }

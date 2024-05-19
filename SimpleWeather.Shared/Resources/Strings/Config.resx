@@ -134,6 +134,9 @@
   <data name="default_weather_provider" xml:space="preserve">
     <value>weatherapi</value>
   </data>
+  <data name="google" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"Bing","newWeatherSource":""}</value>
+  </data>
   <data name="Here" xml:space="preserve">
     <value>{
         "enabled": true,
@@ -168,6 +171,9 @@
         "locSource": "Bing",
         "newWeatherSource": ""
 }</value>
+  </data>
+  <data name="openweather_onecall" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"Bing","newWeatherSource":""}</value>
   </data>
   <data name="tomorrowio" xml:space="preserve">
     <value>{

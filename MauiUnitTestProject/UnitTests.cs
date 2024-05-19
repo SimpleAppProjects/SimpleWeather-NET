@@ -457,6 +457,11 @@ namespace UnitTestProject
         [Fact]
         public async Task RemoteConfigUpdateTest()
         {
+#if WINDOWS
+            var remoteConfig = await FirebaseHelper.GetFirebaseRemoteConfig();
+            var response = await remoteConfig.GetRemoteConfig();
+            Assert.True(response.entries.Count > 0);
+#else
             var db = await FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__
             var uwpConfig = await db.Child("ios_remote_config").OnceAsync<object>();
@@ -476,6 +481,7 @@ namespace UnitTestProject
                     }
                 }
             }
+#endif
         }
 
         [Fact]

@@ -270,6 +270,8 @@ API_KEY.txt
 /SimpleWeather.Shared/Keys/AppCenterConfig.cs.bak
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs
 /SimpleWeather.Shared/Keys/FirebaseConfig.cs.bak
+/SimpleWeather.Shared/Keys/SentryConfig.cs
+/SimpleWeather.Shared/Keys/SentryConfig.cs.bak
 /SimpleWeather.Weather-API/Keys/Keys.cs
 /SimpleWeather.Weather-API/Keys/Keys.cs.bak
 /SimpleWeather.Weather-API/Keys/Keys.7z

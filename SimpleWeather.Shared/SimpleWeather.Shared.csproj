@@ -28,6 +28,7 @@
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
 
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+    <PackageReference Include="Sentry" Version="4.6.2" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <!-- Images -->

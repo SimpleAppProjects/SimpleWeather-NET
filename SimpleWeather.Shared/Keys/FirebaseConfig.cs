@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SimpleWeather.Keys
 {
@@ -22,6 +20,21 @@ namespace SimpleWeather.Keys
         }
 
         public static String GetProjectID()
+        {
+            return null;
+        }
+
+        public static String GetAppID()
+        {
+            return null;
+        }
+
+        public static String GetInstallationId()
+        {
+            return null;
+        }
+
+        public static String GetAnalyticsSecret()
         {
             return null;
         }

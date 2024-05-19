@@ -1,10 +1,11 @@
 ﻿#if !DEBUG && !UNIT_TEST
 using Microsoft.AppCenter.Analytics;
+using SimpleWeather.Firebase;
 #endif
-using SimpleWeather.Utils;
+#if DEBUG
 using System;
+#endif
 using System.Collections.Generic;
-using System.Text;
 
 namespace SimpleWeather.Utils
 {
@@ -17,6 +18,10 @@ namespace SimpleWeather.Utils
             Logger.WriteLine(LoggerLevel.Info, "EVENT | " + eventName + append);
 #elif !UNIT_TEST
             Analytics.TrackEvent(eventName, properties);
+#if WINDOWS
+            var analytics = FirebaseHelper.GetFirebaseAnalytics();
+            analytics.LogEvent(eventName, properties);
+#endif
 #endif
         }
     }

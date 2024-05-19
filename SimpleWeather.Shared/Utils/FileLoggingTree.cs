@@ -1,5 +1,4 @@
-﻿using Microsoft.Maui.Platform;
-using SimpleWeather.Helpers;
+﻿using SimpleWeather.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

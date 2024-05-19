@@ -55,6 +55,7 @@
     <PackageReference Include="KeyedSemaphores" Version="5.0.0" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
+    <PackageReference Include="Sentry" Version="4.6.2" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
       <Version>8.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

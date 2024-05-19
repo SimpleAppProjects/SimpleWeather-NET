@@ -34,6 +34,9 @@ namespace SimpleWeather.Utils
 #elif !UNIT_TEST
             CleanupLogs();
             Timber.Plant(new AppCenterLoggingTree());
+#if WINDOWS
+            Timber.Plant(new SentryLoggingTree());
+#endif
 #endif
         }
 

@@ -21,7 +21,12 @@ namespace SimpleWeather.Firebase
             });
         });
 
-        internal static FirebaseAuthClient FirebaseAuth => authClientLazy.Value;
+        private readonly static Lazy<FirebaseAnalytics> analyticsLazy = new(() =>
+        {
+            return new FirebaseAnalytics(Keys.FirebaseConfig.GetAppID(), Keys.FirebaseConfig.GetAnalyticsSecret(), Keys.FirebaseConfig.GetInstallationId(), GetAuthUser);
+        });
+
+        private static FirebaseAuthClient FirebaseAuth => authClientLazy.Value;
 
         public static async Task<FirebaseClient> GetFirebaseDatabase()
         {
@@ -33,17 +38,26 @@ namespace SimpleWeather.Firebase
             });
         }
 
-        public static async Task<string> GetAccessToken()
+        public static async Task<FirebaseRemoteConfig> GetFirebaseRemoteConfig()
         {
             await CheckSignIn();
 
-            var auth = FirebaseAuth;
+            return new FirebaseRemoteConfig(Keys.FirebaseConfig.GetProjectID(), Keys.FirebaseConfig.GetAppID(), Keys.FirebaseConfig.GetGoogleAPIKey(), GetAuthUser);
+        }
 
+        public static FirebaseAnalytics GetFirebaseAnalytics()
+        {
+            return analyticsLazy.Value;
+        }
+
+        public static async Task<string> GetAccessToken()
+        {
             string token = null;
 
             try
             {
-                token = await auth.User?.GetIdTokenAsync(true);
+                var user = await GetAuthUser();
+                token = await user?.GetIdTokenAsync(true);
             }
             catch (Exception ex)
             {
@@ -51,6 +65,15 @@ namespace SimpleWeather.Firebase
             }
 
             return token;
+        }
+
+        internal static async Task<User> GetAuthUser()
+        {
+            await CheckSignIn();
+
+            var auth = FirebaseAuth;
+
+            return auth.User;
         }
 
         private static async Task CheckSignIn()

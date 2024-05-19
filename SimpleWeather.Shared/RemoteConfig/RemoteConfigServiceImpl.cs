@@ -153,6 +153,18 @@ namespace SimpleWeather.RemoteConfig
         {
             return Task.Run(async () =>
             {
+#if WINDOWS
+                var remoteConfig = await Firebase.FirebaseHelper.GetFirebaseRemoteConfig();
+                var config = await remoteConfig.GetRemoteConfig();
+
+                if (config?.entries?.Count > 0)
+                {
+                    foreach (var prop in config.entries)
+                    {
+                        SetConfigString(prop.Key, prop.Value);
+                    }
+                }
+#else
                 var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__
                 var config = await db.Child("ios_remote_config").OnceAsync<object>();
@@ -166,6 +178,7 @@ namespace SimpleWeather.RemoteConfig
                         SetConfigString(prop.Key, prop.Object.ToString());
                     }
                 }
+#endif
 
                 UpdateWeatherProvider();
             });
