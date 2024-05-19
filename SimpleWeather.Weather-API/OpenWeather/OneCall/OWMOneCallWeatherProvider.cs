@@ -21,6 +21,7 @@ using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 {
+    [Obsolete("Access to One Call 2.5 will be closed in June 2024. Disable or migrate by then as it will require payment info")]
     public partial class OWMOneCallWeatherProvider : WeatherProviderImpl, IAirQualityProvider
     {
         private const String BASE_URL = "https://api.openweathermap.org/data/2.5/";

@@ -11,6 +11,7 @@ namespace SimpleWeather.WeatherData
         public const string Yahoo = "Yahoo";
         public const string WeatherUnderground = "WUnderground";
         public const string OpenWeatherMap = "OpenWeather";
+        public const string OpenWeatherMap_OneCall = "openweather_onecall";
         public const string MetNo = "Metno";
         public const string Here = "Here";
         public const string NWS = "NWS";

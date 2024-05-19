@@ -221,67 +221,73 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 
             txtForecast.date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
 
-            var sb = new StringBuilder();
-            sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoF(forecast.temp.morn)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoF(forecast.feels_like.morn)));
-            sb.AppendLine();
-            sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoF(forecast.temp.day)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoF(forecast.temp.day)));
-            sb.AppendLine();
-            sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoF(forecast.temp.eve)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoF(forecast.feels_like.eve)));
-            sb.AppendLine();
-            sb.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoF(forecast.temp.night)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoF(forecast.feels_like.night)));
+            if (!string.IsNullOrWhiteSpace(forecast.summary))
+            {
+                txtForecast.fcttext = txtForecast.fcttext_metric = forecast.summary;
+            }
+            else
+            {
+                var sb = new StringBuilder()
+                .AppendFormat(CultureInfo.InvariantCulture,
+                    "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
+                    ResStrings.label_temp,
+                    Math.Round(ConversionMethods.KtoF(forecast.temp.morn)),
+                    ResStrings.label_feelslike,
+                    Math.Round(ConversionMethods.KtoF(forecast.feels_like.morn)))
+                .AppendLine()
+                .AppendFormat(CultureInfo.InvariantCulture,
+                    "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
+                    ResStrings.label_temp,
+                    Math.Round(ConversionMethods.KtoF(forecast.temp.day)),
+                    ResStrings.label_feelslike,
+                    Math.Round(ConversionMethods.KtoF(forecast.temp.day)))
+                .AppendFormat(CultureInfo.InvariantCulture,
+                    "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
+                    ResStrings.label_temp,
+                    Math.Round(ConversionMethods.KtoF(forecast.temp.eve)),
+                    ResStrings.label_feelslike,
+                    Math.Round(ConversionMethods.KtoF(forecast.feels_like.eve)))
+                .AppendLine()
+                .AppendFormat(CultureInfo.InvariantCulture,
+                    "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
+                    ResStrings.label_temp,
+                    Math.Round(ConversionMethods.KtoF(forecast.temp.night)),
+                    ResStrings.label_feelslike,
+                    Math.Round(ConversionMethods.KtoF(forecast.feels_like.night)));
 
-            txtForecast.fcttext = sb.ToString();
+                txtForecast.fcttext = sb.ToString();
 
-            var sb_metric = new StringBuilder();
-            sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoC(forecast.temp.morn)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoC(forecast.feels_like.morn)));
-            sb_metric.AppendLine();
-            sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoC(forecast.temp.day)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoC(forecast.feels_like.day)));
-            sb_metric.AppendLine();
-            sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoC(forecast.temp.eve)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoC(forecast.feels_like.eve)));
-            sb_metric.AppendLine();
-            sb_metric.AppendFormat(CultureInfo.InvariantCulture,
-                "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
-                ResStrings.label_temp,
-                Math.Round(ConversionMethods.KtoC(forecast.temp.night)),
-                ResStrings.label_feelslike,
-                Math.Round(ConversionMethods.KtoC(forecast.feels_like.night)));
+                var sb_metric = new StringBuilder()
+                    .AppendFormat(CultureInfo.InvariantCulture,
+                        "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_morning,
+                        ResStrings.label_temp,
+                        Math.Round(ConversionMethods.KtoC(forecast.temp.morn)),
+                        ResStrings.label_feelslike,
+                        Math.Round(ConversionMethods.KtoC(forecast.feels_like.morn)))
+                    .AppendLine()
+                    .AppendFormat(CultureInfo.InvariantCulture,
+                        "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_afternoon,
+                        ResStrings.label_temp,
+                        Math.Round(ConversionMethods.KtoC(forecast.temp.day)),
+                        ResStrings.label_feelslike,
+                        Math.Round(ConversionMethods.KtoC(forecast.feels_like.day)))
+                    .AppendLine()
+                    .AppendFormat(CultureInfo.InvariantCulture,
+                        "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_eve,
+                        ResStrings.label_temp,
+                        Math.Round(ConversionMethods.KtoC(forecast.temp.eve)),
+                        ResStrings.label_feelslike,
+                        Math.Round(ConversionMethods.KtoC(forecast.feels_like.eve)))
+                    .AppendLine()
+                    .AppendFormat(CultureInfo.InvariantCulture,
+                        "{0} - {1}: {2}°; {3}: {4}°", ResStrings.label_night,
+                        ResStrings.label_temp,
+                        Math.Round(ConversionMethods.KtoC(forecast.temp.night)),
+                        ResStrings.label_feelslike,
+                        Math.Round(ConversionMethods.KtoC(forecast.feels_like.night)));
 
-            txtForecast.fcttext_metric = sb_metric.ToString();
+                txtForecast.fcttext_metric = sb_metric.ToString();
+            }
 
             return txtForecast;
         }

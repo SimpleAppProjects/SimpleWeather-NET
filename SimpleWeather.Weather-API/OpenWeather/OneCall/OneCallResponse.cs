@@ -99,6 +99,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
         public float? rain { get; set; }
         public float? snow { get; set; }
         public Weather[] weather { get; set; }
+        public string summary { get; set; }
     }
 
     public class Temp

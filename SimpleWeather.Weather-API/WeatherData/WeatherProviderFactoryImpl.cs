@@ -27,15 +27,15 @@ namespace SimpleWeather.Weather_API.WeatherData
                 case WeatherAPI.OpenWeatherMap:
                     {
                         var SettingsManager = DI.Utils.SettingsManager;
+                        var RemoteConfigService = DI.Utils.RemoteConfigService;
 
-                        if (SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap])
+                        if (SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap] &&
+                            RemoteConfigService.IsProviderEnabled(WeatherAPI.OpenWeatherMap_OneCall))
                         {
                             return new OWMOneCallWeatherProvider();
                         }
-                        else
-                        {
-                            return new OpenWeatherMapProvider();
-                        }
+
+                        return new OpenWeatherMapProvider();
                     }
 
                 case WeatherAPI.MetNo:
