@@ -80,6 +80,19 @@ public partial class App : Application
 
         RegisterSettingsListener();
 
+        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "desktop");
+        }
+        else if (DeviceInfo.Idiom == DeviceIdiom.Tablet)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "tablet");
+        }
+        else if (DeviceInfo.Idiom == DeviceIdiom.Phone)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "phone");
+        }
+
         this.UserAppTheme = SettingsManager.UserTheme switch
         {
             UserThemeMode.Light => AppTheme.Light,

@@ -390,6 +390,8 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                         { "API", api },
                         { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[api]).ToString() }
                     });
+                    AnalyticsLogger.SetUserProperty(AnalyticsProps.WEATHER_PROVIDER, api);
+                    AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY, SettingsManager.UsePersonalKeys[api]);
 #if __IOS__
                     WeatherUpdaterTask.UpdateWeather();
 #endif

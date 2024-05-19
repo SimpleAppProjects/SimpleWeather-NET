@@ -67,6 +67,8 @@ namespace SimpleWeather.Utils
             settingsMgr.SetValue<string>(KEY_LANGUAGE, localeCode);
             UpdateLocale(localeCode);
             UpdateAppLocale();
+
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.USER_LOCALE, GetLocale()?.Name);
         }
 
         public static CultureInfo GetLocale()

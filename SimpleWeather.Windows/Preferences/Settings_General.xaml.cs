@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
-using Mapsui.Providers;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,8 +25,6 @@ using Windows.Devices.Geolocation;
 
 #if !DEBUG
 
-using Microsoft.AppCenter.Analytics;
-using System.Collections.Generic;
 
 #endif
 
@@ -389,6 +386,8 @@ namespace SimpleWeather.NET.Preferences
                                 { "API", api },
                                 { "API_IsInternalKey", (!SettingsManager.UsePersonalKeys[api]).ToString() }
                             });
+                            AnalyticsLogger.SetUserProperty(AnalyticsProps.WEATHER_PROVIDER, api);
+                            AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY, SettingsManager.UsePersonalKeys[api]);
                         }
                         Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
                         break;

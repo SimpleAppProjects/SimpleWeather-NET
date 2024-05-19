@@ -144,6 +144,8 @@ namespace SimpleWeather.NET
             LocaleUtils.Init();
 
             RegisterSettingsListener();
+
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "desktop");
         }
 
         private void InitializeDependencies()

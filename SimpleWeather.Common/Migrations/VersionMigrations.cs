@@ -119,6 +119,11 @@ namespace SimpleWeather.Common.Migrations
                     { "VersionCode", SettingsMgr.VersionCode.ToString() },
                     { "CurrentVersionCode", CurrentVersionCode.ToString() }
                 });
+
+                // Capture user props on every update
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.WEATHER_PROVIDER, SettingsMgr.API);
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY, SettingsMgr.UsePersonalKeys[SettingsMgr.API]);
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.USER_LOCALE, LocaleUtils.GetLocale()?.Name);
             }
             // TZ Refresh
             if (SettingsMgr.VersionCode < 5700)
