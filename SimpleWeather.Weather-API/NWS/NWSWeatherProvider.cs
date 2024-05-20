@@ -29,8 +29,10 @@ namespace SimpleWeather.Weather_API.NWS
 {
     public partial class NWSWeatherProvider : WeatherProviderImpl
     {
-        private const string FORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=json";
-        private const string HRFORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=digitalJSON";
+        private const string FORECAST_QUERY_URL = "https://mobile.weather.gov/wtf/MapClick.php?{0}&FcstType=json";
+        private const string HRFORECAST_QUERY_URL = "https://mobile.weather.gov/wtf/MapClick.php?{0}&FcstType=digitalJSON";
+        private const string POINTS_QUERY_URL = "https://api.weather.gov/points/{0}";
+        private const int MAX_ATTEMPTS = 2;
 
         public NWSWeatherProvider() : base()
         {
@@ -91,46 +93,46 @@ namespace SimpleWeather.Weather_API.NWS
                 Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
                 Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, query));
 
-                using (var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL))
-                using (var hrForecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL))
+                using var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL);
+                observationRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                observationRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                observationRequest.Headers.UserAgent.AddAppUserAgent();
+
+                using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, hrlyForecastURL);
+                forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+                forecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                forecastRequest.Headers.UserAgent.AddAppUserAgent();
+
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
+                using var ctsO = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f));
+                using var observationResponse = await webClient.SendAsync(observationRequest, ctsO.Token);
+
+                // Check for errors
+                await this.CheckForErrors(observationResponse);
+
+                Stream observationStream = await observationResponse.Content.ReadAsStreamAsync();
+
+                // Load point json data
+                Observation.ForecastRootobject observationData = await JSONParser.DeserializerAsync<Observation.ForecastRootobject>(observationStream);
+
+                using var ctsF = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f));
+                using var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token);
+
+                // Check for errors
+                await this.CheckForErrors(forecastResponse);
+
+                Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
+
+                // Load point json data
+                Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
+
+                if (forecastData?.periodsItems?.Count <= 0)
                 {
-                    observationRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
-                    observationRequest.Headers.UserAgent.AddAppUserAgent();
-
-                    hrForecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
-                    hrForecastRequest.Headers.UserAgent.AddAppUserAgent();
-
-                    observationRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
-                    hrForecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
-
-                    // Get response
-                    var webClient = SharedModule.Instance.WebClient;
-                    using (var ctsO = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f)))
-                    using (var observationResponse = await webClient.SendAsync(observationRequest, ctsO.Token))
-                    {
-                        // Check for errors
-                        await this.CheckForErrors(observationResponse);
-
-                        Stream observationStream = await observationResponse.Content.ReadAsStreamAsync();
-
-                        // Load point json data
-                        Observation.ForecastRootobject observationData = await JSONParser.DeserializerAsync<Observation.ForecastRootobject>(observationStream);
-
-                        using (var ctsF = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f)))
-                        using (var forecastResponse = await webClient.SendAsync(hrForecastRequest, ctsF.Token))
-                        {
-                            // Check for errors
-                            await this.CheckForErrors(forecastResponse);
-
-                            Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
-
-                            // Load point json data
-                            Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
-
-                            weather = this.CreateWeatherData(observationData, forecastData);
-                        }
-                    }
+                    forecastData = await GetPointsHourlyForecastResponse(location);
                 }
+
+                weather = this.CreateWeatherData(observationData, forecastData);
             }
             catch (Exception ex)
             {
@@ -197,19 +199,19 @@ namespace SimpleWeather.Weather_API.NWS
 
                     var item = new PeriodsItem();
 
-                    var periodObj = fcastRoot.Property(periodName).Value.ToObject<JObject>();
-                    var timeArr = periodObj.Property("time").Value.ToObject<JArray>();
-                    var unixTimeArr = periodObj.Property("unixtime").Value.ToObject<JArray>();
+                    var periodObj = fcastRoot.Property(periodName)?.Value?.ToObject<JObject>(); if (periodObj == null) continue;
+                    var timeArr = periodObj.Property("time")?.Value?.ToObject<JArray>(); if (timeArr == null) continue;
+                    var unixTimeArr = periodObj.Property("unixtime")?.Value?.ToObject<JArray>(); if (unixTimeArr == null) continue;
+                    var tempArr = periodObj.Property("temperature")?.Value?.ToObject<JArray>(); if (tempArr == null) continue;
+                    var iconArr = periodObj.Property("iconLink")?.Value?.ToObject<JArray>(); if (iconArr == null) continue;
+                    var conditionTxtArr = periodObj.Property("weather")?.Value?.ToObject<JArray>(); if (conditionTxtArr == null) continue;
                     var windChillArr = periodObj.Property("windChill")?.Value?.ToObject<JArray>();
                     var windSpeedArr = periodObj.Property("windSpeed")?.Value?.ToObject<JArray>();
                     var cloudAmtArr = periodObj.Property("cloudAmount")?.Value?.ToObject<JArray>();
                     var popArr = periodObj.Property("pop")?.Value?.ToObject<JArray>();
                     var humidityArr = periodObj.Property("relativeHumidity")?.Value?.ToObject<JArray>();
                     var windGustArr = periodObj.Property("windGust")?.Value?.ToObject<JArray>();
-                    var tempArr = periodObj.Property("temperature")?.Value?.ToObject<JArray>();
                     var windDirArr = periodObj.Property("windDirection")?.Value?.ToObject<JArray>();
-                    var iconArr = periodObj.Property("iconLink")?.Value?.ToObject<JArray>();
-                    var conditionTxtArr = periodObj.Property("weather")?.Value?.ToObject<JArray>();
 
                     item.periodName = periodObj.Property("periodName").Value.ToObject<string>();
 
@@ -225,6 +227,27 @@ namespace SimpleWeather.Weather_API.NWS
                     {
                         String time = jsonElement.Value?.ToString();
                         item.unixtime.Add(time);
+                    }
+
+                    item.temperature = new List<string>(tempArr.Count);
+                    foreach (var jsonElement in tempArr.Children<JValue>())
+                    {
+                        String temp = jsonElement.Value?.ToString();
+                        item.temperature.Add(temp);
+                    }
+
+                    item.iconLink = new List<string>(iconArr.Count);
+                    foreach (var jsonElement in iconArr.Children<JValue>())
+                    {
+                        String icon = jsonElement.Value?.ToString();
+                        item.iconLink.Add(icon);
+                    }
+
+                    item.weather = new List<string>(conditionTxtArr.Count);
+                    foreach (var jsonElement in conditionTxtArr.Children<JValue>())
+                    {
+                        String condition = jsonElement.Value?.ToString();
+                        item.weather.Add(condition);
                     }
 
                     if (windChillArr != null)
@@ -311,20 +334,6 @@ namespace SimpleWeather.Weather_API.NWS
                         item.windGust = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
-                    if (tempArr != null)
-                    {
-                        item.temperature = new List<string>(tempArr.Count);
-                        foreach (var jsonElement in tempArr.Children<JValue>())
-                        {
-                            String temp = jsonElement.Value?.ToString();
-                            item.temperature.Add(temp);
-                        }
-                    }
-                    else
-                    {
-                        item.temperature = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
-                    }
-
                     if (windDirArr != null)
                     {
                         item.windDirection = new List<string>(windDirArr.Count);
@@ -339,39 +348,80 @@ namespace SimpleWeather.Weather_API.NWS
                         item.windDirection = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
                     }
 
-                    if (iconArr != null)
-                    {
-                        item.iconLink = new List<string>(iconArr.Count);
-                        foreach (var jsonElement in iconArr.Children<JValue>())
-                        {
-                            String icon = jsonElement.Value?.ToString();
-                            item.iconLink.Add(icon);
-                        }
-                    }
-                    else
-                    {
-                        item.iconLink = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
-                    }
-
-                    if (conditionTxtArr != null)
-                    {
-                        item.weather = new List<string>(conditionTxtArr.Count);
-                        foreach (var jsonElement in conditionTxtArr.Children<JValue>())
-                        {
-                            String condition = jsonElement.Value?.ToString();
-                            item.weather.Add(condition);
-                        }
-                    }
-                    else
-                    {
-                        item.weather = Enumerable.Repeat<string>(null, unixTimeArr.Count).ToList();
-                    }
-
                     forecastData.periodsItems.Add(item);
                 }
             }
 
             return forecastData;
+        }
+
+        private Task<HourlyForecastResponse> GetPointsHourlyForecastResponse(SimpleWeather.LocationData.LocationData location)
+        {
+            return Task.Run(async () =>
+            {
+                try
+                {
+                    var webClient = SharedModule.Instance.WebClient;
+
+                    Uri pointsUrl = new Uri(string.Format(POINTS_QUERY_URL, UpdatePointsLocationQuery(location)));
+
+                    using var pointsRequest = new HttpRequestMessage(HttpMethod.Get, pointsUrl);
+                    pointsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+                    pointsRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                    pointsRequest.Headers.UserAgent.AddAppUserAgent();
+
+                    using var ctsP = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f));
+                    using var pointsResponse = await webClient.SendAsync(pointsRequest, ctsP.Token);
+                    await this.CheckForErrors(pointsResponse);
+
+                    Stream pointsStream = await pointsResponse.Content.ReadAsStreamAsync();
+
+                    // Load point json data
+                    PointsRootobject pointsRootobject = await JSONParser.DeserializerAsync<PointsRootobject>(pointsStream);
+
+                    using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, pointsRootobject.forecastHourly + "?units=us");
+                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+                    forecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
+                    forecastRequest.Headers.UserAgent.AddAppUserAgent();
+
+                    HourlyPointsRootobject forecastResponseData = null;
+
+                    for (int i = 0; i < MAX_ATTEMPTS; i++)
+                    {
+                        try
+                        {
+                            using var ctsF = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f));
+                            using var response = await webClient.SendAsync(forecastRequest, ctsF.Token);
+
+                            if (response.StatusCode != HttpStatusCode.BadRequest)
+                            {
+                                // Check for errors
+                                await this.CheckForErrors(response);
+
+                                Stream forecastStream = await response.Content.ReadAsStreamAsync();
+
+                                forecastResponseData = JSONParser.Deserializer<HourlyPointsRootobject>(forecastStream);
+                            }
+                        }
+                        catch { }
+
+                        if (forecastResponseData == null)
+                        {
+                            await Task.Delay(1000);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    return forecastResponseData?.ToResponse(pointsRootobject) ?? throw new ArgumentNullException(nameof(forecastResponseData));
+                }
+                catch
+                {
+                    return new HourlyForecastResponse();
+                }
+            });
         }
 
         private class StrNumComparator : IComparer<string>
@@ -428,6 +478,18 @@ namespace SimpleWeather.Weather_API.NWS
         public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
             var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+            return str;
+        }
+
+        private string UpdatePointsLocationQuery(Weather weather)
+        {
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return str;
+        }
+
+        private string UpdatePointsLocationQuery(SimpleWeather.LocationData.LocationData location)
+        {
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
             return str;
         }
 

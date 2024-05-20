@@ -98,7 +98,7 @@ namespace SimpleWeather.Weather_API.NWS
                         // BUG: NWS MapClick API
                         // The epoch time sometimes is a day ahead
                         // If this is the case, adjust all dates accordingly
-                        if (i == 0 && period.periodName?.Contains("night") == true && Equals("6 pm", period.time[i]))
+                        if (i == 0 && period.periodName?.ToLowerInvariant()?.Contains("night") == true && Equals("6 pm", period.time[i]))
                         {
                             var hrDate = date.ToOffset(creationDate.Offset);
                             var futureDate = creationDate.AddDays(1).Date;
