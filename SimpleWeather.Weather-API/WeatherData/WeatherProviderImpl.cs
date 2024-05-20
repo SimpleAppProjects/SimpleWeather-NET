@@ -226,8 +226,7 @@ namespace SimpleWeather.Weather_API.WeatherData
             }
             else
             {
-                // return new WeatherApi.WeatherApiProvider().GetAlerts(location);
-                return Task.FromResult<ICollection<WeatherAlert>>(null);
+                return new WeatherApi.WeatherApiProvider().GetAlerts(location);
             }
         }
 
@@ -235,6 +234,18 @@ namespace SimpleWeather.Weather_API.WeatherData
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public abstract Task<bool> IsKeyValid(string key);
         public abstract string GetAPIKey();
+
+        protected string GetProviderKey()
+        {
+            if (SettingsManager.UsePersonalKeys[WeatherAPI])
+            {
+                return SettingsManager.APIKeys[WeatherAPI];
+            }
+            else
+            {
+                return GetAPIKey();
+            }
+        }
 
         // Utils Methods
         public Task UpdateLocationData(LocData location)
