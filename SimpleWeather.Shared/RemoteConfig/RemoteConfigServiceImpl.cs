@@ -94,11 +94,11 @@ namespace SimpleWeather.RemoteConfig
 
         public string GetDefaultWeatherProvider(LocationData.LocationData location)
         {
-            if (LocationUtils.IsNWSSupported(location))
+            if (LocationUtils.IsNWSSupported(location) && IsProviderEnabled(WeatherAPI.NWS))
             {
                 return WeatherAPI.NWS;
             }
-            else if (LocationUtils.IsFrance(location))
+            else if (LocationUtils.IsFrance(location) && IsProviderEnabled(WeatherAPI.MeteoFrance))
             {
                 return WeatherAPI.MeteoFrance;
             }
@@ -110,11 +110,11 @@ namespace SimpleWeather.RemoteConfig
 
         public string GetDefaultWeatherProvider(LocationData.LocationQuery location)
         {
-            if (LocationUtils.IsNWSSupported(location))
+            if (LocationUtils.IsNWSSupported(location) && IsProviderEnabled(WeatherAPI.NWS))
             {
                 return WeatherAPI.NWS;
             }
-            else if (LocationUtils.IsFrance(location))
+            else if (LocationUtils.IsFrance(location) && IsProviderEnabled(WeatherAPI.MeteoFrance))
             {
                 return WeatherAPI.MeteoFrance;
             }
