@@ -60,7 +60,15 @@ namespace SimpleWeather.LocationData
                 if (!String.IsNullOrWhiteSpace(tz_long))
                 {
                     var tzdbLocation = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.ZoneLocations
-                        .FirstOrDefault(tzdbloc => tzdbloc.ZoneId.Equals(tz_long));
+                        .FirstOrDefault(tzdbloc => Equals(tzdbloc.ZoneId, tz_long));
+
+                    if (tzdbLocation == null)
+                    {
+                        var alias = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.CanonicalIdMap[tz_long];
+
+                        tzdbLocation = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.ZoneLocations
+                            .FirstOrDefault(tzdbloc => Equals(tzdbloc.ZoneId, alias));
+                    }
 
                     if (tzdbLocation != null)
                     {

@@ -220,7 +220,7 @@ namespace SimpleWeather.Weather_API.WeatherData
         // Alerts
         public virtual Task<ICollection<WeatherAlert>> GetAlerts(LocData location)
         {
-            if (LocationUtils.IsUS(location))
+            if (LocationUtils.IsNWSSupported(location))
             {
                 return new NWS.NWSAlertProvider().GetAlerts(location);
             }

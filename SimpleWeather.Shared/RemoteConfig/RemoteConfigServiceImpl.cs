@@ -94,7 +94,7 @@ namespace SimpleWeather.RemoteConfig
 
         public string GetDefaultWeatherProvider(LocationData.LocationData location)
         {
-            if (LocationUtils.IsUS(location))
+            if (LocationUtils.IsNWSSupported(location))
             {
                 return WeatherAPI.NWS;
             }
@@ -110,7 +110,7 @@ namespace SimpleWeather.RemoteConfig
 
         public string GetDefaultWeatherProvider(LocationData.LocationQuery location)
         {
-            if (LocationUtils.IsUS(location))
+            if (LocationUtils.IsNWSSupported(location))
             {
                 return WeatherAPI.NWS;
             }
