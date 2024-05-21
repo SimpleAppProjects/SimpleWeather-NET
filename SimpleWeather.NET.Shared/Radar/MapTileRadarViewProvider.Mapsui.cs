@@ -21,6 +21,10 @@ namespace SimpleWeather.NET.Radar
 {
     public abstract partial class MapTileRadarViewProvider : RadarViewProvider
     {
+        protected const double MIN_ZOOM_LEVEL = 2d;
+        protected const double MAX_ZOOM_LEVEL = 18d;
+        protected const double DEFAULT_ZOOM_LEVEL = 6d;
+
         private MapControl mapControl;
         private WeatherUtils.Coordinate locationCoords;
         private MemoryLayer markerLayer;
@@ -128,7 +132,14 @@ namespace SimpleWeather.NET.Radar
             }
         }
 
-        public abstract void UpdateMap(MapControl mapControl);
+        public virtual void UpdateMap(MapControl mapControl)
+        {
+            mapControl?.Map?.Navigator?.Apply(n =>
+            {
+                n.PanLock = !InteractionsEnabled();
+                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
+            });
+        }
 
         public override void OnDestroyView()
         {
@@ -156,10 +167,11 @@ namespace SimpleWeather.NET.Radar
             {
                 n.ZoomLock = false;
                 n.PanLock = false;
-                n.CenterOnAndZoomTo(MapCameraPosition, 6d.ToMapsuiResolution());
-                n.ZoomLock = true;
+                n.CenterOnAndZoomTo(MapCameraPosition, DEFAULT_ZOOM_LEVEL.ToMapsuiResolution());
+                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
                 n.PanLock = !InteractionsEnabled();
             };
+            mapControl.Map.Navigator.OverrideZoomBounds = new MMinMax(MIN_ZOOM_LEVEL.ToMapsuiResolution(), MAX_ZOOM_LEVEL.ToMapsuiResolution());
             return mapControl;
         }
 

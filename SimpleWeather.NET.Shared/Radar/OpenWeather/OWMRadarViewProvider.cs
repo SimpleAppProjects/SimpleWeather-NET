@@ -43,7 +43,7 @@ namespace SimpleWeather.NET.Radar.OpenWeather
 
         private HttpTileSource CreateTileSource()
         {
-            return new HttpTileSource(new GlobalSphericalMercator(),
+            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "OWMRadar"),
                 "https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid={k}",
                 apiKey: APIKeys.GetOWMKey(), name: OWMAttribution.Text,
                 tileFetcher: FetchTileAsync,

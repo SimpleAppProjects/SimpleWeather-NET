@@ -314,7 +314,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 uri = "about:blank";
             }
 
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: 6, maxZoomLevel: 6, name: "RainViewer"),
+            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "RainViewer"),
                 uri, name: RainViewerAttribution.Text,
                 tileFetcher: FetchTileAsync,
                 attribution: RainViewerAttribution, userAgent: Constants.GetUserAgentString());
