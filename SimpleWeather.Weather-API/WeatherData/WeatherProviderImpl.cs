@@ -16,6 +16,9 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
+using SimpleWeather.Extras;
+using WAPI = SimpleWeather.WeatherData.WeatherAPI;
+
 #if WINUI
 using Windows.UI;
 #else
@@ -126,7 +129,13 @@ namespace SimpleWeather.Weather_API.WeatherData
 
             if (weather.condition.pollen == null)
             {
-                if (SettingsManager.DevSettingsEnabled)
+                var ExtrasService = Ioc.Default.GetService<IExtrasService>();
+
+                if (ExtrasService?.IsEnabled() == true && RemoteConfigService.IsProviderEnabled(WAPI.Google))
+                {
+                    weather.condition.pollen = await new Google.GooglePollenProvider().GetPollenData(location);
+                }
+                else if (SettingsManager.DevSettingsEnabled)
                 {
                     weather.condition.pollen = await new TomorrowIO.TomorrowIOWeatherProvider().GetPollenData(location);
                 }

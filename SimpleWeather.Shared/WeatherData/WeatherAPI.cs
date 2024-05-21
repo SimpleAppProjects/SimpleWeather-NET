@@ -20,6 +20,7 @@ namespace SimpleWeather.WeatherData
         public const string TomorrowIo = "tomorrowio";
         public const string AccuWeather = "accuweather";
         public const string WeatherBitIo = "weatherbitio";
+        public const string Google = "google";
 
         // Location APIs
         public const string BingMaps = "Bing";

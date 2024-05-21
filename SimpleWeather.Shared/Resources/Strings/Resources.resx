@@ -782,4 +782,7 @@
   <data name="copyright_apple_weather" xml:space="preserve">
     <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
   </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
 </root>

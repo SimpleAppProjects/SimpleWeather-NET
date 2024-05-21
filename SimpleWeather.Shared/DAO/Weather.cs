@@ -279,7 +279,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -557,7 +557,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -692,7 +692,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -848,7 +848,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -961,7 +961,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -1057,7 +1057,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -1280,7 +1280,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -1558,7 +1558,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -1747,7 +1747,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -1877,7 +1877,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2009,7 +2009,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2121,7 +2121,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2213,7 +2213,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2293,7 +2293,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2427,7 +2427,7 @@ namespace SimpleWeather.WeatherData
         public override string ToJson()
         {
             using var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2503,6 +2503,7 @@ namespace SimpleWeather.WeatherData
         public PollenCount? treePollenCount;
         public PollenCount? grassPollenCount;
         public PollenCount? ragweedPollenCount;
+        public string attribution;
 
         public Pollen()
         {
@@ -2514,12 +2515,13 @@ namespace SimpleWeather.WeatherData
             return obj is Pollen pollen &&
                    treePollenCount == pollen.treePollenCount &&
                    grassPollenCount == pollen.grassPollenCount &&
-                   ragweedPollenCount == pollen.ragweedPollenCount;
+                   ragweedPollenCount == pollen.ragweedPollenCount &&
+                   attribution == pollen.attribution;
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(treePollenCount, grassPollenCount, ragweedPollenCount);
+            return HashCode.Combine(treePollenCount, grassPollenCount, ragweedPollenCount, attribution);
         }
 
         public override void FromJson(ref Utf8JsonReader reader)
@@ -2547,15 +2549,19 @@ namespace SimpleWeather.WeatherData
                 switch (property)
                 {
                     case nameof(treePollenCount):
-                        this.treePollenCount = (PollenCount)reader.GetInt32();
+                        this.treePollenCount = reader.TryGetInt32()?.Let(x => (PollenCount)x);
                         break;
 
                     case nameof(grassPollenCount):
-                        this.grassPollenCount = (PollenCount)reader.GetInt32();
+                        this.grassPollenCount = reader.TryGetInt32()?.Let(x => (PollenCount)x);
                         break;
 
                     case nameof(ragweedPollenCount):
-                        this.ragweedPollenCount = (PollenCount)reader.GetInt32();
+                        this.ragweedPollenCount = reader.TryGetInt32()?.Let(x => (PollenCount)x);
+                        break;
+
+                    case nameof(attribution):
+                        this.attribution = reader.GetString();
                         break;
 
                     default:
@@ -2567,8 +2573,8 @@ namespace SimpleWeather.WeatherData
 
         public override string ToJson()
         {
-            var stream = new MemoryStream();
-            var writer = new Utf8JsonWriter(stream);
+            using var stream = new MemoryStream();
+            using var writer = new Utf8JsonWriter(stream);
 
             // {
             writer.WriteStartObject();
@@ -2581,6 +2587,9 @@ namespace SimpleWeather.WeatherData
 
             // "ragweedPollenCount" : ""
             writer.WriteInt32(nameof(ragweedPollenCount), (int)(ragweedPollenCount ?? PollenCount.Unknown));
+
+            // "attribution" : ""
+            writer.WriteString(nameof(attribution), attribution);
 
             // }
             writer.WriteEndObject();
