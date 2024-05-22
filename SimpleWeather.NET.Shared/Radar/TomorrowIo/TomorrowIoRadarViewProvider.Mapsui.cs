@@ -1,7 +1,7 @@
-﻿//#if !(ANDROID || IOS || MACCATALYST)
-using BruTile.Predefined;
+﻿using BruTile.Predefined;
 using BruTile.Web;
 using CacheCow.Client.Headers;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui.Tiling.Fetcher;
 using Mapsui.Tiling.Layers;
 using Mapsui.Tiling.Rendering;
@@ -10,23 +10,29 @@ using Mapsui.UI.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Helpers;
+using SimpleWeather.Preferences;
+
 #else
 using Mapsui.UI.Maui;
 using Microsoft.Maui.Dispatching;
+using SimpleWeather.Preferences;
+
 #endif
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.Keys;
+using System.Globalization;
 using System.Net.Http.Headers;
 
-namespace SimpleWeather.NET.Radar.RainViewer
+namespace SimpleWeather.NET.Radar.TomorrowIo
 {
-    public partial class RainViewerViewProvider : MapTileRadarViewProvider, IDisposable
+    public partial class TomorrowIoRadarViewProvider : MapTileRadarViewProvider, IDisposable
     {
-        private const string MapsURL = "https://api.rainviewer.com/public/weather-maps.json";
-        private const string URLTemplate = "{host}{path}/256/{z}/{x}/{y}/1/1_1.png";
+        private const string URLTemplate = "https://api.tomorrow.io/v4/map/tile/{z}/{x}/{y}/precipitationIntensity/{timestamp}.png?apikey={k}";
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         private readonly List<RadarFrame> AvailableRadarFrames;
-        private readonly Dictionary<long, TileLayer> RadarLayers;
+        private readonly Dictionary<string, TileLayer> RadarLayers;
 
         private MapControl _mapControl = null;
 
@@ -44,13 +50,13 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         private readonly string API_ID;
 
-        public RainViewerViewProvider(Border container) : base(container)
+        public TomorrowIoRadarViewProvider(Border container) : base(container)
         {
             AvailableRadarFrames = new List<RadarFrame>();
-            RadarLayers = new Dictionary<long, TileLayer>();
+            RadarLayers = new Dictionary<string, TileLayer>();
             cts = new CancellationTokenSource();
 
-            API_ID = RadarProvider.RadarProviders.RainViewer.GetStringValue();
+            API_ID = RadarProvider.RadarProviders.TomorrowIo.GetStringValue();
         }
 
         public override void UpdateRadarView()
@@ -59,118 +65,86 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
 #if WINDOWS
             RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
+                InteractionsEnabled()/* && ExtrasService.IsEnabled()*/ ? Visibility.Visible : Visibility.Collapsed;
 #else
             RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsEnabled();
 #endif
         }
 
-        public override async void UpdateMap(MapControl mapControl)
+        public override void UpdateMap(MapControl mapControl)
         {
             this._mapControl = mapControl;
 
-            await GetRadarFrames();
+            GetRadarFrames();
         }
 
-        private async Task GetRadarFrames()
+        private void GetRadarFrames()
         {
-            var HttpClient = SharedModule.Instance.WebClient;
+            ProcessingFrames = true;
 
-            try
+            // Remove added tile layers
+            var layersToRemove = RadarLayers.Values.ToList();
+            RadarLayers.Clear();
+            layersToRemove.ForEach(layer =>
             {
-                RefreshToken();
-                var token = cts.Token;
-
-                using var response = await HttpClient.GetAsync(new Uri(MapsURL), token);
-                await response.CheckForErrors(API_ID, 5000);
-                response.EnsureSuccessStatusCode();
-
-                token.ThrowIfCancellationRequested();
-
-                var stream = await response.Content.ReadAsStreamAsync();
-                var root = await JSONParser.DeserializerAsync<Rootobject>(stream);
-
-                token.ThrowIfCancellationRequested();
-
-                ProcessingFrames = true;
-
-                // Remove added tile layers
-                var layersToRemove = RadarLayers.Values.ToList();
-                RadarLayers.Clear();
-                layersToRemove.ForEach(layer =>
-                {
 #if WINDOWS
-                    _mapControl?.DispatcherQueue?.TryEnqueue(() =>
+                _mapControl?.DispatcherQueue?.TryEnqueue(() =>
 #else
-                    _mapControl?.Dispatcher?.Dispatch(() =>
-#endif
-                    {
-                        _mapControl?.Map?.Layers?.Remove(layer);
-                    });
-                });
-
-                if (token.IsCancellationRequested)
-                {
-                    ProcessingFrames = false;
-                    return;
-                }
-
-                AvailableRadarFrames.Clear();
-                AnimationPosition = 0;
-
-                if (root?.radar != null)
-                {
-                    if (root.radar?.past?.Count > 0)
-                    {
-                        root.radar.past.RemoveAll(t => t == null);
-                        AvailableRadarFrames.AddRange(
-                            root.radar.past.Select(f => new RadarFrame(f.time, root.host, f.path))
-                            );
-                    }
-
-                    if (root.radar?.nowcast?.Count > 0)
-                    {
-                        root.radar.nowcast.RemoveAll(t => t == null);
-                        AvailableRadarFrames.AddRange(
-                            root.radar.nowcast.Select(f => new RadarFrame(f.time, root.host, f.path))
-                            );
-                    }
-                }
-
-                ProcessingFrames = false;
-
-#if WINDOWS
-                RadarMapContainer?.DispatcherQueue?.TryEnqueue(() =>
-#else
-                RadarMapContainer?.Dispatcher?.Dispatch(() =>
+                _mapControl?.Dispatcher?.Dispatch(() =>
 #endif
                 {
-                    if (IsViewAlive)
-                    {
-                        var lastPastFramePosition = (root?.radar?.past?.Count ?? 0) - 1;
-                        ShowFrame(lastPastFramePosition);
-                    }
+                    _mapControl?.Map?.Layers?.Remove(layer);
                 });
-            }
-            catch (OperationCanceledException)
+            });
+
+            AvailableRadarFrames.Clear();
+            AnimationPosition = 0;
+
+            var now = DateTimeOffset.UtcNow.Trim(TimeSpan.TicksPerMinute);
+            // Trim minute
+            now = now.AddMinutes(-now.Minute);
+
+            var start = now.AddHours(-2);
+            var end = now.AddHours(2);
+
+            var current = start;
+            var nowIndex = -1;
+
+            while (current <= end)
             {
-                // ignore.
+                AvailableRadarFrames.Add(new(current.UtcDateTime.ToISO8601Format()));
+
+                if (current == now)
+                {
+                    nowIndex = AvailableRadarFrames.Count - 1;
+                }
+
+                current = current.AddMinutes(10);
             }
-            catch (Exception ex)
+
+            ProcessingFrames = false;
+
+#if WINDOWS
+            RadarMapContainer?.DispatcherQueue?.TryEnqueue(() =>
+#else
+            RadarMapContainer?.Dispatcher?.Dispatch(() =>
+#endif
             {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-            finally
-            {
-                ProcessingFrames = false;
-            }
+                if (IsViewAlive)
+                {
+                    var lastPastFramePosition = nowIndex;
+                    ShowFrame(lastPastFramePosition);
+                }
+            });
+
+            ProcessingFrames = false;
         }
 
         private void AddLayer(RadarFrame mapFrame)
         {
             if (ProcessingFrames) return;
 
-            if (!RadarLayers.ContainsKey(mapFrame.TimeStamp))
+            if (!RadarLayers.ContainsKey(mapFrame.timestamp))
             {
                 var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
                 {
@@ -179,7 +153,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 layer.Attribution.Enabled = false;
                 layer.Attribution.MarginY = 18;
                 layer.Attribution.PaddingX = 5;
-                RadarLayers[mapFrame.TimeStamp] = layer;
+                RadarLayers[mapFrame.timestamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
 
@@ -200,16 +174,16 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 position += AvailableRadarFrames.Count;
             }
 
-            if (!AvailableRadarFrames.Any() || AnimationPosition >= AvailableRadarFrames.Count || position >= AvailableRadarFrames.Count)
+            if (AvailableRadarFrames.Count == 0 || AnimationPosition >= AvailableRadarFrames.Count || position >= AvailableRadarFrames.Count)
             {
                 return;
             }
 
             var currentFrame = AvailableRadarFrames[AnimationPosition];
-            var currentTimeStamp = currentFrame.TimeStamp;
+            var currentTimeStamp = currentFrame.timestamp;
 
             var nextFrame = AvailableRadarFrames[position];
-            var nextTimeStamp = nextFrame.TimeStamp;
+            var nextTimeStamp = nextFrame.timestamp;
 
             AddLayer(nextFrame);
 
@@ -246,7 +220,8 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         private void UpdateToolbar(int position, RadarFrame mapFrame)
         {
-            RadarMapContainer.UpdateTimestamp(position, mapFrame.TimeStamp);
+            var ts = DateTimeOffset.ParseExact(mapFrame.timestamp, DateTimeUtils.ISO8601_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal);
+            RadarMapContainer.UpdateTimestamp(position, ts.LocalDateTime);
         }
 
         /**
@@ -312,24 +287,24 @@ namespace SimpleWeather.NET.Radar.RainViewer
             cts = new CancellationTokenSource();
         }
 
-        private static readonly BruTile.Attribution RainViewerAttribution = new("RainViewer", "https://www.rainviewer.com/api.html");
+        private static readonly BruTile.Attribution TomorrowIoAttribution = new("Tomorrow.io", "https://www.tomorrow.io/weather-api/");
 
         private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
         {
             string uri;
             if (mapFrame != null)
             {
-                uri = URLTemplate.Replace("{host}", mapFrame.Host).Replace("{path}", mapFrame.Path);
+                uri = URLTemplate.Replace("{timestamp}", mapFrame.timestamp);
             }
             else
             {
                 uri = "about:blank";
             }
 
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "RainViewer"),
-                uri, name: RainViewerAttribution.Text,
+            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "TomorrowIo"),
+                uri, apiKey: GetKey(), name: TomorrowIoAttribution.Text,
                 tileFetcher: FetchTileAsync,
-                attribution: RainViewerAttribution, userAgent: Constants.GetUserAgentString());
+                attribution: TomorrowIoAttribution, userAgent: Constants.GetUserAgentString());
         }
 
         private async Task<byte[]> FetchTileAsync(Uri arg)
@@ -351,11 +326,11 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 var cacheHeader = response.Headers.GetCacheCowHeader();
                 if (cacheHeader?.RetrievedFromCache == true)
                 {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from cache");
+                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(TomorrowIoRadarViewProvider)}: tile fetched from cache");
                 }
                 else
                 {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from web");
+                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(TomorrowIoRadarViewProvider)}: tile fetched from web");
                 }
 #endif
 
@@ -367,6 +342,16 @@ namespace SimpleWeather.NET.Radar.RainViewer
             }
 
             return arr;
+        }
+
+        private string GetKey()
+        {
+            var key = SettingsManager.APIKeys[WeatherData.WeatherAPI.TomorrowIo];
+
+            if (string.IsNullOrWhiteSpace(key))
+                return APIKeys.GetTomorrowIOKey();
+
+            return key;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -389,5 +374,6 @@ namespace SimpleWeather.NET.Radar.RainViewer
             GC.SuppressFinalize(this);
         }
     }
+
+    internal record RadarFrame(string timestamp);
 }
-//#endif

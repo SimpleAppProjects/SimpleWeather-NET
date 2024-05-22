@@ -30,7 +30,7 @@ namespace SimpleWeather.NET.Radar
         private MemoryLayer markerLayer;
         protected RadarToolbar RadarMapContainer { get; private set; }
 
-        private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
+        protected readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
         protected bool IsViewAlive { get; private set; }
 
@@ -96,13 +96,6 @@ namespace SimpleWeather.NET.Radar
             markerLayer.Opacity = InteractionsEnabled() ? 1 : 0;
 
             mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
-
-#if WINDOWS
-            RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
-#else
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsEnabled();
-#endif
 
             UpdateMap(mapControl);
         }

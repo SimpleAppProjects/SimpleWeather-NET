@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Controls;
 using SimpleWeather.NET.Radar.OpenWeather;
 using SimpleWeather.NET.Radar.RainViewer;
+using SimpleWeather.NET.Radar.TomorrowIo;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -20,40 +21,46 @@ namespace SimpleWeather.NET.Radar
         private static readonly SettingsContainer localSettings = new SettingsContainer();
         internal const string KEY_RADARPROVIDER = "key_radarprovider";
 
-        private const string RAINVIEWER = "rainviewer";
-        private const string OPENWEATHERMAP = "openweather";
-
         public static event RadarProviderChangedEventHandler RadarProviderChanged;
 
         public enum RadarProviders
         {
-            [StringValue(RAINVIEWER)]
+            [StringValue(WeatherAPI.RainViewer)]
             RainViewer,
-            [StringValue(OPENWEATHERMAP)]
-            OpenWeatherMap
+            [StringValue(WeatherAPI.OpenWeatherMap)]
+            OpenWeatherMap,
+            [StringValue(WeatherAPI.TomorrowIo)]
+            TomorrowIo
         }
 
-        private static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders = new List<ProviderEntry>
-        {
-            new ProviderEntry("RainViewer", RAINVIEWER,
+        private static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders =
+        [
+            new ProviderEntry("RainViewer", WeatherAPI.RainViewer,
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
-            new ProviderEntry("OpenWeatherMap", OPENWEATHERMAP,
-                    "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up")
-        };
+            new ProviderEntry("OpenWeatherMap", WeatherAPI.OpenWeatherMap,
+                    "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
+            new ProviderEntry("Tomorrow.io", WeatherAPI.TomorrowIo,
+                    "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/")
+        ];
 
         public static IEnumerable<ProviderEntry> GetRadarProviders()
         {
-            var owm = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap);
-            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var settingsManager = Ioc.Default.GetService<SettingsManager>();
+            IList<string> apiRadarProviders = [WeatherAPI.OpenWeatherMap, WeatherAPI.TomorrowIo];
 
-            if (SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null)
+            IEnumerable<ProviderEntry> providers = RadarAPIProviders;
+
+            apiRadarProviders.ForEach(api =>
             {
-                return RadarAPIProviders.Where(p => p.Value != WeatherAPI.OpenWeatherMap);
-            }
-            else
-            {
-                return RadarAPIProviders;
-            }
+                var p = WeatherModule.Instance.WeatherManager.GetWeatherProvider(api);
+
+                if (!Equals(settingsManager.API, p.WeatherAPI) && (string.IsNullOrWhiteSpace(settingsManager.APIKeys[p.WeatherAPI]) && string.IsNullOrWhiteSpace(p.GetAPIKey())))
+                {
+                    providers = providers.WhereNot(it => Equals(it.Value, p.WeatherAPI));
+                }
+            });
+
+            return providers;
         }
 
         public static RadarProviders RadarAPIProvider
@@ -68,28 +75,17 @@ namespace SimpleWeather.NET.Radar
 
         public static RadarViewProvider GetRadarViewProvider(Border radarContainer)
         {
-            switch (RadarAPIProvider)
+            return RadarAPIProvider switch
             {
-                default:
-                case RadarProviders.RainViewer:
-                    return new RainViewerViewProvider(radarContainer);
-                case RadarProviders.OpenWeatherMap:
-                    return new OWMRadarViewProvider(radarContainer);
-            }
+                RadarProviders.OpenWeatherMap => new OWMRadarViewProvider(radarContainer),
+                RadarProviders.TomorrowIo => new TomorrowIoRadarViewProvider(radarContainer),
+                _ => new RainViewerViewProvider(radarContainer),
+            };
         }
 
         public static string GetRadarProvider()
         {
-            string provider;
-
-            if (localSettings.GetValue<string>(KEY_RADARPROVIDER) is string value && value != null)
-            {
-                provider = value.ToString();
-            }
-            else
-            {
-                provider = RAINVIEWER;
-            }
+            string provider = localSettings.GetValue(KEY_RADARPROVIDER, defaultValue: WeatherAPI.RainViewer);
 
             if (provider == WeatherAPI.OpenWeatherMap)
             {
@@ -99,7 +95,18 @@ namespace SimpleWeather.NET.Radar
                 // Fallback to default since API KEY is unavailable
                 if ((SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] == null)
                 {
-                    return RAINVIEWER;
+                    return WeatherAPI.RainViewer;
+                }
+            }
+            else if (provider == WeatherAPI.TomorrowIo)
+            {
+                var tmr = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.TomorrowIo);
+                var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+
+                // Fallback to default since API KEY is unavailable
+                if ((SettingsManager.API != tmr.WeatherAPI && tmr.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.TomorrowIo] == null)
+                {
+                    return WeatherAPI.RainViewer;
                 }
             }
 

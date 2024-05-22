@@ -74,6 +74,12 @@ public partial class RadarToolbar : ContentView
         TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
     }
 
+    public void UpdateTimestamp(int position, DateTime dateTime)
+    {
+        AnimationSlider.Value = position;
+        TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
+    }
+
     private void AnimationSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
         OnSliderValueChanged?.Invoke(sender, e);

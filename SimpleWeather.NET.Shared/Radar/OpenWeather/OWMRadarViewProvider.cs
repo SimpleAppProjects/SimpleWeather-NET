@@ -1,12 +1,16 @@
 ﻿using BruTile.Predefined;
 using BruTile.Web;
 using CacheCow.Client.Headers;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui.Tiling.Fetcher;
 using Mapsui.Tiling.Layers;
 using Mapsui.Tiling.Rendering;
 #if WINDOWS
 using Mapsui.UI.WinUI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Preferences;
+
 #else
 using Mapsui.UI.Maui;
 #endif
@@ -19,9 +23,22 @@ namespace SimpleWeather.NET.Radar.OpenWeather
     public partial class OWMRadarViewProvider : MapTileRadarViewProvider
     {
         private HttpTileSource TileSource;
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public OWMRadarViewProvider(Border container) : base(container)
         {
+        }
+
+        public override void UpdateRadarView()
+        {
+            base.UpdateRadarView();
+
+#if WINDOWS
+            RadarMapContainer.ToolbarVisibility =
+                InteractionsEnabled() && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
+#else
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsEnabled();
+#endif
         }
 
         public override void UpdateMap(MapControl mapControl)
@@ -45,7 +62,7 @@ namespace SimpleWeather.NET.Radar.OpenWeather
         {
             return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "OWMRadar"),
                 "https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid={k}",
-                apiKey: APIKeys.GetOWMKey(), name: OWMAttribution.Text,
+                apiKey: GetKey(), name: OWMAttribution.Text,
                 tileFetcher: FetchTileAsync,
                 attribution: OWMAttribution, userAgent: Constants.GetUserAgentString());
         }
@@ -85,6 +102,16 @@ namespace SimpleWeather.NET.Radar.OpenWeather
             }
 
             return arr;
+        }
+
+        private string GetKey()
+        {
+            var key = SettingsManager.APIKeys[WeatherData.WeatherAPI.OpenWeatherMap];
+
+            if (string.IsNullOrWhiteSpace(key))
+                return APIKeys.GetOWMKey();
+
+            return key;
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using System;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -58,6 +57,12 @@ namespace SimpleWeather.NET.Radar
             AnimationSlider.Value = position;
 
             var dateTime = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
+            TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
+        }
+
+        public void UpdateTimestamp(int position, DateTime dateTime)
+        {
+            AnimationSlider.Value = position;
             TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
         }
 

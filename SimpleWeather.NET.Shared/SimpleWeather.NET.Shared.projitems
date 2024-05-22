@@ -60,6 +60,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.HttpClient.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\WeatherMapsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\TomorrowIo\TomorrowIoRadarViewProvider.HttpClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\TomorrowIo\TomorrowIoRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\MapControlExtensions.cs" />

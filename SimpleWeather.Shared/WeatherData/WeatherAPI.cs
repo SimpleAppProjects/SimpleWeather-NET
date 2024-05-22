@@ -27,6 +27,9 @@ namespace SimpleWeather.WeatherData
         public const string WeatherApi = "weatherapi";
         public const string Apple = "apple";
 
+        // Radar
+        public const string RainViewer = "rainviewer";
+
         /*
          * Note to self: Common steps to adding a new weather provider
          * 1) Implement WeatherProviderImpl class
