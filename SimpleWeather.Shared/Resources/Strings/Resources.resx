@@ -782,7 +782,29 @@
   <data name="copyright_apple_weather" xml:space="preserve">
     <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
   </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Minimum Alert Severity</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>None (Show all alerts)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Moderate</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Severe</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Extreme</value>
+  </data>
   <data name="api_google" xml:space="preserve">
     <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>More Info</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Reset</value>
   </data>
 </root>

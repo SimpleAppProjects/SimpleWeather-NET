@@ -169,4 +169,8 @@
     <value>mmHg</value>
     <comment>Pressure: mm</comment>
   </data>
+  <data name="unit_knots" xml:space="preserve">
+    <value>knots</value>
+    <comment>Distance: knots</comment>
+  </data>
 </root>

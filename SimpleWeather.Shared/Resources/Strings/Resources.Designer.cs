@@ -79,6 +79,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string action_reset {
+            get {
+                return ResourceManager.GetString("action_reset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Retry.
         /// </summary>
         public static string action_retry {
@@ -93,6 +102,42 @@ namespace SimpleWeather.Resources.Strings {
         public static string action_settings {
             get {
                 return ResourceManager.GetString("action_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None (Show all alerts).
+        /// </summary>
+        public static string alertsev_all {
+            get {
+                return ResourceManager.GetString("alertsev_all", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extreme.
+        /// </summary>
+        public static string alertsev_extreme {
+            get {
+                return ResourceManager.GetString("alertsev_extreme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Moderate.
+        /// </summary>
+        public static string alertsev_moderate {
+            get {
+                return ResourceManager.GetString("alertsev_moderate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severe.
+        /// </summary>
+        public static string alertsev_severe {
+            get {
+                return ResourceManager.GetString("alertsev_severe", resourceCulture);
             }
         }
         
@@ -777,6 +822,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string label_moonset {
             get {
                 return ResourceManager.GetString("label_moonset", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More Info.
+        /// </summary>
+        public static string label_moreinfo {
+            get {
+                return ResourceManager.GetString("label_moreinfo", resourceCulture);
             }
         }
         
@@ -1614,6 +1668,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string pref_title_language {
             get {
                 return ResourceManager.GetString("pref_title_language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum Alert Severity.
+        /// </summary>
+        public static string pref_title_minalertseverity {
+            get {
+                return ResourceManager.GetString("pref_title_minalertseverity", resourceCulture);
             }
         }
         

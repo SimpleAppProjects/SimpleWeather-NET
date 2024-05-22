@@ -810,4 +810,29 @@ Fuzzy</comment>
   <data name="copyright_apple_weather" xml:space="preserve">
     <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
   </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Mindestschwere der Warnung</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Keine (Alle Warnungen anzeigen)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Mäßig</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Schwere</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Extrem</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Mehr Infos</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Zurücksetzen</value>
+  </data>
 </root>
