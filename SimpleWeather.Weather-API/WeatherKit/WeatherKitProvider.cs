@@ -77,7 +77,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                     .AppendPath("weather")
                     .AppendPath(locale)
                     .AppendPath(UpdateLocationQuery(location), encode: false)
-                    .AppendQueryParameter("countryCode", location.country_code)
+                    .AppendQueryParameter("country", location.country_code)
                     .AppendQueryParameter("dataSets", "currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts")
                     .AppendQueryParameter("timezone", location.tz_long)
                     .BuildUri();
