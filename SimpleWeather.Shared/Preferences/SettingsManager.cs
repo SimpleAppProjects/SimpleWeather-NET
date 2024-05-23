@@ -56,6 +56,7 @@ namespace SimpleWeather.Preferences
         public DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
         public int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
         public bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
+        public WeatherAlertSeverity MinimumAlertSeverity { get { return GetMinimumAlertSeverity(); } set { SetMinimumAlertSeverity(value); } }
 #if WINDOWS
         [Deprecated(
 #else
@@ -126,6 +127,7 @@ namespace SimpleWeather.Preferences
         public const string KEY_POPCHANCENOTIFICATION = "key_popchancenotification";
         public const string KEY_POPCHANCEPCT = "key_popchancepct";
         public const string KEY_LASTCHANCENOTIFICATIONTIME = "key_lastchancenotificationtime";
+        public const string KEY_MINALERTSEVERITY = "key_minalertseverity";
 
         // 8am
         public static readonly TimeSpan DEFAULT_DAILYNOTIFICATION_TIME = new TimeSpan(8, 0, 0);
@@ -1054,6 +1056,16 @@ namespace SimpleWeather.Preferences
             {
                 SetValue(KEY_POPCHANCEPCT, 60);
             }
+        }
+
+        private WeatherAlertSeverity GetMinimumAlertSeverity()
+        {
+            return (WeatherAlertSeverity)GetValue<int>(KEY_MINALERTSEVERITY, -1);
+        }
+
+        private void SetMinimumAlertSeverity(WeatherAlertSeverity alertSeverity)
+        {
+            SetValue<int>(KEY_MINALERTSEVERITY, (int)alertSeverity);
         }
         #endregion
     }

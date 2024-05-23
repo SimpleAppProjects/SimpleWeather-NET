@@ -23,13 +23,6 @@ using System.Globalization;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
 
-#if !DEBUG
-
-
-#endif
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace SimpleWeather.NET.Preferences
 {
     /// <summary>
@@ -89,16 +82,14 @@ namespace SimpleWeather.NET.Preferences
             DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
             PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
             PoPChancePct.SelectionChanged += PoPChancePct_SelectionChanged;
+            MinAlertSeverity.SelectionChanged += MinAlertSeverity_SelectionChanged;
 
             AnalyticsLogger.LogEvent("Settings_General");
         }
 
         public void InitSnackManager()
         {
-            if (SnackMgr == null)
-            {
-                SnackMgr = new SnackbarManager(Content as Panel);
-            }
+            SnackMgr ??= new SnackbarManager(Content as Panel);
         }
 
         public void ShowSnackbar(Snackbar snackbar)
@@ -192,37 +183,16 @@ namespace SimpleWeather.NET.Preferences
             }
 
             // Update Interval
-            switch (SettingsManager.RefreshInterval)
+            RefreshComboBox.SelectedValue = SettingsManager.RefreshInterval switch
             {
-                case 30:
-                    RefreshComboBox.SelectedValue = "30";
-                    break;
-
-                case 60:
-                    RefreshComboBox.SelectedValue = "60";
-                    break;
-
-                case 120:
-                    RefreshComboBox.SelectedValue = "120";
-                    break;
-
-                case 180:
-                    RefreshComboBox.SelectedValue = "180";
-                    break;
-
-                case 360:
-                    RefreshComboBox.SelectedValue = "360";
-                    break;
-
-                case 720:
-                    RefreshComboBox.SelectedValue = "720";
-                    break;
-
-                default:
-                    RefreshComboBox.SelectedValue = SettingsManager.DefaultInterval.ToInvariantString();
-                    break;
-            }
-
+                30 => "30",
+                60 => "60",
+                120 => "120",
+                180 => "180",
+                360 => "360",
+                720 => "720",
+                _ => SettingsManager.DefaultInterval.ToInvariantString(),
+            };
             KeyEntry.Text = SettingsManager.APIKey;
             UpdateKeyBorder();
             UpdateRegisterLink();
@@ -230,6 +200,7 @@ namespace SimpleWeather.NET.Preferences
             // Alerts
             AlertSwitch.IsEnabled = wm.SupportsAlerts;
             AlertSwitch.IsOn = SettingsManager.ShowAlerts;
+            MinAlertSeverity.SelectedValue = ((int)SettingsManager.MinimumAlertSeverity).ToInvariantString();
 
             // Daily Notification
             DailyNotifSwitch.IsOn = SettingsManager.DailyNotificationEnabled;
@@ -317,7 +288,7 @@ namespace SimpleWeather.NET.Preferences
             }
         }
 
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object _, SuspendingEventArgs __)
         {
             var provider = APIComboBox.SelectedValue.ToString();
 
@@ -878,6 +849,16 @@ namespace SimpleWeather.NET.Preferences
             if (int.TryParse(pctStr, out int pct))
             {
                 SettingsManager.PoPChanceMinimumPercentage = pct;
+            }
+        }
+
+        private void MinAlertSeverity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox box = sender as ComboBox;
+            string value = box.SelectedValue.ToString();
+            if (int.TryParse(value, out int val))
+            {
+                SettingsManager.MinimumAlertSeverity = (WeatherAlertSeverity)val;
             }
         }
     }

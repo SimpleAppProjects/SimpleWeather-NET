@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherAlerts"
+<ContentPage
+    x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherAlerts"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
@@ -13,9 +14,9 @@
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     Title="{x:Static res_strings:Resources.pref_title_alerts}"
+    main:AppShell.AppBarIsVisible="True"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
-    main:AppShell.AppBarIsVisible="True">
+                                      Dark={StaticResource DarkBackground}}">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
@@ -42,17 +43,26 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_alerts}">
-                    <prefs:SwitchCell
-                        x:Name="AlertPref"
-                        Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
-                    <prefs:SwitchCell
-                        x:Name="PoPChancePref"
-                        Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
+                    <prefs:SwitchCell x:Name="AlertPref" Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
+                    <prefs:ListViewCell
+                        x:Name="MinAlertSeverityPref"
+                        PreferenceKey="{x:Static settings:SettingsManager.KEY_MINALERTSEVERITY}"
+                        Text="{x:Static res_strings:Resources.pref_title_minalertseverity}">
+                        <prefs:ListViewCell.Items>
+                            <m:List Type="{x:Type prefs:PreferenceListItem}">
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_all}" Value="-1" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_moderate}" Value="1" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_severe}" Value="2" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_extreme}" Value="3" />
+                            </m:List>
+                        </prefs:ListViewCell.Items>
+                    </prefs:ListViewCell>
+                    <prefs:SwitchCell x:Name="PoPChancePref" Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
                     <prefs:ListViewCell
                         x:Name="PoPChancePctPref"
+                        IsEnabled="{Binding Source={x:Reference PoPChancePref}, Path=On, Mode=OneWay}"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_POPCHANCEPCT}"
-                        Text="{x:Static res_strings:Resources.label_chance}"
-                        IsEnabled="{Binding Source={x:Reference PoPChancePref}, Path=On, Mode=OneWay}">
+                        Text="{x:Static res_strings:Resources.label_chance}">
                         <prefs:ListViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
                                 <prefs:PreferenceListItem Display="&gt;= 40%" Value="40" />

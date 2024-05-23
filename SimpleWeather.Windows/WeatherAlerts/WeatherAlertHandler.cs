@@ -1,12 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Preferences;
 using SimpleWeather.NET.Notifications;
+using SimpleWeather.Preferences;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.NET.WeatherAlerts
 {
@@ -28,11 +24,13 @@ namespace SimpleWeather.NET.WeatherAlerts
                 {
                     // Check if any of these alerts have been posted before
                     // or are past the expiration date
+                    var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+                    var minSeverity = SettingsManager.MinimumAlertSeverity;
 #if DEBUG
-                    var unotifiedAlerts = alerts;
+                    var unotifiedAlerts = alerts.Where(alert => alert.Severity >= minSeverity);
 #else
                     var now = DateTimeOffset.Now;
-                    var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > now && alert.Date <= now);
+                    var unotifiedAlerts = alerts.Where(alert => alert.Severity >= minSeverity && alert.Notified == false && alert.ExpiresDate > now && alert.Date <= now);
 #endif
 
                     // Post any un-notified alerts

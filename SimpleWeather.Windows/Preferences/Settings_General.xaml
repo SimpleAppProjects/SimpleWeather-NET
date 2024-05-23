@@ -92,6 +92,22 @@
                 <StackPanel Padding="10,5" Orientation="Horizontal">
                     <ToggleSwitch x:Name="AlertSwitch" />
                 </StackPanel>
+                <TextBlock
+                    d:Text="Minimum Alert Severity:"
+                    Style="{StaticResource PrefTitleStyle}"
+                    Text="{helpers:StringRes Name='pref_title_minalertseverity'}" />
+                <StackPanel Padding="10,5" Orientation="Horizontal">
+                    <ComboBox
+                        x:Name="MinAlertSeverity"
+                        MinWidth="260"
+                        DisplayMemberPath="Display"
+                        SelectedValuePath="Value">
+                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_all'}" Value="-1" />
+                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_moderate'}" Value="1" />
+                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_severe'}" Value="2" />
+                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_extreme'}" Value="3" />
+                    </ComboBox>
+                </StackPanel>
                 <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     d:Text="Daily Notification:"

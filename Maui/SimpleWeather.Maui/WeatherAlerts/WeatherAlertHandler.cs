@@ -26,11 +26,13 @@ namespace SimpleWeather.Maui.WeatherAlerts
                 {
                     // Check if any of these alerts have been posted before
                     // or are past the expiration date
+                    var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+                    var minSeverity = SettingsManager.MinimumAlertSeverity;
 #if DEBUG
-                    var unotifiedAlerts = alerts;
+                    var unotifiedAlerts = alerts.Where(alert => alert.Severity >= minSeverity);
 #else
                     var now = DateTimeOffset.Now;
-                    var unotifiedAlerts = alerts.Where(alert => alert.Notified == false && alert.ExpiresDate > now && alert.Date <= now);
+                    var unotifiedAlerts = alerts.Where(alert => alert.Severity >= minSeverity && alert.Notified == false && alert.ExpiresDate > now && alert.Date <= now);
 #endif
 
 #if __IOS__

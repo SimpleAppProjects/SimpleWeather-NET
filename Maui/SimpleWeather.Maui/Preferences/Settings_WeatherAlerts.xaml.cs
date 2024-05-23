@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 #if __IOS__
-using Foundation;
 #endif
 using SimpleWeather.Common.Helpers;
 using SimpleWeather.Extras;
@@ -13,6 +12,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
@@ -50,6 +50,10 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
         // Daily Notification
         AlertPref.IsEnabled = wm.SupportsAlerts;
         AlertPref.On = SettingsManager.ShowAlerts;
+
+        MinAlertSeverityPref.SelectedItem = ((int)SettingsManager.MinimumAlertSeverity).ToInvariantString();
+        MinAlertSeverityPref.Detail = MinAlertSeverityPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, MinAlertSeverityPref.SelectedItem)).Display;
+
         PoPChancePref.On = SettingsManager.PoPChanceNotificationEnabled;
         PoPChancePctPref.SelectedItem = SettingsManager.PoPChanceMinimumPercentage.ToInvariantString();
         PoPChancePctPref.Detail = PoPChancePctPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, PoPChancePctPref.SelectedItem)).Display;
@@ -108,6 +112,14 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
                     if (int.TryParse(message.Value.NewValue.ToString(), out int pct))
                     {
                         SettingsManager.PoPChanceMinimumPercentage = pct;
+                    }
+                }
+                break;
+            case SettingsManager.KEY_MINALERTSEVERITY:
+                {
+                    if (int.TryParse(message.Value.NewValue.ToString(), out int val))
+                    {
+                        SettingsManager.MinimumAlertSeverity = (WeatherAlertSeverity)val;
                     }
                 }
                 break;
