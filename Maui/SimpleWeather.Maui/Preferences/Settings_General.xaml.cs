@@ -1,9 +1,6 @@
-using System.Globalization;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
-#if IOS || MACCATALYST
-#endif
 using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.BackgroundTasks;
@@ -18,9 +15,10 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
-using ResStrings = SimpleWeather.Resources.Strings.Resources;
-using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
 using System.Collections.Immutable;
+using System.Globalization;
+using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -210,8 +208,10 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
     private async void RestoreAPISettings(string selectedProvider)
     {
         // Weather Providers
-        APIPref.Items = WeatherAPI.APIs.Select(entry => new PreferenceListItem(entry.Display, entry.Value));
-        APIPref.SelectedItem = selectedProvider;
+        APIPref.Items = WeatherAPI.APIs
+            .Where(it => RemoteConfigService.IsProviderEnabled(it.Value))
+            .Select(entry => new PreferenceListItem(entry.Display, entry.Value));
+        APIPref.SelectedItem = selectedProvider ?? RemoteConfigService.GetDefaultWeatherProvider();
         APIPref.Detail = APIPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, APIPref.SelectedItem)).Display;
 
         var selectedWProv = wm.GetWeatherProvider(selectedProvider);

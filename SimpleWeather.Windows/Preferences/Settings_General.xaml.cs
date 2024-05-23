@@ -116,7 +116,7 @@ namespace SimpleWeather.NET.Preferences
             // Weather Providers
             if (APIComboBox.ItemsSource == null || !WeatherAPI.APIs.SequenceEqual(APIComboBox.ItemsSource as IEnumerable<SimpleWeather.Controls.ProviderEntry>))
             {
-                APIComboBox.ItemsSource = WeatherAPI.APIs;
+                APIComboBox.ItemsSource = WeatherAPI.APIs.Where(it => RemoteConfigService.IsProviderEnabled(it.Value));
             }
             APIComboBox.DisplayMemberPath = "Display";
             APIComboBox.SelectedValuePath = "Value";
@@ -124,7 +124,7 @@ namespace SimpleWeather.NET.Preferences
             wm.UpdateAPI();
 
             var selectedProvider = SettingsManager.API;
-            APIComboBox.SelectedValue = selectedProvider;
+            APIComboBox.SelectedValue = selectedProvider ?? RemoteConfigService.GetDefaultWeatherProvider();
 
             // Refresh interval
             if (ExtrasService.IsEnabled())
