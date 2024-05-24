@@ -85,6 +85,10 @@ namespace SimpleWeather.NET.Controls
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.wind_kph.Value));
                         speedUnit = ResUnits.unit_msec;
                         break;
+                    case Units.KNOTS:
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.wind_mph.Value));
+                        speedUnit = ResUnits.unit_knots;
+                        break;
                 }
 
                 WindDirection = forecast.wind_degrees.GetValueOrDefault(0) + 180;

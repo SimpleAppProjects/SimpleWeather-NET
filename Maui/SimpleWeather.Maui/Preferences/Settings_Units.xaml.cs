@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -82,7 +83,7 @@ public partial class Settings_Units : ContentPage
                 case Units.SpeedUnits.MilesPerHour:
                     SpeedUnits.Children.Add(new RadioButton()
                     {
-                        Content = "mph",
+                        Content = ResUnits.unit_mph,
                         Value = speedUnit.GetStringValue(),
                         GroupName = nameof(SpeedUnits),
                         MinimumWidthRequest = 85
@@ -91,7 +92,7 @@ public partial class Settings_Units : ContentPage
                 case Units.SpeedUnits.KilometersPerHour:
                     SpeedUnits.Children.Add(new RadioButton()
                     {
-                        Content = "km/h",
+                        Content = ResUnits.unit_kph,
                         Value = speedUnit.GetStringValue(),
                         GroupName = nameof(SpeedUnits),
                         MinimumWidthRequest = 85
@@ -100,7 +101,16 @@ public partial class Settings_Units : ContentPage
                 case Units.SpeedUnits.MetersPerSecond:
                     SpeedUnits.Children.Add(new RadioButton()
                     {
-                        Content = "m/s",
+                        Content = ResUnits.unit_msec,
+                        Value = speedUnit.GetStringValue(),
+                        GroupName = nameof(SpeedUnits),
+                        MinimumWidthRequest = 85
+                    });
+                    break;
+                case Units.SpeedUnits.Knots:
+                    SpeedUnits.Children.Add(new RadioButton()
+                    {
+                        Content = ResUnits.unit_knots,
                         Value = speedUnit.GetStringValue(),
                         GroupName = nameof(SpeedUnits),
                         MinimumWidthRequest = 85
@@ -120,7 +130,7 @@ public partial class Settings_Units : ContentPage
                 case Units.DistanceUnits.Miles:
                     DistanceUnits.Children.Add(new RadioButton()
                     {
-                        Content = "mi",
+                        Content = ResUnits.unit_miles,
                         Value = distanceUnit.GetStringValue(),
                         GroupName = nameof(DistanceUnits),
                         MinimumWidthRequest = 85
@@ -129,7 +139,7 @@ public partial class Settings_Units : ContentPage
                 case Units.DistanceUnits.Kilometers:
                     DistanceUnits.Children.Add(new RadioButton()
                     {
-                        Content = "km",
+                        Content = ResUnits.unit_kilometers,
                         Value = distanceUnit.GetStringValue(),
                         GroupName = nameof(DistanceUnits),
                         MinimumWidthRequest = 85
@@ -149,7 +159,7 @@ public partial class Settings_Units : ContentPage
                 case Units.PrecipitationUnits.Inches:
                     PrecipitationUnits.Children.Add(new RadioButton()
                     {
-                        Content = "in",
+                        Content = ResUnits.unit_in,
                         Value = precipitationUnit.GetStringValue(),
                         GroupName = nameof(PrecipitationUnits),
                         MinimumWidthRequest = 85
@@ -158,7 +168,7 @@ public partial class Settings_Units : ContentPage
                 case Units.PrecipitationUnits.Millimeters:
                     PrecipitationUnits.Children.Add(new RadioButton()
                     {
-                        Content = "mm",
+                        Content = ResUnits.unit_mm,
                         Value = precipitationUnit.GetStringValue(),
                         GroupName = nameof(PrecipitationUnits),
                         MinimumWidthRequest = 85
@@ -178,7 +188,7 @@ public partial class Settings_Units : ContentPage
                 case Units.PressureUnits.InHg:
                     PressureUnits.Children.Add(new RadioButton()
                     {
-                        Content = "inHg",
+                        Content = ResUnits.unit_inHg,
                         Value = pressureUnit.GetStringValue(),
                         GroupName = nameof(PressureUnits),
                         MinimumWidthRequest = 85
@@ -187,7 +197,7 @@ public partial class Settings_Units : ContentPage
                 case Units.PressureUnits.Millibar:
                     PressureUnits.Children.Add(new RadioButton()
                     {
-                        Content = "mb",
+                        Content = ResUnits.unit_mBar,
                         Value = pressureUnit.GetStringValue(),
                         GroupName = nameof(PressureUnits),
                         MinimumWidthRequest = 85
@@ -196,7 +206,7 @@ public partial class Settings_Units : ContentPage
                 case Units.PressureUnits.MmHg:
                     PressureUnits.Children.Add(new RadioButton()
                     {
-                        Content = "mmHg",
+                        Content = ResUnits.unit_mmHg,
                         Value = pressureUnit.GetStringValue(),
                         GroupName = nameof(PressureUnits),
                         MinimumWidthRequest = 85

@@ -1,13 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.NET.Helpers;
-using System;
-using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.NET.Helpers;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 using muxc = Microsoft.UI.Xaml.Controls;
+using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -92,7 +91,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.SpeedUnits.MilesPerHour:
                         SpeedUnits.Items.Add(new RadioButton()
                         {
-                            Content = "mph",
+                            Content = ResUnits.unit_mph,
                             Tag = speedUnit.GetStringValue(),
                             GroupName = nameof(SpeedUnits)
                         });
@@ -100,7 +99,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.SpeedUnits.KilometersPerHour:
                         SpeedUnits.Items.Add(new RadioButton()
                         {
-                            Content = "km/h",
+                            Content = ResUnits.unit_kph,
                             Tag = speedUnit.GetStringValue(),
                             GroupName = nameof(SpeedUnits)
                         });
@@ -108,7 +107,15 @@ namespace SimpleWeather.NET.Preferences
                     case Units.SpeedUnits.MetersPerSecond:
                         SpeedUnits.Items.Add(new RadioButton()
                         {
-                            Content = "m/s",
+                            Content = ResUnits.unit_msec,
+                            Tag = speedUnit.GetStringValue(),
+                            GroupName = nameof(SpeedUnits)
+                        });
+                        break;
+                    case Units.SpeedUnits.Knots:
+                        SpeedUnits.Items.Add(new RadioButton()
+                        {
+                            Content = ResUnits.unit_knots,
                             Tag = speedUnit.GetStringValue(),
                             GroupName = nameof(SpeedUnits)
                         });
@@ -127,7 +134,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.DistanceUnits.Miles:
                         DistanceUnits.Items.Add(new RadioButton()
                         {
-                            Content = "mi",
+                            Content = ResUnits.unit_miles,
                             Tag = distanceUnit.GetStringValue(),
                             GroupName = nameof(DistanceUnits)
                         });
@@ -135,7 +142,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.DistanceUnits.Kilometers:
                         DistanceUnits.Items.Add(new RadioButton()
                         {
-                            Content = "km",
+                            Content = ResUnits.unit_kilometers,
                             Tag = distanceUnit.GetStringValue(),
                             GroupName = nameof(DistanceUnits)
                         });
@@ -154,7 +161,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.PrecipitationUnits.Inches:
                         PrecipitationUnits.Items.Add(new RadioButton()
                         {
-                            Content = "in",
+                            Content = ResUnits.unit_in,
                             Tag = precipitationUnit.GetStringValue(),
                             GroupName = nameof(PrecipitationUnits)
                         });
@@ -162,7 +169,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.PrecipitationUnits.Millimeters:
                         PrecipitationUnits.Items.Add(new RadioButton()
                         {
-                            Content = "mm",
+                            Content = ResUnits.unit_mm,
                             Tag = precipitationUnit.GetStringValue(),
                             GroupName = nameof(PrecipitationUnits)
                         });
@@ -181,7 +188,7 @@ namespace SimpleWeather.NET.Preferences
                     case Units.PressureUnits.InHg:
                         PressureUnits.Items.Add(new RadioButton()
                         {
-                            Content = "inHg",
+                            Content = ResUnits.unit_inHg,
                             Tag = pressureUnit.GetStringValue(),
                             GroupName = nameof(PressureUnits)
                         });
@@ -189,7 +196,15 @@ namespace SimpleWeather.NET.Preferences
                     case Units.PressureUnits.Millibar:
                         PressureUnits.Items.Add(new RadioButton()
                         {
-                            Content = "mb",
+                            Content = ResUnits.unit_mBar,
+                            Tag = pressureUnit.GetStringValue(),
+                            GroupName = nameof(PressureUnits)
+                        });
+                        break;
+                    case Units.PressureUnits.MmHg:
+                        PressureUnits.Items.Add(new RadioButton()
+                        {
+                            Content = ResUnits.unit_mmHg,
                             Tag = pressureUnit.GetStringValue(),
                             GroupName = nameof(PressureUnits)
                         });

@@ -78,6 +78,10 @@ namespace SimpleWeather.Common.Controls
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.wind_kph.Value));
                         speedUnit = ResUnits.unit_msec;
                         break;
+                    case Units.KNOTS:
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.wind_mph.Value));
+                        speedUnit = ResUnits.unit_knots;
+                        break;
                 }
 
                 WindDirection = forecast.wind_degrees.GetValueOrDefault(0);
@@ -221,6 +225,10 @@ namespace SimpleWeather.Common.Controls
                         case Units.METERS_PER_SECOND:
                             speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.windgust_kph.Value));
                             speedUnit = ResUnits.unit_msec;
+                            break;
+                        case Units.KNOTS:
+                            speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.extras.wind_mph.Value));
+                            speedUnit = ResUnits.unit_knots;
                             break;
                     }
 

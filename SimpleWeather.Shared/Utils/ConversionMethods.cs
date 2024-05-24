@@ -12,6 +12,7 @@ namespace SimpleWeather.Utils
         private const float MB_TO_INHG = 29.92f / 1013.25f;
         private const float MSEC_TO_MPH = 2.23694f;
         private const float MSEC_TO_KPH = 3.6f;
+        private const float MPH_TO_KTS = 0.8689762f;
         private const float MM_TO_IN = 1f / 25.4f;
         private const float IN_TO_MM = 25.4f;
         private const float PA_TO_INHG = 0.0002952998751f;
@@ -85,6 +86,11 @@ namespace SimpleWeather.Utils
         public static float KphToMSec(float input)
         {
             return input / MSEC_TO_KPH;
+        }
+
+        public static float MphToKts(float input)
+        {
+            return input * MPH_TO_KTS;
         }
 
         public static float FtoC(float input)

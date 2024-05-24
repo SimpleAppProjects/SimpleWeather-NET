@@ -310,6 +310,10 @@ namespace SimpleWeather.Common.Controls
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(WeatherData.condition.wind_kph.Value));
                         speedUnit = ResUnits.unit_msec;
                         break;
+                    case Units.KNOTS:
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(WeatherData.condition.wind_mph.Value));
+                        speedUnit = ResUnits.unit_knots;
+                        break;
                 }
 
                 WeatherDetailsMap.Add(WeatherDetailsType.WindSpeed, new DetailItemViewModel(WeatherDetailsType.WindSpeed,
@@ -337,6 +341,10 @@ namespace SimpleWeather.Common.Controls
                     case Units.METERS_PER_SECOND:
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(WeatherData.condition.windgust_kph.Value));
                         speedUnit = ResUnits.unit_msec;
+                        break;
+                    case Units.KNOTS:
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(WeatherData.condition.windgust_mph.Value));
+                        speedUnit = ResUnits.unit_knots;
                         break;
                 }
 

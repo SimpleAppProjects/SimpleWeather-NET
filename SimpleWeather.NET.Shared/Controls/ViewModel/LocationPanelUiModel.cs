@@ -268,6 +268,10 @@ namespace SimpleWeather.NET.Controls
                         speedVal = (int)Math.Round(ConversionMethods.KphToMSec(weather.condition.wind_kph.Value));
                         speedUnit = ResUnits.unit_msec;
                         break;
+                    case Units.KNOTS:
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(weather.condition.wind_mph.Value));
+                        speedUnit = ResUnits.unit_knots;
+                        break;
                 }
 
                 WindSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);

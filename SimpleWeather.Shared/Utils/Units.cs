@@ -19,7 +19,9 @@ namespace SimpleWeather.Utils
             [StringValue(KILOMETERS_PER_HOUR)]
             KilometersPerHour,
             [StringValue(METERS_PER_SECOND)]
-            MetersPerSecond
+            MetersPerSecond,
+            [StringValue(KNOTS)]
+            Knots
         }
 
         public enum PressureUnits
@@ -53,6 +55,7 @@ namespace SimpleWeather.Utils
         public const string MILES_PER_HOUR = "MPH";
         public const string KILOMETERS_PER_HOUR = "KMPH";
         public const string METERS_PER_SECOND = "MSEC";
+        public const string KNOTS = "KNOTS";
         public const string INHG = "INMERCURY";
         public const string MILLIBAR = "MILLIBAR";
         public const string MMHG = "MMMERCURY";
