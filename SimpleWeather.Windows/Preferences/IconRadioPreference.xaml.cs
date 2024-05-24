@@ -1,7 +1,8 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using SimpleWeather.Extras;
 using SimpleWeather.Icons;
-using System;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -11,6 +12,9 @@ namespace SimpleWeather.NET.Preferences
     {
         private readonly String[] PREVIEW_ICONS = { WeatherIcons.DAY_SUNNY, WeatherIcons.NIGHT_CLEAR, WeatherIcons.DAY_SUNNY_OVERCAST, WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY, WeatherIcons.RAIN };
         public String Key { get; private set; }
+
+        private IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
+        private bool IsPremiumIcon => !ExtrasService.IsIconPackSupported(Key);
 
         public IconRadioPreference()
         {

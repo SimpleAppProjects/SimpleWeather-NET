@@ -3,7 +3,8 @@
     x:Class="SimpleWeather.Maui.Preferences.IconRadioPreference"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls">
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons">
     <ContentView.GestureRecognizers>
         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
     </ContentView.GestureRecognizers>
@@ -24,5 +25,16 @@
                 <controls:IconControl WeatherIcon="&#xf00d;" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
+        <Image
+            Margin="16,0,0,0"
+            IsVisible="{x:Bind IsPremiumIcon, Mode=OneWay}"
+            VerticalOptions="Center">
+            <Image.Source>
+                <matIcons:MaterialIcon
+                    Size="48"
+                    Symbol="Star"
+                    Color="Gold" />
+            </Image.Source>
+        </Image>
     </HorizontalStackLayout>
 </ContentView>

@@ -31,5 +31,13 @@
                 <controls:IconControl WeatherIcon="&#xf00d;" />
             </StackPanel>
         </StackPanel>
+        <SymbolIcon
+            Width="24"
+            Height="24"
+            Margin="16,0,0,4"
+            VerticalAlignment="Bottom"
+            Foreground="Gold"
+            Symbol="SolidStar"
+            Visibility="{x:Bind IsPremiumIcon, Converter={StaticResource booleanToVisibilityConverter}}" />
     </StackPanel>
 </UserControl>
