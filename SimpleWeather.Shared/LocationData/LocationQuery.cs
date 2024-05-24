@@ -78,18 +78,15 @@ namespace SimpleWeather.LocationData
 
         private void UpdateLocationQuery()
         {
-            if (WeatherAPI.Here.Equals(WeatherSource))
+            Location_Query = WeatherSource switch
             {
-                Location_Query = String.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", LocationLat, LocationLong);
-            }
-            else if (WeatherAPI.WeatherUnlocked.Equals(WeatherSource) || WeatherAPI.WeatherApi.Equals(WeatherSource) || WeatherAPI.TomorrowIo.Equals(WeatherSource) || WeatherAPI.AccuWeather.Equals(WeatherSource))
-            {
-                Location_Query = String.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong);
-            }
-            else
-            {
-                Location_Query = String.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat, LocationLong);
-            }
+                WeatherAPI.Here or
+                WeatherAPI.WeatherUnlocked or
+                WeatherAPI.WeatherApi or
+                WeatherAPI.TomorrowIo or
+                WeatherAPI.AccuWeather => string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong),
+                _ => string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat, LocationLong)
+            };
         }
 
         public void UpdateWeatherSource(string API)

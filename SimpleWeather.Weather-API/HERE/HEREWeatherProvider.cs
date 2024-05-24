@@ -7,7 +7,6 @@ using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -20,16 +19,9 @@ using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.HERE
 {
-    public partial class HEREWeatherProvider : WeatherProviderImpl, IWeatherAlertProvider
+    public partial class HEREWeatherProvider : WeatherProviderImpl
     {
-        private const String WEATHER_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&product=forecast_7days_simple" +
-            "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
-
-        private const String WEATHER_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&product=forecast_7days_simple" +
-            "&product=forecast_hourly&product=forecast_astronomy&product=observation&oneobservation=true&{0}&language={1}&metric=false";
-
-        private const String ALERTS_GLOBAL_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=alerts&{0}&language={1}&metric=false";
-        private const String ALERTS_US_CA_QUERY_URL = "https://weather.ls.hereapi.com/weather/1.0/report.json?product=nws_alerts&{0}&language={1}&metric=false";
+        private const string BASE_URL = "https://weather.hereapi.com/v3/report";
 
         public HEREWeatherProvider() : base()
         {
@@ -71,21 +63,19 @@ namespace SimpleWeather.Weather_API.HERE
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
             string query = UpdateLocationQuery(location);
 
-            Uri queryURL;
-            if (LocationUtils.IsUSorCanada(location))
-            {
-                queryURL = new Uri(String.Format(WEATHER_US_CA_QUERY_URL, query, locale));
-            }
-            else
-            {
-                queryURL = new Uri(String.Format(WEATHER_GLOBAL_QUERY_URL, query, locale));
-            }
-
             try
             {
                 this.CheckRateLimit();
 
-                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
+                var requestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendQueryParameter("products", "forecast7daysSimple,forecastHourly,forecastAstronomy,observation," + (LocationUtils.IsUSorCanada(location) ? "nwsAlerts" : "alerts"))
+                    .AppendQueryParameter("location", query)
+                    .AppendQueryParameter("units", "imperial")
+                    .AppendQueryParameter("oneObservation", "true")
+                    .AppendQueryParameter("lang", locale)
+                    .BuildUri();
+
+                using (var request = new HttpRequestMessage(HttpMethod.Get, requestUri))
                 {
                     // Add headers to request
                     var token = await Auth.HEREOAuthService.GetBearerToken();
@@ -109,28 +99,41 @@ namespace SimpleWeather.Weather_API.HERE
                         // Load weather
                         Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
 
-                        // Check for errors
-                        if (root.Type != null)
+                        // Fold into single item
+                        var rootObject = root.places.Aggregate(new Place(), (@base, item) =>
                         {
-                            switch (root.Type)
+                            if (item.alerts != null)
                             {
-                                case "Invalid Request":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, await response.CreateException());
-                                    break;
-
-                                case "Unauthorized":
-                                    wEx = new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
-                                    break;
-
-                                default:
-                                    break;
+                                @base.alerts = item.alerts;
                             }
-                        }
+                            if (item.hourlyForecasts != null)
+                            {
+                                @base.hourlyForecasts = item.hourlyForecasts;
+                            }
+                            if (item.observations != null)
+                            {
+                                @base.observations = item.observations;
+                            }
+                            if (item.astronomyForecasts != null)
+                            {
+                                @base.astronomyForecasts = item.astronomyForecasts;
+                            }
+                            if (item.nwsAlerts != null)
+                            {
+                                @base.nwsAlerts = item.nwsAlerts;
+                            }
+                            if (item.dailyForecasts != null)
+                            {
+                                @base.dailyForecasts = item.dailyForecasts;
+                            }
 
-                        weather = this.CreateWeatherData(root);
+                            return @base;
+                        });
+
+                        weather = this.CreateWeatherData(rootObject);
 
                         // Add weather alerts if available
-                        weather.weather_alerts = this.CreateWeatherAlerts(root,
+                        weather.weather_alerts = this.CreateWeatherAlerts(rootObject,
                             weather.location.latitude.Value, weather.location.longitude.Value);
                     }
                 }
@@ -211,77 +214,14 @@ namespace SimpleWeather.Weather_API.HERE
             }
         }
 
-        public override async Task<ICollection<WeatherAlert>> GetAlerts(SimpleWeather.LocationData.LocationData location)
-        {
-            ICollection<WeatherAlert> alerts = null;
-
-            var culture = LocaleUtils.GetLocale();
-
-            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-
-            try
-            {
-                this.CheckRateLimit();
-
-                Uri queryURL;
-                if (LocationUtils.IsUSorCanada(location))
-                {
-                    queryURL = new Uri(String.Format(ALERTS_US_CA_QUERY_URL, location.query, locale));
-                }
-                else
-                {
-                    queryURL = new Uri(String.Format(ALERTS_GLOBAL_QUERY_URL, location.query, locale));
-                }
-
-                using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
-                {
-                    // Add headers to request
-                    var token = await Auth.HEREOAuthService.GetBearerToken();
-                    if (!String.IsNullOrWhiteSpace(token))
-                        request.Headers.Add("Authorization", token);
-                    else
-                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError, new Exception($"Invalid bearer token: {token}"));
-
-                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
-
-                    // Connect to webstream
-                    var webClient = SharedModule.Instance.WebClient;
-                    using (var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                    using (var response = await webClient.SendAsync(request, cts.Token))
-                    {
-                        await this.CheckForErrors(response);
-                        response.EnsureSuccessStatusCode();
-
-                        Stream contentStream = await response.Content.ReadAsStreamAsync();
-
-                        // Load data
-                        Rootobject root = await JSONParser.DeserializerAsync<Rootobject>(contentStream);
-
-                        // Add weather alerts if available
-                        alerts = this.CreateWeatherAlerts(root, (float)location.latitude, (float)location.longitude);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                alerts = new List<WeatherAlert>();
-                Logger.WriteLine(LoggerLevel.Error, ex, "HEREWeatherProvider: error getting weather alert data");
-            }
-
-            if (alerts == null)
-                alerts = new List<WeatherAlert>();
-
-            return alerts;
-        }
-
         public override string UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", weather.location.latitude, weather.location.longitude);
+            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
         }
 
         public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "latitude={0:0.####}&longitude={1:0.####}", location.latitude, location.longitude);
+            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
         }
 
         public override String LocaleToLangCode(String iso, String name)

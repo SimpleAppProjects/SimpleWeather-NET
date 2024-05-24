@@ -51,9 +51,6 @@ namespace SimpleWeather.Weather_API.Json
         DefaultIgnoreCondition = JsonIgnoreCondition.Never,
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         WriteIndented = false)]
-    [JsonSerializable(typeof(HERE.AC_Rootobject))]
-    [JsonSerializable(typeof(HERE.Geo_Rootobject))]
-    [JsonSerializable(typeof(HERE.Geo_Rootobject))]
     [JsonSerializable(typeof(HERE.Rootobject))]
     public partial class HEREAPIJsonContext : JsonSerializerContext
     {

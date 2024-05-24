@@ -9,22 +9,22 @@ namespace SimpleWeather.Weather_API.HERE
 {
     public static partial class HEREWeatherProviderExtensions
     {
-        public static ICollection<WeatherAlert> CreateWeatherAlerts(this HEREWeatherProvider _, Rootobject root, float lat, float lon)
+        public static ICollection<WeatherAlert> CreateWeatherAlerts(this HEREWeatherProvider _, Place root, float lat, float lon)
         {
             ICollection<WeatherAlert> weatherAlerts = null;
 
-            if (root.alerts?.alerts?.Length > 0)
+            if (root.alerts?.Length > 0)
             {
-                weatherAlerts = new List<WeatherAlert>(root.alerts.alerts.Length);
+                weatherAlerts = new List<WeatherAlert>(root.alerts.Length);
 
-                foreach (Alert result in root.alerts.alerts)
+                foreach (Alert result in root.alerts)
                 {
                     weatherAlerts.Add(_.CreateWeatherAlert(result));
                 }
             }
-            else if (root.nwsAlerts?.watch?.Length > 0 || root.nwsAlerts?.warning?.Length > 0)
+            else if (root.nwsAlerts?.watches?.Length > 0 || root.nwsAlerts?.warnings?.Length > 0)
             {
-                int numOfAlerts = (root.nwsAlerts?.watch?.Length ?? 0) + (root.nwsAlerts?.warning?.Length ?? 0);
+                int numOfAlerts = (root.nwsAlerts?.watches?.Length ?? 0) + (root.nwsAlerts?.warnings?.Length ?? 0);
 
                 weatherAlerts = new HashSet<WeatherAlert>(
 #if !NETSTANDARD2_0
@@ -32,23 +32,35 @@ namespace SimpleWeather.Weather_API.HERE
 #endif
                     );
 
-                if (root.nwsAlerts.watch != null)
+                if (root.nwsAlerts.watches != null)
                 {
-                    foreach (var watchItem in root.nwsAlerts.watch)
+                    foreach (var watchItem in root.nwsAlerts.watches)
                     {
+                        var locations = watchItem.counties?.Select(x => x.location)
+                            ?? watchItem.zones?.Select(x => x.location)
+                            ?? watchItem.provinces?.Select(x => x.location);
+
+                        if (locations == null) continue;
+
                         // Add watch item if location is within 20km of the center of the alert zone
-                        if (Math.Abs(ConversionMethods.CalculateHaversine(lat, lon, double.Parse(watchItem.latitude), double.Parse(watchItem.longitude))) < 20000)
+                        if (locations.Any(it => Math.Abs(ConversionMethods.CalculateHaversine(lat, lon, (double)it.lat, (double)it.lng)) < 20000))
                         {
                             weatherAlerts.Add(_.CreateWeatherAlert(watchItem));
                         }
                     }
                 }
-                if (root.nwsAlerts.warning != null)
+                if (root.nwsAlerts.warnings != null)
                 {
-                    foreach (var warningItem in root.nwsAlerts.warning)
+                    foreach (var warningItem in root.nwsAlerts.warnings)
                     {
+                        var locations = warningItem.counties?.Select(x => x.location)
+                            ?? warningItem.zones?.Select(x => x.location)
+                            ?? warningItem.provinces?.Select(x => x.location);
+
+                        if (locations == null) continue;
+
                         // Add warning item if location is within 25km of the center of the alert zone
-                        if (Math.Abs(ConversionMethods.CalculateHaversine(lat, lon, double.Parse(warningItem.latitude), double.Parse(warningItem.longitude))) < 25000)
+                        if (locations.Any(it => Math.Abs(ConversionMethods.CalculateHaversine(lat, lon, (double)it.lat, (double)it.lng)) < 25000))
                         {
                             weatherAlerts.Add(_.CreateWeatherAlert(warningItem));
                         }
@@ -186,7 +198,7 @@ namespace SimpleWeather.Weather_API.HERE
             // NOTE: Alert description may be encoded; unescape encoded characters
             weatherAlert.Title = weatherAlert.Message = alert.description?.UnescapeUnicode();
 
-            weatherAlert.SetDateTimeFromSegment(alert.timeSegment);
+            weatherAlert.SetDateTimeFromSegment(alert.timeSegments);
 
             weatherAlert.Attribution = "HERE Weather";
 
@@ -242,7 +254,7 @@ namespace SimpleWeather.Weather_API.HERE
             return weatherAlert;
         }
 
-        private static WeatherAlertType GetAlertType(int type, String alertDescription)
+        private static WeatherAlertType GetAlertType(int type, string alertDescription)
         {
             switch (type)
             {
@@ -378,61 +390,83 @@ namespace SimpleWeather.Weather_API.HERE
             }
         }
 
-        private static WeatherAlertSeverity GetAlertSeverity(int severity)
+        private static WeatherAlertSeverity GetAlertSeverity(int? severity)
         {
-            if (severity >= 75)
+            if (severity.HasValue)
             {
-                return WeatherAlertSeverity.Extreme;
-            }
-            else if (severity >= 50)
-            {
-                return WeatherAlertSeverity.Severe;
-            }
-            else if (severity >= 25)
-            {
-                return WeatherAlertSeverity.Moderate;
+                if (severity >= 75)
+                {
+                    return WeatherAlertSeverity.Extreme;
+                }
+                else if (severity >= 50)
+                {
+                    return WeatherAlertSeverity.Severe;
+                }
+                else if (severity >= 25)
+                {
+                    return WeatherAlertSeverity.Moderate;
+                }
+                else
+                {
+                    return WeatherAlertSeverity.Minor;
+                }
             }
             else
             {
-                return WeatherAlertSeverity.Minor;
+                return WeatherAlertSeverity.Moderate;
             }
+        }
+
+        private static DayOfWeek GetDayOfWeekFromSegment(string dayofweek)
+        {
+            return dayofweek switch
+            {
+                "su" => DayOfWeek.Sunday,
+                "mo" => DayOfWeek.Monday,
+                "tu" => DayOfWeek.Tuesday,
+                "we" => DayOfWeek.Wednesday,
+                "th" => DayOfWeek.Thursday,
+                "fr" => DayOfWeek.Friday,
+                "sa" => DayOfWeek.Saturday,
+                _ => DayOfWeek.Sunday
+            };
         }
 
         private static void SetDateTimeFromSegment(this WeatherAlert _, HERE.Timesegment[] timeSegment)
         {
             if (timeSegment.Length > 1)
             {
-                var startDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week, CultureInfo.InvariantCulture) - 1));
-                var endDate = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment.Last().day_of_week, CultureInfo.InvariantCulture) - 1));
+                var startDate = DateTimeUtils.GetClosestWeekday(GetDayOfWeekFromSegment(timeSegment[0].weekday));
+                var endDate = DateTimeUtils.GetClosestWeekday(GetDayOfWeekFromSegment(timeSegment.Last().weekday));
 
                 _.Date = new DateTimeOffset(startDate.Add(GetTimeFromSegment(timeSegment[0].segment)), TimeSpan.Zero);
                 _.ExpiresDate = new DateTimeOffset(endDate.Add(GetTimeFromSegment(timeSegment.Last().segment)), TimeSpan.Zero);
             }
             else
             {
-                var today = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].day_of_week, CultureInfo.InvariantCulture) - 1));
+                var today = DateTimeUtils.GetClosestWeekday((DayOfWeek)(int.Parse(timeSegment[0].weekday, CultureInfo.InvariantCulture) - 1));
 
                 switch (timeSegment[0].segment)
                 {
-                    case "M": // Morning
+                    case "morning": // Morning
                     default:
-                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("M")), TimeSpan.Zero);
-                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("A")), TimeSpan.Zero);
+                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("morning")), TimeSpan.Zero);
+                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("afternoon")), TimeSpan.Zero);
                         break;
 
-                    case "A": // Afternoon
-                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("A")), TimeSpan.Zero);
-                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("E")), TimeSpan.Zero);
+                    case "afternoon": // Afternoon
+                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("afternoon")), TimeSpan.Zero);
+                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("evening")), TimeSpan.Zero);
                         break;
 
-                    case "E": // Evening
-                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("E")), TimeSpan.Zero);
-                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("N")), TimeSpan.Zero);
+                    case "evening": // Evening
+                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("evening")), TimeSpan.Zero);
+                        _.ExpiresDate = new DateTimeOffset(today.Add(GetTimeFromSegment("night")), TimeSpan.Zero);
                         break;
 
-                    case "N": // Night
-                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("N")), TimeSpan.Zero);
-                        _.ExpiresDate = new DateTimeOffset(today.AddDays(1).Add(GetTimeFromSegment("M")), TimeSpan.Zero); // The next morning
+                    case "night": // Night
+                        _.Date = new DateTimeOffset(today.Add(GetTimeFromSegment("night")), TimeSpan.Zero);
+                        _.ExpiresDate = new DateTimeOffset(today.AddDays(1).Add(GetTimeFromSegment("morning")), TimeSpan.Zero); // The next morning
                         break;
                 }
             }
@@ -444,19 +478,19 @@ namespace SimpleWeather.Weather_API.HERE
 
             switch (segment)
             {
-                case "M": // Morning
+                case "morning": // Morning
                     span = new TimeSpan(5, 0, 0); // hh:mm:ss
                     break;
 
-                case "A": // Afternoon
+                case "afternoon": // Afternoon
                     span = new TimeSpan(12, 0, 0); // hh:mm:ss
                     break;
 
-                case "E": // Evening
+                case "evening": // Evening
                     span = new TimeSpan(17, 0, 0); // hh:mm:ss
                     break;
 
-                case "N": // Night
+                case "night": // Night
                     span = new TimeSpan(21, 0, 0); // hh:mm:ss
                     break;
 

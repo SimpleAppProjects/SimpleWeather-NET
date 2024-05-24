@@ -11,19 +11,19 @@ namespace SimpleWeather.Weather_API.HERE
 {
     public static partial class HEREWeatherProviderExtensions
     {
-        public static Weather CreateWeatherData(this HEREWeatherProvider _, HERE.Rootobject root)
+        public static Weather CreateWeatherData(this HEREWeatherProvider _, HERE.Place root)
         {
             var weather = new Weather();
 
-            var now = root.feedCreation;
+            var now = DateTimeOffset.Now;
             SimpleWeather.WeatherData.Forecast todaysForecast = null;
             TextForecast todaysTxtForecast = null;
 
-            weather.location = _.CreateLocation(root.observations.location[0]);
+            weather.location = _.CreateLocation(root.observations[0].place);
             weather.update_time = now;
-            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            weather.txt_forecast = new List<TextForecast>(root.dailyForecasts.forecastLocation.forecast.Length);
-            foreach (HERE.Forecast fcast in root.dailyForecasts.forecastLocation.forecast)
+            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(root.dailyForecasts[0].forecasts.Length);
+            weather.txt_forecast = new List<TextForecast>(root.dailyForecasts[0].forecasts.Length);
+            foreach (HERE.Forecast fcast in root.dailyForecasts[0].forecasts)
             {
                 var dailyFcast = _.CreateForecast(fcast);
                 var txtFcast = _.CreateTextForecast(fcast);
@@ -37,20 +37,20 @@ namespace SimpleWeather.Weather_API.HERE
                     todaysTxtForecast = txtFcast;
                 }
             }
-            weather.hr_forecast = new List<HourlyForecast>(root.hourlyForecasts.forecastLocation.forecast.Length);
-            foreach (HERE.Forecast1 forecast1 in root.hourlyForecasts.forecastLocation.forecast)
+            weather.hr_forecast = new List<HourlyForecast>(root.hourlyForecasts[0].forecasts.Length);
+            foreach (HERE.Forecast forecast1 in root.hourlyForecasts[0].forecasts)
             {
-                if (forecast1.utcTime.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                if (forecast1.time.Trim(TimeSpan.TicksPerHour) < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                     continue;
 
                 weather.hr_forecast.Add(_.CreateHourlyForecast(forecast1));
             }
 
-            var observation = root.observations.location[0].observation[0];
+            var observation = root.observations[0];
 
             weather.condition = _.CreateCondition(observation, todaysForecast, todaysTxtForecast);
             weather.atmosphere = _.CreateAtmosphere(observation);
-            weather.astronomy = _.CreateAstronomy(root.astronomy.astronomy);
+            weather.astronomy = _.CreateAstronomy(root.astronomyForecasts[0].forecasts);
             weather.precipitation = _.CreatePrecipitation(observation, todaysForecast);
             weather.ttl = 180;
 
@@ -59,14 +59,14 @@ namespace SimpleWeather.Weather_API.HERE
             return weather;
         }
 
-        public static SimpleWeather.WeatherData.Location CreateLocation(this HEREWeatherProvider _, HERE.Location location)
+        public static SimpleWeather.WeatherData.Location CreateLocation(this HEREWeatherProvider _, HERE.Place1 place)
         {
             return new SimpleWeather.WeatherData.Location()
             {
                 // Use location name from location provider
                 name = null,
-                latitude = location.latitude,
-                longitude = location.longitude,
+                latitude = place.location.lat,
+                longitude = place.location.lng,
                 tz_long = null,
             };
         }
@@ -75,7 +75,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             var fcast = new SimpleWeather.WeatherData.Forecast();
 
-            fcast.date = forecast.utcTime.UtcDateTime;
+            fcast.date = forecast.time.UtcDateTime;
             if (float.TryParse(forecast.highTemperature, NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
             {
                 fcast.high_f = highF;
@@ -86,19 +86,22 @@ namespace SimpleWeather.Weather_API.HERE
                 fcast.low_f = lowF;
                 fcast.low_c = ConversionMethods.FtoC(lowF);
             }
-            fcast.condition = new StringBuilder(forecast.description.ToPascalCase()).Apply(sb =>
+            fcast.condition = forecast.description?.Let(it =>
             {
-                if (!String.IsNullOrWhiteSpace(forecast.airDescription) && !Equals(forecast.airDescription, "*"))
+                return new StringBuilder(it.ToPascalCase()).Apply(sb =>
                 {
-                    if (!sb.ToString().EndsWith('.'))
+                    if (!string.IsNullOrWhiteSpace(forecast.airDesc) && !Equals(forecast.airDesc, "*"))
                     {
-                        sb.Append('.');
+                        if (!sb.ToString().EndsWith('.'))
+                        {
+                            sb.Append('.');
+                        }
+                        sb.Append($" {forecast.airDesc}");
                     }
-                    sb.Append($" {forecast.airDescription}");
-                }
-            }).ToString();
+                }).ToString();
+            });
             fcast.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(Equals(forecast.daylight, "N") || forecast.iconName.StartsWith("night_"), forecast.iconName);
+                   .GetWeatherIcon(Equals(forecast.daylight, "night") || forecast.iconName?.StartsWith("night") == true, forecast.iconName);
 
             // Extras
             fcast.extras = new ForecastExtras();
@@ -120,16 +123,16 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 fcast.extras.pop = pop;
             }
-            if (float.TryParse(forecast.rainFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float rain_in))
+            forecast.rainFall.TryParseFloat(0f).Let(it =>
             {
-                fcast.extras.qpf_rain_in = rain_in;
-                fcast.extras.qpf_rain_mm = ConversionMethods.InToMM(rain_in);
-            }
-            if (float.TryParse(forecast.snowFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float snow_in))
+                fcast.extras.qpf_rain_in = it;
+                fcast.extras.qpf_rain_mm = ConversionMethods.InToMM(it);
+            });
+            forecast.snowFall.TryParseFloat(0f).Let(it =>
             {
-                fcast.extras.qpf_snow_in = snow_in;
-                fcast.extras.qpf_snow_cm = ConversionMethods.InToMM(snow_in / 10);
-            }
+                fcast.extras.qpf_snow_in = it;
+                fcast.extras.qpf_snow_cm = ConversionMethods.InToMM(it / 10);
+            });
             if (float.TryParse(forecast.barometerPressure, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
             {
                 fcast.extras.pressure_in = pressureIN;
@@ -152,30 +155,33 @@ namespace SimpleWeather.Weather_API.HERE
             return fcast;
         }
 
-        public static HourlyForecast CreateHourlyForecast(this HEREWeatherProvider _, HERE.Forecast1 hr_forecast)
+        public static HourlyForecast CreateHourlyForecast(this HEREWeatherProvider _, HERE.Forecast hr_forecast)
         {
             var hrf = new HourlyForecast();
 
-            hrf.date = hr_forecast.utcTime;
+            hrf.date = hr_forecast.time;
             if (float.TryParse(hr_forecast.temperature, NumberStyles.Float, CultureInfo.InvariantCulture, out float highF))
             {
                 hrf.high_f = highF;
                 hrf.high_c = ConversionMethods.FtoC(highF);
             }
-            hrf.condition = new StringBuilder(hr_forecast.description.ToPascalCase()).Apply(sb =>
+            hrf.condition = hr_forecast.description?.Let(it =>
             {
-                if (!String.IsNullOrWhiteSpace(hr_forecast.airDescription) && !Equals(hr_forecast.airDescription, "*"))
+                return new StringBuilder(it.ToPascalCase()).Apply(sb =>
                 {
-                    if (!sb.ToString().EndsWith('.'))
+                    if (!String.IsNullOrWhiteSpace(hr_forecast.airDesc) && !Equals(hr_forecast.airDesc, "*"))
                     {
-                        sb.Append('.');
+                        if (!sb.ToString().EndsWith('.'))
+                        {
+                            sb.Append('.');
+                        }
+                        sb.Append($" {hr_forecast.airDesc}");
                     }
-                    sb.Append($" {hr_forecast.airDescription}");
-                }
-            }).ToString();
+                }).ToString();
+            });
 
             hrf.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(Equals(hr_forecast.daylight, "N") || hr_forecast.iconName.StartsWith("night_"), hr_forecast.iconName);
+                   .GetWeatherIcon(Equals(hr_forecast.daylight, "night") || hr_forecast.iconName?.StartsWith("night") == true, hr_forecast.iconName);
 
             if (int.TryParse(hr_forecast.windDirection, NumberStyles.Integer, CultureInfo.InvariantCulture, out int windDeg))
                 hrf.wind_degrees = windDeg;
@@ -210,16 +216,16 @@ namespace SimpleWeather.Weather_API.HERE
             {
                 hrf.extras.pop = PoP;
             }
-            if (float.TryParse(hr_forecast.rainFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float rain_in))
+            hr_forecast.rainFall.TryParseFloat(0f).Let(it =>
             {
-                hrf.extras.qpf_rain_in = rain_in;
-                hrf.extras.qpf_rain_mm = ConversionMethods.InToMM(rain_in);
-            }
-            if (float.TryParse(hr_forecast.snowFall, NumberStyles.Float, CultureInfo.InvariantCulture, out float snow_in))
+                hrf.extras.qpf_rain_in = it;
+                hrf.extras.qpf_rain_mm = ConversionMethods.InToMM(it);
+            });
+            hr_forecast.snowFall.TryParseFloat(0f).Let(it =>
             {
-                hrf.extras.qpf_snow_in = snow_in;
-                hrf.extras.qpf_snow_cm = ConversionMethods.InToMM(snow_in / 10);
-            }
+                hrf.extras.qpf_snow_in = it;
+                hrf.extras.qpf_snow_cm = ConversionMethods.InToMM(it / 10);
+            });
             if (float.TryParse(hr_forecast.barometerPressure, NumberStyles.Float, CultureInfo.InvariantCulture, out float pressureIN))
             {
                 hrf.extras.pressure_in = pressureIN;
@@ -236,33 +242,30 @@ namespace SimpleWeather.Weather_API.HERE
         {
             var textForecast = new TextForecast();
 
-            textForecast.date = forecast.utcTime;
-            textForecast.fcttext = new StringBuilder(
-                String.Format(
-                    CultureInfo.InvariantCulture, "{0} - {1}",
-                    forecast.weekday,
-                    forecast.description.ToPascalCase()
-                )
-            ).Apply(sb =>
+            textForecast.date = forecast.time;
+            textForecast.fcttext = forecast.description?.Let(it =>
             {
-                if (!String.IsNullOrWhiteSpace(forecast.beaufortDescription) && !Equals(forecast.beaufortDescription, "*"))
+                return new StringBuilder(it.ToPascalCase()).Apply(sb =>
                 {
-                    if (!sb.ToString().EndsWith('.'))
+                    if (!String.IsNullOrWhiteSpace(forecast.beaufortDesc) && !Equals(forecast.beaufortDesc, "*"))
                     {
-                        sb.Append('.');
+                        if (!sb.ToString().EndsWith('.'))
+                        {
+                            sb.Append('.');
+                        }
+                        sb.Append($" {forecast.beaufortDesc}");
                     }
-                    sb.Append($" {forecast.beaufortDescription}");
-                }
 
-                if (!String.IsNullOrWhiteSpace(forecast.airDescription) && !Equals(forecast.airDescription, "*"))
-                {
-                    if (!sb.ToString().EndsWith('.'))
+                    if (!String.IsNullOrWhiteSpace(forecast.airDesc) && !Equals(forecast.airDesc, "*"))
                     {
-                        sb.Append('.');
+                        if (!sb.ToString().EndsWith('.'))
+                        {
+                            sb.Append('.');
+                        }
+                        sb.Append($" {forecast.airDesc}");
                     }
-                    sb.Append($" {forecast.airDescription}");
-                }
-            }).ToString();
+                }).ToString();
+            });
             textForecast.fcttext_metric = textForecast.fcttext;
 
             return textForecast;
@@ -272,7 +275,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             var condition = new Condition();
 
-            condition.weather = observation.description.ToPascalCase();
+            condition.weather = observation.description?.ToPascalCase();
             if (float.TryParse(observation.temperature, NumberStyles.Float, CultureInfo.InvariantCulture, out float tempF))
             {
                 condition.temp_f = tempF;
@@ -314,12 +317,12 @@ namespace SimpleWeather.Weather_API.HERE
             }
 
             condition.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Here)
-                   .GetWeatherIcon(Equals(observation.daylight, "N") || observation.iconName.StartsWith("night_"), observation.iconName);
+                   .GetWeatherIcon(Equals(observation.daylight, "night") || observation.iconName?.StartsWith("night") == true, observation.iconName);
 
             if (todaysForecast?.extras?.uv_index.HasValue == true)
                 condition.uv = new UV(todaysForecast.extras.uv_index.Value);
 
-            condition.observation_time = observation.utcTime;
+            condition.observation_time = observation.time;
 
             if (todaysForecast != null && todaysTxtForecast != null)
             {
@@ -375,30 +378,32 @@ namespace SimpleWeather.Weather_API.HERE
             return atmosphere;
         }
 
-        public static SimpleWeather.WeatherData.Astronomy CreateAstronomy(this HEREWeatherProvider _, HERE.Astronomy1[] astronomy)
+        public static SimpleWeather.WeatherData.Astronomy CreateAstronomy(this HEREWeatherProvider _, HERE.AstronomyItem[] astronomy)
         {
             var astro = new SimpleWeather.WeatherData.Astronomy();
 
             var astroData = astronomy[0];
 
-            if (DateTime.TryParse(astroData.sunrise, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunrise))
-                astro.sunrise = sunrise;
-            if (DateTime.TryParse(astroData.sunset, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime sunset))
+            var now = DateTime.Now;
+
+            if (TimeSpan.TryParseExact(astroData.sunRise, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan sunrise))
+                astro.sunrise = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(sunrise));
+            if (TimeSpan.TryParseExact(astroData.sunSet, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan sunset))
             {
-                if (sunrise != null && sunrise != DateTime.MinValue && sunset.CompareTo(sunrise) < 0)
+                if (sunrise != null && sunrise != TimeSpan.MinValue && sunset.CompareTo(sunrise) < 0)
                 {
                     // Is next day
-                    astro.sunset = sunset.AddDays(1);
+                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date).AddDays(1), TimeOnly.FromTimeSpan(sunset));
                 }
                 else
                 {
-                    astro.sunset = sunset;
+                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(sunset));
                 }
             }
-            if (DateTime.TryParse(astroData.moonrise, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime moonrise))
-                astro.moonrise = moonrise;
-            if (DateTime.TryParse(astroData.moonset, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime moonset))
-                astro.moonset = moonset;
+            if (TimeSpan.TryParseExact(astroData.moonRise, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan moonrise))
+                astro.moonrise = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(moonrise));
+            if (TimeSpan.TryParseExact(astroData.moonSet, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan moonset))
+                astro.moonset = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(moonset));
 
             // If the sun won't set/rise, set time to the future
             if (astro.sunrise == null)

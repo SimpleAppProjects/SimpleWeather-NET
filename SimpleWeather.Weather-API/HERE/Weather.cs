@@ -4,41 +4,90 @@ namespace SimpleWeather.Weather_API.HERE
 {
     public class Rootobject
     {
-        public Observations observations { get; set; }
-        public Dailyforecasts dailyForecasts { get; set; }
-        public Hourlyforecasts hourlyForecasts { get; set; }
-        public Alerts alerts { get; set; }
-        public Nwsalerts nwsAlerts { get; set; }
-        public Astronomy astronomy { get; set; }
-        public DateTimeOffset feedCreation { get; set; }
-        public bool metric { get; set; }
-        public string Type { get; set; }
-        public string[] Message { get; set; }
+        public Place[] places { get; set; }
+        public string status { get; set; }
+        public string error { get; set; }
     }
 
-    public class Observations
+    public class Place
     {
-        public Location[] location { get; set; }
+        public Observation[] observations { get; set; }
+        public Dailyforecast[] dailyForecasts { get; set; }
+        public Hourlyforecast[] hourlyForecasts { get; set; }
+        public Astronomyforecast[] astronomyForecasts { get; set; }
+        public Alert[] alerts { get; set; }
+        public Nwsalerts nwsAlerts { get; set; }
+    }
+
+    public class Nwsalerts
+    {
+        public Warning[] warnings { get; set; }
+        public Watch[] watches { get; set; }
+    }
+
+    public class Warning
+    {
+        public Zone[] counties { get; set; }
+        public Zone[] zones { get; set; }
+        public Province[] provinces { get; set; }
+        public string type { get; set; }
+        public string description { get; set; }
+        public int? severity { get; set; }
+        public string message { get; set; }
+        public string name { get; set; }
+        public DateTimeOffset validFromTimeLocal { get; set; }
+        public DateTimeOffset validUntilTimeLocal { get; set; }
+    }
+
+    public class Zone
+    {
+        public string value { get; set; }
+        public string country { get; set; }
+        public string countryName { get; set; }
+        public string state { get; set; }
+        public string stateName { get; set; }
+        public string name { get; set; }
+        public Location location { get; set; }
     }
 
     public class Location
     {
-        public Observation[] observation { get; set; }
+        public float? lat { get; set; }
+        public float? lng { get; set; }
+    }
+
+    public class Watch
+    {
+        public Zone[] counties { get; set; }
+        public Zone[] zones { get; set; }
+        public Province[] provinces { get; set; }
+        public string type { get; set; }
+        public string description { get; set; }
+        public int? severity { get; set; }
+        public string message { get; set; }
+        public string name { get; set; }
+        public DateTimeOffset validFromTimeLocal { get; set; }
+        public DateTimeOffset validUntilTimeLocal { get; set; }
+    }
+
+    public class Province
+    {
+        public string value { get; set; }
         public string country { get; set; }
-        public string state { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public float distance { get; set; }
-        public int timezone { get; set; }
+        public string countryName { get; set; }
+        public string province { get; set; }
+        public string provinceName { get; set; }
+        public string name { get; set; }
+        public Location location { get; set; }
     }
 
     public class Observation
     {
+        public Place1 place { get; set; }
         public string daylight { get; set; }
         public string description { get; set; }
         public string skyInfo { get; set; }
-        public string skyDescription { get; set; }
+        public string skyDesc { get; set; }
         public string temperature { get; set; }
         public string temperatureDesc { get; set; }
         public string comfort { get; set; }
@@ -51,9 +100,12 @@ namespace SimpleWeather.Weather_API.HERE
         public string precipitation6H { get; set; }
         public string precipitation12H { get; set; }
         public string precipitation24H { get; set; }
+        public string precipitationProbability { get; set; }
         public string precipitationDesc { get; set; }
+        public string rainFall { get; set; }
+        public string snowFall { get; set; }
         public string airInfo { get; set; }
-        public string airDescription { get; set; }
+        public string airDesc { get; set; }
         public string windSpeed { get; set; }
         public string windDirection { get; set; }
         public string windDesc { get; set; }
@@ -62,36 +114,32 @@ namespace SimpleWeather.Weather_API.HERE
         public string barometerTrend { get; set; }
         public string visibility { get; set; }
         public string snowCover { get; set; }
-        public string icon { get; set; }
+        public string iconId { get; set; }
         public string iconName { get; set; }
         public string iconLink { get; set; }
         public string ageMinutes { get; set; }
         public string activeAlerts { get; set; }
-        public string country { get; set; }
-        public string state { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public float distance { get; set; }
-        public float elevation { get; set; }
-        public DateTimeOffset utcTime { get; set; }
+        public DateTimeOffset time { get; set; }
     }
 
-    public class Dailyforecasts
+    public class Place1
     {
-        public Forecastlocation forecastLocation { get; set; }
+        public Address address { get; set; }
+        public Location location { get; set; }
+        public string distance { get; set; }
     }
 
-    public class Forecastlocation
+    public class Address
     {
-        public Forecast[] forecast { get; set; }
-        public string country { get; set; }
+        public string countryName { get; set; }
         public string state { get; set; }
         public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public float distance { get; set; }
-        public int timezone { get; set; }
+    }
+
+    public class Dailyforecast
+    {
+        public Place1 place { get; set; }
+        public Forecast[] forecasts { get; set; }
     }
 
     public class Forecast
@@ -99,7 +147,8 @@ namespace SimpleWeather.Weather_API.HERE
         public string daylight { get; set; }
         public string description { get; set; }
         public string skyInfo { get; set; }
-        public string skyDescription { get; set; }
+        public string skyDesc { get; set; }
+        public string temperature { get; set; }
         public string temperatureDesc { get; set; }
         public string comfort { get; set; }
         public string highTemperature { get; set; }
@@ -111,112 +160,66 @@ namespace SimpleWeather.Weather_API.HERE
         public string rainFall { get; set; }
         public string snowFall { get; set; }
         public string airInfo { get; set; }
-        public string airDescription { get; set; }
+        public string airDesc { get; set; }
         public string windSpeed { get; set; }
         public string windDirection { get; set; }
         public string windDesc { get; set; }
         public string windDescShort { get; set; }
         public string beaufortScale { get; set; }
-        public string beaufortDescription { get; set; }
+        public string beaufortDesc { get; set; }
         public string uvIndex { get; set; }
         public string uvDesc { get; set; }
         public string barometerPressure { get; set; }
-        public string icon { get; set; }
-        public string iconName { get; set; }
-        public string iconLink { get; set; }
-        public string dayOfWeek { get; set; }
-        public string weekday { get; set; }
-        public DateTimeOffset utcTime { get; set; }
-    }
-
-    public class Hourlyforecasts
-    {
-        public Forecastlocation1 forecastLocation { get; set; }
-    }
-
-    public class Forecastlocation1
-    {
-        public Forecast1[] forecast { get; set; }
-        public string country { get; set; }
-        public string state { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public float distance { get; set; }
-        public int timezone { get; set; }
-    }
-
-    public class Forecast1
-    {
-        public string daylight { get; set; }
-        public string description { get; set; }
-        public string skyInfo { get; set; }
-        public string skyDescription { get; set; }
-        public string temperature { get; set; }
-        public string temperatureDesc { get; set; }
-        public string comfort { get; set; }
-        public string humidity { get; set; }
-        public string dewPoint { get; set; }
-        public string precipitationProbability { get; set; }
-        public string precipitationDesc { get; set; }
-        public string rainFall { get; set; }
-        public string snowFall { get; set; }
-        public string airInfo { get; set; }
-        public string airDescription { get; set; }
-        public string windSpeed { get; set; }
-        public string windDirection { get; set; }
-        public string windDesc { get; set; }
-        public string windDescShort { get; set; }
-        public string beaufortScale { get; set; }
-        public string beaufortDescription { get; set; }
-        public string uvIndex { get; set; }
-        public string uvDesc { get; set; }
         public string visibility { get; set; }
-        public string barometerPressure { get; set; }
         public string icon { get; set; }
         public string iconName { get; set; }
+        public string iconId { get; set; }
         public string iconLink { get; set; }
-        public string dayOfWeek { get; set; }
         public string weekday { get; set; }
-        public DateTimeOffset utcTime { get; set; }
-        public string localTime { get; set; }
-        public string localTimeFormat { get; set; }
+        public DateTimeOffset time { get; set; }
+        public string sunRise { get; set; }
+        public string sunSet { get; set; }
+        public string moonRise { get; set; }
+        public string moonSet { get; set; }
+        public string moonPhase { get; set; }
+        public string moonPhaseDescription { get; set; }
     }
 
-    public partial class Alerts
+    public class Hourlyforecast
     {
-        //public object[] alerts { get; set; }
-        public string country { get; set; }
-        public string state { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public int timezone { get; set; }
+        public Place1 place { get; set; }
+        public Forecast[] forecasts { get; set; }
     }
 
-    public class Astronomy
+    public class Astronomyforecast
     {
-        public Astronomy1[] astronomy { get; set; }
-        public string country { get; set; }
-        public string state { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public int timezone { get; set; }
+        public Place1 place { get; set; }
+        public AstronomyItem[] forecasts { get; set; }
     }
 
-    public class Astronomy1
+    public class AstronomyItem
     {
-        public string sunrise { get; set; }
-        public string sunset { get; set; }
-        public string moonrise { get; set; }
-        public string moonset { get; set; }
-        public float moonPhase { get; set; }
-        public string moonPhaseDesc { get; set; }
+        public string sunRise { get; set; }
+        public string sunSet { get; set; }
+        public string moonRise { get; set; }
+        public string moonSet { get; set; }
+        public string moonPhase { get; set; }
+        public string moonPhaseDescription { get; set; }
         public string iconName { get; set; }
-        public string city { get; set; }
-        public float latitude { get; set; }
-        public float longitude { get; set; }
-        public DateTimeOffset utcTime { get; set; }
+        public DateTimeOffset time { get; set; }
+    }
+
+    public class Alert
+    {
+        public Place1 place { get; set; }
+        public Timesegment[] timeSegments { get; set; }
+        public string type { get; set; }
+        public string description { get; set; }
+    }
+
+    public class Timesegment
+    {
+        public string segment { get; set; }
+        public string weekday { get; set; }
     }
 }
