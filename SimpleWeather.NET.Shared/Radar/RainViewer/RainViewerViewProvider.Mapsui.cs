@@ -67,6 +67,8 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
         public override async void UpdateMap(MapControl mapControl)
         {
+            base.UpdateMap(mapControl);
+
             this._mapControl = mapControl;
 
             await GetRadarFrames();

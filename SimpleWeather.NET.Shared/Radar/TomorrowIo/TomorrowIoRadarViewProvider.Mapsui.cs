@@ -67,13 +67,18 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
             RadarMapContainer.ToolbarVisibility =
                 InteractionsEnabled()/* && ExtrasService.IsEnabled()*/ ? Visibility.Visible : Visibility.Collapsed;
 #else
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsEnabled();
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled()/* && ExtrasService.IsEnabled()*/;
 #endif
         }
 
         public override void UpdateMap(MapControl mapControl)
         {
+            base.UpdateMap(mapControl);
+
             this._mapControl = mapControl;
+
+            mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
+            mapControl.Map.Navigator.ZoomLock = !InteractionsEnabled();
 
             GetRadarFrames();
         }

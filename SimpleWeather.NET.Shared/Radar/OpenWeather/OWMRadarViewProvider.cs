@@ -43,6 +43,8 @@ namespace SimpleWeather.NET.Radar.OpenWeather
 
         public override void UpdateMap(MapControl mapControl)
         {
+            base.UpdateMap(mapControl);
+
             if (TileSource == null)
             {
                 TileSource = CreateTileSource();
