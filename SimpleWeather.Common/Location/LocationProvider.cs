@@ -103,7 +103,11 @@ namespace SimpleWeather.Common.Location
             }
             catch
             {
+#if WINUI
+                return Geolocator.DefaultGeoposition?.Let(it => new LocationData.Location(it.Latitude, it.Longitude));
+#else
                 return null;
+#endif
             }
         }
 
@@ -112,7 +116,11 @@ namespace SimpleWeather.Common.Location
             if (!await CheckPermissions())
             {
                 Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Location permission denied...");
+#if WINUI
+                return Geolocator.DefaultGeoposition?.Let(it => new LocationData.Location(it.Latitude, it.Longitude));
+#else
                 return null;
+#endif
             }
 
             try
@@ -146,7 +154,11 @@ namespace SimpleWeather.Common.Location
             catch
             {
                 Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Error retrieving location...");
+#if WINUI
+                return Geolocator.DefaultGeoposition?.Let(it => new LocationData.Location(it.Latitude, it.Longitude));
+#else
                 return null;
+#endif
             }
         }
 
