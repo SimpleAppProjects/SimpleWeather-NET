@@ -93,7 +93,7 @@ namespace SimpleWeather.NET.Radar
                     markerLayer.DataHasChanged();
                 }
             }
-            markerLayer.Opacity = InteractionsEnabled() ? 1 : 0;
+            markerLayer.Opacity = 1;
 
             mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
             mapControl.Map.Navigator.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
