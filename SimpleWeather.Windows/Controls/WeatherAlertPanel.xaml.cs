@@ -1,8 +1,9 @@
-﻿using SimpleWeather.Common.Controls;
-using SimpleWeather.Utils;
-using System;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Documents;
+using SimpleWeather.Common.Controls;
+using SimpleWeather.Utils;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -18,6 +19,44 @@ namespace SimpleWeather.NET.Controls
         public WeatherAlertPanel()
         {
             this.InitializeComponent();
+            this.DataContextChanged += (sender, args) =>
+            {
+                MessageSpan.Inlines.Clear();
+
+                if (WeatherAlert.Message?.StartsWith("https://weatherkit.apple.com") == true)
+                {
+                    try
+                    {
+                        MessageSpan.Inlines.Add(new Hyperlink()
+                        {
+                            NavigateUri = new Uri(WeatherAlert.Message),
+                            Inlines =
+                            {
+                                new Run()
+                                {
+                                    Text = ResStrings.label_moreinfo
+                                }
+                            }
+                        });
+                    }
+                    catch
+                    {
+                        MessageSpan.Inlines.Add(new Run()
+                        {
+                            Text = WeatherAlert.Message
+                        });
+                    }
+                }
+                else
+                {
+                    MessageSpan.Inlines.Add(new Run()
+                    {
+                        Text = WeatherAlert.Message
+                    });
+                }
+
+                MessageSpan.Inlines.Add(new LineBreak());
+            };
         }
     }
 

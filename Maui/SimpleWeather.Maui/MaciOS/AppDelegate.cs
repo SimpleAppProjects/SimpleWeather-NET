@@ -2,11 +2,10 @@
 using CoreLocation;
 using Foundation;
 using SimpleWeather.Common.Helpers;
-using SimpleWeather.Extras.BackgroundTasks;
-using SimpleWeather.Maui.BackgroundTasks;
-using SimpleWeather.Maui.Widget;
+using SimpleWeather.Maui.Notifications;
 using SimpleWeather.Utils;
 using UIKit;
+using UserNotifications;
 
 namespace SimpleWeather.Maui;
 
@@ -36,6 +35,9 @@ public partial class AppDelegate
         @delegate.AuthorizationStatusChanged += LocationManager_AuthorizationStatusChanged;
 
         cLLocationManager.Delegate = @delegate;
+
+        UNUserNotificationCenter.Current.Delegate = new NotificationCenterDelegate();
+        WeatherAlertCreator.AddWeatherKitNotificationCategory();
 
 #if DEBUG
         switch (UIApplication.SharedApplication.BackgroundRefreshStatus)

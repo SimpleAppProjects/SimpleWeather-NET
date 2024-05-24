@@ -5,6 +5,7 @@ using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using Windows.UI.Notifications;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.NET.Notifications
 {
@@ -76,6 +77,16 @@ namespace SimpleWeather.NET.Notifications
                             {
                                 Text = alertVM.Attribution
                             }
+                        },
+                    },
+                    Actions = new ToastActionsCustom()
+                    {
+                        Buttons =
+                        {
+                            new ToastButton()
+                                .SetContent(ResStrings.label_moreinfo)
+                                .AddArgument(Constants.KEY_ACTION, "open-link")
+                                .AddArgument(Constants.KEY_DATA, alertVM.Message)
                         }
                     },
                     Launch = new ToastArguments()

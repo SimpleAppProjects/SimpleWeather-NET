@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleWeather.Maui.Controls.WeatherAlertPanel"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
-             xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
-             xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
-             x:DataType="controls:WeatherAlertViewModel">
+<ContentView
+    x:Class="SimpleWeather.Maui.Controls.WeatherAlertPanel"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+    xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:DataType="controls:WeatherAlertViewModel">
     <ContentView.Resources>
         <localControls:AlertTypeIconConverter x:Key="alertTypeIconConv" />
         <localControls:AlertSeverityColorConverter x:Key="alertSeverityColorConv" />
@@ -15,40 +16,43 @@
     <Grid>
         <toolkit:Expander
             x:Name="Expander"
-            HorizontalOptions="FillAndExpand"
+            BackgroundColor="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}}"
             Direction="Down"
-            IsExpanded="False"
-            BackgroundColor="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}}">
+            HorizontalOptions="FillAndExpand"
+            IsExpanded="False">
             <toolkit:Expander.Header>
-                <Grid VerticalOptions="Center" HeightRequest="48">
+                <Grid HeightRequest="48" VerticalOptions="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="40" />
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Image x:Name="AlertIcon"
-                           Grid.Column="0"
-                           WidthRequest="25"
-                           Margin="2,0,0,0"
-                           Source="{Binding AlertType, Converter={StaticResource alertTypeIconConv}}"
-                           VerticalOptions="Center" />
-                    <Label x:Name="Title"
-                           Grid.Column="1"
-                           Padding="8,0"
-                           MaxLines="1"
-                           LineBreakMode="TailTruncation"
-                           FontAttributes="Bold"
-                           Text="{Binding Title}"
-                           TextColor="White"
-                           VerticalOptions="Center" />
-                    <Label x:Name="Date"
-                           Grid.Column="2"
-                           Padding="8,0"
-                           FontAttributes="Bold"
-                           Text="{Binding PostDate}"
-                           TextColor="White"
-                           VerticalOptions="Center" />
+                    <Image
+                        x:Name="AlertIcon"
+                        Grid.Column="0"
+                        Margin="2,0,0,0"
+                        Source="{Binding AlertType, Converter={StaticResource alertTypeIconConv}}"
+                        VerticalOptions="Center"
+                        WidthRequest="25" />
+                    <Label
+                        x:Name="Title"
+                        Grid.Column="1"
+                        Padding="8,0"
+                        FontAttributes="Bold"
+                        LineBreakMode="TailTruncation"
+                        MaxLines="1"
+                        Text="{Binding Title}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
+                    <Label
+                        x:Name="Date"
+                        Grid.Column="2"
+                        Padding="8,0"
+                        FontAttributes="Bold"
+                        Text="{Binding PostDate}"
+                        TextColor="White"
+                        VerticalOptions="Center" />
                     <Image Grid.Column="3" Margin="0,0,12,0">
                         <Image.Source>
                             <matIcons:MaterialIcon
@@ -61,11 +65,16 @@
             </toolkit:Expander.Header>
             <toolkit:Expander.Content>
                 <VerticalStackLayout BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}">
-                    <Label FontSize="{Binding Source={x:Reference Title}, Path=FontSize}"
-                           LineBreakMode="WordWrap"
-                           Padding="24"
-                           Text="{x:Bind $'{ExpireDate}\n\n{Message}\n\n{Attribution}'}"
-                           TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}"/>
+                    <Label
+                        Padding="24"
+                        FontSize="{Binding Source={x:Reference Title}, Path=FontSize}"
+                        LineBreakMode="WordWrap"
+                        TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant},
+                                                    Dark={StaticResource DarkOnSurfaceVariant}}">
+                        <Label.FormattedText>
+                            <FormattedString x:Name="AlertFmtdMessage" />
+                        </Label.FormattedText>
+                    </Label>
                 </VerticalStackLayout>
             </toolkit:Expander.Content>
         </toolkit:Expander>

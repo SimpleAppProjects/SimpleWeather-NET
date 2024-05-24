@@ -74,10 +74,7 @@
                             </Span>
                         </Paragraph>
                         <Paragraph>
-                            <Span>
-                                <Run Text="{Binding Message, Mode=OneWay}" />
-                                <LineBreak />
-                            </Span>
+                            <Span x:Name="MessageSpan" />
                         </Paragraph>
                         <Paragraph>
                             <Span>

@@ -442,118 +442,137 @@ namespace SimpleWeather.NET
                 switch (args[Constants.KEY_ACTION])
                 {
                     case "view-alerts":
-                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
-                            string? data = null;
-
-                            if (args.Contains(Constants.KEY_DATA))
+                            if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                             {
-                                data = args[Constants.KEY_DATA];
-                            }
+                                string? data = null;
 
-                            // App loaded for first time
-                            if (RootFrame.Content == null)
-                            {
-                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                            }
-
-                            if (Shell.Instance != null)
-                            {
-                                LocationData.LocationData? locData = null;
-                                if (!string.IsNullOrWhiteSpace(data))
+                                if (args.Contains(Constants.KEY_DATA))
                                 {
-                                    locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
+                                    data = args[Constants.KEY_DATA];
                                 }
 
-                                // If we're already on WeatherNow navigate to Alert page
-                                if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                // App loaded for first time
+                                if (RootFrame.Content == null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
-                                    {
-                                        Location = locData
-                                    });
+                                    RootFrame.Navigate(typeof(Shell), "suppressNavigate");
                                 }
-                                // If not clear backstack and navigate to Alert page
-                                // Add a WeatherNow page in backstack to go back to
-                                else
+
+                                if (Shell.Instance != null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                    LocationData.LocationData? locData = null;
+                                    if (!string.IsNullOrWhiteSpace(data))
                                     {
-                                        Location = locData
-                                    });
-                                    Shell.Instance.AppFrame.BackStack.Clear();
-                                    Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                        locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
+                                    }
+
+                                    // If we're already on WeatherNow navigate to Alert page
+                                    if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
                                     {
-                                        Location = locData,
-                                        IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
-                                    }, null));
+                                        Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                        {
+                                            Location = locData
+                                        });
+                                    }
+                                    // If not clear backstack and navigate to Alert page
+                                    // Add a WeatherNow page in backstack to go back to
+                                    else
+                                    {
+                                        Shell.Instance.AppFrame.Navigate(typeof(WeatherAlertPage), new WeatherPageArgs()
+                                        {
+                                            Location = locData
+                                        });
+                                        Shell.Instance.AppFrame.BackStack.Clear();
+                                        Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                        {
+                                            Location = locData,
+                                            IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
+                                        }, null));
+                                    }
                                 }
                             }
                         }
                         break;
 
                     case "check-updates":
-                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
-                            // App loaded for first time
-                            if (RootFrame.Content == null)
+                            if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                             {
-                                RootFrame.Navigate(typeof(Shell), "suppressNavigate");
-                            }
-
-                            if (Shell.Instance != null)
-                            {
-                                if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                // App loaded for first time
+                                if (RootFrame.Content == null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
+                                    RootFrame.Navigate(typeof(Shell), "suppressNavigate");
                                 }
-                                else
+
+                                if (Shell.Instance != null)
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
-                                    Shell.Instance.AppFrame.BackStack.Clear();
-                                    Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                    if (Shell.Instance.AppFrame.Content != null && Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
                                     {
-                                        IsHome = true
-                                    }, null));
+                                        Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
+                                    }
+                                    else
+                                    {
+                                        Shell.Instance.AppFrame.Navigate(typeof(SettingsPage), "About");
+                                        Shell.Instance.AppFrame.BackStack.Clear();
+                                        Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
+                                        {
+                                            IsHome = true
+                                        }, null));
+                                    }
                                 }
                             }
                         }
                         break;
 
                     case "view-weather":
-                        if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                         {
-                            string? data = null;
-
-                            if (args.Contains(Constants.KEY_DATA))
+                            if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                             {
-                                data = args[Constants.KEY_DATA];
-                            }
+                                string? data = null;
 
-                            LocationData.LocationData? locData = null;
-                            if (!string.IsNullOrWhiteSpace(data))
-                            {
-                                locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
-                            }
-
-                            // App loaded for first time
-                            if (RootFrame.Content == null)
-                            {
-                                RootFrame.Navigate(typeof(Shell), new WeatherNowArgs()
+                                if (args.Contains(Constants.KEY_DATA))
                                 {
-                                    Location = locData
-                                });
-                            }
-                            else if (Shell.Instance != null)
-                            {
-                                // If we're not on WeatherNow, navigate
-                                if (Shell.Instance.AppFrame.Content != null && !Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                    data = args[Constants.KEY_DATA];
+                                }
+
+                                LocationData.LocationData? locData = null;
+                                if (!string.IsNullOrWhiteSpace(data))
                                 {
-                                    Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                                    locData = await JSONParser.DeserializerAsync<LocationData.LocationData>(data);
+                                }
+
+                                // App loaded for first time
+                                if (RootFrame.Content == null)
+                                {
+                                    RootFrame.Navigate(typeof(Shell), new WeatherNowArgs()
                                     {
                                         Location = locData
                                     });
                                 }
+                                else if (Shell.Instance != null)
+                                {
+                                    // If we're not on WeatherNow, navigate
+                                    if (Shell.Instance.AppFrame.Content != null && !Shell.Instance.AppFrame.SourcePageType.Equals(typeof(WeatherNow)))
+                                    {
+                                        Shell.Instance.AppFrame.Navigate(typeof(WeatherNow), new WeatherNowArgs()
+                                        {
+                                            Location = locData
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    case "open-link":
+                        {
+                            if (args.TryGetValue(Constants.KEY_DATA, out var data))
+                            {
+                                this.RunCatching(async () =>
+                                {
+                                    await Launcher.LaunchUriAsync(new Uri(data));
+                                });
+                                return;
                             }
                         }
                         break;

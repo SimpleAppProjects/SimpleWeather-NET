@@ -1,17 +1,12 @@
 ﻿#if __IOS__ || __MACCATALYST__
+using Foundation;
 using SimpleWeather.Common.Controls;
-using SimpleWeather.Icons;
-using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using UserNotifications;
-using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Notifications
 {
-    public static class WeatherAlertCreator
+    public static partial class WeatherAlertCreator
     {
         private const string TAG = "WeatherAlerts";
 
@@ -27,9 +22,19 @@ namespace SimpleWeather.Maui.Notifications
                 var content = new UNMutableNotificationContent()
                 {
                     Title = alertVM.Title,
-                    Subtitle = alertVM.ExpireDate,
-                    Body = alertVM.Message
+                    Subtitle = alertVM.ExpireDate
                 };
+
+                if (alertVM.Message?.StartsWith("https://weatherkit.apple.com") == true)
+                {
+                    content.CategoryIdentifier = CATEGORY_WEATHERKIT_ALERT;
+                    content.Body = "";
+                    content.UserInfo = NSDictionary.FromObjectAndKey(new NSString(KEY_HYPERLINK), new NSString(alertVM.Message));
+                }
+                else
+                {
+                    content.Body = alertVM.Message;
+                }
 
                 // Set a unique ID for the notification
                 var notID = string.Format("{0}:{1}", location.query, ((int)alertVM.AlertType).ToString());
@@ -44,10 +49,7 @@ namespace SimpleWeather.Maui.Notifications
                 {
                     await notificationCenter.AddNotificationRequestAsync(request);
                 }
-                catch (Exception e)
-                {
-
-                }
+                catch { }
             }
         }
     }
