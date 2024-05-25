@@ -10,9 +10,6 @@ namespace SimpleWeather.Utils
     public class SentryLoggingTree : TimberLog.Timber.Tree
     {
         private const String TAG = nameof(SentryLoggingTree);
-        private const String KEY_PRIORITY = "Priority";
-        private const String KEY_MESSAGE = "Message";
-        private const String KEY_EXCEPTION = "Exception";
 
         protected override void Log(TimberLog.LoggerLevel loggerLevel, string message, Exception exception)
         {
@@ -32,7 +29,7 @@ namespace SimpleWeather.Utils
                 }
                 else
                 {
-                    SentrySdk.CaptureMessage(message, loggerLevel.ToSentryLevel());
+                    SentrySdk.AddBreadcrumb(message, level: loggerLevel.ToBreadcrumbLevel());
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -58,6 +55,19 @@ namespace SimpleWeather.Utils
                 TimberLog.LoggerLevel.Error => SentryLevel.Error,
                 TimberLog.LoggerLevel.Fatal => SentryLevel.Fatal,
                 _ => SentryLevel.Info
+            };
+        }
+
+        public static BreadcrumbLevel ToBreadcrumbLevel(this TimberLog.LoggerLevel level)
+        {
+            return level switch
+            {
+                TimberLog.LoggerLevel.Debug => BreadcrumbLevel.Debug,
+                TimberLog.LoggerLevel.Info => BreadcrumbLevel.Info,
+                TimberLog.LoggerLevel.Warn => BreadcrumbLevel.Warning,
+                TimberLog.LoggerLevel.Error => BreadcrumbLevel.Error,
+                TimberLog.LoggerLevel.Fatal => BreadcrumbLevel.Critical,
+                _ => BreadcrumbLevel.Info
             };
         }
     }
