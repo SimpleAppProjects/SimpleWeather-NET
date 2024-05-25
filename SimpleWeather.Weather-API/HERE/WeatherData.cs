@@ -386,24 +386,24 @@ namespace SimpleWeather.Weather_API.HERE
 
             var now = DateTime.Now;
 
-            if (TimeSpan.TryParseExact(astroData.sunRise, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan sunrise))
-                astro.sunrise = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(sunrise));
-            if (TimeSpan.TryParseExact(astroData.sunSet, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan sunset))
+            if (TimeOnly.TryParse(astroData.sunRise, CultureInfo.InvariantCulture, out TimeOnly sunrise))
+                astro.sunrise = new DateTime(DateOnly.FromDateTime(now.Date), sunrise);
+            if (TimeOnly.TryParse(astroData.sunSet, CultureInfo.InvariantCulture, out TimeOnly sunset))
             {
-                if (sunrise != null && sunrise != TimeSpan.MinValue && sunset.CompareTo(sunrise) < 0)
+                if (sunrise != null && sunrise != TimeOnly.MinValue && sunset.CompareTo(sunrise) < 0)
                 {
                     // Is next day
-                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date).AddDays(1), TimeOnly.FromTimeSpan(sunset));
+                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date).AddDays(1), sunset);
                 }
                 else
                 {
-                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(sunset));
+                    astro.sunset = new DateTime(DateOnly.FromDateTime(now.Date), sunset);
                 }
             }
-            if (TimeSpan.TryParseExact(astroData.moonRise, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan moonrise))
-                astro.moonrise = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(moonrise));
-            if (TimeSpan.TryParseExact(astroData.moonSet, "HH:mm:ss", CultureInfo.InvariantCulture, out TimeSpan moonset))
-                astro.moonset = new DateTime(DateOnly.FromDateTime(now.Date), TimeOnly.FromTimeSpan(moonset));
+            if (TimeOnly.TryParse(astroData.moonRise, CultureInfo.InvariantCulture, out TimeOnly moonrise))
+                astro.moonrise = new DateTime(DateOnly.FromDateTime(now.Date), moonrise);
+            if (TimeOnly.TryParse(astroData.moonSet, CultureInfo.InvariantCulture, out TimeOnly moonset))
+                astro.moonset = new DateTime(DateOnly.FromDateTime(now.Date), moonset);
 
             // If the sun won't set/rise, set time to the future
             if (astro.sunrise == null)

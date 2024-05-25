@@ -19,6 +19,8 @@ namespace SimpleWeather.Weather_API.HERE
 
                 foreach (Alert result in root.alerts)
                 {
+                    if (result?.description == null || result?.timeSegments?.Length == 0) continue;
+
                     weatherAlerts.Add(_.CreateWeatherAlert(result));
                 }
             }
@@ -36,9 +38,9 @@ namespace SimpleWeather.Weather_API.HERE
                 {
                     foreach (var watchItem in root.nwsAlerts.watches)
                     {
-                        var locations = watchItem.counties?.Select(x => x.location)
-                            ?? watchItem.zones?.Select(x => x.location)
-                            ?? watchItem.provinces?.Select(x => x.location);
+                        var locations = watchItem.counties?.Select(x => x.location)?.Let(x => x.Any() ? x : null)
+                            ?? watchItem.zones?.Select(x => x.location)?.Let(x => x.Any() ? x : null)
+                            ?? watchItem.provinces?.Select(x => x.location)?.Let(x => x.Any() ? x : null);
 
                         if (locations == null) continue;
 
@@ -53,9 +55,9 @@ namespace SimpleWeather.Weather_API.HERE
                 {
                     foreach (var warningItem in root.nwsAlerts.warnings)
                     {
-                        var locations = warningItem.counties?.Select(x => x.location)
-                            ?? warningItem.zones?.Select(x => x.location)
-                            ?? warningItem.provinces?.Select(x => x.location);
+                        var locations = warningItem.counties?.Select(x => x.location)?.Let(x => x.Any() ? x : null)
+                            ?? warningItem.zones?.Select(x => x.location)?.Let(x => x.Any() ? x : null)
+                            ?? warningItem.provinces?.Select(x => x.location)?.Let(x => x.Any() ? x : null);
 
                         if (locations == null) continue;
 

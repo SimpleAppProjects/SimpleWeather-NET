@@ -37,6 +37,7 @@ namespace SimpleWeather.Utils
             opts.Converters.Add(new CustomJsonConverter<WeatherData.AirQuality>());
             opts.Converters.Add(new CustomJsonConverter<WeatherData.Pollen>());
             opts.Converters.Add(new CustomJsonConverter<WeatherData.WeatherAlert>());
+            opts.Converters.Add(new ForgivingStringConverter());
 
             opts.TypeInfoResolverChain.Insert(0, DataContractResolver.Default);
             opts.TypeInfoResolverChain.Add(SharedJsonContext.Default);
