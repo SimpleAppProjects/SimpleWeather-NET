@@ -7,5 +7,9 @@
         public const string USER_LOCALE = "user_locale";
         public const string DEVICE_TYPE = "device_type";
         public const string IS_PREMIUM = "is_premium";
+
+        public const string EVENT_SCREENVIEW = "screen_view";
+        public const string PARAM_SCREENCLASS = "screen_class";
+        public const string PARAM_SCREENNAME = "screen_name";
     }
 }

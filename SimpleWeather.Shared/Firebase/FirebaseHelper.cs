@@ -23,7 +23,7 @@ namespace SimpleWeather.Firebase
 
         private readonly static Lazy<FirebaseAnalytics> analyticsLazy = new(() =>
         {
-            return new FirebaseAnalytics(Keys.FirebaseConfig.GetAppID(), Keys.FirebaseConfig.GetAnalyticsSecret(), Keys.FirebaseConfig.GetInstallationId(), GetAuthUser);
+            return new FirebaseAnalytics(Keys.FirebaseConfig.GetMeasurementID(), Keys.FirebaseConfig.GetAnalyticsSecret(), GetAuthUser);
         });
 
         private static FirebaseAuthClient FirebaseAuth => authClientLazy.Value;

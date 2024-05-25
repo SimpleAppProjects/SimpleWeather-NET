@@ -16,22 +16,24 @@ namespace SimpleWeather.Firebase
 {
     public sealed class FirebaseAnalytics
     {
+#if DEBUG
+        private const string BASE_URL = "https://www.google-analytics.com/debug/mp/collect";
+#else
         private const string BASE_URL = "https://www.google-analytics.com/mp/collect";
+#endif
 
-        private readonly string AppId;
+        private readonly string MeasurementID;
         private readonly string ApiSecret;
-        private readonly string AppInstanceId;
 
         private readonly IDictionary<string, string> UserProperties = new Dictionary<string, string>();
         private readonly Func<Task<User>> FirebaseUserFactory;
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(10, 10);
 
-        internal FirebaseAnalytics(string appId, string apiSecret, string instanceId, Func<Task<User>> FirebaseUserFactory)
+        internal FirebaseAnalytics(string measurementId, string apiSecret, Func<Task<User>> FirebaseUserFactory)
         {
             this.FirebaseUserFactory = FirebaseUserFactory;
-            this.AppId = appId;
+            this.MeasurementID = measurementId;
             this.ApiSecret = apiSecret;
-            this.AppInstanceId = instanceId;
         }
 
         public void SetUserProperty([MaxLength(24)] string key, [MaxLength(36)] string value)
@@ -60,7 +62,7 @@ namespace SimpleWeather.Firebase
                     await PostEvent(new Event()
                     {
                         name = eventName,
-                        _params = properties
+                        _params = properties ?? ImmutableDictionary.Create<string, string>()
                     });
                 }
                 finally
@@ -75,19 +77,19 @@ namespace SimpleWeather.Firebase
             try
             {
                 var requestUri = BASE_URL.ToUriBuilderEx()
-                    .AppendQueryParameter("firebase_app_id", AppId)
+                    .AppendQueryParameter("measurement_id", MeasurementID)
                     .AppendQueryParameter("api_secret", ApiSecret)
                     .BuildUri();
 
                 var user = await FirebaseUserFactory();
                 using var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
 
-                var requestContent = new Dictionary<string, string>()
+                var requestContent = new Dictionary<string, object>()
                 {
-                    { "app_instance_id", AppInstanceId },
+                    { "client_id", "SimpleWeather.NET" },
                     { "user_id", user.Uid },
-                    { "events",  JsonConvert.SerializeObject(ImmutableList.Create(@event)) },
-                    { "user_properties", GetUserPropertiesJson() }
+                    { "events",  ImmutableList.Create(@event) },
+                    { "user_properties", GetUserProperties() }
                 };
 
                 request.Content = new StringContent(JsonConvert.SerializeObject(requestContent), Encoding.UTF8, "application/json");
@@ -95,6 +97,20 @@ namespace SimpleWeather.Firebase
                 using var webClient = new HttpClient();
                 using var response = await webClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
+
+#if DEBUG
+                var stream = await response.Content.ReadAsStreamAsync();
+
+                var validationRoot = JSONParser.Deserializer<ValidationRootobject>(stream);
+
+                if (validationRoot.validationMessages.Length > 0)
+                {
+                    validationRoot.validationMessages.ForEach(msg =>
+                    {
+                        Logger.WriteLine(LoggerLevel.Warn, $"FirebaseAnalytics: validation error | code: {msg.validationCode} | path: {msg.fieldPath} | desc: {msg.description}");
+                    });
+                }
+#endif
             }
             catch
             {
@@ -102,16 +118,16 @@ namespace SimpleWeather.Firebase
             }
         }
 
-        private string GetUserPropertiesJson()
+        private object GetUserProperties()
         {
             var userProperties = UserProperties.ToImmutableDictionary();
 
             if (userProperties.Count <= 0)
             {
-                return "{}";
+                return new object();
             }
 
-            return JsonConvert.SerializeObject(userProperties.ToDictionary(entry => entry.Key, entry => new PropertyValue() { value = entry.Value }));
+            return userProperties.ToDictionary(entry => entry.Key, entry => new PropertyValue() { value = entry.Value });
         }
 
         private async Task ReleaseSemaphoreAfterDelayAsync()

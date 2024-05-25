@@ -29,7 +29,7 @@ namespace SimpleWeather.Keys
             return null;
         }
 
-        public static String GetInstallationId()
+        public static String GetMeasurementID()
         {
             return null;
         }
