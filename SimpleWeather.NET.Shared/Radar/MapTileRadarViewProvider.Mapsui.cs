@@ -7,11 +7,13 @@ using Mapsui.Projections;
 #if WINDOWS
 using CommunityToolkit.WinUI;
 using Mapsui.UI.WinUI;
+using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #else
 using Mapsui.UI.Maui;
 using SimpleWeather.Maui.Radar;
+using MapControl = Mapsui.UI.Maui.MapControl;
 #endif
 using SimpleWeather.Extras;
 using SimpleWeather.NET.Utils;

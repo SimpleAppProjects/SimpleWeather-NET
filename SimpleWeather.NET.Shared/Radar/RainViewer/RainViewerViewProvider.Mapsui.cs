@@ -7,11 +7,13 @@ using Mapsui.Tiling.Layers;
 using Mapsui.Tiling.Rendering;
 #if WINDOWS
 using Mapsui.UI.WinUI;
+using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Helpers;
 #else
 using Mapsui.UI.Maui;
+using MapControl = Mapsui.UI.Maui.MapControl;
 using Microsoft.Maui.Dispatching;
 #endif
 using SimpleWeather.Utils;

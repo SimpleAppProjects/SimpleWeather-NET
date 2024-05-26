@@ -34,11 +34,11 @@
 
   <!-- Maui -->
   <PropertyGroup>
-      <MauiVersion>8.0.7</MauiVersion>
+      <MauiVersion>8.0.40</MauiVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <WinAppSDKVersion>1.4.240211001</WinAppSDKVersion>
+    <WinAppSDKVersion>1.5.240428000</WinAppSDKVersion>
   </PropertyGroup>
 
   <PropertyGroup>
