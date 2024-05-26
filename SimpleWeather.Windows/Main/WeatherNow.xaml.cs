@@ -763,12 +763,24 @@ namespace SimpleWeather.NET.Main
                 GotoDetailsPage(false,
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.Control).X + control.ScrollViewer.HorizontalOffset)));
             }
+            else
+            {
+                GotoDetailsPage(false, 0);
+            }
+
+            e.Handled = true;
         }
 
         private void HourlyForecastControl_ItemClick(object sender, ItemClickEventArgs e)
         {
             AnalyticsLogger.LogEvent("WeatherNow: GraphView_Tapped");
             GotoDetailsPage(true, HourlyForecastControl.GetItemPosition(e.ClickedItem));
+        }
+
+        private void HourlyForecastControl_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            GotoDetailsPage(true, 0);
+            e.Handled = true;
         }
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
@@ -787,6 +799,7 @@ namespace SimpleWeather.NET.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: RadarWebView_Tapped");
             Frame.Navigate(typeof(WeatherRadarPage), null, new DrillInNavigationTransitionInfo());
+            e.Handled = true;
         }
 
         private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
@@ -884,11 +897,13 @@ namespace SimpleWeather.NET.Main
         private void ForecastGraphPanel_GraphViewTapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(WeatherChartsPage), null, new DrillInNavigationTransitionInfo());
+            e.Handled = true;
         }
 
         private void AQIndexControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
             Frame.Navigate(typeof(WeatherAQIPage), null, new DrillInNavigationTransitionInfo());
+            e.Handled = true;
         }
 
         private void WeatherNow_Loaded(object sender, RoutedEventArgs e)

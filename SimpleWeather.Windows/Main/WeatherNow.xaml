@@ -388,7 +388,8 @@
                                 VerticalContentAlignment="Stretch"
                                 d:Header="Forecast"
                                 Header="{helpers:StringRes Name='label_forecast'}"
-                                Style="{ThemeResource NavigatableSectionStyle}">
+                                Style="{ThemeResource NavigatableSectionStyle}"
+                                Tapped="ForecastGraphPanel_Tapped">
                                 <graphs:RangeBarGraphPanel
                                     x:Name="ForecastGraphPanel"
                                     ForecastData="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
@@ -406,7 +407,8 @@
                                 VerticalContentAlignment="Stretch"
                                 d:Header="Hourly"
                                 Header="{helpers:StringRes Name='label_hourlyforecast'}"
-                                Style="{ThemeResource NavigatableSectionStyle}">
+                                Style="{ThemeResource NavigatableSectionStyle}"
+                                Tapped="HourlyForecastControl_Tapped">
                                 <localcontrols:HourlyForecastItemPanel
                                     x:Name="HourlyForecastControl"
                                     ForecastData="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay}"
@@ -419,7 +421,10 @@
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
                             Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
-                            <toolkitControls:HeaderedContentControl Header="Placeholder" Style="{ThemeResource NavigatableSectionStyle}">
+                            <toolkitControls:HeaderedContentControl
+                                Header="Placeholder"
+                                Style="{ThemeResource NavigatableSectionStyle}"
+                                Tapped="ForecastGraphPanel_GraphViewTapped">
                                 <toolkitControls:HeaderedContentControl.HeaderTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -545,7 +550,8 @@
                                 VerticalContentAlignment="Stretch"
                                 d:Header="Radar"
                                 Header="{helpers:StringRes Name='label_radar'}"
-                                Style="{ThemeResource NavigatableSectionStyle}">
+                                Style="{ThemeResource NavigatableSectionStyle}"
+                                Tapped="RadarWebView_Tapped">
                                 <Grid>
                                     <Rectangle
                                         Height="360"
