@@ -23,7 +23,7 @@ namespace SimpleWeather.NET.Controls
             {
                 MessageSpan.Inlines.Clear();
 
-                if (WeatherAlert.Message?.StartsWith("https://weatherkit.apple.com") == true)
+                if (WeatherAlert?.Message?.StartsWith("https://weatherkit.apple.com") == true)
                 {
                     try
                     {
@@ -51,7 +51,7 @@ namespace SimpleWeather.NET.Controls
                 {
                     MessageSpan.Inlines.Add(new Run()
                     {
-                        Text = WeatherAlert.Message
+                        Text = WeatherAlert?.Message
                     });
                 }
 
