@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.Weather_API.WeatherApi
 {
@@ -168,6 +170,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public string category { get; set; }
         public string certainty { get; set; }
         [DataMember(Name = "event")]
+        [JsonPropertyName("event")]
+        [JsonProperty("event")]
         public string _event { get; set; }
         public string note { get; set; }
         public string effective { get; set; }

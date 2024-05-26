@@ -1,13 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.Weather_API.NWS
 {
     public class AlertRootobject
     {
         //[DataMember(Name = "@context")]
+        //[JsonPropertyName("@context")]
+        //[JsonProperty("@context")]
         //public Context context { get; set; }
         [DataMember(Name = "@graph")]
+        [JsonPropertyName("@graph")]
+        [JsonProperty("@graph")]
         public AlertGraph[] graph { get; set; }
         public string title { get; set; }
     }
@@ -17,6 +23,8 @@ namespace SimpleWeather.Weather_API.NWS
     {
         public string wx { get; set; }
         [DataMember(Name = "@vocab")]
+        [JsonPropertyName("@vocab")]
+        [JsonProperty("@vocab")]
         public string vocab { get; set; }
     }
     */
@@ -24,8 +32,12 @@ namespace SimpleWeather.Weather_API.NWS
     public class AlertGraph
     {
         //[DataMember(Name = "@id")]
+        //[JsonPropertyName("@id")]
+        //[JsonProperty("@id")]
         //public string atId { get; set; }
         //[DataMember(Name = "@type")]
+        //[JsonPropertyName("@type")]
+        //[JsonProperty("@type")]
         //public string type { get; set; }
         //public string id { get; set; }
         //public string areaDesc { get; set; }
@@ -44,6 +56,8 @@ namespace SimpleWeather.Weather_API.NWS
         //public string certainty { get; set; }
         //public string urgency { get; set; }
         [DataMember(Name = "event")]
+        [JsonPropertyName("event")]
+        [JsonProperty("event")]
         public string _event { get; set; }
         //public string sender { get; set; }
         //public string headline { get; set; }

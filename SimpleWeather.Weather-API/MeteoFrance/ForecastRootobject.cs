@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.Weather_API.MeteoFrance
 {
@@ -57,6 +54,8 @@ namespace SimpleWeather.Weather_API.MeteoFrance
     public class Precipitation
     {
         [DataMember(Name = "24h")]
+        [JsonPropertyName("24h")]
+        [JsonProperty("24h")]
         public float? _24h { get; set; }
     }
 
@@ -104,20 +103,32 @@ namespace SimpleWeather.Weather_API.MeteoFrance
     public class Rain
     {
         [DataMember(Name = "1h")]
+        [JsonPropertyName("1h")]
+        [JsonProperty("1h")]
         public float? _1h { get; set; }
         [DataMember(Name = "3h")]
+        [JsonPropertyName("3h")]
+        [JsonProperty("3h")]
         public float? _3h { get; set; }
         [DataMember(Name = "6h")]
+        [JsonPropertyName("6h")]
+        [JsonProperty("6h")]
         public float? _6h { get; set; }
     }
 
     public class Snow
     {
         [DataMember(Name = "1h")]
+        [JsonPropertyName("1h")]
+        [JsonProperty("1h")]
         public float? _1h { get; set; }
         [DataMember(Name = "3h")]
+        [JsonPropertyName("3h")]
+        [JsonProperty("3h")]
         public float? _3h { get; set; }
         [DataMember(Name = "6h")]
+        [JsonPropertyName("6h")]
+        [JsonProperty("6h")]
         public float? _6h { get; set; }
     }
 

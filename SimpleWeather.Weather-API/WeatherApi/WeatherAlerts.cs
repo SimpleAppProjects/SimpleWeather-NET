@@ -27,43 +27,43 @@ namespace SimpleWeather.Weather_API.WeatherApi
         {
             var weatherAlert = new WeatherAlert();
 
-            if (alert._event.Contains("Hurricane"))
+            if (alert._event?.Contains("Hurricane") == true)
             {
                 weatherAlert.Type = WeatherAlertType.HurricaneWindWarning;
             }
-            else if (alert._event.Contains("Tornado"))
+            else if (alert._event?.Contains("Tornado") == true)
             {
                 weatherAlert.Type = WeatherAlertType.TornadoWarning;
             }
-            else if (alert._event.Contains("Thunderstorm"))
+            else if (alert._event?.Contains("Thunderstorm") == true)
             {
                 weatherAlert.Type = WeatherAlertType.SevereThunderstormWarning;
             }
-            else if (alert._event.Contains("Flood"))
+            else if (alert._event?.Contains("Flood") == true)
             {
                 weatherAlert.Type = WeatherAlertType.FloodWarning;
             }
-            else if (alert._event.Contains("Wind"))
+            else if (alert._event?.Contains("Wind") == true)
             {
                 weatherAlert.Type = WeatherAlertType.HighWind;
             }
-            else if (alert._event.Contains("Fog"))
+            else if (alert._event?.Contains("Fog") == true)
             {
                 weatherAlert.Type = WeatherAlertType.DenseFog;
             }
-            else if (alert._event.Contains("Volcano"))
+            else if (alert._event?.Contains("Volcano") == true)
             {
                 weatherAlert.Type = WeatherAlertType.Volcano;
             }
-            else if (alert._event.Contains("Earthquake"))
+            else if (alert._event?.Contains("Earthquake") == true)
             {
                 weatherAlert.Type = WeatherAlertType.EarthquakeWarning;
             }
-            else if (alert._event.Contains("Storm"))
+            else if (alert._event?.Contains("Storm") == true)
             {
                 weatherAlert.Type = WeatherAlertType.StormWarning;
             }
-            else if (alert._event.Contains("Tsunami"))
+            else if (alert._event?.Contains("Tsunami") == true)
             {
                 weatherAlert.Type = WeatherAlertType.TsunamiWarning;
             }
@@ -80,7 +80,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 _ => WeatherAlertSeverity.Minor,
             };
 
-            weatherAlert.Title = alert._event;
+            weatherAlert.Title = alert._event ?? alert.category;
             weatherAlert.Message = new StringBuilder()
                 .AppendLine(alert.headline)
                 .AppendLine()

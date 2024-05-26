@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Newtonsoft.Json;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 {
@@ -67,12 +69,16 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
     public class Rain
     {
         [DataMember(Name = "1h")]
+        [JsonPropertyName("1h")]
+        [JsonProperty("1h")]
         public float _1h { get; set; }
     }
 
     public class Snow
     {
         [DataMember(Name = "1h")]
+        [JsonPropertyName("1h")]
+        [JsonProperty("1h")]
         public float _1h { get; set; }
     }
 
@@ -124,6 +130,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
     {
         public string sender_name { get; set; }
         [DataMember(Name = "event")]
+        [JsonPropertyName("event")]
+        [JsonProperty("event")]
         public string _event { get; set; }
         public long start { get; set; }
         public long end { get; set; }

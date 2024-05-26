@@ -5,10 +5,16 @@ namespace SimpleWeather.Weather_API.NWS
     public class PointsRootobject
     {
         //[DataMember(Name = "@context")]
+        //[JsonPropertyName("@context")]
+        //[JsonProperty("@context")]
         //public Context context { get; set; }
         //[DataMember(Name = "@id")]
+        //[JsonPropertyName("@id")]
+        //[JsonProperty("@id")]
         //public string id { get; set; }
         //[DataMember(Name = "@type")]
+        //[JsonPropertyName("@type")]
+        //[JsonProperty("@type")]
         //public string type { get; set; }
         //public string geometry { get; set; }
         //public string cwa { get; set; }
@@ -51,52 +57,76 @@ namespace SimpleWeather.Weather_API.NWS
     public class Geometry
     {
         [DataMember(Name = "@id")]
+        [JsonPropertyName("@id")]
+        [JsonProperty("@id")]
         public string id { get; set; }
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Distance
     {
         [DataMember(Name = "@id")]
+        [JsonPropertyName("@id")]
+        [JsonProperty("@id")]
         public string id { get; set; }
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Bearing
     {
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Value
     {
         [DataMember(Name = "@id")]
+        [JsonPropertyName("@id")]
+        [JsonProperty("@id")]
         public string id { get; set; }
     }
     public class Unitcode
     {
         [DataMember(Name = "@id")]
+        [JsonPropertyName("@id")]
+        [JsonProperty("@id")]
         public string id { get; set; }
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Forecastoffice
     {
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Forecastgriddata
     {
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Publiczone
     {
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class County
     {
         [DataMember(Name = "@type")]
+        [JsonPropertyName("@type")]
+        [JsonProperty("@type")]
         public string type { get; set; }
     }
     public class Relativelocation
@@ -187,8 +217,12 @@ namespace SimpleWeather.Weather_API.NWS
     {
         //public Context context { get; set; }
         //[DataMember(Name = "@id")]
+        //[JsonPropertyName("@id")]
+        //[JsonProperty("@id")]
         //public string id { get; set; }
         //[DataMember(Name = "@type")]
+        //[JsonPropertyName("@type")]
+        //[JsonProperty("@type")]
         //public string type { get; set; }
         //public string geometry { get; set; }
         //public Elevation elevation { get; set; }
