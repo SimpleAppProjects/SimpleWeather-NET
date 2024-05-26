@@ -39,6 +39,7 @@
 
   <PropertyGroup>
     <WinAppSDKVersion>1.5.240428000</WinAppSDKVersion>
+    <WinSDKBuildToolsVersion>10.0.22621.3233</WinSDKBuildToolsVersion>
   </PropertyGroup>
 
   <PropertyGroup>

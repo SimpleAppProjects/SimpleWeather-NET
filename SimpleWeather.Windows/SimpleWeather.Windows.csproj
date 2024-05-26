@@ -39,7 +39,7 @@
     <PackageReference Include="Mapsui.WinUI" Version="4.1.6" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.5" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.26100.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
     <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.7" />
     <PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106">
       <PrivateAssets>all</PrivateAssets>
