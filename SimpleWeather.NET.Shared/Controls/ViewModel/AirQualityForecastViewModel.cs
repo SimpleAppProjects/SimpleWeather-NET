@@ -84,7 +84,7 @@ namespace SimpleWeather.NET.Controls
 #endif
             {
                 AQIGraphData = CreateGraphData(enumerable);
-                AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList();
+                AQIForecastData = enumerable?.Where(it => it.index.HasValue)?.Select(it => new AirQualityViewModel(it))?.ToList() ?? [];
             });
         }
 

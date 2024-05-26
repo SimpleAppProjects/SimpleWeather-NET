@@ -64,6 +64,7 @@ namespace SimpleWeather.NET.Main
             base.OnNavigatedTo(e);
 
             AQIView = this.GetViewModel<AirQualityForecastViewModel>();
+            AQIView.PropertyChanged += AQIView_PropertyChanged;
 
             if (e?.Parameter is WeatherPageArgs args)
             {
@@ -75,6 +76,17 @@ namespace SimpleWeather.NET.Main
             }
 
             Initialize();
+        }
+
+        private void AQIView_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(AQIView.AQIGraphData) || e.PropertyName == nameof(AQIView.AQIForecastData))
+            {
+                if (AQIView.AQIGraphData != null || AQIView.AQIForecastData != null)
+                {
+                    LoadingRing.IsActive = false;
+                }
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
