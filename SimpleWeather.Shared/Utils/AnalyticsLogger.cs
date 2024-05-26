@@ -1,5 +1,8 @@
 ﻿#if !UNIT_TEST
 #if WINDOWS
+#if RELEASE
+using Microsoft.AppCenter.Analytics;
+#endif
 using SimpleWeather.Firebase;
 using System.Text.RegularExpressions;
 #else
