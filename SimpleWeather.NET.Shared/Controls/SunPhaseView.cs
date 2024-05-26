@@ -355,10 +355,14 @@ namespace SimpleWeather.NET.Controls
 
         private void SunPhaseView_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (Canvas != null)
+            Canvas?.Let(canvas =>
             {
-                Canvas.PaintSurface -= Canvas_PaintSurface;
-            }
+                try
+                {
+                    canvas.PaintSurface -= Canvas_PaintSurface;
+                }
+                catch { }
+            });
         }
 
 #if WINDOWS

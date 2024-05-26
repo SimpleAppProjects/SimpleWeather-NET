@@ -139,16 +139,16 @@ namespace SimpleWeather.NET.Preferences
             Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo transitionInfo)
         {
             Type _page = null;
-            var item = _pages.FirstOrDefault(p => p.Tag.Equals(navItemTag));
+            var item = _pages.FirstOrDefault(p => Equals(p.Tag, navItemTag));
             _page = item.Page;
             // Get the page type before navigation so you can prevent duplicate
             // entries in the backstack.
-            var preNavPageType = SettingsFrame.CurrentSourcePageType;
+            var preNavPageType = SettingsFrame?.CurrentSourcePageType;
 
             // Only navigate if the selected page isn't currently loaded.
-            if (!(_page is null) && !Type.Equals(preNavPageType, _page))
+            if (_page is not null && !Type.Equals(preNavPageType, _page))
             {
-                SettingsFrame.Navigate(_page, null, transitionInfo);
+                SettingsFrame?.Navigate(_page, null, transitionInfo);
             }
         }
 

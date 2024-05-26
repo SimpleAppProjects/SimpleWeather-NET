@@ -6,6 +6,7 @@ using SkiaSharp.Views.Windows;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
 #endif
+using SimpleWeather.Utils;
 using SkiaSharp;
 #if WINDOWS
 #else
@@ -148,20 +149,28 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         private void BaseGraphViewControl_Unloaded(object sender, RoutedEventArgs e)
         {
-            if (Canvas != null)
+            Canvas?.Let(canvas =>
             {
-                Canvas.PaintSurface -= Canvas_PaintSurface;
-            }
-            if (InternalScrollViewer != null)
+                try
+                {
+                    canvas.PaintSurface -= Canvas_PaintSurface;
+                }
+                catch { }
+            });
+            InternalScrollViewer?.Let(scrollv =>
             {
+                try
+                {
 #if WINDOWS
-                InternalScrollViewer.ViewChanged -= InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.ViewChanging -= InternalScrollViewer_ViewChanging;
+                    scrollv.ViewChanged -= InternalScrollViewer_ViewChanged;
+                    scrollv.ViewChanging -= InternalScrollViewer_ViewChanging;
 #else
-                InternalScrollViewer.Scrolled -= InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.HandlerChanged -= InternalScrollViewer_HandlerChanged;
+                    scrollv.Scrolled -= InternalScrollViewer_ViewChanged;
+                    scrollv.HandlerChanged -= InternalScrollViewer_HandlerChanged;
 #endif
-            }
+                }
+                catch { }
+            });
         }
 
 #if !WINDOWS

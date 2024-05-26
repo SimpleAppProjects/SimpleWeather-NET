@@ -59,6 +59,32 @@ namespace SimpleWeather.Utils
                 return Result<TOutput>.failure(e);
             }
         }
+
+        public static Result<object> RunCatching(this object _, Action action)
+        {
+            try
+            {
+                action();
+                return Result<object>.success(_);
+            }
+            catch (Exception e)
+            {
+                return Result<object>.failure(e);
+            }
+        }
+
+        public static async Task<Result<object>> RunCatching(this object _, Func<Task> action)
+        {
+            try
+            {
+                await action();
+                return Result<object>.success(_);
+            }
+            catch (Exception e)
+            {
+                return Result<object>.failure(e);
+            }
+        }
     }
 
     public struct Result<T>

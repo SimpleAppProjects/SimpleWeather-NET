@@ -581,7 +581,7 @@ namespace SimpleWeather.NET.Preferences
         private void RadarComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string RadarAPI = box.SelectedValue.ToString();
+            string RadarAPI = box?.SelectedValue?.ToString() ?? WeatherAPI.RainViewer;
             var radarProviderValues = Enum.GetValues(typeof(RadarProvider.RadarProviders));
             RadarProvider.RadarAPIProvider = radarProviderValues
                 .Cast<RadarProvider.RadarProviders>()
@@ -739,7 +739,7 @@ namespace SimpleWeather.NET.Preferences
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string requestedLang = box.SelectedValue.ToString();
+            string requestedLang = box.SelectedValue?.ToString();
             LocaleUtils.SetLocaleCode(requestedLang);
 
             DispatcherQueue.TryEnqueue(() =>
@@ -845,7 +845,7 @@ namespace SimpleWeather.NET.Preferences
         private void PoPChancePct_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string pctStr = box.SelectedValue.ToString();
+            string pctStr = box.SelectedValue?.ToString();
             if (int.TryParse(pctStr, out int pct))
             {
                 SettingsManager.PoPChanceMinimumPercentage = pct;
@@ -855,10 +855,15 @@ namespace SimpleWeather.NET.Preferences
         private void MinAlertSeverity_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ComboBox box = sender as ComboBox;
-            string value = box.SelectedValue.ToString();
+            string value = box.SelectedValue?.ToString();
+
             if (int.TryParse(value, out int val))
             {
                 SettingsManager.MinimumAlertSeverity = (WeatherAlertSeverity)val;
+            }
+            else
+            {
+                SettingsManager.MinimumAlertSeverity = WeatherAlertSeverity.Unknown;
             }
         }
     }
