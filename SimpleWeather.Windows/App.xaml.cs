@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Helpers;
 using CommunityToolkit.WinUI.Notifications;
 using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
@@ -15,11 +16,13 @@ using SimpleWeather.Extras;
 using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
 using SimpleWeather.NET.BackgroundTasks;
+using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.Json;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Preferences;
 using SimpleWeather.NET.Setup;
+using SimpleWeather.NET.Shared.Helpers;
 using SimpleWeather.NET.Widgets.Json;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -35,6 +38,7 @@ using Windows.UI.ViewManagement;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using FirebaseAuth = Firebase.Auth;
 using FirebaseDb = Firebase.Database;
+using Package = Windows.ApplicationModel.Package;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace SimpleWeather.NET
@@ -145,7 +149,11 @@ namespace SimpleWeather.NET
 
             RegisterSettingsListener();
 
-            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "desktop");
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, DeviceTypeHelper.DeviceType.ToString().ToLowerInvariant());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION, DeviceTypeHelper.OSVersion.ToString());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION_CODE, DeviceTypeHelper.OSVersion.ToVersionCode());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION, Package.Current.Id.Version.ToFormattedString());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION_CODE, Package.Current.Id.Version.ToVersionCode());
         }
 
         private void InitializeDependencies()

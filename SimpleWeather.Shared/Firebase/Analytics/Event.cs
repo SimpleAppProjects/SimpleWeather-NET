@@ -14,6 +14,6 @@ namespace SimpleWeather.Firebase.Analytics
         [DataMember(Name = "params", IsRequired = false)]
         [JsonPropertyName("params")]
         [JsonProperty("params", DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore)]
-        public IDictionary<string, string> _params { get; set; } = null;
+        public IDictionary<string, object> _params { get; set; } = null;
     }
 }

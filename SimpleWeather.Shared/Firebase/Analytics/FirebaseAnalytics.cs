@@ -16,7 +16,7 @@ namespace SimpleWeather.Firebase
 {
     public sealed class FirebaseAnalytics
     {
-#if DEBUG
+#if false
         private const string BASE_URL = "https://www.google-analytics.com/debug/mp/collect";
 #else
         private const string BASE_URL = "https://www.google-analytics.com/mp/collect";
@@ -62,7 +62,14 @@ namespace SimpleWeather.Firebase
                     await PostEvent(new Event()
                     {
                         name = eventName,
-                        _params = properties ?? ImmutableDictionary.Create<string, string>()
+                        _params = (properties?.ToDictionary(entry => entry.Key, entry => entry.Value as object) ?? [])?.Let(d =>
+                        {
+#if DEBUG
+                            d.Add("debug_mode", true);
+#endif
+                            d.Add("engagement_time_msec", 1000);
+                            return d;
+                        }),
                     });
                 }
                 finally
@@ -89,16 +96,17 @@ namespace SimpleWeather.Firebase
                     { "client_id", "SimpleWeather.NET" },
                     { "user_id", user.Uid },
                     { "events",  ImmutableList.Create(@event) },
-                    { "user_properties", GetUserProperties() }
+                    { "user_properties", GetAnalyticsUserProperties() }
                 };
 
-                request.Content = new StringContent(JsonConvert.SerializeObject(requestContent), Encoding.UTF8, "application/json");
+                var requestContentStr = JsonConvert.SerializeObject(requestContent);
+                request.Content = new StringContent(requestContentStr, Encoding.UTF8, "application/json");
 
                 using var webClient = new HttpClient();
                 using var response = await webClient.SendAsync(request);
                 response.EnsureSuccessStatusCode();
 
-#if DEBUG
+#if false
                 var stream = await response.Content.ReadAsStreamAsync();
 
                 var validationRoot = JSONParser.Deserializer<ValidationRootobject>(stream);
@@ -118,7 +126,7 @@ namespace SimpleWeather.Firebase
             }
         }
 
-        private object GetUserProperties()
+        private object GetAnalyticsUserProperties()
         {
             var userProperties = UserProperties.ToImmutableDictionary();
 
@@ -128,6 +136,11 @@ namespace SimpleWeather.Firebase
             }
 
             return userProperties.ToDictionary(entry => entry.Key, entry => new PropertyValue() { value = entry.Value });
+        }
+
+        internal IDictionary<string, string> GetUserProperties()
+        {
+            return UserProperties.ToImmutableDictionary();
         }
 
         private async Task ReleaseSemaphoreAfterDelayAsync()

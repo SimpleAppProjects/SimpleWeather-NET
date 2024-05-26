@@ -16,6 +16,7 @@ using System.Text;
 using Newtonsoft.Json;
 using System.IO;
 using SimpleWeather.Firebase.RemoteConfig;
+using NodaTime.TimeZones;
 
 namespace SimpleWeather.Firebase
 {
@@ -55,15 +56,19 @@ namespace SimpleWeather.Firebase
                     request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                     request.Headers.IfNoneMatch.Add(EntityTagHeaderValue.Any);
 
-                    var requestContent = new Dictionary<string, string>()
+                    var requestContent = new Dictionary<string, object>()
                     {
                         { "app_instance_id", user.Uid },
                         { "app_instance_id_token", user.Credential.IdToken },
                         { "app_id", AppId },
-                        { "language_code", LocaleUtils.GetDefault()?.Name ?? "" }
+                        { "country_code", LocaleUtils.GetDefault()?.TwoLetterISOLanguageName ?? "" },
+                        { "language_code", LocaleUtils.GetDefault()?.Name ?? "" },
+                        { "time_zone", this.RunCatching(() => TzdbDateTimeZoneSource.Default.GetSystemDefaultId()).GetOrDefault("") },
+                        { "analytics_user_properties", FirebaseHelper.GetFirebaseAnalytics().GetUserProperties() }
                     };
 
-                    request.Content = new StringContent(JsonConvert.SerializeObject(requestContent), Encoding.UTF8, "application/json");
+                    var requestContentStr = JsonConvert.SerializeObject(requestContent);
+                    request.Content = new StringContent(requestContentStr, Encoding.UTF8, "application/json");
 
                     using var cts = new CancellationTokenSource(10000);
                     using var response = await webClient.SendAsync(request, cts.Token);
