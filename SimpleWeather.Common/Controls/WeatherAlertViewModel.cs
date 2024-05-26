@@ -52,7 +52,7 @@ namespace SimpleWeather.Common.Controls
 
             Attribution = WeatherAlert.Attribution;
 
-            if (Attribution != null)
+            if (!string.IsNullOrWhiteSpace(Attribution))
             {
                 Attribution = String.Format("{0} {1}", ResStrings.credit_prefix, Attribution);
             }

@@ -89,7 +89,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 .AppendLine(alert.instruction)
                 .ToString();
 
-            weatherAlert.Attribution = alert.note;
+            weatherAlert.Attribution = alert.note ?? "WeatherAPI.com";
 
             if (DateTimeOffset.TryParse(alert.effective, CultureInfo.InvariantCulture, out var effective))
             {
