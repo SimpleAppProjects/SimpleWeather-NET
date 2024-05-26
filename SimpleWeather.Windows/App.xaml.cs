@@ -748,6 +748,9 @@ namespace SimpleWeather.NET
                     }
                 }
             }
+
+            // Flush the event immediately
+            SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
         }
 
         private void OnDomainFirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
@@ -786,10 +789,10 @@ namespace SimpleWeather.NET
                         Logger.WriteLine(LoggerLevel.Fatal, inner, $"Unhandled Inner Exception: {inner.Message}");
                     }
                 }
-
-                // Flush the event immediately
-                SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
             }
+
+            // Flush the event immediately
+            SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
         }
 
         [SecurityCritical]
@@ -811,6 +814,9 @@ namespace SimpleWeather.NET
                     Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Inner Exception: {0}", inner.Message);
                 }
             }
+
+            // Flush the event immediately
+            SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
         }
 
         private void DefaultTheme_ColorValuesChanged(UISettings sender, object args)
