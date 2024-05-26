@@ -13,7 +13,7 @@ using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Helpers;
 #else
 using Mapsui.UI.Maui;
-using MapControl = Mapsui.UI.WinUI.MapControl;
+using MapControl = Mapsui.UI.Maui.MapControl;
 using Microsoft.Maui.Dispatching;
 #endif
 using SimpleWeather.Preferences;
