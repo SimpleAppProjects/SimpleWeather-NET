@@ -133,7 +133,7 @@ namespace SimpleWeather.Common.Migrations
 
                 foreach (var location in locations)
                 {
-                    if (Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC"))
+                    if (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC"))
                     {
                         if (location.latitude != 0 && location.longitude != 0)
                         {

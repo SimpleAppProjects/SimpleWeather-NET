@@ -156,7 +156,7 @@ namespace SimpleWeather.Common.WeatherData
                 request.ThrowIfCancellationRequested();
 
                 // Is the timezone valid? If not try to fetch a valid zone id
-                if (!wm.IsRegionSupported(location) && (Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
+                if (!wm.IsRegionSupported(location) && (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
                 {
                     if (location.latitude != 0 && location.longitude != 0)
                     {
@@ -172,21 +172,24 @@ namespace SimpleWeather.Common.WeatherData
 
                 if (!wm.IsRegionSupported(location))
                 {
-                    // If location data hasn't been updated, try loading weather from the previous provider
-                    if (!String.IsNullOrWhiteSpace(location.weatherSource))
+                    if (location.latitude != 0 && location.longitude != 0)
                     {
-                        var provider = wm.GetWeatherProvider(location.weatherSource);
-                        if (provider.IsRegionSupported(location))
+                        // If location data hasn't been updated, try loading weather from the previous provider
+                        if (!String.IsNullOrWhiteSpace(location.weatherSource))
                         {
-                            weather = await provider.GetWeather(location).ConfigureAwait(false);
+                            var provider = wm.GetWeatherProvider(location.weatherSource);
+                            if (provider.IsRegionSupported(location))
+                            {
+                                weather = await provider.GetWeather(location).ConfigureAwait(false);
+                            }
                         }
-                    }
 
-                    // Nothing to fallback on; error out
-                    if (weather == null)
-                    {
-                        Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
-                        throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new InvalidOperationException("Invalid location data"));
+                        // Nothing to fallback on; error out
+                        if (weather == null)
+                        {
+                            Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
+                            throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new InvalidOperationException("Invalid location data"));
+                        }
                     }
                 }
                 else
