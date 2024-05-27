@@ -12,10 +12,6 @@ using SimpleWeather.NET.Preferences;
 using SimpleWeather.NET.ViewModels;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -294,12 +290,12 @@ namespace SimpleWeather.NET.Main
             }
             else
             {
-                var item = _pages.FirstOrDefault(p => p.Tag.Equals(navItemTag));
+                var item = _pages.FirstOrDefault(p => Equals(p.Tag, navItemTag));
                 _page = item.Page;
             }
             // Get the page type before navigation so you can prevent duplicate
             // entries in the backstack.
-            var preNavPageType = AppFrame.CurrentSourcePageType;
+            var preNavPageType = AppFrame?.CurrentSourcePageType;
 
             // Only navigate if the selected page isn't currently loaded.
             if (_page is not null && !Type.Equals(preNavPageType, _page))
