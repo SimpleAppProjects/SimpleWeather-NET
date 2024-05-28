@@ -9,6 +9,7 @@ using Microsoft.Maui.Embedding;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
 using Microsoft.Maui.Platform;
+using Plugin.Maui.SegmentedControl;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SimpleWeather.Maui.MaterialIcons;
@@ -63,6 +64,7 @@ public static class MauiProgram
             .UseProgressBar()
             .UseSimpleShell()
             .UseSimpleToolkit()
+            .UseSegmentedControl()
             //.ConfigureContainer()
             //.ConfigureGraphicsControls(DrawableType.Fluent)
             ;

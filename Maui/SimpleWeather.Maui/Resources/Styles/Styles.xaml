@@ -6,7 +6,8 @@
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:mauictrls="clr-namespace:Microsoft.Maui.Controls"
-    xmlns:progBar="clr-namespace:epj.ProgressBar.Maui;assembly=epj.ProgressBar.Maui">
+    xmlns:progBar="clr-namespace:epj.ProgressBar.Maui;assembly=epj.ProgressBar.Maui"
+    xmlns:segmentControl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl">
 
     <Style TargetType="ActivityIndicator">
         <Setter Property="Color" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
@@ -541,6 +542,13 @@
     <Style TargetType="controls:HyperlinkSpan">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}" />
         <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
+
+    <Style TargetType="segmentControl:SegmentedControl">
+        <Setter Property="TintColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+        <Setter Property="SelectedTextColor" Value="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}" />
+        <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
     </Style>
 
     <Style x:Key="ClickableImageStyle" TargetType="Image">

@@ -1,9 +1,15 @@
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using Plugin.Maui.SegmentedControl;
+using SimpleWeather.Controls;
+using SimpleWeather.Maui.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using System;
+using System.Linq;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 using ResUnits = SimpleWeather.Resources.Strings.Units;
+using SegmentValueChangedEventArgs = Plugin.Maui.SegmentedControl.ValueChangedEventArgs;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -43,177 +49,63 @@ public partial class Settings_Units : ContentPage
 
     private void AddUnits()
     {
-        RadioButtonGroup.SetGroupName(TemperatureUnits, nameof(TemperatureUnits));
-        var tempValues = Enum.GetValues(typeof(Units.TemperatureUnits));
-        foreach (var enumVal in tempValues)
-        {
-            var tempUnit = (Units.TemperatureUnits)enumVal;
-            switch (tempUnit)
+        TemperatureUnits.Children = Enum.GetValues(typeof(Units.TemperatureUnits))
+            .OfType<Units.TemperatureUnits>()
+            .Select(tempUnit =>
             {
-                default:
-                case Units.TemperatureUnits.Fahrenheit:
-                    TemperatureUnits.Children.Add(new RadioButton()
-                    {
-                        Content = "°F",
-                        Value = tempUnit.GetStringValue(),
-                        GroupName = nameof(TemperatureUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.TemperatureUnits.Celsuis:
-                    TemperatureUnits.Children.Add(new RadioButton()
-                    {
-                        Content = "°C",
-                        Value = tempUnit.GetStringValue(),
-                        GroupName = nameof(TemperatureUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-            }
-        }
+                return tempUnit switch
+                {
+                    Units.TemperatureUnits.Celsuis => new SegmentedControlItem("°C", tempUnit.GetStringValue()),
+                    _ => new SegmentedControlItem("°F", tempUnit.GetStringValue()),
+                };
+            }).ToList<SegmentedControlOption>();
 
-        RadioButtonGroup.SetGroupName(SpeedUnits, nameof(SpeedUnits));
-        var speedValues = Enum.GetValues(typeof(Units.SpeedUnits));
-        foreach (var enumVal in speedValues)
-        {
-            var speedUnit = (Units.SpeedUnits)enumVal;
-            switch (speedUnit)
+        SpeedUnits.Children = Enum.GetValues(typeof(Units.SpeedUnits))
+            .OfType<Units.SpeedUnits>()
+            .Select(speedUnit =>
             {
-                default:
-                case Units.SpeedUnits.MilesPerHour:
-                    SpeedUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_mph,
-                        Value = speedUnit.GetStringValue(),
-                        GroupName = nameof(SpeedUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.SpeedUnits.KilometersPerHour:
-                    SpeedUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_kph,
-                        Value = speedUnit.GetStringValue(),
-                        GroupName = nameof(SpeedUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.SpeedUnits.MetersPerSecond:
-                    SpeedUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_msec,
-                        Value = speedUnit.GetStringValue(),
-                        GroupName = nameof(SpeedUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.SpeedUnits.Knots:
-                    SpeedUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_knots,
-                        Value = speedUnit.GetStringValue(),
-                        GroupName = nameof(SpeedUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-            }
-        }
+                return speedUnit switch
+                {
+                    Units.SpeedUnits.KilometersPerHour => new SegmentedControlItem(ResUnits.unit_kph, speedUnit.GetStringValue()),
+                    Units.SpeedUnits.MetersPerSecond => new SegmentedControlItem(ResUnits.unit_msec, speedUnit.GetStringValue()),
+                    Units.SpeedUnits.Knots => new SegmentedControlItem(ResUnits.unit_knots, speedUnit.GetStringValue()),
+                    _ => new SegmentedControlItem(ResUnits.unit_mph, speedUnit.GetStringValue()),
+                };
+            }).ToList<SegmentedControlOption>();
 
-        RadioButtonGroup.SetGroupName(DistanceUnits, nameof(DistanceUnits));
-        var distanceValues = Enum.GetValues(typeof(Units.DistanceUnits));
-        foreach (var enumVal in distanceValues)
-        {
-            var distanceUnit = (Units.DistanceUnits)enumVal;
-            switch (distanceUnit)
+        DistanceUnits.Children = Enum.GetValues(typeof(Units.DistanceUnits))
+            .OfType<Units.DistanceUnits>()
+            .Select(distanceUnit =>
             {
-                default:
-                case Units.DistanceUnits.Miles:
-                    DistanceUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_miles,
-                        Value = distanceUnit.GetStringValue(),
-                        GroupName = nameof(DistanceUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.DistanceUnits.Kilometers:
-                    DistanceUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_kilometers,
-                        Value = distanceUnit.GetStringValue(),
-                        GroupName = nameof(DistanceUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-            }
-        }
+                return distanceUnit switch
+                {
+                    Units.DistanceUnits.Kilometers => new SegmentedControlItem(ResUnits.unit_kilometers, distanceUnit.GetStringValue()),
+                    _ => new SegmentedControlItem(ResUnits.unit_miles, distanceUnit.GetStringValue()),
+                };
+            }).ToList<SegmentedControlOption>();
 
-        RadioButtonGroup.SetGroupName(PrecipitationUnits, nameof(PrecipitationUnits));
-        var precipitationValues = Enum.GetValues(typeof(Units.PrecipitationUnits));
-        foreach (var enumVal in precipitationValues)
-        {
-            var precipitationUnit = (Units.PrecipitationUnits)enumVal;
-            switch (precipitationUnit)
+        PrecipitationUnits.Children = Enum.GetValues(typeof(Units.PrecipitationUnits))
+            .OfType<Units.PrecipitationUnits>()
+            .Select(precipitationUnit =>
             {
-                default:
-                case Units.PrecipitationUnits.Inches:
-                    PrecipitationUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_in,
-                        Value = precipitationUnit.GetStringValue(),
-                        GroupName = nameof(PrecipitationUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.PrecipitationUnits.Millimeters:
-                    PrecipitationUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_mm,
-                        Value = precipitationUnit.GetStringValue(),
-                        GroupName = nameof(PrecipitationUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-            }
-        }
+                return precipitationUnit switch
+                {
+                    Units.PrecipitationUnits.Millimeters => new SegmentedControlItem(ResUnits.unit_mm, precipitationUnit.GetStringValue()),
+                    _ => new SegmentedControlItem(ResUnits.unit_in, precipitationUnit.GetStringValue()),
+                };
+            }).ToList<SegmentedControlOption>();
 
-        RadioButtonGroup.SetGroupName(PressureUnits, nameof(PressureUnits));
-        var pressureValues = Enum.GetValues(typeof(Units.PressureUnits));
-        foreach (var enumVal in pressureValues)
-        {
-            var pressureUnit = (Units.PressureUnits)enumVal;
-            switch (pressureUnit)
+        PressureUnits.Children = Enum.GetValues(typeof(Units.PressureUnits))
+            .OfType<Units.PressureUnits>()
+            .Select(pressureUnit =>
             {
-                default:
-                case Units.PressureUnits.InHg:
-                    PressureUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_inHg,
-                        Value = pressureUnit.GetStringValue(),
-                        GroupName = nameof(PressureUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.PressureUnits.Millibar:
-                    PressureUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_mBar,
-                        Value = pressureUnit.GetStringValue(),
-                        GroupName = nameof(PressureUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-                case Units.PressureUnits.MmHg:
-                    PressureUnits.Children.Add(new RadioButton()
-                    {
-                        Content = ResUnits.unit_mmHg,
-                        Value = pressureUnit.GetStringValue(),
-                        GroupName = nameof(PressureUnits),
-                        MinimumWidthRequest = 85
-                    });
-                    break;
-            }
-        }
+                return pressureUnit switch
+                {
+                    Units.PressureUnits.Millibar => new SegmentedControlItem(ResUnits.unit_mBar, pressureUnit.GetStringValue()),
+                    Units.PressureUnits.MmHg => new SegmentedControlItem(ResUnits.unit_mmHg, pressureUnit.GetStringValue()),
+                    _ => new SegmentedControlItem(ResUnits.unit_inHg, pressureUnit.GetStringValue()),
+                };
+            }).ToList<SegmentedControlOption>();
 
         ResetTitle.Text = ResStrings.pref_title_resetunits;
         ResetImperialUnits.Text = ResStrings.default_units_imperial;
@@ -222,134 +114,90 @@ public partial class Settings_Units : ContentPage
 
     private void RegisterListeners()
     {
-        TemperatureUnits.Children.OfType<RadioButton>().ForEach(btn =>
-        {
-            btn.CheckedChanged += TemperatureUnits_CheckedChanged;
-            btn.TapGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#if WINDOWS || MACCATALYST
-            btn.ClickGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#endif
-        });
-
-        SpeedUnits.Children.OfType<RadioButton>().ForEach(btn =>
-        {
-            btn.CheckedChanged += SpeedUnits_CheckedChanged;
-            btn.TapGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#if WINDOWS || MACCATALYST
-            btn.ClickGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#endif
-        });
-
-        DistanceUnits.Children.OfType<RadioButton>().ForEach(btn =>
-        {
-            btn.CheckedChanged += DistanceUnits_CheckedChanged;
-            btn.TapGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#if WINDOWS || MACCATALYST
-            btn.ClickGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#endif
-        });
-
-        PrecipitationUnits.Children.OfType<RadioButton>().ForEach(btn =>
-        {
-            btn.CheckedChanged += PrecipitationUnits_CheckedChanged;
-            btn.TapGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#if WINDOWS || MACCATALYST
-            btn.ClickGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#endif
-        });
-
-        PressureUnits.Children.OfType<RadioButton>().ForEach(btn =>
-        {
-            btn.CheckedChanged += PressureUnits_CheckedChanged;
-            btn.TapGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#if WINDOWS || MACCATALYST
-            btn.ClickGesture(() =>
-            {
-                btn.IsChecked = true;
-            });
-#endif
-        });
+        TemperatureUnits.ValueChanged += TemperatureUnits_SelectionChanged;
+        SpeedUnits.ValueChanged += SpeedUnits_SelectionChanged;
+        DistanceUnits.ValueChanged += DistanceUnits_SelectionChanged;
+        PrecipitationUnits.ValueChanged += PrecipitationUnits_SelectionChanged;
+        PressureUnits.ValueChanged += PressureUnits_SelectionChanged;
     }
 
-    private void TemperatureUnits_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    private void TemperatureUnits_SelectionChanged(object sender, SegmentValueChangedEventArgs e)
     {
-        if (sender is RadioButton btn && e.Value)
+        if (sender is SegmentedControl box && box.SelectedSegment != -1)
         {
-            SettingsManager.TemperatureUnit = btn.Value.ToString();
-            UnitsChanged = true;
+            var value = box.Children?.OfType<SegmentedControlItem>()?.ElementAt(box.SelectedSegment);
+
+            if (!string.IsNullOrWhiteSpace(value?.Value?.ToString()))
+            {
+                SettingsManager.TemperatureUnit = value.Value.ToString();
+                UnitsChanged = true;
+            }
         }
     }
 
-    private void SpeedUnits_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    private void SpeedUnits_SelectionChanged(object sender, SegmentValueChangedEventArgs e)
     {
-        if (sender is RadioButton btn && e.Value)
+        if (sender is SegmentedControl box && box.SelectedSegment != -1)
         {
-            SettingsManager.SpeedUnit = btn.Value.ToString();
-            UnitsChanged = true;
+            var value = box.Children?.OfType<SegmentedControlItem>()?.ElementAt(box.SelectedSegment);
+
+            if (!string.IsNullOrWhiteSpace(value?.Value?.ToString()))
+            {
+                SettingsManager.SpeedUnit = value.Value.ToString();
+                UnitsChanged = true;
+            }
         }
     }
 
-    private void DistanceUnits_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    private void DistanceUnits_SelectionChanged(object sender, SegmentValueChangedEventArgs e)
     {
-        if (sender is RadioButton btn && e.Value)
+        if (sender is SegmentedControl box && box.SelectedSegment != -1)
         {
-            SettingsManager.DistanceUnit = btn.Value.ToString();
-            UnitsChanged = true;
+            var value = box.Children?.OfType<SegmentedControlItem>()?.ElementAt(box.SelectedSegment);
+
+            if (!string.IsNullOrWhiteSpace(value?.Value?.ToString()))
+            {
+                SettingsManager.DistanceUnit = value.Value.ToString();
+                UnitsChanged = true;
+            }
         }
     }
 
-    private void PrecipitationUnits_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    private void PrecipitationUnits_SelectionChanged(object sender, SegmentValueChangedEventArgs e)
     {
-        if (sender is RadioButton btn && e.Value)
+        if (sender is SegmentedControl box && box.SelectedSegment != -1)
         {
-            SettingsManager.PrecipitationUnit = btn.Value.ToString();
-            UnitsChanged = true;
+            var value = box.Children?.OfType<SegmentedControlItem>()?.ElementAt(box.SelectedSegment);
+
+            if (!string.IsNullOrWhiteSpace(value?.Value?.ToString()))
+            {
+                SettingsManager.PrecipitationUnit = value.Value.ToString();
+                UnitsChanged = true;
+            }
         }
     }
 
-    private void PressureUnits_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    private void PressureUnits_SelectionChanged(object sender, SegmentValueChangedEventArgs e)
     {
-        if (sender is RadioButton btn && e.Value)
+        if (sender is SegmentedControl box && box.SelectedSegment != -1)
         {
-            SettingsManager.PressureUnit = btn.Value.ToString();
-            UnitsChanged = true;
+            var value = box.Children?.OfType<SegmentedControlItem>()?.ElementAt(box.SelectedSegment);
+
+            if (!string.IsNullOrWhiteSpace(value?.Value?.ToString()))
+            {
+                SettingsManager.PressureUnit = value.Value.ToString();
+                UnitsChanged = true;
+            }
         }
     }
 
     private void RestoreSettings()
     {
-        RadioButtonGroup.SetSelectedValue(TemperatureUnits, TemperatureUnits.Children.OfType<RadioButton>().FirstOrDefault(btn => string.Equals(SettingsManager.TemperatureUnit, btn.Value?.ToString()))?.Value);
-        RadioButtonGroup.SetSelectedValue(SpeedUnits, SpeedUnits.Children.OfType<RadioButton>().FirstOrDefault(btn => string.Equals(SettingsManager.SpeedUnit, btn.Value?.ToString()))?.Value);
-        RadioButtonGroup.SetSelectedValue(DistanceUnits, DistanceUnits.Children.OfType<RadioButton>().FirstOrDefault(btn => string.Equals(SettingsManager.DistanceUnit, btn.Value?.ToString()))?.Value);
-        RadioButtonGroup.SetSelectedValue(PrecipitationUnits, PrecipitationUnits.Children.OfType<RadioButton>().FirstOrDefault(btn => string.Equals(SettingsManager.PrecipitationUnit, btn.Value?.ToString()))?.Value);
-        RadioButtonGroup.SetSelectedValue(PressureUnits, PressureUnits.Children.OfType<RadioButton>().FirstOrDefault(btn => string.Equals(SettingsManager.PressureUnit, btn.Value?.ToString()))?.Value);
+        TemperatureUnits.SelectedSegment = TemperatureUnits.Children.IndexOf(TemperatureUnits.Children.OfType<SegmentedControlItem>().First(it => Equals(it.Value, SettingsManager.TemperatureUnit)));
+        SpeedUnits.SelectedSegment = SpeedUnits.Children.IndexOf(SpeedUnits.Children.OfType<SegmentedControlItem>().First(it => Equals(it.Value, SettingsManager.SpeedUnit)));
+        DistanceUnits.SelectedSegment = DistanceUnits.Children.IndexOf(DistanceUnits.Children.OfType<SegmentedControlItem>().First(it => Equals(it.Value, SettingsManager.DistanceUnit)));
+        PrecipitationUnits.SelectedSegment = PrecipitationUnits.Children.IndexOf(PrecipitationUnits.Children.OfType<SegmentedControlItem>().First(it => Equals(it.Value, SettingsManager.PrecipitationUnit)));
+        PressureUnits.SelectedSegment = PressureUnits.Children.IndexOf(PressureUnits.Children.OfType<SegmentedControlItem>().First(it => Equals(it.Value, SettingsManager.PressureUnit)));
     }
 
     private void ResetImperialUnits_Clicked(object sender, EventArgs e)
