@@ -40,6 +40,22 @@ namespace SimpleWeather.Maui.Preferences
                     chk.SetAppThemeColor(CheckBoxCell.TextColorProperty, lightTextColor, darkTextColor);
                     chk.SetAppThemeColor(CheckBoxCell.DetailColorProperty, lightDetailColor, darkDetailColor);
                 }
+                else if (element is PickerViewCell pvc)
+                {
+                    pvc.SetAppThemeColor(PickerViewCell.ColorProperty, lightPrimaryColor, darkPrimaryColor);
+                    pvc.SetAppThemeColor(PickerViewCell.TextColorProperty, lightTextColor, darkTextColor);
+                    pvc.SetAppThemeColor(PickerViewCell.DetailColorProperty, lightDetailColor, darkDetailColor);
+                }
+                else if (element is TextViewCell tvc)
+                {
+                    tvc.SetAppThemeColor(TextViewCell.TextColorProperty, lightTextColor, darkTextColor);
+                    tvc.SetAppThemeColor(TextViewCell.DetailColorProperty, lightDetailColor, darkDetailColor);
+                }
+
+                if (element is ViewCell vc && vc.View is View v)
+                {
+                    v.SetAppThemeColor(View.BackgroundColorProperty, Colors.White, Color.Parse("#1B1B1B"));
+                }
             }
         }
 	}

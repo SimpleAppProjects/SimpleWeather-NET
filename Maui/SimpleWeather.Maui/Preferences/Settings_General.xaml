@@ -13,9 +13,8 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.title_activity_settings}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
@@ -47,35 +46,35 @@
                         x:Name="FollowGPS"
                         Detail="{x:Static res_strings:Resources.pref_summary_currentlocation}"
                         Text="{x:Static res_strings:Resources.label_currentlocation}" />
-                    <prefs:ListViewCell
+                    <prefs:PickerViewCell
                         x:Name="IntervalPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_REFRESHINTERVAL}"
                         Text="{x:Static res_strings:Resources.pref_title_refreshinterval}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_Units}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_units}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_Features}"
                         Detail="{x:Static res_strings:Resources.pref_summary_features}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_features}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_Icons}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_icons}" />
-                    <prefs:ListViewCell
+                    <prefs:PickerViewCell
                         x:Name="ThemePref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_USERTHEME}"
                         Text="{x:Static res_strings:Resources.pref_title_userthememode}">
-                        <prefs:ListViewCell.Items>
+                        <prefs:PickerViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_light}" Value="{x:Static utils:UserThemeMode.Light}" />
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_dark}" Value="{x:Static utils:UserThemeMode.Dark}" />
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_default}" Value="{x:Static utils:UserThemeMode.System}" />
                             </m:List>
-                        </prefs:ListViewCell.Items>
-                    </prefs:ListViewCell>
+                        </prefs:PickerViewCell.Items>
+                    </prefs:PickerViewCell>
                     <prefs:ListViewCell
                         x:Name="LanguagePref"
                         PreferenceKey="key_language"
@@ -96,13 +95,13 @@
                     </prefs:ListViewCell>
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
-                    <TextCell
+                    <prefs:TextViewCell
                         x:Name="WeatherNotifPref"
                         CommandParameter="{x:Type prefs:Settings_WeatherNotifications}"
                         Detail="{x:Static res_strings:Resources.not_channel_name_dailynotification}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_onnotification}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         x:Name="WeatherAlertPref"
                         CommandParameter="{x:Type prefs:Settings_WeatherAlerts}"
                         Detail="{x:Bind utils:StringUtils.ToPascalCase($'{res_strings:Resources.pref_title_alerts}, {res_strings:Resources.not_channel_name_precipnotification}')}"
@@ -118,7 +117,7 @@
                         x:Name="PersonalKeyPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_personalkey}"
                         Text="{x:Static res_strings:Resources.pref_title_personalkey}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         x:Name="APIRegisterPref"
                         Detail="{x:Static res_strings:Resources.pref_summary_apiregister}"
                         Tapped="TextCell_Tapped"
@@ -130,13 +129,13 @@
                         Text="{x:Static res_strings:Resources.key_hint}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_feature_radar}">
-                    <prefs:ListViewCell
+                    <prefs:PickerViewCell
                         x:Name="RadarPref"
                         PreferenceKey="{x:Static radar:RadarProvider.KEY_RADARPROVIDER}"
                         Text="{x:Static res_strings:Resources.label_radar}" />
                 </TableSection>
                 <TableSection x:Name="AboutSection" Title="{x:Static res_strings:Resources.pref_title_about}">
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_About}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_about_app}" />

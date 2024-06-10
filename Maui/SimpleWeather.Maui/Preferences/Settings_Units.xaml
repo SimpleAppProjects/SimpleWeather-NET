@@ -6,74 +6,104 @@
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:segmentControl="clr-namespace:Plugin.Maui.SegmentedControl;assembly=Plugin.Maui.SegmentedControl"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_units}"
-    main:AppShell.AppBarIsVisible="True"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}">
+    main:AppShell.AppBarIsVisible="True">
 
     <ContentPage.Resources>
-        <Style x:Key="SettingsDividerStyle" TargetType="Rectangle">
-            <Setter Property="HeightRequest" Value="2" />
-            <Setter Property="Fill" Value="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant}, Dark={StaticResource DarkOnSurfaceVariant}}" />
-            <Setter Property="Opacity" Value="0.1" />
+        <Style x:Key="SettingsDividerStyle" TargetType="BoxView">
+            <Setter Property="HeightRequest" Value="1" />
+            <Setter Property="Color" Value="{AppThemeBinding Light='#20000000', Dark='#20FFFFFF'}" />
+            <Setter Property="Margin" Value="0,16,0,4" />
         </Style>
     </ContentPage.Resources>
 
-    <Grid>
-        <ScrollView
-            Padding="16"
-            HorizontalScrollBarVisibility="Never"
-            Orientation="Vertical">
+    <ScrollView Orientation="Vertical">
+        <Frame BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}"
+               BorderColor="Transparent"
+               CornerRadius="8"
+               Margin="{OnIdiom Default=16, Phone=8}"
+               Padding="{OnIdiom Default=16, Phone=8}"
+               MinimumHeightRequest="0"
+               VerticalOptions="Start">
             <VerticalStackLayout>
                 <Label
                     Padding="0,5"
-                    FontSize="Header"
+                    FontSize="{OnIdiom Default=17, Phone=14}"
                     Text="{x:Static res_strings:Resources.label_temperature}" />
                 <segmentControl:SegmentedControl x:Name="TemperatureUnits" />
                 <Label
                     Padding="0,5"
-                    FontSize="Header"
+                    FontSize="{OnIdiom Default=17, Phone=14}"
                     Text="{x:Static res_strings:Resources.label_speed}" />
                 <segmentControl:SegmentedControl x:Name="SpeedUnits" />
                 <Label
                     Padding="0,5"
-                    FontSize="Header"
+                    FontSize="{OnIdiom Default=17, Phone=14}"
                     Text="{x:Static res_strings:Resources.label_distance}" />
                 <segmentControl:SegmentedControl x:Name="DistanceUnits" />
                 <Label
                     Padding="0,5"
-                    FontSize="Header"
+                    FontSize="{OnIdiom Default=17, Phone=14}"
                     Text="{x:Static res_strings:Resources.label_precipitation}" />
                 <segmentControl:SegmentedControl x:Name="PrecipitationUnits" />
                 <Label
                     Padding="0,5"
-                    FontSize="Header"
+                    FontSize="{OnIdiom Default=17, Phone=14}"
                     Text="{x:Static res_strings:Resources.label_pressure}" />
                 <segmentControl:SegmentedControl x:Name="PressureUnits" />
-                <Rectangle Style="{DynamicResource SettingsDividerStyle}" />
-                <VerticalStackLayout Margin="0,8,0,0">
+                <BoxView Style="{DynamicResource SettingsDividerStyle}" />
+                <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*">
                     <Label
                         x:Name="ResetTitle"
-                        FontSize="Header"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Padding="0,5"
+                        FontSize="{OnIdiom Default=17, Phone=14}"
                         Text="{x:Static res_strings:Resources.pref_title_resetunits}" />
-                    <HorizontalStackLayout Padding="0,5">
-                        <Button
-                            x:Name="ResetImperialUnits"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
-                            TextColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
-                            Margin="0,5,5,5"
-                            Clicked="ResetImperialUnits_Clicked"
-                            Text="°F, mph, in, inHg, mi" />
-                        <Button
-                            x:Name="ResetMetricUnits"
-                            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
-                            TextColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
-                            Margin="5"
-                            Clicked="ResetMetricUnits_Clicked"
-                            Text="°C, km/h, mm, mb, km" />
-                    </HorizontalStackLayout>
-                </VerticalStackLayout>
+                    <Button
+                        x:Name="ResetImperialUnits"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,0,5,0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark='#656565'}"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        BorderWidth="1"
+                        BorderColor="{AppThemeBinding Light='#30000000', Dark='#30000000'}"
+                        CornerRadius="6"
+                        FontSize="{OnIdiom Default=15, Phone=13}"
+                        MinimumHeightRequest="0"
+                        MinimumWidthRequest="0"
+                        Padding="{OnIdiom Default='10,4,10,4', Phone='4,8'}"
+                        Clicked="ResetImperialUnits_Clicked"
+                        Text="°F, mph, in, inHg, mi">
+                        <Button.Shadow>
+                            <Shadow Radius="1" Offset="0.5,1" Opacity="0.05" />
+                        </Button.Shadow>
+                    </Button>
+                    <Button
+                        x:Name="ResetMetricUnits"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Margin="5,0,0,0"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark='#656565'}"
+                        TextColor="{AppThemeBinding Light={StaticResource Black}, Dark={StaticResource White}}"
+                        BorderWidth="1"
+                        BorderColor="{AppThemeBinding Light='#30000000', Dark='#B0000000'}"
+                        CornerRadius="6"
+                        FontSize="{OnIdiom Default=15, Phone=13}"
+                        MinimumHeightRequest="0"
+                        MinimumWidthRequest="0"
+                        Padding="{OnIdiom Default='10,4,10,4', Phone='4,8'}"
+                        Clicked="ResetMetricUnits_Clicked"
+                        Text="°C, km/h, mm, mb, km">
+                        <Button.Shadow>
+                            <Shadow Radius="1" Offset="0.5,1" Opacity="0.05" />
+                        </Button.Shadow>
+                    </Button>
+                </Grid>
             </VerticalStackLayout>
-        </ScrollView>
-    </Grid>
+        </Frame>
+    </ScrollView>
 </ContentPage>

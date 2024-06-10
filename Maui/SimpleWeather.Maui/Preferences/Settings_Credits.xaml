@@ -14,167 +14,125 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_credits}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
 
-    <ScrollView
-        Padding="16,0"
-        HorizontalScrollBarVisibility="Never"
-        Orientation="Vertical">
-        <Grid>
-            <VerticalStackLayout>
-                <Label
-                    Padding="8,16"
-                    FontAttributes="Bold"
-                    FontSize="Title"
-                    Style="{DynamicResource SettingTitleStyle}"
-                    Text="{x:Static res_strings:Resources.pref_category_providers}" />
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_here}" />
-                    <Label TextType="Html">
-                        <![CDATA[
-                        <p>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</p>
-                        ]]>
-                    </Label>
-                    <ImageButton
-                        Padding="0,10"
+    <ContentPage.Resources>
+        <Style x:Key="SettingsFrameStyle" TargetType="Frame">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,8" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+        <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
+            <Setter Property="HasUnevenRows" Value="True" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="VerticalOptions" Value="StartAndExpand" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <TableView
+            x:Name="SettingsTable"
+            Intent="Settings"
+            Style="{DynamicResource SettingsTableViewStyle}"
+            HasUnevenRows="True">
+            <TableRoot>
+                <TableSection Title="{x:Static res_strings:Resources.pref_category_providers}">
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_here}"
+                        Detail="The HERE Logo is a trademark or registered trademark of HERE Global B.V."
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://here.com/en"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://here.com/en">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="{AppThemeBinding Light='here.png', Dark='here_dark.png'}" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_apple_weather}" />
-                    <Label TextType="Html">
-                        <![CDATA[
-                        <p>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</p>
-                        ]]>
-                    </Label>
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_apple_weather}"
+                        Detail="Apple Weather and (Apple) Weather are trademarks of Apple Inc."
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://weatherkit.apple.com/legal-attribution.html"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://weatherkit.apple.com/legal-attribution.html">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="weatherkit.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_metno}" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_metno}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://www.met.no/en"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://www.met.no/en">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="metno.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_nws}" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_nws}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="http://www.weather.gov"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="http://www.weather.gov">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="nws.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_owm}" />
-                    <ImageButton
-                        Padding="0,20"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_owm}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="http://openweathermap.org/"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="http://openweathermap.org/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="openweathermap.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="Bing Maps" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="Bing Maps"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://www.bing.com/maps"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://www.bing.com/maps">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="{AppThemeBinding Light='bingmaps.png', Dark='bingmaps_dark.png'}" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_waqi}" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_waqi}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://aqicn.org/"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://aqicn.org/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="waqi.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_wunlocked}" />
-                    <ImageButton
-                        Padding="0,10"
-                        BackgroundColor="{StaticResource DarkSurfaceVariant}"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_wunlocked}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://developer.weatherunlocked.com/"
-                        HorizontalOptions="Center"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}"
-                        VerticalOptions="Center">
-                        <ImageButton.Source>
+                        ImageBackgroundColor="{AppThemeBinding Light='#30000000', Dark='#00000000'}">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="wunlocked.png" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_weatherapi}" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_weatherapi}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://www.weatherapi.com/"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://www.weatherapi.com/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <VerticalStackLayout Padding="10">
-                    <Label FontSize="Subtitle" Text="{x:Static res_strings:Resources.api_tomorrowio}" />
-                    <ImageButton
-                        Padding="0,10"
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_tomorrowio}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://tomorrow.io"
-                        MaximumHeightRequest="{OnIdiom Phone=50, Default=75}">
-                        <ImageButton.Source>
+                        CommandParameter="https://tomorrow.io">
+                        <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
-                        </ImageButton.Source>
-                    </ImageButton>
-                </VerticalStackLayout>
-                <Label
-                    Padding="0,8"
-                    FontAttributes="Bold"
-                    FontSize="Subtitle"
-                    Style="{DynamicResource SettingsTitleStyle}"
-                    Text="{x:Static res_strings:Resources.pref_title_icons}" />
-                <VerticalStackLayout x:Name="IconCreditsContainer" />
-            </VerticalStackLayout>
-        </Grid>
-    </ScrollView>
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                </TableSection>
+                <TableSection x:Name="IconCreditsContainer"
+                              Title="{x:Static res_strings:Resources.pref_title_icons}">
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </Grid>
+
 </ContentPage>

@@ -14,15 +14,15 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_oslibs}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
 
-    <ScrollView Orientation="Vertical">
+    <ScrollView Orientation="Vertical"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground}, Dark={StaticResource DarkBackground}}">
         <VerticalStackLayout>
             <Label Padding="16,8">
                 <Label.FormattedText>

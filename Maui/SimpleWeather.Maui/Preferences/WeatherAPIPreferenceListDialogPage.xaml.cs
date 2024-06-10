@@ -8,6 +8,7 @@ public partial class WeatherAPIPreferenceListDialogPage : PreferenceListDialogPa
     {
         try {
             this.InitializeComponent();
+            _PreferenceListView.RowHeight = 50;
 
             if (this.Resources.TryGetValue("WeatherAPIItemTemplate", out var template)) {
                 this._PreferenceListView.ItemTemplate = template as DataTemplate;

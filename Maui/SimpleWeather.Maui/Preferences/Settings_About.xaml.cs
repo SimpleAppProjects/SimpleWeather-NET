@@ -44,7 +44,7 @@ public partial class Settings_About : ContentPage, ISnackbarManager
         App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
         SettingsTable.UpdateCellColors(
-            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
             LightPrimary as Color, DarkPrimary as Color);
     }
 
@@ -82,8 +82,9 @@ public partial class Settings_About : ContentPage, ISnackbarManager
 
     private async void TextCell_Tapped(object sender, EventArgs e)
     {
-        var cell = sender as TextCell;
-        if (cell.CommandParameter is Type pageType)
+        var commandParam = ((sender as TextCell)?.CommandParameter) ?? ((sender as TextViewCell)?.CommandParameter);
+
+        if (commandParam is Type pageType)
         {
             if (pageType == typeof(Settings_Credits))
             {
@@ -94,7 +95,7 @@ public partial class Settings_About : ContentPage, ISnackbarManager
                 await Navigation.PushAsync(new Settings_OSSLibs());
             }
         }
-        else if (cell is DialogCell dialogCell)
+        else if (sender is DialogCell dialogCell)
         {
             switch (dialogCell.PreferenceKey)
             {

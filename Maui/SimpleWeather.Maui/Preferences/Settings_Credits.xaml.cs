@@ -12,9 +12,10 @@ public partial class Settings_Credits : ContentPage
 	{
 		InitializeComponent();
         Initialize();
+        UpdateSettingsTableTheme();
     }
 
-    private Command HyperlinkButtonCommand = new Command(async (parameter) =>
+    private readonly Command HyperlinkButtonCommand = new(async (parameter) =>
     {
         if (parameter is string url)
         {
@@ -24,51 +25,42 @@ public partial class Settings_Credits : ContentPage
             }
             catch { }
         }
+        else if (parameter is Uri uri)
+        {
+            try
+            {
+                await Launcher.TryOpenAsync(uri);
+            }
+            catch { }
+        }
     });
 
     private void Initialize()
     {
-        IconCreditsContainer.Children.Clear();
+        IconCreditsContainer.Clear();
 
         var providers = SharedModule.Instance.WeatherIconsManager.GetIconProviders();
 
         foreach (var provider in providers)
         {
-            var textBlock = new VerticalStackLayout()
+            var tvc = new TextViewCell()
             {
-                Padding = new Thickness(0, 10, 0, 10),
-                HorizontalOptions = LayoutOptions.Start
+                Text = provider.Value.DisplayName,
+                Detail = provider.Value.AuthorName,
+                CommandParameter = provider.Value.AttributionLink,
+                Command = HyperlinkButtonCommand
             };
 
-            var title = new Label()
-            {
-                FontSize = 16,
-                Text = provider.Value.DisplayName
-            };
-            var subtitle = new Label()
-            {
-                FontSize = 13
-            }.Apply(it =>
-            {
-                it.Text = provider.Value.AuthorName;
-
-                if (provider.Value.AttributionLink != null)
-                {
-                    it.TapGesture(async () =>
-                    {
-                        try
-                        {
-                            await Launcher.TryOpenAsync(provider.Value.AttributionLink);
-                        }
-                        catch { }
-                    });
-                }
-            });
-
-            textBlock.Add(title);
-            textBlock.Add(subtitle);
-
-            IconCreditsContainer.Children.Add(textBlock);
+            IconCreditsContainer.Add(tvc);
         }
+    }
+
+    private void UpdateSettingsTableTheme()
+    {
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+        SettingsTable.UpdateCellColors(
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
+            LightPrimary as Color, DarkPrimary as Color);
     }
 }

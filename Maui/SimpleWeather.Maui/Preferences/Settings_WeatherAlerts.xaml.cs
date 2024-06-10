@@ -35,13 +35,14 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
         App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
         SettingsTable.UpdateCellColors(
-            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
             LightPrimary as Color, DarkPrimary as Color);
 
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         AlertPref.OnChanged += AlertPref_OnChanged;
         PoPChancePref.OnChanged += PoPChancePref_OnChanged;
+
         WeakReferenceMessenger.Default.Register(this);
     }
 
@@ -211,6 +212,7 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
         }
         else
         {
+            SettingsManager.PoPChanceNotificationEnabled = false;
             UpdaterTaskUtils.CancelTasks();
         }
     }

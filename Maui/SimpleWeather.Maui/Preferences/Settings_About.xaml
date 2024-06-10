@@ -14,9 +14,8 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_about}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
@@ -44,11 +43,11 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection>
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_Credits}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_credits}" />
-                    <TextCell
+                    <prefs:TextViewCell
                         CommandParameter="{x:Type prefs:Settings_OSSLibs}"
                         Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_oslibs}" />
@@ -71,7 +70,7 @@
                         Detail="{x:Static res_strings:Resources.pref_summary_translate}" />
                 </TableSection>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_version}">
-                    <TextCell
+                    <prefs:TextViewCell
                         x:Name="VersionPref"
                         Tapped="VersionPref_Tapped"
                         Text="{x:Static res_strings:Resources.app_name}"

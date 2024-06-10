@@ -15,9 +15,8 @@
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     xmlns:weather="clr-namespace:SimpleWeather.WeatherData;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.title_dev_settings}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
@@ -50,7 +49,7 @@
                 </TableSection>
                 <TableSection Title="Misc">
                     <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />
-                    <TextCell x:Name="LogsCell" Text="Save Logs" />
+                    <prefs:TextViewCell x:Name="LogsCell" Text="Save Logs" />
                 </TableSection>
             </TableRoot>
         </TableView>

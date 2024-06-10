@@ -10,7 +10,15 @@ public partial class IconRadioPreference : ContentView
     public String Key { get; private set; }
 
     private IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
-    private bool IsPremiumIcon => !ExtrasService.IsIconPackSupported(Key);
+
+    private bool IsPremiumIcon
+    {
+        get => (bool)GetValue(IsPremiumIconProperty);
+        set => SetValue(IsPremiumIconProperty, value);
+    }
+
+    private static readonly BindableProperty IsPremiumIconProperty =
+        BindableProperty.Create(nameof(IsPremiumIcon), typeof(bool), typeof(IconRadioPreference), false);
 
     public IconRadioPreference()
     {
@@ -34,6 +42,7 @@ public partial class IconRadioPreference : ContentView
     {
         IconPreference.Text = provider.DisplayName;
         Key = provider.Key;
+        IsPremiumIcon = !ExtrasService.IsIconPackSupported(Key);
 
         IconContainer.Children.Clear();
         foreach (var icon in PREVIEW_ICONS)

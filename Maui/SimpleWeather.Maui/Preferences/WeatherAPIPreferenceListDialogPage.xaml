@@ -7,23 +7,29 @@
     xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{Binding Text}"
     x:DataType="local:ListViewCell"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
-                                      Dark={StaticResource DarkSurface}}"
     main:AppShell.AppBarIsVisible="True">
 
     <local:PreferenceListDialogPage.Resources>
         <converters:WeatherProviderPremiumVisibilityConverter x:Key="premiumApiConv" />
         <DataTemplate x:DataType="local:PreferenceListItemViewModel" x:Key="WeatherAPIItemTemplate">
             <local:TransparentViewCell>
-                <Grid Margin="0,2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <RadioButton Grid.Column="0" IsChecked="{Binding IsChecked, Mode=TwoWay}" VerticalOptions="Center" />
+                <Grid Margin="{OnPlatform MacCatalyst='0,2,16,2', Default='0,2'}" ColumnDefinitions="Auto,*,Auto"
+                      VerticalOptions="Center">
+                    <Border Grid.Column="0" Stroke="Transparent"
+                            VerticalOptions="Center" WidthRequest="48">
+                        <Image IsVisible="{Binding Value, Converter={StaticResource premiumApiConv}}"
+                               HorizontalOptions="Center">
+                            <Image.Source>
+                                <matIcons:MaterialIcon
+                                    Size="24"
+                                    Symbol="Star"
+                                    Color="Gold" />
+                            </Image.Source>
+                        </Image>
+                    </Border>
                     <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
                         <Label
                             FontSize="Default"
@@ -35,14 +41,19 @@
                             Text="{Binding Detail}"
                             VerticalOptions="Center" />
                     </VerticalStackLayout>
-                    <Image Grid.Column="2" IsVisible="{Binding Value, Converter={StaticResource premiumApiConv}}" VerticalOptions="Center">
-                        <Image.Source>
-                            <matIcons:MaterialIcon
-                                Size="24"
-                                Symbol="Star"
-                                Color="Gold" />
-                        </Image.Source>
-                    </Image>
+                    <Border Grid.Column="2" HeightRequest="36" WidthRequest="36"
+                            Stroke="Transparent">
+                        <Image IsVisible="{Binding IsChecked, Mode=TwoWay}"
+                                VerticalOptions="Center" HorizontalOptions="Center"
+                                Margin="8">
+                            <Image.Source>
+                                <matIcons:MaterialIcon
+                                    Size="24"
+                                    Glyph="&#xe5ca;"
+                                    Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                            </Image.Source>
+                        </Image>
+                    </Border>
                 </Grid>
             </local:TransparentViewCell>
         </DataTemplate>

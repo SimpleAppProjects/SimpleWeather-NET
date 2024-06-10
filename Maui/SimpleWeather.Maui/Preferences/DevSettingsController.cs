@@ -30,7 +30,7 @@ namespace SimpleWeather.Maui.Preferences
         public void OnCreatePreferences(TableSection section)
         {
             section.Add(
-                new TextCell()
+                new TextViewCell()
                 {
                     Text = "Developer settings",
                     AutomationId = KEY_DEVSETTINGS

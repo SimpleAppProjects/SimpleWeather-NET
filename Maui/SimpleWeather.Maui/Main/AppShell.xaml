@@ -37,13 +37,13 @@
 
     <Shell.Resources>
         <Style x:Key="MobileAppShellTabBarStyle" TargetType="simpleControls:TabBar">
-            <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="IconColor" Value="{AppThemeBinding Light='#8f8a8b', Dark='#767474'}" />
+            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light='#8f8a8b', Dark='#767474'}" />
             <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="DesignLanguage" Value="{OnIdiom Phone='Material3', Default='Fluent'}" />
+            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}" />
+            <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light='#208f8a8b', Dark='#20767474'}" />
+            <Setter Property="DesignLanguage" Value="Cupertino" />
         </Style>
         <Style x:Key="DefaultAppShellTabBarStyle" TargetType="simpleControls:TabBar">
             <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
@@ -52,7 +52,7 @@
             <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
             <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
             <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="DesignLanguage" Value="{OnIdiom Phone='Material3', Default='Fluent'}" />
+            <Setter Property="DesignLanguage" Value="Fluent" />
         </Style>
         <x:Array x:Key="DesktopTabItems" Type="{x:Type BaseShellItem}">
             <ShellContent
@@ -133,12 +133,12 @@
                 BackButtonTitle="{x:Static res_strings:Resources.label_back}"
                 BackButtonVisible="False"
                 BackTapped="ShellAppBar_BackTapped"
-                BarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
-                                                     Dark={StaticResource DarkSurface}}"
+                BarBackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground},
+                                                     Dark={StaticResource DarkPageBackground}}"
                 BarTextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                Dark={StaticResource DarkOnSurface}}"
-                BorderColor="{AppThemeBinding Light={StaticResource LightAppBarBorder},
-                                              Dark={StaticResource DarkAppBarBorder}}"
+                BorderColor="{AppThemeBinding Light={StaticResource LightPageBackground},
+                                              Dark={StaticResource DarkPageBackground}}"
                 BorderHeight="{OnPlatform iOS=1,
                                           MacCatalyst=1,
                                           Default=0}" />

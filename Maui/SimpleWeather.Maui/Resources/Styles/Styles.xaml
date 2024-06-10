@@ -482,11 +482,11 @@
     </Style>
 
     <Style TargetType="TimePicker">
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray900}, Dark={StaticResource White}}" />
+        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource SimpleBlue}, Dark={StaticResource SimpleBlueLight}}" />
         <Setter Property="BackgroundColor" Value="Transparent" />
         <Setter Property="FontFamily" Value="OpenSansRegular" />
         <Setter Property="FontSize" Value="14" />
-        <Setter Property="MinimumHeightRequest" Value="44" />
+        <Setter Property="MinimumHeightRequest" Value="0" />
         <Setter Property="MinimumWidthRequest" Value="44" />
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
@@ -494,7 +494,7 @@
                     <VisualState x:Name="Normal" />
                     <VisualState x:Name="Disabled">
                         <VisualState.Setters>
-                            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource Gray300}, Dark={StaticResource Gray600}}" />
+                            <Setter Property="TextColor" Value="{AppThemeBinding Light='#30000000', Dark='#30FFFFFF'}" />
                         </VisualState.Setters>
                     </VisualState>
                 </VisualStateGroup>
@@ -549,6 +549,24 @@
         <Setter Property="SelectedTextColor" Value="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}" />
         <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+    </Style>
+
+    <Style TargetType="controls:PickerButton">
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="BorderColor" Value="Transparent" />
+        <Setter Property="BorderWidth" Value="0" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="MinimumHeightRequest" Value="0" />
+        <Setter Property="HorizontalOptions" Value="End" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="Padding" Value="4,0" />
+        <Setter Property="ImageSource">
+            <Setter.Value>
+                <matIcons:MaterialIcon Glyph="&#xe5d7;" Color="{TemplateBinding TextColor}" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ContentLayout" Value="Right, 4" />
     </Style>
 
     <Style x:Key="ClickableImageStyle" TargetType="Image">

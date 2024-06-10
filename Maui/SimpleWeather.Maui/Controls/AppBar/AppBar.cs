@@ -466,7 +466,7 @@ namespace SimpleWeather.Maui.Controls.AppBar
             {
                 Color = BorderColor,
                 HeightRequest = BorderHeight,
-                Opacity = 0.5
+                Opacity = 1
             };
 
             _contentContainer.Children.Add(_backContainer);

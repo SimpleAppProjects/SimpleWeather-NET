@@ -12,7 +12,7 @@ public partial class Settings_Features : ContentPage
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
 
         SettingsTable.UpdateCellColors(
-            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
             LightPrimary as Color, DarkPrimary as Color);
 
         SettingsTable.Root

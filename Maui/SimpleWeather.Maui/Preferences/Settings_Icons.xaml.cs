@@ -35,10 +35,7 @@ public partial class Settings_Icons : ContentPage
 
             foreach (var provider in providers)
             {
-                var radioBtn = new IconRadioPreference(provider.Value)
-                {
-                    Padding = new Thickness(0, 10, 0, 10),
-                };
+                var radioBtn = new IconRadioPreference(provider.Value);
 
                 IconRadioContainer.Children.Add(radioBtn);
 

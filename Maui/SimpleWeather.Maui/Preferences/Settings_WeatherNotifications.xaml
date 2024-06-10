@@ -13,9 +13,8 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_category_notification}"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}"
     main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
@@ -44,21 +43,9 @@
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
                     <prefs:SwitchCell x:Name="DailyNotifPref" Text="{x:Static res_strings:Resources.not_channel_name_dailynotification}" />
-                    <ViewCell>
-                        <VerticalStackLayout Padding="16,0">
-                            <Label
-                                Margin="0,12,0,0"
-                                FontSize="18"
-                                Text="{x:Static res_strings:Resources.pref_title_time}" />
-                            <TimePicker
-                                x:Name="DailyNotifTimePref"
-                                Margin="0,8,0,0"
-                                ios:TimePicker.UpdateMode="Immediately"
-                                HorizontalOptions="Fill"
-                                IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}"
-                                VerticalOptions="Center" />
-                        </VerticalStackLayout>
-                    </ViewCell>
+                    <prefs:TimePickerViewCell x:Name="DailyNotifTimePref" Text="{x:Static res_strings:Resources.pref_title_time}"
+                                              IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}"
+                                              PreferenceKey="{x:Static settings:SettingsManager.KEY_DAILYNOTIFICATIONTIME}" />
                 </TableSection>
             </TableRoot>
         </TableView>

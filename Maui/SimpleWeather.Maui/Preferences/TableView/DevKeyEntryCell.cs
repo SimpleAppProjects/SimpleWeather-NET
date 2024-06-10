@@ -6,7 +6,7 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
 
-public partial class DevKeyEntryCell : TextCell
+public partial class DevKeyEntryCell : TextViewCell
 {
     public string API
     {
@@ -45,6 +45,6 @@ public partial class DevKeyEntryCell : TextCell
             diag.Close();
         };
 
-        App.Current.CurrentPage?.ShowPopup(keyDialog);
+        keyDialog.Show();
     }
 }

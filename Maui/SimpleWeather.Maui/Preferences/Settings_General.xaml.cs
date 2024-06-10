@@ -70,11 +70,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         RestoreSettings();
 
-        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
-        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
-        SettingsTable.UpdateCellColors(
-            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
-            LightPrimary as Color, DarkPrimary as Color);
+        UpdateSettingsTableTheme();
 
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
@@ -197,7 +193,18 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
             {
                 AboutSection.Add(PremiumPref);
             }
+
+            UpdateSettingsTableTheme();
         });
+    }
+
+    private void UpdateSettingsTableTheme()
+    {
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+        SettingsTable.UpdateCellColors(
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
+            LightPrimary as Color, DarkPrimary as Color);
     }
 
     private void RestoreAPISettings()
@@ -764,8 +771,9 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
     private async void TextCell_Tapped(object sender, EventArgs e)
     {
-        var cell = sender as TextCell;
-        if (cell.CommandParameter is Type pageType)
+        var commandParam = ((sender as TextCell)?.CommandParameter) ?? ((sender as TextViewCell)?.CommandParameter);
+
+        if (commandParam is Type pageType)
         {
             if (pageType == typeof(Settings_Units))
             {
@@ -803,14 +811,14 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
                 }
             }
         }
-        else if (cell.CommandParameter is Uri uri)
+        else if (commandParam is Uri uri)
         {
             this.RunCatching(async () =>
             {
                 return await Browser.Default.OpenAsync(uri);
             });
         }
-        else if (cell is DialogCell dialogCell && Equals(SettingsManager.KEY_APIKEY, dialogCell.PreferenceKey))
+        else if (sender is DialogCell dialogCell && Equals(SettingsManager.KEY_APIKEY, dialogCell.PreferenceKey))
         {
             ShowKeyEntryPopup();
         }
@@ -819,12 +827,6 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
     private void ShowKeyEntryPopup()
     {
         var keyPopup = new KeyEntryPopup(APIPref.SelectedItem?.ToString());
-
-        var deviceDisplay = DeviceDisplay.Current;
-        keyPopup.Size = new Size(
-            width: Math.Min(420, 0.7 * (deviceDisplay.MainDisplayInfo.Width / deviceDisplay.MainDisplayInfo.Density)),
-            height: Math.Min(360, deviceDisplay.MainDisplayInfo.Height / deviceDisplay.MainDisplayInfo.Density)
-        );
 
         keyPopup.PrimaryButtonClick += async (s, e) =>
         {
@@ -865,15 +867,15 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
 
         keyPopup.SecondaryButtonClick += (s, e) =>
         {
-            keyPopup.Close(false);
+            keyPopup.Close();
         };
 
-        this.ShowPopup(keyPopup);
+        keyPopup.Show();
     }
 
     private Cell CreatePremiumPreference()
     {
-        return new TextCell()
+        return new TextViewCell()
         {
             CommandParameter = typeof(PremiumPage),
             Text = ResExtras.pref_title_premium,

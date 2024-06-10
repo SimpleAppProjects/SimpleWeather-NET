@@ -22,6 +22,7 @@
         Map = 0xe55b,
         ExpandLess = 0xe5ce,
         ExpandMore = 0xe5cf,
+        UnfoldMore = 0xe5d7,
         Edit = 0xe3c9,
         Add = 0xe145,
         AddCircle = 0xe147,

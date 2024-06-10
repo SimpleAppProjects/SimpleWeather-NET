@@ -13,10 +13,9 @@
     xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
     xmlns:system="using:System"
     xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
+    BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_alerts}"
-    main:AppShell.AppBarIsVisible="True"
-    BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                      Dark={StaticResource DarkBackground}}">
+    main:AppShell.AppBarIsVisible="True">
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
@@ -44,26 +43,26 @@
             <TableRoot>
                 <TableSection Title="{x:Static res_strings:Resources.pref_title_alerts}">
                     <prefs:SwitchCell x:Name="AlertPref" Text="{x:Static res_strings:Resources.pref_summary_alerts}" />
-                    <prefs:ListViewCell
+                    <prefs:PickerViewCell
                         x:Name="MinAlertSeverityPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_MINALERTSEVERITY}"
                         Text="{x:Static res_strings:Resources.pref_title_minalertseverity}">
-                        <prefs:ListViewCell.Items>
+                        <prefs:PickerViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_all}" Value="-1" />
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_moderate}" Value="1" />
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_severe}" Value="2" />
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_extreme}" Value="3" />
                             </m:List>
-                        </prefs:ListViewCell.Items>
-                    </prefs:ListViewCell>
+                        </prefs:PickerViewCell.Items>
+                    </prefs:PickerViewCell>
                     <prefs:SwitchCell x:Name="PoPChancePref" Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
-                    <prefs:ListViewCell
+                    <prefs:PickerViewCell
                         x:Name="PoPChancePctPref"
                         IsEnabled="{Binding Source={x:Reference PoPChancePref}, Path=On, Mode=OneWay}"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_POPCHANCEPCT}"
                         Text="{x:Static res_strings:Resources.label_chance}">
-                        <prefs:ListViewCell.Items>
+                        <prefs:PickerViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
                                 <prefs:PreferenceListItem Display="&gt;= 40%" Value="40" />
                                 <prefs:PreferenceListItem Display="&gt;= 50%" Value="50" />
@@ -72,8 +71,8 @@
                                 <prefs:PreferenceListItem Display="&gt;= 80%" Value="80" />
                                 <prefs:PreferenceListItem Display="&gt;= 90%" Value="90" />
                             </m:List>
-                        </prefs:ListViewCell.Items>
-                    </prefs:ListViewCell>
+                        </prefs:PickerViewCell.Items>
+                    </prefs:PickerViewCell>
                 </TableSection>
             </TableRoot>
         </TableView>

@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using epj.ProgressBar.Maui;
+using MauiIcons.Cupertino;
+using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Controls.Compatibility.Hosting;
 using Microsoft.Maui.Controls.Handlers.Compatibility;
@@ -57,6 +59,7 @@ public static class MauiProgram
                 handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
                 handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
+                handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
 #endif
@@ -65,6 +68,8 @@ public static class MauiProgram
             .UseSimpleShell()
             .UseSimpleToolkit()
             .UseSegmentedControl()
+            .UseMaterialMauiIcons()
+            .UseCupertinoMauiIcons()
             //.ConfigureContainer()
             //.ConfigureGraphicsControls(DrawableType.Fluent)
             ;

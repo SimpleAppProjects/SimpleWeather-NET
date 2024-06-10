@@ -34,13 +34,14 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
         App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
         SettingsTable.UpdateCellColors(
-            Colors.Black, Colors.White, Colors.DimGray, Colors.LightGray,
+            Colors.Black, Colors.White, Color.Parse("#767676"), Color.Parse("#a2a2a2"),
             LightPrimary as Color, DarkPrimary as Color);
 
         // Event Listeners
         this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         DailyNotifPref.OnChanged += DailyNotifPref_OnChanged;
-        DailyNotifTimePref.PropertyChanged += DailyNotifTimePref_PropertyChanged;
+
+        WeakReferenceMessenger.Default.Register(this);
     }
 
     private void RestoreSettings()
@@ -96,11 +97,27 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
 
     public void Receive(SettingsChangedMessage message)
     {
-        switch (message.Value.PreferenceKey)
+        switch (message?.Value?.PreferenceKey)
         {
-        }
+            case SettingsManager.KEY_DAILYNOTIFICATIONTIME:
+                {
+                    SettingsManager.DailyNotificationTime = (TimeSpan) message.Value.NewValue;
 
-        RestoreSettings();
+                    if (SettingsManager.DailyNotificationEnabled)
+                    {
+#if __IOS__
+                        UpdaterTaskUtils.RescheduleDailyNotificationTask();
+
+                        // Schedule notification anyway as task is not guaranteed
+                        DailyNotificationTask.ScheduleDailyNotification();
+#endif
+                    }
+                }
+                break;
+            default:
+                RestoreSettings();
+                break;
+        }
     }
 
     private async void DailyNotifPref_OnChanged(object sender, ToggledEventArgs e)
@@ -159,24 +176,6 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
             // Unregister task
             UpdaterTaskUtils.EnableDailyNotificationTask(false);
 #endif
-        }
-    }
-
-    private void DailyNotifTimePref_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(DailyNotifTimePref.Time))
-        {
-            SettingsManager.DailyNotificationTime = DailyNotifTimePref.Time;
-
-            if (SettingsManager.DailyNotificationEnabled)
-            {
-#if __IOS__
-                UpdaterTaskUtils.RescheduleDailyNotificationTask();
-
-                // Schedule notification anyway as task is not guaranteed
-                DailyNotificationTask.ScheduleDailyNotification();
-#endif
-            }
         }
     }
 }

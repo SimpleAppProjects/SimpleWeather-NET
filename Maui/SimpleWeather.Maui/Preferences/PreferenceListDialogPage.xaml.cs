@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.Messaging;
@@ -34,6 +35,18 @@ namespace SimpleWeather.Maui.Preferences
             });
             this.PreferenceListView.SelectedItem = selectedItem;
             this.PreferenceListView.ItemSelected += PreferenceListView_ItemSelected;
+
+            this.PreferenceListView.Loaded += (s, e) =>
+            {
+                if (PreferenceListView.ItemsSource?.OfType<object>()?.Count() is int count)
+                {
+                    (PreferenceListView.Parent as View).HeightRequest = ((PreferenceListView.RowHeight > 0 ? PreferenceListView.RowHeight : 48) * count) + (count * 0.5);
+                }
+                else
+                {
+                    (PreferenceListView.Parent as View).HeightRequest = -1;
+                }
+            };
         }
 
         private async void PreferenceListView_ItemSelected(object sender, SelectedItemChangedEventArgs e)

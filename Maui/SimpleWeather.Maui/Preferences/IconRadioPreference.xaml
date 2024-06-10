@@ -4,37 +4,46 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons">
+    xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+    BackgroundColor="{AppThemeBinding Light='White', Dark='#1b1b1b'}">
     <ContentView.GestureRecognizers>
         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
     </ContentView.GestureRecognizers>
 
-    <HorizontalStackLayout VerticalOptions="Center">
-        <RadioButton
-            x:Name="PreferenceRadioButton"
-            CheckedChanged="PreferenceRadioButton_CheckedChanged"
-            HorizontalOptions="Start"
-            MinimumWidthRequest="35"
-            VerticalOptions="Center" />
-        <VerticalStackLayout>
-            <Label
-                x:Name="IconPreference"
-                Padding="5"
-                FontSize="16" />
-            <HorizontalStackLayout x:Name="IconContainer">
-                <controls:IconControl WeatherIcon="&#xf00d;" />
-            </HorizontalStackLayout>
-        </VerticalStackLayout>
-        <Image
-            Margin="16,0,0,0"
-            IsVisible="{x:Bind IsPremiumIcon, Mode=OneWay}"
-            VerticalOptions="Center">
-            <Image.Source>
-                <matIcons:MaterialIcon
-                    Size="48"
-                    Symbol="Star"
-                    Color="Gold" />
-            </Image.Source>
-        </Image>
-    </HorizontalStackLayout>
+    <Grid RowDefinitions="Auto,Auto">
+        <HorizontalStackLayout Padding="16,4,4,0">
+            <RadioButton
+                x:Name="PreferenceRadioButton"
+                CheckedChanged="PreferenceRadioButton_CheckedChanged"
+                HorizontalOptions="Start"
+                MinimumWidthRequest="35"
+                VerticalOptions="End" />
+            <VerticalStackLayout>
+                <Label
+                    x:Name="IconPreference"
+                    Padding="5"
+                    FontSize="16" />
+                <HorizontalStackLayout x:Name="IconContainer">
+                    <controls:IconControl WeatherIcon="&#xf00d;" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+            <Image
+                Margin="16,0,0,0"
+                IsVisible="{x:Bind IsPremiumIcon, Mode=OneWay}"
+                VerticalOptions="End">
+                <Image.Source>
+                    <matIcons:MaterialIcon
+                        Size="24"
+                        Symbol="Star"
+                        Color="Gold" />
+                </Image.Source>
+            </Image>
+        </HorizontalStackLayout>
+        <BoxView Grid.Row="1"
+                 Margin="0,20,0,0"
+                 HeightRequest="1"
+                 Color="{AppThemeBinding Light='#20000000', Dark='#20FFFFFF'}"
+                 VerticalOptions="End"
+                 HorizontalOptions="Fill" />
+    </Grid>
 </ContentView>
