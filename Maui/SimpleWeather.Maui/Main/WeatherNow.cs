@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Markup;
+﻿using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Maui.Controls.Shapes;
 using SimpleWeather.Common.Controls;
@@ -8,6 +8,7 @@ using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.DataBinding;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Utils;
@@ -18,7 +19,10 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
@@ -54,8 +58,6 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     public WeatherNow()
     {
-        InitializeComponent();
-
         AnalyticsLogger.LogEvent("WeatherNow");
 
         Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
@@ -65,7 +67,9 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         this.Unloaded += WeatherNow_Unloaded;
 
         BindingContext = WNowViewModel;
+        Title = ResStrings.label_nav_weathernow;
 
+        Initialize();
         InitControls();
     }
 
@@ -265,152 +269,6 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 }
                 break;
         }
-    }
-
-    private void InitControls()
-    {
-        // Refresh toolbar item
-        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
-        {
-            ToolbarItems.Add(CreateRefreshToolbarButton());
-        }
-
-        // Condition Panel
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-            {
-                this.Title = null;
-                Shell.SetTitleView(this, CreateClockToolbar());
-
-                ListLayout.Add(
-                    CreateMobileConditionPanel()
-                    .Row(0)
-                );
-            }
-            else
-            {
-                if (Utils.FeatureSettings.BackgroundImage)
-                {
-                    MainGrid.Children.Insert(0,
-                        new Image()
-                        {
-                            Aspect = Aspect.AspectFill,
-                            IsVisible = Utils.FeatureSettings.BackgroundImage
-                        }
-                        .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
-                            BindingMode.OneWay, source: WNowViewModel
-                        )
-                        .Row(0)
-                        .RowSpan(3)
-                        .Apply(it =>
-                        {
-                            it.Loaded += BackgroundOverlay_Loaded;
-                            it.PropertyChanged += BackgroundOverlay_PropertyChanged;
-                            it.PropertyChanging += BackgroundOverlay_PropertyChanging;
-                        })
-                    );
-
-                    MainGrid.Insert(1,
-                        new Grid()
-                        {
-                            IsVisible = Utils.FeatureSettings.BackgroundImage,
-                            Background = new LinearGradientBrush(
-                                new GradientStopCollection()
-                                {
-                                    new GradientStop(Color.FromRgba(0, 0, 0, 0x50), 0),
-                                    new GradientStop(Color.FromRgba(0, 0, 0, 0xFF), 1),
-                                },
-                                new Point(0.5, 0),
-                                new Point(0.5, 1)
-                            )
-                        }
-                        .Row(0)
-                        .RowSpan(3)
-                        .Apply(it => GradientOverlay = it)
-                    );
-                }
-
-                ListLayout.Add(
-                    CreateDesktopConditionPanel()
-                    .Row(0)
-                );
-            }
-        }
-
-        // Add Grid
-        var GridLayout = new Grid()
-        {
-            RowDefinitions =
-            {
-                // Forecast
-                new RowDefinition(GridLength.Auto),
-                // Hourly Forecast
-                new RowDefinition(GridLength.Auto),
-                // Charts
-                new RowDefinition(GridLength.Auto),
-                // Details
-                new RowDefinition(GridLength.Auto),
-                // Sun Phase
-                new RowDefinition(GridLength.Auto),
-                // Radar
-                new RowDefinition(GridLength.Auto),
-                // Credits
-                new RowDefinition(GridLength.Auto),
-            },
-            Children =
-            {
-                // Forecast Panel
-                CreateForecastPanel()
-                    .Row(0),
-                // HourlyForecast Panel
-                CreateHourlyForecastPanel()
-                    .Row(1),
-                // Charts
-                CreateChartsPanel()
-                    .Row(2),
-                // Details
-                CreateDetailsPanel()
-                    .Row(3),
-                // Sun Phase
-                CreateSunPhasePanel()
-                    .Row(4),
-                // Radar
-                CreateRadarPanel()
-                    .Row(5),
-                // Weather Credit
-                CreateWeatherCredit()
-                    .Row(6)
-            }
-        }.Apply(it =>
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(0);
-            else
-                it.Paddings(16, 4, 16, 0);
-        });
-        var GridContainer = new Border()
-        {
-            Content = GridLayout,
-            Stroke = null,
-            StrokeThickness = 0,
-            StrokeShape = new RoundRectangle()
-            {
-                CornerRadius = new CornerRadius(8, 8, 0, 0)
-            }
-        }.Apply(it =>
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-            {
-                it.BackgroundColor = Colors.Transparent;
-            }
-            else
-            {
-                it.DynamicResource(Border.BackgroundColorProperty, "RegionColor");
-            }
-        });
-        ListLayout.Add(GridContainer, row: 1);
-
-        AdjustViewsLayout(0);
     }
 
     protected override void OnSizeAllocated(double width, double height)
@@ -646,11 +504,13 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     private async void GotoDetailsPage(bool IsHourly, int Position)
     {
-        await Navigation.PushAsync(new WeatherDetailsPage(new DetailsPageArgs()
+        var detailsPage = new WeatherDetailsPage(new DetailsPageArgs()
         {
             IsHourly = IsHourly,
             ScrollToPosition = Position
-        }));
+        });
+
+        await Navigation.PushAsync(detailsPage);
     }
 
     private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)

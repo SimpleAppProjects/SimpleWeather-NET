@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using CommunityToolkit.Maui.Behaviors;
 
 namespace SimpleWeather.Maui.Controls.AppBar
 {
@@ -144,6 +145,11 @@ namespace SimpleWeather.Maui.Controls.AppBar
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnAppBarItemTapped;
             GestureRecognizers.Add(tapGestureRecognizer);
+
+            Behaviors.Add(new TouchBehavior()
+            {
+                PressedScale = 0.95
+            });
         }
 
         void UpdateIsEnabled()

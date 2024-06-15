@@ -3,15 +3,19 @@
     x:Class="SimpleWeather.Maui.Main.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:android="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:appbar="clr-namespace:SimpleWeather.Maui.Controls.AppBar"
     xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
+    xmlns:mauiIcons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:maticons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:settings="clr-namespace:SimpleWeather.Maui.Preferences"
     xmlns:simpleControls="clr-namespace:SimpleToolkit.SimpleShell.Controls;assembly=SimpleToolkit.SimpleShell.Controls"
+    xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
     xmlns:simpleShell="clr-namespace:SimpleToolkit.SimpleShell;assembly=SimpleToolkit.SimpleShell"
     xmlns:system="clr-namespace:System;assembly=mscorlib"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
@@ -54,6 +58,13 @@
             <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
             <Setter Property="DesignLanguage" Value="Fluent" />
         </Style>
+        <Style x:Key="DefaultAppShellSideBarStyle" TargetType="controls:SideBar">
+            <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+        </Style>
         <x:Array x:Key="DesktopTabItems" Type="{x:Type BaseShellItem}">
             <ShellContent
                 Title="{x:Static res_strings:Resources.label_nav_weathernow}"
@@ -79,6 +90,8 @@
                 Icon="{maticons:MaterialIcon Symbol=StarBorder,
                                              Size=24}"
                 Route="locations" />
+        </x:Array>
+        <x:Array x:Key="FooterTabItems" Type="{x:Type BaseShellItem}">
             <ShellContent
                 Title="{x:Static res_strings:Resources.title_activity_settings}"
                 ContentTemplate="{DataTemplate settings:Settings_General}"
@@ -112,23 +125,67 @@
                                              Size=24}"
                 Route="settings" />
         </x:Array>
+        <x:Array x:Key="TabletTabItems" Type="{x:Type BaseShellItem}">
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_weathernow}"
+                ContentTemplate="{DataTemplate local:WeatherNow}"
+                Icon="{maticons:MaterialIcon Symbol=LightMode,
+                                             Size=24}"
+                Route="weather" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_alerts}"
+                ContentTemplate="{DataTemplate local:WeatherAlertPage}"
+                Icon="{maticons:MaterialIcon Symbol=Error,
+                                             Size=24}"
+                Route="alerts" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_radar}"
+                ContentTemplate="{DataTemplate local:WeatherRadarPage}"
+                Icon="{maticons:MaterialIcon Symbol=Radar,
+                                             Size=24}"
+                Route="radar" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.label_nav_locations}"
+                ContentTemplate="{DataTemplate local:LocationsPage}"
+                Icon="{maticons:MaterialIcon Symbol=StarBorder,
+                                             Size=24}"
+                Route="locations" />
+            <ShellContent
+                Title="{x:Static res_strings:Resources.title_activity_settings}"
+                ContentTemplate="{DataTemplate settings:Settings_General}"
+                Icon="{maticons:MaterialIcon Symbol=Settings,
+                                             Size=24}"
+                Route="settings" />
+        </x:Array>
     </Shell.Resources>
 
     <!--  Default content  -->
     <ShellContent ContentTemplate="{DataTemplate local:WeatherNow}" Route="root" />
 
     <simpleShell:SimpleShell.Content>
-        <Grid x:Name="MainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
-                                                                  Dark={StaticResource DarkBackground}}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+        <Grid x:Name="MainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground},
+                                                                  Dark={StaticResource DarkPageBackground}}"
+              RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
+
+            <controls:SideBar
+                x:Name="ShellSideBar"
+                Grid.Column="0" Grid.RowSpan="3"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
+                SelectionBackgroundColor="{AppThemeBinding Light='#10000000', Dark='#20FFFFFF'}"
+                ExpandButtonHeight="52"
+                CollapsedWidth="52"
+                ExpandedWidth="420"
+                Items="{StaticResource DesktopTabItems}"
+                FooterItems="{StaticResource FooterTabItems}"
+                SelectedItem="{Binding Source={x:Reference _Shell}, Path=CurrentShellContent}"
+                ItemSelected="ShellSideBar_ItemSelected"
+                Style="{StaticResource DefaultAppShellSideBarStyle}"
+                IsVisible="{OnIdiom Default=false, Desktop=true}"/>
 
             <appbar:AppBar
                 x:Name="ShellAppBar"
                 Title="{x:Static res_strings:Resources.app_name}"
+                Grid.Column="1"
                 Grid.Row="0"
                 BackButtonTitle="{x:Static res_strings:Resources.label_back}"
                 BackButtonVisible="False"
@@ -143,12 +200,13 @@
                                           MacCatalyst=1,
                                           Default=0}" />
 
-            <Grid IsClippedToBounds="True" Grid.Row="1">
+            <Grid IsClippedToBounds="True" Grid.Row="1" Grid.Column="1">
                 <simpleShell:SimpleNavigationHost x:Name="NavHostContainer" />
             </Grid>
 
             <simpleControls:TabBar
                 x:Name="ShellTabBar"
+                Grid.Column="1"
                 Grid.Row="2"
                 IsScrollable="False"
                 ItemSelected="ShellTabBar_ItemSelected"
@@ -156,13 +214,15 @@
                 SelectedItem="{Binding Source={x:Reference _Shell}, Path=CurrentShellContent}"
                 ShowButtonWhenMoreItemsDoNotFit="True"
                 ShowMenuOnMoreButtonClick="True"
-                Style="{OnIdiom Default={StaticResource DefaultAppShellTabBarStyle},
-                                Phone={StaticResource MobileAppShellTabBarStyle}}">
+                Style="{OnIdiom Default={StaticResource MobileAppShellTabBarStyle},
+                                Desktop={StaticResource DefaultAppShellTabBarStyle}}"
+                IsVisible="{OnIdiom Default=true, Desktop=false}">
                 <simpleControls:TabBar._Items>
                     <OnIdiom
                         x:TypeArguments="collections:IEnumerable"
-                        Default="{StaticResource DesktopTabItems}"
-                        Phone="{StaticResource MobileTabItems}" />
+                        Default="{StaticResource MobileTabItems}"
+                        Tablet="{StaticResource TabletTabItems}"
+                        Desktop="{StaticResource DesktopTabItems}" />
                 </simpleControls:TabBar._Items>
             </simpleControls:TabBar>
         </Grid>

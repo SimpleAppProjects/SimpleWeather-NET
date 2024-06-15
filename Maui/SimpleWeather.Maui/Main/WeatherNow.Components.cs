@@ -14,6 +14,8 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Controls.Flow;
 using SimpleWeather.Maui.Controls.Graphs;
+using SimpleWeather.Maui.Converters;
+using SimpleWeather.Maui.DataBinding;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Utils;
@@ -38,13 +40,283 @@ namespace SimpleWeather.Maui.Main;
 public partial class WeatherNow
 {
     // Views
+    private Grid MainGrid { get; set; }
+    private RowDefinition BannerRow { get; set; }
+    private RefreshView RefreshLayout { get; set; }
+    private ScrollView MainViewer { get; set; }
+    private Grid ListLayout { get; set; }
+    private ActivityIndicator ContentRing { get; set; }
+    private Grid BannerContainer { get; set; }
+    private Grid SnackbarContainer { get; set; }
     private Label CurTemp { get; set; }
     private IconControl WeatherBox { get; set; }
     private Border RadarWebViewContainer { get; set; }
     private VisualElement GradientOverlay { get; set; }
     private VisualElement HourlyForecastPanel { get; set; }
 
-    private readonly HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
+    // Resources
+    private readonly DetailsItemGridFilterConverter detailsFilter = new();
+    private readonly GraphDataGridLengthConverter graphDataGridLengthConv = new();
+    private readonly GraphDataVisibilityConverter graphDataConv = new();
+
+    private readonly HashSet<VisualElement> ResizeElements = new();
+
+    private void Initialize()
+    {
+        App.Current.Resources.TryGetValue("inverseBoolConverter", out var inverseBoolConverter);
+        App.Current.Resources.TryGetValue("LightPrimary", out var LightPrimary);
+        App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
+
+        this.Content = MainGrid = new Grid()
+        {
+            RowDefinitions =
+            {
+                new RowDefinition(GridLength.Auto),
+                // BannerRow
+                new RowDefinition(GridLength.Auto)
+                    .Let(it => BannerRow = it),
+                new RowDefinition(GridLength.Star),
+            },
+            Children =
+            {
+                // RefreshLayout
+                new RefreshView()
+                {
+                    Content = new ScrollView()
+                    {
+                        Orientation = ScrollOrientation.Vertical,
+                        Content = new Grid()
+                        {
+                            HorizontalOptions = LayoutOptions.Center,
+                            VerticalOptions = LayoutOptions.Center,
+                            RowDefinitions =
+                            {
+                                new RowDefinition(GridLength.Auto),
+                                new RowDefinition(GridLength.Auto),
+                            }
+                        }
+                        .Apply(it =>
+                        {
+                            it.SizeChanged += ListLayout_SizeChanged;
+
+                            ListLayout = it;
+                        })
+                    }
+                    .Bind<ScrollView, WeatherUiModel, bool>(ScrollView.IsVisibleProperty, path: nameof(WNowViewModel.Weather), mode: BindingMode.OneWay, source: WNowViewModel,
+                        convert: (model) =>
+                        {
+                            return model?.Location != null;
+                        }
+                    )
+                    .Apply(it =>
+                    {
+                        MainViewer = it;
+                    })
+                }
+                .AppThemeBinding(RefreshView.RefreshColorProperty, LightPrimary, DarkPrimary)
+                .Bind<RefreshView, WeatherNowState, bool>(RefreshView.IsRefreshingProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
+                    convert: (uiState) =>
+                    {
+                        return uiState?.IsLoading ?? true;
+                    }, targetNullValue: true, fallbackValue: true
+                )
+                .Bind<RefreshView, WeatherNowState, bool>(RefreshView.IsVisibleProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
+                    convert: WeatherNowBinding.IsViewVisible
+                )
+                .Row(2)
+                .Apply(it =>
+                {
+                    it.Refreshing += RefreshBtn_Clicked;
+
+                    RefreshLayout = it;
+                }),
+                // ContentRing
+                new ActivityIndicator()
+                .RowSpan(3)
+                .Center()
+                .Bind<ActivityIndicator, WeatherNowState, bool>(ActivityIndicator.IsRunningProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
+                    convert: WeatherNowBinding.IsLoadingRingActive, targetNullValue: true, fallbackValue: true
+                )
+                .Apply(it =>
+                {
+                    ContentRing = it;
+                }),
+                // BannerContainer
+                new Grid()
+                {
+                    VerticalOptions = LayoutOptions.Start,
+                    ZIndex = 0
+                }
+                .Row(1)
+                .Apply(it =>
+                {
+                    BannerContainer = it;
+                }),
+                // SnackbarContainer
+                new Grid()
+                {
+                    VerticalOptions = LayoutOptions.End,
+                    ZIndex = 1
+                }
+                .Row(0)
+                .RowSpan(3)
+                .Apply(it =>
+                {
+                    SnackbarContainer = it;
+                })
+            }
+        };
+    }
+
+    private void InitControls()
+    {
+        // Refresh toolbar item
+        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        {
+            ToolbarItems.Add(CreateRefreshToolbarButton());
+        }
+
+        // Condition Panel
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+            {
+                this.Title = null;
+                Shell.SetTitleView(this, CreateClockToolbar());
+
+                ListLayout.Add(
+                    CreateMobileConditionPanel()
+                    .Row(0)
+                );
+            }
+            else
+            {
+                if (Utils.FeatureSettings.BackgroundImage)
+                {
+                    MainGrid.Children.Insert(0,
+                        new Image()
+                        {
+                            Aspect = Aspect.AspectFill,
+                            IsVisible = Utils.FeatureSettings.BackgroundImage
+                        }
+                        .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
+                            BindingMode.OneWay, source: WNowViewModel
+                        )
+                        .Row(0)
+                        .RowSpan(3)
+                        .Apply(it =>
+                        {
+                            it.Loaded += BackgroundOverlay_Loaded;
+                            it.PropertyChanged += BackgroundOverlay_PropertyChanged;
+                            it.PropertyChanging += BackgroundOverlay_PropertyChanging;
+                        })
+                    );
+
+                    MainGrid.Insert(1,
+                        new Grid()
+                        {
+                            IsVisible = Utils.FeatureSettings.BackgroundImage,
+                            Background = new LinearGradientBrush(
+                                new GradientStopCollection()
+                                {
+                                    new GradientStop(Color.FromRgba(0, 0, 0, 0x50), 0),
+                                    new GradientStop(Color.FromRgba(0, 0, 0, 0xFF), 1),
+                                },
+                                new Point(0.5, 0),
+                                new Point(0.5, 1)
+                            )
+                        }
+                        .Row(0)
+                        .RowSpan(3)
+                        .Apply(it => GradientOverlay = it)
+                    );
+                }
+
+                ListLayout.Add(
+                    CreateDesktopConditionPanel()
+                    .Row(0)
+                );
+            }
+        }
+
+        // Add Grid
+        var GridLayout = new Grid()
+        {
+            RowDefinitions =
+            {
+                // Forecast
+                new RowDefinition(GridLength.Auto),
+                // Hourly Forecast
+                new RowDefinition(GridLength.Auto),
+                // Charts
+                new RowDefinition(GridLength.Auto),
+                // Details
+                new RowDefinition(GridLength.Auto),
+                // Details Extra
+                new RowDefinition(GridLength.Auto),
+                // Sun Phase
+                new RowDefinition(GridLength.Auto),
+                // Radar
+                new RowDefinition(GridLength.Auto),
+                // Credits
+                new RowDefinition(GridLength.Auto),
+            },
+            Children =
+            {
+                // Forecast Panel
+                CreateForecastPanel()
+                    .Row(0),
+                // HourlyForecast Panel
+                CreateHourlyForecastPanel()
+                    .Row(1),
+                // Charts
+                CreateChartsPanel()
+                    .Row(2),
+                // Details
+                CreateDetailsPanel()
+                    .Row(3),
+                CreateDetailsExtraPanel()
+                    .Row(4),
+                // Sun Phase
+                CreateSunPhasePanel()
+                    .Row(5),
+                // Radar
+                CreateRadarPanel()
+                    .Row(6),
+                // Weather Credit
+                CreateWeatherCredit()
+                    .Row(7)
+            }
+        }.Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(0);
+            else
+                it.Paddings(16, 4, 16, 0);
+        });
+        var GridContainer = new Border()
+        {
+            Content = GridLayout,
+            Stroke = null,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle()
+            {
+                CornerRadius = new CornerRadius(8, 8, 0, 0)
+            }
+        }.Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+            {
+                it.BackgroundColor = Colors.Transparent;
+            }
+            else
+            {
+                it.DynamicResource(Border.BackgroundColorProperty, "RegionColor");
+            }
+        });
+        ListLayout.Add(GridContainer, row: 1);
+
+        AdjustViewsLayout(0);
+    }
 
     private ToolbarItem CreateRefreshToolbarButton()
     {
@@ -870,7 +1142,6 @@ public partial class WeatherNow
     {
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
-        Resources.TryGetValue("graphDataConv", out var graphDataConv);
 
         return new Grid()
         {
@@ -1105,8 +1376,6 @@ public partial class WeatherNow
     {
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
-        Resources.TryGetValue("graphDataConv", out var graphDataConv);
-        Resources.TryGetValue("graphDataGridLengthConv", out var graphDataGridLengthConv);
 
         return new Grid()
         {
@@ -1148,11 +1417,11 @@ public partial class WeatherNow
                     {
                         new RowDefinition()
                             .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataGridLengthConv as IValueConverter, source: ForecastView
+                                BindingMode.OneWay, graphDataGridLengthConv, source: ForecastView
                             ),
                         new RowDefinition()
                             .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataGridLengthConv as IValueConverter, source: ForecastView
+                                BindingMode.OneWay, graphDataGridLengthConv, source: ForecastView
                             ),
                     },
                     Children =
@@ -1171,7 +1440,7 @@ public partial class WeatherNow
                             it.Loaded += (s,e) =>
                             {
                                 it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                        BindingMode.OneWay, graphDataConv, source: ForecastView
                                 );
                             };
                             it.GraphViewTapped += async (s, e) =>
@@ -1193,7 +1462,7 @@ public partial class WeatherNow
                             it.Loaded += (s,e) =>
                             {
                                 it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                        BindingMode.OneWay, graphDataConv as IValueConverter, source: ForecastView
+                                        BindingMode.OneWay, graphDataConv, source: ForecastView
                                 );
                             };
                             it.GraphViewTapped += async (s, e) =>
@@ -1236,13 +1505,11 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
-        Resources.TryGetValue("detailsFilter", out var detailsFilter);
 
         return new Grid()
         {
             RowDefinitions =
             {
-                new RowDefinition(GridLength.Auto),
                 new RowDefinition(GridLength.Auto),
                 new RowDefinition(GridLength.Auto),
             },
@@ -1271,9 +1538,13 @@ public partial class WeatherNow
                     JustifyContent = FlexJustify.Center,
                 }
                 .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
-                        BindingMode.OneWay, detailsFilter as IValueConverter, source: WNowViewModel
+                        BindingMode.OneWay, detailsFilter, source: WNowViewModel
                 )                
-                .DynamicResource(BindableLayout.ItemTemplateProperty, "DetailItemTemplate")
+                .ItemTemplate(new DataTemplate(() =>
+                {
+                    return new DetailItem()
+                        .Center();
+                }))
                 .Row(1)
                 .Apply(it =>
                 {
@@ -1285,123 +1556,6 @@ public partial class WeatherNow
                                 return Utils.FeatureSettings.WeatherDetails && (bool)(collectionBooleanConverter as IValueConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
                             }
                         );
-                    };
-                }),
-                // ExtraDetailsEnabled
-                new WrapGrid()
-                {
-                    MaxColumns = 3,
-                    MinItemWidth = 340
-                }
-                .OnIdiom(WrapGrid.MaxColumnsProperty, Phone: 1, Default: 3)
-                .Apply(wrapLayout =>
-                {
-                    // UV
-                    wrapLayout.Add(
-                        new UVControl()
-                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                                    BindingMode.OneWay, source: WNowViewModel
-                            )
-                            .Apply(it =>
-                            {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
-                                        {
-                                            return Utils.FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
-                                        }
-                                    );
-                                };
-                            })
-                    );
-                    // Beaufort
-                    wrapLayout.Add(
-                        new BeaufortControl()
-                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                                    BindingMode.OneWay, source: WNowViewModel
-                            )
-                            .Apply(it =>
-                            {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
-                                        {
-                                            return Utils.FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
-                                        }
-                                    );
-                                };
-                            })
-                    );
-                    // AQIndex
-                    wrapLayout.Add(
-                        new AQIControl()
-                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                                    BindingMode.OneWay, source: WNowViewModel
-                            )
-                            .TapGesture(async () =>
-                            {
-                                await Navigation.PushAsync(new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData }));
-                            })
-                            .Apply(it =>
-                            {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
-                                        {
-                                            return Utils.FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
-                                        }
-                                    );
-                                };
-                            })
-                    );
-                    // PollenEnabled
-                    wrapLayout.Add(
-                        new PollenCountControl()
-                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                                    BindingMode.OneWay, source: WNowViewModel
-                            )
-                            .Apply(it =>
-                            {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
-                                        {
-                                            return Utils.FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
-                                        }
-                                    );
-                                };
-                            })
-                    );
-                    // MoonPhase
-                    wrapLayout.Add(
-                        new MoonPhaseControl()
-                            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                                    BindingMode.OneWay, source: WNowViewModel
-                            )
-                            .Apply(it =>
-                            {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
-                                        {
-                                            return Utils.FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
-                                        }
-                                    );
-                                };
-                            })
-                    );
-                })
-                .Row(2)
-                .Apply(it =>
-                {
-                    it.Loaded += (s, e) =>
-                    {
-                        it.IsVisible = Utils.FeatureSettings.ExtraDetailsEnabled;
                     };
                 })
             }
@@ -1421,6 +1575,155 @@ public partial class WeatherNow
 
             ResizeElements.Add(it);
         });
+    }
+
+    private WrapGrid CreateDetailsExtraPanel()
+    {
+        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
+        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
+        App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
+        App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
+
+        // ExtraDetailsEnabled
+        return new WrapGrid()
+        {
+            MaxColumns = 3,
+            MinItemWidth = 340
+        }
+        .OnIdiom(WrapGrid.MaxColumnsProperty, Phone: 1, Default: 3)
+        .Apply(wrapLayout =>
+        {
+            // UV
+            wrapLayout.Add(CreateUVControl());
+            // Beaufort
+            wrapLayout.Add(CreateBeaufortControl());
+            // AQIndex
+            wrapLayout.Add(CreateAQIControl());
+            // PollenEnabled
+            wrapLayout.Add(CreatePollenCountControl());
+            // MoonPhase
+            wrapLayout.Add(CreateMoonPhaseControl());
+        })
+        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        .Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                it.Padding(8, 0);
+            else
+                it.Padding(16, 0);
+
+            it.Loaded += (s, e) =>
+            {
+                it.IsVisible = Utils.FeatureSettings.ExtraDetailsEnabled;
+            };
+
+            ResizeElements.Add(it);
+        });
+    }
+
+    private UVControl CreateUVControl()
+    {
+        return new UVControl()
+            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                    BindingMode.OneWay, source: WNowViewModel
+            )
+            .Apply(it =>
+            {
+                it.Loaded += (s, e) =>
+                {
+                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
+                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                        {
+                            return Utils.FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
+                        }
+                    );
+                };
+            });
+    }
+
+    private BeaufortControl CreateBeaufortControl()
+    {
+        return new BeaufortControl()
+            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                    BindingMode.OneWay, source: WNowViewModel
+            )
+            .Apply(it =>
+            {
+                it.Loaded += (s, e) =>
+                {
+                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
+                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                        {
+                            return Utils.FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
+                        }
+                    );
+                };
+            });
+    }
+
+    private AQIControl CreateAQIControl()
+    {
+        return new AQIControl()
+            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                    BindingMode.OneWay, source: WNowViewModel
+            )
+            .TapGesture(async () =>
+            {
+                var weatherAqiPage = new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData });
+                await Navigation.PushAsync(weatherAqiPage);
+            })
+            .Apply(it =>
+            {
+                it.Loaded += (s, e) =>
+                {
+                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
+                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                        {
+                            return Utils.FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
+                        }
+                    );
+                };
+            });
+    }
+
+    private PollenCountControl CreatePollenCountControl()
+    {
+        return new PollenCountControl()
+            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                    BindingMode.OneWay, source: WNowViewModel
+            )
+            .Apply(it =>
+            {
+                it.Loaded += (s, e) =>
+                {
+                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
+                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                        {
+                            return Utils.FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
+                        }
+                    );
+                };
+            });
+    }
+
+    private MoonPhaseControl CreateMoonPhaseControl()
+    {
+        return new MoonPhaseControl()
+            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                    BindingMode.OneWay, source: WNowViewModel
+            )
+            .Apply(it =>
+            {
+                it.Loaded += (s, e) =>
+                {
+                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
+                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                        {
+                            return Utils.FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                        }
+                    );
+                };
+            });
     }
 
     private Grid CreateSunPhasePanel()

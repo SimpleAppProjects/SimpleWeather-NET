@@ -110,7 +110,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
     {
         base.OnNavigated(args);
 
-        if (ShellTabBar.Items?.Any() == true)
+        if (DeviceInfo.Idiom != DeviceIdiom.Desktop == ShellTabBar.Items?.Any() == true)
         {
             var currentPageType = this.CurrentPage.GetType();
 
@@ -135,6 +135,31 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
                 ShellTabBar.SelectedItem = ShellTabBar.Items.FirstOrDefault(sc => sc.Route == "settings");
             }
         }
+        else if (ShellSideBar.AllItems?.Any() == true)
+        {
+            var currentPageType = this.CurrentPage.GetType();
+
+            if (currentPageType == typeof(WeatherNow) || currentPageType == typeof(WeatherDetailsPage))
+            {
+                ShellSideBar.SelectedItem = ShellSideBar.AllItems.FirstOrDefault(sc => sc.Route == "weather");
+            }
+            else if (currentPageType == typeof(WeatherAlertPage))
+            {
+                ShellSideBar.SelectedItem = ShellSideBar.AllItems.FirstOrDefault(sc => sc.Route == "alerts");
+            }
+            else if (currentPageType == typeof(WeatherRadarPage))
+            {
+                ShellSideBar.SelectedItem = ShellSideBar.AllItems.FirstOrDefault(sc => sc.Route == "radar");
+            }
+            else if (currentPageType == typeof(LocationsPage))
+            {
+                ShellSideBar.SelectedItem = ShellSideBar.AllItems.FirstOrDefault(sc => sc.Route == "locations");
+            }
+            else if (currentPageType == typeof(Settings_General))
+            {
+                ShellSideBar.SelectedItem = ShellSideBar.AllItems.FirstOrDefault(sc => sc.Route == "settings");
+            }
+        }
 
         UpdateAppBar();
 
@@ -143,12 +168,22 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         (NavHostContainer as IView)?.InvalidateMeasure();
     }
 
-    private async void ShellTabBar_ItemSelected(object sender, SimpleToolkit.SimpleShell.Controls.TabItemSelectedEventArgs e)
+    private void ShellTabBar_ItemSelected(object sender, SimpleToolkit.SimpleShell.Controls.TabItemSelectedEventArgs e)
     {
-        if (e.ShellItem.Route.Contains("weather"))
+        OnShellItemSelected(e.ShellItem);
+    }
+
+    private void ShellSideBar_ItemSelected(object sender, Controls.SideBarItemSelectedEventArgs e)
+    {
+        OnShellItemSelected(e.ShellItem);
+    }
+
+    private async void OnShellItemSelected(BaseShellItem ShellItem)
+    {
+        if (ShellItem.Route.Contains("weather"))
             await this.Navigation.PopToRootAsync(true);
-        else if (!CurrentState.Location.OriginalString.Contains(e.ShellItem.Route))
-            await this.GoToAsync($"/{e.ShellItem.Route}", true);
+        else if (!CurrentState.Location.OriginalString.Contains(ShellItem.Route))
+            await this.GoToAsync($"/{ShellItem.Route}", true);
     }
 
     private void UpdateAppBar()
