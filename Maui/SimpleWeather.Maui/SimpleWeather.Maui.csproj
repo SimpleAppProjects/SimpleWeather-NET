@@ -136,14 +136,14 @@
 		<PackageReference Include="AathifMahir.Maui.MauiIcons.Material" Version="3.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
-		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.9.0.2" />
-		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.9.0.4" />
+		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.39.0.0" />
+		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.39.0.0" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 		<PackageReference Include="com.thewizrd.StoreKit2Proxy.Maui" Version="1.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.9.0.2" />
-		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.9.0.4" />
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.39.0.0" />
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.39.0.0" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
