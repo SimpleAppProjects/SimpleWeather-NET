@@ -31,21 +31,23 @@ namespace SimpleWeather.NET.Utils
         #endregion
 
         #region Settings Keys
-        private const string KEY_BGIMAGE = "key_bgimage";
-        private const string KEY_FORECAST = "key_forecast";
-        private const string KEY_HRFORECAST = "key_hrforecast";
-        private const string KEY_CHARTS = "key_charts";
-        private const string KEY_WEATHERSUMMARY = "key_weathersummary";
-        private const string KEY_WEATHERDETAILS = "key_weatherdetails";
-        private const string KEY_UVINDEX = "key_uvindex";
-        private const string KEY_BEAUFORT = "key_beaufort";
-        private const string KEY_AQINDEX = "key_aqindex";
-        private const string KEY_MOONPHASE = "key_moonphase";
-        private const string KEY_SUNPHASE = "key_sunphase";
-        private const string KEY_RADAR = "key_radar";
-        private const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
-        private const string KEY_TILEBGIMAGE = "key_tilebgimage";
-        private const string KEY_POLLEN = "key_pollen";
+        public const string KEY_BGIMAGE = "key_bgimage";
+        public const string KEY_FORECAST = "key_forecast";
+        public const string KEY_HRFORECAST = "key_hrforecast";
+        public const string KEY_CHARTS = "key_charts";
+        public const string KEY_WEATHERSUMMARY = "key_weathersummary";
+        public const string KEY_WEATHERDETAILS = "key_weatherdetails";
+        public const string KEY_UVINDEX = "key_uvindex";
+        public const string KEY_BEAUFORT = "key_beaufort";
+        public const string KEY_AQINDEX = "key_aqindex";
+        public const string KEY_MOONPHASE = "key_moonphase";
+        public const string KEY_SUNPHASE = "key_sunphase";
+        public const string KEY_RADAR = "key_radar";
+        public const string KEY_LOCPANELBGIMAGE = "key_locpanelbgimage";
+        public const string KEY_TILEBGIMAGE = "key_tilebgimage";
+        public const string KEY_POLLEN = "key_pollen";
+
+        private const string KEY_FEATURE_ORDER = "key_feature_order";
         #endregion Settings Keys
 
         public static event FeatureSettingsChangedEventHandler OnFeatureSettingsChanged;
@@ -204,6 +206,29 @@ namespace SimpleWeather.NET.Utils
         private static void SetPollenEnabled(bool value)
         {
             featureSettings.SetValue(KEY_POLLEN, value);
+        }
+
+        public static bool IsFeatureEnabled(string key)
+        {
+            return featureSettings.GetValue(key, true);
+        }
+
+        public static void SetFeatureEnabled(string key, bool enabled)
+        {
+            featureSettings.SetValue(key, enabled);
+        }
+
+        public static ISet<string> GetFeatureOrder()
+        {
+            return featureSettings.GetValue<string>(KEY_FEATURE_ORDER, null)?.Split(',')?.ToHashSet();
+        }
+
+        public static void SetFeatureOrder(IEnumerable<string> list)
+        {
+            featureSettings.SetValue(KEY_FEATURE_ORDER, list?.Aggregate((s1, s2) =>
+            {
+                return s1 + ',' + s2;
+            }));
         }
     }
 }

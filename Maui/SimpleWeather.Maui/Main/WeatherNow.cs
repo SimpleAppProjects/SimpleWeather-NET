@@ -15,6 +15,7 @@ using SimpleWeather.Maui.Utils;
 using SimpleWeather.Maui.WeatherAlerts;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Radar;
+using SimpleWeather.NET.Utils;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
@@ -23,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using FeatureSettings = SimpleWeather.NET.Utils.FeatureSettings;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
@@ -60,7 +62,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
     {
         AnalyticsLogger.LogEvent("WeatherNow");
 
-        Utils.FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
+        FeatureSettings.OnFeatureSettingsChanged += FeatureSettings_OnFeatureSettingsChanged;
         SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
         RadarProvider.RadarProviderChanged += RadarProvider_RadarProviderChanged;
         this.Loaded += WeatherNow_Loaded;
@@ -172,7 +174,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             case nameof(WNowViewModel.UiState):
                 var uiState = WNowViewModel.UiState;
 
-                if (Utils.FeatureSettings.WeatherRadar)
+                if (FeatureSettings.WeatherRadar)
                 {
                     WNowViewModel.Weather?.LocationCoord?.Let(coords =>
                     {
@@ -515,7 +517,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     private void RadarProvider_RadarProviderChanged(RadarProviderChangedEventArgs e)
     {
-        if (Utils.FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
+        if (FeatureSettings.WeatherRadar && RadarWebViewContainer != null)
         {
             radarViewProvider?.OnDestroyView();
             radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
@@ -527,6 +529,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
     {
         OnAppThemeChanged(App.Current.CurrentTheme);
         App.Current.RequestedThemeChanged += WeatherNow_RequestedThemeChanged;
+        UpdateViewOrder();
     }
 
     private void WeatherNow_Unloaded(object sender, EventArgs e)
@@ -555,7 +558,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     private void UpdateControlTheme()
     {
-        UpdateControlTheme(Utils.FeatureSettings.BackgroundImage);
+        UpdateControlTheme(FeatureSettings.BackgroundImage);
     }
 
     private void UpdateControlTheme(bool backgroundEnabled)

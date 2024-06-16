@@ -4,7 +4,7 @@ using SimpleWeather.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using FeatureSettings = SimpleWeather.Maui.Utils.FeatureSettings;
+using FeatureSettings = SimpleWeather.NET.Utils.FeatureSettings;
 
 namespace SimpleWeather.Maui.Converters
 {

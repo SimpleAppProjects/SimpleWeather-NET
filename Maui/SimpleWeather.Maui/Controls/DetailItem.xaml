@@ -12,7 +12,7 @@
              WidthRequest="{OnIdiom Default=150, Desktop=175, Phone=110}">
     <Border x:Name="ItemBorder"
             Margin="{OnIdiom Phone=4, Default=8}"
-            BackgroundColor="{AppThemeBinding Light={StaticResource LightPopoverBackground}, Dark={StaticResource DarkPopoverBackground}}"
+            BackgroundColor="{AppThemeBinding Light='#B3FDFCFF', Dark='#B31B1B1B'}"
             StrokeThickness="1"
             Stroke="{mrkup:SolidColorBrush Alpha=0.1, Color={AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}}">
         <Border.StrokeShape>
@@ -43,8 +43,8 @@
                 ShowAsMonochrome="False"
                 WeatherIcon="{Binding Icon, Mode=OneWay}"
                 Rotation="{Binding IconRotation, Mode=OneWay}"
-                HeightRequest="{OnIdiom Default=50, Phone=35}"
-                WidthRequest="{OnIdiom Default=50, Phone=35}"
+                HeightRequest="{OnIdiom Default=40, Desktop=50, Phone=35}"
+                WidthRequest="{OnIdiom Default=40, Desktop=50, Phone=35}"
                 IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
                 IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}" />
             <controls:ViewBox

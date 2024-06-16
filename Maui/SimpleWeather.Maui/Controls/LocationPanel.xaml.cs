@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Utils;
 
 namespace SimpleWeather.Maui.Controls;
 
@@ -72,7 +73,7 @@ public partial class LocationPanel : ContentView
 
     private void UpdateControlTheme()
     {
-        UpdateControlTheme(Utils.FeatureSettings.LocationPanelBackgroundImage);
+        UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage);
     }
 
     private void UpdateControlTheme(bool backgroundEnabled)
@@ -98,7 +99,7 @@ public partial class LocationPanel : ContentView
     {
         var bgImage = sender as Image;
         bgImage.PropertyChanged += BgImage_PropertyChanged;
-        UpdateControlTheme(Utils.FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
+        UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
     }
 
     private void BackgroundOverlay_Unloaded(object sender, EventArgs e)
@@ -112,7 +113,7 @@ public partial class LocationPanel : ContentView
         var bgImage = sender as Image;
         if (e.PropertyName == nameof(bgImage.Source))
         {
-            UpdateControlTheme(Utils.FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
+            UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
         }
     }
 

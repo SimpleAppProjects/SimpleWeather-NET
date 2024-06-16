@@ -14,6 +14,7 @@ using Microsoft.Maui.Platform;
 using Plugin.Maui.SegmentedControl;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
+using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Weather_API.Keys;
@@ -60,6 +61,7 @@ public static class MauiProgram
                 handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
+                handlers.AddHandler<ReorderableCollectionView, ReorderableCollectionViewHandler<ReorderableCollectionView>>();
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
 #endif

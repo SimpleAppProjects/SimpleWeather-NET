@@ -33,6 +33,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Timers;
 using UIKit;
+using FeatureSettings = SimpleWeather.NET.Utils.FeatureSettings;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
@@ -45,6 +46,7 @@ public partial class WeatherNow
     private RefreshView RefreshLayout { get; set; }
     private ScrollView MainViewer { get; set; }
     private Grid ListLayout { get; set; }
+    private Grid GridLayout { get; set; }
     private ActivityIndicator ContentRing { get; set; }
     private Grid BannerContainer { get; set; }
     private Grid SnackbarContainer { get; set; }
@@ -190,13 +192,13 @@ public partial class WeatherNow
             }
             else
             {
-                if (Utils.FeatureSettings.BackgroundImage)
+                if (FeatureSettings.BackgroundImage)
                 {
                     MainGrid.Children.Insert(0,
                         new Image()
                         {
                             Aspect = Aspect.AspectFill,
-                            IsVisible = Utils.FeatureSettings.BackgroundImage
+                            IsVisible = FeatureSettings.BackgroundImage
                         }
                         .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
                             BindingMode.OneWay, source: WNowViewModel
@@ -214,7 +216,7 @@ public partial class WeatherNow
                     MainGrid.Insert(1,
                         new Grid()
                         {
-                            IsVisible = Utils.FeatureSettings.BackgroundImage,
+                            IsVisible = FeatureSettings.BackgroundImage,
                             Background = new LinearGradientBrush(
                                 new GradientStopCollection()
                                 {
@@ -239,7 +241,7 @@ public partial class WeatherNow
         }
 
         // Add Grid
-        var GridLayout = new Grid()
+        GridLayout = new Grid()
         {
             RowDefinitions =
             {
@@ -251,7 +253,15 @@ public partial class WeatherNow
                 new RowDefinition(GridLength.Auto),
                 // Details
                 new RowDefinition(GridLength.Auto),
-                // Details Extra
+                // UV
+                new RowDefinition(GridLength.Auto),
+                // Beaufort
+                new RowDefinition(GridLength.Auto),
+                // AQIndex
+                new RowDefinition(GridLength.Auto),
+                // PollenEnabled
+                new RowDefinition(GridLength.Auto),
+                // MoonPhase
                 new RowDefinition(GridLength.Auto),
                 // Sun Phase
                 new RowDefinition(GridLength.Auto),
@@ -264,27 +274,51 @@ public partial class WeatherNow
             {
                 // Forecast Panel
                 CreateForecastPanel()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_FORECAST)
                     .Row(0),
                 // HourlyForecast Panel
                 CreateHourlyForecastPanel()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_HRFORECAST)
                     .Row(1),
                 // Charts
                 CreateChartsPanel()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_CHARTS)
                     .Row(2),
                 // Details
                 CreateDetailsPanel()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_WEATHERDETAILS)
                     .Row(3),
-                CreateDetailsExtraPanel()
+                // UV
+                CreateUVControl()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_UVINDEX)
                     .Row(4),
+                // Beaufort
+                CreateBeaufortControl()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_BEAUFORT)
+                    .Row(5),
+                // AQIndex
+                CreateAQIControl()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_AQINDEX)
+                    .Row(6),
+                // PollenEnabled
+                CreatePollenCountControl()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_POLLEN)
+                    .Row(7),
+                // MoonPhase
+                CreateMoonPhaseControl()
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_MOONPHASE)
+                    .Row(8),
                 // Sun Phase
                 CreateSunPhasePanel()
-                    .Row(5),
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_SUNPHASE)
+                    .Row(9),
                 // Radar
                 CreateRadarPanel()
-                    .Row(6),
+                    .Apply(it => it.StyleId = FeatureSettings.KEY_RADAR)
+                    .Row(10),
                 // Weather Credit
                 CreateWeatherCredit()
-                    .Row(7)
+                    .Row(11)
             }
         }.Apply(it =>
         {
@@ -316,6 +350,34 @@ public partial class WeatherNow
         ListLayout.Add(GridContainer, row: 1);
 
         AdjustViewsLayout(0);
+    }
+
+    private void UpdateViewOrder()
+    {
+        var orderableFeatures = FeatureSettings.GetFeatureOrder();
+
+        var index = 0;
+
+        if (orderableFeatures?.Any() == true)
+        {
+            var featureViewMap = orderableFeatures.ToDictionary(f => f, f =>
+            {
+                return GridLayout.Cast<Element>().First(v => v.StyleId == f);
+            });
+
+            orderableFeatures.ForEach(feature =>
+            {
+                featureViewMap[feature].Row(index++);
+            });
+        }
+        else
+        {
+            // Use default order
+            GridLayout.Cast<View>().ForEach(v =>
+            {
+                v.Row(index++);
+            });
+        }
     }
 
     private ToolbarItem CreateRefreshToolbarButton()
@@ -557,14 +619,14 @@ public partial class WeatherNow
                 {
                     it.Loaded += (s, e) =>
                     {
-                        it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                        it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                     };
 
                     WNowViewModel.PropertyChanged += (s, e) =>
                     {
                         if (e.PropertyName == nameof(WNowViewModel.ImageData))
                         {
-                            it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                            it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                         }
                     };
 
@@ -573,16 +635,16 @@ public partial class WeatherNow
                         var displayInfo = DeviceDisplay.MainDisplayInfo;
                         var heightDp = displayInfo.Height / displayInfo.Density;
 
-                        if (DeviceInfo.Idiom == DeviceIdiom.Tablet || displayInfo.Orientation == DisplayOrientation.Landscape)
+                        if (displayInfo.Orientation == DisplayOrientation.Landscape)
                         {
-                            it.MaximumHeightRequest = 560;
+                            it.MaximumHeightRequest = Math.Min(480, MainGrid.Height - (110 * displayInfo.Density));
                         }
                         else
                         {
-                            it.MaximumHeightRequest = 420;
+                            it.MaximumHeightRequest = Math.Min(420, MainGrid.Height - (110 * displayInfo.Density));
                         }
 
-                        it.EnableAspectRatio = displayInfo.Orientation != DisplayOrientation.Landscape;
+                        it.EnableAspectRatio = true;
 
                         if (heightDp >= 800)
                         {
@@ -769,7 +831,7 @@ public partial class WeatherNow
                         {
                             it.Loaded += (s, e) =>
                             {
-                                it.IsVisible = Utils.FeatureSettings.WeatherSummary;
+                                it.IsVisible = FeatureSettings.WeatherSummary;
                             };
 
                             it.TapGesture(async () =>
@@ -894,13 +956,13 @@ public partial class WeatherNow
                     {
                         if (e.PropertyName == nameof(WNowViewModel.ImageData))
                         {
-                            it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                            it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                         }
                     };
 
                     it.Loaded += (s, e) =>
                     {
-                        it.IsVisible = Utils.FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
+                        it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
                     };
                 }),
                 // Condition Panel
@@ -1016,7 +1078,7 @@ public partial class WeatherNow
                         // WeatherBox
                         new IconControl()
                         {
-                            ForceDarkTheme = Utils.FeatureSettings.BackgroundImage,
+                            ForceDarkTheme = FeatureSettings.BackgroundImage,
                             HeightRequest = 108,
                             HorizontalOptions = LayoutOptions.End,
                             VerticalOptions = LayoutOptions.Center,
@@ -1061,7 +1123,7 @@ public partial class WeatherNow
                         {
                             it.Loaded += (s, e) =>
                             {
-                                it.IsVisible = Utils.FeatureSettings.WeatherSummary;
+                                it.IsVisible = FeatureSettings.WeatherSummary;
                             };
                         }),
                         // Attribution
@@ -1081,7 +1143,7 @@ public partial class WeatherNow
                             {
                                 it.Loaded += (s, e) =>
                                 {
-                                     it.IsVisible = Utils.FeatureSettings.BackgroundImage;
+                                     it.IsVisible = FeatureSettings.BackgroundImage;
                                 };
 
                                 it.Clicked += (s, e) =>
@@ -1124,7 +1186,7 @@ public partial class WeatherNow
                 {
                     Dispatcher.Dispatch(() =>
                     {
-                        if (Utils.FeatureSettings.BackgroundImage && h > 0)
+                        if (FeatureSettings.BackgroundImage && h > 0)
                         {
                             Spacer.HeightRequest = h - (ConditionPanelLayout.Height - Spacer.Height);
                         }
@@ -1210,7 +1272,7 @@ public partial class WeatherNow
                     VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView,
                     convert: (data) =>
                     {
-                        return Utils.FeatureSettings.Forecast && (bool)(graphDataConv as IValueConverter).Convert(data, typeof(bool), null, CultureInfo.InvariantCulture);
+                        return FeatureSettings.Forecast && (bool)(graphDataConv as IValueConverter).Convert(data, typeof(bool), null, CultureInfo.InvariantCulture);
                     }
                  );
             };
@@ -1358,7 +1420,7 @@ public partial class WeatherNow
                 it.Bind<Grid, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                     BindingMode.OneWay, source: ForecastView, convert: (collection) =>
                     {
-                        return Utils.FeatureSettings.HourlyForecast && (bool)((IValueConverter)collectionBooleanConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
+                        return FeatureSettings.HourlyForecast && (bool)((IValueConverter)collectionBooleanConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
                     }
                 );
             };
@@ -1485,7 +1547,7 @@ public partial class WeatherNow
                     VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView,
                     convert: (isPresent) =>
                     {
-                        return Utils.FeatureSettings.Charts && isPresent;
+                        return FeatureSettings.Charts && isPresent;
                     }
                  );
             };
@@ -1527,7 +1589,7 @@ public partial class WeatherNow
                 {
                     it.Loaded += (s, e) =>
                     {
-                        it.IsVisible = Utils.FeatureSettings.DetailsEnabled;
+                        it.IsVisible = FeatureSettings.DetailsEnabled;
                     };
                 }),
                 // WeatherDetails
@@ -1553,7 +1615,7 @@ public partial class WeatherNow
                         it.Bind<VisualElement, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
                             BindingMode.OneWay, source: WNowViewModel, convert: (collection) =>
                             {
-                                return Utils.FeatureSettings.WeatherDetails && (bool)(collectionBooleanConverter as IValueConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
+                                return FeatureSettings.WeatherDetails && (bool)(collectionBooleanConverter as IValueConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
                             }
                         );
                     };
@@ -1570,51 +1632,7 @@ public partial class WeatherNow
 
             it.Loaded += (s, e) =>
             {
-                it.IsVisible = Utils.FeatureSettings.DetailsEnabled;
-            };
-
-            ResizeElements.Add(it);
-        });
-    }
-
-    private WrapGrid CreateDetailsExtraPanel()
-    {
-        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
-        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
-        App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
-        App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
-
-        // ExtraDetailsEnabled
-        return new WrapGrid()
-        {
-            MaxColumns = 3,
-            MinItemWidth = 340
-        }
-        .OnIdiom(WrapGrid.MaxColumnsProperty, Phone: 1, Default: 3)
-        .Apply(wrapLayout =>
-        {
-            // UV
-            wrapLayout.Add(CreateUVControl());
-            // Beaufort
-            wrapLayout.Add(CreateBeaufortControl());
-            // AQIndex
-            wrapLayout.Add(CreateAQIControl());
-            // PollenEnabled
-            wrapLayout.Add(CreatePollenCountControl());
-            // MoonPhase
-            wrapLayout.Add(CreateMoonPhaseControl());
-        })
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
-        .Apply(it =>
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
-
-            it.Loaded += (s, e) =>
-            {
-                it.IsVisible = Utils.FeatureSettings.ExtraDetailsEnabled;
+                it.IsVisible = FeatureSettings.DetailsEnabled;
             };
 
             ResizeElements.Add(it);
@@ -1627,17 +1645,25 @@ public partial class WeatherNow
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
+            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .Apply(it =>
             {
+                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                    it.Padding(8, 0);
+                else
+                    it.Padding(16, 0);
+
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
                         BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                         {
-                            return Utils.FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
                         }
                     );
                 };
+
+                ResizeElements.Add(it);
             });
     }
 
@@ -1647,17 +1673,25 @@ public partial class WeatherNow
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
+            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .Apply(it =>
             {
+                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                    it.Padding(8, 0);
+                else
+                    it.Padding(16, 0);
+
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
                         BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                         {
-                            return Utils.FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
                         }
                     );
                 };
+
+                ResizeElements.Add(it);
             });
     }
 
@@ -1667,6 +1701,7 @@ public partial class WeatherNow
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
+            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .TapGesture(async () =>
             {
                 var weatherAqiPage = new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData });
@@ -1674,15 +1709,22 @@ public partial class WeatherNow
             })
             .Apply(it =>
             {
+                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                    it.Padding(8, 0);
+                else
+                    it.Padding(16, 0);
+
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                         BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                         {
-                            return Utils.FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
                         }
                     );
                 };
+
+                ResizeElements.Add(it);
             });
     }
 
@@ -1692,17 +1734,25 @@ public partial class WeatherNow
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
+            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .Apply(it =>
             {
+                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                    it.Padding(8, 0);
+                else
+                    it.Padding(16, 0);
+
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
                         BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                         {
-                            return Utils.FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
                         }
                     );
                 };
+
+                ResizeElements.Add(it);
             });
     }
 
@@ -1712,17 +1762,25 @@ public partial class WeatherNow
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
+            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .Apply(it =>
             {
+                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+                    it.Padding(8, 0);
+                else
+                    it.Padding(16, 0);
+
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
                         BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                         {
-                            return Utils.FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
                         }
                     );
                 };
+
+                ResizeElements.Add(it);
             });
     }
 
@@ -1800,7 +1858,7 @@ public partial class WeatherNow
                     VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
                     BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                     {
-                        return Utils.FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                        return FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(value?.ToString());
                     }
                 );
             };
@@ -1898,7 +1956,7 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.IsVisible = Utils.FeatureSettings.WeatherRadar;
+                it.IsVisible = FeatureSettings.WeatherRadar;
             };
 
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)

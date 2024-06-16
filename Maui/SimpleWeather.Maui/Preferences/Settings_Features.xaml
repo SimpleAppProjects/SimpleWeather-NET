@@ -3,10 +3,15 @@
     x:Class="SimpleWeather.Maui.Preferences.Settings_Features"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
+    xmlns:markup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+    xmlns:toolkitMarkup="clr-namespace:CommunityToolkit.Maui.Markup;assembly=CommunityToolkit.Maui.Markup"
+    xmlns:mauiIcons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences"
-    xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils;assembly=SimpleWeather"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_features}"
     main:AppShell.AppBarIsVisible="True">
@@ -14,68 +19,140 @@
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
 
-    <ContentPage.Resources>
-        <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
-            <Setter Property="HasUnevenRows" Value="True" />
-            <Setter Property="BackgroundColor" Value="Transparent" />
-            <Setter Property="VerticalOptions" Value="StartAndExpand" />
-        </Style>
-        <Style TargetType="prefs:CheckBoxCell">
-            <Setter Property="IsCompact" Value="True" />
-        </Style>
-    </ContentPage.Resources>
-
     <Grid>
-        <TableView
-            x:Name="SettingsTable"
-            Intent="Settings"
-            Style="{DynamicResource SettingsTableViewStyle}">
-            <TableRoot>
-                <TableSection Title="{x:Static res_strings:Resources.pref_summary_features}">
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_bgimage}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_forecast}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_hrforecast}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_charts}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_summary}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_details}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_uv}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_beaufort}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_aqindex}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.label_pollen_count}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_moonphase}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_sunphase}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_radar}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
-                    <prefs:CheckBoxCell
-                        Text="{x:Static res_strings:Resources.pref_title_feature_locpanelimg}"
-                        IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}" />
-                </TableSection>
-            </TableRoot>
-        </TableView>
+        <controls:ReorderableCollectionView Header="{x:Static res_strings:Resources.pref_summary_features}"
+                                            Footer="{x:Static res_strings:Resources.action_reset}"
+                                            IsGrouped="True" CanReorderItems="True" SelectionMode="None"
+                                            CanMixGroups="False" VerticalOptions="Fill" HorizontalOptions="Fill"
+                                            ItemsSource="{x:Bind Features, Mode=OneWay}"
+                                            LongPressed="ReorderableCollectionView_LongPressed"
+                                            ReorderCompleted="ReorderableCollectionView_ReorderCompleted">
+            <CollectionView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid RowDefinitions="*,Auto" Padding="0,24,0,0">
+                        <Label FontSize="13" Text="{Binding}" Opacity="0.6"
+                               Padding="16,4"
+                               TextTransform="Uppercase"
+                               HorizontalOptions="Start" />
+                        <BoxView HeightRequest="1" Grid.Row="1"
+                                 Color="{AppThemeBinding Light={StaticResource LightAppBarBorder}, Dark={StaticResource DarkAppBarBorder}}" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.HeaderTemplate>
+            <CollectionView.FooterTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Button Text="{Binding}"
+                                FontAttributes="Bold"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="15"
+                                Clicked="ResetButton_Clicked"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
+                                TextColor="{AppThemeBinding Light={StaticResource LightOnPrimary}, Dark={StaticResource DarkOnPrimary}}"
+                                CornerRadius="8"
+                                Margin="0,16"
+                                MinimumHeightRequest="0"
+                                MinimumWidthRequest="96"
+                                HorizontalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.FooterTemplate>
+            <CollectionView.GroupFooterTemplate>
+                <DataTemplate>
+                    <BoxView HeightRequest="1"
+                             Color="{AppThemeBinding Light={StaticResource LightAppBarBorder}, Dark={StaticResource DarkAppBarBorder}}" />
+                </DataTemplate>
+            </CollectionView.GroupFooterTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="prefs:Feature">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnItemTapped" />
+                        </Grid.GestureRecognizers>
+                        <Grid.Behaviors>
+                            <toolkit:TouchBehavior
+                                DefaultBackgroundColor="{AppThemeBinding Light=White, Dark='#1B1B1B'}"
+                                PressedBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"/>
+                        </Grid.Behaviors>
+                        <CheckBox IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
+                        <Label Grid.Column="1" Text="{Binding Title, Mode=OneWay}"
+                               VerticalOptions="Center" Padding="8,0" />
+                        <Image Grid.Column="2"
+                               Source="{mauiIcons:Material Icon=DragHandle, IconSize=24, IconColor=Black}"
+                               Margin="16,0"
+                               IsVisible="{Binding CanReorder, Mode=OneWay}">
+                            <Image.Behaviors>
+                                <toolkit:IconTintColorBehavior TintColor="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+                            </Image.Behaviors>
+                        </Image>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.Resources>
+                <prefs:FeatureGroup x:Key="OrderableFeatures" x:Name="OrderableFeatures">
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_FORECAST}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_forecast}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_HRFORECAST}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_hrforecast}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_CHARTS}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_charts}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_WEATHERDETAILS}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_details}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_UVINDEX}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_uv}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.UV, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_BEAUFORT}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_beaufort}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_AQINDEX}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_aqindex}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_POLLEN}"
+                        Title="{x:Static res_strings:Resources.label_pollen_count}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_MOONPHASE}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_moonphase}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_SUNPHASE}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_sunphase}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=TwoWay}" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_RADAR}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_radar}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
+                </prefs:FeatureGroup>
+                <prefs:FeatureGroup x:Key="NonOrderableFeatures" x:Name="NonOrderableFeatures" CanReorder="False">
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_BGIMAGE}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_bgimage}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=TwoWay}"
+                        CanReorder="False" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_WEATHERSUMMARY}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_summary}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherSummary, Mode=TwoWay}"
+                        CanReorder="False" />
+                    <prefs:Feature
+                        Key="{x:Static uwpUtils:FeatureSettings.KEY_LOCPANELBGIMAGE}"
+                        Title="{x:Static res_strings:Resources.pref_title_feature_locpanelimg}"
+                        IsEnabled="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage, Mode=TwoWay}"
+                        CanReorder="False" />
+                </prefs:FeatureGroup>
+            </CollectionView.Resources>
+        </controls:ReorderableCollectionView>
     </Grid>
 </ContentPage>
