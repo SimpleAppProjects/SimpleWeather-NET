@@ -1227,7 +1227,8 @@ public partial class WeatherNow
                 .Column(0)
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
-                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
+                .TapGesture(() => GotoDetailsPage(false)),
                 new Image()     
                 {
                     VerticalOptions = LayoutOptions.Center,
@@ -1236,6 +1237,7 @@ public partial class WeatherNow
                         Size = 24
                     }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 }
+                .TapGesture(() => GotoDetailsPage(false))
                 .Column(1)
                 .Row(0),
                 // Content
@@ -1371,7 +1373,8 @@ public partial class WeatherNow
                 .Column(0)
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
-                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
+                .TapGesture(() => GotoDetailsPage(true)),
                 new Image()
                 {
                     VerticalOptions = LayoutOptions.Center,
@@ -1380,6 +1383,7 @@ public partial class WeatherNow
                         Size = 24
                     }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 }
+                .TapGesture(() => GotoDetailsPage(true))
                 .Column(1)
                 .Row(0),
                 // Content
@@ -1461,7 +1465,11 @@ public partial class WeatherNow
                 .Column(0)
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
-                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
+                .TapGesture(async () =>
+                {
+                    await Navigation.PushAsync(new WeatherChartsPage());
+                }),
                 new Image()
                 {
                     VerticalOptions = LayoutOptions.Center,
@@ -1470,6 +1478,10 @@ public partial class WeatherNow
                         Size = 24
                     }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 }
+                .TapGesture(async () =>
+                {
+                    await Navigation.PushAsync(new WeatherChartsPage());
+                })
                 .Column(1)
                 .Row(0),
                 // Content
@@ -1899,7 +1911,11 @@ public partial class WeatherNow
                 .Column(0)
                 .Row(0)
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
-                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
+                .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
+                .TapGesture(async () =>
+                {
+                    await Navigation.PushAsync(new WeatherRadarPage());
+                }),
                 new Image()
                 {
                     VerticalOptions = LayoutOptions.Center,
@@ -1909,7 +1925,11 @@ public partial class WeatherNow
                     }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 }
                 .Column(1)
-                .Row(0),
+                .Row(0)
+                .TapGesture(async () =>
+                {
+                    await Navigation.PushAsync(new WeatherRadarPage());
+                }),
                 // Content
                 new Border()
                 {

@@ -504,7 +504,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         await Navigation.PushAsync(new WeatherAlertPage());
     }
 
-    private async void GotoDetailsPage(bool IsHourly, int Position)
+    private async void GotoDetailsPage(bool IsHourly, int Position = 0)
     {
         var detailsPage = new WeatherDetailsPage(new DetailsPageArgs()
         {
