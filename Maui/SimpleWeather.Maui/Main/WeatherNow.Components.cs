@@ -635,7 +635,11 @@ public partial class WeatherNow
                         var displayInfo = DeviceDisplay.MainDisplayInfo;
                         var heightDp = displayInfo.Height / displayInfo.Density;
 
-                        if (displayInfo.Orientation == DisplayOrientation.Landscape)
+                        if (DeviceInfo.Idiom == DeviceIdiom.Phone)
+                        {
+                            it.MaximumHeightRequest = 420;
+                        }
+                        else if (displayInfo.Orientation == DisplayOrientation.Landscape)
                         {
                             it.MaximumHeightRequest = Math.Min(480, MainGrid.Height - (110 * displayInfo.Density));
                         }
