@@ -250,6 +250,7 @@ ModelManifest.xml
 /Maui/SimpleWeather.Maui.AppWidget/DerivedData
 /Maui/StoreKit2Proxy
 /Maui/WidgetCenterProxy
+/Maui/SimpleWeather.Maui/GoogleService-Info*.plist
 /Maui/SimpleWeather.Maui/MaciOS/GoogleService-Info*.plist
 
 # XCode
