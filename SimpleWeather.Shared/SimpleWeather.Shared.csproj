@@ -28,7 +28,7 @@
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
 
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
-    <PackageReference Include="Sentry" Version="4.6.2" />
+    <PackageReference Include="Sentry" Version="4.7.0" />
   </ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
 		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="10.24.0" />
@@ -45,7 +45,7 @@
 		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="10.24.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
-    <PackageReference Include="Sentry.Maui" Version="4.6.2" />
+    <PackageReference Include="Sentry.Maui" Version="4.7.0" />
 	</ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <!-- Images -->
@@ -71,10 +71,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
     <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseAuthentication.net" Version="4.1.0" />
     <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseDatabase.net" Version="4.2.0" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net8.0-maccatalyst' And '$(TargetFramework)' != 'net8.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.3" />
-    <PackageReference Condition="'$(TargetFramework)' != 'net8.0-maccatalyst' And '$(TargetFramework)' != 'net8.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.3" />
-    <PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Analytics" Version="5.0.3-SNAPSHOT" />
-    <PackageReference Condition="'$(TargetFramework)' == 'net8.0-maccatalyst' Or '$(TargetFramework)' == 'net8.0-ios'" Include="Microsoft.AppCenter.Crashes" Version="5.0.3-SNAPSHOT" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.5" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NodaTime" Version="3.1.11" />
@@ -90,7 +88,7 @@
     <PackageReference Include="ZCS.DataContractResolver" Version="1.2.1" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.0.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings\AQIndex.Designer.cs">
