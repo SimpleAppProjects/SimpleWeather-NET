@@ -45,7 +45,7 @@ namespace SimpleWeather.Utils
 #if WINDOWS
             analytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties);
 #elif __IOS__
-            FirebaseAnalytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties.ToDictionary(k => k.Key as object, v => v.Value as object));
+            FirebaseAnalytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties?.ToDictionary(k => k.Key as object, v => v.Value as object));
 #endif
 #endif
         }
