@@ -2,7 +2,7 @@
 
 namespace SimpleWeather.Utils
 {
-    public static partial class FeatureSettings
+    public static partial class UpdateSettings
     {
         private const string KEY_UPDATEAVAILABLE = "key_updateavailable";
 

@@ -603,11 +603,13 @@ public partial class WeatherNow
                                         });
                                     };
 
+                                    it.IsVisible = WNowViewModel.ImageData != null;
                                     it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
                                     WNowViewModel.PropertyChanged += (s, e) =>
                                     {
                                         if (e.PropertyName == nameof(WNowViewModel.ImageData))
                                         {
+                                            it.IsVisible = WNowViewModel.ImageData != null;
                                             it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
                                         }
                                     };

@@ -106,7 +106,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                             if (isMandatory)
                             {
                                 CreateUpdateToast();
-                                FeatureSettings.IsUpdateAvailable = true;
+                                UpdateSettings.IsUpdateAvailable = true;
                             }
                             return;
                         }
@@ -123,7 +123,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                         // Retry when this task runs again
                         if (isMandatory)
                         {
-                            FeatureSettings.IsUpdateAvailable = true;
+                            UpdateSettings.IsUpdateAvailable = true;
                         }
                         return;
                     default:
@@ -159,7 +159,7 @@ namespace SimpleWeather.NET.BackgroundTasks
                     // Retry when this task runs again
                     if (isMandatory)
                     {
-                        FeatureSettings.IsUpdateAvailable = true;
+                        UpdateSettings.IsUpdateAvailable = true;
                     }
                     return;
                 default:

@@ -2,11 +2,13 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using ExCSS;
 using Microsoft.Maui;
 #if __ANDROID__
 using Microsoft.Maui.Controls.Compatibility.Platform.Android;
 #endif
 using Microsoft.Maui.Storage;
+using SimpleWeather.Helpers;
 
 namespace SimpleWeather.Utils
 {
@@ -21,6 +23,10 @@ namespace SimpleWeather.Utils
             else if (filePath.StartsWith("maui-appx:"))
             {
                 return await FileSystem.AppPackageFileExistsAsync(filePath.ReplaceFirst("maui-appx://", ""));
+            }
+            else if (filePath.StartsWith("ios:"))
+            {
+                return File.Exists(Path.Combine(ApplicationDataHelper.GetRootDataFolderPath(), filePath.ReplaceFirst("ios://", "")));
             }
             else
             {

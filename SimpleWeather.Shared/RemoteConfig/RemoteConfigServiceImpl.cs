@@ -4,17 +4,20 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Threading.Tasks;
+#if __IOS__
+using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
+#endif
 
 namespace SimpleWeather.RemoteConfig
 {
     public sealed partial class RemoteConfigServiceImpl : IRemoteConfigService
     {
-        private const String DEFAULT_WEATHERPROVIDER_KEY = "default_weather_provider";
+        private const string DEFAULT_WEATHERPROVIDER_KEY = "default_weather_provider";
 
         // Shared Settings
         private readonly SettingsContainer RemoteConfigContainer = new SettingsContainer("firebase_remoteconfig");
 
-        private String GetConfigString(String weatherAPI, bool useFallback = false)
+        private string GetConfigString(string weatherAPI, bool useFallback = false)
         {
             if (useFallback)
             {
@@ -25,7 +28,12 @@ namespace SimpleWeather.RemoteConfig
 #endif
             }
 
+#if __IOS__
+            var remoteConfStr = FirebaseRemoteConfig.SharedInstance?.GetConfigValue(weatherAPI)?.StringValue;
+            return remoteConfStr ??
+#else
             return RemoteConfigContainer.GetValue<string>(weatherAPI) ??
+#endif
 #if __IOS__
                 ConfigiOS.ResourceManager.GetString(weatherAPI);
 #else
@@ -33,14 +41,18 @@ namespace SimpleWeather.RemoteConfig
 #endif
         }
 
-        public void SetConfigString(String key, String value)
+        private void SetConfigString(string key, string value)
         {
             RemoteConfigContainer.SetValue(key, value);
         }
 
         public string GetLocationProvider(string weatherAPI)
         {
+#if __IOS__
+            string configJson = FirebaseRemoteConfig.SharedInstance.GetConfigValue(weatherAPI)?.StringValue;
+#else
             string configJson = GetConfigString(weatherAPI);
+#endif
 
             var config = JSONParser.Deserializer<WeatherProviderConfig>(configJson);
 
@@ -164,6 +176,8 @@ namespace SimpleWeather.RemoteConfig
                         SetConfigString(prop.Key, prop.Value);
                     }
                 }
+#elif __IOS__
+                await FirebaseRemoteConfig.SharedInstance?.FetchAndActivateAsync();
 #else
                 var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__

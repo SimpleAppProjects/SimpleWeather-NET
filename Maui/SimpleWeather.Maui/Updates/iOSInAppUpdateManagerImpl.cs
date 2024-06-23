@@ -4,6 +4,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using UIKit;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
 
 namespace SimpleWeather.Maui.Updates
 {
@@ -37,7 +38,7 @@ namespace SimpleWeather.Maui.Updates
 
                     if (appStoreVersion > currentVersion)
                     {
-                        FeatureSettings.IsUpdateAvailable = true;
+                        UpdateSettings.IsUpdateAvailable = true;
 
                         // Check priority of update
                         var remoteUpdateInfo = await GetRemoteUpdateInfo();
@@ -106,6 +107,12 @@ namespace SimpleWeather.Maui.Updates
         {
             return Task.Run(async () =>
             {
+                var config = FirebaseRemoteConfig.SharedInstance;
+                await config?.FetchAndActivateAsync();
+
+                var json = config.GetConfigValue("ios_updates")?.StringValue;
+                return JSONParser.Deserializer<List<UpdateInfo>>(json)?.AsEnumerable();
+#if false
                 var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
                 var config = await db.Child("ios_updates").OnceAsync<object>();
 
@@ -118,6 +125,7 @@ namespace SimpleWeather.Maui.Updates
                 }
 
                 return null;
+#endif
             });
         }
 

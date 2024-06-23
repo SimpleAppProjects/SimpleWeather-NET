@@ -1,9 +1,17 @@
-﻿using Firebase.Auth;
-using Firebase.Database;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if __IOS__
+using Firebase.CloudFirestore;
+using FirebaseFirestore = Firebase.CloudFirestore.Firestore;
+using FirebaseStorage = Firebase.Storage.Storage;
+using FirebaseDatabase = Firebase.Database.Database;
+using FirebaseAuth = Firebase.Auth.Auth;
+#else
+using Firebase.Auth;
+using Firebase.Database;
+#endif
 
 namespace SimpleWeather.Firebase
 {
@@ -11,6 +19,86 @@ namespace SimpleWeather.Firebase
     {
         private static bool sHasSignInFailed = false;
 
+#if __IOS__
+        private static bool sSetupFirebaseDB = false;
+
+        public static async Task<FirebaseFirestore> GetFirestoreDB()
+        {
+            await CheckSignIn();
+
+            var db = FirebaseFirestore.SharedInstance;
+            db.Settings = new FirestoreSettings()
+            {
+                // Min: 1048576 bytes; should be -1 for unlimited but getting 0
+                CacheSizeBytes = Math.Min(FirestoreSettings.CacheSizeUnlimited, -1),
+                PersistenceEnabled = true,
+                SslEnabled = true
+            };
+            return db;
+        }
+
+        public static async Task<FirebaseStorage> GetFirebaseStorage()
+        {
+            await CheckSignIn();
+
+            var stor = FirebaseStorage.DefaultInstance;
+            stor.MaxDownloadRetryTime = TimeSpan.FromHours(1).TotalSeconds; // time in seconds
+            return stor;
+        }
+
+        public static async Task<FirebaseDatabase> GetFirebaseDB()
+        {
+            await CheckSignIn();
+
+            var db = FirebaseDatabase.DefaultInstance;
+            if (!sSetupFirebaseDB)
+            {
+                db.PersistenceEnabled = true;
+                db.PersistenceCacheSizeBytes = 2 * 1024 * 1024; // 2 MB
+                sSetupFirebaseDB = true;
+            }
+            return db;
+        }
+
+        public static async Task<string> GetAccessToken()
+        {
+            await CheckSignIn();
+
+            string token = null;
+
+            try
+            {
+                var auth = FirebaseAuth.DefaultInstance;
+                token = await auth.CurrentUser?.GetIdTokenAsync();
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine(LoggerLevel.Debug, ex, "Error getting user token");
+            }
+
+            return token;
+        }
+
+        private static async Task CheckSignIn()
+        {
+            var auth = FirebaseAuth.DefaultInstance;
+            if (auth.CurrentUser == null && !sHasSignInFailed)
+            {
+                try
+                {
+                    using var cts = new CancellationTokenSource(15000 /* 15s */);
+                    await auth.SignInAnonymouslyAsync().WaitAsync(cts.Token);
+                }
+                catch (Exception ex)
+                {
+                    if (ex is TimeoutException)
+                    {
+                        sHasSignInFailed = true;
+                    }
+                }
+            }
+        }
+#else
         private readonly static Lazy<FirebaseAuthClient> authClientLazy = new(() =>
         {
             return new FirebaseAuthClient(new FirebaseAuthConfig()
@@ -95,5 +183,6 @@ namespace SimpleWeather.Firebase
                 }
             }
         }
+#endif
     }
 }

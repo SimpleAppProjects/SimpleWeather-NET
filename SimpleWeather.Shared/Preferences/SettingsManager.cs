@@ -95,6 +95,7 @@ namespace SimpleWeather.Preferences
         // Units
         public const int DefaultInterval = 180; // 3 hrs
         public const int READ_TIMEOUT = 10000; // 10s
+        public const int CONNECTION_TIMEOUT = 10000; // 10s
 
         // Settings Keys
         public const string KEY_API = "API";

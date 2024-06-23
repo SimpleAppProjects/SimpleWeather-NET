@@ -9,10 +9,18 @@ using System.Text.RegularExpressions;
 using Microsoft.AppCenter.Analytics;
 #endif
 
+#if __IOS__
+using FirebaseAnalytics = Firebase.Analytics.Analytics;
+#if RELEASE
+using System.Text.RegularExpressions;
+#endif
+#endif
+
 #endif
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace SimpleWeather.Utils
 {
@@ -36,6 +44,8 @@ namespace SimpleWeather.Utils
             Analytics.TrackEvent(eventName, properties);
 #if WINDOWS
             analytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties);
+#elif __IOS__
+            FirebaseAnalytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties.ToDictionary(k => k.Key as object, v => v.Value as object));
 #endif
 #endif
         }
@@ -51,6 +61,16 @@ namespace SimpleWeather.Utils
         {
             analytics.SetUserProperty(property, value);
         }
+#elif __IOS__
+        public static void SetUserProperty([MaxLength(24)] string property, [MaxLength(36)] string value)
+        {
+            FirebaseAnalytics.SetUserProperty(value, property);
+        }
+
+        public static void SetUserProperty([MaxLength(24)] string property, bool value)
+        {
+            FirebaseAnalytics.SetUserProperty(value.ToString(), property);
+        }
 #else
         public static void SetUserProperty([MaxLength(24)] string property, [MaxLength(36)] string value)
         {
@@ -64,7 +84,7 @@ namespace SimpleWeather.Utils
 #endif
 #endif
 
-#if !DEBUG && WINDOWS && !UNIT_TEST
+#if !DEBUG && (WINDOWS || __IOS__) && !UNIT_TEST
         [GeneratedRegex("[^a-zA-Z0-9]")]
         private static partial Regex GAnalyticsRegex();
 #endif

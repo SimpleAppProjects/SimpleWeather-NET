@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using SimpleWeather.Helpers;
 #if WINUI
 using Microsoft.UI;
 using Windows.UI;
@@ -48,11 +49,30 @@ namespace SimpleWeather.Common.Controls
                 }
                 else
                 {
-                    this.ImageUri = new Uri(imageData.ImageUrl, UriKind.Absolute);
-                    this.ImageSource = new UriImageSource()
+                    if (imageData.ImageUrl.StartsWith("ios"))
                     {
-                        Uri = this.ImageUri
-                    };
+                        this.ImageUri = new Uri(imageData.ImageUrl.ReplaceFirst("ios://", Path.TrimEndingDirectorySeparator(ApplicationDataHelper.GetRootDataFolderPath())), UriKind.Absolute);
+                    }
+                    else
+                    {
+                        this.ImageUri = new Uri(imageData.ImageUrl, UriKind.Absolute);
+                    }
+
+                    if (this.ImageUri.IsFile)
+                    {
+                        this.ImageSource = new FileImageSource()
+                        {
+                            File = this.ImageUri.AbsolutePath
+                        };
+
+                    }
+                    else
+                    {
+                        this.ImageSource = new UriImageSource()
+                        {
+                            Uri = this.ImageUri
+                        };
+                    }
                 }
             }
 #endif

@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.WeatherData;
 using System;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using SimpleWeather.Icons;
 #if WINUI
 using Microsoft.UI;
 using Windows.UI;
@@ -189,6 +190,43 @@ namespace SimpleWeather.Utils
 #endif
                 _ => defaultColor
             };
+        }
+
+        public static bool IsNight(this Weather weather)
+        {
+            bool isNight = weather.condition.icon switch
+            {
+                WeatherIcons.NIGHT_CLEAR or
+                WeatherIcons.NIGHT_ALT_CLOUDY or
+                WeatherIcons.NIGHT_ALT_CLOUDY_GUSTS or
+                WeatherIcons.NIGHT_ALT_CLOUDY_WINDY or
+                WeatherIcons.NIGHT_FOG or
+                WeatherIcons.NIGHT_ALT_HAIL or
+                WeatherIcons.NIGHT_HAZE or
+                WeatherIcons.NIGHT_ALT_LIGHTNING or
+                WeatherIcons.NIGHT_ALT_RAIN or
+                WeatherIcons.NIGHT_ALT_RAIN_MIX or
+                WeatherIcons.NIGHT_ALT_RAIN_WIND or
+                WeatherIcons.NIGHT_ALT_SHOWERS or
+                WeatherIcons.NIGHT_ALT_SLEET or
+                WeatherIcons.NIGHT_ALT_SLEET_STORM or
+                WeatherIcons.NIGHT_ALT_SNOW or
+                WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM or
+                WeatherIcons.NIGHT_ALT_SNOW_WIND or
+                WeatherIcons.NIGHT_ALT_SPRINKLE or
+                WeatherIcons.NIGHT_ALT_STORM_SHOWERS or
+                WeatherIcons.NIGHT_OVERCAST or
+                WeatherIcons.NIGHT_ALT_THUNDERSTORM or
+                WeatherIcons.NIGHT_WINDY or
+                WeatherIcons.NIGHT_HOT or
+                WeatherIcons.NIGHT_ALT_CLOUDY_HIGH or
+                WeatherIcons.NIGHT_LIGHT_WIND or
+                WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY => true,
+
+                _ => false
+            };
+
+            return isNight;
         }
     }
 }

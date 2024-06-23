@@ -1,4 +1,4 @@
-﻿#if !UNIT_TEST && WINDOWS
+﻿#if !UNIT_TEST && (WINDOWS || __MACCATALYST__)
 using Microsoft.AppCenter.Crashes;
 using Sentry;
 using System;

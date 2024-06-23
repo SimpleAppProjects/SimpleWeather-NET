@@ -1,6 +1,8 @@
-﻿using SimpleWeather.Utils;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Images;
 using SQLite;
 using System.Collections.Generic;
 using System.Globalization;
@@ -210,10 +212,19 @@ namespace SimpleWeather.Common.Migrations
                 catch { }
 #endif
             }
+            // v5.9.3
+            // Reset ImageDatabase
+            if (SettingsMgr.VersionCode < 5930)
+            {
+#if __IOS__
+                var imageDataService = Ioc.Default.GetService<IImageDataService>();
+                await imageDataService.ClearCachedImageData();
+#endif
+            }
 #if !UNIT_TEST
             if (SettingsMgr.VersionCode < CurrentVersionCode)
             {
-                FeatureSettings.IsUpdateAvailable = false;
+                UpdateSettings.IsUpdateAvailable = false;
             }
 #endif
             SettingsMgr.VersionCode = CurrentVersionCode;

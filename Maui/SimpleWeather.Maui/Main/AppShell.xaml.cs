@@ -39,7 +39,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 #if __IOS__
         UpdaterTaskUtils.StartTasks();
 
-        if (FeatureSettings.IsUpdateAvailable)
+        if (UpdateSettings.IsUpdateAvailable)
         {
             Task.Run(async () =>
             {

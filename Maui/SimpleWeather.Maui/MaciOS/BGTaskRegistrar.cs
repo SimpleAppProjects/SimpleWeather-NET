@@ -26,6 +26,7 @@ namespace SimpleWeather.Maui
             RemoteConfigUpdateTask.RegisterTask();
             PremiumStatusTask.RegisterTask();
             AppUpdaterTask.RegisterTask();
+            ImageDatabaseTask.RegisterTask();
         }
 
         public static void ScheduleBGTasks()
@@ -36,6 +37,7 @@ namespace SimpleWeather.Maui
             RemoteConfigUpdateTask.ScheduleTask();
             PremiumStatusTask.ScheduleTask();
             AppUpdaterTask.ScheduleTask();
+            ImageDatabaseTask.ScheduleTask();
 
 #if DEBUG
             BGTaskScheduler.Shared.GetPending((tks) =>

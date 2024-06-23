@@ -39,6 +39,7 @@ namespace SimpleWeather.Helpers
 
             return appDataFolderPath;
         }
+
         public static string GetLocalCacheFolderPath()
         {
 #if WINUI
@@ -65,6 +66,18 @@ namespace SimpleWeather.Helpers
             Directory.CreateDirectory(appDataFolderPath);
 
             return appDataFolderPath;
+        }
+
+        public static string GetRootDataFolderPath()
+        {
+#if WINUI
+            var appDataFolder = ApplicationData.Current.LocalFolder;
+            var appDataFolderPath = appDataFolder.Path;
+#else
+            var appDataFolderPath = FileSystem.Current.AppDataDirectory;
+#endif
+
+            return Directory.GetParent(Path.TrimEndingDirectorySeparator(appDataFolderPath)).FullName;
         }
     }
 }

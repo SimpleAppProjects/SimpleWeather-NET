@@ -14,6 +14,9 @@
       "SimpleWeather.NET.Shared\\SimpleWeather.NET.Shared.shproj",
       "SimpleWeather.NET.Extras\\SimpleWeather.NET.Extras.shproj",
       "Maui\\SimpleWeather.Maui\\SimpleWeather.Maui.csproj",
+      "Maui\\SimpleToolkit\\src\\SimpleToolkit.Core\\SimpleToolkit.Core.csproj",
+      "Maui\\SimpleToolkit\\src\\SimpleToolkit.SimpleShell.Controls\\SimpleToolkit.SimpleShell.Controls.csproj",
+      "Maui\\SimpleToolkit\\src\\SimpleToolkit.SimpleShell\\SimpleToolkit.SimpleShell.csproj",
       "MauiUnitTestProject\\MauiUnitTestProject.csproj"
     ]
   }

@@ -1,4 +1,5 @@
-﻿using CacheCow.Client;
+﻿#if !__IOS__
+using CacheCow.Client;
 using CacheCow.Client.FileCacheStore;
 using Firebase.Auth;
 
@@ -112,3 +113,4 @@ namespace SimpleWeather.Firebase
         }
     }
 }
+#endif

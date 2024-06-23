@@ -1,4 +1,5 @@
-﻿using Firebase.Auth;
+﻿#if !__IOS__
+using Firebase.Auth;
 using Newtonsoft.Json;
 using SimpleWeather.Firebase.Analytics;
 using SimpleWeather.Utils;
@@ -150,3 +151,4 @@ namespace SimpleWeather.Firebase
         }
     }
 }
+#endif

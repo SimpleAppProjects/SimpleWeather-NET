@@ -186,7 +186,7 @@ namespace SimpleWeather.NET
 
         private void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<ImageDataHelperImpl, Backgrounds.ImageDataHelperRes>();
+            serviceCollection.AddSingleton<IImageDataService, Backgrounds.ImageDataHelperRes>();
             serviceCollection.AddLogging();
             serviceCollection.AddLocalization();
             serviceCollection.AddSingleton<CustomStringLocalizer>();

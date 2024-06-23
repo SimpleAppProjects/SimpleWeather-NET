@@ -12,7 +12,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData.Images;
-#if IOS || MACCATALYST
+#if __IOS__
 using UIKit;
 #endif
 using Microsoft.AppCenter;
@@ -21,6 +21,8 @@ using Microsoft.AppCenter.Crashes;
 using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.NET.Json;
+using System.Security;
+using SimpleWeather.Maui.Images;
 
 namespace SimpleWeather.Maui;
 
@@ -60,10 +62,7 @@ public partial class App : Application
             args.ExceptionMode = ObjCRuntime.MarshalManagedExceptionMode.UnwindNativeCode;
         };
 #endif
-        AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
-        {
-            Logger.WriteLine(LoggerLevel.Fatal, e.ExceptionObject as Exception, "UnhandledException: {0}", e.ExceptionObject);
-        };
+        AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();
 
@@ -136,6 +135,10 @@ public partial class App : Application
         });
         SharedModule.Instance.BuildServiceProvider();
 
+#if __IOS__
+        FirebaseConfigurator.Initialize();
+#endif
+
         // Initialize post-DI setup; Migrations require rely on DI
         CommonModule.Instance.Initialize();
         ExtrasModule.Instance.Initialize();
@@ -145,7 +148,7 @@ public partial class App : Application
 
     private void ConfigureServices(IServiceCollection serviceCollection)
     {
-        serviceCollection.AddSingleton<ImageDataHelperImpl, Backgrounds.ImageDataHelperRes>();
+        serviceCollection.AddSingleton<IImageDataService, ImageDataServiceImpl>();
         // Add Setup Pages
         serviceCollection.AddScoped<SetupViewModel>()
             .AddTransient<SetupWelcomePage>()
@@ -162,15 +165,62 @@ public partial class App : Application
 #endif
     }
 
+    [SecurityCritical]
+    private void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        var exception = e.ExceptionObject as Exception;
+
+        if (exception is not null)
+        {
+#if __MACCATALYST__
+            // Tell Sentry this was an unhandled exception
+            exception.Data[Sentry.Protocol.Mechanism.HandledKey] = false;
+            exception.Data[Sentry.Protocol.Mechanism.MechanismKey] = "AppDomain.CurrentDomain.UnhandledException";
+#endif
+
+            Logger.WriteLine(LoggerLevel.Fatal, exception, "Unhandled Exception: {0}", exception);
+
+            // Log inner exceptions
+            if (exception is AggregateException agg)
+            {
+                foreach (Exception inner in agg.InnerExceptions)
+                {
+                    Logger.WriteLine(LoggerLevel.Fatal, inner, "Unhandled Inner Exception: {0}", inner.Message);
+                }
+            }
+        }
+
+#if __MACCATALYST__
+        // Flush the event immediately
+        SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
+#endif
+    }
+
+    [SecurityCritical]
     private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-        Logger.WriteLine(LoggerLevel.Fatal, e.Exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
+        var exception = e.Exception;
 
-        // Log inner exceptions
-        foreach (Exception inner in e.Exception.InnerExceptions)
+        if (exception is not null)
         {
-            Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Exception: {0}", inner.Message);
+#if __MACCATALYST__
+            // Tell Sentry this was an unhandled exception
+            exception.Data[Sentry.Protocol.Mechanism.HandledKey] = false;
+            exception.Data[Sentry.Protocol.Mechanism.MechanismKey] = "TaskScheduler.UnobservedTaskException";
+#endif
+
+            Logger.WriteLine(LoggerLevel.Fatal, exception, "Unobserved Task Exception: Observed = {0}", e.Observed);
+
+            // Log inner exceptions
+            foreach (Exception inner in exception.InnerExceptions)
+            {
+                Logger.WriteLine(LoggerLevel.Fatal, inner, "Unobserved Task Exception: {0}", inner.Message);
+            }
         }
+
+#if __MACCATALYST__
+        SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
+#endif
     }
 
     protected override void OnStart()

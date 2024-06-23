@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Extensions.Localization;
 using SimpleWeather.Resources.Strings;
+#if !__IOS__
 using ResBackgrounds = SimpleWeather.Backgrounds.Resources.Strings.Backgrounds;
+#endif
 using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -10,7 +12,9 @@ namespace SimpleWeather.NET.Localization
     public class CustomStringLocalizer : IStringLocalizer
     {
         private readonly IStringLocalizer<ResStrings> ResStrings = Ioc.Default.GetService<IStringLocalizer<ResStrings>>();
+#if !__IOS__
         private readonly IStringLocalizer<ResBackgrounds> ResBackgrounds = Ioc.Default.GetService<IStringLocalizer<ResBackgrounds>>();
+#endif
         private readonly IStringLocalizer<ResExtras> ResExtras = Ioc.Default.GetService<IStringLocalizer<ResExtras>>();
         private readonly IStringLocalizer<AQIndex> ResAQIndex = Ioc.Default.GetService<IStringLocalizer<AQIndex>>();
         private readonly IStringLocalizer<Beaufort> ResBeaufort = Ioc.Default.GetService<IStringLocalizer<Beaufort>>();
@@ -29,11 +33,14 @@ namespace SimpleWeather.NET.Localization
         {
             get
             {
+#if !__IOS__
                 if (name.StartsWith("/Backgrounds/"))
                 {
                     return ResBackgrounds[name.Substring(13)];
                 }
-                else if (name.StartsWith("/Extras/"))
+                else
+#endif
+                if (name.StartsWith("/Extras/"))
                 {
                     var key = name.Substring(8);
                     var value = ResExtras[key];
@@ -82,11 +89,14 @@ namespace SimpleWeather.NET.Localization
         {
             get
             {
+#if !__IOS__
                 if (name.StartsWith("/Backgrounds/"))
                 {
                     return ResBackgrounds[name.Substring(13), arguments];
                 }
-                else if (name.StartsWith("/Extras/"))
+                else
+#endif
+                if (name.StartsWith("/Extras/"))
                 {
                     return ResExtras[name.Substring(8), arguments];
                 }
@@ -132,7 +142,9 @@ namespace SimpleWeather.NET.Localization
         public IEnumerable<LocalizedString> GetAllStrings(bool includeParentCultures)
         {
             return ResStrings.GetAllStrings(includeParentCultures)
+#if !__IOS__
                 .Concat(ResBackgrounds.GetAllStrings(includeParentCultures))
+#endif
                 .Concat(ResExtras.GetAllStrings(includeParentCultures))
                 .Concat(ResAQIndex.GetAllStrings(includeParentCultures))
                 .Concat(ResBeaufort.GetAllStrings(includeParentCultures))

@@ -66,7 +66,7 @@ namespace SimpleWeather
         private void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IExtrasService, DefaultExtrasServiceImpl>();
-            serviceCollection.AddSingleton<ImageDataHelperImpl, ImageDataHelperDefault>();
+            serviceCollection.AddSingleton<IImageDataService, ImageDataHelperDefault>();
             serviceCollection.AddSingleton<IRemoteConfigService>(DI.Utils.RemoteConfigService);
             serviceCollection.AddSingleton<SettingsManager>(DI.Utils.SettingsManager);
         }

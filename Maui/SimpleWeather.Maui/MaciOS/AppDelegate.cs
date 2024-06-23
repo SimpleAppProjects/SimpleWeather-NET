@@ -1,15 +1,19 @@
 ﻿#if __IOS__
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CoreLocation;
+using Firebase.CloudMessaging;
 using Foundation;
 using SimpleWeather.Common.Helpers;
+using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Notifications;
 using SimpleWeather.Utils;
+using SimpleWeather.WeatherData.Images;
 using UIKit;
 using UserNotifications;
 
 namespace SimpleWeather.Maui;
 
-public partial class AppDelegate
+public partial class AppDelegate : IMessagingDelegate, IUNUserNotificationCenterDelegate
 {
 #if DEBUG
     public const string GROUP_IDENTIFIER = "group.com.thewizrd.simpleweather.debug";
@@ -36,8 +40,12 @@ public partial class AppDelegate
 
         cLLocationManager.Delegate = @delegate;
 
-        UNUserNotificationCenter.Current.Delegate = new NotificationCenterDelegate();
+        UNUserNotificationCenter.Current.Delegate = this;
         WeatherAlertCreator.AddWeatherKitNotificationCategory();
+
+        Messaging.SharedInstance.Delegate = this;
+
+        application.RegisterForRemoteNotifications();
 
 #if DEBUG
         switch (UIApplication.SharedApplication.BackgroundRefreshStatus)
@@ -140,5 +148,112 @@ public partial class AppDelegate
         Microsoft.Maui.Storage.Preferences.Set($"{taskID}_lastruntime", value);
     }
 #endif
+
+    [Export("userNotificationCenter:willPresentNotification:withCompletionHandler:")]
+    public void WillPresentNotification(UNUserNotificationCenter center, UNNotification notification, Action<UNNotificationPresentationOptions> completionHandler)
+    {
+        var userInfo = notification?.Request?.Content?.UserInfo;
+
+        // Check if message contains a data payload
+        if (userInfo?.Count > 0)
+        {
+            if (userInfo.ContainsKey(FromObject("invalidate")))
+            {
+                OnFCMInvalidateNotificationReceived(userInfo);
+            }
+        }
+
+        completionHandler(UNNotificationPresentationOptions.List | UNNotificationPresentationOptions.Banner | UNNotificationPresentationOptions.Sound);
+    }
+
+    [Export("userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:")]
+    public void DidReceiveNotificationResponse(UNUserNotificationCenter center, UNNotificationResponse response, Action completionHandler)
+    {
+        var content = response?.Notification?.Request?.Content;
+        var userInfo = content?.UserInfo;
+
+        // Check if message contains a data payload
+        if (userInfo?.Count > 0)
+        {
+            if (userInfo.ContainsKey(FromObject("invalidate")))
+            {
+                OnFCMInvalidateNotificationReceived(userInfo);
+            }
+        }
+
+        if (content?.CategoryIdentifier == WeatherAlertCreator.CATEGORY_WEATHERKIT_ALERT)
+        {
+            if (userInfo?.TryGetValue(new NSString(), out var value) == true)
+            {
+                var uri = value as NSString;
+                MainThread.BeginInvokeOnMainThread(async () =>
+                {
+                    await Launcher.TryOpenAsync(new Uri(uri));
+                });
+            }
+        }
+
+        // Always call the completion handler when done.
+        completionHandler();
+    }
+
+    [Export("application:didReceiveRemoteNotification:fetchCompletionHandler:")]
+    public void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
+    {
+        // Check if message contains a data payload
+        if (userInfo?.Count > 0)
+        {
+            if (userInfo.ContainsKey(FromObject("invalidate")))
+            {
+                OnFCMInvalidateNotificationReceived(userInfo);
+            }
+        }
+
+        completionHandler(UIBackgroundFetchResult.NewData);
+    }
+
+    [Export("application:didFailToRegisterForRemoteNotificationsWithError:")]
+    public void FailedToRegisterForRemoteNotifications(UIApplication application, NSError error)
+    {
+        if (error != null)
+        {
+            Logger.WriteLine(LoggerLevel.Error, new NSErrorException(error));
+        }
+    }
+
+    [Export("messaging:didReceiveRegistrationToken:")]
+    public void DidReceiveRegistrationToken(Messaging messaging, string fcmToken)
+    {
+#if DEBUG
+        if (fcmToken != null)
+        {
+            Logger.WriteLine(LoggerLevel.Debug, $"FirebaseMessaging: token - ${fcmToken}");
+        }
+#endif
+    }
+
+    [Export("application:didRegisterForRemoteNotificationsWithDeviceToken:")]
+    public void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
+    {
+        Messaging.SharedInstance.ApnsToken = deviceToken;
+        FirebaseConfigurator.SubscribeToTopics();
+    }
+
+    private void OnFCMInvalidateNotificationReceived(NSDictionary userInfo)
+    {
+        Messaging.SharedInstance.AppDidReceiveMessage(userInfo);
+
+        if (userInfo.ContainsKey(FromObject("date")))
+        {
+            var date = userInfo["date"] as NSString;
+            if (date != null && long.TryParse(date, out long dateTs))
+            {
+                var imageDataService = Ioc.Default.GetService<IImageDataService>();
+                imageDataService.SetImageDBUpdateTime(dateTs);
+            }
+        }
+        // Enqueue work
+        FCMTask.InvalidateCache();
+    }
 }
 #endif

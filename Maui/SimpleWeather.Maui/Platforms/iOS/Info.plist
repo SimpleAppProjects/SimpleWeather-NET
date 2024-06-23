@@ -10,6 +10,7 @@
 		<string>SimpleWeather.RemoteConfigUpdateTask</string>
 		<string>SimpleWeather.PremiumStatusTask</string>
 		<string>SimpleWeather.AppUpdaterTask</string>
+		<string>SimpleWeather.ImageDatabaseTask</string>
 	</array>
 	<key>CFBundleDisplayName</key>
 	<string>SimpleWeather</string>
@@ -30,6 +31,7 @@
 		<string>location</string>
 		<string>fetch</string>
 		<string>processing</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UIDeviceFamily</key>
 	<array>

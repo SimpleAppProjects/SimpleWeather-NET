@@ -9,6 +9,7 @@ using SimpleWeather.WeatherData.Images.Model;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using SimpleWeather.Helpers;
 #if WINUI
 using Windows.Storage;
 #else
@@ -178,7 +179,7 @@ namespace SimpleWeather.Common.Images
             backgroundCode = GetBackgroundCodeFromIcon(icon, wm.IsNight(weather));
 
             // Check cache for image data
-            var imageHelper = SharedModule.Instance.Services.GetService<ImageDataHelperImpl>();
+            var imageHelper = SharedModule.Instance.Services.GetService<IImageDataService>();
             var imageData = await imageHelper.GetCachedImageData(backgroundCode);
             // Check if cache is available and valid
 #if WINUI
@@ -210,14 +211,14 @@ namespace SimpleWeather.Common.Images
                 }
 
 #if !UNIT_TEST
-                if (!FeatureSettings.IsUpdateAvailable)
+                if (!UpdateSettings.IsUpdateAvailable)
                 {
 #endif
                     imageData = await imageHelper.GetRemoteImageData(backgroundCode);
 #if WINUI
                     if (imageData?.IsValid() == true)
 #else
-                    if (await imageData?.IsValidAsync() == true)
+                    if (imageData != null && await imageData.IsValidAsync())
 #endif
                         return new ImageDataViewModel(imageData);
                     else
@@ -226,7 +227,7 @@ namespace SimpleWeather.Common.Images
 #if WINUI
                         if (imageData?.IsValid() == true)
 #else
-                        if (await imageData?.IsValidAsync() == true)
+                        if (imageData != null && await imageData.IsValidAsync())
 #endif
                             return new ImageDataViewModel(imageData);
                     }
@@ -238,7 +239,7 @@ namespace SimpleWeather.Common.Images
 #if WINUI
                     if (imageData?.IsValid() == true)
 #else
-                    if (await imageData?.IsValidAsync() == true)
+                    if (imageData != null && await imageData.IsValidAsync())
 #endif
                         return new ImageDataViewModel(imageData);
                 }
@@ -253,11 +254,11 @@ namespace SimpleWeather.Common.Images
 #if WINUI
             if (imgData?.IsValid() == true)
 #else
-            if (await imgData?.IsValidAsync() == true)
+            if (imgData != null && await imgData.IsValidAsync())
 #endif
             {
                 var uri = new Uri(imgData.ImageUrl);
-                if (uri.Scheme == "file" || uri.Scheme == "ms-appx" || uri.Scheme == "maui-appx")
+                if (uri.Scheme == "file" || uri.Scheme == "ms-appx" || uri.Scheme == "maui-appx" || uri.Scheme == "ios")
                 {
                     Stream stream;
 #if !WINUI
@@ -306,6 +307,28 @@ namespace SimpleWeather.Common.Images
                                 await Task.Delay(250);
                             }
                             var fs = await FileSystemUtils.OpenAppPackageFileAsync(filePath);
+                            var bs = new BufferedStream(fs);
+                            stream = bs;
+                        }
+                        catch (Exception e)
+                        {
+                            Logger.WriteLine(LoggerLevel.Error, e, "ImageData: unable to open file");
+                            // Assume we're ok
+                            return true;
+                        }
+                    }
+                    else if (uri.Scheme == "ios")
+                    {
+                        var filePath = imgData.ImageUrl.ReplaceFirst("ios://", "");
+                        filePath = Path.Combine(ApplicationDataHelper.GetRootDataFolderPath(), filePath.TrimStart('/'));
+
+                        try
+                        {
+                            while (FileUtils.IsFileLocked(filePath))
+                            {
+                                await Task.Delay(250);
+                            }
+                            var fs = File.OpenRead(filePath);
                             var bs = new BufferedStream(fs);
                             stream = bs;
                         }
