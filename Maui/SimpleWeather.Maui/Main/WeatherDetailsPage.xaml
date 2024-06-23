@@ -53,6 +53,9 @@
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" />
             </CollectionView.ItemsLayout>
+            <CollectionView.Footer>
+                <Rectangle HeightRequest="16" />
+            </CollectionView.Footer>
         </CollectionView>
         <ActivityIndicator
             x:Name="ContentIndicator"

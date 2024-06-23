@@ -29,7 +29,8 @@
                     HorizontalScrollBarVisibility="Never"
                     BindingContext="{Binding Source={x:Reference AlertsPage}, Path=AlertsView}">
             <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand"
-                                 BindableLayout.ItemsSource="{Binding Alerts, Mode=OneWay}">
+                                 BindableLayout.ItemsSource="{Binding Alerts, Mode=OneWay}"
+                                 Padding="0,0,0,16">
                 <BindableLayout.EmptyView>
                     <Label Padding="4" Text="{x:Static res_strings:Resources.NoWeatherAlerts_Prompt_Text}" />
                 </BindableLayout.EmptyView>

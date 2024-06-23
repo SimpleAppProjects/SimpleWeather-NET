@@ -71,6 +71,9 @@
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical" ItemSpacing="16" />
             </CollectionView.ItemsLayout>
+            <CollectionView.Footer>
+                <Rectangle HeightRequest="16" />
+            </CollectionView.Footer>
         </CollectionView>
         <ActivityIndicator
             x:Name="ContentIndicator"

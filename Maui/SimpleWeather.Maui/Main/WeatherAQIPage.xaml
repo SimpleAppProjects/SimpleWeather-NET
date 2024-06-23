@@ -60,7 +60,7 @@
             <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
         </VerticalStackLayout>
         <ScrollView Grid.Row="1" Orientation="Vertical">
-            <VerticalStackLayout x:Name="AQILayout" MaximumWidthRequest="1280">
+            <VerticalStackLayout x:Name="AQILayout" MaximumWidthRequest="1280" Padding="0,0,0,16">
                 <VerticalStackLayout>
                     <Label
                         Padding="16,10"
