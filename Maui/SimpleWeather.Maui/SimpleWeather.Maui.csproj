@@ -78,6 +78,7 @@
 		<WarningLevel>4</WarningLevel>
 		<UseHardenedRuntime>true</UseHardenedRuntime>
 		<RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers>
+		<NoDSymUtil>false</NoDSymUtil>
 		<MtouchLink>SdkOnly</MtouchLink>
 		<EnableCodeSigning>True</EnableCodeSigning>
 		<EnablePackageSigning>true</EnablePackageSigning>
@@ -317,6 +318,15 @@
 		<LinkWithSwiftSystemLibraries>true</LinkWithSwiftSystemLibraries>
 	</PropertyGroup>
 	<!-- Firebase End -->
+	<!-- Sentry Start -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('maccatalyst')) And '$(Configuration)' == 'Release'">
+		<UseSentryCLI>true</UseSentryCLI>
+		<!-- Sends symbols to Sentry, enabling symbolication of stack traces. -->
+		<SentryUploadSymbols>true</SentryUploadSymbols>
+		<!-- Sends sources to Sentry, enabling display of source context. -->
+		<SentryUploadSources>true</SentryUploadSources>
+	</PropertyGroup>
+	<!-- Sentry End -->
 	<!--
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/widgetExtension">
