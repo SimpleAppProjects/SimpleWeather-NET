@@ -53,5 +53,9 @@
                 </TableSection>
             </TableRoot>
         </TableView>
+        <Grid
+            x:Name="SnackbarContainer"
+            VerticalOptions="End"
+            ZIndex="100" />
     </Grid>
 </ContentPage>

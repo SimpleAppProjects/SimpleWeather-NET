@@ -19,51 +19,54 @@ public partial class WeatherAlertPanel : ContentView
         InitializeComponent();
         this.BindingContextChanged += (s, e) =>
         {
-            AlertFmtdMessage.Spans.Clear();
-
-            /*
-                Text="{x:Bind $'{ExpireDate}\n\n{Message}\n\n{Attribution}'}"
-             */
-            AlertFmtdMessage.Spans.Add(new Span()
+            if (AlertFmtdMessage != null)
             {
-                Text = WeatherAlert.ExpireDate
-            });
-            AlertFmtdMessage.Spans.Add(new LineBreakSpan());
-            AlertFmtdMessage.Spans.Add(new LineBreakSpan());
+                AlertFmtdMessage.Spans.Clear();
 
-            // Message
-            if (WeatherAlert.Message?.StartsWith("https://weatherkit.apple.com") == true)
-            {
-                try
+                /*
+                    Text="{x:Bind $'{ExpireDate}\n\n{Message}\n\n{Attribution}'}"
+                 */
+                AlertFmtdMessage.Spans.Add(new Span()
                 {
-                    AlertFmtdMessage.Spans.Add(new HyperlinkSpan()
+                    Text = WeatherAlert?.ExpireDate
+                });
+                AlertFmtdMessage.Spans.Add(new LineBreakSpan());
+                AlertFmtdMessage.Spans.Add(new LineBreakSpan());
+
+                // Message
+                if (WeatherAlert?.Message?.StartsWith("https://weatherkit.apple.com") == true)
+                {
+                    try
                     {
-                        NavigateUri = WeatherAlert.Message,
-                        Text = ResStrings.label_moreinfo
-                    });
+                        AlertFmtdMessage.Spans.Add(new HyperlinkSpan()
+                        {
+                            NavigateUri = WeatherAlert?.Message,
+                            Text = ResStrings.label_moreinfo
+                        });
+                    }
+                    catch
+                    {
+                        AlertFmtdMessage.Spans.Add(new Span()
+                        {
+                            Text = WeatherAlert?.Message
+                        });
+                    }
                 }
-                catch
+                else
                 {
                     AlertFmtdMessage.Spans.Add(new Span()
                     {
-                        Text = WeatherAlert.Message
+                        Text = WeatherAlert?.Message
                     });
                 }
-            }
-            else
-            {
+
+                AlertFmtdMessage.Spans.Add(new LineBreakSpan());
+                AlertFmtdMessage.Spans.Add(new LineBreakSpan());
                 AlertFmtdMessage.Spans.Add(new Span()
                 {
-                    Text = WeatherAlert.Message
+                    Text = WeatherAlert?.Attribution
                 });
             }
-
-            AlertFmtdMessage.Spans.Add(new LineBreakSpan());
-            AlertFmtdMessage.Spans.Add(new LineBreakSpan());
-            AlertFmtdMessage.Spans.Add(new Span()
-            {
-                Text = WeatherAlert.Attribution
-            });
         };
     }
 }

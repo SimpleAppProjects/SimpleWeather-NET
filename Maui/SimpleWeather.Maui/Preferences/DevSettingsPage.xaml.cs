@@ -51,14 +51,11 @@ public partial class DevSettingsPage : ContentPage
     {
         void ShowNoLogsFoundPrompt()
         {
-            if (this.Content is View root)
+            Dispatcher.Dispatch(() =>
             {
-                Dispatcher.Dispatch(() =>
-                {
-                    var snackMgr = new SnackbarManager(root);
-                    snackMgr.Show(Snackbar.Make("No logs found", SnackbarDuration.Short));
-                });
-            }
+                var snackMgr = new SnackbarManager(SnackbarContainer);
+                snackMgr.Show(Snackbar.Make("No logs found", SnackbarDuration.Short));
+            });
         }
 
         try

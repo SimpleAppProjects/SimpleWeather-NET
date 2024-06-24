@@ -192,7 +192,7 @@
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
                         Text="{Binding PoP, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout
                     Grid.Column="1"
@@ -208,7 +208,7 @@
                         IconProvider="wi-erik-flowers"
                         IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
                         ShowAsMonochrome="True"
-                        Rotation="{Binding WindDirection}"
+                        Rotation="{Binding WindDirection, Mode=OneWay}"
                         WeatherIcon="{Binding WindIcon, Mode=OneWay}" />
                     <Label
                         x:Name="WindCondition"
@@ -217,7 +217,7 @@
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
                         Text="{Binding WindSpeed, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor}" />
+                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
             <Label

@@ -18,7 +18,7 @@ public partial class LocationPanel : ContentView
     }
 
     public static readonly BindableProperty ConditionPanelTextColorProperty =
-        BindableProperty.Create(nameof(ConditionPanelTextColor), typeof(Color), typeof(LocationPanel), Colors.White);
+        BindableProperty.Create(nameof(ConditionPanelTextColor), typeof(Color), typeof(LocationPanel), Colors.White, propertyChanged: OnThemeablePropertyChanged);
 
     public bool ForceIconDarkTheme
     {
@@ -27,7 +27,7 @@ public partial class LocationPanel : ContentView
     }
 
     public static readonly BindableProperty ForceIconDarkThemeProperty =
-        BindableProperty.Create(nameof(ForceIconDarkTheme), typeof(bool), typeof(LocationPanel), false);
+        BindableProperty.Create(nameof(ForceIconDarkTheme), typeof(bool), typeof(LocationPanel), false, propertyChanged: OnThemeablePropertyChanged);
 
     public event EventHandler LongPress;
 
@@ -68,6 +68,21 @@ public partial class LocationPanel : ContentView
         if (args.NewHandler is IPlatformViewHandler newHandler && newHandler.PlatformView is not null)
         {
             RegisterLongPress(newHandler.PlatformView);
+        }
+    }
+
+    private static void OnThemeablePropertyChanged(BindableObject bindable, object oldValue, object newValue)
+    {
+        if (bindable is LocationPanel panel)
+        {
+            if (panel.IsLoaded)
+            {
+                panel.UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && panel?.BackgroundOverlay?.Source != null);
+            }
+            else
+            {
+                panel.UpdateControlTheme();
+            }
         }
     }
 
