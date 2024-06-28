@@ -42,7 +42,7 @@ namespace SimpleWeather.Maui.Updates
 
                         // Check priority of update
                         var remoteUpdateInfo = await GetRemoteUpdateInfo();
-                        configUpdateInfo = remoteUpdateInfo?.FirstOrDefault(it => it.VersionCode.ToInvariantString() == appUpdateInfo?.version?.Replace(".", ""));
+                        configUpdateInfo = remoteUpdateInfo?.FirstOrDefault(it => Version.Parse(it.Version) == appStoreVersion);
 
                         if (configUpdateInfo != null)
                         {

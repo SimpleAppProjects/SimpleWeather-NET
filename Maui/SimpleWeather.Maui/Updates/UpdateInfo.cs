@@ -6,7 +6,9 @@ namespace SimpleWeather.Maui.Updates
     public class UpdateInfo
     {
         [JsonPropertyName("version")]
-        public int VersionCode { get; set; }
+        public string Version { get; set; }
+        [JsonPropertyName("versionCode")]
+        public long VersionCode { get; set; }
         [JsonPropertyName("updatePriority")]
         public int UpdatePriority { get; set; }
     }
