@@ -125,7 +125,7 @@
 		<PackageReference Include="SkiaSharp.Views.Maui.Controls.Compatibility" Version="2.88.8" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.8" />
-		<PackageReference Include="Mapsui.Maui" Version="4.1.6" />
+		<PackageReference Include="Mapsui.Maui" Version="4.1.7" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.6" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
 
@@ -298,7 +298,7 @@
 		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="10.24.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
-	    <PackageReference Include="Sentry.Maui" Version="4.7.0" />
+	    <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(Configuration)' == 'Debug'">
 		<BundleResource Include="MaciOS\GoogleService-Info-Dev.plist" Condition="Exists('MaciOS\GoogleService-Info-Dev.plist')">

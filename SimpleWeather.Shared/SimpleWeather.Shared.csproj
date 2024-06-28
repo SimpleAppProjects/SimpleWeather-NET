@@ -28,7 +28,7 @@
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="10.0.22621.28" />
 
     <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
-    <PackageReference Include="Sentry" Version="4.7.0" />
+    <PackageReference Include="Sentry" Version="$(SentryVersion)" />
   </ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
 		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="10.24.0" />
@@ -45,7 +45,7 @@
 		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="10.24.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
-    <PackageReference Include="Sentry.Maui" Version="4.7.0" />
+    <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />
 	</ItemGroup>
   <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
     <!-- Images -->
