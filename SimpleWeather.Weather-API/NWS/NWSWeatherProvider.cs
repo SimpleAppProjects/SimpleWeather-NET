@@ -29,8 +29,8 @@ namespace SimpleWeather.Weather_API.NWS
 {
     public partial class NWSWeatherProvider : WeatherProviderImpl
     {
-        private const string FORECAST_QUERY_URL = "https://mobile.weather.gov/wtf/MapClick.php?{0}&FcstType=json";
-        private const string HRFORECAST_QUERY_URL = "https://mobile.weather.gov/wtf/MapClick.php?{0}&FcstType=digitalJSON";
+        private const string FORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=json";
+        private const string HRFORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=digitalJSON";
         private const string POINTS_QUERY_URL = "https://api.weather.gov/points/{0}";
         private const int MAX_ATTEMPTS = 2;
 
@@ -90,8 +90,8 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 this.CheckRateLimit();
 
-                Uri observationURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
-                Uri hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, query));
+                var observationURL = new Uri(string.Format(FORECAST_QUERY_URL, query));
+                var hrlyForecastURL = new Uri(string.Format(HRFORECAST_QUERY_URL, query));
 
                 using var observationRequest = new HttpRequestMessage(HttpMethod.Get, observationURL);
                 observationRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
