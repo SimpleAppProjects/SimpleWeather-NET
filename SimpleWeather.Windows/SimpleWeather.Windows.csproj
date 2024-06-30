@@ -35,6 +35,16 @@
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
 
+  <!-- Sentry Start -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <UseSentryCLI>true</UseSentryCLI>
+    <!-- Sends symbols to Sentry, enabling symbolication of stack traces. -->
+    <SentryUploadSymbols>true</SentryUploadSymbols>
+    <!-- Sends sources to Sentry, enabling display of source context. -->
+    <SentryUploadSources>true</SentryUploadSources>
+  </PropertyGroup>
+  <!-- Sentry End -->
+
   <ItemGroup>
     <PackageReference Include="Mapsui.WinUI" Version="4.1.7" />
     <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.6" />
