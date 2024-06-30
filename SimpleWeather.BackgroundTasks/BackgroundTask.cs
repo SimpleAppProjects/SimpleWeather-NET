@@ -35,10 +35,7 @@ namespace SimpleWeather.BackgroundTasks
             }
             finally
             {
-                if (deferral != null)
-                {
-                    deferral.Complete();
-                }
+                deferral?.Complete();
             }
         }
     }

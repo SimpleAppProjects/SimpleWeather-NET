@@ -1,6 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using Windows.Win32;
-using Windows.Win32.System.Com;
+using Vanara.PInvoke;
 
 namespace SimpleWeather.NET
 {
@@ -13,11 +12,8 @@ namespace SimpleWeather.NET
 
         private static void RegisterClassObject(Guid clsid, object factory)
         {
-            int hr = PInvoke.CoRegisterClassObject(in clsid, factory, CLSCTX.CLSCTX_LOCAL_SERVER, REGCLS.REGCLS_MULTIPLEUSE, out uint _);
-            if (hr < 0)
-            {
-                Marshal.ThrowExceptionForHR(hr);
-            }
+            HRESULT hr = Ole32.CoRegisterClassObject(in clsid, factory, Ole32.CLSCTX.CLSCTX_LOCAL_SERVER, Ole32.REGCLS.REGCLS_MULTIPLEUSE, out uint _);
+            hr.ThrowIfFailed();
         }
     }
 }

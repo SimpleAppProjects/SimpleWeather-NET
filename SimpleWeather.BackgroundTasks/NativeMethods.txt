@@ -1,3 +1,0 @@
-// OOP COM
-CoCreateInstance
-REGCLS

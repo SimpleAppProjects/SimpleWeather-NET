@@ -1,8 +1,7 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
+using Vanara.PInvoke;
 using Windows.ApplicationModel.Background;
-using Windows.Win32;
-using Windows.Win32.System.Com;
 using WinRT;
 
 namespace SimpleWeather.BackgroundTasks
@@ -20,19 +19,13 @@ namespace SimpleWeather.BackgroundTasks
 
             try
             {
-                int hr = PInvoke.CoCreateInstance(inProcBackgroundTaskHostGuid, null, CLSCTX.CLSCTX_LOCAL_SERVER, typeof(IBackgroundTask).GUID, out obj);
-                if (hr < 0)
-                {
-                    Marshal.ThrowExceptionForHR(hr);
-                }
+                HRESULT hr = Ole32.CoCreateInstance(inProcBackgroundTaskHostGuid, null, Ole32.CLSCTX.CLSCTX_LOCAL_SERVER, typeof(IBackgroundTask).GUID, out obj);
+                hr.ThrowIfFailed();
             }
             catch (Exception)
             {
-                int hr = PInvoke.CoCreateInstance(inProcBackgroundTaskHostGuid, null, CLSCTX.CLSCTX_LOCAL_SERVER, typeof(IBackgroundTask).GUID, out obj);
-                if (hr < 0)
-                {
-                    Marshal.ThrowExceptionForHR(hr);
-                }
+                HRESULT hr = Ole32.CoCreateInstance(inProcBackgroundTaskHostGuid, null, Ole32.CLSCTX.CLSCTX_LOCAL_SERVER, typeof(IBackgroundTask).GUID, out obj);
+                hr.ThrowIfFailed();
             }
 
             this.backgroundTask = MarshalInterface<IBackgroundTask>.FromAbi(Marshal.GetIUnknownForObject(obj));
