@@ -45,7 +45,6 @@
     <WinAppSDKVersion>1.5.240607001</WinAppSDKVersion>
     <WinSDKBuildToolsVersion>10.0.22621.3233</WinSDKBuildToolsVersion>
     <WinSDKRefVersion>10.0.22621.33</WinSDKRefVersion>
-    <EnableCoreMrtTooling Condition=" '$(BuildingInsideVisualStudio)' != 'true' ">false</EnableCoreMrtTooling>
   </PropertyGroup>
 
   <PropertyGroup>

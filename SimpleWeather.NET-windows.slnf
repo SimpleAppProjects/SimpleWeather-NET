@@ -1,0 +1,21 @@
+{
+  "solution": {
+    "path": "SimpleWeather.NET.sln",
+    "projects": [
+      "EditManifest\\EditManifest.csproj",
+      "KeyCheck\\KeyCheck.csproj",
+      "MauiUnitTestProject\\MauiUnitTestProject.csproj",
+      "SimpleWeather.BackgroundTasks\\SimpleWeather.BackgroundTasks.csproj",
+      "SimpleWeather.Backgrounds\\SimpleWeather.Backgrounds.csproj",
+      "SimpleWeather.Common\\SimpleWeather.Common.csproj",
+      "SimpleWeather.Extras\\SimpleWeather.Extras.csproj",
+      "SimpleWeather.NET.Extras\\SimpleWeather.NET.Extras.shproj",
+      "SimpleWeather.NET.Shared\\SimpleWeather.NET.Shared.shproj",
+      "SimpleWeather.Shared\\SimpleWeather.Shared.csproj",
+      "SimpleWeather.Weather-API\\SimpleWeather.Weather-API.csproj",
+      "SimpleWeather.WeatherIcons\\SimpleWeather.WeatherIcons.csproj",
+      "SimpleWeather.Windows\\SimpleWeather.Windows.csproj",
+      "TranslationImport\\TranslationImport.csproj"
+    ]
+  }
+}
