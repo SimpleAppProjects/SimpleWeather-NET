@@ -153,8 +153,9 @@
             Margin="10,0"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            Orientation="Vertical">
-            <Grid HorizontalAlignment="Right" Visibility="{x:Bind databinding:BindingExtensions.IsVisibleIfBothTrue(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
+            Orientation="Vertical"
+            Visibility="{x:Bind ViewModel.IsWeatherValid, Mode=OneWay}">
+            <Grid HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.IsShowHiLo, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
@@ -182,7 +183,7 @@
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
             </Grid>
-            <Grid HorizontalAlignment="Right" Visibility="{x:Bind databinding:BindingExtensions.IsVisibleIfBothTrue(ViewModel.IsShowHiLo, ViewModel.IsWeatherValid), Mode=OneWay}">
+            <Grid HorizontalAlignment="Right" Visibility="{x:Bind ViewModel.IsShowHiLo, Mode=OneWay}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
@@ -225,8 +226,8 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                    Height="{Binding ElementName=PoPCondition, Path=ActualHeight}"
+                    Width="20"
+                    Height="20"
                     d:WeatherIcon="&#xf084;"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
@@ -253,8 +254,8 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                    Height="{Binding ElementName=WindCondition, Path=ActualHeight}"
+                    Width="20"
+                    Height="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     IconProvider="wi-erik-flowers"
                     RenderTransformOrigin="0.5,0.5"

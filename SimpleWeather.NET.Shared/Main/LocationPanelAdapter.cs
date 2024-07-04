@@ -1,16 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 #if WINDOWS
 using CommunityToolkit.WinUI;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
+
 #endif
 using SimpleWeather.LocationData;
 using SimpleWeather.NET.Controls;
 #if WINDOWS
 using SimpleWeather.NET.Helpers;
-using SimpleWeather.NET.Tiles;
-using SimpleWeather.NET.Widgets;
 #else
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.Controls;
@@ -20,7 +17,6 @@ using SimpleWeather.Utils;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 #if WINDOWS
-using Windows.UI.StartScreen;
 #endif
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -33,7 +29,6 @@ namespace SimpleWeather.Maui.Main
     internal class LocationPanelAdapter
     {
 #if WINDOWS
-        private CollectionViewSource _ViewSource;
         private ObservableCollection<LocationPanelGroup> LocationPanelGroups;
 #else
         internal ObservableCollection<LocationPanelGroup> LocationPanelGroups;
@@ -65,7 +60,8 @@ namespace SimpleWeather.Maui.Main
         }
 
 #if WINDOWS
-        internal CollectionViewSource ViewSource { get { return _ViewSource; } }
+        internal ObservableCollection<LocationPanelUiModel> GPSPanels { get => (ObservableCollection<LocationPanelUiModel>)GetDataset(LocationType.GPS); }
+        internal ObservableCollection<LocationPanelUiModel> FavPanels { get => (ObservableCollection<LocationPanelUiModel>)GetDataset(LocationType.Search); }
 #endif
 
         internal event NotifyCollectionChangedEventHandler ListChanged;
@@ -97,7 +93,7 @@ namespace SimpleWeather.Maui.Main
         }
 
 #if WINDOWS
-        internal LocationPanelAdapter(ListViewBase listViewBase)
+        internal LocationPanelAdapter(ListViewBase listViewBase, Panel SnackbarContainer = null)
 #else
         internal LocationPanelAdapter(CollectionView listViewBase, IView SnackbarContainer = null)
 #endif
@@ -109,19 +105,12 @@ namespace SimpleWeather.Maui.Main
             ParentListView.Loaded += (s, e) =>
             {
 #if WINDOWS
-                SnackMgr = new SnackbarManager(VisualTreeHelperExtensions.GetParent<Panel>(ParentListView));
+                SnackMgr = new SnackbarManager(SnackbarContainer ?? VisualTreeHelperExtensions.GetParent<Panel>(ParentListView));
 #else
                 SnackMgr = new SnackbarManager(SnackbarContainer ?? ParentListView);
 #endif
             };
 
-#if WINDOWS
-            _ViewSource = new CollectionViewSource()
-            {
-                IsSourceGrouped = true,
-                ItemsPath = new PropertyPath("LocationPanels")
-            };
-#endif
             LocationPanelGroups = new ObservableCollection<LocationPanelGroup>()
             {
 #if WINDOWS
@@ -133,9 +122,6 @@ namespace SimpleWeather.Maui.Main
             {
                 grp.LocationPanels.CollectionChanged += LocationPanels_CollectionChanged;
             }
-#if WINDOWS
-            _ViewSource.Source = LocationPanelGroups;
-#endif
         }
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -233,9 +219,20 @@ namespace SimpleWeather.Maui.Main
             items?.ForEach(item => Add(item));
         }
 
+        internal void AddAll(LocationType _, IEnumerable<LocationPanelUiModel> items)
+        {
+            items?.ForEach(item => Add(item));
+        }
+
         internal void ReplaceAll(IEnumerable<LocationPanelUiModel> items)
         {
             RemoveAll();
+            AddAll(items);
+        }
+
+        internal void ReplaceAll(LocationType locationType, IEnumerable<LocationPanelUiModel> items)
+        {
+            RemoveAll(locationType);
             AddAll(items);
         }
 
@@ -303,6 +300,29 @@ namespace SimpleWeather.Maui.Main
 
             HasGPSPanel = false;
             HasSearchPanel = false;
+        }
+
+        internal void RemoveAll(LocationType locationType)
+        {
+#if WINDOWS
+            var group = LocationPanelGroups
+                .Single(grp => grp.LocationType == locationType)
+                ?.LocationPanels;
+#else
+            var group = LocationPanelGroups.SingleOrDefault(grp => grp.LocationType == locationType);
+#endif
+
+            group.Clear();
+
+            switch (locationType)
+            {
+                case LocationType.GPS:
+                    HasGPSPanel = false;
+                    break;
+                case LocationType.Search:
+                    HasSearchPanel = false;
+                    break;
+            }
         }
 
         internal void DeletePanel(LocationPanelUiModel view)

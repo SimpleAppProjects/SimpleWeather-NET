@@ -14,12 +14,8 @@ using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.ViewModels;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Threading.Tasks;
-using Windows.Foundation.Metadata;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 namespace SimpleWeather.NET.Main
@@ -37,7 +33,19 @@ namespace SimpleWeather.NET.Main
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
+        private readonly DispatcherTimer HoldingTimer = new()
+        {
+            Interval = TimeSpan.FromSeconds(1.5)
+        };
+        private readonly List<Action> HoldingListeners = [];
+        private bool IsHolding = false;
+
+        private readonly List<object> ItemStack = [];
+        private readonly DispatcherTimer DeleteTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
+        private readonly List<Action> RemoveListeners = [];
+
         public bool EditMode { get; set; } = false;
+        private bool DataChanged = false;
         private bool HomeChanged = false;
 
         private AppBarButton EditButton;
@@ -50,13 +58,9 @@ namespace SimpleWeather.NET.Main
         public LocationsPage()
         {
             this.InitializeComponent();
+            NavigationCacheMode = NavigationCacheMode.Required;
 
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-                NavigationCacheMode = NavigationCacheMode.Disabled;
-            else
-                NavigationCacheMode = NavigationCacheMode.Required;
-
-            PanelAdapter = new LocationPanelAdapter(LocationsPanel);
+            PanelAdapter = new LocationPanelAdapter(LocationsPanel, SnackbarContainer);
             PanelAdapter.ListChanged += LocationPanels_CollectionChanged;
 
             // CommandBar
@@ -72,6 +76,33 @@ namespace SimpleWeather.NET.Main
             EditButton = PrimaryCommands[0] as AppBarButton;
             EditButton.Tapped += AppBarButton_Click;
             EditButton.Visibility = PanelAdapter.FavoritesCount > 1 ? Visibility.Visible : Visibility.Collapsed;
+
+            HoldingTimer.Tick += (s, e) =>
+            {
+                HoldingTimer?.Stop();
+
+                if (!EditMode)
+                {
+                    ToggleEditMode();
+
+                    IsHolding = true;
+
+                    HoldingListeners?.ForEach(l =>
+                    {
+                        l.Invoke();
+                    });
+                }
+            };
+
+            DeleteTimer.Tick += (s, e) =>
+            {
+                DeleteTimer?.Stop();
+
+                RemoveListeners?.ForEach(l =>
+                {
+                    l.Invoke();
+                });
+            };
 
             AnalyticsLogger.LogEvent("LocationsPage");
         }
@@ -89,24 +120,6 @@ namespace SimpleWeather.NET.Main
 
             LocationsViewModel = this.GetViewModel<LocationsViewModel>();
 
-            if (e.NavigationMode == NavigationMode.Back || e.NavigationMode == NavigationMode.New)
-            {
-                // Remove all from backstack except home
-                if (this.Frame.BackStackDepth >= 1)
-                {
-                    try
-                    {
-                        var home = this.Frame.BackStack.ElementAt(0);
-                        this.Frame.BackStack.Clear();
-                        this.Frame.BackStack.Add(home);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.WriteLine(LoggerLevel.Error, ex, "Exception!!");
-                    }
-                }
-            }
-
             LocationsViewModel.PropertyChanged += LocationsViewModel_PropertyChanged;
             LocationsViewModel.WeatherUpdated += LocationsViewModel_WeatherUpdated;
             LocationsViewModel.RefreshLocations();
@@ -116,8 +129,20 @@ namespace SimpleWeather.NET.Main
         {
             switch (e.PropertyName)
             {
+                case nameof(LocationsViewModel.GPSLocation):
+                    PanelAdapter.RemoveGPSPanel();
+                    if (LocationsViewModel.GPSLocation != null)
+                    {
+                        PanelAdapter.Add(LocationsViewModel.GPSLocation);
+                    }
+                    break;
                 case nameof(LocationsViewModel.Locations):
-                    PanelAdapter.ReplaceAll(LocationsViewModel.Locations);
+                    {
+                        var gpsLocation = LocationsViewModel.Locations?.FirstOrDefault(it => it.LocationType == (int)LocationType.GPS);
+                        var locations = gpsLocation == null ? LocationsViewModel.Locations : LocationsViewModel.Locations.Except(Enumerable.Repeat(gpsLocation, 1));
+
+                        PanelAdapter.ReplaceAll(LocationType.Search, locations);
+                    }
                     break;
                 case nameof(LocationsViewModel.ErrorMessages):
                     {
@@ -211,13 +236,35 @@ namespace SimpleWeather.NET.Main
         private void StackControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             // Resize StackControl items
-            double StackWidth = LocationsPanel.ActualWidth;
-            LocationsPanel.Height = this.ActualHeight;
+            double StackWidth = (this.Content as FrameworkElement)?.ActualWidth ?? this.ActualWidth;
+            //LocationsPanel.Height = this.ActualHeight;
 
             if (StackWidth <= 0)
                 return;
 
-            if (LocationsPanel.ItemsPanelRoot is ItemsWrapGrid WrapsGrid)
+            var panels = ImmutableList.Create(GPSLocationsPanel, LocationsPanel);
+
+            panels.ForEach(p =>
+            {
+                UpdateItemsGridSize(p, StackWidth);
+            });
+        }
+
+        private void LocationsPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Resize StackControl items
+            double StackWidth = (this.Content as FrameworkElement)?.ActualWidth ?? this.ActualWidth;
+            //LocationsPanel.Height = this.ActualHeight;
+
+            if (StackWidth <= 0)
+                return;
+
+            UpdateItemsGridSize(sender as ItemsControl, StackWidth);
+        }
+
+        private void UpdateItemsGridSize(ItemsControl ItemsPanel, double StackWidth)
+        {
+            if (ItemsPanel?.ItemsPanelRoot is ItemsWrapGrid WrapsGrid)
             {
                 if (StackWidth >= 1280)
                 {
@@ -240,24 +287,69 @@ namespace SimpleWeather.NET.Main
 
         private void LocationPanels_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            bool dataMoved = (e.Action == NotifyCollectionChangedAction.Remove) || (e.Action == NotifyCollectionChangedAction.Move);
-            bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
-            bool limitReached = PanelAdapter.ItemCount >= SettingsManager.MAX_LOCATIONS;
+            DeleteTimer.Stop();
+            RemoveListeners.Clear();
 
-            if (EditMode && e.NewStartingIndex == 0)
-                HomeChanged = true;
+            bool dataMoved = false;
 
-            // Cancel edit Mode
-            if (EditMode && onlyHomeIsLeft)
-                ToggleEditMode();
+            if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems is not null)
+            {
+                if (ItemStack.Count > 0) ItemStack.Clear();
+                ItemStack.AddRange(e.OldItems.Cast<object>());
+            }
+            if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
+            {
+                dataMoved = ItemStack.Any(e.NewItems.Contains);
 
-            // Disable EditMode if only single location
-            EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
-            AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
+                if (dataMoved)
+                {
+                    ItemStack.Clear();
+                }
+            }
+
+            dataMoved = dataMoved || e.Action == NotifyCollectionChangedAction.Move;
+
+            RemoveListeners.Add(() =>
+            {
+                bool onlyHomeIsLeft = PanelAdapter.FavoritesCount <= 1;
+                bool limitReached = PanelAdapter.ItemCount >= SettingsManager.MAX_LOCATIONS;
+
+                // Flag that data has changed
+                if (EditMode && dataMoved)
+                    DataChanged = true;
+
+                if (EditMode && e.NewStartingIndex == 0)
+                    HomeChanged = true;
+
+                // Cancel edit Mode
+                if (EditMode && onlyHomeIsLeft)
+                    ToggleEditMode();
+
+                // Disable EditMode if only single location
+                EditButton.Visibility = onlyHomeIsLeft ? Visibility.Collapsed : Visibility.Visible;
+                AddLocationsButton.Visibility = limitReached ? Visibility.Collapsed : Visibility.Visible;
+
+                if (dataMoved && !EditMode)
+                {
+                    var dataSet = PanelAdapter.GetDataset(LocationType.Search);
+
+                    dataSet?.ForEach(view =>
+                    {
+                        if (view.LocationType != (int)LocationType.GPS)
+                        {
+                            UpdateFavoritesPosition(view);
+                        }
+                    });
+                }
+            });
+
+            DeleteTimer.Start();
         }
 
         private async void LocationsPanel_ItemClick(object sender, ItemClickEventArgs e)
         {
+            if (EditMode) return;
+
             AnalyticsLogger.LogEvent("LocationsPage: LocationsPanel_ItemClick");
             if (e.ClickedItem is LocationPanelUiModel panel)
             {
@@ -268,8 +360,6 @@ namespace SimpleWeather.NET.Main
                         IsHome = Equals(panel.LocationData, await SettingsManager.GetHomeData()),
                         Location = panel.LocationData
                     });
-                    // Remove all from backstack except home
-                    this.Frame.BackStack.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -297,29 +387,30 @@ namespace SimpleWeather.NET.Main
             EditButton.Icon = new SymbolIcon(EditMode ? Symbol.Accept : Symbol.Edit);
             EditButton.Label = EditMode ? App.Current.ResLoader.GetString("Label_Done") : App.Current.ResLoader.GetString("action_editmode");
             LocationsPanel.IsItemClickEnabled = !EditMode;
+
             // Enable selection mode for non-Mobile (non-Touch devices)
-            if (!ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            LocationsPanel.IsMultiSelectCheckBoxEnabled = EditMode;
+            LocationsPanel.SelectionMode = EditMode ? ListViewSelectionMode.Multiple : ListViewSelectionMode.None;
+            if (EditMode && PrimaryCommands.Count == 1)
             {
-                LocationsPanel.IsMultiSelectCheckBoxEnabled = EditMode;
-                LocationsPanel.SelectionMode = EditMode ? ListViewSelectionMode.Multiple : ListViewSelectionMode.None;
-                if (EditMode && PrimaryCommands.Count == 1)
-                {
-                    PrimaryCommands.Insert(0,
-                        new AppBarButton()
-                        {
-                            Icon = new SymbolIcon(Symbol.Delete),
-                            Label = App.Current.ResLoader.GetString("delete"),
-                        }
-                    );
-                    var deleteBtn = PrimaryCommands[0] as AppBarButton;
-                    deleteBtn.Tapped += DeleteBtn_Click;
-                }
-                else if (PrimaryCommands.Count > 1)
-                {
-                    PrimaryCommands.Remove(PrimaryCommands[0]);
-                }
-                Shell.Instance.RequestCommandBarUpdate();
+                PrimaryCommands.Insert(0,
+                    new AppBarButton()
+                    {
+                        Icon = new SymbolIcon(Symbol.Delete),
+                        Label = App.Current.ResLoader.GetString("delete"),
+                    }
+                );
+                var deleteBtn = PrimaryCommands[0] as AppBarButton;
+                deleteBtn.Tapped += DeleteBtn_Click;
             }
+            else if (PrimaryCommands.Count > 1)
+            {
+                PrimaryCommands.Remove(PrimaryCommands[0]);
+            }
+            Shell.Instance.RequestCommandBarUpdate();
+
+            // Enable reordering
+            LocationsPanel.CanReorderItems = LocationsPanel.CanDragItems = LocationsPanel.AllowDrop = EditMode;
 
             foreach (LocationPanelUiModel view in PanelAdapter.GetDataset())
             {
@@ -347,6 +438,11 @@ namespace SimpleWeather.NET.Main
                     container.IsEnabled = view.LocationType != (int)LocationType.GPS || !EditMode;
                     container.IsHitTestVisible = view.LocationType != (int)LocationType.GPS || !EditMode;
                 }
+
+                if (view.LocationType != (int)LocationType.GPS && !EditMode && (DataChanged || HomeChanged))
+                {
+                    UpdateFavoritesPosition(view);
+                }
             }
 
             if (!EditMode && HomeChanged)
@@ -358,16 +454,8 @@ namespace SimpleWeather.NET.Main
                     });
             }
 
+            DataChanged = false;
             HomeChanged = false;
-        }
-
-        private async void SwipeItem_Invoked(Microsoft.UI.Xaml.Controls.SwipeItem sender, Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs args)
-        {
-            if (args.SwipeControl is FrameworkElement button && button.DataContext is LocationPanelUiModel view)
-            {
-                AnalyticsLogger.LogEvent("LocationsPage: SwipeItem_Invoked");
-                await PanelAdapter.RemovePanel(view).ConfigureAwait(true);
-            }
         }
 
         private async void DeleteBtn_Click(object sender, RoutedEventArgs e)
@@ -376,12 +464,57 @@ namespace SimpleWeather.NET.Main
             await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelUiModel>()).ConfigureAwait(true);
         }
 
+        private void LocationPanel_PointerPressed(object sender, PointerRoutedEventArgs e)
+        {
+            HoldingTimer.Stop();
+            HoldingListeners.Clear();
+            if (!EditMode)
+            {
+                HoldingListeners.Add(() =>
+                {
+                    if (sender is FrameworkElement element && element.DataContext is LocationPanelUiModel model && model.LocationType == (int)LocationType.Search)
+                    {
+                        LocationsPanel.SelectedItem = element.DataContext;
+                    }
+                });
+                HoldingTimer.Start();
+            }
+        }
+
+        private void LocationPanel_PointerReleased(object sender, PointerRoutedEventArgs e)
+        {
+            HoldingListeners.Clear();
+            HoldingTimer.Stop();
+            IsHolding = false;
+            e.Handled = false;
+        }
+
         private void LocationPanel_Holding(object sender, HoldingRoutedEventArgs e)
         {
             if (e.HoldingState == HoldingState.Started)
             {
                 if (!EditMode) ToggleEditMode();
-                e.Handled = true;
+                IsHolding = e.Handled = true;
+            }
+            else
+            {
+                IsHolding = false;
+            }
+        }
+
+        private void LocationPanel_ContextRequested(UIElement sender, ContextRequestedEventArgs args)
+        {
+            if (sender is FrameworkElement element && element.DataContext is LocationPanelUiModel model && model.LocationType == (int)LocationType.GPS)
+            {
+                args.Handled = true;
+            }
+        }
+
+        private async void DeleteFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.DataContext is LocationPanelUiModel model && model.LocationType == (int)LocationType.Search)
+            {
+                await PanelAdapter.RemovePanel(model);
             }
         }
 
@@ -412,6 +545,19 @@ namespace SimpleWeather.NET.Main
                     container.IsHitTestVisible = view.LocationType != (int)LocationType.GPS || !EditMode;
                 }
             }
+        }
+
+        private void UpdateFavoritesPosition(LocationPanelUiModel view)
+        {
+            var query = view?.LocationData?.query;
+            var dataPosition = PanelAdapter?.GetDataset(LocationType.Search)?.IndexOf(view);
+            Task.Run(async () =>
+            {
+                if (query != null && dataPosition.HasValue)
+                {
+                    await SettingsManager.MoveLocation(query, dataPosition.Value);
+                }
+            });
         }
     }
 }

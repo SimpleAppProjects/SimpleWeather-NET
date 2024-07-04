@@ -9,15 +9,19 @@ using SimpleWeather.ComponentModel;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.NET.Controls;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using static SimpleWeather.Utils.WeatherUtils;
+using SimpleWeather.LocationData;
 
 namespace SimpleWeather.NET.ViewModels
 {
+    public record LocationsUiState(bool IsLoading = false)
+    {
+        public LocationPanelUiModel GPSLocation { get; init; } = null;
+        public IEnumerable<LocationPanelUiModel> Locations { get; init; } = new List<LocationPanelUiModel>(0);
+        public IEnumerable<ErrorMessage> ErrorMessages { get; init; } = new List<ErrorMessage>(0);
+    }
+
     [Bindable(true)]
     public class LocationsViewModel : BaseViewModel
     {
@@ -33,11 +37,25 @@ namespace SimpleWeather.NET.ViewModels
             private set => SetProperty(ref uistate, value);
         }
 
+        private LocationPanelUiModel gpsLocation = null;
+        public LocationPanelUiModel GPSLocation
+        {
+            get => gpsLocation;
+            private set => SetProperty(ref gpsLocation, value);
+        }
+
         private IEnumerable<LocationPanelUiModel> locations = null;
         public IEnumerable<LocationPanelUiModel> Locations
         {
             get => locations;
             private set => SetProperty(ref locations, value);
+        }
+
+        private bool hasLocations = false;
+        public bool HasLocations
+        {
+            get => hasLocations;
+            private set => SetProperty(ref hasLocations, value);
         }
 
         private IEnumerable<ErrorMessage> errorMessages = new List<ErrorMessage>(0);
@@ -58,8 +76,10 @@ namespace SimpleWeather.NET.ViewModels
         {
             if (e.PropertyName == nameof(UiState))
             {
+                this.GPSLocation = UiState?.GPSLocation;
                 this.Locations = UiState?.Locations;
                 this.ErrorMessages = UiState?.ErrorMessages;
+                this.HasLocations = (UiState?.IsLoading != true) && (UiState?.Locations?.Any() == true);
             }
         }
 
@@ -123,7 +143,10 @@ namespace SimpleWeather.NET.ViewModels
         {
             var locationMap = locations.ToDictionary(_ => _, locData => new LocationPanelUiModel() { LocationData = locData, IsLoading = true });
 
-            UiState = UiState with { Locations = locationMap.Values, IsLoading = false };
+            var gpsLocation = locationMap.Values.FirstOrDefault(l => l.LocationType == (int)LocationType.GPS);
+            var favorites = gpsLocation != null ? locationMap.Values.Skip(1) : locationMap.Values;
+
+            UiState = UiState with { GPSLocation = gpsLocation, Locations = favorites, IsLoading = false };
 
             Task.Run(async () =>
             {
@@ -281,8 +304,8 @@ namespace SimpleWeather.NET.ViewModels
                                 // update location to system
                                 await SettingsManager.SaveLastGPSLocData(result.Data);
                                 SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
+                                return result.Data;
                             }
-                            break;
                         case LocationResult.NotChanged:
                         case LocationResult.ChangedInvalid:
                             if (result.Data?.IsValid() == true)
@@ -325,12 +348,6 @@ namespace SimpleWeather.NET.ViewModels
                 ErrorMessages = state.ErrorMessages?.WhereNot(it => it == error)
             };
         }
-    }
-
-    public record LocationsUiState(bool IsLoading = false)
-    {
-        public IEnumerable<LocationPanelUiModel> Locations { get; init; } = new List<LocationPanelUiModel>(0);
-        public IEnumerable<ErrorMessage> ErrorMessages { get; init; } = new List<ErrorMessage>(0);
     }
 
     public sealed class WeatherUpdatedEventArgs : EventArgs

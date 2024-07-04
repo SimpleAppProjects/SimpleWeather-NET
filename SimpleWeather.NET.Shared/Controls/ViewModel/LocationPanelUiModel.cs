@@ -245,6 +245,8 @@ namespace SimpleWeather.NET.Controls
                 LoTemp = WeatherIcons.PLACEHOLDER;
             }
 
+            IsShowHiLo = !Equals(HiTemp, LoTemp);
+
             // Wind
             if (weather.condition.wind_mph.HasValue && weather.condition.wind_mph >= 0 &&
                 weather.condition.wind_degrees.HasValue && weather.condition.wind_degrees >= 0)

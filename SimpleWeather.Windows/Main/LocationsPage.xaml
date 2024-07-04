@@ -6,8 +6,11 @@
     xmlns:converters="using:SimpleWeather.NET.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
+    xmlns:linq="using:System.Linq"
+    xmlns:locData="using:SimpleWeather.LocationData"
     xmlns:localcontrols="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:viewModels="using:SimpleWeather.NET.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
@@ -16,54 +19,70 @@
 
     <Page.Resources>
         <converters:LocationTypeConverter x:Key="locTypeConverter" />
-        <Style x:Key="LocationsPanelHeaderStyle" TargetType="GridViewHeaderItem">
-            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
-            <Setter Property="FontSize" Value="{ThemeResource GridViewHeaderItemThemeFontSize}" />
-            <Setter Property="Background" Value="{ThemeResource GridViewHeaderItemBackground}" />
-            <Setter Property="Margin" Value="0,0,0,4" />
-            <Setter Property="Padding" Value="8,8,8,0" />
-            <Setter Property="HorizontalContentAlignment" Value="Left" />
-            <Setter Property="VerticalContentAlignment" Value="Top" />
-            <Setter Property="MinHeight" Value="{ThemeResource GridViewHeaderItemMinHeight}" />
-            <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="GridViewHeaderItem">
-                        <StackPanel
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                            <ContentPresenter
-                                x:Name="ContentPresenter"
-                                Margin="{TemplateBinding Padding}"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                ContentTransitions="{TemplateBinding ContentTransitions}" />
-                            <Rectangle
-                                Height="1"
-                                Margin="0,8,0,0"
-                                HorizontalAlignment="Stretch"
-                                VerticalAlignment="Bottom"
-                                Stroke="{ThemeResource GridViewHeaderItemDividerStroke}"
-                                StrokeThickness="0.5" />
-                        </StackPanel>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <toolkitConverters:DoubleToObjectConverter
+            x:Key="locTypeEnabledConverter"
+            FalseValue="True"
+            LessThan="0"
+            TrueValue="False" />
+        <DataTemplate x:Key="LocationsPanelHeaderTemplate">
+            <StackPanel MinHeight="{ThemeResource GridViewHeaderItemMinHeight}">
+                <TextBlock
+                    Padding="14,8,16,0"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Text="{Binding}" />
+                <Rectangle
+                    Height="1"
+                    Margin="0,8,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Bottom"
+                    Stroke="{ThemeResource GridViewHeaderItemDividerStroke}"
+                    StrokeThickness="0.5" />
+            </StackPanel>
+        </DataTemplate>
+        <DataTemplate x:Key="LocationPanelTemplate" x:DataType="localcontrols:LocationPanelUiModel">
+            <localcontrols:LocationPanel
+                ContextRequested="LocationPanel_ContextRequested"
+                Holding="LocationPanel_Holding"
+                IsEnabled="{Binding LocationType, Converter={StaticResource locTypeEnabledConverter}}"
+                IsRightTapEnabled="True"
+                PointerPressed="LocationPanel_PointerPressed"
+                PointerReleased="LocationPanel_PointerReleased">
+                <localcontrols:LocationPanel.ContextFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem
+                            Click="DeleteFlyoutItem_Click"
+                            Icon="Delete"
+                            Text="{helpers:StringRes Name='delete'}" />
+                    </MenuFlyout>
+                </localcontrols:LocationPanel.ContextFlyout>
+            </localcontrols:LocationPanel>
+        </DataTemplate>
+        <ItemsPanelTemplate x:Key="LocationPanelItemPanelTemplate">
+            <ItemsWrapGrid
+                MaxWidth="1280"
+                Margin="16,0"
+                MaximumRowsOrColumns="4"
+                Orientation="Horizontal" />
+        </ItemsPanelTemplate>
+        <SolidColorBrush x:Key="GridViewItemCheckBrush" Color="White" />
+        <SolidColorBrush x:Key="GridViewItemBackground" Color="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
     </Page.Resources>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
         <StackPanel
             x:Name="NoLocationsPrompt"
+            Grid.Row="0"
             Margin="0,0,0,48"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Vertical"
-            Visibility="Collapsed">
+            Visibility="{x:Bind LocationsViewModel.HasLocations, Mode=OneWay, Converter={StaticResource inverseBoolConverter}}">
             <SymbolIcon Margin="8" Symbol="Add" />
             <TextBlock
                 d:Text="Location not set. Please add a location"
@@ -71,93 +90,76 @@
                 Text="{helpers:StringRes Name='prompt_location_not_set'}"
                 TextWrapping="Wrap" />
         </StackPanel>
-        <GridView
-            x:Name="LocationsPanel"
-            HorizontalAlignment="Stretch"
-            HorizontalContentAlignment="Stretch"
-            d:ItemsSource=",,,,"
-            d:Visibility="Collapsed"
-            ContainerContentChanging="LocationsPanel_ContainerContentChanging"
-            IsItemClickEnabled="True"
-            IsSwipeEnabled="False"
-            ItemClick="LocationsPanel_ItemClick"
-            ItemsSource="{x:Bind PanelAdapter.ViewSource.View, Mode=OneWay}"
-            SelectionMode="None">
-            <GridView.GroupStyle>
-                <GroupStyle HeaderContainerStyle="{ThemeResource LocationsPanelHeaderStyle}" HidesIfEmpty="True">
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock
-                                Margin="-8,4"
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                Text="{Binding Path=LocationType, Converter={StaticResource locTypeConverter}}" />
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </GridView.GroupStyle>
-            <GridView.Resources>
-                <SolidColorBrush x:Key="GridViewItemCheckBrush" Color="White" />
-                <SolidColorBrush x:Key="GridViewItemBackground" Color="{ThemeResource CardBackgroundFillColorDefaultBrush}" />
-                <ui:FontIconSource x:Key="DeleteIcon" Glyph="&#xE107;" />
-                <ui:SwipeItems x:Key="right" Mode="Execute">
-                    <ui:SwipeItem
-                        Background="#FFDB4437"
-                        IconSource="{StaticResource DeleteIcon}"
-                        Invoked="SwipeItem_Invoked"
-                        Text="Delete" />
-                </ui:SwipeItems>
-            </GridView.Resources>
-            <GridView.ItemTemplate>
-                <DataTemplate x:DataType="localcontrols:LocationPanelUiModel">
-                    <ui:SwipeControl
-                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                        BorderBrush="{ThemeResource CardStrokeColorDefaultSolidBrush}"
-                        BorderThickness="2"
-                        CornerRadius="{ThemeResource ControlCornerRadius}"
-                        IsEnabled="{x:Bind EditMode, Mode=OneWay}"
-                        RightItems="{StaticResource right}">
-                        <localcontrols:LocationPanel Holding="LocationPanel_Holding" />
-                    </ui:SwipeControl>
-                </DataTemplate>
-            </GridView.ItemTemplate>
-            <GridView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <ItemsWrapGrid
-                        MaxWidth="1280"
-                        Margin="16,0"
-                        MaximumRowsOrColumns="4"
-                        Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </GridView.ItemsPanel>
-            <GridView.Footer>
-                <Button
-                    x:Name="AddLocationsButton"
-                    MaxWidth="1280"
-                    Margin="16,0,20,0"
+        <ScrollView Grid.Row="1" ContentOrientation="Vertical">
+            <StackPanel VerticalAlignment="Top">
+                <GridView
+                    x:Name="GPSLocationsPanel"
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Stretch"
-                    Click="AddLocationsButton_Click">
-                    <Grid Width="Auto" HorizontalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Viewbox Grid.Column="0">
-                            <TextBlock
-                                Padding="2.5"
-                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                Text="&#xE710;" />
-                        </Viewbox>
-                        <TextBlock
-                            Grid.Column="1"
-                            Padding="5"
-                            VerticalAlignment="Center"
-                            d:Text="Add Location"
-                            Text="{helpers:StringRes Name='label_btn_add_location'}" />
-                    </Grid>
-                </Button>
-            </GridView.Footer>
-        </GridView>
+                    d:ItemsSource=",,,,"
+                    d:Visibility="Collapsed"
+                    x:Load="{x:Bind LocationsViewModel.GPSLocation, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+                    ContainerContentChanging="LocationsPanel_ContainerContentChanging"
+                    Header="{x:Bind locData:LocationType.GPS, Converter={StaticResource locTypeConverter}, Mode=OneTime}"
+                    HeaderTemplate="{StaticResource LocationsPanelHeaderTemplate}"
+                    IsItemClickEnabled="True"
+                    IsSwipeEnabled="False"
+                    ItemClick="LocationsPanel_ItemClick"
+                    ItemTemplate="{StaticResource LocationPanelTemplate}"
+                    ItemsPanel="{StaticResource LocationPanelItemPanelTemplate}"
+                    ItemsSource="{x:Bind PanelAdapter.GPSPanels, Mode=OneWay}"
+                    Loaded="LocationsPanel_Loaded"
+                    SelectionMode="None" />
+                <GridView
+                    x:Name="LocationsPanel"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Stretch"
+                    d:ItemsSource=",,,,"
+                    d:Visibility="Collapsed"
+                    ContainerContentChanging="LocationsPanel_ContainerContentChanging"
+                    Header="{x:Bind locData:LocationType.Search, Converter={StaticResource locTypeConverter}, Mode=OneTime}"
+                    HeaderTemplate="{StaticResource LocationsPanelHeaderTemplate}"
+                    IsItemClickEnabled="True"
+                    IsSwipeEnabled="False"
+                    ItemClick="LocationsPanel_ItemClick"
+                    ItemTemplate="{StaticResource LocationPanelTemplate}"
+                    ItemsPanel="{StaticResource LocationPanelItemPanelTemplate}"
+                    ItemsSource="{x:Bind PanelAdapter.FavPanels, Mode=OneWay}"
+                    Loaded="LocationsPanel_Loaded"
+                    SelectionMode="None" />
+            </StackPanel>
+        </ScrollView>
+        <Button
+            x:Name="AddLocationsButton"
+            Grid.Row="2"
+            MaxWidth="1280"
+            Margin="16,0,20,8"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
+            Click="AddLocationsButton_Click">
+            <Grid Width="Auto" HorizontalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Viewbox Grid.Column="0">
+                    <TextBlock
+                        Padding="2.5"
+                        FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                        Text="&#xE710;" />
+                </Viewbox>
+                <TextBlock
+                    Grid.Column="1"
+                    Padding="5"
+                    VerticalAlignment="Center"
+                    d:Text="Add Location"
+                    Text="{helpers:StringRes Name='label_btn_add_location'}" />
+            </Grid>
+        </Button>
+        <Grid
+            x:Name="SnackbarContainer"
+            Grid.RowSpan="3"
+            VerticalAlignment="Bottom"
+            Canvas.ZIndex="1" />
     </Grid>
 </viewModels:ViewModelPage>

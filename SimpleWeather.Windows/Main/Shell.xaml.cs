@@ -386,6 +386,8 @@ namespace SimpleWeather.NET.Main
         {
             if (PageHeader is PageHeader header)
             {
+                header.Commands = null;
+
                 if (AppFrame.Content is ICommandBarPage cmdBarPage)
                 {
                     header.Title = cmdBarPage.CommandBarLabel;
