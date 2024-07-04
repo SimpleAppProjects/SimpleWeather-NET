@@ -1,8 +1,5 @@
 ﻿using Microsoft.UI.Dispatching;
 using Microsoft.Windows.AppLifecycle;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.NET
 {

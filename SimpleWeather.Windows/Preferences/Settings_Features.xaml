@@ -15,13 +15,126 @@
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
 
-    <Grid>
-        <ScrollViewer
-            Padding="16,0"
-            HorizontalScrollMode="Disabled"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto">
-            <StackPanel>
+    <Page.Resources>
+        <local:FeatureList x:Key="OrderableFeatures" x:Name="OrderableFeatures">
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_FORECAST, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_forecast'}"
+                d:Title="Forecast"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.Forecast}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_HRFORECAST, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_hrforecast'}"
+                d:Title="Hourly Forecast"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.HourlyForecast}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_CHARTS, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_charts'}"
+                d:Title="Charts"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.Charts}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_WEATHERDETAILS, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_details'}"
+                d:Title="Weather Details"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherDetails}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_UVINDEX, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_uv'}"
+                d:Title="UV"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.UV}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_BEAUFORT, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_beaufort'}"
+                d:Title="Beaufort"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.Beaufort}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_AQINDEX, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_aqindex'}"
+                d:Title="Air Quality Index"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.AQIndex}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_POLLEN, Mode=OneTime}"
+                Title="{helpers:StringRes Name='label_pollen_count'}"
+                d:Title="Pollen Count"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.PollenEnabled}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_MOONPHASE, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_moonphase'}"
+                d:Title="Moon Phase"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.MoonPhase}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_SUNPHASE, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_sunphase'}"
+                d:Title="Sun Phase"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.SunPhase}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_RADAR, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_radar'}"
+                d:Title="Weather Radar"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=TwoWay}" />
+        </local:FeatureList>
+        <local:FeatureList x:Key="NonOrderableFeatures" x:Name="NonOrderableFeatures">
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_BGIMAGE, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_bgimage'}"
+                d:Title="Background Image"
+                CanReorder="False"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.BackgroundImage}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_WEATHERSUMMARY, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_summary'}"
+                d:Title="Weather Summary"
+                CanReorder="False"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.WeatherSummary}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_LOCPANELBGIMAGE, Mode=OneTime}"
+                Title="{helpers:StringRes Name='pref_title_feature_locpanelimg'}"
+                d:Title="Location Panel Image"
+                CanReorder="False"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage}" />
+            <local:Feature
+                Key="{x:Bind uwpUtils:FeatureSettings.KEY_TILEBGIMAGE, Mode=OneTime}"
+                x:Uid="FeatureOption_TileBackground"
+                Title="Tile Background Image"
+                CanReorder="False"
+                IsEnabled="{x:Bind uwpUtils:FeatureSettings.TileBackgroundImage}" />
+        </local:FeatureList>
+        <DataTemplate x:Key="FeatureItemTemplate" x:DataType="local:Feature">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <CheckBox
+                    Grid.Column="0"
+                    MinWidth="0"
+                    HorizontalAlignment="Left"
+                    IsChecked="{Binding IsEnabled, Mode=TwoWay}" />
+                <Grid Grid.Column="1" Tapped="Item_Tapped">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Grid.Column="0"
+                        Padding="16,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        Text="{Binding Title, Mode=OneWay}" />
+                    <FontIcon
+                        Grid.Column="1"
+                        Margin="16,0"
+                        FontFamily="{StaticResource MaterialIconsFontFamily}"
+                        Glyph="&#xe25d;"
+                        Visibility="{Binding CanReorder, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}" />
+                </Grid>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <ScrollView ContentOrientation="Vertical">
+        <StackPanel>
+            <StackPanel Padding="16,0">
                 <TextBlock
                     d:Text="Features"
                     Style="{ThemeResource SettingTitleStyle}"
@@ -31,67 +144,32 @@
                     d:Text="Select features to enable/disable:"
                     Style="{StaticResource PrefTitleStyle}"
                     Text="{helpers:StringRes Name='pref_summary_features'}" />
-                <CheckBox
-                    d:Content="Background Image"
-                    Content="{helpers:StringRes Name='pref_title_feature_bgimage'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.BackgroundImage}" />
-                <CheckBox
-                    d:Content="Forecast"
-                    Content="{helpers:StringRes Name='pref_title_feature_forecast'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.Forecast}" />
-                <CheckBox
-                    d:Content="Hourly Forecast"
-                    Content="{helpers:StringRes Name='pref_title_feature_hrforecast'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.HourlyForecast}" />
-                <CheckBox
-                    d:Content="Charts"
-                    Content="{helpers:StringRes Name='pref_title_feature_charts'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.Charts}" />
-                <CheckBox
-                    d:Content="Weather Summary"
-                    Content="{helpers:StringRes Name='pref_title_feature_summary'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherSummary}" />
-                <CheckBox
-                    d:Content="Weather Details"
-                    Content="{helpers:StringRes Name='pref_title_feature_details'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherDetails}" />
-                <CheckBox
-                    d:Content="UV"
-                    Content="{helpers:StringRes Name='pref_title_feature_uv'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.UV}" />
-                <CheckBox
-                    d:Content="Beaufort"
-                    Content="{helpers:StringRes Name='pref_title_feature_beaufort'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.Beaufort}" />
-                <CheckBox
-                    d:Content="Air Quality Index"
-                    Content="{helpers:StringRes Name='pref_title_feature_aqindex'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.AQIndex}" />
-                <CheckBox
-                    d:Content="Pollen Count"
-                    Content="{helpers:StringRes Name='label_pollen_count'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.PollenEnabled}" />
-                <CheckBox
-                    d:Content="Moon Phase"
-                    Content="{helpers:StringRes Name='pref_title_feature_moonphase'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.MoonPhase}" />
-                <CheckBox
-                    d:Content="Sun Phase"
-                    Content="{helpers:StringRes Name='pref_title_feature_sunphase'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.SunPhase}" />
-                <CheckBox
-                    d:Content="Weather Radar"
-                    Content="{helpers:StringRes Name='pref_title_feature_radar'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.WeatherRadar}" />
-                <CheckBox
-                    d:Content="Location Panel Image"
-                    Content="{helpers:StringRes Name='pref_title_feature_locpanelimg'}"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.LocationPanelBackgroundImage}" />
-                <CheckBox
-                    x:Uid="FeatureOption_TileBackground"
-                    Content="Tile Background Image"
-                    IsChecked="{x:Bind uwpUtils:FeatureSettings.TileBackgroundImage}" />
             </StackPanel>
-        </ScrollViewer>
-    </Grid>
+            <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
+            <ListView
+                x:Name="FeatureListView"
+                Padding="16,0"
+                AllowDrop="True"
+                CanDragItems="True"
+                CanReorderItems="True"
+                ItemTemplate="{StaticResource FeatureItemTemplate}"
+                ReorderMode="Enabled"
+                SelectionMode="None" />
+            <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
+            <ListView
+                Padding="16,0"
+                ItemTemplate="{StaticResource FeatureItemTemplate}"
+                ItemsSource="{StaticResource NonOrderableFeatures}"
+                SelectionMode="None" />
+            <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
+            <Button
+                MinWidth="96"
+                Margin="0,16"
+                HorizontalAlignment="Center"
+                HorizontalContentAlignment="Center"
+                Click="ResetButton_Click"
+                Content="{helpers:StringRes Name='action_reset'}"
+                FontWeight="Bold" />
+        </StackPanel>
+    </ScrollView>
 </Page>

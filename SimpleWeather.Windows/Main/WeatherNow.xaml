@@ -41,18 +41,14 @@
                 Grid.RowSpan="2"
                 x:Load="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
                 Source="{x:Bind MainViewer}"
-                VerticalShift="100"
-                Visibility="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}}">
+                VerticalShift="100">
                 <Image
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     ImageFailed="BackgroundOverlay_ImageFailed"
                     ImageOpened="BackgroundOverlay_ImageOpened"
-                    Stretch="UniformToFill">
-                    <Image.Source>
-                        <BitmapImage UriSource="{x:Bind WNowViewModel.ImageData.ImageUri, Mode=OneWay}" />
-                    </Image.Source>
-                </Image>
+                    Source="{x:Bind WNowViewModel.ImageData.ImageUri, Mode=OneWay, Converter={StaticResource uriImgSrcConv}}"
+                    Stretch="UniformToFill" />
             </ParallaxView>
             <Grid
                 x:Name="GradientOverlay"
@@ -365,23 +361,53 @@
                             Height="5"
                             RelativePanel.AlignBottomWithPanel="True" />
                     </RelativePanel>
-                    <StackPanel
+                    <Grid
+                        x:Name="GridLayout"
                         Grid.Row="5"
                         Padding="16,4,16,0"
                         CornerRadius="8,8,0,0"
-                        Loaded="StackPanel_Loaded">
-                        <StackPanel.Background>
+                        Loaded="GridLayout_Loaded">
+                        <Grid.RowDefinitions>
+                            <!--  Forecast  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Hourly Forecast  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Charts  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Details  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  UV  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Beaufort  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  AQIndex  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  PollenEnabled  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  MoonPhase  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Sun Phase  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Radar  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  Credits  -->
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.Background>
                             <muxm:AcrylicBrush
                                 x:Name="StackBackgroundBrush"
                                 FallbackColor="{ThemeResource RegionColor}"
                                 TintColor="{ThemeResource AcrylicStackTintColor}"
                                 TintOpacity="{ThemeResource AcrylicStackTintOpacity}" />
-                        </StackPanel.Background>
+                        </Grid.Background>
                         <StackPanel
                             Name="ForecastPanel"
+                            Grid.Row="0"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_FORECAST, Mode=OneTime}"
                             Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
@@ -398,9 +424,12 @@
                         </StackPanel>
                         <StackPanel
                             Name="HourlyForecastPanel"
+                            Grid.Row="1"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.HourlyForecast, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_HRFORECAST, Mode=OneTime}"
                             Visibility="{x:Bind ForecastView.HourlyForecastData, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
@@ -417,9 +446,12 @@
                         </StackPanel>
                         <StackPanel
                             x:Name="ChartsPanel"
+                            Grid.Row="2"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Charts, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_CHARTS, Mode=OneTime}"
                             Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
                             <toolkitControls:HeaderedContentControl
                                 Header="Placeholder"
@@ -461,75 +493,96 @@
                                 </StackPanel>
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
-                        <StackPanel
+                        <toolkitControls:HeaderedContentControl
                             x:Name="DetailsContainer"
+                            Grid.Row="3"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
-                            x:Load="{x:Bind uwpUtils:FeatureSettings.DetailsEnabled, Mode=OneWay}">
-                            <toolkitControls:HeaderedContentControl
-                                HorizontalContentAlignment="Stretch"
-                                VerticalContentAlignment="Stretch"
-                                d:Header="Details"
-                                Header="{helpers:StringRes Name='label_details'}"
-                                Style="{ThemeResource SectionLabelStyle}">
-                                <StackPanel>
-                                    <ItemsControl
-                                        x:Name="DetailsPanel"
-                                        HorizontalAlignment="Center"
-                                        HorizontalContentAlignment="Center"
-                                        x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=OneWay}"
-                                        ItemsSource="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}"
-                                        Visibility="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                                <localcontrols:DetailItem HorizontalAlignment="Center" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <ItemsWrapGrid Orientation="Horizontal" />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                    </ItemsControl>
-                                    <localcontrols:ExtendingWrapPanel
-                                        x:Name="DetailsGrid"
-                                        x:Load="{x:Bind uwpUtils:FeatureSettings.ExtraDetailsEnabled, Mode=OneWay}"
-                                        Orientation="Horizontal">
-                                        <localcontrols:UVControl
-                                            x:Name="UVContrl"
-                                            x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
-                                            DataContext="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay}"
-                                            Visibility="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                        <localcontrols:BeaufortControl
-                                            x:Name="BeaufControl"
-                                            x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
-                                            DataContext="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay}"
-                                            Visibility="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                        <localcontrols:AQIControl
-                                            x:Name="AQIndexControl"
-                                            x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
-                                            DataContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}"
-                                            Tapped="AQIndexControl_Tapped"
-                                            Visibility="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                        <localcontrols:PollenCountControl
-                                            x:Name="PollenControl"
-                                            x:Load="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=OneWay}"
-                                            DataContext="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay}"
-                                            Visibility="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                        <localcontrols:MoonPhaseControl
-                                            x:Name="MoonControl"
-                                            x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
-                                            DataContext="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay}"
-                                            Visibility="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
-                                    </localcontrols:ExtendingWrapPanel>
-                                </StackPanel>
-                            </toolkitControls:HeaderedContentControl>
-                        </StackPanel>
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            d:Header="Details"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherDetails, Mode=OneWay}"
+                            Header="{helpers:StringRes Name='label_details'}"
+                            Loaded="OrderableView_Loaded"
+                            Style="{ThemeResource SectionLabelStyle}"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_WEATHERDETAILS, Mode=OneTime}"
+                            Visibility="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
+                            <ItemsControl
+                                x:Name="DetailsPanel"
+                                HorizontalAlignment="Center"
+                                HorizontalContentAlignment="Center"
+                                ItemsSource="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="controls:DetailItemViewModel">
+                                        <localcontrols:DetailItem HorizontalAlignment="Center" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <ItemsWrapGrid Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                        </toolkitControls:HeaderedContentControl>
+                        <localcontrols:UVControl
+                            x:Name="UVContrl"
+                            Grid.Row="4"
+                            MaxWidth="1280"
+                            Margin="0,0,0,25"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.UV, Mode=OneWay}"
+                            DataContext="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_UVINDEX, Mode=OneTime}"
+                            Visibility="{x:Bind WNowViewModel.Weather.UVIndex, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                        <localcontrols:BeaufortControl
+                            x:Name="BeaufControl"
+                            Grid.Row="5"
+                            MaxWidth="1280"
+                            Margin="0,0,0,25"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.Beaufort, Mode=OneWay}"
+                            DataContext="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_BEAUFORT, Mode=OneTime}"
+                            Visibility="{x:Bind WNowViewModel.Weather.Beaufort, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                        <localcontrols:AQIControl
+                            x:Name="AQIndexControl"
+                            Grid.Row="6"
+                            MaxWidth="1280"
+                            Margin="0,0,0,25"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.AQIndex, Mode=OneWay}"
+                            DataContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_AQINDEX, Mode=OneTime}"
+                            Tapped="AQIndexControl_Tapped"
+                            Visibility="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                        <localcontrols:PollenCountControl
+                            x:Name="PollenControl"
+                            Grid.Row="7"
+                            MaxWidth="1280"
+                            Margin="0,0,0,25"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.PollenEnabled, Mode=OneWay}"
+                            DataContext="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_POLLEN, Mode=OneTime}"
+                            Visibility="{x:Bind WNowViewModel.Weather.Pollen, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                        <localcontrols:MoonPhaseControl
+                            x:Name="MoonControl"
+                            Grid.Row="8"
+                            MaxWidth="1280"
+                            Margin="0,0,0,25"
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.MoonPhase, Mode=OneWay}"
+                            DataContext="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_MOONPHASE, Mode=OneTime}"
+                            Visibility="{x:Bind WNowViewModel.Weather.MoonPhase, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
                         <StackPanel
                             x:Name="SunPhaseContainer"
+                            Grid.Row="9"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
                             x:Load="{x:Bind uwpUtils:FeatureSettings.SunPhase, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_SUNPHASE, Mode=OneTime}"
                             Visibility="{x:Bind WNowViewModel.Weather.SunPhase, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
@@ -542,9 +595,12 @@
                         </StackPanel>
                         <StackPanel
                             x:Name="RadarContainer"
+                            Grid.Row="10"
                             MaxWidth="1280"
                             Margin="0,0,0,25"
-                            x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}">
+                            x:Load="{x:Bind uwpUtils:FeatureSettings.WeatherRadar, Mode=OneWay}"
+                            Loaded="OrderableView_Loaded"
+                            Tag="{x:Bind uwpUtils:FeatureSettings.KEY_RADAR, Mode=OneTime}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -568,12 +624,13 @@
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
                         <TextBlock
+                            Grid.Row="11"
                             MaxWidth="1280"
                             Padding="10"
                             HorizontalAlignment="Center"
                             FontSize="14"
                             Text="{x:Bind WNowViewModel.Weather.WeatherCredit, FallbackValue='Data from Weather Provider', Mode=OneWay}" />
-                    </StackPanel>
+                    </Grid>
                 </Grid>
             </ScrollViewer>
         </Grid>

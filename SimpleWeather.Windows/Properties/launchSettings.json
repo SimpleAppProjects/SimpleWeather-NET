@@ -2,16 +2,22 @@
   "profiles": {
     "SimpleWeather.Windows (Package)": {
       "commandName": "MsixPackage",
-      "doNotLaunchApp": true
+      "doNotLaunchApp": true,
+      "hotReloadEnabled": true,
+      "nativeDebugging": false
     },
     "SimpleWeather.Windows (Package - COMServer)": {
       "commandName": "MsixPackage",
       "commandLineArgs": "-RegisterProcessAsComServer",
-      "doNotLaunchApp": true
+      "doNotLaunchApp": true,
+      "hotReloadEnabled": true,
+      "nativeDebugging": false
     },
     "SimpleWeather.Windows (Unpackaged)": {
       "commandName": "Project",
-      "doNotLaunchApp": true
+      "doNotLaunchApp": true,
+      "hotReloadEnabled": true,
+      "nativeDebugging": false
     }
   }
 }

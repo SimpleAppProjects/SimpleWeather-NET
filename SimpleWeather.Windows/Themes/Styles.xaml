@@ -345,5 +345,6 @@
         <Setter Property="Fill" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
     </Style>
     <FontFamily x:Key="WeatherIconsFontFamily">ms-appx:///SimpleWeather.Shared/Resources/Fonts/weathericons-regular-webfont.ttf#Weather Icons</FontFamily>
+    <FontFamily x:Key="MaterialIconsFontFamily">ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</FontFamily>
     <!--  Custom Styles End  -->
 </ResourceDictionary>

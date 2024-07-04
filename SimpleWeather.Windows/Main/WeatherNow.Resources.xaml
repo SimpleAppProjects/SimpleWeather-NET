@@ -28,4 +28,5 @@
     <converters:DetailsItemGridFilterConverter x:Key="detailsFilter" />
     <converters:GraphDataVisibilityConverter x:Key="graphDataConv" />
     <converters:TempToColorTempConverter x:Key="tempToColorTempConverter" FallbackColor="{ThemeResource ForegroundColor}" />
+    <converters:UriToImageSourceConverter x:Key="uriImgSrcConv" />
 </ResourceDictionary>

@@ -786,7 +786,7 @@ namespace SimpleWeather.NET.Main
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
         {
             radarViewProvider?.OnDestroyView();
-            radarViewProvider ??= RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
+            radarViewProvider = RadarProvider.GetRadarViewProvider(RadarWebViewContainer);
             radarViewProvider.EnableInteractions(false);
 
             WNowViewModel.Weather?.Let(it =>
@@ -830,6 +830,10 @@ namespace SimpleWeather.NET.Main
         {
             if (backgroundEnabled)
             {
+                if (BackgroundOverlay != null)
+                {
+                    BackgroundOverlay.Visibility = Visibility.Visible;
+                }
                 if (GradientOverlay != null)
                 {
                     GradientOverlay.Visibility = Visibility.Visible;
@@ -847,6 +851,10 @@ namespace SimpleWeather.NET.Main
             }
             else
             {
+                if (BackgroundOverlay != null)
+                {
+                    BackgroundOverlay.Visibility = Visibility.Collapsed;
+                }
                 if (GradientOverlay != null)
                 {
                     GradientOverlay.Visibility = Visibility.Collapsed;
@@ -864,8 +872,9 @@ namespace SimpleWeather.NET.Main
             }
         }
 
-        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        private void GridLayout_Loaded(object sender, RoutedEventArgs e)
         {
+            UpdateViewOrder();
             UpdateControlTheme();
         }
 
@@ -920,6 +929,52 @@ namespace SimpleWeather.NET.Main
         private void WeatherNow_ActualThemeChanged(FrameworkElement sender, object args)
         {
             ForecastView.RequestedTheme = sender.ActualTheme;
+        }
+
+        private void OrderableView_Loaded(object sender, RoutedEventArgs e)
+        {
+            var element = sender as FrameworkElement;
+            UpdateViewOrder(element);
+        }
+
+        private void UpdateViewOrder(FrameworkElement element = null)
+        {
+            if (GridLayout == null) return;
+
+            var elements = GridLayout.Children.Cast<FrameworkElement>();
+            if (element != null && !elements.Contains(element))
+            {
+                elements = elements.Append(element);
+            }
+
+            var orderableFeatures = FeatureSettings.GetFeatureOrder();
+
+            var index = 0;
+
+            if (orderableFeatures?.Any() == true)
+            {
+                var featureViewMap = orderableFeatures.ToDictionary(f => f, f =>
+                {
+                    return elements.FirstOrDefault(e => Equals(e.Tag, f));
+                });
+
+                orderableFeatures.ForEach(feature =>
+                {
+                    var v = featureViewMap[feature];
+
+                    if (v != null)
+                    {
+                        Grid.SetRow(featureViewMap[feature], index++);
+                    }
+                });
+            }
+            else
+            {
+                elements.ForEach(v =>
+                {
+                    Grid.SetRow(v, index++);
+                });
+            }
         }
     }
 }
