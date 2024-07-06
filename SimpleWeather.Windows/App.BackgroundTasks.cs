@@ -16,6 +16,7 @@ namespace SimpleWeather.NET
                 {
                     { typeof(IBackgroundTask).GUID, obj => MarshalInterface<IBackgroundTask>.FromManaged((IBackgroundTask)obj) },
                 });
+
             // On launch register the BackgroundTask class for OOP COM activation
             COMUtilities.RegisterClass<InProcBackgroundTask>(this.inProcBackgroundTaskFactory);
         }

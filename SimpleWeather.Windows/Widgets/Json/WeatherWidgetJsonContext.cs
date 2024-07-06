@@ -20,6 +20,7 @@ namespace SimpleWeather.NET.Widgets.Json
         NumberHandling = JsonNumberHandling.AllowReadingFromString,
         WriteIndented = false)]
     [JsonSerializable(typeof(WeatherWidgetData))]
+    [JsonSerializable(typeof(WeatherWidgetCustomizeData))]
     public partial class WeatherWidgetJsonContext : JsonSerializerContext
     {
     }

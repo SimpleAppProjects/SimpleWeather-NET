@@ -302,7 +302,8 @@ namespace SimpleWeather.NET.Widgets
                 if (locData != null)
                 {
                     RemoveWidgetId(Constants.KEY_GPS, oldId);
-                    AddWidgetId(Constants.KEY_GPS, newId);
+                    RemoveWidgetId(locData.query, oldId);
+                    AddWidgetId(locData.query, newId);
                     SaveLocationData(newId, locData);
                 }
             }
@@ -311,6 +312,18 @@ namespace SimpleWeather.NET.Widgets
         public static void RemoveLocation(string query)
         {
             widgetContainer.Values.Remove(query);
+        }
+
+        public static string GetWidgetKey(string id)
+        {
+            if (IsGPS(id))
+            {
+                return Constants.KEY_GPS;
+            }
+            else
+            {
+                return GetLocationData(id)?.query;
+            }
         }
 
         public static AbstractWidgetCreator GetWidgetCreator(string widgetId)

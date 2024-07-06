@@ -33,7 +33,13 @@ namespace SimpleWeather.NET
 
             try
             {
-                AppInstance keyInstance = AppInstance.FindOrRegisterForKey("SimpleWeather.Windows.app");
+                AppInstance keyInstance = AppInstance.FindOrRegisterForKey(
+#if DEBUG
+                    "SimpleWeather_Debug.Windows.app"
+#else
+                    "SimpleWeather.Windows.app"
+#endif
+                    );
 
                 if (!keyInstance.IsCurrent)
                 {

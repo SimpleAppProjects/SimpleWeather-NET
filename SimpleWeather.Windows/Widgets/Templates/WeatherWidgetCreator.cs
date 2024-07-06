@@ -89,6 +89,102 @@ namespace SimpleWeather.NET.Widgets.Templates
             return await BuildWidgetData(widgetId, viewModel, locData, info);
         }
 
+        public override Task<string> BuildCustomization(string widgetId, WidgetInfo info)
+        {
+            return Task.FromResult(Minify($@"
+            {{
+                ""$schema"": ""http://adaptivecards.io/schemas/adaptive-card.json"",
+                ""type"": ""AdaptiveCard"",
+                ""version"": ""1.5"",
+                ""body"": [
+                    {{
+                        ""type"": ""TextBlock"",
+                        ""text"": ""${{label}}"",
+                        ""size"": ""Large"",
+                        ""weight"": ""Bolder"",
+                        ""style"": ""heading"",
+                        ""wrap"": true
+                    }},
+                    {{
+                        ""type"": ""Container"",
+                        ""items"": [
+                            {{
+                                ""type"": ""Input.ChoiceSet"",
+                                ""choices"": [
+                                    {{
+                                        ""title"": ""${{title}}"",
+                                        ""value"": ""${{value}}"",
+                                        ""$data"": ""${{locations}}""
+                                    }}
+                                ],
+                                ""style"": ""expanded"",
+                                ""id"": ""widgetLocation"",
+                                ""value"": ""${{selectedLocation}}""
+                            }}
+                        ],
+                        ""verticalContentAlignment"": ""Center""
+                    }},
+                    {{
+                        ""type"": ""ActionSet"",
+                        ""horizontalAlignment"": ""Center"",
+                        ""actions"": [
+                            {{
+                                ""type"": ""Action.Execute"",
+                                ""title"": ""Done"",
+                                ""verb"": ""done"",
+                                ""style"": ""positive""
+                            }}
+                        ]
+                    }}
+                ]
+            }}"));
+        }
+
+        public override async Task<string> BuildCustomizeData(string widgetId, WidgetInfo info)
+        {
+            var locations = await SettingsManager.GetFavorites();
+            var locationChoices = locations?.Select(l =>
+            {
+                return new LocationChoice()
+                {
+                    title = l.name,
+                    value = l.query
+                };
+            })?.ToList();
+
+            if (SettingsManager.FollowGPS)
+            {
+                var defaultLocation = new LocationChoice()
+                {
+                    title = ResStrings.label_currentlocation,
+                    value = Constants.KEY_GPS
+                };
+
+                if (locationChoices != null)
+                    locationChoices.Insert(0, defaultLocation);
+                else
+                    locationChoices = [defaultLocation];
+            }
+            else if (locationChoices?.Any() != true)
+            {
+                locationChoices =
+                [
+                    new LocationChoice()
+                    {
+                        title = ResStrings.summary_default,
+                        value = ""
+                    }
+                ];
+            }
+
+            return JSONParser.Serializer(new WeatherWidgetCustomizeData()
+            {
+                label = ResStrings.label_nav_locations,
+                selectedLocation = info.CustomState ?? WidgetUtils.GetWidgetKey(widgetId),
+                locations = [.. locationChoices]
+            });
+        }
+
         private static async Task<string> BuildWidgetData(
             string widgetId, WeatherUiModel weather,
             LocationData.LocationData location, WidgetInfo info)

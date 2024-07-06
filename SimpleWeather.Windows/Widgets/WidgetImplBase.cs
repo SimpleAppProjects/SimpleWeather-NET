@@ -8,6 +8,7 @@ namespace SimpleWeather.NET.Widgets
         protected string id;
         protected string state;
         protected bool isActivated = false;
+        protected bool inCustomization = false;
 
         protected WidgetImplBase(string widgetId, string initialState)
         {
@@ -23,8 +24,10 @@ namespace SimpleWeather.NET.Widgets
         public virtual void Deactivate() { }
         public virtual void OnActionInvoked(WidgetActionInvokedArgs actionInvokedArgs) { }
         public virtual void OnWidgetContextChanged(WidgetContextChangedArgs contextChangedArgs) { }
+        public virtual void OnCustomizationRequested(WidgetContext context) { }
 
         public abstract string GetTemplateForWidget();
+        public abstract string GetCustomizationTemplateForWidget();
         public abstract string GetDataForWidget();
     }
 }

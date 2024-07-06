@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET
@@ -8,10 +7,11 @@ namespace SimpleWeather.NET
     // that the system can identify this entry point and launch it as necessary
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [Guid("E3E44B22-74AE-47CE-A507-6EBE2F832B8F")]
+    [Guid("148C5627-665B-4DAC-AB27-64397E80335A")]
     [ComSourceInterfaces(typeof(IBackgroundTask))]
-    internal class InProcBackgroundTask : IBackgroundTask
+    public class InProcBackgroundTask : IBackgroundTask
     {
+        [MTAThread]
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             BackgroundTaskDeferral deferral = null;
@@ -23,10 +23,7 @@ namespace SimpleWeather.NET
             }
             finally
             {
-                if (deferral != null)
-                {
-                    deferral.Complete();
-                }
+                deferral?.Complete();
             }
         }
     }

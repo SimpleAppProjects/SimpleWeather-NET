@@ -89,6 +89,8 @@ namespace EditManifest
                                 line = line.Replace("S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756", "S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191");
                                 line = line.Replace("DisplayName=\"SimpleWeather\"", "DisplayName=\"SimpleWeather (Debug)\"");
                                 line = line.Replace("E3E44B22-74AE-47CE-A507-6EBE2F832B8F", "148C5627-665B-4DAC-AB27-64397E80335A");
+                                line = line.Replace("Id=\"Weather_Widget\"", "Id=\"Weather_Widget_Debug\"");
+                                line = line.Replace("Id=\"SimpleWeatherWidgetApp\"", "Id=\"SimpleWeatherDebugWidgetApp\"");
                             }
                             else
                             {
@@ -96,6 +98,8 @@ namespace EditManifest
                                 line = line.Replace("S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191", "S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756");
                                 line = line.Replace("DisplayName=\"SimpleWeather (Debug)\"", "DisplayName=\"SimpleWeather\"");
                                 line = line.Replace("148C5627-665B-4DAC-AB27-64397E80335A", "E3E44B22-74AE-47CE-A507-6EBE2F832B8F");
+                                line = line.Replace("Id=\"Weather_Widget_Debug\"", "Id=\"Weather_Widget\"");
+                                line = line.Replace("Id=\"SimpleWeatherDebugWidgetApp\"", "Id=\"SimpleWeatherWidgetApp\"");
                             }
                         }
                         else if (OSVersion == OSVersion.MaciOS)

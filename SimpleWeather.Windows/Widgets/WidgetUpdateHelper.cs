@@ -134,7 +134,8 @@ namespace SimpleWeather.NET.Widgets
                 widgetManager.UpdateWidget(new WidgetUpdateRequestOptions(widgetId)
                 {
                     Template = template,
-                    Data = data
+                    Data = data,
+                    CustomState = WidgetUtils.GetWidgetKey(widgetId)
                 });
             }
             else
@@ -142,6 +143,20 @@ namespace SimpleWeather.NET.Widgets
                 Logger.WriteLine(LoggerLevel.Debug, $"{nameof(WidgetUpdateHelper)}: widget: {widgetInfo.WidgetContext.DefinitionId}; widgetId: {widgetId}; Template not provided");
                 await ResetWidget(widgetInfo, widgetManager, widgetId);
             }
+        }
+
+        public static async Task CustomizeWidget(WidgetInfo widgetInfo, WidgetManager widgetManager, string widgetId)
+        {
+            var creator = WidgetUtils.GetWidgetCreator(widgetId);
+            var template = await creator.BuildCustomization(widgetId, widgetInfo);
+            var data = await creator.BuildCustomizeData(widgetId, widgetInfo);
+
+            widgetManager.UpdateWidget(new WidgetUpdateRequestOptions(widgetId)
+            {
+                Template = template,
+                Data = data,
+                CustomState = WidgetUtils.GetWidgetKey(widgetId)
+            });
         }
     }
 }

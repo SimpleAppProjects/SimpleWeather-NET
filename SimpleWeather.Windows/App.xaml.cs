@@ -325,9 +325,9 @@ namespace SimpleWeather.NET
             {
                 var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
                 var activationKind = activatedArgs.Kind;
+                var launchArgs = activatedArgs?.Data as ILaunchActivatedEventArgs;
 
-                if (activatedArgs.Data is ILaunchActivatedEventArgs launchArgs &&
-                    launchArgs.Arguments?.Contains("RegisterProcessAsComServer") == true)
+                if (launchArgs?.Arguments?.Contains("RegisterProcessAsComServer") == true)
                 {
                     RegisterCOMServer();
                     RegisterWidgetProvider();

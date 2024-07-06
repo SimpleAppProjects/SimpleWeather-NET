@@ -18,6 +18,13 @@ namespace SimpleWeather.NET.Widgets.Templates
             return Task.FromResult("${}");
         }
 
+        public abstract Task<string> BuildCustomization(string widgetId, WidgetInfo info);
+
+        public virtual Task<string> BuildCustomizeData(string widgetId, WidgetInfo info)
+        {
+            return Task.FromResult("${}");
+        }
+
         protected Task<LocationData.LocationData> GetLocation(string widgetId)
         {
             return Task.Run(async () =>

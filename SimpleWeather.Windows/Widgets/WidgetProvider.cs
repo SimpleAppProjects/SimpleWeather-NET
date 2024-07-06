@@ -75,7 +75,13 @@ namespace SimpleWeather.NET.Widgets
             if (!WidgetImpls.ContainsKey(widgetContext.DefinitionId))
             {
                 Logger.WriteLine(LoggerLevel.Debug, $"{nameof(WidgetProvider)} - ERROR: Requested unknown Widget Definition ${widgetContext.DefinitionId}");
-                throw new Exception($"{nameof(WidgetProvider)} - Invalid definition requested: {widgetContext.DefinitionId}");
+                return;
+            }
+
+            if (WidgetInstances.ContainsKey(widgetContext.Id))
+            {
+                Logger.WriteLine(LoggerLevel.Debug, $"{nameof(WidgetProvider)} - WARN: Widget already initialized. Def - ${widgetContext.DefinitionId}; Id - ${widgetContext.Id}");
+                return;
             }
 
             var widgetInstance = WidgetImpls[widgetContext.DefinitionId](widgetContext.Id, "");
@@ -121,7 +127,7 @@ namespace SimpleWeather.NET.Widgets
         // For example: clicking a button or submitting input.
         public void OnActionInvoked(WidgetActionInvokedArgs actionInvokedArgs)
         {
-            WidgetInstances[actionInvokedArgs.WidgetContext.Id].OnActionInvoked(actionInvokedArgs);
+            WidgetInstances.GetValueOrDefault(actionInvokedArgs.WidgetContext.Id)?.OnActionInvoked(actionInvokedArgs);
         }
 
         // Handle the WidgetContextChanged call. This function is called when the context a widget
@@ -131,7 +137,7 @@ namespace SimpleWeather.NET.Widgets
         // 2) If previously sent data/template accounts for various sizes based on $host.widgetSize - you can use this event solely for telemtry.
         public void OnWidgetContextChanged(WidgetContextChangedArgs contextChangedArgs)
         {
-            WidgetInstances[contextChangedArgs.WidgetContext.Id].OnWidgetContextChanged(contextChangedArgs);
+            WidgetInstances.GetValueOrDefault(contextChangedArgs.WidgetContext.Id)?.OnWidgetContextChanged(contextChangedArgs);
         }
 
         // Handle the Activate call. This function is called when widgets host starts listening
@@ -142,7 +148,9 @@ namespace SimpleWeather.NET.Widgets
         {
             if (!WidgetInstances.TryGetValue(widgetContext.Id, out WidgetImplBase widgetImpl))
             {
-                throw new Exception($"Activate called for unknown ");
+                Logger.WriteLine(LoggerLevel.Debug, $"{nameof(WidgetProvider)} - WARN: Activate called for unknown id. Attempting to recover... Def - ${widgetContext.DefinitionId}; Id - ${widgetContext.Id}");
+                CreateWidget(widgetContext);
+                return;
             }
 
             widgetImpl.Activate(widgetContext);
@@ -154,12 +162,15 @@ namespace SimpleWeather.NET.Widgets
         // It's recommended to stop sending updates until Activate function was called.
         public void Deactivate(string widgetId)
         {
-            WidgetInstances[widgetId].Deactivate();
+            WidgetInstances.GetValueOrDefault(widgetId)?.Deactivate();
         }
 
-        public void OnCustomizationRequested(WidgetCustomizationRequestedArgs customizationRequestedArgs)
+        public void OnCustomizationRequested(WidgetCustomizationRequestedArgs args)
         {
-
+            if (WidgetInstances.TryGetValue(args.WidgetContext.Id, out WidgetImplBase widgetImpl))
+            {
+                widgetImpl.OnCustomizationRequested(args.WidgetContext);
+            }
         }
 
         public void OnAnalyticsInfoReported(WidgetAnalyticsInfoReportedArgs args)
