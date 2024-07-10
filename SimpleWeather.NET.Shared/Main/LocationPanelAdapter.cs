@@ -59,10 +59,8 @@ namespace SimpleWeather.Maui.Main
             return LocationPanelGroups.SingleOrDefault(grp => grp.LocationType == locationType)?.LocationPanels;
         }
 
-#if WINDOWS
         internal ObservableCollection<LocationPanelUiModel> GPSPanels { get => (ObservableCollection<LocationPanelUiModel>)GetDataset(LocationType.GPS); }
         internal ObservableCollection<LocationPanelUiModel> FavPanels { get => (ObservableCollection<LocationPanelUiModel>)GetDataset(LocationType.Search); }
-#endif
 
         internal event NotifyCollectionChangedEventHandler ListChanged;
 
@@ -113,10 +111,8 @@ namespace SimpleWeather.Maui.Main
 
             LocationPanelGroups = new ObservableCollection<LocationPanelGroup>()
             {
-#if WINDOWS
                 new LocationPanelGroup(LocationType.GPS),
                 new LocationPanelGroup(LocationType.Search),
-#endif
             };
             foreach (var grp in LocationPanelGroups)
             {
@@ -176,28 +172,16 @@ namespace SimpleWeather.Maui.Main
 
         internal void Add(LocationPanelUiModel item)
         {
-#if WINDOWS
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Add(item);
-#else
-            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
-            group ??= CreateLocationPanelGroup((LocationType)item.LocationType);
-            group.LocationPanels.Add(item);
-#endif
         }
 
         internal void Add(int index, LocationPanelUiModel item)
         {
-#if WINDOWS
             LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Insert(index, item);
-#else
-            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
-            group ??= CreateLocationPanelGroup((LocationType)item.LocationType);
-            group.LocationPanels.Insert(index, item);
-#endif
         }
 
         private LocationPanelGroup CreateLocationPanelGroup(LocationType locationType)
@@ -238,37 +222,9 @@ namespace SimpleWeather.Maui.Main
 
         internal bool Remove(LocationPanelUiModel item)
         {
-#if WINDOWS
             return (bool)LocationPanelGroups
                 .Single(grp => (int)grp.LocationType == item.LocationType)
                 ?.LocationPanels.Remove(item);
-#else
-            var group = LocationPanelGroups.SingleOrDefault(grp => (int)grp.LocationType == item.LocationType);
-
-            if (group != null)
-            {
-                try
-                {
-                    bool result = false;
-
-                    try
-                    {
-                        result = group.Remove(item);
-                    } catch { }
-
-                    if (group.Count == 0)
-                    {
-                        group.CollectionChanged -= LocationPanels_CollectionChanged;
-                        LocationPanelGroups.Remove(group);
-                    }
-
-                    return result;
-                }
-                catch { }
-            }
-
-            return false;
-#endif
         }
 
         internal void RemoveGPSPanel()
@@ -282,21 +238,8 @@ namespace SimpleWeather.Maui.Main
         {
             foreach (var group in LocationPanelGroups)
             {
-#if WINDOWS
                 group.LocationPanels.Clear();
-#else
-                try
-                {
-                    if (group.Count > 0)
-                        group.Clear();
-                }
-                catch { }
-#endif
             }
-
-#if !WINDOWS
-            LocationPanelGroups.Clear();
-#endif
 
             HasGPSPanel = false;
             HasSearchPanel = false;
@@ -304,13 +247,9 @@ namespace SimpleWeather.Maui.Main
 
         internal void RemoveAll(LocationType locationType)
         {
-#if WINDOWS
             var group = LocationPanelGroups
                 .Single(grp => grp.LocationType == locationType)
                 ?.LocationPanels;
-#else
-            var group = LocationPanelGroups.SingleOrDefault(grp => grp.LocationType == locationType);
-#endif
 
             group.Clear();
 
@@ -360,10 +299,6 @@ namespace SimpleWeather.Maui.Main
                 Action UndoAction = delegate
                 {
                     var collection = GetDataset((LocationType)panel.LocationType);
-
-#if !WINDOWS
-                    collection ??= CreateLocationPanelGroup((LocationType)panel.LocationType);
-#endif
 
                     if (!collection.Contains(panel))
                     {
@@ -428,9 +363,6 @@ namespace SimpleWeather.Maui.Main
                     foreach (var panelPair in panelPairs.OrderBy(p => p.Key))
                     {
                         var collection = GetDataset((LocationType)panelPair.Value.LocationType);
-#if !WINDOWS
-                        collection ??= CreateLocationPanelGroup((LocationType)panelPair.Value.LocationType);
-#endif
 
                         if (!collection.Contains(panelPair.Value))
                         {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using CommunityToolkit.Maui.Markup;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Utils;
 
@@ -40,7 +41,8 @@ public partial class LocationPanel : ContentView
         };
         this.Loaded += LocationPanel_Loaded;
         this.Unloaded += LocationPanel_Unloaded;
-	}
+        UpdateControlTheme();
+    }
 
     private void LocationPanel_Loaded(object sender, EventArgs e)
     {
@@ -95,15 +97,15 @@ public partial class LocationPanel : ContentView
     {
         if (backgroundEnabled)
         {
-            BackgroundOverlay?.SetValue(VisualElement.IsVisibleProperty, true);
-            GradientOverlay?.SetValue(VisualElement.IsVisibleProperty, true);
+            BackgroundOverlay?.IsVisible(true);
+            GradientOverlay?.IsVisible(true);
             ConditionPanelTextColor = Colors.White;
             ForceIconDarkTheme = true;
         }
         else
         {
-            BackgroundOverlay?.SetValue(VisualElement.IsVisibleProperty, false);
-            GradientOverlay?.SetValue(VisualElement.IsVisibleProperty, false);
+            BackgroundOverlay?.IsVisible(false);
+            GradientOverlay?.IsVisible(false);
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             ForceIconDarkTheme = false;
         }

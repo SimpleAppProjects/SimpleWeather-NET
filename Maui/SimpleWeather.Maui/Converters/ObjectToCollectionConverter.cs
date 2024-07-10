@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Immutable;
 using System.Globalization;
 using CommunityToolkit.Maui.Converters;
 
@@ -17,7 +18,12 @@ namespace SimpleWeather.Maui.Converters
 
         public override IEnumerable ConvertFrom(object value, CultureInfo culture)
         {
-            return value as IEnumerable;
+            if (value is not null)
+            {
+                return value is IEnumerable enumerable ? enumerable : ImmutableList.Create(value);
+            }
+
+            return null;
         }
     }
 }
