@@ -110,7 +110,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="TimberLog" Version="1.0.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.18" />
@@ -126,7 +126,7 @@
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.8" />
 		<PackageReference Include="Mapsui.Maui" Version="4.1.7" />
-		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.6" />
+		<PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.7" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
 
 		<PackageReference Include="AathifMahir.Maui.MauiIcons.Cupertino" Version="3.0.0" />
@@ -136,7 +136,7 @@
 		<PackageReference Include="Maui.RevenueCat.iOS" Version="4.39.0.0" />
 		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.39.0.0" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
-		<PackageReference Include="com.thewizrd.StoreKit2Proxy.Maui" Version="1.0.0" />
+		<PackageReference Include="com.thewizrd.StoreKit2Proxy.Maui" Version="1.0.1" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.39.0.0" />

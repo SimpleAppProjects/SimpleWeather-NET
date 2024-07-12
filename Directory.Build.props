@@ -34,11 +34,11 @@
 
   <!-- Maui -->
   <PropertyGroup>
-      <MauiVersion>8.0.61</MauiVersion>
+    <MauiVersion>8.0.70</MauiVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <SentryVersion>4.8.0</SentryVersion>
+    <SentryVersion>4.9.0</SentryVersion>
   </PropertyGroup>
 
   <PropertyGroup>
