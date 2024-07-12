@@ -43,6 +43,9 @@
 		<ItemGroup>
 			<_CustomLinkFlags Include="-L/usr/lib/swift/" />
 			<_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(_SwiftTargetPlatform)/" />
+			<_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/$(_SwiftTargetPlatform)/" />
+			<_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/$(_SwiftTargetPlatform)/" />
+            <_CustomLinkFlags Include="-L/System/iOSSupport/usr/lib/swift/" />
             <_CustomLinkFlags Include="-Wl,-rpath" />
             <_CustomLinkFlags Include="-Wl,/usr/lib/swift" />
 		</ItemGroup>
