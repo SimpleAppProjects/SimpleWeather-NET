@@ -127,6 +127,66 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/step-up-labs/firebase-authentication-dotnet" Style="{ThemeResource CreditHyperlinkButtonStyle}">FirebaseAuthentication.net</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2019 Step Up Labs<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/step-up-labs/firebase-database-dotnet" Style="{ThemeResource CreditHyperlinkButtonStyle}">FirebaseDatabase.net</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2016 Step Up Labs<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/mapsui/mapsui" Style="{ThemeResource CreditHyperlinkButtonStyle}">Mapsui.WinUI</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
@@ -239,6 +299,36 @@
                     <LineBreak />
                     <Span>
                         <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/getsentry/sentry-dotnet" Style="{ThemeResource CreditHyperlinkButtonStyle}">Sentry</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        The MIT License (MIT)<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2018-2024 Sentry<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
                             <HyperlinkButton NavigateUri="https://github.com/mono/SkiaSharp" Style="{ThemeResource CreditHyperlinkButtonStyle}">SkiaSharp</HyperlinkButton>
                         </InlineUIContainer>
                     </Span>
@@ -326,6 +416,66 @@
                         LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
                         OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN<LineBreak />
                         THE SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/wieslawsoltes/Svg.Skia" Style="{ThemeResource CreditHyperlinkButtonStyle}">Svg.Skia</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        MIT License<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2020 Wiesław Šoltés<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
+                    <LineBreak />
+                    <LineBreak />
+                    <Span>
+                        <InlineUIContainer>
+                            <HyperlinkButton NavigateUri="https://github.com/dahall/Vanara" Style="{ThemeResource CreditHyperlinkButtonStyle}">Vanara.PInvoke</HyperlinkButton>
+                        </InlineUIContainer>
+                    </Span>
+                    <Span>
+                        <LineBreak />
+                        MIT License<LineBreak />
+                        <LineBreak />
+                        Copyright (c) 2017 David Hall<LineBreak />
+                        <LineBreak />
+                        Permission is hereby granted, free of charge, to any person obtaining a copy<LineBreak />
+                        of this software and associated documentation files (the &quot;Software&quot;), to deal<LineBreak />
+                        in the Software without restriction, including without limitation the rights<LineBreak />
+                        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell<LineBreak />
+                        copies of the Software, and to permit persons to whom the Software is<LineBreak />
+                        furnished to do so, subject to the following conditions:<LineBreak />
+                        <LineBreak />
+                        The above copyright notice and this permission notice shall be included in all<LineBreak />
+                        copies or substantial portions of the Software.<LineBreak />
+                        <LineBreak />
+                        THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR<LineBreak />
+                        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,<LineBreak />
+                        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE<LineBreak />
+                        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER<LineBreak />
+                        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,<LineBreak />
+                        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE<LineBreak />
+                        SOFTWARE.</Span>
                     <LineBreak />
                     <LineBreak />
                     <Span>
