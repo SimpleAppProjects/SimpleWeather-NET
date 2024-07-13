@@ -465,7 +465,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         }
 
         // Enable reordering
-        LocationsPanel.CanReorderItems = EditMode;
+        //LocationsPanel.CanReorderItems = EditMode;
 
         foreach (LocationPanelUiModel view in PanelAdapter.GetDataset())
         {
@@ -527,16 +527,18 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelUiModel>()).ConfigureAwait(true);
     }
 
-    private void LocationPanel_LongPress(object sender, EventArgs e)
+    private void LocationsPanel_LongPressed(object sender, LongPressEventArgs e)
     {
-        if (sender is BindableObject obj && obj.BindingContext is LocationPanelUiModel model && model.LocationType == (int)LocationType.Search)
+        var item = PanelAdapter?.GetDataset(LocationType.Search)?.ElementAtOrDefault(e.Item);
+
+        if (item is not null)
         {
             if (!EditMode && PanelAdapter.FavoritesCount > 1)
             {
                 ToggleEditMode();
 
                 LocationsPanel.SelectedItems?.Clear();
-                LocationsPanel.SelectedItems?.Add(model);
+                LocationsPanel.SelectedItems?.Add(item);
             }
         }
     }

@@ -50,7 +50,6 @@
                             HeightRequest="{OnIdiom Phone=115,
                                                     Default=135}"
                             HorizontalOptions="Fill"
-                            LongPress="LocationPanel_LongPress"
                             MinimumWidthRequest="480"
                             VerticalOptions="Fill" />
                     </SwipeView.Content>
@@ -84,7 +83,6 @@
                 <localControls:LocationPanel
                     HeightRequest="{OnIdiom Phone=115, Default=135}"
                     HorizontalOptions="Fill"
-                    LongPress="LocationPanel_LongPress"
                     MinimumWidthRequest="480"
                     VerticalOptions="Fill" />
                 <VisualStateManager.VisualStateGroups>
@@ -164,18 +162,19 @@
                     Text="{x:Static res_strings:Resources.label_favoritelocations}"
                     TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                                 Dark={StaticResource DarkOnBackground}}" />
-                <CollectionView
+                <localControls:ReorderableCollectionView
                     x:Name="LocationsPanel"
                     Grid.Row="2"
                     Margin="0,4,0,8"
-                    CanReorderItems="False"
+                    CanReorderItems="True"
                     IsGrouped="False"
                     IsVisible="False"
                     SelectionMode="None"
                     x:DataType="{x:Null}"
                     ItemsSource="{x:Bind PanelAdapter.FavPanels, Mode=OneWay}"
                     ItemTemplate="{OnIdiom Default={StaticResource MobilePanelTemplate}, Desktop={StaticResource DesktopPanelTemplate}}"
-                    ReorderCompleted="LocationsPanel_ReorderCompleted">
+                    ReorderCompleted="LocationsPanel_ReorderCompleted"
+                    LongPressed="LocationsPanel_LongPressed">
                     <CollectionView.GroupHeaderTemplate>
                         <DataTemplate x:DataType="local:LocationPanelGroup">
                             <Label
@@ -194,7 +193,7 @@
                             Span="1"
                             VerticalItemSpacing="4" />
                     </CollectionView.ItemsLayout>
-                </CollectionView>
+                </localControls:ReorderableCollectionView>
             </Grid>
         </ScrollView>
         <ActivityIndicator
