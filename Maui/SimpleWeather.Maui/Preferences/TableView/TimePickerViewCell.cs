@@ -155,10 +155,14 @@ namespace SimpleWeather.Maui.Preferences
                     Picker.Opacity = Picker.IsEnabled ? 1 : 0.25;
                 }
             };
+
+            this.View.TapGesture(OnTapped);
         }
 
         protected override void OnTapped()
         {
+            if (!IsEnabled) return;
+
             base.OnTapped();
         }
     }

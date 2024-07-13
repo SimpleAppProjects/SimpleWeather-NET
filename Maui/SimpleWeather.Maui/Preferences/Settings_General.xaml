@@ -78,6 +78,7 @@
                     <prefs:ListViewCell
                         x:Name="LanguagePref"
                         PreferenceKey="key_language"
+                        Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.pref_title_language}">
                         <prefs:ListViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
@@ -112,6 +113,7 @@
                     <prefs:ListViewCell
                         x:Name="APIPref"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_API}"
+                        Tapped="TextCell_Tapped"
                         Text="{x:Static res_strings:Resources.api_label}" />
                     <prefs:SwitchCell
                         x:Name="PersonalKeyPref"

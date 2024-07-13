@@ -73,7 +73,6 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         UpdateSettingsTableTheme();
 
         // Event Listeners
-        this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         FollowGPS.OnChanged += FollowGPS_OnChanged;
         PersonalKeyPref.OnChanged += PersonalKeyPref_OnChanged;
 
@@ -465,17 +464,6 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         }
     }
 
-    private async void Model_ItemSelected(object sender, Microsoft.Maui.Controls.Internals.EventArg<object> e)
-    {
-        if (e.Data is ListViewCell listPref)
-        {
-            if (listPref.PreferenceKey == SettingsManager.KEY_API)
-                await Navigation.PushAsync(new WeatherAPIPreferenceListDialogPage(listPref));
-            else
-                await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
-        }
-    }
-
     public void Receive(SettingsChangedMessage message)
     {
         SkipRestore = false;
@@ -817,6 +805,13 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
             {
                 return await Browser.Default.OpenAsync(uri);
             });
+        }
+        else if (sender is ListViewCell listVCell)
+        {
+            if (listVCell.PreferenceKey == SettingsManager.KEY_API)
+                await Navigation.PushAsync(new WeatherAPIPreferenceListDialogPage(listVCell));
+            else
+                await Navigation.PushAsync(new PreferenceListDialogPage(listVCell));
         }
         else if (sender is DialogCell dialogCell && Equals(SettingsManager.KEY_APIKEY, dialogCell.PreferenceKey))
         {

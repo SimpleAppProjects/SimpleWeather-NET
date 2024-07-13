@@ -157,11 +157,16 @@ namespace SimpleWeather.Maui.Preferences
                     return new Thickness(16, isCompact ? 0 : 8);
                 }
             );
+
+            this.View.TapGesture(OnTapped);
         }
 
         protected override void OnTapped()
         {
+            if (!IsEnabled) return;
+
             base.OnTapped();
+
             this.IsChecked = !this.IsChecked;
         }
 

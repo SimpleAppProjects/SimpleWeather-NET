@@ -144,16 +144,15 @@ namespace SimpleWeather.Maui.Preferences
                 }
             }
             .FillVertical();
+
+            this.View.TapGesture(OnTapped);
         }
 
         protected override void OnTapped()
         {
-            base.OnTapped();
+            if (!IsEnabled) return;
 
-            if (!IsEnabled)
-            {
-                return;
-            }
+            base.OnTapped();
 
             Command?.Execute(CommandParameter);
         }

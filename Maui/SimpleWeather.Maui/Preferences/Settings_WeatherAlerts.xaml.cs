@@ -39,7 +39,6 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
             LightPrimary as Color, DarkPrimary as Color);
 
         // Event Listeners
-        this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         AlertPref.OnChanged += AlertPref_OnChanged;
         PoPChancePref.OnChanged += PoPChancePref_OnChanged;
 
@@ -58,14 +57,6 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
         PoPChancePref.On = SettingsManager.PoPChanceNotificationEnabled;
         PoPChancePctPref.SelectedItem = SettingsManager.PoPChanceMinimumPercentage.ToInvariantString();
         PoPChancePctPref.Detail = PoPChancePctPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, PoPChancePctPref.SelectedItem)).Display;
-    }
-
-    private async void Model_ItemSelected(object sender, Microsoft.Maui.Controls.Internals.EventArg<object> e)
-    {
-        if (e.Data is ListViewCell listPref)
-        {
-            await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
-        }
     }
 
     public void InitSnackManager()

@@ -38,7 +38,6 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
             LightPrimary as Color, DarkPrimary as Color);
 
         // Event Listeners
-        this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
         DailyNotifPref.OnChanged += DailyNotifPref_OnChanged;
 
         WeakReferenceMessenger.Default.Register(this);
@@ -49,14 +48,6 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
         // Daily Notification
         DailyNotifPref.On = SettingsManager.DailyNotificationEnabled;
         DailyNotifTimePref.Time = SettingsManager.DailyNotificationTime;
-    }
-
-    private async void Model_ItemSelected(object sender, Microsoft.Maui.Controls.Internals.EventArg<object> e)
-    {
-        if (e.Data is ListViewCell listPref)
-        {
-            await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
-        }
     }
 
     public void InitSnackManager()

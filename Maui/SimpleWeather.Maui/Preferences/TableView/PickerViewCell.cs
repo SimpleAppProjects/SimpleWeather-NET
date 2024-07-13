@@ -182,10 +182,14 @@ namespace SimpleWeather.Maui.Preferences
                     }
                 }
             };
+
+            this.View.TapGesture(OnTapped);
         }
 
         protected override void OnTapped()
         {
+            if (!IsEnabled) return;
+
             base.OnTapped();
         }
     }

@@ -24,9 +24,6 @@ public partial class Settings_About : ContentPage, ISnackbarManager
     {
         InitializeComponent();
 
-        // Event Listeners
-        this.SettingsTable.Model.ItemSelected += Model_ItemSelected;
-
         // Version info
         VersionPref.Detail = $"v{AppInfo.Current.VersionString}";
 
@@ -70,14 +67,6 @@ public partial class Settings_About : ContentPage, ISnackbarManager
     {
         DismissAllSnackbars();
         SnackMgr = null;
-    }
-
-    private async void Model_ItemSelected(object sender, Microsoft.Maui.Controls.Internals.EventArg<object> e)
-    {
-        if (e.Data is ListViewCell listPref)
-        {
-            await Navigation.PushAsync(new PreferenceListDialogPage(listPref));
-        }
     }
 
     private async void TextCell_Tapped(object sender, EventArgs e)
