@@ -10,7 +10,7 @@
   xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   IgnorableNamespaces="uap rescap mp desktop4">
-  <Identity Name="49586DaveAntoine.SimpleWeatherDebug" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.9.2.0" />
+  <Identity Name="49586DaveAntoine.SimpleWeather-Asimpleweatherapp" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.9.7.0" />
   <mp:PhoneIdentity PhoneProductId="06966ad9-299e-4a4c-8204-576b8ada7455" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SimpleWeather - A simple weather app</DisplayName>
@@ -34,7 +34,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
-      <uap:VisualElements DisplayName="SimpleWeather (Debug)" Square150x150Logo="Assets\Square150x150Logo.png" Description="SimpleWeather" BackgroundColor="transparent" Square44x44Logo="Assets\Square44x44Logo.png">
+      <uap:VisualElements DisplayName="SimpleWeather" Square150x150Logo="Assets\Square150x150Logo.png" Description="SimpleWeather" BackgroundColor="transparent" Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:LockScreen Notification="badgeAndTileText" BadgeLogo="Assets\BadgeLogo.png" />
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png" Square310x310Logo="Assets\Square310x310Logo.png">
           <uap:ShowNameOnTiles>
@@ -73,8 +73,8 @@
             <com:ExeServer
                 Executable="SimpleWeather.Windows.exe"
                 Arguments="-RegisterProcessAsComServer"
-                LaunchAndActivationPermission="O:PSG:BUD:(A;;11;;;IU)(A;;11;;;S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191)S:(ML;;NX;;;LW)">
-              <com:Class Id="148C5627-665B-4DAC-AB27-64397E80335A" />
+                LaunchAndActivationPermission="O:PSG:BUD:(A;;11;;;IU)(A;;11;;;S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756)S:(ML;;NX;;;LW)">
+              <com:Class Id="E3E44B22-74AE-47CE-A507-6EBE2F832B8F" />
               <!-- Widget Provider -->
               <com:Class Id="1D453922-87B3-41AB-9D61-1A73C4360E71" DisplayName="Widget provider" />
             </com:ExeServer>
@@ -82,7 +82,7 @@
         </com:Extension>
         <!-- Widget Provider -->
         <uap3:Extension Category="windows.appExtension">
-          <uap3:AppExtension Name="com.microsoft.windows.widgets" DisplayName="SimpleWeather (Debug)" Id="SimpleWeatherDebugWidgetApp" PublicFolder="Public">
+          <uap3:AppExtension Name="com.microsoft.windows.widgets" DisplayName="SimpleWeather" Id="SimpleWeatherWidgetApp" PublicFolder="Public">
             <uap3:Properties>
               <WidgetProvider>
                 <ProviderIcons>
@@ -96,7 +96,7 @@
                   <TrustedPackageFamilyName>Microsoft.MicrosoftEdge.Stable_8wekyb3d8bbwe</TrustedPackageFamilyName>
                 </TrustedPackageFamilyNames>
                 <Definitions>
-                  <Definition Id="Weather_Widget_Debug" DisplayName="SimpleWeather (Debug)" Description="SimpleWeather Widget" AllowMultiple="false" IsCustomizable="true">
+                  <Definition Id="Weather_Widget" DisplayName="SimpleWeather" Description="SimpleWeather Widget" AllowMultiple="false" IsCustomizable="true">
                     <Capabilities>
                       <Capability>
                         <Size Name="small" />

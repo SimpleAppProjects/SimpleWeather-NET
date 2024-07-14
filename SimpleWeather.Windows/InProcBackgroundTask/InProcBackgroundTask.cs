@@ -7,7 +7,7 @@ namespace SimpleWeather.NET
     // that the system can identify this entry point and launch it as necessary
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
-    [Guid("148C5627-665B-4DAC-AB27-64397E80335A")]
+    [Guid("E3E44B22-74AE-47CE-A507-6EBE2F832B8F")]
     [ComSourceInterfaces(typeof(IBackgroundTask))]
     public class InProcBackgroundTask : IBackgroundTask
     {
