@@ -1,11 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.NET.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using muxc = Microsoft.UI.Xaml.Controls;
 using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -62,24 +62,21 @@ namespace SimpleWeather.NET.Preferences
                 {
                     default:
                     case Units.TemperatureUnits.Fahrenheit:
-                        TemperatureUnits.Items.Add(new RadioButton()
+                        TemperatureUnits.Items.Add(new SegmentedItem()
                         {
                             Content = "°F",
-                            Tag = tempUnit.GetStringValue(),
-                            GroupName = nameof(TemperatureUnits)
+                            Tag = tempUnit.GetStringValue()
                         });
                         break;
                     case Units.TemperatureUnits.Celsuis:
-                        TemperatureUnits.Items.Add(new RadioButton()
+                        TemperatureUnits.Items.Add(new SegmentedItem()
                         {
                             Content = "°C",
-                            Tag = tempUnit.GetStringValue(),
-                            GroupName = nameof(TemperatureUnits)
+                            Tag = tempUnit.GetStringValue()
                         });
                         break;
                 }
             }
-            TemperatureUnits.MaxColumns = Math.Max(tempValues.Length, 1);
 
             var speedValues = Enum.GetValues(typeof(Units.SpeedUnits));
             foreach (var enumVal in speedValues)
@@ -89,40 +86,35 @@ namespace SimpleWeather.NET.Preferences
                 {
                     default:
                     case Units.SpeedUnits.MilesPerHour:
-                        SpeedUnits.Items.Add(new RadioButton()
+                        SpeedUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_mph,
-                            Tag = speedUnit.GetStringValue(),
-                            GroupName = nameof(SpeedUnits)
+                            Tag = speedUnit.GetStringValue()
                         });
                         break;
                     case Units.SpeedUnits.KilometersPerHour:
-                        SpeedUnits.Items.Add(new RadioButton()
+                        SpeedUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_kph,
-                            Tag = speedUnit.GetStringValue(),
-                            GroupName = nameof(SpeedUnits)
+                            Tag = speedUnit.GetStringValue()
                         });
                         break;
                     case Units.SpeedUnits.MetersPerSecond:
-                        SpeedUnits.Items.Add(new RadioButton()
+                        SpeedUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_msec,
-                            Tag = speedUnit.GetStringValue(),
-                            GroupName = nameof(SpeedUnits)
+                            Tag = speedUnit.GetStringValue()
                         });
                         break;
                     case Units.SpeedUnits.Knots:
-                        SpeedUnits.Items.Add(new RadioButton()
+                        SpeedUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_knots,
-                            Tag = speedUnit.GetStringValue(),
-                            GroupName = nameof(SpeedUnits)
+                            Tag = speedUnit.GetStringValue()
                         });
                         break;
                 }
             }
-            SpeedUnits.MaxColumns = Math.Max(speedValues.Length, 1);
 
             var distanceValues = Enum.GetValues(typeof(Units.DistanceUnits));
             foreach (var enumVal in distanceValues)
@@ -132,24 +124,21 @@ namespace SimpleWeather.NET.Preferences
                 {
                     default:
                     case Units.DistanceUnits.Miles:
-                        DistanceUnits.Items.Add(new RadioButton()
+                        DistanceUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_miles,
-                            Tag = distanceUnit.GetStringValue(),
-                            GroupName = nameof(DistanceUnits)
+                            Tag = distanceUnit.GetStringValue()
                         });
                         break;
                     case Units.DistanceUnits.Kilometers:
-                        DistanceUnits.Items.Add(new RadioButton()
+                        DistanceUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_kilometers,
-                            Tag = distanceUnit.GetStringValue(),
-                            GroupName = nameof(DistanceUnits)
+                            Tag = distanceUnit.GetStringValue()
                         });
                         break;
                 }
             }
-            DistanceUnits.MaxColumns = Math.Max(distanceValues.Length, 1);
 
             var precipitationValues = Enum.GetValues(typeof(Units.PrecipitationUnits));
             foreach (var enumVal in precipitationValues)
@@ -159,24 +148,21 @@ namespace SimpleWeather.NET.Preferences
                 {
                     default:
                     case Units.PrecipitationUnits.Inches:
-                        PrecipitationUnits.Items.Add(new RadioButton()
+                        PrecipitationUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_in,
-                            Tag = precipitationUnit.GetStringValue(),
-                            GroupName = nameof(PrecipitationUnits)
+                            Tag = precipitationUnit.GetStringValue()
                         });
                         break;
                     case Units.PrecipitationUnits.Millimeters:
-                        PrecipitationUnits.Items.Add(new RadioButton()
+                        PrecipitationUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_mm,
-                            Tag = precipitationUnit.GetStringValue(),
-                            GroupName = nameof(PrecipitationUnits)
+                            Tag = precipitationUnit.GetStringValue()
                         });
                         break;
                 }
             }
-            PrecipitationUnits.MaxColumns = Math.Max(precipitationValues.Length, 1);
 
             var pressureValues = Enum.GetValues(typeof(Units.PressureUnits));
             foreach (var enumVal in pressureValues)
@@ -186,32 +172,28 @@ namespace SimpleWeather.NET.Preferences
                 {
                     default:
                     case Units.PressureUnits.InHg:
-                        PressureUnits.Items.Add(new RadioButton()
+                        PressureUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_inHg,
-                            Tag = pressureUnit.GetStringValue(),
-                            GroupName = nameof(PressureUnits)
+                            Tag = pressureUnit.GetStringValue()
                         });
                         break;
                     case Units.PressureUnits.Millibar:
-                        PressureUnits.Items.Add(new RadioButton()
+                        PressureUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_mBar,
-                            Tag = pressureUnit.GetStringValue(),
-                            GroupName = nameof(PressureUnits)
+                            Tag = pressureUnit.GetStringValue()
                         });
                         break;
                     case Units.PressureUnits.MmHg:
-                        PressureUnits.Items.Add(new RadioButton()
+                        PressureUnits.Items.Add(new SegmentedItem()
                         {
                             Content = ResUnits.unit_mmHg,
-                            Tag = pressureUnit.GetStringValue(),
-                            GroupName = nameof(PressureUnits)
+                            Tag = pressureUnit.GetStringValue()
                         });
                         break;
                 }
             }
-            PressureUnits.MaxColumns = Math.Max(pressureValues.Length, 1);
 
             ResetTitle.Text = App.Current.ResLoader.GetString("pref_title_resetunits");
             ResetImperialUnits.Content = App.Current.ResLoader.GetString("default_units_imperial");
@@ -222,7 +204,7 @@ namespace SimpleWeather.NET.Preferences
         {
             TemperatureUnits.SelectionChanged += (s, e) =>
             {
-                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                if (s is Segmented segm && segm.SelectedItem is SegmentedItem item)
                 {
                     SettingsManager.TemperatureUnit = item.Tag.ToString();
                     UnitsChanged = true;
@@ -230,7 +212,7 @@ namespace SimpleWeather.NET.Preferences
             };
             SpeedUnits.SelectionChanged += (s, e) =>
             {
-                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                if (s is Segmented segm && segm.SelectedItem is SegmentedItem item)
                 {
                     SettingsManager.SpeedUnit = item.Tag.ToString();
                     UnitsChanged = true;
@@ -238,7 +220,7 @@ namespace SimpleWeather.NET.Preferences
             };
             DistanceUnits.SelectionChanged += (s, e) =>
             {
-                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                if (s is Segmented segm && segm.SelectedItem is SegmentedItem item)
                 {
                     SettingsManager.DistanceUnit = item.Tag.ToString();
                     UnitsChanged = true;
@@ -246,7 +228,7 @@ namespace SimpleWeather.NET.Preferences
             };
             PrecipitationUnits.SelectionChanged += (s, e) =>
             {
-                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                if (s is Segmented segm && segm.SelectedItem is SegmentedItem item)
                 {
                     SettingsManager.PrecipitationUnit = item.Tag.ToString();
                     UnitsChanged = true;
@@ -254,7 +236,7 @@ namespace SimpleWeather.NET.Preferences
             };
             PressureUnits.SelectionChanged += (s, e) =>
             {
-                if (s is muxc.RadioButtons rbs && rbs.SelectedItem is RadioButton item)
+                if (s is Segmented segm && segm.SelectedItem is SegmentedItem item)
                 {
                     SettingsManager.PressureUnit = item.Tag.ToString();
                     UnitsChanged = true;
@@ -264,11 +246,11 @@ namespace SimpleWeather.NET.Preferences
 
         private void RestoreSettings()
         {
-            TemperatureUnits.SelectedItem = TemperatureUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.TemperatureUnit, (btn as RadioButton).Tag?.ToString()));
-            SpeedUnits.SelectedItem = SpeedUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.SpeedUnit, (btn as RadioButton).Tag?.ToString()));
-            DistanceUnits.SelectedItem = DistanceUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.DistanceUnit, (btn as RadioButton).Tag?.ToString()));
-            PrecipitationUnits.SelectedItem = PrecipitationUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.PrecipitationUnit, (btn as RadioButton).Tag?.ToString()));
-            PressureUnits.SelectedItem = PressureUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.PressureUnit, (btn as RadioButton).Tag?.ToString()));
+            TemperatureUnits.SelectedItem = TemperatureUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.TemperatureUnit, (btn as SegmentedItem).Tag?.ToString()));
+            SpeedUnits.SelectedItem = SpeedUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.SpeedUnit, (btn as SegmentedItem).Tag?.ToString()));
+            DistanceUnits.SelectedItem = DistanceUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.DistanceUnit, (btn as SegmentedItem).Tag?.ToString()));
+            PrecipitationUnits.SelectedItem = PrecipitationUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.PrecipitationUnit, (btn as SegmentedItem).Tag?.ToString()));
+            PressureUnits.SelectedItem = PressureUnits.Items.FirstOrDefault(btn => string.Equals(SettingsManager.PressureUnit, (btn as SegmentedItem).Tag?.ToString()));
         }
 
         private void ResetImperialUnits_Click(object sender, RoutedEventArgs e)

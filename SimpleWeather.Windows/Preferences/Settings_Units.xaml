@@ -15,15 +15,26 @@
     mc:Ignorable="d">
 
     <Page.Resources>
-        <Style x:Key="RadioButtonsStyle" TargetType="muxc:RadioButtons">
-            <Setter Property="HeaderTemplate">
-                <Setter.Value>
-                    <DataTemplate>
-                        <TextBlock Padding="0,5" Text="{Binding}" />
-                    </DataTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///CommunityToolkit.WinUI.Controls.Segmented/Segmented/Segmented.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="UnitHeaderStyle" TargetType="mtuc:HeaderedContentControl">
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <TextBlock Padding="0,5" Text="{Binding}" />
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style
+                x:Key="UnitsSegmentStyle"
+                BasedOn="{StaticResource DefaultSegmentedStyle}"
+                TargetType="mtuc:Segmented">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </ResourceDictionary>
     </Page.Resources>
 
     <Grid>
@@ -37,46 +48,36 @@
                     d:Text="Units"
                     Style="{ThemeResource SettingTitleStyle}"
                     Text="{helpers:StringRes Name='pref_title_units'}" />
-                <muxc:RadioButtons x:Name="TemperatureUnits">
-                    <muxc:RadioButtons.Header>
-                        <TextBlock
-                            Padding="0,5"
-                            d:Text="Temperature"
-                            Text="{helpers:StringRes Name='label_temperature'}" />
-                    </muxc:RadioButtons.Header>
-                </muxc:RadioButtons>
-                <muxc:RadioButtons x:Name="SpeedUnits">
-                    <muxc:RadioButtons.Header>
-                        <TextBlock
-                            Padding="0,5"
-                            d:Text="Speed"
-                            Text="{helpers:StringRes Name='label_speed'}" />
-                    </muxc:RadioButtons.Header>
-                </muxc:RadioButtons>
-                <muxc:RadioButtons x:Name="DistanceUnits">
-                    <muxc:RadioButtons.Header>
-                        <TextBlock
-                            Padding="0,5"
-                            d:Text="Distance"
-                            Text="{helpers:StringRes Name='label_distance'}" />
-                    </muxc:RadioButtons.Header>
-                </muxc:RadioButtons>
-                <muxc:RadioButtons x:Name="PrecipitationUnits">
-                    <muxc:RadioButtons.Header>
-                        <TextBlock
-                            Padding="0,5"
-                            d:Text="Precipitation"
-                            Text="{helpers:StringRes Name='label_precipitation'}" />
-                    </muxc:RadioButtons.Header>
-                </muxc:RadioButtons>
-                <muxc:RadioButtons x:Name="PressureUnits">
-                    <muxc:RadioButtons.Header>
-                        <TextBlock
-                            Padding="0,5"
-                            d:Text="Pressure"
-                            Text="{helpers:StringRes Name='label_pressure'}" />
-                    </muxc:RadioButtons.Header>
-                </muxc:RadioButtons>
+                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_temperature'}" Style="{ThemeResource UnitHeaderStyle}">
+                    <mtuc:Segmented
+                        x:Name="TemperatureUnits"
+                        SelectionMode="Single"
+                        Style="{ThemeResource UnitsSegmentStyle}" />
+                </mtuc:HeaderedContentControl>
+                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_speed'}" Style="{ThemeResource UnitHeaderStyle}">
+                    <mtuc:Segmented
+                        x:Name="SpeedUnits"
+                        SelectionMode="Single"
+                        Style="{ThemeResource UnitsSegmentStyle}" />
+                </mtuc:HeaderedContentControl>
+                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_distance'}" Style="{ThemeResource UnitHeaderStyle}">
+                    <mtuc:Segmented
+                        x:Name="DistanceUnits"
+                        SelectionMode="Single"
+                        Style="{ThemeResource UnitsSegmentStyle}" />
+                </mtuc:HeaderedContentControl>
+                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_precipitation'}" Style="{ThemeResource UnitHeaderStyle}">
+                    <mtuc:Segmented
+                        x:Name="PrecipitationUnits"
+                        SelectionMode="Single"
+                        Style="{ThemeResource UnitsSegmentStyle}" />
+                </mtuc:HeaderedContentControl>
+                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_pressure'}" Style="{ThemeResource UnitHeaderStyle}">
+                    <mtuc:Segmented
+                        x:Name="PressureUnits"
+                        SelectionMode="Single"
+                        Style="{ThemeResource UnitsSegmentStyle}" />
+                </mtuc:HeaderedContentControl>
                 <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
                 <TextBlock
                     x:Name="ResetTitle"
