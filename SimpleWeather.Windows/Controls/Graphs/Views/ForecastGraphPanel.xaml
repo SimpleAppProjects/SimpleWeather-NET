@@ -10,7 +10,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     xmlns:uiControls="using:Microsoft.UI.Xaml.Controls"
     x:Name="Control"
     d:DataContext="{d:DesignInstance Type=local:ForecastGraphDataCreator}"

@@ -7,11 +7,11 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:localControls="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mtuc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:muxm="using:Microsoft.UI.Xaml.Media"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.Converters"
     mc:Ignorable="d">
     <!--  Converters Start  -->
     <toolkitConverters:BoolNegationConverter x:Key="inverseBoolConverter" />

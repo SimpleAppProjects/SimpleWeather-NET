@@ -6,7 +6,7 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mtuc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.NET.Utils"

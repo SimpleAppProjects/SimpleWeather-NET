@@ -28,7 +28,8 @@
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="$(WinSDKRefVersion)" />
     <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="$(WinSDKRefVersion)" />
 
-    <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Helpers" Version="$(WinToolkitVersion)" />
     <PackageReference Include="Sentry" Version="$(SentryVersion)" />
   </ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">

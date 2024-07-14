@@ -1,7 +1,4 @@
-﻿using CommunityToolkit.WinUI.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Windows.ApplicationModel;
 using Windows.Foundation.Metadata;
 using Windows.System.Profile;
 
@@ -20,21 +17,16 @@ namespace SimpleWeather.NET.Shared.Helpers
 
         public static DeviceTypes DeviceType
         {
-            get 
+            get
             {
-                switch (AnalyticsInfo.VersionInfo.DeviceFamily)
+                return AnalyticsInfo.VersionInfo.DeviceFamily switch
                 {
-                    case "Windows.Desktop":
-                        return DeviceTypes.Desktop;
-                    case "Windows.Mobile":
-                        return DeviceTypes.Mobile;
-                    case "Windows.Xbox":
-                        return DeviceTypes.Xbox;
-                    case "Windows.IoT":
-                        return DeviceTypes.IoT;
-                    default:
-                        return DeviceTypes.Other;
-                }
+                    "Windows.Desktop" => DeviceTypes.Desktop,
+                    "Windows.Mobile" => DeviceTypes.Mobile,
+                    "Windows.Xbox" => DeviceTypes.Xbox,
+                    "Windows.IoT" => DeviceTypes.IoT,
+                    _ => DeviceTypes.Other,
+                };
             }
         }
 
@@ -54,12 +46,12 @@ namespace SimpleWeather.NET.Shared.Helpers
             return true;
         }
 
-        public static OSVersion OSVersion
+        public static PackageVersion OSVersion
         {
             get
             {
                 ulong version = ulong.Parse(AnalyticsInfo.VersionInfo.DeviceFamilyVersion);
-                return new OSVersion
+                return new PackageVersion
                 {
                     Major = (ushort)((version & 0xFFFF000000000000L) >> 48),
                     Minor = (ushort)((version & 0x0000FFFF00000000L) >> 32),

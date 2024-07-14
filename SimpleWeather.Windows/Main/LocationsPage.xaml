@@ -10,7 +10,7 @@
     xmlns:locData="using:SimpleWeather.LocationData"
     xmlns:localcontrols="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.Converters"
     xmlns:ui="using:Microsoft.UI.Xaml.Controls"
     xmlns:viewModels="using:SimpleWeather.NET.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
@@ -82,7 +82,7 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
             Orientation="Vertical"
-            Visibility="{x:Bind LocationsViewModel.HasLocations, Mode=OneWay, Converter={StaticResource inverseBoolConverter}}">
+            Visibility="{x:Bind LocationsViewModel.HasLocations, Mode=OneWay, Converter={StaticResource booleanToVisibilityConverter}, ConverterParameter='True'}">
             <SymbolIcon Margin="8" Symbol="Add" />
             <TextBlock
                 d:Text="Location not set. Please add a location"
@@ -126,7 +126,13 @@
                     ItemsPanel="{StaticResource LocationPanelItemPanelTemplate}"
                     ItemsSource="{x:Bind PanelAdapter.FavPanels, Mode=OneWay}"
                     Loaded="LocationsPanel_Loaded"
-                    SelectionMode="None" />
+                    SelectionMode="None">
+                    <GridView.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource DefaultGridViewItemStyle}" TargetType="GridViewItem">
+                            <Setter Property="Margin" Value="5,5,5,5" />
+                        </Style>
+                    </GridView.ItemContainerStyle>
+                </GridView>
             </StackPanel>
         </ScrollView>
         <Button

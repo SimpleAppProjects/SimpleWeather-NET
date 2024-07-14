@@ -1,6 +1,6 @@
 ﻿#if WINDOWS
-using CommunityToolkit.Common.Collections;
 using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Collections;
 #else
 using SimpleWeather.Maui.IncrementalLoadingCollection;
 #endif
@@ -15,7 +15,6 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System.ComponentModel;
-using System.Collections;
 
 namespace SimpleWeather.NET.Controls
 {

@@ -10,7 +10,7 @@
     xmlns:localcontrols="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     xmlns:viewModels="using:SimpleWeather.NET.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
     DataContext="{x:Bind ForecastsView.SelectedForecasts, Mode=OneWay}"

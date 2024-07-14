@@ -269,18 +269,22 @@ namespace SimpleWeather.NET.Main
                 if (StackWidth >= 1280)
                 {
                     WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 4;
+                    WrapsGrid.MaximumRowsOrColumns = 4;
                 }
                 else if (StackWidth >= 1007)
                 {
                     WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 3;
+                    WrapsGrid.MaximumRowsOrColumns = 3;
                 }
                 else if (StackWidth >= 640)
                 {
                     WrapsGrid.ItemWidth = (StackWidth - WrapsGrid.Margin.Left - WrapsGrid.Margin.Right) / 2;
+                    WrapsGrid.MaximumRowsOrColumns = 2;
                 }
                 else
                 {
                     WrapsGrid.ItemWidth = Double.NaN;
+                    WrapsGrid.MaximumRowsOrColumns = 1;
                 }
             }
         }
@@ -537,6 +541,8 @@ namespace SimpleWeather.NET.Main
                     {
                         presenter.CheckBoxBrush = brush as Brush;
                     }
+
+                    presenter.HorizontalContentAlignment = HorizontalAlignment.Stretch;
                 }
 
                 if (container != null)

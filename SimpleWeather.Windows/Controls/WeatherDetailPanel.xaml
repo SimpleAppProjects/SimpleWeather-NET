@@ -9,8 +9,8 @@
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     x:Name="Control"
     mc:Ignorable="d">

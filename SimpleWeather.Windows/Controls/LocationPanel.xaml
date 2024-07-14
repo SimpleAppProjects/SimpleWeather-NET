@@ -9,8 +9,9 @@
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.UI.Converters"
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkitConverters="using:CommunityToolkit.WinUI.Converters"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.NET.Utils"
     xmlns:weatherData="using:SimpleWeather.WeatherData"
@@ -30,10 +31,19 @@
                     <Color x:Key="DropShadowColor">Gray</Color>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
+            <toolkit:AttachedDropShadow
+                x:Key="CommonShadow"
+                BlurRadius="15.0"
+                CastTo="{x:Bind ShadowTarget, Mode=OneWay}"
+                Opacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
+                Color="{ThemeResource DropShadowColor}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid x:Name="MainGrid" RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}">
+    <Grid
+        x:Name="MainGrid"
+        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+        RequestedTheme="{x:Bind ControlTheme, Mode=OneWay}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
@@ -73,6 +83,10 @@
                 </LinearGradientBrush>
             </Grid.Background>
         </Grid>
+        <Border
+            x:Name="ShadowTarget"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="3" />
         <muxc:ProgressRing
             Grid.RowSpan="2"
             Grid.ColumnSpan="3"
@@ -97,19 +111,15 @@
                 ShowAsMonochrome="True"
                 UriSource="/Assets/outline_near_me_black_24dp.png"
                 Visibility="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(ViewModel.LocationType), Mode=OneWay}" />
-            <toolkitControls:DropShadowPanel
-                BlurRadius="15.0"
-                ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                Color="{ThemeResource DropShadowColor}">
-                <TextBlock
-                    x:Name="LocationName"
-                    d:Text="San Fernando del Valle de Catamarca, Argentina"
-                    FontSize="14"
-                    FontWeight="Medium"
-                    MaxLines="1"
-                    Text="{x:Bind ViewModel.LocationName, Mode=OneWay}"
-                    TextTrimming="CharacterEllipsis" />
-            </toolkitControls:DropShadowPanel>
+            <TextBlock
+                x:Name="LocationName"
+                d:Text="San Fernando del Valle de Catamarca, Argentina"
+                toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                FontSize="14"
+                FontWeight="Medium"
+                MaxLines="1"
+                Text="{x:Bind ViewModel.LocationName, Mode=OneWay}"
+                TextTrimming="CharacterEllipsis" />
         </StackPanel>
         <StackPanel
             Grid.Row="1"
@@ -119,33 +129,25 @@
             VerticalAlignment="Center"
             Orientation="Vertical"
             Visibility="{x:Bind ViewModel.IsWeatherValid, Mode=OneWay}">
-            <toolkitControls:DropShadowPanel
+            <TextBlock
+                x:Name="CurrentTemp"
+                Padding="5,0"
                 VerticalAlignment="Center"
-                BlurRadius="15.0"
-                ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                Color="{ThemeResource DropShadowColor}">
-                <TextBlock
-                    x:Name="CurrentTemp"
-                    Padding="5,0"
-                    d:Text="70°F"
-                    FontSize="36"
-                    FontWeight="Medium"
-                    Text="{x:Bind ViewModel.CurrTemp, Mode=OneWay}" />
-            </toolkitControls:DropShadowPanel>
-            <toolkitControls:DropShadowPanel
-                BlurRadius="15.0"
-                ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                Color="{ThemeResource DropShadowColor}">
-                <TextBlock
-                    x:Name="CurWeather"
-                    Padding="5,0"
-                    d:Text="Mostly Cloudy"
-                    FontSize="16"
-                    FontWeight="Medium"
-                    MaxLines="1"
-                    Text="{x:Bind ViewModel.CurrWeather, Mode=OneWay}"
-                    TextTrimming="CharacterEllipsis" />
-            </toolkitControls:DropShadowPanel>
+                d:Text="70°F"
+                toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                FontSize="36"
+                FontWeight="Medium"
+                Text="{x:Bind ViewModel.CurrTemp, Mode=OneWay}" />
+            <TextBlock
+                x:Name="CurWeather"
+                Padding="5,0"
+                d:Text="Mostly Cloudy"
+                toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                FontSize="16"
+                FontWeight="Medium"
+                MaxLines="1"
+                Text="{x:Bind ViewModel.CurrWeather, Mode=OneWay}"
+                TextTrimming="CharacterEllipsis" />
         </StackPanel>
         <StackPanel
             Grid.Row="1"
@@ -160,20 +162,16 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                    Color="{ThemeResource DropShadowColor}">
-                    <TextBlock
-                        x:Name="HiTemp"
-                        HorizontalAlignment="Right"
-                        d:Text="80°"
-                        FontSize="20"
-                        FontWeight="Medium"
-                        HorizontalTextAlignment="Right"
-                        Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                        TextAlignment="Right" />
-                </toolkitControls:DropShadowPanel>
+                <TextBlock
+                    x:Name="HiTemp"
+                    HorizontalAlignment="Right"
+                    d:Text="80°"
+                    toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                    FontSize="20"
+                    FontWeight="Medium"
+                    HorizontalTextAlignment="Right"
+                    Text="{x:Bind ViewModel.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                    TextAlignment="Right" />
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
@@ -188,20 +186,16 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                    Color="{ThemeResource DropShadowColor}">
-                    <TextBlock
-                        x:Name="LoTemp"
-                        HorizontalAlignment="Right"
-                        d:Text="80°"
-                        FontSize="20"
-                        FontWeight="Medium"
-                        HorizontalTextAlignment="Right"
-                        Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                        TextAlignment="Right" />
-                </toolkitControls:DropShadowPanel>
+                <TextBlock
+                    x:Name="LoTemp"
+                    HorizontalAlignment="Right"
+                    d:Text="80°"
+                    toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                    FontSize="20"
+                    FontWeight="Medium"
+                    HorizontalTextAlignment="Right"
+                    Text="{x:Bind ViewModel.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
+                    TextAlignment="Right" />
                 <local:IconControl
                     Grid.Column="1"
                     Width="20"
@@ -233,19 +227,15 @@
                     IconProvider="wi-erik-flowers"
                     ShowAsMonochrome="True"
                     WeatherIcon="{x:Bind ViewModel.PoPIcon, Mode=OneWay}" />
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                    Color="{ThemeResource DropShadowColor}">
-                    <TextBlock
-                        x:Name="PoPCondition"
-                        Padding="5,0"
-                        VerticalAlignment="Center"
-                        d:Text="70%"
-                        FontSize="20"
-                        FontWeight="Medium"
-                        Text="{x:Bind ViewModel.PoP, TargetNullValue='&#x2022;', Mode=OneWay}" />
-                </toolkitControls:DropShadowPanel>
+                <TextBlock
+                    x:Name="PoPCondition"
+                    Padding="5,0"
+                    VerticalAlignment="Center"
+                    d:Text="70%"
+                    toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                    FontSize="20"
+                    FontWeight="Medium"
+                    Text="{x:Bind ViewModel.PoP, TargetNullValue='&#x2022;', Mode=OneWay}" />
             </StackPanel>
             <StackPanel
                 Grid.Column="1"
@@ -265,19 +255,15 @@
                         <RotateTransform d:Angle="90" Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay}" />
                     </local:IconControl.RenderTransform>
                 </local:IconControl>
-                <toolkitControls:DropShadowPanel
-                    BlurRadius="15.0"
-                    ShadowOpacity="{x:Bind ControlShadowOpacity, Mode=OneWay}"
-                    Color="{ThemeResource DropShadowColor}">
-                    <TextBlock
-                        x:Name="WindCondition"
-                        Padding="5,0"
-                        VerticalAlignment="Center"
-                        d:Text="7 mph"
-                        FontSize="20"
-                        FontWeight="Medium"
-                        Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}" />
-                </toolkitControls:DropShadowPanel>
+                <TextBlock
+                    x:Name="WindCondition"
+                    Padding="5,0"
+                    VerticalAlignment="Center"
+                    d:Text="7 mph"
+                    toolkit:Effects.Shadow="{StaticResource CommonShadow}"
+                    FontSize="20"
+                    FontWeight="Medium"
+                    Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}" />
             </StackPanel>
         </StackPanel>
         <TextBlock

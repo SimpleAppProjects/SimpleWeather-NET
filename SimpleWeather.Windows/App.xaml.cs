@@ -150,7 +150,7 @@ namespace SimpleWeather.NET
             RegisterSettingsListener();
 
             AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, DeviceTypeHelper.DeviceType.ToString().ToLowerInvariant());
-            AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION, DeviceTypeHelper.OSVersion.ToString());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION, DeviceTypeHelper.OSVersion.ToFormattedString());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION_CODE, DeviceTypeHelper.OSVersion.ToVersionCode());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION, Package.Current.Id.Version.ToFormattedString());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION_CODE, Package.Current.Id.Version.ToVersionCode());

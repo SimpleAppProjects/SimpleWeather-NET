@@ -66,12 +66,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="CommunityToolkit.WinUI" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Collections" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.HeaderedControls" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.Segmented" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Converters" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Helpers" Version="$(WinToolkitVersion)" />
+    <PackageReference Include="CommunityToolkit.WinUI.Media" Version="$(WinToolkitVersion)" />
     <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Core" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.Layout" Version="7.1.2" />
-    <PackageReference Include="CommunityToolkit.WinUI.UI.Media" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="$(WinToolkitVersion)" />
     <PackageReference Include="SkiaSharp.Extended" Version="2.0.0" />
     <PackageReference Include="SkiaSharp.Skottie" Version="2.88.8" />
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="2.88.8" />
@@ -190,7 +195,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell.exe -file &quot;$(ProjectDir)end-process.ps1&quot;&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)InProcBackgroundTask\InProcBackgroundTask.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Widgets\InProcBackgroundTask.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
+    <Exec Command="powershell.exe -file &quot;$(ProjectDir)end-process.ps1&quot;&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)InProcBackgroundTask\InProcBackgroundTask.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Widgets\WidgetProvider.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
   </Target>
 
   <Import Project="..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />

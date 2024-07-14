@@ -7,7 +7,7 @@
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     MinWidth="400"
     d:DesignHeight="400"
     d:DesignWidth="600"

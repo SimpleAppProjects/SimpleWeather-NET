@@ -5,7 +5,7 @@
     xmlns:localControls="using:SimpleWeather.NET.Controls"
     xmlns:localGraphs="using:SimpleWeather.NET.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:mtuc="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     mc:Ignorable="d">
 

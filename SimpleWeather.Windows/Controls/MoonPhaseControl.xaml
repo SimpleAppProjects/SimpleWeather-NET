@@ -7,8 +7,8 @@
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:toolkitTriggers="using:CommunityToolkit.WinUI.UI.Triggers"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
     xmlns:wicons="using:SimpleWeather.Icons"
     x:Name="Control"
     MinWidth="450"
@@ -178,7 +178,7 @@
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <toolkitTriggers:ControlSizeTrigger
+                        <toolkit:ControlSizeTrigger
                             MinWidth="0"
                             MaxWidth="640"
                             TargetElement="{x:Bind Control}" />
@@ -192,7 +192,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <toolkitTriggers:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
+                        <toolkit:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="MoonriseIcon.Height" Value="45" />

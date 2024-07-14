@@ -8,8 +8,8 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
-    xmlns:toolkitTriggers="using:CommunityToolkit.WinUI.UI.Triggers"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
     x:Name="Control"
     MinWidth="340"
     MinHeight="150"
@@ -108,7 +108,7 @@
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">
                     <VisualState.StateTriggers>
-                        <toolkitTriggers:ControlSizeTrigger
+                        <toolkit:ControlSizeTrigger
                             MinWidth="0"
                             MaxWidth="640"
                             TargetElement="{x:Bind Control}" />
@@ -124,7 +124,7 @@
                 </VisualState>
                 <VisualState x:Name="Desktop">
                     <VisualState.StateTriggers>
-                        <toolkitTriggers:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
+                        <toolkit:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="TreePollenLabel.FontSize" Value="18" />

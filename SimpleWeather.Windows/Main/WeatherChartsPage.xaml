@@ -8,7 +8,7 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Main"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.UI.Controls"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     xmlns:viewModels="using:SimpleWeather.NET.ViewModels"
     d:Background="{ThemeResource RegionBrush}"
     mc:Ignorable="d">

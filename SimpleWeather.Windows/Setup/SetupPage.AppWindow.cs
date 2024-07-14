@@ -1,10 +1,8 @@
-﻿using CommunityToolkit.WinUI.UI;
+﻿using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using SimpleWeather.NET.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using WinRT.Interop;
 using WinUIEx;
