@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
-    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <RootNamespace>SimpleWeather.BackgroundTasks</RootNamespace>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm64</RuntimeIdentifiers>
@@ -11,31 +11,17 @@
   <!-- CsWinRT properties -->
   <PropertyGroup>
     <CsWinRTComponent>true</CsWinRTComponent>
-    <CsWinRTWindowsMetadata>10.0.19041.0</CsWinRTWindowsMetadata>
+    <CsWinRTGeneratedFilesDir>$([MSBuild]::NormalizeDirectory('$(BuildOutDir)', '$(MSBuildProjectName)', 'bin'))\Generated Files</CsWinRTGeneratedFilesDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Windows.CsWinRT" Version="$(CsWinRTVersion)" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
-    <PackageReference Include="Vanara.PInvoke.Ole" Version="4.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!--
-		If you encounter this error message:
-		
-			error NETSDK1148: A referenced assembly was compiled using a newer version of Microsoft.Windows.SDK.NET.dll. Please update to a newer .NET SDK in order to reference this assembly.
-
-		This means that the two packages below must be aligned with the "build" version number of
-		the "Microsoft.Windows.SDK.BuildTools" package above, and the "revision" version number
-		must be the highest found in https://www.nuget.org/packages/Microsoft.Windows.SDK.NET.Ref.
-		-->
-    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="$(WinSDKRefVersion)" />
-    <FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="$(WinSDKRefVersion)" />
+    <PackageReference Include="Vanara.PInvoke.Ole" Version="4.0.4" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

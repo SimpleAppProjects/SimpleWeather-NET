@@ -34,18 +34,20 @@
 
   <!-- Maui -->
   <PropertyGroup>
-    <MauiVersion>8.0.70</MauiVersion>
+    <MauiVersion>8.0.90</MauiVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <SentryVersion>4.9.0</SentryVersion>
+    <SentryVersion>4.10.2</SentryVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <WinToolkitVersion>8.0.240109</WinToolkitVersion>
-    <WinAppSDKVersion>1.5.240627000</WinAppSDKVersion>
+    <WinToolkitVersion>8.1.240916</WinToolkitVersion>
+    <WinAppSDKVersion>1.5.240802000</WinAppSDKVersion>
+    <CsWinRTVersion>2.0.8</CsWinRTVersion>
     <WinSDKBuildToolsVersion>10.0.22621.3233</WinSDKBuildToolsVersion>
-    <WinSDKRefVersion>10.0.22621.33</WinSDKRefVersion>
+    <WindowsSdkPackageVersion>10.0.22621.33</WindowsSdkPackageVersion>
+    <MvvmToolkitVersion>8.2.2</MvvmToolkitVersion>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.22621.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
@@ -68,8 +68,6 @@
 	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="$(WinSDKRefVersion)" />
-		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" TargetingPackVersion="$(WinSDKRefVersion)" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />

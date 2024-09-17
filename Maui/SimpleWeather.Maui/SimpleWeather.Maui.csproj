@@ -112,7 +112,7 @@
 		<PackageReference Include="TimberLog" Version="1.0.0" />
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.0.0" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.1" />
 		<PackageReference Include="CompiledBindings.MAUI" Version="1.0.18" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.1" />
 		<PackageReference Include="KeyedSemaphores" Version="5.0.0" />
