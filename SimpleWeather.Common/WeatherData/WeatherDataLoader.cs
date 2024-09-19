@@ -32,6 +32,11 @@ namespace SimpleWeather.Common.WeatherData
             UpdateLocation(location);
         }
 
+        public bool IsLocationValid()
+        {
+            return location?.IsValid() == true;
+        }
+
         public void UpdateLocation(LocationData.LocationData locationData)
         {
             if (locationData == null || !locationData.IsValid())

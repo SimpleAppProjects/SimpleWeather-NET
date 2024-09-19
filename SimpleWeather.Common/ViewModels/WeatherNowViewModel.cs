@@ -63,6 +63,13 @@ namespace SimpleWeather.Common.ViewModels
             private set => SetProperty(ref errorMessages, value);
         }
 
+        private bool isInitialized = false;
+        public bool IsInitialized
+        {
+            get => isInitialized;
+            private set => SetProperty(ref isInitialized, value);
+        }
+
         public WeatherNowViewModel(SettingsManager settingsManager, WeatherProviderManager weatherProviderManager)
         {
             this.SettingsManager = settingsManager;
@@ -77,6 +84,7 @@ namespace SimpleWeather.Common.ViewModels
             {
                 Weather = UiState?.Weather;
                 ErrorMessages = UiState?.ErrorMessages;
+                IsInitialized = UiState?.IsInitialized ?? false;
             }
         }
 
@@ -114,6 +122,8 @@ namespace SimpleWeather.Common.ViewModels
                 }
 
                 UpdateLocation(locData);
+
+                UiState = UiState with { IsInitialized = true };
             });
         }
 
@@ -136,13 +146,36 @@ namespace SimpleWeather.Common.ViewModels
                         await SettingsManager.UpdateLocation(locationResult.Data);
                         weatherDataLoader.UpdateLocation(locationResult.Data);
                     }
+                    else if (locationResult is LocationResult.NotChanged)
+                    {
+                        locationResult?.Data?.Let(data =>
+                        {
+                            if (data.IsValid())
+                            {
+                                if (!weatherDataLoader.IsLocationValid())
+                                {
+                                    weatherDataLoader.UpdateLocation(data);
+                                    UiState = UiState with { LocationData = data };
+                                }
+                            }
+                        });
+                    }
                 }
 
-                var result = await weatherDataLoader.LoadWeatherResult(
-                    new WeatherRequest.Builder()
-                    .ForceRefresh(forceRefresh)
-                    .LoadAlerts()
-                    .Build());
+                WeatherResult result;
+
+                if (weatherDataLoader.IsLocationValid())
+                {
+                    result = await weatherDataLoader.LoadWeatherResult(
+                        new WeatherRequest.Builder()
+                        .ForceRefresh(forceRefresh)
+                        .LoadAlerts()
+                        .Build());
+                }
+                else
+                {
+                    result = new WeatherResult.NoWeather();
+                }
 
                 UpdateWeatherState(result);
             });
@@ -343,7 +376,8 @@ namespace SimpleWeather.Common.ViewModels
         LocationData.LocationData LocationData = null,
         bool NoLocationAvailable = false,
         bool ShowDisconnectedView = false,
-        bool IsImageLoading = false
+        bool IsImageLoading = false,
+        bool IsInitialized = false
     )
     {
         public IEnumerable<ErrorMessage> ErrorMessages { get; init; } = new List<ErrorMessage>(0);
