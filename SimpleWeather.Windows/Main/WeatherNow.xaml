@@ -484,22 +484,29 @@
                             Style="{ThemeResource SectionLabelStyle}"
                             Tag="{x:Bind uwpUtils:FeatureSettings.KEY_WEATHERDETAILS, Mode=OneTime}"
                             Visibility="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource collectionVisibilityConverter}}">
-                            <ItemsControl
+                            <ItemsView
                                 x:Name="DetailsPanel"
-                                HorizontalAlignment="Center"
-                                HorizontalContentAlignment="Center"
-                                ItemsSource="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}">
-                                <ItemsControl.ItemTemplate>
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                IsItemInvokedEnabled="False"
+                                ItemsSource="{x:Bind WNowViewModel.Weather.WeatherDetails, Mode=OneWay, Converter={StaticResource detailsFilter}}"
+                                SelectionMode="None">
+                                <ItemsView.ItemTemplate>
                                     <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                        <localcontrols:DetailItem HorizontalAlignment="Center" />
+                                        <ItemContainer IsHitTestVisible="False">
+                                            <localcontrols:DetailItem />
+                                        </ItemContainer>
                                     </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <ItemsWrapGrid Orientation="Horizontal" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                                </ItemsView.ItemTemplate>
+                                <ItemsView.Layout>
+                                    <UniformGridLayout
+                                        ItemsJustification="Center"
+                                        ItemsStretch="Fill"
+                                        MinColumnSpacing="8"
+                                        MinItemWidth="250"
+                                        MinRowSpacing="8" />
+                                </ItemsView.Layout>
+                            </ItemsView>
                         </toolkitControls:HeaderedContentControl>
                         <localcontrols:UVControl
                             x:Name="UVContrl"

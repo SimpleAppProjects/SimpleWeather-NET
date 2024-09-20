@@ -236,7 +236,7 @@ namespace SimpleWeather.Common.Controls
                 WeatherDetailsMap.Add(WeatherDetailsType.Pressure, new DetailItemViewModel(WeatherDetailsType.Pressure,
                     String.Format(culture, "{0} {1:0.00} {2}",
                     WeatherUtils.GetPressureStateIcon(WeatherData.atmosphere.pressure_trend),
-                    pressureVal, pressureUnit)));
+                    pressureVal, pressureUnit).TrimStart()));
             }
 
             if (WeatherData.atmosphere.humidity.HasValue)

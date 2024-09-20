@@ -9,8 +9,6 @@
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Name="Control"
-    d:DesignHeight="175"
-    d:DesignWidth="175"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -32,7 +30,6 @@
 
     <Border
         x:Name="ItemBorder"
-        Margin="15"
         Background="{ThemeResource ButtonBackground}"
         BorderBrush="{ThemeResource ButtonBorderBrush}"
         BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
@@ -40,22 +37,20 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock
-                Name="DetailLabel"
-                Grid.Row="0"
-                Padding="8"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <localControls:IconControl
                 x:Name="IconCtrl"
-                Grid.Row="1"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="0"
                 Width="48"
-                Height="48"
-                Margin="7.5"
+                Height="40"
+                Margin="8,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 ForceBitmapIcon="True"
@@ -67,18 +62,24 @@
                     <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />
                 </localControls:IconControl.RenderTransform>
             </localControls:IconControl>
-            <Viewbox
-                Grid.Row="2"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                StretchDirection="DownOnly">
-                <TextBlock
-                    Name="DetailValue"
-                    Padding="8"
-                    FontFamily="{StaticResource WeatherIconsFontFamily}"
-                    Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
-                    TextWrapping="WrapWholeWords" />
-            </Viewbox>
+            <TextBlock
+                Name="DetailLabel"
+                Grid.Row="0"
+                Grid.Column="1"
+                Padding="6,4,6,2"
+                HorizontalAlignment="Left"
+                FontWeight="SemiBold"
+                MaxLines="1"
+                Text="{x:Bind Details.Label, FallbackValue='Label', Mode=OneWay}" />
+            <TextBlock
+                Name="DetailValue"
+                Grid.Row="1"
+                Grid.Column="1"
+                Padding="6,2,6,4"
+                HorizontalAlignment="Left"
+                FontFamily="{StaticResource WeatherIconsFontFamily}"
+                MaxLines="1"
+                Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
@@ -87,10 +88,8 @@
                         <AdaptiveTrigger MinWindowWidth="0" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="13" />
+                        <Setter Target="DetailLabel.FontSize" Value="15" />
                         <Setter Target="DetailValue.FontSize" Value="15" />
-                        <Setter Target="Control.Height" Value="150" />
-                        <Setter Target="Control.Width" Value="150" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -98,10 +97,8 @@
                         <AdaptiveTrigger MinWindowWidth="641" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="DetailLabel.FontSize" Value="16" />
-                        <Setter Target="DetailValue.FontSize" Value="18" />
-                        <Setter Target="Control.Height" Value="175" />
-                        <Setter Target="Control.Width" Value="175" />
+                        <Setter Target="DetailLabel.FontSize" Value="17" />
+                        <Setter Target="DetailValue.FontSize" Value="17" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
