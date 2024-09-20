@@ -1,6 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using System;
 using Windows.Foundation;
 
 namespace SimpleWeather.NET.Helpers
@@ -60,6 +59,11 @@ namespace SimpleWeather.NET.Helpers
             var distToBottom = window.Bounds.Height - (coords.Y + element.ActualSize.Y);
 
             return Math.Min(distToTop, distToBottom);
+        }
+
+        public static Rect ToRect(this FrameworkElement element)
+        {
+            return new Rect(0, 0, double.IsFinite(element.ActualWidth) ? element.ActualWidth : 0, double.IsFinite(element.ActualHeight) ? element.ActualHeight : 0);
         }
     }
 }

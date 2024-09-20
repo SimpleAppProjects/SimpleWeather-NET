@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
+using CommunityToolkit.WinUI.Controls;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -762,13 +763,18 @@ namespace SimpleWeather.NET.Main
             {
                 GotoDetailsPage(false,
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.Control).X + control.ScrollViewer.HorizontalOffset)));
+                e.Handled = true;
             }
             else
             {
-                GotoDetailsPage(false, 0);
+                var point = e.GetPosition(ForecastGraphPanel);
+                var rect = ForecastGraphPanel.ToRect();
+                if (!rect.Contains(point))
+                {
+                    GotoDetailsPage(false, 0);
+                    e.Handled = true;
+                }
             }
-
-            e.Handled = true;
         }
 
         private void HourlyForecastControl_ItemClick(object sender, ItemClickEventArgs e)
@@ -779,8 +785,13 @@ namespace SimpleWeather.NET.Main
 
         private void HourlyForecastControl_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            GotoDetailsPage(true, 0);
-            e.Handled = true;
+            var point = e.GetPosition(HourlyForecastControl);
+            var rect = HourlyForecastControl.ToRect();
+            if (!rect.Contains(point))
+            {
+                GotoDetailsPage(true, 0);
+                e.Handled = true;
+            }
         }
 
         private void RadarWebView_Loaded(object sender, RoutedEventArgs e)
@@ -905,8 +916,26 @@ namespace SimpleWeather.NET.Main
 
         private void ForecastGraphPanel_GraphViewTapped(object sender, TappedRoutedEventArgs e)
         {
-            Frame.Navigate(typeof(WeatherChartsPage), null, new DrillInNavigationTransitionInfo());
-            e.Handled = true;
+            if (sender is IGraph)
+            {
+                Frame.Navigate(typeof(WeatherChartsPage), null, new DrillInNavigationTransitionInfo());
+                e.Handled = true;
+            }
+            else if (sender is HeaderedContentControl header && header.Content is FrameworkElement content)
+            {
+                var point = e.GetPosition(content);
+                var rect = content.ToRect();
+                if (!rect.Contains(point))
+                {
+                    Frame.Navigate(typeof(WeatherChartsPage), null, new DrillInNavigationTransitionInfo());
+                    e.Handled = true;
+                }
+            }
+            else
+            {
+                Frame.Navigate(typeof(WeatherChartsPage), null, new DrillInNavigationTransitionInfo());
+                e.Handled = true;
+            }
         }
 
         private void AQIndexControl_Tapped(object sender, TappedRoutedEventArgs e)
