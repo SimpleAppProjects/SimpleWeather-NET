@@ -98,7 +98,7 @@ namespace SimpleWeather.NET.Controls
 
                     var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
                     var date = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour).AddHours(-(hrInterval * 0.5d));
-                    currentHrForecastsData.SetValue(await SettingsManager.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, date));
+                    currentHrForecastsData.SetValue(await SettingsManager.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 24, date));
 
                     WeatherDB.Connection.GetConnection().TableChanged += ForecastGraphViewModel_TableChanged;
                 });

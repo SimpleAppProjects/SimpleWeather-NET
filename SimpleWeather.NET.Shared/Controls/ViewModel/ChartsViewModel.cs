@@ -56,7 +56,7 @@ namespace SimpleWeather.NET.Controls
                     this.iconProvider = SettingsManager.IconProvider;
 
                     var date = DateTimeOffset.Now.ToOffset(location.tz_offset).Trim(TimeSpan.TicksPerHour);
-                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, date));
+                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 24, date));
 
                     currentForecastsData.SetValue(await WeatherDB.GetForecastData(location.query));
 
