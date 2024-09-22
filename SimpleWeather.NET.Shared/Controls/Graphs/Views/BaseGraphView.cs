@@ -235,14 +235,11 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             if (property == FontSizeProperty)
             {
-                this.bottomTextPaint.TextSize = FontSizeToTextSize(FontSize);
-                this.bottomTextFont.Size = this.bottomTextPaint.TextSize;
-                UpdateGraph();
+                (obj as BaseGraphView<T, S, E>)?.UpdateFontSize();
             }
             else if (property == FontWeightProperty)
             {
-                this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontWeight);
-                UpdateGraph();
+                (obj as BaseGraphView<T, S, E>)?.UpdateFontFamily();
             }
         }
 
@@ -254,19 +251,6 @@ namespace SimpleWeather.NET.Controls.Graphs
             }
         }
 #else
-        private void UpdateFontSize()
-        {
-            this.bottomTextPaint.TextSize = FontSizeToTextSize(FontSize);
-            this.bottomTextFont.Size = this.bottomTextPaint.TextSize;
-            UpdateGraph();
-        }
-
-        private void UpdateFontFamily()
-        {
-            this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontAttributes);
-            UpdateGraph();
-        }
-
         private static void OnBottomTextColorChanged(BindableObject obj, object oldValue, object newValue)
         {
             if (newValue != oldValue)
@@ -275,6 +259,23 @@ namespace SimpleWeather.NET.Controls.Graphs
             }
         }
 #endif
+
+        protected virtual void UpdateFontSize()
+        {
+            this.bottomTextPaint.TextSize = FontSizeToTextSize(FontSize);
+            this.bottomTextFont.Size = this.bottomTextPaint.TextSize;
+            UpdateGraph();
+        }
+
+        protected virtual void UpdateFontFamily()
+        {
+#if WINDOWS
+            this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontWeight);
+#else
+            this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontAttributes);
+#endif
+            UpdateGraph();
+        }
 
         private void UpdateBottomTextColor()
         {

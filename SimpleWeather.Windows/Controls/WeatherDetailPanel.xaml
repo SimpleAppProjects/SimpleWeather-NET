@@ -95,7 +95,7 @@
                                     ForceBitmapIcon="True"
                                     Foreground="{ThemeResource ExtraTextForegroundBrush}"
                                     ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
-                                    WeatherIcon="&#xf078;" />
+                                    WeatherIcon="&#xf084;" />
                                 <TextBlock
                                     Margin="5,0,5,0"
                                     VerticalAlignment="Center"

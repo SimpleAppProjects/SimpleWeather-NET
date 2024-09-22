@@ -30,7 +30,7 @@
                 IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}"
-                WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
+                WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <Label
                 Grid.Column="{mrkup:OnDeviceWidth MinWidth=828, Default=0, GreaterThanEq=1}"
                 Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"

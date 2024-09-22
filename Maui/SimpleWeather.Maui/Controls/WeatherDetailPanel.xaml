@@ -64,7 +64,7 @@
                         ForceBitmapIcon="True"
                         IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
                         ShowAsMonochrome="{Binding Source={x:Reference DetailPanel}, Path=UseMonochrome}"
-                        WeatherIcon="&#xf078;" />
+                        WeatherIcon="&#xf084;" />
                     <Label
                         Margin="5,0,5,0"
                         VerticalOptions="Center"

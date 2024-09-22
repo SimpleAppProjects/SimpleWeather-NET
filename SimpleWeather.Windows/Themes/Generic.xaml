@@ -309,6 +309,12 @@
         <Setter Property="HorizontalContentAlignment" Value="Center" />
     </Style>
 
+    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:ForecastRangeBarGraphView">
+        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
     <Style TargetType="localControls:SunPhaseView">
         <Setter Property="PaintColor" Value="{ThemeResource SunViewPaintColor}" />
         <Setter Property="PhaseArcColor" Value="{ThemeResource SunViewPhaseArcColor}" />

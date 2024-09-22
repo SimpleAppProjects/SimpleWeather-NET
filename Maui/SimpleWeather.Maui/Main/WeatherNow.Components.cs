@@ -1247,8 +1247,8 @@ public partial class WeatherNow
                 .Column(1)
                 .Row(0),
                 // Content
-                new RangeBarGraphPanel()
-                .Bind(RangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
+                new ForecastRangeBarGraphPanel()
+                .Bind(ForecastRangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>

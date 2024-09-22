@@ -29,7 +29,7 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         [ObservableProperty]
-        private RangeBarGraphData forecastGraphData;
+        private ForecastRangeBarGraphData forecastGraphData;
 
         [ObservableProperty]
         private List<HourlyForecastNowViewModel> hourlyForecastData;
@@ -147,7 +147,7 @@ namespace SimpleWeather.NET.Controls
 #endif
             {
                 // At most 10 forecasts
-                ForecastGraphData = await CreateGraphData(fcasts?.forecast?.Take(10));
+                ForecastGraphData = await CreateForecastGraphData(fcasts?.forecast?.Take(10));
                 RefreshMinutelyForecasts(fcasts?.min_forecast);
             });
         }
@@ -238,6 +238,53 @@ namespace SimpleWeather.NET.Controls
             }
 
             return new RangeBarGraphData(new RangeBarGraphDataSet(entryData));
+        }
+
+        private async Task<ForecastRangeBarGraphData> CreateForecastGraphData(IEnumerable<Forecast> forecastData)
+        {
+            if (forecastData == null) return null;
+
+            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
+            var culture = LocaleUtils.GetLocale();
+
+            var entryData = new List<ForecastRangeBarEntry>(forecastData.Count());
+
+            foreach (var forecast in forecastData)
+            {
+                if (!forecast.high_f.HasValue && !forecast.low_f.HasValue)
+                    continue;
+
+                var entry = new ForecastRangeBarEntry();
+                string date = forecast.date.ToString("ddd dd", culture);
+
+                entry.XLabel = date;
+                entry.XIcon = await CreateIconDrawable(forecast.icon,
+#if WINDOWS
+                    isLight: RequestedTheme == ElementTheme.Light);
+#else
+                    isLight: IsLight);
+#endif
+
+                // Temp Data
+                if (forecast.high_f.HasValue && forecast.high_c.HasValue)
+                {
+                    int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
+                    var hiTemp = string.Format(culture, "{0}°", value);
+                    entry.HiTempData = new YEntryData(value, hiTemp);
+                }
+                if (forecast.low_f.HasValue && forecast.low_c.HasValue)
+                {
+                    int value = (int)(isFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value));
+                    var loTemp = string.Format(culture, "{0}°", value);
+                    entry.LoTempData = new YEntryData(value, loTemp);
+                }
+
+                entry.PoP = forecast?.extras?.pop;
+
+                entryData.Add(entry);
+            }
+
+            return new ForecastRangeBarGraphData(new ForecastRangeBarGraphDataSet(entryData));
         }
 
         private async Task<SKDrawable> CreateIconDrawable(string icon, bool isLight = false)

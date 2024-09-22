@@ -1,19 +1,19 @@
 ﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class RangeBarGraphData : GraphData<RangeBarGraphDataSet, RangeBarGraphEntry>
+    public class ForecastRangeBarGraphData : GraphData<ForecastRangeBarGraphDataSet, ForecastRangeBarEntry>
     {
-        public RangeBarGraphData() : base() { }
+        public ForecastRangeBarGraphData() : base() { }
 
-        public RangeBarGraphData(RangeBarGraphDataSet set) : base(set) { }
+        public ForecastRangeBarGraphData(ForecastRangeBarGraphDataSet set) : base(set) { }
 
-        public void SetDataSet(RangeBarGraphDataSet set)
+        public void SetDataSet(ForecastRangeBarGraphDataSet set)
         {
             DataSets.Clear();
             DataSets.Add(set);
             NotifyDataChanged();
         }
 
-        public RangeBarGraphDataSet GetDataSet()
+        public ForecastRangeBarGraphDataSet GetDataSet()
         {
             if (DataSets.Count != 0)
             {

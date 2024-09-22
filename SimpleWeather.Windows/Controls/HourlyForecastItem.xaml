@@ -45,7 +45,7 @@
                 IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
                 Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
-                WeatherIcon="{x:Bind icons:WeatherIcons.RAINDROP, Mode=OneTime}" />
+                WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <TextBlock
                 Grid.Column="1"
                 Margin="5,0,0,0"

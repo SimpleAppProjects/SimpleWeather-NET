@@ -393,7 +393,7 @@
                                 Header="{helpers:StringRes Name='label_forecast'}"
                                 Style="{ThemeResource NavigatableSectionStyle}"
                                 Tapped="ForecastGraphPanel_Tapped">
-                                <graphs:RangeBarGraphPanel
+                                <graphs:ForecastRangeBarGraphPanel
                                     x:Name="ForecastGraphPanel"
                                     ForecastData="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
                                     GraphViewTapped="ForecastGraphPanel_Tapped" />
