@@ -11,9 +11,23 @@
              MinimumWidthRequest="340">
     <ContentView.Resources>
         <converters:NullableColorConverter x:Key="nullableColorConv" FallbackColor="{AppThemeBinding Light=Black, Dark=White}" />
+        <Style x:Key="PollenLabelStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="{OnIdiom Default='14', Desktop='16'}" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="PollenDescriptionStyle" TargetType="Label">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontAttributes" Value="None" />
+            <Setter Property="Padding" Value="12,4,12,4" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+        </Style>
     </ContentView.Resources>
 
-    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,*" VerticalOptions="FillAndExpand">
+    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,*,*,*" VerticalOptions="FillAndExpand">
         <Label
             Grid.Row="0"
             Grid.ColumnSpan="3"
@@ -24,52 +38,72 @@
             x:Name="TreePollenLabel"
             Grid.Row="1"
             Grid.Column="0"
-            HorizontalOptions="Center"
-            VerticalOptions="Start"
-            FontSize="16"
-            Margin="0,0,0,8"
+            Style="{DynamicResource PollenLabelStyle}"
             Text="{x:Static res_strings:Resources.label_pollen_tree}" />
-        <Label
-            x:Name="TreePollenDescription"
+        <Image
+            x:Name="TreePollenIcon"
             Grid.Row="2"
             Grid.Column="0"
+            HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontSize="24"
+            VerticalOptions="Start">
+            <Image.Source>
+                <FileImageSource File="{AppThemeBinding Light='ic_outline_tree_light.png', Dark='ic_outline_tree_dark.png'}" />
+            </Image.Source>
+        </Image>
+        <Label
+            x:Name="TreePollenDescription"
+            Grid.Row="3"
+            Grid.Column="0"
+            Style="{DynamicResource PollenDescriptionStyle}"
             TextColor="{Binding TreePollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
             Text="{Binding TreePollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
         <Label
             x:Name="GrassPollenLabel"
             Grid.Row="1"
             Grid.Column="1"
-            HorizontalOptions="Center"
-            FontSize="16"
-            Margin="0,0,0,8"
+            Style="{DynamicResource PollenLabelStyle}"
             Text="{x:Static res_strings:Resources.label_pollen_grass}" />
-        <Label
-            x:Name="GrassPollenDescription"
+        <Image
+            x:Name="GrassPollenIcon"
             Grid.Row="2"
             Grid.Column="1"
+            HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontSize="24"
+            VerticalOptions="Start">
+            <Image.Source>
+                <FileImageSource File="{AppThemeBinding Light='ic_baseline_grass_light.png', Dark='ic_baseline_grass_dark.png'}" />
+            </Image.Source>
+        </Image>
+        <Label
+            x:Name="GrassPollenDescription"
+            Grid.Row="3"
+            Grid.Column="1"
+            Style="{DynamicResource PollenDescriptionStyle}"
             TextColor="{Binding GrassPollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
             Text="{Binding GrassPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
         <Label
             x:Name="RagweedPollenLabel"
             Grid.Row="1"
             Grid.Column="2"
-            HorizontalOptions="Center"
-            FontSize="16"
-            Margin="0,0,0,8"
-            Text="{x:Static res_strings:Resources.label_pollen_grass}" />
-        <Label
-            x:Name="RagweedPollenDescription"
+            Style="{DynamicResource PollenLabelStyle}"
+            Text="{x:Static res_strings:Resources.label_pollen_ragweed}" />
+        <Image
+            x:Name="RagweedPollenIcon"
             Grid.Row="2"
             Grid.Column="2"
+            HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Center"
-            FontSize="24"
+            VerticalOptions="Start">
+            <Image.Source>
+                <FileImageSource File="{AppThemeBinding Light='ic_ragweed_pollen_light.png', Dark='ic_ragweed_pollen_dark.png'}" />
+            </Image.Source>
+        </Image>
+        <Label
+            x:Name="RagweedPollenDescription"
+            Grid.Row="3"
+            Grid.Column="2"
+            Style="{DynamicResource PollenDescriptionStyle}"
             TextColor="{Binding RagweedPollenDescriptionColor, Converter={StaticResource nullableColorConv}}"
             Text="{Binding RagweedPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
     </Grid>

@@ -8,8 +8,8 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     xmlns:toolkit="using:CommunityToolkit.WinUI"
+    xmlns:toolkitControls="using:CommunityToolkit.WinUI.Controls"
     x:Name="Control"
     MinWidth="340"
     MinHeight="150"
@@ -21,6 +21,28 @@
         <ResourceDictionary>
             <SolidColorBrush x:Key="FallbackColorBrush" Color="{ThemeResource TextFillColorPrimary}" />
             <converters:ColorToSolidColorBrushConverter x:Key="color2solidConv" FallbackColor="{ThemeResource FallbackColorBrush}" />
+            <Style
+                x:Key="PollenLabelStyle"
+                BasedOn="{StaticResource BaseTextBlockStyle}"
+                TargetType="TextBlock">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
+            <Style
+                x:Key="PollenDescriptionStyle"
+                BasedOn="{StaticResource BaseTextBlockStyle}"
+                TargetType="TextBlock">
+                <Setter Property="FontSize" Value="15" />
+                <Setter Property="FontWeight" Value="Normal" />
+                <Setter Property="Padding" Value="12,4,12,4" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalTextAlignment" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -45,62 +67,70 @@
                     x:Name="TreePollenLabel"
                     Grid.Row="0"
                     Grid.Column="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    FontSize="16"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Style="{ThemeResource PollenLabelStyle}"
                     Text="{helpers:StringRes Name='label_pollen_tree'}" />
-                <TextBlock
-                    x:Name="TreePollenDescription"
+                <BitmapIcon
+                    x:Name="TreePollenIcon"
                     Grid.Row="1"
                     Grid.Column="0"
+                    Height="36"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Top"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_outline_tree.png" />
+                <TextBlock
+                    x:Name="TreePollenDescription"
+                    Grid.Row="2"
+                    Grid.Column="0"
                     d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     d:Text="Low"
-                    FontSize="24"
                     Foreground="{x:Bind ViewModel.TreePollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
-                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Style="{ThemeResource PollenDescriptionStyle}"
                     Text="{x:Bind ViewModel.TreePollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
                 <TextBlock
                     x:Name="GrassPollenLabel"
                     Grid.Row="0"
                     Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    FontSize="18"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Style="{ThemeResource PollenLabelStyle}"
                     Text="{helpers:StringRes Name='label_pollen_grass'}" />
-                <TextBlock
-                    x:Name="GrassPollenDescription"
+                <BitmapIcon
+                    x:Name="GrassPollenIcon"
                     Grid.Row="1"
                     Grid.Column="1"
+                    Height="36"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Top"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_baseline_grass.png" />
+                <TextBlock
+                    x:Name="GrassPollenDescription"
+                    Grid.Row="2"
+                    Grid.Column="1"
                     d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     d:Text="Low"
-                    FontSize="24"
                     Foreground="{x:Bind ViewModel.GrassPollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
-                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Style="{ThemeResource PollenDescriptionStyle}"
                     Text="{x:Bind ViewModel.GrassPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
                 <TextBlock
                     x:Name="RagweedPollenLabel"
                     Grid.Row="0"
                     Grid.Column="2"
-                    HorizontalAlignment="Center"
-                    FontSize="18"
-                    Style="{ThemeResource SubtitleTextBlockStyle}"
+                    Style="{ThemeResource PollenLabelStyle}"
                     Text="{helpers:StringRes Name='label_pollen_ragweed'}" />
-                <TextBlock
-                    x:Name="RagweedPollenDescription"
+                <BitmapIcon
+                    x:Name="RagweedPollenIcon"
                     Grid.Row="1"
                     Grid.Column="2"
+                    Height="36"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Top"
+                    UriSource="ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_ragweed_pollen.png" />
+                <TextBlock
+                    x:Name="RagweedPollenDescription"
+                    Grid.Row="2"
+                    Grid.Column="2"
                     d:Foreground="{ThemeResource TextFillColorPrimaryBrush}"
                     d:Text="High"
-                    FontSize="24"
                     Foreground="{x:Bind ViewModel.RagweedPollenDescriptionColor, Mode=OneWay, Converter={StaticResource color2solidConv}}"
-                    Style="{ThemeResource CaptionTextBlockStyle}"
+                    Style="{ThemeResource PollenDescriptionStyle}"
                     Text="{x:Bind ViewModel.RagweedPollenDescription, FallbackValue='&#x2014;', Mode=OneWay}" />
             </Grid>
         </toolkitControls:HeaderedContentControl>
@@ -114,12 +144,9 @@
                             TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TreePollenLabel.FontSize" Value="16" />
-                        <Setter Target="GrassPollenLabel.FontSize" Value="16" />
-                        <Setter Target="RagweedPollenLabel.FontSize" Value="16" />
-                        <Setter Target="TreePollenDescription.FontSize" Value="18" />
-                        <Setter Target="GrassPollenDescription.FontSize" Value="18" />
-                        <Setter Target="RagweedPollenDescription.FontSize" Value="18" />
+                        <Setter Target="TreePollenLabel.FontSize" Value="15" />
+                        <Setter Target="GrassPollenLabel.FontSize" Value="15" />
+                        <Setter Target="RagweedPollenLabel.FontSize" Value="15" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -127,12 +154,9 @@
                         <toolkit:ControlSizeTrigger MinWidth="641" TargetElement="{x:Bind Control}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="TreePollenLabel.FontSize" Value="18" />
-                        <Setter Target="GrassPollenLabel.FontSize" Value="18" />
-                        <Setter Target="RagweedPollenLabel.FontSize" Value="18" />
-                        <Setter Target="TreePollenDescription.FontSize" Value="20" />
-                        <Setter Target="GrassPollenDescription.FontSize" Value="20" />
-                        <Setter Target="RagweedPollenDescription.FontSize" Value="20" />
+                        <Setter Target="TreePollenLabel.FontSize" Value="17" />
+                        <Setter Target="GrassPollenLabel.FontSize" Value="17" />
+                        <Setter Target="RagweedPollenLabel.FontSize" Value="17" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
