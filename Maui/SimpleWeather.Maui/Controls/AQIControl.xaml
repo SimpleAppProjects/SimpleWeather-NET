@@ -75,16 +75,12 @@
                 Text="{Binding Description}"
                 VerticalOptions="Start" />
         </Grid>
-        <ProgressBar
+        <sharedControls:AQIProgressBar
             x:Name="AQIProgressBar"
             Grid.Row="2"
             Grid.ColumnSpan="2"
             Margin="12,0,12,12"
-            BackgroundColor="{AppThemeBinding Light='#B3616161',
-                                              Dark='#8AF1F1F1'}"
-            HeightRequest="4"
-            Progress="{x:Bind Progress * 0.01}"
-            ProgressColor="{Binding ProgressColor}" />
+            Progress="{Binding Progress}" />
         <Label
             x:Name="Attribution"
             Grid.Row="3"

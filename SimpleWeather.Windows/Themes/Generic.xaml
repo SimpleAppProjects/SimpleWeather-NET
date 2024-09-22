@@ -341,4 +341,27 @@
         <Setter Property="Height" Value="225" />
     </Style>
 
+    <Style TargetType="localControls:AQIProgressBar">
+        <Setter Property="BottomTextColor" Value="{ThemeResource TextFillColorPrimary}" />
+        <Setter Property="ThumbColor" Value="White" />
+        <Setter Property="Height" Value="Auto" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="localControls:AQIProgressBar">
+                    <Grid
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                        <skiaSharp:SKXamlCanvas
+                            xmlns:skiaSharp="using:SkiaSharp.Views.Windows"
+                            x:Name="Canvas"
+                            Background="Transparent"
+                            IgnorePixelScaling="True" />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 </ResourceDictionary>

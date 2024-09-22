@@ -9,6 +9,7 @@
     <Import_RootNamespace>SimpleWeather.NET.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\AQIProgressBar.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\Banner.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\BannerManager.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Banner\IBannerManager.cs" />

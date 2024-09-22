@@ -66,13 +66,10 @@
             Text="{Binding Description}"
             HorizontalTextAlignment="Start"
             VerticalOptions="Center" />
-        <ProgressBar
+        <sharedControls:AQIProgressBar
             x:Name="AQIProgressBar"
-            HeightRequest="4"
             Margin="12,0"
-            BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
-            ProgressColor="{Binding ProgressColor}"
-            Progress="{x:Bind Progress * 0.01}" />
+            Progress="{Binding Progress}" />
         <FlexLayout
             HorizontalOptions="Center"
             VerticalOptions="Start"

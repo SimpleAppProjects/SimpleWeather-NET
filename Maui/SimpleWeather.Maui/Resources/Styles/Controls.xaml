@@ -400,4 +400,33 @@
         CanCascade="True"
         TargetType="sharedControls:SunPhaseView" />
 
+    <Style x:Key="DefaultAQIProgressBarStyle" TargetType="sharedControls:AQIProgressBar">
+        <Setter Property="BottomTextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
+        <Setter Property="ThumbColor" Value="White" />
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BackgroundColor="{TemplateBinding BackgroundColor}"
+                        Stroke="Transparent"
+                        StrokeThickness="0">
+                        <skiaSharp:SKCanvasView
+                            xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                            x:Name="Canvas"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                            IgnorePixelScaling="True" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultAQIProgressBarStyle}"
+        CanCascade="True"
+        TargetType="sharedControls:AQIProgressBar" />
+
 </ResourceDictionary>

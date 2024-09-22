@@ -79,21 +79,14 @@
                     TextWrapping="Wrap" />
             </StackPanel>
             <Rectangle x:Name="ProgressBarBarrier" RelativePanel.Above="AQIProgresBar" />
-            <muxc:ProgressBar
+            <local:AQIProgressBar
                 x:Name="AQIProgresBar"
-                Height="5"
                 Margin="15,5"
-                d:Value="50"
-                Background="{ThemeResource ProgressBarBackgroundBrush}"
-                Maximum="100"
+                d:Progress="50"
+                Progress="{x:Bind ViewModel.Progress, Mode=OneWay}"
                 RelativePanel.AlignBottomWithPanel="True"
                 RelativePanel.AlignLeftWithPanel="True"
-                RelativePanel.AlignRightWithPanel="True"
-                Value="{x:Bind ViewModel.Progress, Mode=OneWay}">
-                <muxc:ProgressBar.Foreground>
-                    <SolidColorBrush d:Color="Red" Color="{x:Bind ViewModel.ProgressColor, Mode=OneWay}" />
-                </muxc:ProgressBar.Foreground>
-            </muxc:ProgressBar>
+                RelativePanel.AlignRightWithPanel="True" />
         </RelativePanel>
         <toolkitControls:WrapPanel
             Padding="12,8"
