@@ -61,7 +61,7 @@
         <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
     <Style x:Key="SectionLabelContentPresenterStyle" TargetType="ContentPresenter">
-        <Setter Property="Padding" Value="10,20" />
+        <Setter Property="Padding" Value="10,10" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
