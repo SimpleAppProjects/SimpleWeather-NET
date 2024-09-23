@@ -1,17 +1,19 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SimpleWeather.Maui.Controls.MoonPhaseControl"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
-             xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
-             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-             xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
-             xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-             xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-             xmlns:wicons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
-             x:DataType="commonControls:MoonPhaseViewModel"
-             MinimumWidthRequest="{OnIdiom Default=450, Phone=340}">
+<ContentView
+    x:Class="SimpleWeather.Maui.Controls.MoonPhaseControl"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+    xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
+    xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:wicons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
+    x:DataType="commonControls:MoonPhaseViewModel"
+    MinimumWidthRequest="{OnIdiom Default=450,
+                                  Phone=340}">
     <ContentView.Resources>
         <Style x:Key="DisabledMoonStyle" TargetType="controls:IconControl">
             <Setter Property="Opacity" Value="0.5" />
@@ -30,92 +32,45 @@
     <VerticalStackLayout VerticalOptions="FillAndExpand">
         <Label
             x:Name="MoonPhaseLabel"
-            Text="{x:Static res_strings:Resources.label_moonphase}"
-            Style="{DynamicResource WeatherNowSectionLabel}" />
-        <FlexLayout
+            Style="{DynamicResource WeatherNowSectionLabel}"
+            Text="{x:Static res_strings:Resources.label_moonphase}" />
+        <CollectionView
             x:Name="MoonStack"
-            Padding="{OnIdiom Default='15,0', Phone='4,0'}"
+            Margin="{OnIdiom Default='15,0',
+                             Phone='4,0'}"
+            CanReorderItems="False"
             HorizontalOptions="Center"
-            Wrap="Wrap" AlignContent="Center" JustifyContent="Center" AlignItems="Center">
-            <!--  New Moon  -->
-            <controls:IconControl
-                x:Name="NewMoonIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_NEW}" />
-            <!--  Waxing Crescent  -->
-            <controls:IconControl
-                x:Name="WaxCresIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}" />
-            <!--  First Qtr  -->
-            <controls:IconControl
-                x:Name="FirstQtrIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_FIRST_QUARTER}" />
-            <!--  Waxing Gibbous  -->
-            <controls:IconControl
-                x:Name="WaxGibbousIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}" />
-            <!--  Full Moon  -->
-            <controls:IconControl
-                x:Name="FullMoonIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_FULL}" />
-            <!--  Waning Gibbous  -->
-            <controls:IconControl
-                x:Name="WanGibbousIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}" />
-            <!--  Third Qtr  -->
-            <controls:IconControl
-                x:Name="ThirdQtrIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_THIRD_QUARTER}" />
-            <!--  Waning Crescent  -->
-            <controls:IconControl
-                x:Name="WanCrescentIcon"
-                HeightRequest="36"
-                WidthRequest="36"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                Style="{DynamicResource DisabledMoonStyle}"
-                WeatherIcon="{x:Static wicons:WeatherIcons.MOON_WANING_CRESCENT_3}" />
-        </FlexLayout>
-        <Label Padding="12"
-               HorizontalOptions="Center"
-               VerticalOptions="Center"
-               FontSize="{OnIdiom Default=18, Phone=16}"
-               LineHeight="1.25"
-               Text="{Binding MoonPhase.Value, Mode=OneWay}" />
+            HorizontalScrollBarVisibility="Never"
+            InputTransparent="True"
+            ItemsUpdatingScrollMode="KeepScrollOffset"
+            MaximumWidthRequest="488"
+            SelectionMode="None"
+            VerticalScrollBarVisibility="Never">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="controls:MoonPhaseItem">
+                    <controls:IconControl
+                        Margin="4"
+                        Padding="4"
+                        HeightRequest="60"
+                        IconHeight="60"
+                        IconWidth="60"
+                        Opacity="{Binding Opacity, Mode=OneWay}"
+                        WeatherIcon="{Binding Icon, Mode=OneWay}"
+                        WidthRequest="60" />
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal" />
+            </CollectionView.ItemsLayout>
+        </CollectionView>
+        <Label
+            Padding="12"
+            FontSize="{OnIdiom Default=18,
+                               Phone=16}"
+            HorizontalOptions="Center"
+            LineHeight="1.25"
+            Text="{Binding MoonPhase.Value, Mode=OneWay}"
+            VerticalOptions="Center" />
         <HorizontalStackLayout HorizontalOptions="Center">
             <HorizontalStackLayout
                 Margin="10,0"
@@ -123,17 +78,19 @@
                 IsVisible="{Binding Moonrise, Converter={StaticResource stringBooleanConverter}}">
                 <controls:IconControl
                     x:Name="MoonriseIcon"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="{OnIdiom Default=36, Phone=32}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                    HeightRequest="{OnIdiom Default=36,
+                                            Phone=32}"
                     IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONRISE}" />
+                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONRISE}"
+                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}" />
                 <Label
                     x:Name="MoonriseText"
+                    FontSize="{OnIdiom Default=18,
+                                       Phone=16}"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    FontSize="{OnIdiom Default=18, Phone=16}"
-                    Text="{Binding Moonrise}" />
+                    Text="{Binding Moonrise}"
+                    VerticalOptions="Center" />
             </HorizontalStackLayout>
             <HorizontalStackLayout
                 Margin="10,0"
@@ -141,17 +98,19 @@
                 IsVisible="{Binding Moonset, Converter={StaticResource stringBooleanConverter}}">
                 <controls:IconControl
                     x:Name="MoonsetIcon"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    HeightRequest="{OnIdiom Default=36, Phone=32}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                    HeightRequest="{OnIdiom Default=36,
+                                            Phone=32}"
                     IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONSET}" />
+                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONSET}"
+                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}" />
                 <Label
                     x:Name="MoonsetText"
+                    FontSize="{OnIdiom Default=18,
+                                       Phone=16}"
                     HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    FontSize="{OnIdiom Default=18, Phone=16}"
-                    Text="{Binding Moonset}" />
+                    Text="{Binding Moonset}"
+                    VerticalOptions="Center" />
             </HorizontalStackLayout>
         </HorizontalStackLayout>
     </VerticalStackLayout>

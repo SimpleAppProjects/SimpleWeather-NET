@@ -12,6 +12,7 @@
     xmlns:wicons="using:SimpleWeather.Icons"
     x:Name="Control"
     MinWidth="450"
+    MaxWidth="480"
     d:DesignHeight="250"
     d:DesignWidth="500"
     mc:Ignorable="d">
@@ -45,84 +46,46 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel>
+    <StackPanel Orientation="Vertical">
         <toolkitControls:HeaderedContentControl
             HorizontalContentAlignment="Stretch"
+            toolkit:UIElementExtensions.ClipToBounds="False"
             Header="{helpers:StringRes Name='label_moonphase'}"
             Style="{StaticResource SectionLabelStyle}">
-            <StackPanel>
-                <local:AlignableWrapPanel
+            <StackPanel toolkit:UIElementExtensions.ClipToBounds="False">
+                <ItemsView
                     x:Name="MoonStack"
+                    MaxWidth="488"
                     Padding="15,0"
                     HorizontalAlignment="Center"
                     HorizontalContentAlignment="Center"
-                    Orientation="Horizontal">
-                    <!--  New Moon  -->
-                    <local:IconControl
-                        x:Name="NewMoonIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0eb;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_NEW}" />
-                    <!--  Waxing Crescent  -->
-                    <local:IconControl
-                        x:Name="WaxCresIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0d2;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_CRESCENT_3}" />
-                    <!--  First Qtr  -->
-                    <local:IconControl
-                        x:Name="FirstQtrIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0d6;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_FIRST_QUARTER}" />
-                    <!--  Waxing Gibbous  -->
-                    <local:IconControl
-                        x:Name="WaxGibbousIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0d9;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WAXING_GIBBOUS_3}" />
-                    <!--  Full Moon  -->
-                    <local:IconControl
-                        x:Name="FullMoonIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:Style="{ThemeResource MoonStyle}"
-                        d:WeatherIcon="&#xf0dd;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_FULL}" />
-                    <!--  Waning Gibbous  -->
-                    <local:IconControl
-                        x:Name="WanGibbousIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0e0;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_GIBBOUS_3}" />
-                    <!--  Third Qtr  -->
-                    <local:IconControl
-                        x:Name="ThirdQtrIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0e4;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_THIRD_QUARTER}" />
-                    <!--  Waning Crescent  -->
-                    <local:IconControl
-                        x:Name="WanCrescentIcon"
-                        Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                        Height="50"
-                        d:WeatherIcon="&#xf0e7;"
-                        Style="{ThemeResource DisabledMoonStyle}"
-                        WeatherIcon="{x:Bind wicons:WeatherIcons.MOON_WANING_CRESCENT_3}" />
-                </local:AlignableWrapPanel>
+                    toolkit:UIElementExtensions.ClipToBounds="False"
+                    IsHitTestVisible="False"
+                    IsItemInvokedEnabled="False"
+                    ItemsSource="{x:Bind DataSet, Mode=OneWay}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.HorizontalScrollMode="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollMode="Disabled"
+                    SelectionMode="None">
+                    <ItemsView.ItemTemplate>
+                        <DataTemplate x:DataType="local:MoonPhaseItem">
+                            <ItemContainer toolkit:UIElementExtensions.ClipToBounds="False">
+                                <local:IconControl
+                                    Width="60"
+                                    Height="60"
+                                    Margin="4"
+                                    Padding="4"
+                                    toolkit:UIElementExtensions.ClipToBounds="False"
+                                    Opacity="{Binding Opacity, Mode=OneWay}"
+                                    WeatherIcon="{Binding Icon, Mode=OneWay}" />
+                            </ItemContainer>
+                        </DataTemplate>
+                    </ItemsView.ItemTemplate>
+                    <ItemsView.Layout>
+                        <StackLayout Orientation="Horizontal" />
+                    </ItemsView.Layout>
+                </ItemsView>
                 <TextBlock
                     Padding="10"
                     HorizontalAlignment="Center"

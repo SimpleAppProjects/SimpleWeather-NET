@@ -73,6 +73,26 @@ namespace SimpleWeather.Utils
             return -1;
         }
 
+        public static void ForEachIndexed<T>(this IEnumerable<T> e, Action<int, T> action)
+        {
+            var i = 0;
+            foreach (T item in e)
+            {
+                action(i, item);
+                i++;
+            }
+        }
+
+        public static void ForEachIndexed(this IEnumerable e, Action<int, object> action)
+        {
+            var i = 0;
+            foreach (object item in e)
+            {
+                action(i, item);
+                i++;
+            }
+        }
+
 #if WINDOWS
 #nullable enable
         public static object? GetValueOrDefault(this IPropertySet dictionary, string key) =>
