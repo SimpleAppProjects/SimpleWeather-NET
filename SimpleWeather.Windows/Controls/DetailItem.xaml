@@ -30,6 +30,7 @@
 
     <Border
         x:Name="ItemBorder"
+        HorizontalAlignment="Stretch"
         Background="{ThemeResource ButtonBackground}"
         BorderBrush="{ThemeResource ButtonBorderBrush}"
         BorderThickness="{ThemeResource ButtonBorderThemeThickness}"

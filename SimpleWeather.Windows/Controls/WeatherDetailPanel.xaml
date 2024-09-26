@@ -28,22 +28,26 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <muxc:Expander
+    <Grid Margin="8,4">
+        <Expander
+            Padding="0"
             HorizontalAlignment="Stretch"
             HorizontalContentAlignment="Stretch"
             d:IsEnabled="False"
+            CornerRadius="8"
             ExpandDirection="Down"
             IsEnabled="{x:Bind ViewModel.HasExtras, Mode=OneWay}"
             IsExpanded="False">
-            <muxc:Expander.Resources>
-                <Thickness x:Key="ExpanderHeaderPadding">16,8,0,8</Thickness>
+            <Expander.Resources>
+                <Thickness x:Key="ExpanderHeaderPadding">0</Thickness>
+                <Thickness x:Key="ExpanderContentPadding">0</Thickness>
                 <SolidColorBrush x:Key="ExpanderHeaderDisabledForeground" Color="{ThemeResource ControlFillColorTransparent}" />
-            </muxc:Expander.Resources>
-            <muxc:Expander.Header>
-                <Grid MinHeight="60" Padding="0,2">
+            </Expander.Resources>
+            <Expander.Header>
+                <Grid Padding="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="16" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <local:IconControl
@@ -51,171 +55,92 @@
                         Grid.Column="0"
                         Width="50"
                         Height="50"
-                        Margin="8,0"
                         VerticalAlignment="Center"
                         d:WeatherIcon="&#xf00d;"
                         WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
                     <StackPanel
-                        Grid.Column="1"
+                        Grid.Column="2"
                         VerticalAlignment="Center"
                         Orientation="Vertical">
                         <TextBlock
                             x:Name="Date"
-                            Padding="2"
+                            Padding="4,2,4,4"
                             d:Text="Someday XX"
-                            FontSize="14"
-                            FontWeight="Bold"
+                            FontSize="16"
+                            FontWeight="SemiBold"
                             Foreground="{ThemeResource ExpanderHeaderForeground}"
                             MaxLines="1"
                             Text="{x:Bind ViewModel.Date, Mode=OneWay, TargetNullValue='&#x2014;'}"
                             TextTrimming="CharacterEllipsis" />
                         <TextBlock
-                            x:Name="Condition"
-                            Padding="2"
+                            x:Name="HiLo"
+                            Padding="4,2"
                             VerticalAlignment="Center"
-                            d:Text="50° | 44° - Sprinkles early. Mostly cloudy. Mild"
+                            d:Text="50° / 44°"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{ThemeResource ExpanderHeaderForeground}"
+                            MaxLines="1"
+                            Text="{x:Bind ViewModel.HiLo, Mode=OneWay, TargetNullValue='&#x2014;'}"
+                            TextTrimming="CharacterEllipsis" />
+                        <TextBlock
+                            x:Name="Condition"
+                            Padding="4,2,4,4"
+                            VerticalAlignment="Center"
+                            d:Text="Sprinkles early. Mostly cloudy. Mild"
                             FontSize="14"
                             Foreground="{ThemeResource ExpanderHeaderForeground}"
                             MaxLines="1"
                             Text="{x:Bind ViewModel.Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
                             TextTrimming="CharacterEllipsis" />
-                        <StackPanel
-                            x:Name="Extras"
-                            VerticalAlignment="Center"
-                            Orientation="Horizontal">
-                            <StackPanel
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <local:IconControl
-                                    x:Name="PoPIcon"
-                                    Width="20"
-                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    VerticalAlignment="Center"
-                                    ForceBitmapIcon="True"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
-                                    WeatherIcon="&#xf084;" />
-                                <TextBlock
-                                    Margin="5,0,5,0"
-                                    VerticalAlignment="Center"
-                                    d:Text="100%"
-                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    MaxLines="1"
-                                    Text="{x:Bind ViewModel.PoPChance, Mode=OneWay}"
-                                    TextLineBounds="Tight"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
-                            <StackPanel
-                                Padding="5,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Visibility="{x:Bind ViewModel.Cloudiness, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <local:IconControl
-                                    Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
-                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    VerticalAlignment="Center"
-                                    ForceBitmapIcon="True"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
-                                    WeatherIcon="&#xf013;" />
-                                <TextBlock
-                                    Margin="5,0,5,0"
-                                    VerticalAlignment="Center"
-                                    d:Text="80%"
-                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    MaxLines="1"
-                                    Text="{x:Bind ViewModel.Cloudiness, Mode=OneWay}"
-                                    TextLineBounds="Tight"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
-                            <StackPanel
-                                Padding="5,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                                <local:IconControl
-                                    Width="{Binding ElementName=PoPIcon, Path=Width, Mode=OneWay}"
-                                    Height="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Width, Mode=OneWay}"
-                                    VerticalAlignment="Center"
-                                    ForceBitmapIcon="True"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    ShowAsMonochrome="{Binding ElementName=Control, Path=UseMonochrome, Mode=OneWay}"
-                                    WeatherIcon="&#xf050;" />
-                                <TextBlock
-                                    Margin="5,0,5,0"
-                                    VerticalAlignment="Center"
-                                    d:Text="7 mph, SSE"
-                                    FontSize="{Binding ElementName=Condition, Path=FontSize, Mode=OneWay}"
-                                    Foreground="{ThemeResource ExtraTextForegroundBrush}"
-                                    MaxLines="1"
-                                    Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}"
-                                    TextLineBounds="Tight"
-                                    TextTrimming="CharacterEllipsis" />
-                            </StackPanel>
-                        </StackPanel>
                     </StackPanel>
                 </Grid>
-            </muxc:Expander.Header>
-            <muxc:Expander.Content>
-                <StackPanel Padding="10">
+            </Expander.Header>
+            <Expander.Content>
+                <StackPanel>
                     <TextBlock
                         x:Name="ConditionDescription"
+                        Padding="16"
                         HorizontalAlignment="Stretch"
                         FontSize="14"
-                        TextWrapping="WrapWholeWords">
+                        TextWrapping="WrapWholeWords"
+                        Visibility="{x:Bind ViewModel.ConditionLongDesc, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
                         <TextBlock.Inlines>
-                            <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, Mode=OneWay}" /><LineBreak />
+                            <Run x:Name="CondDescFirstRun" Text="{x:Bind ViewModel.ConditionLongDesc, Mode=OneWay}" />
                         </TextBlock.Inlines>
                     </TextBlock>
-                    <ItemsControl ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}">
-                        <ItemsControl.ItemTemplate>
+                    <ItemsView
+                        Padding="8"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
+                        IsItemInvokedEnabled="False"
+                        ItemsSource="{x:Bind ViewModel.Extras, Mode=OneWay}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.HorizontalScrollMode="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollMode="Disabled"
+                        SelectionMode="None">
+                        <ItemsView.ItemTemplate>
                             <DataTemplate x:DataType="controls:DetailItemViewModel">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="150" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Foreground="{ThemeResource SystemBaseMediumHighColor}"
-                                        Text="{x:Bind Label}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        Foreground="{ThemeResource SystemBaseHighColor}"
-                                        Text="{x:Bind Value}" />
-                                </Grid>
+                                <ItemContainer IsHitTestVisible="False">
+                                    <local:DetailItem HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" />
+                                </ItemContainer>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ItemsView.ItemTemplate>
+                        <ItemsView.Layout>
+                            <UniformGridLayout
+                                ItemsJustification="Center"
+                                ItemsStretch="Fill"
+                                MinColumnSpacing="8"
+                                MinItemWidth="250"
+                                MinRowSpacing="8"
+                                Orientation="Horizontal" />
+                        </ItemsView.Layout>
+                    </ItemsView>
                 </StackPanel>
-            </muxc:Expander.Content>
-        </muxc:Expander>
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup x:Name="WidthStates">
-                <VisualState x:Name="Mobile">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="0" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="14" />
-                        <Setter Target="Condition.FontSize" Value="14" />
-                        <Setter Target="PoPIcon.Width" Value="20" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState x:Name="Desktop">
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="641" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="Date.FontSize" Value="16" />
-                        <Setter Target="Condition.FontSize" Value="16" />
-                        <Setter Target="PoPIcon.Width" Value="25" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
+            </Expander.Content>
+        </Expander>
     </Grid>
 </UserControl>

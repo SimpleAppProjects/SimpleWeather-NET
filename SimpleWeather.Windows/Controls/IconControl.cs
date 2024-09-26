@@ -155,9 +155,23 @@ namespace SimpleWeather.NET.Controls
                         canvas.PaintSurface += (s, e) =>
                         {
                             e.Surface.Canvas.Clear();
+
                             var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+
+                            var scaleX = e.Info.Width / ActualWidth;
+                            var scaleY = e.Info.Height / ActualHeight;
+
+                            var dX = (float)-((Padding.Left + Padding.Right) * 0.5 / scaleX);
+                            var dY = (float)-((Padding.Top + Padding.Bottom) * 0.5 / scaleY);
+
+                            bounds.Inflate(dX, dY);
                             drawable.Bounds = bounds;
+
+                            var cnt = e.Surface.Canvas.Save();
+                            e.Surface.Canvas.Translate(-dX, -dY);
                             drawable.Draw(e.Surface.Canvas);
+                            e.Surface.Canvas.RestoreToCount(cnt);
+                            e.Surface.Flush(true);
                         };
                         canvas.SetBinding(HeightProperty, new Binding()
                         {
@@ -195,15 +209,22 @@ namespace SimpleWeather.NET.Controls
                     canvas.PaintSurface += (s, e) =>
                     {
                         e.Surface.Canvas.Clear();
+
                         var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
-                        /*
-                        if (drawable is SKSvgDrawable svgDrawable)
-                        {
-                            svgDrawable.TintColor = ShowAsMonochrome && Foreground is SolidColorBrush colorBrush ? colorBrush.Color.ToSKColor() : null;
-                        }
-                        */
+
+                        var scaleX = e.Info.Width / ActualWidth;
+                        var scaleY = e.Info.Height / ActualHeight;
+
+                        var dX = (float)-((Padding.Left + Padding.Right) * 0.5 / scaleX);
+                        var dY = (float)-((Padding.Top + Padding.Bottom) * 0.5 / scaleY);
+
+                        bounds.Inflate(dX, dY);
                         drawable.Bounds = bounds;
+
+                        var cnt = e.Surface.Canvas.Save();
+                        e.Surface.Canvas.Translate(-dX, -dY);
                         drawable.Draw(e.Surface.Canvas);
+                        e.Surface.Canvas.RestoreToCount(cnt);
                         e.Surface.Flush(true);
                     };
                     canvas.SetBinding(HeightProperty, new Binding()
