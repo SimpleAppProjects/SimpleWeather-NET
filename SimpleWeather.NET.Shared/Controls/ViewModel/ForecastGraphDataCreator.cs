@@ -9,7 +9,6 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Collections.Immutable;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
-using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 namespace SimpleWeather.NET.Controls
 {
@@ -178,30 +177,25 @@ namespace SimpleWeather.NET.Controls
                     {
                         string unit = SettingsManager.SpeedUnit;
                         int speedVal;
-                        string speedUnit;
 
                         switch (unit)
                         {
                             case Units.MILES_PER_HOUR:
                             default:
                                 speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
-                                speedUnit = ResUnits.unit_mph;
                                 break;
                             case Units.KILOMETERS_PER_HOUR:
                                 speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
-                                speedUnit = ResUnits.unit_kph;
                                 break;
                             case Units.METERS_PER_SECOND:
                                 speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
-                                speedUnit = ResUnits.unit_msec;
                                 break;
                             case Units.KNOTS:
                                 speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.extras.wind_mph.Value));
-                                speedUnit = ResUnits.unit_knots;
                                 break;
                         }
 
-                        var windSpeed = string.Format(culture, "{0} {1}", speedVal, speedUnit);
+                        var windSpeed = string.Format(culture, "{0}", speedVal);
 
                         series.AddEntry(new LineGraphEntry(date, new YEntryData(speedVal, windSpeed)));
                     }
@@ -211,22 +205,19 @@ namespace SimpleWeather.NET.Controls
                     {
                         string unit = SettingsManager.PrecipitationUnit;
                         float precipValue;
-                        string precipUnit;
 
                         switch (unit)
                         {
                             case Units.INCHES:
                             default:
                                 precipValue = forecast.extras.qpf_rain_in.Value;
-                                precipUnit = ResUnits.unit_in;
                                 break;
                             case Units.MILLIMETERS:
                                 precipValue = forecast.extras.qpf_rain_mm.Value;
-                                precipUnit = ResUnits.unit_mm;
                                 break;
                         }
 
-                        series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit))));
+                        series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##}", precipValue))));
                     }
                     break;
                 case ForecastGraphType.Snow:
@@ -234,22 +225,19 @@ namespace SimpleWeather.NET.Controls
                     {
                         string unit = SettingsManager.PrecipitationUnit;
                         float precipValue;
-                        string precipUnit;
 
                         switch (unit)
                         {
                             case Units.INCHES:
                             default:
                                 precipValue = forecast.extras.qpf_snow_in.Value;
-                                precipUnit = ResUnits.unit_in;
                                 break;
                             case Units.MILLIMETERS:
                                 precipValue = forecast.extras.qpf_snow_cm.Value * 10;
-                                precipUnit = ResUnits.unit_mm;
                                 break;
                         }
 
-                        series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit))));
+                        series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##}", precipValue))));
                     }
                     break;
                 case ForecastGraphType.UVIndex:
@@ -285,22 +273,19 @@ namespace SimpleWeather.NET.Controls
 
                 string unit = SettingsManager.PrecipitationUnit;
                 float precipValue;
-                string precipUnit;
 
                 switch (unit)
                 {
                     case Units.INCHES:
                     default:
                         precipValue = ConversionMethods.MMToIn(forecast.rain_mm.Value);
-                        precipUnit = ResUnits.unit_in;
                         break;
                     case Units.MILLIMETERS:
                         precipValue = forecast.rain_mm.Value;
-                        precipUnit = ResUnits.unit_mm;
                         break;
                 }
 
-                series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##} {1}", precipValue, precipUnit))));
+                series.AddEntry(new LineGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##}", precipValue))));
             }
         }
 
@@ -346,6 +331,29 @@ namespace SimpleWeather.NET.Controls
                     series = new LineDataSeries(entryData);
                     series.SetSeriesColors(Colors.MediumPurple);
                     series.SetSeriesMinMax(0f, 100f);
+                    break;
+            }
+
+            switch (graphType)
+            {
+                case ForecastGraphType.Temperature:
+                case ForecastGraphType.Precipitation:
+                case ForecastGraphType.Humidity:
+                case ForecastGraphType.UVIndex:
+                    break;
+                case ForecastGraphType.Wind:
+                    {
+                        var unit = SettingsManager.SpeedUnit;
+                        series.SeriesLabel = Units.GetUnitString(unit);
+                    }
+                    break;
+                case ForecastGraphType.Rain:
+                case ForecastGraphType.Minutely:
+                case ForecastGraphType.Snow:
+                    {
+                        var unit = SettingsManager.PrecipitationUnit;
+                        series.SeriesLabel = Units.GetUnitString(unit);
+                    }
                     break;
             }
 

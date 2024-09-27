@@ -167,11 +167,8 @@ namespace SimpleWeather.NET.Helpers
 
         public static bool Intersects(this RectF a, RectF b)
         {
-            return a.IntersectsWith(b);
-            /*
             return a.Left < b.Right && b.Left < a.Right
                 && a.Top < b.Bottom && b.Top < a.Bottom;
-            */
         }
     }
 }

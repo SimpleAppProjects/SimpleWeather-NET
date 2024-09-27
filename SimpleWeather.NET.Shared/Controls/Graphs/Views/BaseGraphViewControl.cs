@@ -110,14 +110,14 @@ namespace SimpleWeather.NET.Controls.Graphs
         }
 
 #if WINDOWS
-        protected virtual void OnViewChanging() { }
+        protected virtual void OnViewChanging(ScrollViewerViewChangingEventArgs e) { }
 #endif
         protected virtual void OnViewChanged() { }
 
 #if WINDOWS
         private void InternalScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            OnViewChanging();
+            OnViewChanging(e);
             ViewChanging?.Invoke(sender, e);
         }
 #endif

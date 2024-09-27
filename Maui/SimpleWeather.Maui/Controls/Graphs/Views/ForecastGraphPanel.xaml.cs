@@ -117,6 +117,7 @@ namespace SimpleWeather.Maui.Controls.Graphs
             if (GraphData != null)
             {
                 LineGraphView.SetData(GraphData);
+                LineGraphView.DrawSeriesLabels = GraphData?.DataSets?.Any(set => !string.IsNullOrWhiteSpace(set.SeriesLabel)) == true;
             }
         }
 

@@ -50,7 +50,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         protected float bottomTextDescent;
 
         protected readonly float iconBottomMargin = 4f; // 2dp // 4dp
-        protected readonly float bottomTextTopMargin = 6f; // 6dp
+        protected readonly float bottomTextTopMargin = 12f; // 6dp
 
         protected float sideLineLength = 0;
         protected float backgroundGridWidth = 45f; // 45dp
@@ -505,9 +505,9 @@ namespace SimpleWeather.NET.Controls.Graphs
         }
 
 #if WINDOWS
-        protected override void OnViewChanging()
+        protected override void OnViewChanging(ScrollViewerViewChangingEventArgs e)
         {
-            base.OnViewChanging();
+            base.OnViewChanging(e);
 #else
         protected override void OnViewChanged()
         {
@@ -515,10 +515,10 @@ namespace SimpleWeather.NET.Controls.Graphs
 #endif
 #if WINDOWS
             visibleRect.Set(
-                    (float)ScrollViewer.HorizontalOffset,
-                    (float)ScrollViewer.VerticalOffset,
-                    (float)(ScrollViewer.HorizontalOffset + ScrollViewer.ActualWidth),
-                    (float)(ScrollViewer.VerticalOffset + ScrollViewer.ActualHeight)
+                    (float)e.NextView.HorizontalOffset,
+                    (float)e.NextView.VerticalOffset,
+                    (float)(e.NextView.HorizontalOffset + ScrollViewer.ActualWidth),
+                    (float)(e.NextView.VerticalOffset + ScrollViewer.ActualHeight)
             );
             Canvas.Invalidate();
 #else

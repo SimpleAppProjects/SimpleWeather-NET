@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Parsers.Core;
+using ResUnits = SimpleWeather.Resources.Strings.Units;
 
 namespace SimpleWeather.Utils
 {
@@ -63,5 +64,24 @@ namespace SimpleWeather.Utils
         public const string KILOMETERS = "KILOMETERS";
         public const string INCHES = "INCHES";
         public const string MILLIMETERS = "MILLIMETERS";
+
+        public static string GetUnitString(string unit)
+        {
+            return unit switch
+            {
+                MILES_PER_HOUR => ResUnits.unit_mph,
+                KILOMETERS_PER_HOUR => ResUnits.unit_kph,
+                METERS_PER_SECOND => ResUnits.unit_msec,
+                KNOTS => ResUnits.unit_knots,
+                INHG => ResUnits.unit_inHg,
+                MILLIBAR => ResUnits.unit_mBar,
+                MMHG => ResUnits.unit_mmHg,
+                MILES => ResUnits.unit_miles,
+                KILOMETERS => ResUnits.unit_kilometers,
+                INCHES => ResUnits.unit_in,
+                MILLIMETERS => ResUnits.unit_mm,
+                _ => unit
+            };
+        }
     }
 }

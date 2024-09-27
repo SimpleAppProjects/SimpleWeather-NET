@@ -784,8 +784,8 @@ namespace SimpleWeather.NET.Controls.Graphs
                     var textBounds = new SKRect();
                     bottomTextPaint.MeasureText(title, ref textBounds);
 
-                    float xRectStart = paddingLength + textWidth * i + ((rectSize + rect2TextPadding) * i);
-                    float xTextStart = paddingLength + textWidth * i + rectSize + ((rectSize + rect2TextPadding) * i);
+                    float xRectStart = visibleRect.Left + paddingLength + textWidth * i + ((rectSize + rect2TextPadding) * i);
+                    float xTextStart = visibleRect.Left + paddingLength + textWidth * i + rectSize + ((rectSize + rect2TextPadding) * i);
 
                     var rectF = new SKRect(xRectStart, bottomTextTopMargin + textDescent, xRectStart + rectSize, rectSize + bottomTextTopMargin + textDescent);
                     seriesRectPaint.Color = seriesColor.ToSKColor();
