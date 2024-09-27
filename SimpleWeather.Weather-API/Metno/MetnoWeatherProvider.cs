@@ -121,7 +121,7 @@ namespace SimpleWeather.Weather_API.Metno
                 SunRootobject sunRoot = await JSONParser.DeserializerAsync<SunRootobject>(sunStream);
                 MoonRootobject moonRoot = await JSONParser.DeserializerAsync<MoonRootobject>(moonStream);
 
-                weather = this.CreateWeatherData(foreRoot, sunRoot, moonRoot);
+                weather = this.CreateWeatherData(foreRoot, sunRoot, moonRoot, location);
             }
             catch (Exception ex)
             {
@@ -191,7 +191,7 @@ namespace SimpleWeather.Weather_API.Metno
 
             foreach (Forecast forecast in weather.forecast)
             {
-                forecast.date = forecast.date.Add(offset);
+                //forecast.date = forecast.date.Add(offset);
                 forecast.condition = GetWeatherCondition(forecast.icon);
                 forecast.icon = GetWeatherIcon(forecast.icon);
             }

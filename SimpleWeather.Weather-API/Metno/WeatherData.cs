@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using LocData = SimpleWeather.LocationData.LocationData;
 
 namespace SimpleWeather.Weather_API.Metno
 {
@@ -11,11 +12,20 @@ namespace SimpleWeather.Weather_API.Metno
     {
         private const string ASTRO_DATETIME_FORMAT = "yyyy'-'MM'-'dd'T'HH':'mmK";
 
-        public static Weather CreateWeatherData(this MetnoWeatherProvider _, Rootobject foreRoot, SunRootobject sunRoot, MoonRootobject moonRoot)
+        public static Weather CreateWeatherData(this MetnoWeatherProvider _, Rootobject foreRoot, SunRootobject sunRoot, MoonRootobject moonRoot, LocData locationData)
         {
             var weather = new Weather();
 
-            var now = DateTimeOffset.UtcNow;
+            DateTimeOffset now;
+
+            if (locationData?.tz_offset != null)
+            {
+                now = DateTimeOffset.UtcNow.ToOffset(locationData.tz_offset);
+            }
+            else
+            {
+                now = DateTimeOffset.UtcNow;
+            }
 
             weather.location = _.CreateLocation(foreRoot);
             weather.update_time = now;
@@ -35,7 +45,21 @@ namespace SimpleWeather.Weather_API.Metno
             for (int i = 0; i < foreRoot.properties.timeseries.Length; i++)
             {
                 var time = foreRoot.properties.timeseries[i];
-                DateTime date = time.time;
+                DateTime date;
+
+                if (locationData?.tz_offset != null)
+                {
+                    date = time.time.Add(locationData.tz_offset);
+                }
+                else
+                {
+                    date = time.time;
+                }
+
+                if (currentDate.IsMinValue())
+                {
+                    currentDate = date;
+                }
 
                 // Create condition for next 2hrs from data
                 if (i == 0)
@@ -50,7 +74,7 @@ namespace SimpleWeather.Weather_API.Metno
                     weather.hr_forecast.Add(_.CreateHourlyForecast(time));
 
                 // Create new forecast
-                if (currentDate.Date != date.Date && date >= currentDate.AddDays(1))
+                if (i == 0 || currentDate.Date != date.Date)
                 {
                     // Last forecast for day; create forecast
                     if (fcast != null)
@@ -60,10 +84,10 @@ namespace SimpleWeather.Weather_API.Metno
                         fcast.date = currentDate;
                         // high
                         fcast.high_f = ConversionMethods.CtoF(dayMax);
-                        fcast.high_c = (float)Math.Round(dayMax);
+                        fcast.high_c = dayMax;
                         // low
                         fcast.low_f = ConversionMethods.CtoF(dayMin);
-                        fcast.low_c = (float)Math.Round(dayMin);
+                        fcast.low_c = dayMin;
 
                         weather.forecast.Add(fcast);
                     }
@@ -167,8 +191,8 @@ namespace SimpleWeather.Weather_API.Metno
             hrf.high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value);
             hrf.high_c = hr_forecast.data.instant.details.air_temperature.Value;
             hrf.wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
-            hrf.wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value));
-            hrf.wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value));
+            hrf.wind_mph = ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value);
+            hrf.wind_kph = ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value);
 
             if (hr_forecast.data.next_1_hours != null)
             {
@@ -221,8 +245,8 @@ namespace SimpleWeather.Weather_API.Metno
             }
             if (hr_forecast.data.instant.details.wind_speed_of_gust.HasValue)
             {
-                hrf.extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed_of_gust.Value));
-                hrf.extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed_of_gust.Value));
+                hrf.extras.windgust_mph = ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed_of_gust.Value);
+                hrf.extras.windgust_kph = ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed_of_gust.Value);
             }
             if (hr_forecast.data.instant.details.fog_area_fraction.HasValue)
             {
@@ -246,14 +270,14 @@ namespace SimpleWeather.Weather_API.Metno
             condition.temp_f = ConversionMethods.CtoF(time.data.instant.details.air_temperature.Value);
             condition.temp_c = (float)time.data.instant.details.air_temperature.Value;
             condition.wind_degrees = (int)Math.Round(time.data.instant.details.wind_from_direction.Value);
-            condition.wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value));
-            condition.wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value));
+            condition.wind_mph = ConversionMethods.MSecToMph(time.data.instant.details.wind_speed.Value);
+            condition.wind_kph = ConversionMethods.MSecToKph(time.data.instant.details.wind_speed.Value);
             condition.feelslike_f = WeatherUtils.GetFeelsLikeTemp(condition.temp_f.Value, condition.wind_mph.Value, (int)time.data.instant.details.relative_humidity.Value);
             condition.feelslike_c = ConversionMethods.FtoC(condition.feelslike_f.Value);
             if (time.data.instant.details.wind_speed_of_gust.HasValue)
             {
-                condition.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(time.data.instant.details.wind_speed_of_gust.Value));
-                condition.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(time.data.instant.details.wind_speed_of_gust.Value));
+                condition.windgust_mph = ConversionMethods.MSecToMph(time.data.instant.details.wind_speed_of_gust.Value);
+                condition.windgust_kph = ConversionMethods.MSecToKph(time.data.instant.details.wind_speed_of_gust.Value);
             }
 
             if (time.data.next_1_hours != null)
