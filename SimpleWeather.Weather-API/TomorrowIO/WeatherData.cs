@@ -136,7 +136,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (item.values.dewPoint.HasValue)
             {
                 forecast.extras.dewpoint_c = item.values.dewPoint.Value;
-                forecast.extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
+                forecast.extras.dewpoint_f = ConversionMethods.CtoF(item.values.dewPoint.Value);
             }
             forecast.extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
@@ -156,7 +156,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (item.values.pressureSeaLevel.HasValue)
             {
                 forecast.extras.pressure_mb = item.values.pressureSeaLevel.Value;
-                forecast.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value).RoundToInt();
+                forecast.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value);
             }
             if (item.values.windDirection.HasValue)
             {
@@ -230,7 +230,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (item.values.dewPoint.HasValue)
             {
                 hrf.extras.dewpoint_c = item.values.dewPoint.Value;
-                hrf.extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(item.values.dewPoint.Value));
+                hrf.extras.dewpoint_f = ConversionMethods.CtoF(item.values.dewPoint.Value);
             }
             hrf.extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
@@ -250,7 +250,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (item.values.pressureSeaLevel.HasValue)
             {
                 hrf.extras.pressure_mb = item.values.pressureSeaLevel.Value;
-                hrf.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value).RoundToInt();
+                hrf.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value);
             }
             if (item.values.windDirection.HasValue)
             {

@@ -111,8 +111,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                 pressure_mb = forecast.pressure,
                 pressure_in = ConversionMethods.MBToInHg(forecast.pressure),
                 wind_degrees = forecast.wind_deg,
-                wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind_speed)),
-                wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind_speed)),
+                wind_mph = ConversionMethods.MSecToMph(forecast.wind_speed),
+                wind_kph = ConversionMethods.MSecToKph(forecast.wind_speed),
                 uv_index = forecast.uvi
             };
             if (forecast.pop.HasValue)
@@ -126,8 +126,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             }
             if (forecast.wind_gust.HasValue)
             {
-                fcast.extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind_gust.Value));
-                fcast.extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind_gust.Value));
+                fcast.extras.windgust_mph = ConversionMethods.MSecToMph(forecast.wind_gust.Value);
+                fcast.extras.windgust_kph = ConversionMethods.MSecToKph(forecast.wind_gust.Value);
             }
             if (forecast.rain.HasValue)
             {
@@ -164,8 +164,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                    .GetWeatherIcon(hr_forecast.weather[0].id.ToInvariantString() + dn);
 
             hrf.wind_degrees = hr_forecast.wind_deg;
-            hrf.wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_speed));
-            hrf.wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind_speed));
+            hrf.wind_mph = ConversionMethods.MSecToMph(hr_forecast.wind_speed);
+            hrf.wind_kph = ConversionMethods.MSecToKph(hr_forecast.wind_speed);
 
             // Extras
             hrf.extras = new ForecastExtras()
@@ -189,8 +189,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             }
             if (hr_forecast.wind_gust.HasValue)
             {
-                hrf.extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind_gust.Value));
-                hrf.extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind_gust.Value));
+                hrf.extras.windgust_mph = ConversionMethods.MSecToMph(hr_forecast.wind_gust.Value);
+                hrf.extras.windgust_kph = ConversionMethods.MSecToKph(hr_forecast.wind_gust.Value);
             }
             if (hr_forecast.visibility.HasValue)
             {

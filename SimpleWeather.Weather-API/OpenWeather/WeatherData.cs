@@ -98,8 +98,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             if (!weather.atmosphere.dewpoint_c.HasValue && weather.condition.temp_c.HasValue && weather.atmosphere.humidity.HasValue &&
                 weather.condition.temp_c > 0 && weather.condition.temp_c < 60 && weather.atmosphere.humidity > 1)
             {
-                weather.atmosphere.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(weather.condition.temp_c.Value, weather.atmosphere.humidity.Value));
-                weather.atmosphere.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(weather.atmosphere.dewpoint_c.Value));
+                weather.atmosphere.dewpoint_c = WeatherUtils.CalculateDewpointC(weather.condition.temp_c.Value, weather.atmosphere.humidity.Value);
+                weather.atmosphere.dewpoint_f = ConversionMethods.CtoF(weather.atmosphere.dewpoint_c.Value);
             }
 
             weather.source = WeatherAPI.OpenWeatherMap;
@@ -141,14 +141,14 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 pressure_mb = forecast.main.pressure,
                 pressure_in = ConversionMethods.MBToInHg(forecast.main.pressure),
                 wind_degrees = (int)Math.Round(forecast.wind.deg),
-                wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind.speed)),
-                wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind.speed)),
+                wind_mph = ConversionMethods.MSecToMph(forecast.wind.speed),
+                wind_kph = ConversionMethods.MSecToKph(forecast.wind.speed),
             };
             if (ConversionMethods.KtoC(forecast.main.temp) is float temp_c &&
                 temp_c > 0 && temp_c < 60 && forecast.main.humidity > 1)
             {
-                fcast.extras.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(forecast.main.temp), forecast.main.humidity));
-                fcast.extras.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(fcast.extras.dewpoint_c.Value));
+                fcast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(forecast.main.temp), forecast.main.humidity);
+                fcast.extras.dewpoint_f = ConversionMethods.CtoF(fcast.extras.dewpoint_c.Value);
             }
             if (forecast.main.feels_like.HasValue)
             {
@@ -166,8 +166,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             }
             if (forecast.wind.gust.HasValue)
             {
-                fcast.extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(forecast.wind.gust.Value));
-                fcast.extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(forecast.wind.gust.Value));
+                fcast.extras.windgust_mph = ConversionMethods.MSecToMph(forecast.wind.gust.Value);
+                fcast.extras.windgust_kph = ConversionMethods.MSecToKph(forecast.wind.gust.Value);
             }
             if (forecast.rain?._3h.HasValue == true)
             {
@@ -203,8 +203,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
                    .GetWeatherIcon(hr_forecast.weather[0].id.ToInvariantString() + dn);
 
             hrf.wind_degrees = (int)hr_forecast.wind.deg;
-            hrf.wind_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind.speed));
-            hrf.wind_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind.speed));
+            hrf.wind_mph = ConversionMethods.MSecToMph(hr_forecast.wind.speed);
+            hrf.wind_kph = ConversionMethods.MSecToKph(hr_forecast.wind.speed);
 
             // Extras
             hrf.extras = new ForecastExtras
@@ -220,8 +220,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             };
             if (hrf.high_c.Value > 0 && hrf.high_c.Value < 60 && hr_forecast.main.humidity > 1)
             {
-                hrf.extras.dewpoint_c = (float)Math.Round(WeatherUtils.CalculateDewpointC(hrf.high_c.Value, hr_forecast.main.humidity));
-                hrf.extras.dewpoint_f = (float)Math.Round(ConversionMethods.CtoF(hrf.extras.dewpoint_c.Value));
+                hrf.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(hrf.high_c.Value, hr_forecast.main.humidity);
+                hrf.extras.dewpoint_f = ConversionMethods.CtoF(hrf.extras.dewpoint_c.Value);
             }
             if (hr_forecast.main.feels_like.HasValue)
             {
@@ -234,8 +234,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             }
             if (hr_forecast.wind.gust.HasValue)
             {
-                hrf.extras.windgust_mph = (float)Math.Round(ConversionMethods.MSecToMph(hr_forecast.wind.gust.Value));
-                hrf.extras.windgust_kph = (float)Math.Round(ConversionMethods.MSecToKph(hr_forecast.wind.gust.Value));
+                hrf.extras.windgust_mph = ConversionMethods.MSecToMph(hr_forecast.wind.gust.Value);
+                hrf.extras.windgust_kph = ConversionMethods.MSecToKph(hr_forecast.wind.gust.Value);
             }
             if (hr_forecast.visibility.HasValue)
             {

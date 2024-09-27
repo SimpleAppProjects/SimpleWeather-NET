@@ -99,8 +99,8 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             // Extras
             forecast.extras = new ForecastExtras();
             forecast.extras.humidity = (int)MathF.Round((day.humid_min_pct + day.humid_max_pct) / 2);
-            forecast.extras.pressure_mb = MathF.Round((day.slp_min_mb + day.slp_max_mb) / 2);
-            forecast.extras.pressure_in = MathF.Round((day.slp_min_in + day.slp_max_in) / 2);
+            forecast.extras.pressure_mb = (day.slp_min_mb + day.slp_max_mb) / 2f;
+            forecast.extras.pressure_in = (day.slp_min_in + day.slp_max_in) / 2f;
             if (day.windspd_max_mph > 0 && day.humid_max_pct > 0)
             {
                 forecast.extras.feelslike_f = WeatherUtils.GetFeelsLikeTemp(forecast.high_f.Value, day.windspd_max_mph, (int)Math.Round(day.humid_max_pct));
@@ -108,14 +108,14 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             }
             if (forecast.high_c > 0 && forecast.high_c < 60 && day.humid_max_pct > 1)
             {
-                forecast.extras.dewpoint_c = MathF.Round(WeatherUtils.CalculateDewpointC(forecast.high_c.Value, (int)Math.Round(day.humid_max_pct)));
-                forecast.extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(forecast.extras.dewpoint_c.Value));
+                forecast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(forecast.high_c.Value, (int)Math.Round(day.humid_max_pct));
+                forecast.extras.dewpoint_f = ConversionMethods.CtoF(forecast.extras.dewpoint_c.Value);
             }
-            forecast.extras.wind_mph = MathF.Round(day.windspd_max_mph);
-            forecast.extras.wind_kph = MathF.Round(day.windspd_max_kmh);
+            forecast.extras.wind_mph = day.windspd_max_mph;
+            forecast.extras.wind_kph = day.windspd_max_kmh;
             forecast.extras.pop = (int)MathF.Round(day.prob_precip_pct);
-            forecast.extras.windgust_mph = MathF.Round(day.windgst_max_mph);
-            forecast.extras.windgust_kph = MathF.Round(day.windgst_max_kmh);
+            forecast.extras.windgust_mph = day.windgst_max_mph;
+            forecast.extras.windgust_kph = day.windgst_max_kmh;
             forecast.extras.qpf_rain_mm = day.rain_total_mm;
             forecast.extras.qpf_rain_in = day.rain_total_in;
             forecast.extras.qpf_snow_cm = day.snow_total_mm / 10;
@@ -148,8 +148,8 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             hrf.icon = timeframe.wx_code.ToInvariantString();
 
             hrf.wind_degrees = (int)MathF.Round(timeframe.winddir_deg);
-            hrf.wind_mph = MathF.Round(timeframe.windspd_mph);
-            hrf.wind_kph = MathF.Round(timeframe.windspd_kmh);
+            hrf.wind_mph = timeframe.windspd_mph;
+            hrf.wind_kph = timeframe.windspd_kmh;
 
             // Extras
             hrf.extras = new ForecastExtras();
@@ -159,10 +159,10 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             hrf.extras.pressure_in = timeframe.slp_in;
             hrf.extras.wind_mph = hrf.wind_mph;
             hrf.extras.wind_kph = hrf.wind_kph;
-            hrf.extras.dewpoint_f = MathF.Round(timeframe.dewpoint_f);
-            hrf.extras.dewpoint_c = MathF.Round(timeframe.dewpoint_c);
-            hrf.extras.feelslike_f = MathF.Round(timeframe.feelslike_f);
-            hrf.extras.feelslike_c = MathF.Round(timeframe.feelslike_c);
+            hrf.extras.dewpoint_f = timeframe.dewpoint_f;
+            hrf.extras.dewpoint_c = timeframe.dewpoint_c;
+            hrf.extras.feelslike_f = timeframe.feelslike_f;
+            hrf.extras.feelslike_c = timeframe.feelslike_c;
             if (int.TryParse(timeframe.prob_precip_pct, out int pop))
             {
                 hrf.extras.pop = pop;
@@ -171,8 +171,8 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             {
                 hrf.extras.pop = 0;
             }
-            hrf.extras.windgust_mph = MathF.Round(timeframe.windgst_mph);
-            hrf.extras.windgust_kph = MathF.Round(timeframe.windgst_kmh);
+            hrf.extras.windgust_mph = timeframe.windgst_mph;
+            hrf.extras.windgust_kph = timeframe.windgst_kmh;
             hrf.extras.visibility_mi = timeframe.vis_mi;
             hrf.extras.visibility_km = timeframe.vis_km;
             hrf.extras.qpf_rain_mm = timeframe.rain_mm;

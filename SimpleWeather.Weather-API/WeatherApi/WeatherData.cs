@@ -96,8 +96,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
             forecast.extras.feelslike_f = WeatherUtils.GetFeelsLikeTemp(day.day.avgtemp_f, day.day.maxwind_mph, (int)MathF.Round(day.day.avghumidity));
             forecast.extras.feelslike_c = ConversionMethods.FtoC(forecast.extras.feelslike_f.Value);
             forecast.extras.humidity = (int)MathF.Round(day.day.avghumidity);
-            forecast.extras.dewpoint_c = MathF.Round(WeatherUtils.CalculateDewpointC(day.day.avgtemp_c, forecast.extras.humidity.Value));
-            forecast.extras.dewpoint_f = MathF.Round(ConversionMethods.CtoF(forecast.extras.dewpoint_c.Value));
+            forecast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(day.day.avgtemp_c, forecast.extras.humidity.Value);
+            forecast.extras.dewpoint_f = ConversionMethods.CtoF(forecast.extras.dewpoint_c.Value);
             forecast.extras.uv_index = day.day.uv;
             forecast.extras.pop = day.day.daily_chance_of_rain ?? day.day.daily_chance_of_snow;
             forecast.extras.qpf_rain_mm = day.day.totalprecip_mm;
