@@ -690,6 +690,7 @@ public partial class WeatherNow
                     {
                         new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Star),
                         new RowDefinition(GridLength.Auto),
                     },
@@ -817,13 +818,33 @@ public partial class WeatherNow
                                 BindingMode.OneWay, source: WNowViewModel
                             )
                             .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
+                        // FeelsLike
+                        new Label()
+                        {
+                            LineBreakMode = LineBreakMode.TailTruncation,
+                            MaxLines = 2
+                        }
+                            .Margins(16, 0, 16, 0)
+                            .Opacity(0.75)
+                            .Padding(4)
+                            .Font(size: 16)
+                            .Row(2)
+                            .ColumnSpan(4)
+                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
+                                BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Bind<Label, string, bool>(Label.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
+                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
+                                convert: (feelsLike) => !string.IsNullOrWhiteSpace(feelsLike)
+                            )
+                            .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                         // Summary
                         new Label()
                         {
                             LineBreakMode = LineBreakMode.TailTruncation,
                             MaxLines = 3
                         }
-                        .Row(2)
+                        .Row(3)
                         .ColumnSpan(5)
                         .Margin(16, 4)
                         .Padding(4)
@@ -853,7 +874,7 @@ public partial class WeatherNow
                         }),
                         // Update time
                         new Label()
-                        .Row(3)
+                        .Row(4)
                         .ColumnSpan(5)
                         .Margins(16, 4, 16, 8)
                         .Padding(4)
@@ -989,6 +1010,7 @@ public partial class WeatherNow
                         new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Auto),
+                        new RowDefinition(GridLength.Auto),
                     },
                     Children =
                     {
@@ -1111,12 +1133,30 @@ public partial class WeatherNow
                                 BindingMode.OneWay, source: WNowViewModel
                             )
                             .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
+                        // FeelsLike
+                        new Label()
+                            {
+                                LineBreakMode = LineBreakMode.WordWrap,
+                            }
+                            .Margin(0, 5)
+                            .Padding(5)
+                            .Font(size: 14)
+                            .Row(2)
+                            .ColumnSpan(4)
+                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
+                                BindingMode.OneWay, source: WNowViewModel
+                            )
+                            .Bind<Label, string, bool>(Label.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
+                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
+                                convert: (feelsLike) => !string.IsNullOrWhiteSpace(feelsLike)
+                            )
+                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
                         // Summary
                         new Label()
                         {
                             LineBreakMode = LineBreakMode.WordWrap
                         }
-                        .Row(2)
+                        .Row(3)
                         .ColumnSpan(5)
                         .Margin(0, 10)
                         .Padding(5)
@@ -1134,7 +1174,7 @@ public partial class WeatherNow
                         }),
                         // Attribution
                         new Button()
-                            .Row(3)
+                            .Row(4)
                             .ColumnSpan(4)
                             .End()
                             .Margin(16,0)

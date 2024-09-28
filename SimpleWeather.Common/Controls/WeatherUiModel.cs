@@ -22,6 +22,7 @@ namespace SimpleWeather.Common.Controls
         public string HiTemp { get; private set; }
         public string LoTemp { get; private set; }
         public bool ShowHiLo { get; private set; } = false;
+        public string FeelsLike { get; private set; }
         public string WeatherSummary { get; private set; }
         public SunPhaseViewModel SunPhase { get; private set; }
         public UVIndexViewModel UVIndex { get; private set; }
@@ -282,9 +283,15 @@ namespace SimpleWeather.Common.Controls
             if (WeatherData.condition.feelslike_f.HasValue && (WeatherData.condition.feelslike_f != WeatherData.condition.feelslike_c))
             {
                 var value = isFahrenheit ? Math.Round(WeatherData.condition.feelslike_f.Value) : Math.Round(WeatherData.condition.feelslike_c.Value);
+                var detailItem = new DetailItemViewModel(WeatherDetailsType.FeelsLike, String.Format(culture, "{0}°", value));
 
-                WeatherDetailsMap.Add(WeatherDetailsType.FeelsLike, new DetailItemViewModel(WeatherDetailsType.FeelsLike,
-                       String.Format(culture, "{0}°", value)));
+                FeelsLike = String.Format(culture, "{0} {1}", detailItem.Label, detailItem.Value);
+
+                WeatherDetailsMap.Add(WeatherDetailsType.FeelsLike, detailItem);
+            }
+            else
+            {
+                FeelsLike = null;
             }
 
             // Wind
