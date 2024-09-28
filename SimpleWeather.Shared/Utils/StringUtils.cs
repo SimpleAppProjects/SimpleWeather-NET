@@ -248,5 +248,15 @@ namespace SimpleWeather.Utils
             }
             return text;
         }
+
+        public static bool? TryParseBool(this string value)
+        {
+            return bool.TryParse(value, out bool result) ? result : null;
+        }
+
+        public static bool TryParseBool(this string value, bool defaultValue)
+        {
+            return bool.TryParse(value, out bool result) ? result : defaultValue;
+        }
     }
 }

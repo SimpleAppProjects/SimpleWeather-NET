@@ -15,5 +15,7 @@ namespace SimpleWeather.RemoteConfig
         string GetDefaultWeatherProvider(LocationData.LocationQuery location);
 
         Task CheckConfig();
+
+        bool GetBoolean(string key);
     }
 }

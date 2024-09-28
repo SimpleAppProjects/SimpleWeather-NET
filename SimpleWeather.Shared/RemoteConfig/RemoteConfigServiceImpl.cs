@@ -197,5 +197,15 @@ namespace SimpleWeather.RemoteConfig
                 UpdateWeatherProvider();
             });
         }
+
+        public bool GetBoolean(string key)
+        {
+#if __IOS__
+            var remoteBoolVal = FirebaseRemoteConfig.SharedInstance?.GetConfigValue(key)?.BoolValue;
+            return remoteBoolVal ?? false;
+#else
+            return RemoteConfigContainer.GetValue<bool>(key, defaultValue: Config.ResourceManager.GetString(key)?.TryParseBool() ?? false);
+#endif
+        }
     }
 }
