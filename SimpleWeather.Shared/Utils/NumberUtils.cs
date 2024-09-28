@@ -15,6 +15,16 @@ namespace SimpleWeather.Utils
             return int.TryParse(number, out int result) ? result : defaultValue;
         }
 
+        public static long? TryParseLong(this string number)
+        {
+            return long.TryParse(number, out long result) ? result : null;
+        }
+
+        public static long TryParseLong(this string number, long defaultValue)
+        {
+            return long.TryParse(number, out long result) ? result : defaultValue;
+        }
+
         public static float? TryParseFloat(this string number)
         {
             return float.TryParse(number, out float result) ? result : null;

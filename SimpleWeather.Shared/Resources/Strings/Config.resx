@@ -135,7 +135,11 @@
     <value>weatherapi</value>
   </data>
   <data name="google" xml:space="preserve">
-    <value>{"enabled":false,"locSource":"Bing","newWeatherSource":""}</value>
+    <value>{
+    "enabled": true,
+    "locSource": "Bing",
+    "newWeatherSource": ""
+}</value>
   </data>
   <data name="Here" xml:space="preserve">
     <value>{
@@ -173,7 +177,11 @@
 }</value>
   </data>
   <data name="openweather_onecall" xml:space="preserve">
-    <value>{"enabled":true,"locSource":"Bing","newWeatherSource":""}</value>
+    <value>{
+    "enabled": true,
+    "locSource": "Bing",
+    "newWeatherSource": ""
+}</value>
   </data>
   <data name="tomorrowio" xml:space="preserve">
     <value>{
@@ -201,6 +209,13 @@
         "enabled": true,
         "locSource": "Bing",
         "newWeatherSource": ""
+}</value>
+  </data>
+  <data name="rainviewer" xml:space="preserve">
+    <value>{
+    "enabled": true,
+    "locSource": "",
+    "newWeatherSource": ""
 }</value>
   </data>
 </root>

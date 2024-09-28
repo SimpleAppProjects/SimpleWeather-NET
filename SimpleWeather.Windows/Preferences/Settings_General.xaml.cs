@@ -211,7 +211,7 @@ namespace SimpleWeather.NET.Preferences
             PoPChancePct.SelectedValue = SettingsManager.PoPChanceMinimumPercentage.ToInvariantString();
 
             // Radar
-            RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders();
+            RadarComboBox.ItemsSource = RadarProvider.GetRadarProviders().Where(it => RemoteConfigService.IsProviderEnabled(it.Value));
             RadarComboBox.DisplayMemberPath = "Display";
             RadarComboBox.SelectedValuePath = "Value";
             RadarComboBox.SelectedValue = RadarProvider.GetRadarProvider();

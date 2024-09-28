@@ -135,7 +135,11 @@
     <value>weatherapi</value>
   </data>
   <data name="google" xml:space="preserve">
-    <value>{"enabled":true,"locSource":"apple","newWeatherSource":""}</value>
+    <value>{
+    "enabled": true,
+    "locSource": "apple",
+    "newWeatherSource": ""
+}</value>
   </data>
   <data name="Here" xml:space="preserve">
     <value>{
@@ -205,6 +209,13 @@
         "enabled": true,
         "locSource": "apple",
         "newWeatherSource": ""
+}</value>
+  </data>
+  <data name="rainviewer" xml:space="preserve">
+    <value>{
+    "enabled": true,
+    "locSource": "",
+    "newWeatherSource": ""
 }</value>
   </data>
 </root>

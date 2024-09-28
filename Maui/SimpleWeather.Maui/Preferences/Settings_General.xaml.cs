@@ -17,6 +17,7 @@ using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Linq;
 using ResExtras = SimpleWeather.Extras.Resources.Strings.Extras;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -156,7 +157,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         IntervalPref.Detail = IntervalPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, IntervalPref.SelectedItem)).Display;
 
         // Radar
-        RadarPref.Items = RadarProvider.GetRadarProviders().Select(entry => new PreferenceListItem(entry.Display, entry.Value));
+        RadarPref.Items = RadarProvider.GetRadarProviders().Where(it => RemoteConfigService.IsProviderEnabled(it.Value)).Select(entry => new PreferenceListItem(entry.Display, entry.Value));
         RadarPref.SelectedItem = RadarProvider.GetRadarProvider();
         RadarPref.Detail = RadarPref.Items.OfType<PreferenceListItem>().First(it => Equals(it.Value, RadarPref.SelectedItem)).Display;
 

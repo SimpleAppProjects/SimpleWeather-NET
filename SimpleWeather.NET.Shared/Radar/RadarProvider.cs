@@ -1,14 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Parsers.Core;
 #if WINDOWS
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 #endif
 using SimpleWeather.Controls;
+using SimpleWeather.NET.Radar.NWS;
 using SimpleWeather.NET.Radar.OpenWeather;
 using SimpleWeather.NET.Radar.RainViewer;
 using SimpleWeather.NET.Radar.TomorrowIo;
 using SimpleWeather.Preferences;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
@@ -27,6 +28,8 @@ namespace SimpleWeather.NET.Radar
         {
             [StringValue(WeatherAPI.RainViewer)]
             RainViewer,
+            [StringValue(WeatherAPI.NWS)]
+            NWS,
             [StringValue(WeatherAPI.OpenWeatherMap)]
             OpenWeatherMap,
             [StringValue(WeatherAPI.TomorrowIo)]
@@ -37,6 +40,8 @@ namespace SimpleWeather.NET.Radar
         [
             new ProviderEntry("RainViewer", WeatherAPI.RainViewer,
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
+            new ProviderEntry("National Weather Service (United States)", WeatherAPI.NWS,
+                    "https://radar.weather.gov/", "https://radar.weather.gov/"),
             new ProviderEntry("OpenWeatherMap", WeatherAPI.OpenWeatherMap,
                     "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("Tomorrow.io", WeatherAPI.TomorrowIo,
@@ -75,12 +80,29 @@ namespace SimpleWeather.NET.Radar
 
         public static RadarViewProvider GetRadarViewProvider(Border radarContainer)
         {
-            return RadarAPIProvider switch
+            var radarProvider = GetRadarProvider();
+            var isEnabled = IsRadarProviderEnabled(radarProvider);
+
+            if (radarProvider == WeatherAPI.OpenWeatherMap && isEnabled)
             {
-                RadarProviders.OpenWeatherMap => new OWMRadarViewProvider(radarContainer),
-                RadarProviders.TomorrowIo => new TomorrowIoRadarViewProvider(radarContainer),
-                _ => new RainViewerViewProvider(radarContainer),
-            };
+                return new OWMRadarViewProvider(radarContainer);
+            }
+            else if (radarProvider == WeatherAPI.TomorrowIo && isEnabled)
+            {
+                return new TomorrowIoRadarViewProvider(radarContainer);
+            }
+            else if (radarProvider == WeatherAPI.NWS && isEnabled)
+            {
+                return new NWSRadarViewProvider(radarContainer);
+            }
+            else if (radarProvider == WeatherAPI.RainViewer && isEnabled)
+            {
+                return new RainViewerViewProvider(radarContainer);
+            }
+            else
+            {
+                return new EmptyRadarViewProvider(radarContainer);
+            }
         }
 
         public static string GetRadarProvider()
@@ -117,6 +139,12 @@ namespace SimpleWeather.NET.Radar
         {
             localSettings.SetValue(KEY_RADARPROVIDER, value.GetStringValue());
             RadarProviderChanged?.Invoke(new RadarProviderChangedEventArgs() { NewValue = value });
+        }
+
+        private static bool IsRadarProviderEnabled(string provider)
+        {
+            var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+            return remoteConfigService.IsProviderEnabled(provider);
         }
     }
 }
