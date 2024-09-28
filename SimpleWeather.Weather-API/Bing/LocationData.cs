@@ -160,9 +160,9 @@ namespace SimpleWeather.Weather_API.Bing
 
             if (!string.IsNullOrWhiteSpace(result?.Name) || !string.IsNullOrWhiteSpace(result?.Address?.Neighborhood))
             {
-                model.LocationName = result?.Address?.Neighborhood ?? result.Name;
+                model.LocationName = result?.Address?.Neighborhood ?? result?.Address?.Locality ?? result.Name;
 
-                if (!string.IsNullOrWhiteSpace(result?.Address?.AdminDistrict) && !model.LocationName.EndsWith(result.Address.AdminDistrict))
+                if (!string.IsNullOrWhiteSpace(result?.Address?.AdminDistrict) && !model.LocationName.EndsWith(result.Address.AdminDistrict) && !model.LocationName.EndsWith(result.Address.CountryRegion))
                 {
                     model.LocationName = $"{model.LocationName}, {result.Address.AdminDistrict}";
                 }
