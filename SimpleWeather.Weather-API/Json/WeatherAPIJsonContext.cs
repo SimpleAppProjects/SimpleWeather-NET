@@ -9,6 +9,7 @@ namespace SimpleWeather.Weather_API.Json
         {
             options.TypeInfoResolverChain.Add(AccuWeatherJsonContext.Default);
             options.TypeInfoResolverChain.Add(AQICNJsonContext.Default);
+            options.TypeInfoResolverChain.Add(BrightSkyJsonContext.Default);
             options.TypeInfoResolverChain.Add(HEREAPIJsonContext.Default);
             options.TypeInfoResolverChain.Add(MeteoFranceJsonContext.Default);
             options.TypeInfoResolverChain.Add(MetnoJsonContext.Default);
@@ -44,6 +45,17 @@ namespace SimpleWeather.Weather_API.Json
         WriteIndented = false)]
     [JsonSerializable(typeof(AQICN.Rootobject))]
     public partial class AQICNJsonContext : JsonSerializerContext
+    {
+    }
+
+    [JsonSourceGenerationOptions(
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        WriteIndented = false)]
+    [JsonSerializable(typeof(BrightSky.CurrentRootobject))]
+    [JsonSerializable(typeof(BrightSky.ForecastRootobject))]
+    [JsonSerializable(typeof(BrightSky.AlertsRootobject))]
+    public partial class BrightSkyJsonContext : JsonSerializerContext
     {
     }
 

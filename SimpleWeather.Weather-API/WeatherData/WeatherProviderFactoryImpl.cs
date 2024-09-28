@@ -1,4 +1,5 @@
 ﻿using SimpleWeather.Weather_API.AccuWeather;
+using SimpleWeather.Weather_API.BrightSky;
 using SimpleWeather.Weather_API.HERE;
 using SimpleWeather.Weather_API.MeteoFrance;
 using SimpleWeather.Weather_API.Metno;
@@ -64,6 +65,9 @@ namespace SimpleWeather.Weather_API.WeatherData
 
                 case WeatherAPI.Apple:
                     return new WeatherKitProvider();
+
+                case WeatherAPI.DWD:
+                    return new BrightSkyProvider();
 
                 default:
                     {

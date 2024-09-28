@@ -96,7 +96,24 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {&quot;enabled&quot;:true,&quot;locSource&quot;:&quot;apple&quot;,&quot;newWeatherSource&quot;:&quot;&quot;}.
+        ///   Looks up a localized string similar to {
+        ///        &quot;enabled&quot;: true,
+        ///        &quot;locSource&quot;: &quot;Bing&quot;,
+        ///        &quot;newWeatherSource&quot;: &quot;&quot;
+        ///}.
+        /// </summary>
+        public static string dwd {
+            get {
+                return ResourceManager.GetString("dwd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;enabled&quot;: true,
+        ///    &quot;locSource&quot;: &quot;apple&quot;,
+        ///    &quot;newWeatherSource&quot;: &quot;&quot;
+        ///}.
         /// </summary>
         public static string google {
             get {
@@ -179,6 +196,19 @@ namespace SimpleWeather.Resources.Strings {
         public static string openweather_onecall {
             get {
                 return ResourceManager.GetString("openweather_onecall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;enabled&quot;: true,
+        ///    &quot;locSource&quot;: &quot;&quot;,
+        ///    &quot;newWeatherSource&quot;: &quot;&quot;
+        ///}.
+        /// </summary>
+        public static string rainviewer {
+            get {
+                return ResourceManager.GetString("rainviewer", resourceCulture);
             }
         }
         

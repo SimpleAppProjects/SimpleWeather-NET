@@ -218,4 +218,11 @@
     "newWeatherSource": ""
 }</value>
   </data>
+  <data name="dwd" xml:space="preserve">
+    <value>{
+    "enabled": true,
+    "locSource": "Bing",
+    "newWeatherSource": ""
+}</value>
+  </data>
 </root>

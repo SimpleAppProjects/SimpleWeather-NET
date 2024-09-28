@@ -20,12 +20,13 @@ namespace SimpleWeather.WeatherData
         public const string TomorrowIo = "tomorrowio";
         public const string AccuWeather = "accuweather";
         public const string WeatherBitIo = "weatherbitio";
-        public const string Google = "google";
+        public const string Apple = "apple";
+        public const string DWD = "dwd";
 
         // Location APIs
         public const string BingMaps = "Bing";
+        public const string Google = "google";
         public const string WeatherApi = "weatherapi";
-        public const string Apple = "apple";
 
         // Radar
         public const string RainViewer = "rainviewer";
@@ -48,7 +49,7 @@ namespace SimpleWeather.WeatherData
             }
         }
 
-        private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(9)
+        private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(11)
         {
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
@@ -58,12 +59,14 @@ namespace SimpleWeather.WeatherData
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("WeatherAPI.com", WeatherApi,
                 "https://weatherapi.com", "https://weatherapi.com/api"),
-            new ProviderEntry("U.S. National Weather Service (NOAA)", NWS,
+            new ProviderEntry("National Weather Service (United States)", NWS,
                 "https://www.weather.gov", "https://www.weather.gov"),
             new ProviderEntry("Meteo France", MeteoFrance,
                 "https://meteofrance.com/", "https://meteofrance.com/"),
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
+            new ProviderEntry("BrightSky (DWD) [Germany]", DWD,
+                "https://brightsky.dev/", "https://brightsky.dev/"),
             new ProviderEntry("Tomorrow.io", TomorrowIo,
                 "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
             new ProviderEntry("Weatherbit.io", WeatherBitIo,

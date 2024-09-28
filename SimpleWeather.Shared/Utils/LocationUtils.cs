@@ -26,6 +26,9 @@ namespace SimpleWeather.Utils
         // American Somoa
         private static readonly BoundingBox AS_BOUNDING_BOX = new(-14.6018129466, -10.9972026743, -171.141907163, -168.1016121805);
 
+        // Germany
+        private static readonly BoundingBox DE_BOUNDING_BOX = new(47.2701114, 55.099161, 5.8663153, 15.0419319);
+
         private static readonly ISet<string> NWS_SUPPORTED_COUNTRIES = ImmutableHashSet.Create("US", "AS", "UM", "GU", "MP", "PR", "VI");
         private static readonly IList<BoundingBox> NWS_SUPPORTED_LOCATIONS = [US_BOUNDING_BOX, PR_BOUNDING_BOX, VI_BOUNDING_BOX, GU_MP_BOUNDING_BOX, AS_BOUNDING_BOX];
 
@@ -163,6 +166,42 @@ namespace SimpleWeather.Utils
             else
             {
                 return NWS_SUPPORTED_LOCATIONS.Any(x => x.Intersects(location.LocationLat, location.LocationLong));
+            }
+        }
+
+        public static bool IsGermany(string countryCode)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode))
+            {
+                return false;
+            }
+            else
+            {
+                return countryCode.Equals("de", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("germany", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        public static bool IsGermany(LocationData.LocationData location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.country_code))
+            {
+                return IsGermany(location.country_code);
+            }
+            else
+            {
+                return DE_BOUNDING_BOX.Intersects(location.latitude, location.longitude);
+            }
+        }
+
+        public static bool IsGermany(LocationData.LocationQuery location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.LocationCountry))
+            {
+                return IsGermany(location.LocationCountry);
+            }
+            else
+            {
+                return DE_BOUNDING_BOX.Intersects(location.LocationLat, location.LocationLong);
             }
         }
 
