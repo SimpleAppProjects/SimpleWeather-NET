@@ -102,7 +102,12 @@ namespace SimpleWeather.SQLiteNet
                 using (connectionWithLock.Lock())
                 {
                     var item = connectionWithLock.FindWithQuery<T>(query, args);
-                    connectionWithLock.GetChildren(item);
+
+                    if (item != null)
+                    {
+                        connectionWithLock.GetChildren(item);
+                    }
+
                     return item;
                 }
             });

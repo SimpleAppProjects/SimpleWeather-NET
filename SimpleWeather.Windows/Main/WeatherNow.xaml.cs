@@ -555,7 +555,7 @@ namespace SimpleWeather.NET.Main
         {
             var result = await VerifyLocationData();
 
-            await result.Data?.Let(async locationData =>
+            await (result.Data?.Let(async locationData =>
             {
                 if (locationData.locationType == LocationType.GPS && SettingsManager.FollowGPS)
                 {
@@ -570,7 +570,7 @@ namespace SimpleWeather.NET.Main
                         // Access denied
                     }
                 }
-            });
+            }) ?? Task.CompletedTask);
 
             if (result is LocationResult.Changed || result is LocationResult.ChangedInvalid)
             {

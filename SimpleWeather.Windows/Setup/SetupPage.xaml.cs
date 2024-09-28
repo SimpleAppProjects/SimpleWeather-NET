@@ -10,9 +10,6 @@ using SimpleWeather.NET.Main;
 using SimpleWeather.NET.ViewModels;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Windows.Foundation.Metadata;
 using Windows.UI.ViewManagement;
 
@@ -177,10 +174,10 @@ namespace SimpleWeather.NET.Setup
         private async void UISettings_ColorValuesChanged(UISettings sender, object args)
         {
             // NOTE: Run on UI Thread since this may be called off the main thread
-            await DispatcherQueue?.EnqueueAsync(() =>
+            await (DispatcherQueue?.EnqueueAsync(() =>
             {
                 UpdateAppTheme();
-            });
+            }) ?? Task.CompletedTask);
         }
     }
 }

@@ -290,7 +290,7 @@ namespace SimpleWeather.NET.Controls
         {
             if (ImageData == null)
             {
-                ImageData = await weather?.GetImageData();
+                ImageData = await (weather?.GetImageData() ?? Task.FromResult<ImageDataViewModel>(default));
             }
         }
 

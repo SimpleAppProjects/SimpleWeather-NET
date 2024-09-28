@@ -177,7 +177,7 @@ namespace SimpleWeather.RemoteConfig
                     }
                 }
 #elif __IOS__
-                await FirebaseRemoteConfig.SharedInstance?.FetchAndActivateAsync();
+                await (FirebaseRemoteConfig.SharedInstance?.FetchAndActivateAsync() ?? Task.CompletedTask);
 #else
                 var db = await Firebase.FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__

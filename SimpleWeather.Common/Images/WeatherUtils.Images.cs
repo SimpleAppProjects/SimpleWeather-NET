@@ -188,7 +188,7 @@ namespace SimpleWeather.Common.Images
             var imgDataValid = imageData != null && await imageData.IsValidAsync();
 #endif
             // Validate image header/contents
-            var imgValid = imgDataValid && (await imageData?.IsImageValid());
+            var imgValid = imgDataValid && await imageData.IsImageValid();
             if (imgValid)
                 return new ImageDataViewModel(imageData);
             else

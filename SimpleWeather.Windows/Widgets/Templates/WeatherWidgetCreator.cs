@@ -195,9 +195,9 @@ namespace SimpleWeather.NET.Widgets.Templates
             var widgetData = new WeatherWidgetData()
             {
                 current = await weather.ToCurrent(),
-                forecast = await forecast?.ToForecasts(),
+                forecast = await (forecast?.ToForecasts() ?? Task.FromResult<Forecast[]>(default)),
                 showForecast = forecast?.Count > 0,
-                hr_forecast = await hr_forecast?.ToForecasts(),
+                hr_forecast = await (hr_forecast?.ToForecasts() ?? Task.FromResult<HourlyForecast[]>(default)),
                 showHrForecast = hr_forecast?.Count > 0,
                 chanceIcon = await WeatherWidgetDataExtensions.GetWeatherIcon(WeatherIcons.RAINDROP)
             };
