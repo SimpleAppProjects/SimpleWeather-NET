@@ -225,4 +225,11 @@
         "newWeatherSource": ""
 }</value>
   </data>
+  <data name="eccc" xml:space="preserve">
+    <value>{
+    "enabled": true,
+    "locSource": "Bing",
+    "newWeatherSource": ""
+}</value>
+  </data>
 </root>

@@ -72,6 +72,11 @@ namespace SimpleWeather.Utils
             return value == DateTime.MinValue;
         }
 
+        public static bool IsMinValue(this DateTimeOffset value)
+        {
+            return value == DateTimeOffset.MinValue;
+        }
+
         /// <summary>
         /// Outputs TimeSpan to the following format: "hh:mm:ss"
         /// </summary>

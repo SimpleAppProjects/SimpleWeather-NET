@@ -1,5 +1,6 @@
 ﻿using SimpleWeather.Weather_API.AccuWeather;
 using SimpleWeather.Weather_API.BrightSky;
+using SimpleWeather.Weather_API.ECCC;
 using SimpleWeather.Weather_API.HERE;
 using SimpleWeather.Weather_API.MeteoFrance;
 using SimpleWeather.Weather_API.Metno;
@@ -68,6 +69,9 @@ namespace SimpleWeather.Weather_API.WeatherData
 
                 case WeatherAPI.DWD:
                     return new BrightSkyProvider();
+
+                case WeatherAPI.ECCC:
+                    return new ECCCWeatherProvider();
 
                 default:
                     {

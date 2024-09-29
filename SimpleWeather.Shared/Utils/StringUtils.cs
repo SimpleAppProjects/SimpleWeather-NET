@@ -240,6 +240,15 @@ namespace SimpleWeather.Utils
             return Regex.IsMatch(text, pattern, RegexOptions.CultureInvariant);
         }
 
+        public static string RemovePrefix(this string text, string prefix)
+        {
+            if (text.StartsWith(prefix))
+            {
+                return text.Substring(prefix.Length);
+            }
+            return text;
+        }
+
         public static string RemoveSuffix(this string text, string suffix)
         {
             if (text.EndsWith(suffix))

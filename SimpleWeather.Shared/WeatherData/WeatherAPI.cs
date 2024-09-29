@@ -22,6 +22,7 @@ namespace SimpleWeather.WeatherData
         public const string WeatherBitIo = "weatherbitio";
         public const string Apple = "apple";
         public const string DWD = "dwd";
+        public const string ECCC = "eccc";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -61,12 +62,14 @@ namespace SimpleWeather.WeatherData
                 "https://weatherapi.com", "https://weatherapi.com/api"),
             new ProviderEntry("National Weather Service (United States)", NWS,
                 "https://www.weather.gov", "https://www.weather.gov"),
+            new ProviderEntry("BrightSky (DWD) [Germany]", DWD,
+                "https://brightsky.dev/", "https://brightsky.dev/"),
+            new ProviderEntry("Environment and Climate Change Canada (ECCC)", ECCC,
+                "https://www.weather.gc.ca/", "https://www.weather.gc.ca/canada_e.html"),
             new ProviderEntry("Meteo France", MeteoFrance,
                 "https://meteofrance.com/", "https://meteofrance.com/"),
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
-            new ProviderEntry("BrightSky (DWD) [Germany]", DWD,
-                "https://brightsky.dev/", "https://brightsky.dev/"),
             new ProviderEntry("Tomorrow.io", TomorrowIo,
                 "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
             new ProviderEntry("Weatherbit.io", WeatherBitIo,

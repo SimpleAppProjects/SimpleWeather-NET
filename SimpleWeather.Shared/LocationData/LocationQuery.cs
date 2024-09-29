@@ -84,7 +84,8 @@ namespace SimpleWeather.LocationData
                 WeatherAPI.WeatherUnlocked or
                 WeatherAPI.WeatherApi or
                 WeatherAPI.TomorrowIo or
-                WeatherAPI.AccuWeather => string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong),
+                WeatherAPI.AccuWeather or
+                WeatherAPI.ECCC => string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong),
                 _ => string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat, LocationLong)
             };
         }

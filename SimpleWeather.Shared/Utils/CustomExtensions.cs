@@ -23,6 +23,33 @@ namespace SimpleWeather.Utils
             return obj;
         }
 
+#nullable enable
+        public static TInput? TakeIf<TInput>(this TInput obj, Func<TInput, bool> predicate) where TInput : class
+        {
+            return predicate.Invoke(obj) ? obj : null;
+        }
+#nullable restore
+
+        public static int? TakeIf(this int obj, Func<int, bool> predicate)
+        {
+            return predicate.Invoke(obj) ? obj : null;
+        }
+
+        public static long? TakeIf(this long obj, Func<long, bool> predicate)
+        {
+            return predicate.Invoke(obj) ? obj : null;
+        }
+
+        public static float? TakeIf(this float obj, Func<float, bool> predicate)
+        {
+            return predicate.Invoke(obj) ? obj : null;
+        }
+
+        public static double? TakeIf(this double obj, Func<double, bool> predicate)
+        {
+            return predicate.Invoke(obj) ? obj : null;
+        }
+
         public static Result<TInput> RunCatching<TInput>(this object _, Func<TInput> action)
         {
             try

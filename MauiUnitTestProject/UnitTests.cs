@@ -12,7 +12,6 @@ using SimpleWeather.Firebase;
 using SimpleWeather.Helpers;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.LocationData;
-using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.HERE;
@@ -23,6 +22,7 @@ using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Text.Json;
 using Xunit;
@@ -69,6 +69,8 @@ namespace UnitTestProject
 
         public async Task InitializeAsync()
         {
+            SharedModule.Instance.Initialize();
+
             await Utils.SettingsManager.LoadIfNeeded();
 
             if (Utils.SettingsManager.UsePersonalKeys[Utils.SettingsManager.API])
@@ -85,6 +87,8 @@ namespace UnitTestProject
                 Utils.SettingsManager.UsePersonalKeys[Utils.SettingsManager.API] = true;
                 WasUsingPersonalKey = false;
             }
+
+            SharedModule.Instance.Dispose();
 
             return Task.CompletedTask;
         }
@@ -430,6 +434,46 @@ namespace UnitTestProject
             var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.8589384, 2.264635)).ConfigureAwait(false); // ~ Paris, France
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [Fact]
+        public async Task GetDWDWeather()
+        {
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.DWD);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(52.52, 13.4)).ConfigureAwait(false); // Berlin
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [Fact]
+        public async Task GetECCCWeather()
+        {
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.ECCC);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984)).ConfigureAwait(false); // Banning, ON
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
+        [Fact]
+        public async Task GetECCCWeather_FR()
+        {
+            CultureInfo locale = null;
+
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                locale = LocaleUtils.GetLocale();
+                LocaleUtils.SetLocaleCode(CultureInfo.GetCultureInfo("fr-CA").Name);
+            });
+
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.ECCC);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984)).ConfigureAwait(false); // Banning, ON
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+            // Restore
+            await MainThread.InvokeOnMainThreadAsync(() =>
+            {
+                LocaleUtils.SetLocaleCode(locale.Name);
+            });
         }
 
         /// <summary>

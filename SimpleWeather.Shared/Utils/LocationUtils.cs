@@ -9,7 +9,9 @@ namespace SimpleWeather.Utils
     {
         // Source: https://gist.github.com/graydon/11198540
         private static readonly BoundingBox US_BOUNDING_BOX = new(24.9493, 49.5904, -125.0011, -66.9326);
-        private static readonly BoundingBox USCA_BOUNDING_BOX = new(24.4825578966, 71.7611572494, -168.9184947286, -52.2436900411);
+
+        // Canada
+        private static readonly BoundingBox CA_BOUNDING_BOX = new(41.6765556, 83.3362128, -141.00275, -52.3231981);
 
         // France
         private static readonly BoundingBox FR_BOUNDING_BOX = new(41.2632185, 51.268318, -5.4534286, 9.8678344);
@@ -44,15 +46,17 @@ namespace SimpleWeather.Utils
             }
         }
 
+        private static bool InUSBounds(double lat, double lon) => US_BOUNDING_BOX.Intersects(lat, lon);
+
         public static bool IsUS(LocationData.LocationData location)
         {
             if (!string.IsNullOrWhiteSpace(location.country_code))
             {
-                return IsUS(location.country_code);
+                return IsUS(location.country_code) || InUSBounds(location.latitude, location.longitude);
             }
             else
             {
-                return US_BOUNDING_BOX.Intersects(location.latitude, location.longitude);
+                return InUSBounds(location.latitude, location.longitude);
             }
         }
 
@@ -60,11 +64,11 @@ namespace SimpleWeather.Utils
         {
             if (!string.IsNullOrWhiteSpace(location.LocationCountry))
             {
-                return IsUS(location.LocationCountry);
+                return IsUS(location.LocationCountry) || InUSBounds(location.LocationLat, location.LocationLong);
             }
             else
             {
-                return US_BOUNDING_BOX.Intersects(location.LocationLat, location.LocationLong);
+                return InUSBounds(location.LocationLat, location.LocationLong);
             }
         }
 
@@ -76,19 +80,21 @@ namespace SimpleWeather.Utils
             }
             else
             {
-                return IsUS(countryCode) || countryCode.Equals("CA", StringComparison.InvariantCultureIgnoreCase) || countryCode.Contains("canada", StringComparison.InvariantCultureIgnoreCase);
+                return IsUS(countryCode) || IsCanada(countryCode);
             }
         }
+
+        private static bool InUSorCanadaBounds(double lat, double lon) => InUSBounds(lat, lon) || InCanadaBounds(lat, lon);
 
         public static bool IsUSorCanada(LocationData.LocationData location)
         {
             if (!string.IsNullOrWhiteSpace(location.country_code))
             {
-                return IsUSorCanada(location.country_code);
+                return IsUSorCanada(location.country_code) || InUSorCanadaBounds(location.latitude, location.longitude);
             }
             else
             {
-                return USCA_BOUNDING_BOX.Intersects(location.latitude, location.longitude);
+                return InUSorCanadaBounds(location.latitude, location.longitude);
             }
         }
 
@@ -96,11 +102,49 @@ namespace SimpleWeather.Utils
         {
             if (!string.IsNullOrWhiteSpace(location.LocationCountry))
             {
-                return IsUSorCanada(location.LocationCountry);
+                return IsUSorCanada(location.LocationCountry) || InUSorCanadaBounds(location.LocationLat, location.LocationLong);
             }
             else
             {
-                return USCA_BOUNDING_BOX.Intersects(location.LocationLat, location.LocationLong);
+                return InUSorCanadaBounds(location.LocationLat, location.LocationLong);
+            }
+        }
+
+        public static bool IsCanada(string countryCode)
+        {
+            if (string.IsNullOrWhiteSpace(countryCode))
+            {
+                return false;
+            }
+            else
+            {
+                return countryCode.Equals("ca", StringComparison.InvariantCultureIgnoreCase) || countryCode.Equals("canada", StringComparison.InvariantCultureIgnoreCase);
+            }
+        }
+
+        private static bool InCanadaBounds(double lat, double lon) => CA_BOUNDING_BOX.Intersects(lat, lon);
+
+        public static bool IsCanada(LocationData.LocationData location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.country_code))
+            {
+                return IsCanada(location.country_code) || InCanadaBounds(location.latitude, location.longitude);
+            }
+            else
+            {
+                return InCanadaBounds(location.latitude, location.longitude);
+            }
+        }
+
+        public static bool IsCanada(LocationData.LocationQuery location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.LocationCountry))
+            {
+                return IsCanada(location.LocationCountry) || InCanadaBounds(location.LocationLat, location.LocationLong);
+            }
+            else
+            {
+                return InCanadaBounds(location.LocationLat, location.LocationLong);
             }
         }
 
@@ -116,15 +160,17 @@ namespace SimpleWeather.Utils
             }
         }
 
+        private static bool InFranceBounds(double lat, double lon) => FR_BOUNDING_BOX.Intersects(lat, lon);
+
         public static bool IsFrance(LocationData.LocationData location)
         {
             if (!string.IsNullOrWhiteSpace(location.country_code))
             {
-                return IsFrance(location.country_code);
+                return IsFrance(location.country_code) || InFranceBounds(location.latitude, location.longitude);
             }
             else
             {
-                return FR_BOUNDING_BOX.Intersects(location.latitude, location.longitude);
+                return InFranceBounds(location.latitude, location.longitude);
             }
         }
 
@@ -132,11 +178,11 @@ namespace SimpleWeather.Utils
         {
             if (!string.IsNullOrWhiteSpace(location.LocationCountry))
             {
-                return IsFrance(location.LocationCountry);
+                return IsFrance(location.LocationCountry) || InFranceBounds(location.LocationLat, location.LocationLong);
             }
             else
             {
-                return FR_BOUNDING_BOX.Intersects(location.LocationLat, location.LocationLong);
+                return InFranceBounds(location.LocationLat, location.LocationLong);
             }
         }
 
@@ -181,15 +227,17 @@ namespace SimpleWeather.Utils
             }
         }
 
+        private static bool InGermanyBounds(double lat, double lon) => DE_BOUNDING_BOX.Intersects(lat, lon);
+
         public static bool IsGermany(LocationData.LocationData location)
         {
             if (!string.IsNullOrWhiteSpace(location.country_code))
             {
-                return IsGermany(location.country_code);
+                return IsGermany(location.country_code) || InGermanyBounds(location.latitude, location.longitude);
             }
             else
             {
-                return DE_BOUNDING_BOX.Intersects(location.latitude, location.longitude);
+                return InGermanyBounds(location.latitude, location.longitude);
             }
         }
 
@@ -197,11 +245,11 @@ namespace SimpleWeather.Utils
         {
             if (!string.IsNullOrWhiteSpace(location.LocationCountry))
             {
-                return IsGermany(location.LocationCountry);
+                return IsGermany(location.LocationCountry) || InGermanyBounds(location.LocationLat, location.LocationLong);
             }
             else
             {
-                return DE_BOUNDING_BOX.Intersects(location.LocationLat, location.LocationLong);
+                return InGermanyBounds(location.LocationLat, location.LocationLong);
             }
         }
 

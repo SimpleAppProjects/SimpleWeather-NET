@@ -65,10 +65,10 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
             if ((!weather.condition.high_f.HasValue || !weather.condition.low_f.HasValue) && weather.forecast.Count > 0)
             {
-                weather.condition.high_f = weather.forecast[0].high_f.Value;
-                weather.condition.high_c = weather.forecast[0].high_c.Value;
-                weather.condition.low_f = weather.forecast[0].low_f.Value;
-                weather.condition.low_c = weather.forecast[0].low_c.Value;
+                weather.condition.high_f = weather.forecast[0].high_f;
+                weather.condition.high_c = weather.forecast[0].high_c;
+                weather.condition.low_f = weather.forecast[0].low_f;
+                weather.condition.low_c = weather.forecast[0].low_c;
             }
 
             weather.weather_alerts = _.CreateWeatherAlerts(currRoot.alerts, tzOffset);

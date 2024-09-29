@@ -36,7 +36,7 @@ namespace SimpleWeather.Utils
             };
 
 #if WINDOWS || WINUI
-            if (SharedModule.Instance.DispatcherQueue.HasThreadAccess)
+            if (SharedModule.Instance.DispatcherQueue?.HasThreadAccess ?? false)
 #else
 			if (MainThread.IsMainThread)
 #endif
@@ -48,7 +48,7 @@ namespace SimpleWeather.Utils
                 // Update current thread and Main Thread
                 localeAction();
 #if WINDOWS || WINUI
-                SharedModule.Instance.DispatcherQueue.EnqueueAsync(localeAction);
+                SharedModule.Instance.DispatcherQueue?.EnqueueAsync(localeAction);
 #else
                 MainThread.BeginInvokeOnMainThread(localeAction);
 #endif

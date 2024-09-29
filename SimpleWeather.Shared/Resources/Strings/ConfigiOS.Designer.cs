@@ -111,6 +111,19 @@ namespace SimpleWeather.Resources.Strings {
         /// <summary>
         ///   Looks up a localized string similar to {
         ///    &quot;enabled&quot;: true,
+        ///    &quot;locSource&quot;: &quot;Bing&quot;,
+        ///    &quot;newWeatherSource&quot;: &quot;&quot;
+        ///}.
+        /// </summary>
+        public static string eccc {
+            get {
+                return ResourceManager.GetString("eccc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {
+        ///    &quot;enabled&quot;: true,
         ///    &quot;locSource&quot;: &quot;apple&quot;,
         ///    &quot;newWeatherSource&quot;: &quot;&quot;
         ///}.
