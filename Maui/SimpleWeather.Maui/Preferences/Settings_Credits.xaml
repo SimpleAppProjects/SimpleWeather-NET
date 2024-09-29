@@ -127,6 +127,22 @@
                             <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_brightsky}"
+                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        CommandParameter="https://brightsky.dev/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
+                            <FileImageSource File="brightsky.png" />
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_eccc}"
+                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        CommandParameter="https://www.weather.gc.ca/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
+                            <FileImageSource File="eccc_logo.png" />
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
                 </TableSection>
                 <TableSection x:Name="IconCreditsContainer"
                               Title="{x:Static res_strings:Resources.pref_title_icons}">

@@ -807,4 +807,10 @@
   <data name="action_reset" xml:space="preserve">
     <value>Reset</value>
   </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
 </root>

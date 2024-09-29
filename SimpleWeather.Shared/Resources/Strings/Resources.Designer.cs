@@ -160,6 +160,24 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bright Sky (DWD).
+        /// </summary>
+        public static string api_brightsky {
+            get {
+                return ResourceManager.GetString("api_brightsky", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment and Climate Change Canada (ECCC).
+        /// </summary>
+        public static string api_eccc {
+            get {
+                return ResourceManager.GetString("api_eccc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google.
         /// </summary>
         public static string api_google {

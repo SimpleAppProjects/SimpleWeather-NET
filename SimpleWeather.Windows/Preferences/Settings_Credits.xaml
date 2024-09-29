@@ -142,6 +142,31 @@
                             Source="{ThemeResource TomorrowIoImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_brightsky}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://brightsky.dev/">
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Height="50"
+                                HorizontalAlignment="Left"
+                                Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/brightsky.png" />
+                            <Rectangle Width="24" />
+                            <Image
+                                Height="50"
+                                HorizontalAlignment="Left"
+                                Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/dwd.png" />
+                        </StackPanel>
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_eccc}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.weather.gc.ca/">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/eccc_logo.png" />
+                    </HyperlinkButton>
+                </StackPanel>
                 <ContentPresenter d:Content="Icons" Content="{helpers:StringRes Name='pref_title_icons'}">
                     <ContentPresenter.ContentTemplate>
                         <DataTemplate>
