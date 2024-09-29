@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
+<Project Sdk="MSBuild.Sdk.Extras/3.0.23">
   <PropertyGroup>
     <TargetFrameworks>net8.0</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">$(TargetFrameworks);net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
@@ -88,7 +88,7 @@
     <PackageReference Include="ZCS.DataContractResolver" Version="1.2.2" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.0.3" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings\AQIndex.Designer.cs">
