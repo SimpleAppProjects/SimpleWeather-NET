@@ -15,6 +15,10 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using System.ComponentModel;
+#if !WINDOWS
+using System.Collections.Generic;
+using System.Collections;
+#endif
 
 namespace SimpleWeather.NET.Controls
 {

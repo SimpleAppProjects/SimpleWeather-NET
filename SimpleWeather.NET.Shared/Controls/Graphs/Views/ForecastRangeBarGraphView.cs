@@ -1,4 +1,5 @@
-﻿using SimpleWeather.SkiaSharp;
+﻿using SimpleWeather.Icons;
+using SimpleWeather.SkiaSharp;
 #if WINDOWS
 using SimpleWeather.NET.Helpers;
 #else
@@ -10,7 +11,9 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp.Views.Windows;
 using CommunityToolkit.WinUI;
-using SimpleWeather.Icons;
+#else
+using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
+using SimpleWeather.Utils;
 #endif
 
 namespace SimpleWeather.NET.Controls.Graphs

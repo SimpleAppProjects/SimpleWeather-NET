@@ -40,6 +40,6 @@
             <graphs:ForecastRangeBarGraphView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
             </graphs:ForecastRangeBarGraphView.GestureRecognizers>
-        </graphs:RangeBarGraphView>
+        </graphs:ForecastRangeBarGraphView>
     </Grid>
 </ContentView>
