@@ -31,7 +31,7 @@
        <Exec Condition="'$(Configuration)|$(ComputedPlatform)' == 'Release|iPhoneSimulator'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-iphonesimulator/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExt.appex" />
        <Exec Condition="'$(Configuration)|$(_PlatformName)' == 'Release|MacCatalyst'" Command="ditto $(MSBuildProjectDirectory)/../SimpleWeather.Maui.AppWidget/DerivedData/SimpleWeather/Build/Products/Release-maccatalyst/widgetintentExt.appex $(MSBuildProjectDirectory)/$(_AppPlugInsPath)widgetintentExt.appex" />
     </Target>
-    <Target Name="_AddSwiftLinkerFlags" Condition="'$(LinkWithSwiftSystemLibraries)' == 'true'" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
+    <Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
 		<PropertyGroup>
 			<_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'iOS' And '$(_SdkIsSimulator)' == 'true'">iphonesimulator</_SwiftTargetPlatform>
 			<_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'iOS' And '$(_SdkIsSimulator)' != 'true'">iphoneos</_SwiftTargetPlatform>
