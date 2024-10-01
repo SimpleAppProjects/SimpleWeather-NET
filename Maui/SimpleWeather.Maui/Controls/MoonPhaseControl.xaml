@@ -12,6 +12,7 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:wicons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
     x:DataType="commonControls:MoonPhaseViewModel"
+    x:Name="Control"
     MinimumWidthRequest="{OnIdiom Default=450,
                                   Phone=340}">
     <ContentView.Resources>
@@ -42,7 +43,9 @@
             HorizontalOptions="Center"
             HorizontalScrollBarVisibility="Never"
             InputTransparent="True"
+            ItemsSource="{Binding Source={x:Reference Control}, Path=DataSet, Mode=OneWay}"
             ItemsUpdatingScrollMode="KeepScrollOffset"
+            HeightRequest="52"
             MaximumWidthRequest="488"
             SelectionMode="None"
             VerticalScrollBarVisibility="Never">

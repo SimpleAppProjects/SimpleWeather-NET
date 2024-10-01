@@ -22,6 +22,10 @@ public partial class MoonPhaseControl : ContentView
     public MoonPhaseControl()
     {
         this.InitializeComponent();
+
+        DataSet = Enumerable.Repeat(_moonPhaseTypes, 3).SelectMany(phase => phase).Select(p => new MoonPhaseItem(p)).ToList();
+        MoonStack.ItemsSource = DataSet;
+
         this.BindingContextChanged += (sender, args) =>
         {
             ApplyBindings();
