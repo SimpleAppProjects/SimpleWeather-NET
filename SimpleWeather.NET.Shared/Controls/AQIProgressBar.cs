@@ -19,6 +19,7 @@ using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
 using Microsoft.Maui.Layouts;
+using System.Diagnostics;
 #endif
 #if !WINDOWS
 using RoutedEventArgs = System.EventArgs;
@@ -388,6 +389,10 @@ namespace SimpleWeather.NET.Controls
             OnDraw(canvas);
         }
 
+#if !WINDOWS
+        private float GraphTop => bottomTextTopMargin + bottomTextBottomMargin + bottomTextHeight + bottomTextDescent;
+#endif
+
         private void OnDraw(SKCanvas canvas)
         {
             DrawLabels(canvas);
@@ -398,7 +403,11 @@ namespace SimpleWeather.NET.Controls
         private void DrawLabels(SKCanvas canvas)
         {
             // Draw bottom text
+#if WINDOWS
             float y = ViewHeight - bottomTextBottomMargin;
+#else
+            float y = GraphTop + trackPaint.StrokeWidth + bottomTextTopMargin + bottomTextHeight + bottomTextDescent;
+#endif
 
             for (int i = 0; i < COLOR_MAP.Count; i++)
             {
@@ -441,7 +450,11 @@ namespace SimpleWeather.NET.Controls
 
         private void DrawTrack(SKCanvas canvas)
         {
+#if WINDOWS
             var y = ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent - trackPaint.StrokeWidth;
+#else
+            var y = GraphTop;
+#endif
 
             COLOR_MAP.Reverse<(Range, Color)>().ForEach(pair =>
             {
@@ -450,9 +463,17 @@ namespace SimpleWeather.NET.Controls
                 canvas.DrawRoundRect(
                     new SKRect(
                         pair.Item1.Start.Value > 0 ? trackPaint.StrokeWidth * 2f : trackPaint.StrokeWidth * 1.5f,
+#if WINDOWS
                         y + trackPaint.StrokeWidth / 2f,
+#else
+                        y - trackPaint.StrokeWidth / 2f,
+#endif
                         ViewWidth * pct - trackPaint.StrokeWidth * 1.5f,
+#if WINDOWS
                         y - trackPaint.StrokeWidth / 2f
+#else
+                        y + trackPaint.StrokeWidth / 2f
+#endif
                     ),
                     trackPaint.StrokeWidth / 2f,
                     trackPaint.StrokeWidth / 2f,
@@ -465,22 +486,14 @@ namespace SimpleWeather.NET.Controls
         {
             var progress = Math.Min(Progress, 500);
             var x = ViewWidth * (progress / 500f) + (progress == 0 ? thumbSize / 1.75f : 0f) - (progress >= 500 ? thumbSize / 1.75f : 0);
+#if WINDOWS
             var y = ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent - trackPaint.StrokeWidth / 2f;
+#else
+            var y = GraphTop + trackPaint.StrokeWidth / 2f;
+#endif
 
             canvas.DrawCircle(x, y, thumbSize / 2f, thumbPaint);
         }
-
-#if !WINDOWS
-        protected double GetMeasurement(double constraint, double desiredSize, double measuredSize, double maxSize)
-        {
-            if (desiredSize > 0)
-            {
-                return maxSize > 0 ? Math.Min(desiredSize, maxSize) : desiredSize;
-            }
-
-            return measuredSize;
-        }
-#endif
 
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
@@ -506,8 +519,8 @@ namespace SimpleWeather.NET.Controls
             ViewWidth = (float)Canvas.Width;
 #else
 
-            Canvas.WidthRequest = availableSize.Width;
-            Canvas.HeightRequest = double.IsFinite(availableSize.Height) ? availableSize.Height : Math.Max(MinimumHeightRequest, ((bottomTextTopMargin + bottomTextHeight + bottomTextDescent) * 2) + trackPaint.StrokeWidth * 3); ;
+            Canvas.WidthRequest = Width - Margin.HorizontalThickness;
+            Canvas.HeightRequest = Math.Max(MinimumHeightRequest, GraphTop + trackPaint.StrokeWidth + bottomTextTopMargin + bottomTextHeight * 2 + bottomTextDescent + bottomTextBottomMargin);
 
             ViewHeight = (float)Canvas.HeightRequest;
             ViewWidth = (float)Canvas.WidthRequest;

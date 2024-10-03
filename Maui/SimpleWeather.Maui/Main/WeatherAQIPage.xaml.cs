@@ -96,6 +96,24 @@ public partial class WeatherAQIPage : ViewModelPage
                 ActivityIndicator.IsRunningProperty, mode: BindingMode.OneWay, source: BindableLayout.GetItemsSource(AQIContainer),
                 path: "Count", converter: Resources["invValueBooleanConverter"] as IValueConverter);
         });
+
+        AQIContainer.ChildAdded += (s, e) =>
+        {
+            Dispatcher.Dispatch(() =>
+            {
+                (AQIContainer as IView)?.InvalidateMeasure();
+            });
+        };
+    }
+
+    protected override void OnSizeAllocated(double width, double height)
+    {
+        base.OnSizeAllocated(width, height);
+
+        Dispatcher.Dispatch(() =>
+        {
+            (AQIContainer as IView)?.InvalidateMeasure();
+        });
     }
 }
 

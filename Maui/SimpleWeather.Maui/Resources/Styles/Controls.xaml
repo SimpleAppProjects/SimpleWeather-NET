@@ -409,13 +409,14 @@
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
+                        HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                        Margin="{TemplateBinding Margin}"
                         Stroke="Transparent"
                         StrokeThickness="0">
                         <skiaSharp:SKCanvasView
                             xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
                             x:Name="Canvas"
                             BackgroundColor="Transparent"
-                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
                             IgnorePixelScaling="True" />
                     </Border>
                 </ControlTemplate>

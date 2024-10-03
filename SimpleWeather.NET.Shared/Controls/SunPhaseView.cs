@@ -661,30 +661,11 @@ namespace SimpleWeather.NET.Controls
             canvas.DrawText(SunsetLabel, sunsetX, y, bottomTextFont, bottomTextPaint);
         }
 
-#if !WINDOWS
-        protected double GetMeasurement(double constraint, double desiredSize, double measuredSize, double maxSize)
-        {
-            if (desiredSize > 0)
-            {
-                return maxSize > 0 ? Math.Min(desiredSize, maxSize) : desiredSize;
-            }
-
-            return measuredSize;
-        }
-#endif
-
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
         {
             Size size = base.MeasureOverride(availableSize);
 #else
-        private double MeasureWidth(double widthConstraint, double measuredWidth)
-        {
-            int MIN_HORIZONTAL_GRID_NUM = 2;
-            double preferred = backgroundGridWidth * MIN_HORIZONTAL_GRID_NUM + sideLineLength * 2;
-            return LayoutManager.ResolveConstraints(widthConstraint, this.Width, measuredWidth, min: preferred);
-        }
-
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
             Size size = base.MeasureOverride(widthConstraint, heightConstraint);
