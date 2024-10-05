@@ -256,13 +256,13 @@
                 <ControlTemplate>
                     <controls:ViewBox
                         x:Name="IconBox"
-                        HeightRequest="{TemplateBinding WidthRequest}"
+                        HeightRequest="{TemplateBinding IconHeight}"
+                        WidthRequest="{TemplateBinding IconWidth}"
                         MaximumHeightRequest="{TemplateBinding MaximumHeightRequest}"
                         MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}"
                         MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}"
                         MinimumWidthRequest="{TemplateBinding MinimumWidthRequest}"
-                        Stretch="Uniform"
-                        WidthRequest="{TemplateBinding WidthRequest}" />
+                        Stretch="Uniform" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

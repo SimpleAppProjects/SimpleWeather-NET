@@ -172,9 +172,12 @@ namespace SimpleWeather.Maui.Controls
                         canvas.PaintSurface += (s, e) =>
                         {
                             e.Surface.Canvas.Clear();
-                            var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+
+                            var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
                             drawable.Bounds = bounds;
                             drawable.Draw(e.Surface.Canvas);
+
+                            e.Surface.Flush(true);
                         };
                         canvas.SetBinding(HeightRequestProperty, new Binding()
                         {
@@ -229,6 +232,10 @@ namespace SimpleWeather.Maui.Controls
                 try
                 {
                     var drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                    if (ForceBitmapIcon && drawable is SKSvgDrawable svgDrawable)
+                    {
+                        svgDrawable.TintColor = IconColor.ToSKColor();
+                    }
                     var canvas = new SKCanvasView()
                     {
                         VerticalOptions = LayoutOptions.Center,
@@ -237,9 +244,12 @@ namespace SimpleWeather.Maui.Controls
                     canvas.PaintSurface += (s, e) =>
                     {
                         e.Surface.Canvas.Clear();
-                        var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+
+                        var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
                         drawable.Bounds = bounds;
                         drawable.Draw(e.Surface.Canvas);
+
+                        e.Surface.Flush(true);
                     };
                     canvas.SetBinding(HeightRequestProperty, new Binding()
                     {
@@ -277,9 +287,12 @@ namespace SimpleWeather.Maui.Controls
                 canvas.PaintSurface += (s, e) =>
                 {
                     e.Surface.Canvas.Clear();
-                    var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
+
+                    var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
                     drawable.Bounds = bounds;
                     drawable.Draw(e.Surface.Canvas);
+
+                    e.Surface.Flush(true);
                 };
                 canvas.SetBinding(HeightRequestProperty, new Binding()
                 {

@@ -13,8 +13,7 @@
     xmlns:wicons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
     x:DataType="commonControls:MoonPhaseViewModel"
     x:Name="Control"
-    MinimumWidthRequest="{OnIdiom Default=450,
-                                  Phone=340}">
+    MinimumWidthRequest="{OnIdiom Default=450, Phone=340}">
     <ContentView.Resources>
         <Style x:Key="DisabledMoonStyle" TargetType="controls:IconControl">
             <Setter Property="Opacity" Value="0.5" />
@@ -45,25 +44,23 @@
             InputTransparent="True"
             ItemsSource="{Binding Source={x:Reference Control}, Path=DataSet, Mode=OneWay}"
             ItemsUpdatingScrollMode="KeepScrollOffset"
-            HeightRequest="52"
+            HeightRequest="60"
             MaximumWidthRequest="488"
             SelectionMode="None"
+            VerticalOptions="Center"
             VerticalScrollBarVisibility="Never">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="controls:MoonPhaseItem">
                     <controls:IconControl
-                        Margin="4"
                         Padding="4"
-                        HeightRequest="60"
                         IconHeight="60"
                         IconWidth="60"
                         Opacity="{Binding Opacity, Mode=OneWay}"
-                        WeatherIcon="{Binding Icon, Mode=OneWay}"
-                        WidthRequest="60" />
+                        WeatherIcon="{Binding Icon, Mode=OneWay}" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal" />
+                <LinearItemsLayout Orientation="Horizontal" ItemSpacing="4" />
             </CollectionView.ItemsLayout>
         </CollectionView>
         <Label
@@ -81,12 +78,9 @@
                 IsVisible="{Binding Moonrise, Converter={StaticResource stringBooleanConverter}}">
                 <controls:IconControl
                     x:Name="MoonriseIcon"
-                    HeightRequest="{OnIdiom Default=36,
-                                            Phone=32}"
-                    IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONRISE}"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}" />
+                    IconHeight="{OnIdiom Default=36, Phone=32}"
+                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
+                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONRISE}" />
                 <Label
                     x:Name="MoonriseText"
                     FontSize="{OnIdiom Default=18,
@@ -101,12 +95,9 @@
                 IsVisible="{Binding Moonset, Converter={StaticResource stringBooleanConverter}}">
                 <controls:IconControl
                     x:Name="MoonsetIcon"
-                    HeightRequest="{OnIdiom Default=36,
-                                            Phone=32}"
-                    IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
-                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONSET}"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}" />
+                    IconHeight="{OnIdiom Default=36, Phone=32}"
+                    IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
+                    WeatherIcon="{x:Static wicons:WeatherIcons.MOONSET}" />
                 <Label
                     x:Name="MoonsetText"
                     FontSize="{OnIdiom Default=18,

@@ -132,10 +132,8 @@
                         VerticalOptions="End" />
                     <local:IconControl
                         Grid.Column="1"
-                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        HeightRequest="{Binding Source={x:Reference HiTemp}, Path=Height}"
-                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconHeight="{Binding Source={x:Reference HiTemp}, Path=Height}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
                         ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
                         IconProvider="wi-erik-flowers"
                         IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
@@ -159,10 +157,8 @@
                         VerticalOptions="End" />
                     <local:IconControl
                         Grid.Column="1"
-                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        HeightRequest="{Binding Source={x:Reference LoTemp}, Path=Height}"
-                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconHeight="{Binding Source={x:Reference LoTemp}, Path=Height}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
                         ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
                         IconProvider="wi-erik-flowers"
                         IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
@@ -184,10 +180,8 @@
                     IsVisible="{Binding PoP, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
                     <local:IconControl
                         ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        HeightRequest="{Binding Source={x:Reference PoPCondition}, Path=Height}"
-                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconHeight="{Binding Source={x:Reference PoPCondition}, Path=Height}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
                         IconProvider="wi-erik-flowers"
                         IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
                         ShowAsMonochrome="True"
@@ -208,10 +202,8 @@
                     IsVisible="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
                     <local:IconControl
                         ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                        WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        HeightRequest="{Binding Source={x:Reference WindCondition}, Path=Height}"
-                        IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest}"
+                        IconHeight="{Binding Source={x:Reference WindCondition}, Path=Height}"
+                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
                         IconProvider="wi-erik-flowers"
                         IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
                         ShowAsMonochrome="True"

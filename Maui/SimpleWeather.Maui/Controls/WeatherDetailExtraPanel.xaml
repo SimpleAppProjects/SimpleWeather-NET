@@ -96,8 +96,6 @@
                     <controls:IconControl
                         x:Name="IconBox"
                         Grid.Column="2"
-                        WidthRequest="48"
-                        HeightRequest="60"
                         IconWidth="48"
                         IconHeight="48"
                         IconColor="{AppThemeBinding Light={StaticResource LightInverseOnSurface}, Dark={StaticResource DarkInverseOnSurface}}"

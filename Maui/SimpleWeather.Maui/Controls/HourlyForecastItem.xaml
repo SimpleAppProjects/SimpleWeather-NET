@@ -22,8 +22,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
                 Grid.Row="0"
-                WidthRequest="20"
-                HeightRequest="20"
                 IconWidth="20"
                 IconHeight="20"
                 IconColor="{DynamicResource SimpleBlueLight}"
@@ -52,8 +50,6 @@
             MaxLines="1"
             Text="{Binding ShortDate}" />
         <controls:IconControl
-            HeightRequest="{OnIdiom Phone=36, Tablet=42, Default=50}"
-            WidthRequest="{OnIdiom Phone=36, Tablet=42, Default=50}"
             IconHeight="{OnIdiom Phone=36, Tablet=42, Default=50}"
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             Margin="5"
@@ -87,8 +83,6 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
                 Grid.Row="0"
-                WidthRequest="20"
-                HeightRequest="20"
                 IconWidth="20"
                 IconHeight="20"
                 IconColor="LightSeaGreen"

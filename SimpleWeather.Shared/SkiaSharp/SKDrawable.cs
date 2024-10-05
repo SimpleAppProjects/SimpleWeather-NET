@@ -17,8 +17,8 @@ namespace SimpleWeather.SkiaSharp
         private readonly SKPaint _paint;
         private bool disposedValue;
 
-        private SKColor _tintColor = default;
-        public SKColor TintColor
+        private SKColor? _tintColor = null;
+        public SKColor? TintColor
         {
             get => _tintColor;
             set
@@ -33,13 +33,17 @@ namespace SimpleWeather.SkiaSharp
             _bitmap = bitmap;
             _paint = new SKPaint()
             {
-                ColorFilter = SKColorFilter.CreateBlendMode(TintColor, SKBlendMode.SrcIn)
+                IsAntialias = true,
+                FilterQuality = SKFilterQuality.High,
+                IsDither = true
             };
+
+            UpdateColorFilter();
         }
 
         private void UpdateColorFilter()
         {
-            _paint.ColorFilter = SKColorFilter.CreateBlendMode(TintColor, SKBlendMode.SrcIn);
+            _paint.ColorFilter = TintColor != null ? SKColorFilter.CreateBlendMode(TintColor.Value, SKBlendMode.SrcIn) : null;
         }
 
         public override void Draw(SKCanvas canvas)

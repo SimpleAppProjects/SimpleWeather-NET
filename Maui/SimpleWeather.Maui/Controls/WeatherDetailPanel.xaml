@@ -20,8 +20,6 @@
         <controls:IconControl
             x:Name="IconBox"
             Grid.Column="0"
-            WidthRequest="50"
-            HeightRequest="50"
             IconWidth="50"
             IconHeight="50"
             Margin="8,0"
@@ -56,8 +54,6 @@
                     IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
                     <controls:IconControl
                         x:Name="PoPIcon"
-                        WidthRequest="20"
-                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
                         IconWidth="20"
                         IconHeight="20"
                         VerticalOptions="Center"
@@ -79,8 +75,6 @@
                     VerticalOptions="Center"
                     IsVisible="{Binding Cloudiness, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
                     <controls:IconControl
-                        WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
-                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
                         IconWidth="20"
                         IconHeight="20"
                         VerticalOptions="Center"
@@ -102,8 +96,6 @@
                     VerticalOptions="Center"
                     IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}, Mode=OneWay}">
                     <controls:IconControl
-                        WidthRequest="{Binding Source={x:Reference PoPIcon}, Path=WidthRequest, Mode=OneWay}"
-                        HeightRequest="{Binding Source={RelativeSource Mode=Self}, Path=WidthRequest, Mode=OneWay}"
                         IconWidth="20"
                         IconHeight="20"
                         VerticalOptions="Center"

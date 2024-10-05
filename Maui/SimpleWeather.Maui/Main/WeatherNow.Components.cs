@@ -1657,13 +1657,15 @@ public partial class WeatherNow
                     Wrap = FlexWrap.Wrap,
                     JustifyContent = FlexJustify.Center,
                 }
+                .Paddings(16, 8, 16, 8)
                 .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
                         BindingMode.OneWay, detailsFilter, source: WNowViewModel
                 )                
                 .ItemTemplate(new DataTemplate(() =>
                 {
                     return new DetailItem()
-                        .Center();
+                        .MinWidth(250)
+                        .Margin(2, 4);
                 }))
                 .Row(1)
                 .Apply(it =>

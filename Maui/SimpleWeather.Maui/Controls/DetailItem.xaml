@@ -7,58 +7,55 @@
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:helpers="clr-namespace:SimpleWeather.Maui.Helpers"
              xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-             x:DataType="commonControls:DetailItemViewModel"
-             HeightRequest="{OnIdiom Default=150, Desktop=175, Phone=110}"
-             WidthRequest="{OnIdiom Default=150, Desktop=175, Phone=110}">
-    <Border x:Name="ItemBorder"
-            Margin="{OnIdiom Phone=4, Default=8}"
-            BackgroundColor="{AppThemeBinding Light='#B3FDFCFF', Dark='#B3242424'}"
+             x:DataType="commonControls:DetailItemViewModel">
+    <Border BackgroundColor="{AppThemeBinding Light='#B3EFEDF1', Dark='#B31F1F23'}"
             StrokeThickness="1"
-            Stroke="{mrkup:SolidColorBrush Alpha=0.1, Color={AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}}">
+            Stroke="{mrkup:SolidColorBrush Alpha=1, Color={AppThemeBinding Light='#FFC4C7C5', Dark='#FF444746'}}">
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="8" />
         </Border.StrokeShape>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="{OnIdiom Phone='*', Default='Auto'}" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="{OnIdiom Phone='*', Default='Auto'}" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Label x:Name="DetailLabel"
-                   Grid.Row="0"
-                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=16}"
-                   FontAttributes="Bold"
-                   Padding="{OnIdiom Phone=0, Default=8}"
-                   HorizontalOptions="Center"
-                   VerticalOptions="Center"
-                   Text="{Binding Label, FallbackValue='Label', Mode=OneWay}" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
             <controls:IconControl
                 x:Name="IconCtrl"
-                Grid.Row="1"
-                Margin="{OnIdiom Phone='0', Default='7.5'}"
+                Grid.Row="0"
+                Grid.Column="0"
+                Grid.RowSpan="2"
                 HorizontalOptions="Center"
-                VerticalOptions="Fill"
+                VerticalOptions="Center"
                 ForceBitmapIcon="True"
+                Padding="8,0"
                 IconColor="{AppThemeBinding Light={StaticResource SimpleBlueDark}, Dark={StaticResource SimpleBlueLight}}"
                 ShowAsMonochrome="False"
                 WeatherIcon="{Binding Icon, Mode=OneWay}"
                 Rotation="{Binding IconRotation, Mode=OneWay}"
-                HeightRequest="{OnIdiom Default=40, Desktop=50, Phone=35}"
-                WidthRequest="{OnIdiom Default=40, Desktop=50, Phone=35}"
-                IconHeight="{Binding Source={RelativeSource Mode=Self}, Path=Height}"
-                IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=Width}" />
-            <controls:ViewBox
-                Grid.Row="2"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                StretchDirection="DownOnly">
-                <Label x:Name="DetailValue"
-                       FontFamily="WeatherIcons"
-                       FontSize="{OnIdiom Phone=12, Default=14, Desktop=15}"
-                       Padding="{OnIdiom Phone=0, Default=8}"
-                       Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}"
-                       MaxLines="1" />
-            </controls:ViewBox>
+                IconHeight="48"
+                IconWidth="48" />
+            <Label x:Name="DetailLabel"
+                   Grid.Row="0"
+                   Grid.Column="1"
+                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=16}"
+                   FontAttributes="Bold"
+                   MaxLines="1"
+                   Padding="6,4,6,2"
+                   VerticalOptions="Center"
+                   Text="{Binding Label, FallbackValue='Label', Mode=OneWay}" />
+            <Label x:Name="DetailValue"
+                   Grid.Row="1"
+                   Grid.Column="1"
+                   Opacity="0.75"
+                   FontSize="{OnIdiom Phone=12, Default=14, Desktop=16}"
+                   MaxLines="1"
+                   Padding="6,2,6,4"
+                   VerticalOptions="Center"
+                   Text="{Binding Value, FallbackValue='Value', Mode=OneWay}" />
         </Grid>
     </Border>
 </ContentView>

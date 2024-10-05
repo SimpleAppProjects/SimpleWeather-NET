@@ -69,7 +69,7 @@ namespace SimpleWeather.Maui.Controls
 
         protected override void OnChildAdded(Element child)
         {
-            if (!(child is View view))
+            if (child is not View view)
                 throw new ArgumentException(nameof(child));
 
             view.PropertyChanged += ViewPropertyChanged;
@@ -86,10 +86,10 @@ namespace SimpleWeather.Maui.Controls
 
         private void ViewPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (!(sender is View view))
+            if (sender is not View)
                 return;
 
-            if (e.PropertyName == "VerticalOptions" || e.PropertyName == "HorizontalOptions")
+            if (e.PropertyName == nameof(VerticalOptions) || e.PropertyName == nameof(HorizontalOptions))
                 InvalidateMeasure();
         }
 
