@@ -43,11 +43,7 @@
             RemainingItemsThresholdReached="ListControl_RemainingItemsThresholdReached">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <localControls:WeatherDetailPanel Margin="0,0,0,8">
-                        <localControls:WeatherDetailPanel.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="DetailPanel_Tapped" />
-                        </localControls:WeatherDetailPanel.GestureRecognizers>
-                    </localControls:WeatherDetailPanel>
+                    <localControls:WeatherDetailPanel Margin="0,0,0,8" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.ItemsLayout>

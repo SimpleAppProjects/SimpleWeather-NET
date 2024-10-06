@@ -150,59 +150,6 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
         }
     }
 
-    private async void DetailPanel_Tapped(object sender, TappedEventArgs e)
-    {
-        var deviceIdiom = DeviceInfo.Idiom;
-
-        if (deviceIdiom == DeviceIdiom.Phone || deviceIdiom == DeviceIdiom.Tablet || deviceIdiom == DeviceIdiom.Desktop)
-        {
-            var content = new WeatherDetailExtraPanel()
-            {
-                BindingContext = (sender as BindableObject)?.BindingContext,
-            };
-
-            if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
-            {
-                var popover = new Popover()
-                {
-                    Content = content.MinHeight(this.Height / 2d).Width(420)
-                };
-
-                content.CloseButtonClicked += (s, e) =>
-                {
-                    popover.Hide();
-                };
-
-                popover.Show(sender as View);
-            }
-            else
-            {
-                var page = new ContentPage()
-                {
-                    Content = content
-                };
-
-                content.CloseButtonClicked += async (s, e) =>
-                {
-                    await this.Navigation.PopModalAsync(true);
-                    SuppressNavEvent = false;
-                };
-
-                page.On<iOS>().SetModalPresentationStyle(UIModalPresentationStyle.FormSheet);
-
-                if (deviceIdiom == DeviceIdiom.Phone)
-                {
-                    var displayInfo = DeviceDisplay.Current.MainDisplayInfo;
-                    content.HeightRequest = displayInfo.Height / displayInfo.Density;
-                    content.VerticalOptions = LayoutOptions.StartAndExpand;
-                }
-
-                SuppressNavEvent = true;
-                await this.Navigation.PushModalAsync(page);
-            }
-        }
-    }
-
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

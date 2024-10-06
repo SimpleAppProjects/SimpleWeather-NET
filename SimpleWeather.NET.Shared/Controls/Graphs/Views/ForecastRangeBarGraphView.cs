@@ -478,7 +478,11 @@ namespace SimpleWeather.NET.Controls.Graphs
 #else
                 var fs = await FileSystemUtils.OpenAppPackageFileAsync(WIconFontUri);
 #endif
-                popIconFont.Typeface = SKTypeface.FromStream(fs);
+                try
+                {
+                    popIconFont.Typeface = SKTypeface.FromStream(fs);
+                }
+                catch { }
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
