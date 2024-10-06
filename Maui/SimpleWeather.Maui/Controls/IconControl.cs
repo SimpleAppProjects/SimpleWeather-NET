@@ -173,9 +173,18 @@ namespace SimpleWeather.Maui.Controls
                         {
                             e.Surface.Canvas.Clear();
 
-                            var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
+                            var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
+                            var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
+
+                            var cnt = e.Surface.Canvas.Save();
+
                             drawable.Bounds = bounds;
+
+                            if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
                             drawable.Draw(e.Surface.Canvas);
+
+                            e.Surface.Canvas.RestoreToCount(cnt);
 
                             e.Surface.Flush(true);
                         };
@@ -245,9 +254,18 @@ namespace SimpleWeather.Maui.Controls
                     {
                         e.Surface.Canvas.Clear();
 
-                        var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
+                        var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
+                        var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
+
+                        var cnt = e.Surface.Canvas.Save();
+
                         drawable.Bounds = bounds;
+
+                        if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
                         drawable.Draw(e.Surface.Canvas);
+
+                        e.Surface.Canvas.RestoreToCount(cnt);
 
                         e.Surface.Flush(true);
                     };
@@ -288,9 +306,18 @@ namespace SimpleWeather.Maui.Controls
                 {
                     e.Surface.Canvas.Clear();
 
-                    var bounds = new SKRect(0, 0, e.Info.Width, e.Info.Height);
+                    var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
+                    var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
+
+                    var cnt = e.Surface.Canvas.Save();
+
                     drawable.Bounds = bounds;
+
+                    if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
                     drawable.Draw(e.Surface.Canvas);
+
+                    e.Surface.Canvas.RestoreToCount(cnt);
 
                     e.Surface.Flush(true);
                 };
