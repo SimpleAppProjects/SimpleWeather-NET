@@ -2,16 +2,13 @@
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class ForecastRangeBarEntry : RangeBarGraphEntry
+    public class ForecastRangeBarEntry
     {
-        public int? PoP { get; set; }
-
-        public ForecastRangeBarEntry() { }
-
-        public ForecastRangeBarEntry(string label, YEntryData hiTempData, YEntryData loTempData, SKDrawable icon = null, int iconRotation = 0, int? pop = null)
-            : base(label, hiTempData, loTempData, icon, iconRotation)
-        {
-            this.PoP = pop;
-        }
+        public string XLabel { get; set; }
+        public string XIcon { get; set; }
+        public int XIconRotation { get; set; }
+        public YEntryData HiTempData { get; set; }
+        public YEntryData LoTempData { get; set; }
+        public int? PoP { get; set; } = null;
     }
 }

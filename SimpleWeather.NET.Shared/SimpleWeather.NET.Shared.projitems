@@ -18,8 +18,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarEntry.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarGraphData.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarGraphDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphEntry.cs" />
@@ -36,7 +34,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BarGraphView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphViewControl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ForecastRangeBarGraphView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ItemSizeChangedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\LineView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\RangeBarGraphView.cs" />
@@ -86,5 +83,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Localization\IResourceLoader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localization\ResourceLoaderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\BingMaps.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarGraphDataSet.cs" />
   </ItemGroup>
 </Project>

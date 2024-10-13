@@ -1,4 +1,4 @@
-using CommunityToolkit.Maui.Behaviors;
+﻿using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Converters;
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Maui.Views;
@@ -1293,26 +1293,15 @@ public partial class WeatherNow
                 .Column(1)
                 .Row(0),
                 // Content
-                new ForecastRangeBarGraphPanel()
-                .Bind(ForecastRangeBarGraphPanel.ForecastDataProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
+                new ForecastRangeBarGraphView()
+                .Bind(BindingContextProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
                 {
-                    it.GraphViewTapped += (s, e) =>
+                    it.ItemClick += (s, e) =>
                     {
-                        if (s is IGraph control)
-                        {
-                            if (e is TappedEventArgs ev)
-                            {
-                                GotoDetailsPage(false,
-                                    control.GetItemPositionFromPoint((float)(ev.GetPosition(control.Control)?.X + control.ScrollViewer.ScrollX)));
-                            }
-                            else
-                            {
-                                GotoDetailsPage(false, 0);
-                            }
-                        }
+                        GotoDetailsPage(false, e.ItemIndex);
                     };
                 })
             }
@@ -1322,11 +1311,11 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<Grid, object, bool>(
+                it.Bind<Grid, ForecastRangeBarGraphDataSet, bool>(
                     VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView,
                     convert: (data) =>
                     {
-                        return FeatureSettings.Forecast && (bool)(graphDataConv as IValueConverter).Convert(data, typeof(bool), null, CultureInfo.InvariantCulture);
+                        return FeatureSettings.Forecast && data?.IsEmpty != true;
                     }
                  );
             };

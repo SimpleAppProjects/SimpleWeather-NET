@@ -29,7 +29,7 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         [ObservableProperty]
-        private ForecastRangeBarGraphData forecastGraphData;
+        private ForecastRangeBarGraphDataSet forecastGraphData;
 
         [ObservableProperty]
         private List<HourlyForecastNowViewModel> hourlyForecastData;
@@ -125,7 +125,7 @@ namespace SimpleWeather.NET.Controls
                 }
                 if (e?.Table?.TableName == WeatherData.HourlyForecasts.TABLE_NAME)
                 {
-                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 12));
+                    currentHrForecastsData.SetValue(await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimit(locationData.query, 0, 24));
                 }
             });
         }
@@ -141,13 +141,13 @@ namespace SimpleWeather.NET.Controls
         private void RefreshForecasts(Forecasts fcasts)
         {
 #if WINDOWS
-            DispatcherQueue.EnqueueAsync(async () =>
+            DispatcherQueue.EnqueueAsync(() =>
 #else
-            MainThread.BeginInvokeOnMainThread(async () =>
+            MainThread.BeginInvokeOnMainThread(() =>
 #endif
             {
                 // At most 10 forecasts
-                ForecastGraphData = await CreateForecastGraphData(fcasts?.forecast?.Take(10));
+                ForecastGraphData = CreateForecastGraphData(fcasts?.forecast?.Take(10));
                 RefreshMinutelyForecasts(fcasts?.min_forecast);
             });
         }
@@ -210,7 +210,7 @@ namespace SimpleWeather.NET.Controls
                     continue;
 
                 var entry = new RangeBarGraphEntry();
-                string date = forecast.date.ToString("ddd dd", culture);
+                string date = forecast.date.ToString("ddd", culture);
 
                 entry.XLabel = date;
                 entry.XIcon = await CreateIconDrawable(forecast.icon,
@@ -240,7 +240,7 @@ namespace SimpleWeather.NET.Controls
             return new RangeBarGraphData(new RangeBarGraphDataSet(entryData));
         }
 
-        private async Task<ForecastRangeBarGraphData> CreateForecastGraphData(IEnumerable<Forecast> forecastData)
+        private ForecastRangeBarGraphDataSet CreateForecastGraphData(IEnumerable<Forecast> forecastData)
         {
             if (forecastData == null) return null;
 
@@ -255,15 +255,10 @@ namespace SimpleWeather.NET.Controls
                     continue;
 
                 var entry = new ForecastRangeBarEntry();
-                string date = forecast.date.ToString("ddd dd", culture);
+                string date = forecast.date.ToString("ddd", culture);
 
                 entry.XLabel = date;
-                entry.XIcon = await CreateIconDrawable(forecast.icon,
-#if WINDOWS
-                    isLight: RequestedTheme == ElementTheme.Light);
-#else
-                    isLight: IsLight);
-#endif
+                entry.XIcon = forecast.icon;
 
                 // Temp Data
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
@@ -284,7 +279,7 @@ namespace SimpleWeather.NET.Controls
                 entryData.Add(entry);
             }
 
-            return new ForecastRangeBarGraphData(new ForecastRangeBarGraphDataSet(entryData));
+            return new ForecastRangeBarGraphDataSet(entryData);
         }
 
         private async Task<SKDrawable> CreateIconDrawable(string icon, bool isLight = false)

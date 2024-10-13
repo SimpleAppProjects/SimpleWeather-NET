@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
+             xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             x:Class="SimpleWeather.Maui.Controls.ForecastRangeBar"
+             x:DataType="graphs:ForecastRangeBarEntry"
+             Padding="{OnIdiom Default=4, Phone=0}">
+    <VerticalStackLayout
+        HorizontalOptions="Center" VerticalOptions="End"
+        MinimumWidthRequest="70">
+        <FlexLayout x:Name="InnerBar"
+                    Wrap="NoWrap" Direction="Column"
+                    AlignContent="Center" AlignItems="Center">
+            <Label
+                HorizontalOptions="Center"
+                FontSize="{OnIdiom Phone=14, Default=16}"
+                MaxLines="1"
+                Padding="4"
+                Text="{Binding HiTempData.YLabel, Mode=OneWay}" />
+            <RoundRectangle
+                x:Name="RangeBar"
+                FlexLayout.Grow="1"
+                FlexLayout.Shrink="0"
+                HorizontalOptions="Center"
+                CornerRadius="24"
+                HeightRequest="100"
+                WidthRequest="8" />
+            <Label
+                HorizontalOptions="Center"
+                FontSize="{OnIdiom Phone=14, Default=16}"
+                MaxLines="1"
+                Padding="4"
+                Text="{Binding LoTempData.YLabel, Mode=OneWay}" />
+        </FlexLayout>
+        <HorizontalStackLayout
+            MinimumHeightRequest="16"
+            Padding="5"
+            HorizontalOptions="Center"
+            VerticalOptions="Start">
+            <controls:IconControl
+                IconWidth="16"
+                IconHeight="16"
+                IconColor="{DynamicResource SimpleBlueLight}"
+                IconProvider="wi-erik-flowers"
+                ShowAsMonochrome="True"
+                IsVisible="{x:Bind PoP is ne null}"
+                WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
+            <Label
+                Margin="5,0,0,0"
+                FontSize="{OnIdiom Default=14, Phone=12}"
+                TextColor="{DynamicResource SimpleBlueLight}"
+                VerticalTextAlignment="Center"
+                MaxLines="1"
+                Text="{x:Bind system:String.Format('{0}%', PoP), Mode=OneWay}"
+                IsVisible="{x:Bind PoP is ne null}" />
+        </HorizontalStackLayout>
+        <controls:IconControl
+            IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
+            IconHeight="{OnIdiom Phone=36, Tablet=42, Default=50}"
+            HorizontalOptions="Center"
+            Rotation="{Binding XIconRotation, Mode=OneWay}"
+            AnchorX="0.5"
+            AnchorY="0.5"
+            WeatherIcon="{Binding XIcon, Mode=OneWay}" />
+        <Label
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            FontSize="{OnIdiom Phone=14, Default=16}"
+            MaxLines="1"
+            Padding="4"
+            Text="{Binding XLabel, Mode=OneWay}" />
+    </VerticalStackLayout>
+</ContentView>
+
