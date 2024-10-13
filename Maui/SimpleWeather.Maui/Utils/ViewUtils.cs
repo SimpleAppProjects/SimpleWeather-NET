@@ -21,13 +21,13 @@ namespace SimpleWeather.Maui.Utils
 				{
 					var str = new NSString(text);
 					var textSize = str.GetBoundingRect(
-						new CGSize(uiLabel.Frame.Size.Width, NFloat.MaxValue),
-						NSStringDrawingOptions.UsesLineFragmentOrigin,
+						new CGSize(uiLabel.Bounds.Size.Width, NFloat.MaxValue),
+						NSStringDrawingOptions.UsesLineFragmentOrigin | NSStringDrawingOptions.UsesFontLeading,
 						new UIStringAttributes { Font = uiLabel.Font },
 						null
 					).Size;
 
-					isTruncated = textSize.Height > uiLabel.Bounds.Size.Height;
+                    isTruncated = Math.Ceiling(textSize.Height) >= uiLabel.Bounds.Height - label.Padding.VerticalThickness;
                 }	
 			}
 #endif

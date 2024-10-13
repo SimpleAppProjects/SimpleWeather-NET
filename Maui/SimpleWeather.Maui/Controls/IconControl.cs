@@ -215,36 +215,11 @@ namespace SimpleWeather.Maui.Controls
                     }
                 }
             }
-            else
-            {
-                iconElement = await CreateBitmapIcon(wip);
-            }
-
-            IconBox.Children.Clear();
-            IconBox.Children.Add(iconElement);
-        }
-
-        private bool ShouldUseBitmap()
-        {
-            return ShowAsMonochrome && IconColor != Colors.Transparent && !IsBlackOrWhiteColor(IconColor);
-        }
-
-        private bool IsBlackOrWhiteColor(Color c)
-        {
-            return (c.Red == 1f && c.Green == 1f && c.Blue == 1f) || (c.Red == 0f && c.Green == 0f && c.Blue == 0f);
-        }
-
-        private async Task<IView> CreateBitmapIcon(IWeatherIconsProvider provider)
-        {
-            if (provider is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
+            else if (wip is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
             {
                 try
                 {
                     var drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                    if (ForceBitmapIcon && drawable is SKSvgDrawable svgDrawable)
-                    {
-                        svgDrawable.TintColor = IconColor.ToSKColor();
-                    }
                     var canvas = new SKCanvasView()
                     {
                         VerticalOptions = LayoutOptions.Center,
@@ -281,61 +256,79 @@ namespace SimpleWeather.Maui.Controls
                         Path = nameof(IconWidth),
                         Mode = BindingMode.OneWay,
                     });
-
-                    return canvas;
+                    iconElement = canvas;
                 }
                 catch (Exception e)
                 {
                     Logger.WriteLine(LoggerLevel.Error, e);
                     Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
+                    iconElement = await CreateBitmapIcon(wip);
                 }
             }
-
+            else
             {
-                var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                if (drawable is SKBitmapDrawable bmpDrawable)
-                {
-                    bmpDrawable.TintColor = IconColor.ToSKColor();
-                }
-                var canvas = new SKCanvasView()
-                {
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center
-                };
-                canvas.PaintSurface += (s, e) =>
-                {
-                    e.Surface.Canvas.Clear();
-
-                    var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
-                    var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                    var cnt = e.Surface.Canvas.Save();
-
-                    drawable.Bounds = bounds;
-
-                    if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                    drawable.Draw(e.Surface.Canvas);
-
-                    e.Surface.Canvas.RestoreToCount(cnt);
-
-                    e.Surface.Flush(true);
-                };
-                canvas.SetBinding(HeightRequestProperty, new Binding()
-                {
-                    Source = this,
-                    Path = nameof(IconHeight),
-                    Mode = BindingMode.OneWay,
-                });
-                canvas.SetBinding(WidthRequestProperty, new Binding()
-                {
-                    Source = this,
-                    Path = nameof(IconWidth),
-                    Mode = BindingMode.OneWay,
-                });
-
-                return canvas;
+                iconElement = await CreateBitmapIcon(wip);
             }
+
+            IconBox.Children.Clear();
+            IconBox.Children.Add(iconElement);
+        }
+
+        private bool ShouldUseBitmap()
+        {
+            return ShowAsMonochrome && IconColor != Colors.Transparent && !IsBlackOrWhiteColor(IconColor);
+        }
+
+        private bool IsBlackOrWhiteColor(Color c)
+        {
+            return (c.Red == 1f && c.Green == 1f && c.Blue == 1f) || (c.Red == 0f && c.Green == 0f && c.Blue == 0f);
+        }
+
+        private async Task<IView> CreateBitmapIcon(IWeatherIconsProvider provider)
+        {
+            var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+            if (ShowAsMonochrome && drawable is SKBitmapDrawable bmpDrawable)
+            {
+                bmpDrawable.TintColor = IconColor.ToSKColor();
+            }
+            var canvas = new SKCanvasView()
+            {
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center
+            };
+            canvas.PaintSurface += (s, e) =>
+            {
+                e.Surface.Canvas.Clear();
+
+                var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
+                var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
+
+                var cnt = e.Surface.Canvas.Save();
+
+                drawable.Bounds = bounds;
+
+                if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
+                drawable.Draw(e.Surface.Canvas);
+
+                e.Surface.Canvas.RestoreToCount(cnt);
+
+                e.Surface.Flush(true);
+            };
+            canvas.SetBinding(HeightRequestProperty, new Binding()
+            {
+                Source = this,
+                Path = nameof(IconHeight),
+                Mode = BindingMode.OneWay,
+            });
+            canvas.SetBinding(WidthRequestProperty, new Binding()
+            {
+                Source = this,
+                Path = nameof(IconWidth),
+                Mode = BindingMode.OneWay,
+            });
+
+            return canvas;
         }
 
         private Task<IView> CreateXAMLIconElement(string uri)

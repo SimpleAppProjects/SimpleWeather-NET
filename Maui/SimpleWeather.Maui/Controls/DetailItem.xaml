@@ -9,6 +9,7 @@
              xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
              x:DataType="commonControls:DetailItemViewModel">
     <Border BackgroundColor="{AppThemeBinding Light='#B3EFEDF1', Dark='#B31F1F23'}"
+            MinimumHeightRequest="{OnIdiom Default=50, Phone=70}"
             StrokeThickness="1"
             Stroke="{mrkup:SolidColorBrush Alpha=1, Color={AppThemeBinding Light='#FFC4C7C5', Dark='#FF444746'}}">
         <Border.StrokeShape>

@@ -23,7 +23,7 @@
         <Frame.Shadow>
             <Shadow Brush="Black"
                     Offset="0,0"
-                    Radius="1"
+                    Radius="0.5"
                     Opacity="0.5" />
         </Frame.Shadow>
         <Grid BindingContext="{x:Bind ViewModel, Mode=OneWay}">
@@ -95,7 +95,7 @@
                 x:Name="ConditionDescription"
                 Grid.Row="1"
                 Grid.ColumnSpan="3"
-                Padding="16"
+                Margin="16"
                 HorizontalOptions="Fill"
                 FontSize="14"
                 LineBreakMode="WordWrap"
@@ -105,7 +105,7 @@
                 x:Name="DetailsLayout"
                 Grid.Row="2"
                 Grid.ColumnSpan="3"
-                Padding="8"
+                Padding="8,4,8,8"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
                 Wrap="Wrap"
@@ -114,7 +114,7 @@
                 IsVisible="False">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="commonControls:DetailItemViewModel">
-                        <controls:DetailItem MinimumWidthRequest="250" Margin="2,4" />
+                        <controls:DetailItem MinimumWidthRequest="{OnIdiom Default=155, Desktop=185}" Margin="2,4" />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>
             </FlexLayout>

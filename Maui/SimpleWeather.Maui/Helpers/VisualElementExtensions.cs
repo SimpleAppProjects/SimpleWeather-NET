@@ -1,4 +1,6 @@
-﻿namespace SimpleWeather.Maui.Helpers
+﻿using SimpleWeather.Utils;
+
+namespace SimpleWeather.Maui.Helpers
 {
     public static class VisualElementExtensions
     {
@@ -39,6 +41,11 @@
             }
 
             return null;
+        }
+
+        public static void RemoveChildren(this Layout layout, int start, int count)
+        {
+            layout.RemoveRange(start, count);
         }
     }
 }

@@ -109,5 +109,20 @@ namespace SimpleWeather.Utils
         }
 #nullable restore
 #endif
+
+        public static void RemoveRange<T>(this IList<T> list, int start, int count)
+        {
+            var end = start + count;
+
+            if (start < 0 || count < 0 || end > list.Count)
+            {
+                throw new IndexOutOfRangeException();
+            }
+
+            for (int i = end - 1; i >= start; i--)
+            {
+                list.RemoveAt(i);
+            }
+        }
     }
 }

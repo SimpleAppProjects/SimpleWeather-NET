@@ -1,4 +1,4 @@
-﻿using CommunityToolkit.Maui.Behaviors;
+using CommunityToolkit.Maui.Behaviors;
 using CommunityToolkit.Maui.Converters;
 using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Maui.Views;
@@ -586,26 +586,30 @@ public partial class WeatherNow
                             .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
                                 BindingMode.OneWay, source: WNowViewModel
                             ),
-                            new Button()
+                            new Label()
                                 .End()
                                 .Bottom()
-                                .Margin(16,0)
+                                .Margin(16,4)
                                 .Padding(0)
                                 .BackgroundColor(Colors.Transparent)
                                 .Font(size: 11)
                                 .TextColor(Colors.White)
+                                .Text($"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})")
+                                .Behaviors(new TouchBehavior()
+                                {
+                                    PressedOpacity = 0.75
+                                })
+                                .TapGesture(() =>
+                                {
+                                    WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
+                                    {
+                                        await Browser.Default.OpenAsync(uri);
+                                    });
+                                })
                                 .Apply(it =>
                                 {
-                                    it.Clicked += (s, e) =>
-                                    {
-                                        WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
-                                        {
-                                            await Browser.Default.OpenAsync(uri);
-                                        });
-                                    };
-
                                     it.IsVisible = WNowViewModel.ImageData != null;
-                                    it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
+
                                     WNowViewModel.PropertyChanged += (s, e) =>
                                     {
                                         if (e.PropertyName == nameof(WNowViewModel.ImageData))
@@ -1666,7 +1670,7 @@ public partial class WeatherNow
                 .ItemTemplate(new DataTemplate(() =>
                 {
                     return new DetailItem()
-                        .MinWidth(250)
+                        .OnIdiom(VisualElement.MinimumWidthRequestProperty, 155, Phone: 155, Desktop: 250)
                         .Margin(2, 4);
                 }))
                 .Row(1)

@@ -32,8 +32,8 @@ public partial class WeatherDetailPanel : ContentView
 
     public WeatherDetailPanel()
 	{
-		InitializeComponent();
         ViewModel = new WeatherDetailViewModel();
+        InitializeComponent();
         this.BindingContextChanged += (sender, args) =>
         {
             // Reset expanded state
@@ -66,10 +66,7 @@ public partial class WeatherDetailPanel : ContentView
             ExpandIcon.IsVisible = IsExpandable;
             ApplyBindings();
         };
-        HeaderFrame.TapGesture(() =>
-        {
-            Toggle();
-        });
+        HeaderFrame.TapGesture(Toggle);
 	}
 
     private void Toggle()
@@ -83,7 +80,7 @@ public partial class WeatherDetailPanel : ContentView
             ConditionDescription.IsVisible = entering && ShouldShowBodyText;
             DetailsLayout.IsVisible = entering;
             ExpandIcon.RotateTo(entering ? 180 : 0, 250, Easing.CubicInOut);
-            HeaderFrame.Shadow.Radius = entering ? 2 : 1;
+            HeaderFrame.Shadow.Radius = entering ? 2 : 0.5f;
 
             Dispatcher.Dispatch(() =>
             {
@@ -104,19 +101,25 @@ public partial class WeatherDetailPanel : ContentView
 
     private void MeasureConditionDescTest(double width)
     {
-        var textPaint = new SKPaint(new SKFont(SKTypeface.Default, 14) { Edging = SKFontEdging.SubpixelAntialias });
-        var desiredWidth = textPaint.MeasureText(ConditionDescription.Text ?? string.Empty);
-        ShouldShowBodyText = !string.IsNullOrWhiteSpace(ViewModel.ConditionLongDesc);
-
-        if (BindingContext is HourlyForecastItemViewModel)
+        if (IsLoaded)
         {
-            if (desiredWidth >= (width - 60 - IconBox.Margin.HorizontalThickness - 36))
-                ShouldShowBodyText = true;
-            else if (ViewModel.Extras?.Count <= 0)
-                IsExpandable = false;
-        }
+            var textPaint = new SKPaint(new SKFont(SKTypeface.Default, 14) { Edging = SKFontEdging.SubpixelAntialias });
+            var desiredWidth = textPaint.MeasureText(ConditionDescription?.Text ?? string.Empty);
+            ShouldShowBodyText = !string.IsNullOrWhiteSpace(ViewModel.ConditionLongDesc);
 
-        ConditionDescription.IsVisible = IsExpanded && ShouldShowBodyText;
-        ExpandIcon.IsVisible = IsExpandable || ShouldShowBodyText;
+            if (BindingContext is HourlyForecastItemViewModel)
+            {
+                if (desiredWidth >= (width - 60 - IconBox.Margin.HorizontalThickness - 36))
+                    ShouldShowBodyText = true;
+                else if (ViewModel.Extras?.Count <= 0)
+                    IsExpandable = false;
+            }
+
+            if (ConditionDescription != null)
+                ConditionDescription.IsVisible = IsExpanded && ShouldShowBodyText;
+
+            if (ExpandIcon != null)
+                ExpandIcon.IsVisible = IsExpandable || ShouldShowBodyText;
+        }
     }
 }

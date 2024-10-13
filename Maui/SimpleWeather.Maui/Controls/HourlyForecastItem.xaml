@@ -7,21 +7,16 @@
              xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              x:DataType="sharedControls:HourlyForecastNowViewModel"
              xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-             WidthRequest="{OnIdiom Default=150, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=75, GreaterThanEq=100}, Tablet=110}"
+             WidthRequest="{OnIdiom Default=150, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=90, GreaterThanEq=100}, Tablet=110}"
              HeightRequest="{OnIdiom Default=250, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=200, GreaterThanEq=175}, Tablet=192}"
              BindingContextChanged="HourlyForecastItem_BindingContextChanged">
     <VerticalStackLayout VerticalOptions="Center">
-        <Grid
+        <HorizontalStackLayout
             MinimumHeightRequest="20"
             Padding="5"
             HorizontalOptions="Center"
-            VerticalOptions="Start"
-            ColumnDefinitions="Auto,*"
-            RowDefinitions="Auto,Auto">
+            VerticalOptions="Start">
             <controls:IconControl
-                Grid.Column="0"
-                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
-                Grid.Row="0"
                 IconWidth="20"
                 IconHeight="20"
                 IconColor="{DynamicResource SimpleBlueLight}"
@@ -30,9 +25,6 @@
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <Label
-                Grid.Column="{mrkup:OnDeviceWidth MinWidth=828, Default=0, GreaterThanEq=1}"
-                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
-                Grid.Row="{mrkup:OnDeviceWidth MinWidth=828, Default=1, GreaterThanEq=0}"
                 Margin="5,0,0,0"
                 FontSize="{OnIdiom Default=14, Phone=12}"
                 TextColor="{DynamicResource SimpleBlueLight}"
@@ -40,7 +32,7 @@
                 MaxLines="1"
                 Text="{Binding PoPChance}"
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}" />
-        </Grid>
+        </HorizontalStackLayout>
         <Label
             x:Name="DateBlock"
             Padding="{OnIdiom Default='10,5', Phone='4'}"
@@ -73,16 +65,11 @@
             Text="{Binding Condition}"
             LineBreakMode="TailTruncation"
             IsVisible="{OnIdiom Default=true, Phone=false}"/>
-        <Grid
+        <HorizontalStackLayout
             MinimumHeightRequest="20"
             Padding="5"
-            HorizontalOptions="Center"
-            ColumnDefinitions="Auto,*"
-            RowDefinitions="Auto,Auto">
+            HorizontalOptions="Center">
             <controls:IconControl
-                Grid.Column="0"
-                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
-                Grid.Row="0"
                 IconWidth="20"
                 IconHeight="20"
                 IconColor="LightSeaGreen"
@@ -92,9 +79,6 @@
                 IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}" />
             <Label
-                Grid.Column="{mrkup:OnDeviceWidth MinWidth=828, Default=0, GreaterThanEq=1}"
-                Grid.ColumnSpan="{mrkup:OnDeviceWidth MinWidth=828, Default=2, GreaterThanEq=1}"
-                Grid.Row="{mrkup:OnDeviceWidth MinWidth=828, Default=1, GreaterThanEq=0}"
                 Margin="5,0,0,0"
                 FontSize="{OnIdiom Default=14, Phone=12}"
                 TextColor="LightSeaGreen"
@@ -102,7 +86,7 @@
                 LineBreakMode="NoWrap"
                 Text="{Binding WindSpeed}"
                 IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}" />
-        </Grid>
+        </HorizontalStackLayout>
     </VerticalStackLayout>
 </ContentView>
 

@@ -64,7 +64,7 @@ public partial class MoonPhaseControl : ContentView
         };
         MoonStack.SizeChanged += (sender, args) =>
         {
-            ScrollToSelectedPhase();
+            Dispatcher.Dispatch(ScrollToSelectedPhase);
         };
     }
 
