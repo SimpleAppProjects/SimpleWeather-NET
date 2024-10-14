@@ -103,6 +103,8 @@
     <Color x:Key="DarkAppBarBorder">#404040</Color>
     <Color x:Key="LightPageBackground">#F2F2F7</Color>
     <Color x:Key="DarkPageBackground">#000000</Color>
+    <Color x:Key="LightFrameBackground">#fff7f2fa</Color>
+    <Color x:Key="DarkFrameBackground">#ff1d1b20</Color>
     <!-- iOS Colors End -->
 
 </ResourceDictionary>

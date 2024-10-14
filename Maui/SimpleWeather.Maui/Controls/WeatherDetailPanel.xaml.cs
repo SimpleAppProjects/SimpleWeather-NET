@@ -67,7 +67,30 @@ public partial class WeatherDetailPanel : ContentView
             ApplyBindings();
         };
         HeaderFrame.TapGesture(Toggle);
+        SetFrameColor();
 	}
+
+    private void SetFrameColor()
+    {
+        App.Current.Resources.TryGetValue("SimpleBlue", out var SimpleBlue);
+        App.Current.Resources.TryGetValue("SimpleBlueLight", out var SimpleBlueLight);
+        App.Current.Resources.TryGetValue("LightSurface", out var LightSurface);
+        App.Current.Resources.TryGetValue("DarkSurface", out var DarkSurface);
+
+        var simpleBlueLightColor = (Color)SimpleBlueLight;
+        var simpleBlueColor = (Color)SimpleBlue;
+        var lightSurfaceColor = (Color)LightSurface;
+        var darkSurfaceColor = (Color)DarkSurface;
+
+        if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+        {
+            HeaderFrame.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(Color.FromArgb("#242424"), simpleBlueLightColor.WithAlpha(0x10)));
+        }
+        else
+        {
+            HeaderFrame.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(darkSurfaceColor, simpleBlueLightColor.WithAlpha(0x10)));
+        }
+    }
 
     private void Toggle()
     {

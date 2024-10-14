@@ -1252,12 +1252,54 @@ public partial class WeatherNow
         });
     }
 
-    private Grid CreateForecastPanel()
+    private static Frame CreateWeatherNowFrame(View content)
+    {
+        App.Current.Resources.TryGetValue("SimpleBlue", out var SimpleBlue);
+        App.Current.Resources.TryGetValue("SimpleBlueLight", out var SimpleBlueLight);
+        App.Current.Resources.TryGetValue("LightSurface", out var LightSurface);
+        App.Current.Resources.TryGetValue("DarkSurface", out var DarkSurface);
+
+        var simpleBlueLightColor = (Color)SimpleBlueLight;
+        var simpleBlueColor = (Color)SimpleBlue;
+        var lightSurfaceColor = (Color)LightSurface;
+        var darkSurfaceColor = (Color)DarkSurface;
+
+        return new Frame()
+        {
+            Padding = new Thickness(4),
+            Margin = new Thickness(8, 4),
+            CornerRadius = 8,
+            MinimumHeightRequest = 0,
+            HasShadow = true,
+            Shadow = new Shadow()
+            {
+                Brush = Brush.Black,
+                Offset = new Point(0, 0),
+                Radius = 1f,
+                Opacity = 1f
+            },
+            BorderColor = Colors.Transparent,
+            Content = content,
+        }
+        .Apply(it =>
+        {
+            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
+            {
+                it.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(Color.FromArgb("#242424"), simpleBlueLightColor.WithAlpha(0x70)));
+            }
+            else
+            {
+                it.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(darkSurfaceColor, simpleBlueLightColor.WithAlpha(0x10)));
+            }
+        });
+    }
+
+    private Frame CreateForecastPanel()
     {
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -1278,10 +1320,11 @@ public partial class WeatherNow
                 }
                 .Column(0)
                 .Row(0)
+                .OnIdiom(Label.MarginProperty, Thickness.Zero, Phone: new Thickness(4,0,0,0), Tablet: new Thickness(4,0,0,0))
                 .AppThemeColorBinding(Label.TextColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel")
                 .TapGesture(() => GotoDetailsPage(false)),
-                new Image()     
+                new Image()
                 {
                     VerticalOptions = LayoutOptions.Center,
                     Source = new MaterialIcon(MaterialSymbol.ChevronRight)
@@ -1289,6 +1332,7 @@ public partial class WeatherNow
                         Size = 24
                     }.AppThemeColorBinding(MaterialIcon.ColorProperty, (Color)LightOnBackground, (Color)DarkOnBackground)
                 }
+                .OnIdiom(Image.MarginProperty, Thickness.Zero, Phone: new Thickness(0,0,4,0), Tablet: new Thickness(0,0,4,0))
                 .TapGesture(() => GotoDetailsPage(false))
                 .Column(1)
                 .Row(0),
@@ -1305,13 +1349,12 @@ public partial class WeatherNow
                     };
                 })
             }
-        }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        })
         .Apply(it =>
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<Grid, ForecastRangeBarGraphDataSet, bool>(
+                it.Bind<VisualElement, ForecastRangeBarGraphDataSet, bool>(
                     VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView,
                     convert: (data) =>
                     {
@@ -1321,9 +1364,9 @@ public partial class WeatherNow
             };
 
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
+            {
+                it.Padding(0, 4);
+            }
 
             ResizeElements.Add(it);
         });
@@ -1386,13 +1429,13 @@ public partial class WeatherNow
         .TapGesture(GotoAlertsPage);
     }
 
-    private Grid CreateHourlyForecastPanel()
+    private Frame CreateHourlyForecastPanel()
     {
         App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -1456,13 +1499,12 @@ public partial class WeatherNow
                     HourlyForecastPanel = it;
                 })
             }
-        }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        })
         .Apply(it =>
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<Grid, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
+                it.Bind<VisualElement, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
                     BindingMode.OneWay, source: ForecastView, convert: (collection) =>
                     {
                         return FeatureSettings.HourlyForecast && (bool)((IValueConverter)collectionBooleanConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
@@ -1470,21 +1512,16 @@ public partial class WeatherNow
                 );
             };
 
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
-
             ResizeElements.Add(it);
         });
     }
 
-    private Grid CreateChartsPanel()
+    private Frame CreateChartsPanel()
     {
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -1590,13 +1627,12 @@ public partial class WeatherNow
                 .Row(1)
                 .ColumnSpan(2)
             }
-        }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        })
         .Apply(it =>
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<Grid, bool, bool>(
+                it.Bind<VisualElement, bool, bool>(
                     VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView,
                     convert: (isPresent) =>
                     {
@@ -1605,23 +1641,18 @@ public partial class WeatherNow
                  );
             };
 
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
-
             ResizeElements.Add(it);
         });
     }
 
-    private Grid CreateDetailsPanel()
+    private Frame CreateDetailsPanel()
     {
         App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
         App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -1652,7 +1683,7 @@ public partial class WeatherNow
                     Wrap = FlexWrap.Wrap,
                     JustifyContent = FlexJustify.Center,
                 }
-                .Paddings(16, 8, 16, 8)
+                .Paddings(12, 8, 12, 8) // 16,8
                 .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
                         BindingMode.OneWay, detailsFilter, source: WNowViewModel
                 )                
@@ -1676,15 +1707,9 @@ public partial class WeatherNow
                     };
                 })
             }
-        }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        })
         .Apply(it =>
         {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
-
             it.Loaded += (s, e) =>
             {
                 it.IsVisible = FeatureSettings.DetailsEnabled;
@@ -1694,20 +1719,14 @@ public partial class WeatherNow
         });
     }
 
-    private UVControl CreateUVControl()
+    private Frame CreateUVControl()
     {
-        return new UVControl()
+        return CreateWeatherNowFrame(new UVControl()
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
                     BindingMode.OneWay, source: WNowViewModel
-            )
-            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+            ))
             .Apply(it =>
             {
-                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                    it.Padding(8, 0);
-                else
-                    it.Padding(16, 0);
-
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
@@ -1722,20 +1741,14 @@ public partial class WeatherNow
             });
     }
 
-    private BeaufortControl CreateBeaufortControl()
+    private Frame CreateBeaufortControl()
     {
-        return new BeaufortControl()
+        return CreateWeatherNowFrame(new BeaufortControl()
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
                     BindingMode.OneWay, source: WNowViewModel
-            )
-            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+            ))
             .Apply(it =>
             {
-                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                    it.Padding(8, 0);
-                else
-                    it.Padding(16, 0);
-
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
@@ -1750,25 +1763,19 @@ public partial class WeatherNow
             });
     }
 
-    private AQIControl CreateAQIControl()
+    private Frame CreateAQIControl()
     {
-        return new AQIControl()
+        return CreateWeatherNowFrame(new AQIControl()
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
                     BindingMode.OneWay, source: WNowViewModel
             )
-            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
             .TapGesture(async () =>
             {
                 var weatherAqiPage = new WeatherAQIPage(new WeatherPageArgs() { Location = WNowViewModel?.UiState?.LocationData });
                 await Navigation.PushAsync(weatherAqiPage);
-            })
+            }))
             .Apply(it =>
             {
-                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                    it.Padding(8, 0);
-                else
-                    it.Padding(16, 0);
-
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
@@ -1783,20 +1790,14 @@ public partial class WeatherNow
             });
     }
 
-    private PollenCountControl CreatePollenCountControl()
+    private Frame CreatePollenCountControl()
     {
-        return new PollenCountControl()
+        return CreateWeatherNowFrame(new PollenCountControl()
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
                     BindingMode.OneWay, source: WNowViewModel
-            )
-            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+            ))
             .Apply(it =>
             {
-                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                    it.Padding(8, 0);
-                else
-                    it.Padding(16, 0);
-
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
@@ -1811,20 +1812,14 @@ public partial class WeatherNow
             });
     }
 
-    private MoonPhaseControl CreateMoonPhaseControl()
+    private Frame CreateMoonPhaseControl()
     {
-        return new MoonPhaseControl()
+        return CreateWeatherNowFrame(new MoonPhaseControl()
             .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
                     BindingMode.OneWay, source: WNowViewModel
-            )
-            .OnIdiom(View.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+            ))
             .Apply(it =>
             {
-                if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                    it.Padding(8, 0);
-                else
-                    it.Padding(16, 0);
-
                 it.Loaded += (s, e) =>
                 {
                     it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
@@ -1839,13 +1834,13 @@ public partial class WeatherNow
             });
     }
 
-    private Grid CreateSunPhasePanel()
+    private Frame CreateSunPhasePanel()
     {
         App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -1880,7 +1875,7 @@ public partial class WeatherNow
 
                             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                             {
-                                parentHorizMargin = new Thickness(4, 0);
+                                parentHorizMargin = new Thickness(20, 0);
                             }
                             else
                             {
@@ -1903,13 +1898,12 @@ public partial class WeatherNow
                     })
             }
         }
-        .FillHorizontal()
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        .FillHorizontal())
         .Apply(it =>
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<Grid, object, bool>(
+                it.Bind<VisualElement, object, bool>(
                     VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
                     BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
                     {
@@ -1918,21 +1912,16 @@ public partial class WeatherNow
                 );
             };
 
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
-
             ResizeElements.Add(it);
         });
     }
 
-    private Grid CreateRadarPanel()
+    private Frame CreateRadarPanel()
     {
         App.Current.Resources.TryGetValue("LightOnBackground", out var LightOnBackground);
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
-        return new Grid()
+        return CreateWeatherNowFrame(new Grid()
         {
             RowDefinitions =
             {
@@ -2013,19 +2002,13 @@ public partial class WeatherNow
                     radarViewProvider?.EnableInteractions(false);
                 })
             }
-        }
-        .OnIdiom(Grid.MarginProperty, Default: new Thickness(0, 0, 0, 20), Phone: new Thickness(0), Tablet: new Thickness(0))
+        })
         .Apply(it =>
         {
             it.Loaded += (s, e) =>
             {
                 it.IsVisible = FeatureSettings.WeatherRadar;
             };
-
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                it.Padding(8, 0);
-            else
-                it.Padding(16, 0);
 
             ResizeElements.Add(it);
         });

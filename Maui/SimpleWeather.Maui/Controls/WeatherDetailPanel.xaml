@@ -16,7 +16,7 @@
            CornerRadius="8"
            Padding="4"
            BorderColor="{mrkup:Color Alpha=0.25, Color={AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}}"
-           BackgroundColor="{AppThemeBinding Light='#fff7f2fa', Dark='#ff1d1b20'}"
+           BackgroundColor="{AppThemeBinding Light={StaticResource LightFrameBackground}, Dark={StaticResource DarkFrameBackground}}"
            HasShadow="True"
            MinimumHeightRequest="0"
            VerticalOptions="Center">
