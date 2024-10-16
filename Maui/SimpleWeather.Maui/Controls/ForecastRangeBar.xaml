@@ -58,6 +58,7 @@
                 IsVisible="{x:Bind PoP is ne null}" />
         </HorizontalStackLayout>
         <controls:IconControl
+            x:Name="IconCtrl"
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             IconHeight="{OnIdiom Phone=36, Tablet=42, Default=50}"
             HorizontalOptions="Center"

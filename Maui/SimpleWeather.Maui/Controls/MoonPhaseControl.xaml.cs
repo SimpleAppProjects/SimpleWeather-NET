@@ -72,6 +72,11 @@ public partial class MoonPhaseControl : ContentView
     {
         MoonStack?.ScrollTo(SelectedIndex, position: ScrollToPosition.Center);
     }
+
+    private void IconControl_Loaded(object sender, EventArgs e)
+    {
+        (sender as IconControl)?.UpdateWeatherIcon();
+    }
 }
 
 public class MoonPhaseItem(MoonPhase.MoonPhaseType moonPhaseType) : BindableObject

@@ -11,7 +11,7 @@
     <Border BackgroundColor="{AppThemeBinding Light='#B3EFEDF1', Dark='#B31F1F23'}"
             MinimumHeightRequest="{OnIdiom Default=50, Phone=0}"
             StrokeThickness="1"
-            Stroke="{mrkup:SolidColorBrush Alpha=0.25, Color={AppThemeBinding Light='#FFC4C7C5', Dark='#FF444746'}}">
+            Stroke="{mrkup:SolidColorBrush Alpha={AppThemeBinding Light=0.25, Dark=1.0}, Color={AppThemeBinding Light='#FFC4C7C5', Dark='#FF444746'}}">
         <Border.StrokeShape>
             <RoundRectangle CornerRadius="8" />
         </Border.StrokeShape>

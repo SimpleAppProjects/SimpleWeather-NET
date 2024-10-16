@@ -3,7 +3,14 @@ namespace SimpleWeather.Maui.MarkupExtensions
 {
     public class SolidColorBrushExtension : BindableObject, IMarkupExtension<SolidColorBrush>
     {
-        public float Alpha { get; set; } = 1f;
+        public float Alpha
+        {
+            get => (float)GetValue(AlphaProperty);
+            set => SetValue(AlphaProperty, value);
+        }
+
+        public static readonly BindableProperty AlphaProperty =
+            BindableProperty.Create(nameof(Alpha), typeof(float), typeof(SolidColorBrushExtension), 1f);
 
         public Color Color
         {

@@ -56,7 +56,8 @@
                         IconHeight="60"
                         IconWidth="60"
                         Opacity="{Binding Opacity, Mode=OneWay}"
-                        WeatherIcon="{Binding Icon, Mode=OneWay}" />
+                        WeatherIcon="{Binding Icon, Mode=OneWay}"
+                        Loaded="IconControl_Loaded" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.ItemsLayout>

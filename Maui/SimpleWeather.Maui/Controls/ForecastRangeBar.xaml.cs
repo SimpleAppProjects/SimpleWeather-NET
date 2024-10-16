@@ -24,6 +24,7 @@ public partial class ForecastRangeBar : ContentView
     {
         base.OnBindingContextChanged();
 		ApplyBindings();
+		IconCtrl.UpdateWeatherIcon();
     }
 
     public void SetColors() => SetColors(DEFAULT_COLORS);
