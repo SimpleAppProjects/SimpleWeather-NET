@@ -84,5 +84,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Localization\ResourceLoaderImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\BingMaps.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarGraphDataSet.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\ECCC\ECCCRadarViewProvider.HttpClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\ECCC\ECCCRadarViewProvider.Mapsui.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\ECCC\ECCCRadarViewProvider.RadarFrame.cs" />
   </ItemGroup>
 </Project>

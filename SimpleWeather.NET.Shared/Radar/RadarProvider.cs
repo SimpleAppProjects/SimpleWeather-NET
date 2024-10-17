@@ -4,6 +4,7 @@ using Microsoft.Toolkit.Parsers.Core;
 using Microsoft.UI.Xaml.Controls;
 #endif
 using SimpleWeather.Controls;
+using SimpleWeather.NET.Radar.ECCC;
 using SimpleWeather.NET.Radar.NWS;
 using SimpleWeather.NET.Radar.OpenWeather;
 using SimpleWeather.NET.Radar.RainViewer;
@@ -30,6 +31,8 @@ namespace SimpleWeather.NET.Radar
             RainViewer,
             [StringValue(WeatherAPI.NWS)]
             NWS,
+            [StringValue(WeatherAPI.ECCC)]
+            ECCC,
             [StringValue(WeatherAPI.OpenWeatherMap)]
             OpenWeatherMap,
             [StringValue(WeatherAPI.TomorrowIo)]
@@ -42,6 +45,8 @@ namespace SimpleWeather.NET.Radar
                     "https://www.rainviewer.com/", "https://www.rainviewer.com/api.html"),
             new ProviderEntry("National Weather Service (United States)", WeatherAPI.NWS,
                     "https://radar.weather.gov/", "https://radar.weather.gov/"),
+            new ProviderEntry("Environment and Climate Change Canada (ECCC)", WeatherAPI.ECCC,
+                    "https://geo.weather.gc.ca", "https://geo.weather.gc.ca"),
             new ProviderEntry("OpenWeatherMap", WeatherAPI.OpenWeatherMap,
                     "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("Tomorrow.io", WeatherAPI.TomorrowIo,
@@ -94,6 +99,10 @@ namespace SimpleWeather.NET.Radar
             else if (radarProvider == WeatherAPI.NWS && isEnabled)
             {
                 return new NWSRadarViewProvider(radarContainer);
+            }
+            else if (radarProvider == WeatherAPI.ECCC && isEnabled)
+            {
+                return new ECCCRadarViewProvider(radarContainer);
             }
             else if (radarProvider == WeatherAPI.RainViewer && isEnabled)
             {
