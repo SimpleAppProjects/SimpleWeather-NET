@@ -59,7 +59,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 weather.forecast.Add(dailyFcast);
                 weather.txt_forecast.Add(txtFcast);
 
-                if (todaysForecast == null && dailyFcast.date.Date == now.UtcDateTime.Date)
+                if (todaysForecast == null)
                 {
                     todaysForecast = dailyFcast;
                     todaysTxtForecast = txtFcast;
