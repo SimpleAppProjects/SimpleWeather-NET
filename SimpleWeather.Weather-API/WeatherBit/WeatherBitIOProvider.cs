@@ -23,7 +23,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
     {
         private const String BASE_URL = "https://api.weatherbit.io/v2.0/";
         private const String KEYCHECK_QUERY_URL = BASE_URL + "current?key={0}";
-        private const String CURRENT_QUERY_URL = BASE_URL + "current?{0}&lang={1}&units=M&include=minutely,alerts&key={2}";
+        private const String CURRENT_QUERY_URL = BASE_URL + "current?{0}&lang={1}&units=M&include=alerts&key={2}";
         private const String FORECAST_QUERY_URL = BASE_URL + "forecast/daily?{0}&lang={1}&units=M&key={2}";
         private const String HRFORECAST_QUERY_URL = BASE_URL + "forecast/hourly?{0}&lang={1}&units=M&key={2}";
         private const String ALERTS_QUERY_URL = BASE_URL + "alerts?{0}&key={1}";
