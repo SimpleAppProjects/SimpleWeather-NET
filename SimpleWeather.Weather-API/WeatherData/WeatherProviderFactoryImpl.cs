@@ -6,7 +6,6 @@ using SimpleWeather.Weather_API.MeteoFrance;
 using SimpleWeather.Weather_API.Metno;
 using SimpleWeather.Weather_API.NWS;
 using SimpleWeather.Weather_API.OpenWeather;
-using SimpleWeather.Weather_API.OpenWeather.OneCall;
 using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.Weather_API.WeatherBit;
@@ -27,18 +26,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                     return new HEREWeatherProvider();
 
                 case WeatherAPI.OpenWeatherMap:
-                    {
-                        var SettingsManager = DI.Utils.SettingsManager;
-                        var RemoteConfigService = DI.Utils.RemoteConfigService;
-
-                        if (SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap] &&
-                            RemoteConfigService.IsProviderEnabled(WeatherAPI.OpenWeatherMap_OneCall))
-                        {
-                            return new OWMOneCallWeatherProvider();
-                        }
-
-                        return new OpenWeatherMapProvider();
-                    }
+                    return new OpenWeatherMapProvider();
 
                 case WeatherAPI.MetNo:
                     return new MetnoWeatherProvider();
