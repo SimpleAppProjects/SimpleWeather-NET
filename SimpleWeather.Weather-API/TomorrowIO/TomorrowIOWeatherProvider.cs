@@ -283,11 +283,15 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             Pollen pollenData = null;
 
             var key = SettingsManager.APIKeys[WAPI.TomorrowIo] ?? GetAPIKey();
-            if (String.IsNullOrWhiteSpace(key)) return null;
 
             try
             {
                 this.CheckRateLimit();
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
 
                 Rootobject root;
 

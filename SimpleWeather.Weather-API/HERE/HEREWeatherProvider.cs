@@ -82,7 +82,7 @@ namespace SimpleWeather.Weather_API.HERE
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
-                        throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError, new Exception($"Invalid bearer token: {token}"));
+                        throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey, new Exception($"Invalid bearer token: {token}"));
 
                     request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 

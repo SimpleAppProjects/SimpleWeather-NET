@@ -28,12 +28,15 @@ namespace SimpleWeather.Weather_API.Google
             Pollen pollenData = null;
 
             var key = APIKeys.GetGPollenKey();
-            if (string.IsNullOrWhiteSpace(key))
-                return null;
 
             try
             {
                 CheckRateLimit(API_ID);
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
 
                 Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, QUERY_URL, location.latitude, location.longitude, key));
 

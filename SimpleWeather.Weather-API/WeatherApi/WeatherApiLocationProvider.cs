@@ -48,6 +48,11 @@ namespace SimpleWeather.Weather_API.WeatherApi
             {
                 this.CheckRateLimit();
 
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 Uri queryURL = new Uri(String.Format(QUERY_URL, key, location_query, locale));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, queryURL))
@@ -146,6 +151,11 @@ namespace SimpleWeather.Weather_API.WeatherApi
             try
             {
                 this.CheckRateLimit();
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
 
                 Uri queryURL = new Uri(String.Format(QUERY_URL, key, location_query, locale));
 

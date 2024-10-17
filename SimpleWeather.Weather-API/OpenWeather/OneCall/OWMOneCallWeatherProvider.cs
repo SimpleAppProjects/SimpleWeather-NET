@@ -268,6 +268,11 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             {
                 this.CheckRateLimit();
 
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 Uri weatherURL = new Uri(string.Format(AQI_QUERY_URL, location.latitude, location.longitude, key));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, weatherURL))

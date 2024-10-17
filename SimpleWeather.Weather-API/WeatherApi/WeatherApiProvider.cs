@@ -203,6 +203,11 @@ namespace SimpleWeather.Weather_API.WeatherApi
             {
                 this.CheckRateLimit();
 
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 Uri alertsURL = new Uri(string.Format(ALERTS_QUERY_URL, UpdateLocationQuery(location), locale, key));
 
                 using (var request = new HttpRequestMessage(HttpMethod.Get, alertsURL))

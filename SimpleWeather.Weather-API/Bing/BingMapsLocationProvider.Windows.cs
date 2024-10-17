@@ -37,6 +37,11 @@ namespace SimpleWeather.Weather_API.Bing
 
             try
             {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 MapService.ServiceToken = key;
                 // The nearby location to use as a query hint.
                 BasicGeoposition geoPoint = new BasicGeoposition
@@ -112,6 +117,11 @@ namespace SimpleWeather.Weather_API.Bing
 
             try
             {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 MapService.ServiceToken = key;
                 // The nearby location to use as a query hint.
                 BasicGeoposition queryHint = new BasicGeoposition

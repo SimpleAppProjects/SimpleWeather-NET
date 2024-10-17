@@ -33,6 +33,11 @@ namespace SimpleWeather.Weather_API.Bing
             {
                 this.CheckRateLimit();
 
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
                 using var cts = new CancellationTokenSource(Preferences.SettingsManager.READ_TIMEOUT);
 
                 var request = new ReverseGeocodeRequest()
@@ -115,6 +120,11 @@ namespace SimpleWeather.Weather_API.Bing
             try
             {
                 this.CheckRateLimit();
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
 
                 using var cts = new CancellationTokenSource(Preferences.SettingsManager.READ_TIMEOUT);
 
