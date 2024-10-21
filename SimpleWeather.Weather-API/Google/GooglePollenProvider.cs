@@ -1,4 +1,7 @@
-﻿using SimpleWeather.HttpClientExtensions;
+﻿#if __IOS__
+using Microsoft.Maui.ApplicationModel;
+#endif
+using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
@@ -44,6 +47,9 @@ namespace SimpleWeather.Weather_API.Google
                 HttpClient webClient = SharedModule.Instance.WebClient;
                 var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
 
+#if __IOS__
+                request.Headers.Add("X-Ios-Bundle-Identifier", AppInfo.PackageName);
+#endif
                 request.Headers.UserAgent.AddAppUserAgent();
                 request.Headers.CacheControl = new CacheControlHeaderValue()
                 {
