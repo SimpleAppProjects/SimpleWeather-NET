@@ -53,8 +53,8 @@
                 <DataTemplate x:DataType="controls:MoonPhaseItem">
                     <controls:IconControl
                         Padding="4"
-                        IconHeight="60"
-                        IconWidth="60"
+                        IconHeight="{OnIdiom Default=60, Phone=52}"
+                        IconWidth="{OnIdiom Default=60, Phone=52}"
                         Opacity="{Binding Opacity, Mode=OneWay}"
                         WeatherIcon="{Binding Icon, Mode=OneWay}"
                         Loaded="IconControl_Loaded" />

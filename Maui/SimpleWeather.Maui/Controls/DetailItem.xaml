@@ -37,8 +37,8 @@
                 ShowAsMonochrome="False"
                 WeatherIcon="{Binding Icon, Mode=OneWay}"
                 Rotation="{Binding IconRotation, Mode=OneWay}"
-                IconHeight="48"
-                IconWidth="48" />
+                IconHeight="{OnIdiom Default=48, Phone=40}"
+                IconWidth="{OnIdiom Default=48, Phone=40}" />
             <Label x:Name="DetailLabel"
                    Grid.Row="0"
                    Grid.Column="1"
