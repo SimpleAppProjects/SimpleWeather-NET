@@ -132,7 +132,7 @@ public partial class Settings_WeatherNotifications : ContentPage, ISnackbarManag
 #endif
         }
 
-        if (sw.On && !ExtrasService.IsEnabled())
+        if (sw.On && !ExtrasService.IsAtLeastProEnabled())
         {
             SettingsManager.DailyNotificationEnabled = sw.On = false;
             await this.Navigation.PushAsync(new PremiumPage());

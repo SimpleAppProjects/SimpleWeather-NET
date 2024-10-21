@@ -114,7 +114,7 @@ public partial class Settings_General : ContentPage, IBackRequestedPage, ISnackb
         RestoreAPISettings();
 
         // Refresh interval
-        if (ExtrasService.IsEnabled())
+        if (ExtrasService.IsPremiumEnabled())
         {
             IntervalPref.Items = PremiumRefreshOptions;
         }

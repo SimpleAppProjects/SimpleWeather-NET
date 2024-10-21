@@ -98,7 +98,7 @@ namespace SimpleWeather.NET.Radar
             markerLayer.Opacity = 1;
 
             mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
-            mapControl.Map.Navigator.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
+            mapControl.Map.Navigator.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
 
             UpdateMap(mapControl);
         }
@@ -133,7 +133,7 @@ namespace SimpleWeather.NET.Radar
             mapControl?.Map?.Navigator?.Apply(n =>
             {
                 n.PanLock = !InteractionsEnabled();
-                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
+                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
             });
         }
 
@@ -164,7 +164,7 @@ namespace SimpleWeather.NET.Radar
                 n.ZoomLock = false;
                 n.PanLock = false;
                 n.CenterOnAndZoomTo(MapCameraPosition, DEFAULT_ZOOM_LEVEL.ToMapsuiResolution());
-                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsEnabled());
+                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
                 n.PanLock = !InteractionsEnabled();
             };
             mapControl.Map.Navigator.OverrideZoomBounds = new MMinMax(MIN_ZOOM_LEVEL.ToMapsuiResolution(), MAX_ZOOM_LEVEL.ToMapsuiResolution());

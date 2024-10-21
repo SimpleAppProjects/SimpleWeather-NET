@@ -25,6 +25,12 @@ namespace SimpleWeather.Maui.Helpers
             }
         }
 
+        public static T IsGone<T>(this T element, bool value) where T : VisualElement
+        {
+            element.IsVisible = value ? false : true;
+            return element;
+        }
+
         public static T GetParent<T>(this VisualElement depObj) where T : VisualElement
         {
             if (depObj != null)

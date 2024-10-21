@@ -56,7 +56,7 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
 
         // Refresh interval
         RefreshComboBox.ItemDisplayBinding = new Binding("Display");
-        if (ExtrasService.IsEnabled())
+        if (ExtrasService.IsPremiumEnabled())
         {
             RefreshComboBox.ItemsSource = PremiumRefreshOptions;
             RefreshComboBox.SelectedItem = PremiumRefreshOptions.First(it => Equals(it.Value, SettingsManager.RefreshInterval.ToInvariantString()));

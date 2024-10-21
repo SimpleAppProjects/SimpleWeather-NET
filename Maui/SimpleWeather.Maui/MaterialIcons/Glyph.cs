@@ -35,5 +35,7 @@
         ArrowBackiOS = 0xe5e0,
         Check = 0xe5ca,
         ThumbsUp = 0xe8dc,
+        WorkspacePremium = 0xe7af,
+        Stars = 0xe8d0,
     }
 }

@@ -7,6 +7,7 @@
         public const string USER_LOCALE = "user_locale";
         public const string DEVICE_TYPE = "device_type";
         public const string IS_PREMIUM = "is_premium";
+        public const string IS_PRO = "is_pro";
 
         public const string WINDOWS_OS_VERSION = "windows_os_version";
         public const string WINDOWS_OS_VERSION_CODE = "win_os_version_code";

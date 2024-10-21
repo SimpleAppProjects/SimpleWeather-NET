@@ -430,4 +430,32 @@
         CanCascade="True"
         TargetType="sharedControls:AQIProgressBar" />
 
+    <Style x:Key="DefaultToggleButtonGroupStyle" TargetType="controls:ToggleButtonGroup">
+        <Setter Property="CornerRadius" Value="20" />
+        <Setter Property="HorizontalOptions" Value="Center" />
+        <Setter Property="VerticalOptions" Value="Center" />
+        <Setter Property="ControlTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border StrokeThickness="1"
+                            Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}"
+                            BackgroundColor="{TemplateBinding BackgroundColor}"
+                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                            VerticalOptions="{TemplateBinding VerticalOptions}">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="{TemplateBinding CornerRadius}" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout x:Name="Container" />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style
+        ApplyToDerivedTypes="True"
+        BasedOn="{StaticResource DefaultToggleButtonGroupStyle}"
+        CanCascade="True"
+        TargetType="controls:ToggleButtonGroup" />
+
 </ResourceDictionary>

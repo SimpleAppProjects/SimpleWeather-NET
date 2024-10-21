@@ -2,14 +2,21 @@
 {
     public interface IExtrasService
     {
-        void EnableExtras();
+        bool AreSubscriptionsSupported { get; }
+
+        void CheckPremiumStatus();
+
+        void EnablePremiumAccess();
+        void EnableProAccess();
         void DisableExtras();
-        bool IsEnabled();
+        void DisableProAccess();
+        void DisablePremiumAccess();
+        bool IsAtLeastProEnabled();
+        bool IsPremiumEnabled();
+        bool IsProEnabled();
+
         bool IsIconPackSupported(string packKey);
         bool IsWeatherAPISupported(string api);
         bool IsPremiumWeatherAPI(string api);
-        void CheckPremiumStatus();
-
-        bool AreSubscriptionsSupported { get; }
     }
 }

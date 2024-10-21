@@ -52,9 +52,9 @@ namespace SimpleWeather.NET.Radar.NWS
 
 #if WINDOWS
             RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && ExtrasService.IsEnabled() ? Visibility.Visible : Visibility.Collapsed;
+                InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled() ? Visibility.Visible : Visibility.Collapsed;
 #else
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsEnabled();
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
 #endif
         }
 

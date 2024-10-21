@@ -174,7 +174,7 @@ public partial class Settings_WeatherAlerts : ContentPage, ISnackbarManager, IRe
 #endif
         }
 
-        if (sw.On && !ExtrasService.IsEnabled())
+        if (sw.On && !ExtrasService.IsAtLeastProEnabled())
         {
             SettingsManager.PoPChanceNotificationEnabled = sw.On = false;
             await this.Navigation.PushAsync(new PremiumPage());

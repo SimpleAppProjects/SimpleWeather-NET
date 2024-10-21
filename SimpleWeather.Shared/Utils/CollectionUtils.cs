@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if __IOS__
+using Foundation;
+#endif
 #if WINDOWS
 using Windows.Foundation.Collections;
 #endif
@@ -124,5 +127,12 @@ namespace SimpleWeather.Utils
                 list.RemoveAt(i);
             }
         }
+
+#if __IOS__
+        public static bool ContainsKey(this NSDictionary dict, object key)
+        {
+            return dict.ContainsKey(NSObject.FromObject(key));
+        }
+#endif
     }
 }

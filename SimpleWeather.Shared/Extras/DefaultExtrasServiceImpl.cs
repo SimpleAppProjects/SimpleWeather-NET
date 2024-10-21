@@ -9,12 +9,37 @@
             // no-op
         }
 
-        public void EnableExtras()
+        public void DisableProAccess()
         {
             // no-op
         }
 
-        public bool IsEnabled()
+        public void DisablePremiumAccess()
+        {
+            // no-op
+        }
+
+        public void EnablePremiumAccess()
+        {
+            // no-op
+        }
+
+        public void EnableProAccess()
+        {
+            // no-op
+        }
+
+        public bool IsAtLeastProEnabled()
+        {
+            return true;
+        }
+
+        public bool IsPremiumEnabled()
+        {
+            return true;
+        }
+
+        public bool IsProEnabled()
         {
             return true;
         }
