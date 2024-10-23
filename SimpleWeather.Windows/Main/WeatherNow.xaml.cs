@@ -765,6 +765,11 @@ namespace SimpleWeather.NET.Main
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.Control).X + control.ScrollViewer.HorizontalOffset)));
                 e.Handled = true;
             }
+            else if (sender is ForecastRangeBar rangeBar)
+            {
+                GotoDetailsPage(false, ForecastGraphPanel.GetItemPosition(rangeBar));
+                e.Handled = true;
+            }
             else
             {
                 var point = e.GetPosition(ForecastGraphPanel);

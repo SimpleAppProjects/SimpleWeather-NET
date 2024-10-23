@@ -254,8 +254,8 @@
                 <ControlTemplate TargetType="localControls:IconControl">
                     <Viewbox
                         x:Name="IconBox"
-                        Width="{TemplateBinding Width}"
-                        Height="{TemplateBinding Height}"
+                        Width="{TemplateBinding IconWidth}"
+                        Height="{TemplateBinding IconHeight}"
                         MinWidth="{TemplateBinding MinWidth}"
                         MinHeight="{TemplateBinding MinHeight}"
                         MaxWidth="{TemplateBinding MaxWidth}"
@@ -304,12 +304,6 @@
     </Style>
 
     <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:RangeBarGraphView">
-        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-    </Style>
-
-    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:ForecastRangeBarGraphView">
         <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />

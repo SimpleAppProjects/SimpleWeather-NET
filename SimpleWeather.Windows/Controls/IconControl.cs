@@ -85,6 +85,24 @@ namespace SimpleWeather.NET.Controls
         public static readonly DependencyProperty ForceBitmapIconProperty =
             DependencyProperty.Register(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
 
+        public double IconHeight
+        {
+            get => (double)GetValue(IconHeightProperty);
+            set => SetValue(IconHeightProperty, value);
+        }
+
+        public static readonly DependencyProperty IconHeightProperty =
+            DependencyProperty.Register(nameof(IconHeight), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+
+        public double IconWidth
+        {
+            get => (double)GetValue(IconWidthProperty);
+            set => SetValue(IconWidthProperty, value);
+        }
+
+        public static readonly DependencyProperty IconWidthProperty =
+            DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
         public IconControl()
@@ -156,33 +174,31 @@ namespace SimpleWeather.NET.Controls
                         {
                             e.Surface.Canvas.Clear();
 
-                            var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
-
-                            var scaleX = e.Info.Width / ActualWidth;
-                            var scaleY = e.Info.Height / ActualHeight;
-
-                            var dX = (float)-((Padding.Left + Padding.Right) * 0.5 / scaleX);
-                            var dY = (float)-((Padding.Top + Padding.Bottom) * 0.5 / scaleY);
-
-                            bounds.Inflate(dX, dY);
-                            drawable.Bounds = bounds;
+                            var padding = (float)Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
+                            var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
 
                             var cnt = e.Surface.Canvas.Save();
-                            e.Surface.Canvas.Translate(-dX, -dY);
+
+                            drawable.Bounds = bounds;
+
+                            if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
                             drawable.Draw(e.Surface.Canvas);
+
                             e.Surface.Canvas.RestoreToCount(cnt);
+
                             e.Surface.Flush(true);
                         };
                         canvas.SetBinding(HeightProperty, new Binding()
                         {
                             Source = this,
-                            Path = new PropertyPath(nameof(ActualHeight)),
+                            Path = new PropertyPath(nameof(IconHeight)),
                             Mode = BindingMode.OneWay,
                         });
                         canvas.SetBinding(WidthProperty, new Binding()
                         {
                             Source = this,
-                            Path = new PropertyPath(nameof(ActualWidth)),
+                            Path = new PropertyPath(nameof(IconWidth)),
                             Mode = BindingMode.OneWay,
                         });
                         iconElement = canvas;
@@ -210,33 +226,31 @@ namespace SimpleWeather.NET.Controls
                     {
                         e.Surface.Canvas.Clear();
 
-                        var bounds = new SKRect(0, 0, e.Info.Height, e.Info.Height);
-
-                        var scaleX = e.Info.Width / ActualWidth;
-                        var scaleY = e.Info.Height / ActualHeight;
-
-                        var dX = (float)-((Padding.Left + Padding.Right) * 0.5 / scaleX);
-                        var dY = (float)-((Padding.Top + Padding.Bottom) * 0.5 / scaleY);
-
-                        bounds.Inflate(dX, dY);
-                        drawable.Bounds = bounds;
+                        var padding = (float)Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
+                        var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
 
                         var cnt = e.Surface.Canvas.Save();
-                        e.Surface.Canvas.Translate(-dX, -dY);
+
+                        drawable.Bounds = bounds;
+
+                        if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
                         drawable.Draw(e.Surface.Canvas);
+
                         e.Surface.Canvas.RestoreToCount(cnt);
+
                         e.Surface.Flush(true);
                     };
                     canvas.SetBinding(HeightProperty, new Binding()
                     {
                         Source = this,
-                        Path = new PropertyPath(nameof(ActualHeight)),
+                        Path = new PropertyPath(nameof(IconHeight)),
                         Mode = BindingMode.OneWay,
                     });
                     canvas.SetBinding(WidthProperty, new Binding()
                     {
                         Source = this,
-                        Path = new PropertyPath(nameof(ActualWidth)),
+                        Path = new PropertyPath(nameof(IconWidth)),
                         Mode = BindingMode.OneWay,
                     });
                     iconElement = canvas;
@@ -287,6 +301,25 @@ namespace SimpleWeather.NET.Controls
                 Mode = BindingMode.OneWay,
                 Source = ShowAsMonochrome
             });
+            bmpIcon.SetBinding(HeightProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(nameof(IconHeight)),
+                Mode = BindingMode.OneWay,
+            });
+            bmpIcon.SetBinding(WidthProperty, new Binding()
+            {
+                Source = this,
+                Path = new PropertyPath(nameof(IconWidth)),
+                Mode = BindingMode.OneWay,
+            });
+            var padding = Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
+            bmpIcon.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
+            bmpIcon.RenderTransform = new ScaleTransform()
+            {
+                ScaleX = (float)Math.Max((IconHeight - padding) / IconHeight, (IconWidth - padding) / IconWidth),
+                ScaleY = (float)Math.Max((IconHeight - padding) / IconHeight, (IconWidth - padding) / IconWidth)
+            };
             return bmpIcon;
         }
 

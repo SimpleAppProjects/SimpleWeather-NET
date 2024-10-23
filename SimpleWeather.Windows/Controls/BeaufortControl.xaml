@@ -25,11 +25,11 @@
             <RelativePanel>
                 <local:IconControl
                     x:Name="BeaufortIcon"
-                    Width="55"
-                    Height="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
                     Foreground="{ThemeResource BeaufortPaintColorBrush}"
+                    IconHeight="55"
+                    IconWidth="55"
                     RelativePanel.Above="BeaufortProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"

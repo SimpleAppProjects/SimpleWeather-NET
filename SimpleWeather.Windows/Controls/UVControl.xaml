@@ -22,12 +22,12 @@
             <RelativePanel>
                 <local:IconControl
                     x:Name="UVIcon"
-                    Width="55"
-                    Height="55"
                     Margin="20,10"
                     VerticalAlignment="Center"
                     ForceBitmapIcon="True"
                     Foreground="{ThemeResource SunPaintColorBrush}"
+                    IconHeight="55"
+                    IconWidth="55"
                     RelativePanel.Above="UVProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"

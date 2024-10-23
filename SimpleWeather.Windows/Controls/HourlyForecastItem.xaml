@@ -38,11 +38,11 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <local:IconControl
-                Width="20"
-                Height="20"
                 d:WeatherIcon="&#xf078;"
                 Foreground="{ThemeResource SimpleBlueLight}"
+                IconHeight="20"
                 IconProvider="wi-erik-flowers"
+                IconWidth="20"
                 ShowAsMonochrome="True"
                 Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
@@ -69,11 +69,11 @@
         <Border Style="{ThemeResource Divider}" Visibility="Collapsed" />
         <local:IconControl
             x:Name="WeatherIconControl"
-            Width="50"
-            Height="50"
             Margin="5"
             HorizontalAlignment="Center"
             d:WeatherIcon="&#xf00d;"
+            IconHeight="50"
+            IconWidth="50"
             WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
         <TextBlock
             Padding="10,0"
@@ -104,11 +104,11 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <local:IconControl
-                Width="20"
-                Height="20"
                 d:WeatherIcon="&#xf058;"
                 Foreground="LightSeaGreen"
+                IconHeight="20"
                 IconProvider="wi-erik-flowers"
+                IconWidth="20"
                 RenderTransformOrigin="0.5,0.5"
                 ShowAsMonochrome="True"
                 Visibility="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"

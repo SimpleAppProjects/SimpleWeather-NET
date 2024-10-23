@@ -174,10 +174,10 @@
                     TextAlignment="Right" />
                 <local:IconControl
                     Grid.Column="1"
-                    Width="20"
-                    Height="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconHeight="20"
                     IconProvider="wi-erik-flowers"
+                    IconWidth="20"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf058;" />
             </Grid>
@@ -198,10 +198,10 @@
                     TextAlignment="Right" />
                 <local:IconControl
                     Grid.Column="1"
-                    Width="20"
-                    Height="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconHeight="20"
                     IconProvider="wi-erik-flowers"
+                    IconWidth="20"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf044;" />
             </Grid>
@@ -220,11 +220,11 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.PoP, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="20"
-                    Height="20"
                     d:WeatherIcon="&#xf084;"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconHeight="20"
                     IconProvider="wi-erik-flowers"
+                    IconWidth="20"
                     ShowAsMonochrome="True"
                     WeatherIcon="{x:Bind ViewModel.PoPIcon, Mode=OneWay}" />
                 <TextBlock
@@ -244,10 +244,10 @@
                 Orientation="Horizontal"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                 <local:IconControl
-                    Width="20"
-                    Height="20"
                     Foreground="{ThemeResource TextFillColorPrimaryBrush}"
+                    IconHeight="20"
                     IconProvider="wi-erik-flowers"
+                    IconWidth="20"
                     RenderTransformOrigin="0.5,0.5"
                     ShowAsMonochrome="True"
                     WeatherIcon="&#xf0b1;">

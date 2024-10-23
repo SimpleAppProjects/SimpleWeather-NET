@@ -243,10 +243,10 @@
                                     Foreground="{ThemeResource ForegroundColor}"
                                     Text="{x:Bind WNowViewModel.Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 <localcontrols:IconControl
-                                    Width="25"
-                                    Height="25"
                                     Foreground="OrangeRed"
+                                    IconHeight="25"
                                     IconProvider="wi-erik-flowers"
+                                    IconWidth="25"
                                     ShowAsMonochrome="True"
                                     WeatherIcon="&#xf058;" />
                             </StackPanel>
@@ -260,21 +260,21 @@
                                     Foreground="{ThemeResource ForegroundColor}"
                                     Text="{x:Bind WNowViewModel.Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 <localcontrols:IconControl
-                                    Width="25"
-                                    Height="25"
                                     Foreground="DeepSkyBlue"
+                                    IconHeight="25"
                                     IconProvider="wi-erik-flowers"
+                                    IconWidth="25"
                                     ShowAsMonochrome="True"
                                     WeatherIcon="&#xf044;" />
                             </StackPanel>
                         </StackPanel>
                         <localcontrols:IconControl
                             x:Name="WeatherBox"
-                            Width="108"
-                            Height="108"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
                             ForceDarkTheme="{x:Bind uwpUtils:FeatureSettings.BackgroundImage, Mode=OneWay}"
+                            IconHeight="108"
+                            IconWidth="108"
                             RelativePanel.Above="SummaryPanel"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignTopWithPanel="True"
@@ -404,7 +404,7 @@
                             x:Load="{x:Bind uwpUtils:FeatureSettings.Forecast, Mode=OneWay}"
                             Loaded="OrderableView_Loaded"
                             Tag="{x:Bind uwpUtils:FeatureSettings.KEY_FORECAST, Mode=OneTime}"
-                            Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}">
+                            Visibility="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay, Converter={StaticResource null2VisibilityConverter}}">
                             <toolkitControls:HeaderedContentControl
                                 HorizontalContentAlignment="Stretch"
                                 VerticalContentAlignment="Stretch"
@@ -412,10 +412,10 @@
                                 Header="{helpers:StringRes Name='label_forecast'}"
                                 Style="{ThemeResource NavigatableSectionStyle}"
                                 Tapped="ForecastGraphPanel_Tapped">
-                                <graphs:ForecastRangeBarGraphPanel
+                                <localcontrols:ForecastRangeBarGraphView
                                     x:Name="ForecastGraphPanel"
-                                    ForecastData="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
-                                    GraphViewTapped="ForecastGraphPanel_Tapped" />
+                                    DataContext="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
+                                    ItemClick="ForecastGraphPanel_Tapped" />
                             </toolkitControls:HeaderedContentControl>
                         </StackPanel>
                         <StackPanel

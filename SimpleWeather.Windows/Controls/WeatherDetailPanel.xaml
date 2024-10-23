@@ -53,10 +53,10 @@
                     <local:IconControl
                         x:Name="IconBox"
                         Grid.Column="0"
-                        Width="50"
-                        Height="50"
                         VerticalAlignment="Center"
                         d:WeatherIcon="&#xf00d;"
+                        IconHeight="50"
+                        IconWidth="50"
                         WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
                     <StackPanel
                         Grid.Column="2"

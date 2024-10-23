@@ -72,11 +72,11 @@
                         <DataTemplate x:DataType="local:MoonPhaseItem">
                             <ItemContainer toolkit:UIElementExtensions.ClipToBounds="False">
                                 <local:IconControl
-                                    Width="60"
-                                    Height="60"
                                     Margin="4"
                                     Padding="4"
                                     toolkit:UIElementExtensions.ClipToBounds="False"
+                                    IconHeight="60"
+                                    IconWidth="60"
                                     Opacity="{Binding Opacity, Mode=OneWay}"
                                     WeatherIcon="{Binding Icon, Mode=OneWay}" />
                             </ItemContainer>
@@ -101,9 +101,9 @@
                         Visibility="{x:Bind ViewModel.Moonrise, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                         <local:IconControl
                             x:Name="MoonriseIcon"
-                            Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                            Height="35"
                             d:WeatherIcon="&#xf0c9;"
+                            IconHeight="35"
+                            IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
                             WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}" />
                         <TextBlock
                             x:Name="MoonriseText"
@@ -121,9 +121,9 @@
                         Visibility="{x:Bind ViewModel.Moonset, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
                         <local:IconControl
                             x:Name="MoonsetIcon"
-                            Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-                            Height="35"
                             d:WeatherIcon="&#xf0ca;"
+                            IconHeight="35"
+                            IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
                             WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}" />
                         <TextBlock
                             x:Name="MoonsetText"
