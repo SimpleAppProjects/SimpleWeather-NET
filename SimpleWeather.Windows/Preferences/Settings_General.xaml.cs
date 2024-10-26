@@ -127,7 +127,7 @@ namespace SimpleWeather.NET.Preferences
             APIComboBox.SelectedValue = selectedProvider ?? RemoteConfigService.GetDefaultWeatherProvider();
 
             // Refresh interval
-            if (ExtrasService.IsEnabled())
+            if (ExtrasService.IsPremiumEnabled())
             {
                 RefreshComboBox.ItemsSource = PremiumRefreshOptions;
             }
@@ -767,7 +767,7 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            if (sw.IsOn && ExtrasService.IsEnabled())
+            if (sw.IsOn && ExtrasService.IsAtLeastProEnabled())
             {
                 SettingsManager.DailyNotificationEnabled = true;
                 // Register task
@@ -775,7 +775,7 @@ namespace SimpleWeather.NET.Preferences
             }
             else
             {
-                if (sw.IsOn && !ExtrasService.IsEnabled())
+                if (sw.IsOn && !ExtrasService.IsAtLeastProEnabled())
                 {
                     // show premium popup
                     Frame.Navigate(typeof(Extras.Store.PremiumPage));
@@ -819,7 +819,7 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            if (sw.IsOn && ExtrasService.IsEnabled())
+            if (sw.IsOn && ExtrasService.IsAtLeastProEnabled())
             {
                 SettingsManager.PoPChanceNotificationEnabled = true;
                 // Re-register background task if needed
@@ -828,7 +828,7 @@ namespace SimpleWeather.NET.Preferences
             }
             else
             {
-                if (sw.IsOn && !ExtrasService.IsEnabled())
+                if (sw.IsOn && !ExtrasService.IsAtLeastProEnabled())
                 {
                     // show premium popup
                     SettingsManager.PoPChanceNotificationEnabled = sw.IsOn = false;

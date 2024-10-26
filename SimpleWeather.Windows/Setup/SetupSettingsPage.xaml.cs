@@ -58,7 +58,7 @@ namespace SimpleWeather.NET.Setup
             wm.UpdateAPI();
 
             // Refresh interval
-            if (ExtrasService.IsEnabled())
+            if (ExtrasService.IsPremiumEnabled())
             {
                 RefreshComboBox.ItemsSource = PremiumRefreshOptions;
             }

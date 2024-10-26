@@ -65,6 +65,26 @@ namespace SimpleWeather.NET.Helpers
         {
             return new Rect(0, 0, double.IsFinite(element.ActualWidth) ? element.ActualWidth : 0, double.IsFinite(element.ActualHeight) ? element.ActualHeight : 0);
         }
+
+        public static bool IsVisible(this UIElement element)
+        {
+            return element.Visibility == Visibility.Visible;
+        }
+
+        public static void IsVisible(this UIElement element, bool visible)
+        {
+            element.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public static bool IsGone(this UIElement element)
+        {
+            return element.Visibility == Visibility.Collapsed;
+        }
+
+        public static void IsGone(this UIElement element, bool gone)
+        {
+            element.Visibility = gone ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 }
 
