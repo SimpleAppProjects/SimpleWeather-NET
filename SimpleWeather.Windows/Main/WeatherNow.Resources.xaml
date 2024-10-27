@@ -2,7 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="using:SimpleWeather.NET.Converters"
-    xmlns:toolkit="using:CommunityToolkit.WinUI">
+    xmlns:toolkit="using:CommunityToolkit.WinUI"
+    xmlns:toolkitMedia="using:CommunityToolkit.WinUI.Media">
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <Style
@@ -35,4 +36,23 @@
         BlurRadius="15.0"
         CastTo="{Binding ElementName=ShadowTarget, Mode=OneWay}"
         Opacity="{Binding ElementName=WNowPage, Path='ControlShadowOpacity', Mode=OneWay}" />
+    <toolkitMedia:AttachedCardShadow
+        x:Name="CommonCardShadow"
+        CornerRadius="8"
+        Opacity="1"
+        Offset="1"
+        Color="Black" />
+    <Style x:Key="WeatherNowFrameStyle" TargetType="Border">
+        <Setter Property="Background" Value="{ThemeResource SurfaceColor}" />
+        <Setter Property="Margin" Value="8,4" />
+        <Setter Property="Padding" Value="4" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderBrush">
+            <Setter.Value>
+                <SolidColorBrush Opacity="0.25" Color="{ThemeResource SurfaceStrokeColorDefault}" />
+            </Setter.Value>
+        </Setter>
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="toolkit:Effects.Shadow" Value="{ThemeResource CommonCardShadow}" />
+    </Style>
 </ResourceDictionary>

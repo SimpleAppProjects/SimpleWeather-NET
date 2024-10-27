@@ -46,97 +46,89 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel Orientation="Vertical">
-        <toolkitControls:HeaderedContentControl
-            HorizontalContentAlignment="Stretch"
+    <StackPanel toolkit:UIElementExtensions.ClipToBounds="False" Orientation="Vertical">
+        <ItemsView
+            x:Name="MoonStack"
+            MaxWidth="488"
+            Padding="15,0"
+            HorizontalAlignment="Center"
+            HorizontalContentAlignment="Center"
             toolkit:UIElementExtensions.ClipToBounds="False"
-            Header="{helpers:StringRes Name='label_moonphase'}"
-            Style="{StaticResource SectionLabelStyle}">
-            <StackPanel toolkit:UIElementExtensions.ClipToBounds="False">
-                <ItemsView
-                    x:Name="MoonStack"
-                    MaxWidth="488"
-                    Padding="15,0"
-                    HorizontalAlignment="Center"
-                    HorizontalContentAlignment="Center"
-                    toolkit:UIElementExtensions.ClipToBounds="False"
-                    IsHitTestVisible="False"
-                    IsItemInvokedEnabled="False"
-                    ItemsSource="{x:Bind DataSet, Mode=OneWay}"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.HorizontalScrollMode="Disabled"
-                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollMode="Disabled"
-                    SelectionMode="None">
-                    <ItemsView.ItemTemplate>
-                        <DataTemplate x:DataType="local:MoonPhaseItem">
-                            <ItemContainer toolkit:UIElementExtensions.ClipToBounds="False">
-                                <local:IconControl
-                                    Margin="4"
-                                    Padding="4"
-                                    toolkit:UIElementExtensions.ClipToBounds="False"
-                                    IconHeight="60"
-                                    IconWidth="60"
-                                    Opacity="{Binding Opacity, Mode=OneWay}"
-                                    WeatherIcon="{Binding Icon, Mode=OneWay}" />
-                            </ItemContainer>
-                        </DataTemplate>
-                    </ItemsView.ItemTemplate>
-                    <ItemsView.Layout>
-                        <StackLayout Orientation="Horizontal" />
-                    </ItemsView.Layout>
-                </ItemsView>
+            IsHitTestVisible="False"
+            IsItemInvokedEnabled="False"
+            ItemsSource="{x:Bind DataSet, Mode=OneWay}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.HorizontalScrollMode="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollMode="Disabled"
+            SelectionMode="None">
+            <ItemsView.ItemTemplate>
+                <DataTemplate x:DataType="local:MoonPhaseItem">
+                    <ItemContainer toolkit:UIElementExtensions.ClipToBounds="False">
+                        <local:IconControl
+                            Margin="4"
+                            Padding="4"
+                            toolkit:UIElementExtensions.ClipToBounds="False"
+                            IconHeight="60"
+                            IconWidth="60"
+                            Opacity="{Binding Opacity, Mode=OneWay}"
+                            WeatherIcon="{Binding Icon, Mode=OneWay}" />
+                    </ItemContainer>
+                </DataTemplate>
+            </ItemsView.ItemTemplate>
+            <ItemsView.Layout>
+                <StackLayout Orientation="Horizontal" />
+            </ItemsView.Layout>
+        </ItemsView>
+        <TextBlock
+            Padding="10"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            d:Text="Full Moon"
+            FontSize="18"
+            Text="{x:Bind ViewModel.MoonPhase.Value, Mode=OneWay}" />
+        <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+            <StackPanel
+                Margin="10,0"
+                Padding="5"
+                Orientation="Horizontal"
+                Visibility="{x:Bind ViewModel.Moonrise, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                <local:IconControl
+                    x:Name="MoonriseIcon"
+                    d:WeatherIcon="&#xf0c9;"
+                    IconHeight="35"
+                    IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
+                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}" />
                 <TextBlock
-                    Padding="10"
+                    x:Name="MoonriseText"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    d:Text="Full Moon"
-                    FontSize="18"
-                    Text="{x:Bind ViewModel.MoonPhase.Value, Mode=OneWay}" />
-                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <StackPanel
-                        Margin="10,0"
-                        Padding="5"
-                        Orientation="Horizontal"
-                        Visibility="{x:Bind ViewModel.Moonrise, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                        <local:IconControl
-                            x:Name="MoonriseIcon"
-                            d:WeatherIcon="&#xf0c9;"
-                            IconHeight="35"
-                            IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
-                            WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}" />
-                        <TextBlock
-                            x:Name="MoonriseText"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            d:Text="6:00 PM"
-                            FontSize="16"
-                            Text="{x:Bind ViewModel.Moonrise, Mode=OneWay}"
-                            TextLineBounds="Tight" />
-                    </StackPanel>
-                    <StackPanel
-                        Margin="10,0"
-                        Padding="5"
-                        Orientation="Horizontal"
-                        Visibility="{x:Bind ViewModel.Moonset, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
-                        <local:IconControl
-                            x:Name="MoonsetIcon"
-                            d:WeatherIcon="&#xf0ca;"
-                            IconHeight="35"
-                            IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
-                            WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}" />
-                        <TextBlock
-                            x:Name="MoonsetText"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            d:Text="3:00 AM"
-                            FontSize="16"
-                            Text="{x:Bind ViewModel.Moonset, Mode=OneWay}"
-                            TextLineBounds="Tight" />
-                    </StackPanel>
-                </StackPanel>
+                    d:Text="6:00 PM"
+                    FontSize="16"
+                    Text="{x:Bind ViewModel.Moonrise, Mode=OneWay}"
+                    TextLineBounds="Tight" />
             </StackPanel>
-        </toolkitControls:HeaderedContentControl>
+            <StackPanel
+                Margin="10,0"
+                Padding="5"
+                Orientation="Horizontal"
+                Visibility="{x:Bind ViewModel.Moonset, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}">
+                <local:IconControl
+                    x:Name="MoonsetIcon"
+                    d:WeatherIcon="&#xf0ca;"
+                    IconHeight="35"
+                    IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
+                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}" />
+                <TextBlock
+                    x:Name="MoonsetText"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    d:Text="3:00 AM"
+                    FontSize="16"
+                    Text="{x:Bind ViewModel.Moonset, Mode=OneWay}"
+                    TextLineBounds="Tight" />
+            </StackPanel>
+        </StackPanel>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState x:Name="Mobile">

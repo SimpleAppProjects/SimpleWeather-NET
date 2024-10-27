@@ -74,7 +74,11 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="toolkitControls:HeaderedContentControl">
-                    <Grid>
+                    <Grid
+                        Margin="{TemplateBinding Margin}"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition />
