@@ -18,5 +18,15 @@ namespace SimpleWeather.Weather_API.Utils
             localSettings.SetValue(GetRetryTimePrefKey(apiID),
                 DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + (retryTimeInMs + GetRandomOffset(retryTimeInMs)));
         }
+
+        private static partial int GetRetryCount(string apiID)
+        {
+            return localSettings.GetValue<int>(GetRetryCountPrefKey(apiID), 0);
+        }
+
+        private static partial void SetRetryCount(string apiID, int count)
+        {
+            localSettings.SetValue(GetRetryCountPrefKey(apiID), count);
+        }
     }
 }

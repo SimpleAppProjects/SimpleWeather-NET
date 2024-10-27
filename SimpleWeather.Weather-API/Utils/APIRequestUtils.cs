@@ -55,6 +55,11 @@ namespace SimpleWeather.Weather_API.Utils
                             await response.CreateException());
                 }
             }
+            else
+            {
+                // Reset retry time
+                ResetRetries(apiID);
+            }
         }
 
         /// <summary>
@@ -124,7 +129,28 @@ namespace SimpleWeather.Weather_API.Utils
         {
             if ((int)response.StatusCode == 429)
             {
-                SetNextRetryTime(apiID, retryTimeInMs);
+                var retryCount = GetRetryCount(apiID);
+
+                if (retryCount > 0)
+                {
+                    SetRetryCount(apiID, retryCount + 1);
+
+                    if (retryTimeInMs <= 60000 && retryCount <= 10)
+                    {
+                        // try exponential backoff if under 60s
+                        SetNextRetryTime(apiID, (long)(retryTimeInMs * MathF.Pow(1.1f, retryCount)));
+                    }
+                    else
+                    {
+                        SetNextRetryTime(apiID, retryTimeInMs);
+                    }
+                }
+                else
+                {
+                    SetRetryCount(apiID, 1);
+                    SetNextRetryTime(apiID, retryTimeInMs);
+                }
+
                 throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
                     await response.CreateException());
             }
@@ -240,14 +266,27 @@ namespace SimpleWeather.Weather_API.Utils
         }
 
         private const string KEY_NEXTRETRYTIME = "key_nextretrytime";
+        private const string KEY_RETRYCOUNT = "key_retrycount";
 
         private static string GetRetryTimePrefKey(string apiID)
         {
             return $"{apiID}:{KEY_NEXTRETRYTIME}";
         }
 
+        private static string GetRetryCountPrefKey(string apiID)
+        {
+            return $"{apiID}:{KEY_RETRYCOUNT}";
+        }
+
         private static partial long GetNextRetryTime(string apiID);
         private static partial void SetNextRetryTime(string apiID, long retryTimeInMs);
+        private static partial int GetRetryCount(string apiID);
+        private static partial void SetRetryCount(string apiID, int count);
+        private static void ResetRetries(string apiID)
+        {
+            SetRetryCount(apiID, 0);
+            SetNextRetryTime(apiID, -DateTimeOffset.UtcNow.ToUnixTimeMilliseconds());
+        }
 
         /// <summary>
         /// Returns random number of milliseconds as the delay offset based on given retry time
