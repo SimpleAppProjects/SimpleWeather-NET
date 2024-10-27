@@ -8,7 +8,10 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mtui="using:CommunityToolkit.WinUI"
+    xmlns:mtuic="using:CommunityToolkit.WinUI.Controls"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+    xmlns:utils="using:SimpleWeather.Utils"
     d:Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Enabled"
     mc:Ignorable="d">
@@ -19,209 +22,154 @@
             HorizontalScrollMode="Disabled"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel>
-                <TextBlock
-                    x:Name="GeneralHeader"
-                    x:Uid="Pref_GeneralHeader"
-                    Style="{StaticResource SettingTitleStyle}"
-                    Text="General Settings" />
-                <TextBlock
-                    d:Text="Follow current location via GPS"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_summary_currentlocation'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ToggleSwitch x:Name="FollowGPS" />
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <ComboBox
-                    x:Name="RefreshComboBox"
-                    MinWidth="260"
-                    Margin="0,10">
-                    <ComboBox.Header>
-                        <TextBlock
-                            d:Text="Update Frequency"
-                            Style="{StaticResource PrefTitleStyle}"
-                            Text="{helpers:StringRes Name='pref_title_refreshinterval'}" />
-                    </ComboBox.Header>
-                </ComboBox>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    d:Text="Choose a theme"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_title_userthememode'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <RadioButton
-                        x:Name="LightMode"
-                        d:Content="Light"
-                        Content="{helpers:StringRes Name='userthememode_light'}" />
-                    <RadioButton
-                        x:Name="DarkMode"
-                        d:Content="Dark"
-                        Content="{helpers:StringRes Name='userthememode_dark'}" />
-                    <RadioButton
-                        x:Name="SystemMode"
-                        d:Content="System Theme"
-                        Content="{helpers:StringRes Name='userthememode_default'}" />
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    d:Text="Language:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_title_language'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ComboBox
-                        x:Name="LanguageComboBox"
-                        DisplayMemberPath="Display"
-                        SelectedValuePath="Value">
-                        <controls:ComboBoxItem Display="{helpers:StringRes Name='summary_default'}" Value="" />
-                        <controls:ComboBoxItem Value="en" />
-                        <controls:ComboBoxItem Value="es" />
-                        <controls:ComboBoxItem Value="fr" />
-                        <controls:ComboBoxItem Value="de" />
-                        <controls:ComboBoxItem Value="nl" />
-                        <controls:ComboBoxItem Value="pl" />
-                        <controls:ComboBoxItem Value="sk" />
-                        <controls:ComboBoxItem Value="zh-Hans" />
-                    </ComboBox>
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    d:Text="Show notifications for weather alerts:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_summary_alerts'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ToggleSwitch x:Name="AlertSwitch" />
-                </StackPanel>
-                <TextBlock
-                    d:Text="Minimum Alert Severity:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_title_minalertseverity'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ComboBox
-                        x:Name="MinAlertSeverity"
-                        MinWidth="260"
-                        DisplayMemberPath="Display"
-                        SelectedValuePath="Value">
-                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_all'}" Value="-1" />
-                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_moderate'}" Value="1" />
-                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_severe'}" Value="2" />
-                        <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_extreme'}" Value="3" />
-                    </ComboBox>
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    d:Text="Daily Notification:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='not_channel_name_dailynotification'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ToggleSwitch x:Name="DailyNotifSwitch" />
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TimePicker
-                    x:Name="DailyNotifTimePicker"
-                    Padding="0,5"
-                    d:Header="Time:"
-                    Header="{helpers:StringRes Name='pref_title_time'}"
-                    IsEnabled="{x:Bind DailyNotifSwitch.IsOn, Mode=OneWay}">
-                    <TimePicker.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Style="{StaticResource PrefTitleStyle}" Text="{Binding}" />
-                        </DataTemplate>
-                    </TimePicker.HeaderTemplate>
-                </TimePicker>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    d:Text="Precipitation Notification:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='not_channel_name_precipnotification'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ToggleSwitch x:Name="PoPChanceNotifSwitch" />
-                </StackPanel>
-                <TextBlock
-                    d:Text="Chance:"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="{helpers:StringRes Name='label_chance'}" />
-                <StackPanel Padding="10,5" Orientation="Horizontal">
-                    <ComboBox
-                        x:Name="PoPChancePct"
-                        DisplayMemberPath="Display"
-                        IsEnabled="{x:Bind PoPChanceNotifSwitch.IsOn, Mode=OneWay}"
-                        SelectedValuePath="Value">
-                        <controls:ComboBoxItem Display="&gt;= 40%" Value="40" />
-                        <controls:ComboBoxItem Display="&gt;= 50%" Value="50" />
-                        <controls:ComboBoxItem Display="&gt;= 60%" Value="60" />
-                        <controls:ComboBoxItem Display="&gt;= 70%" Value="70" />
-                        <controls:ComboBoxItem Display="&gt;= 80%" Value="80" />
-                        <controls:ComboBoxItem Display="&gt;= 90%" Value="90" />
-                    </ComboBox>
-                </StackPanel>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <ComboBox
-                    x:Name="APIComboBox"
-                    x:Uid="API_Box"
-                    MinWidth="260"
-                    Margin="0,10"
-                    HorizontalAlignment="Left"
-                    PlaceholderText="Select Weather Provider">
-                    <ComboBox.Header>
-                        <TextBlock
-                            d:Text="Weather Provider"
-                            Style="{StaticResource PrefTitleStyle}"
-                            Text="{helpers:StringRes Name='api_label'}" />
-                    </ComboBox.Header>
-                </ComboBox>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <StackPanel x:Name="KeyPanel">
-                    <TextBlock
-                        d:Text="Use personal provider key:"
-                        Style="{StaticResource PrefTitleStyle}"
-                        Text="{helpers:StringRes Name='pref_summary_personalkey'}" />
-                    <StackPanel Padding="10,5" Orientation="Horizontal">
-                        <ToggleSwitch x:Name="PersonalKeySwitch" />
+            <Grid>
+                <StackPanel
+                    MaxWidth="1280"
+                    Margin="0,0,0,16"
+                    HorizontalAlignment="Stretch"
+                    Spacing="4">
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{helpers:StringRes Name='pref_title_general'}" />
+
+                    <mtuic:SettingsCard
+                        Description="{helpers:StringRes Name='pref_summary_currentlocation'}"
+                        Header="{helpers:StringRes Name='label_currentlocation'}"
+                        HeaderIcon="{mtui:BitmapIcon ShowAsMonochrome=True,
+                                                     Source='/Assets/outline_near_me_black_24dp.png'}"
+                        IsEnabled="{x:Bind FollowGPS.IsEnabled, Mode=OneWay}">
+                        <ToggleSwitch x:Name="FollowGPS" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard
+                        Header="{helpers:StringRes Name='pref_title_refreshinterval'}"
+                        HeaderIcon="{mtui:SymbolIcon Symbol=Clock}"
+                        IsEnabled="{x:Bind RefreshComboBox.IsEnabled, Mode=OneWay}">
+                        <ComboBox x:Name="RefreshComboBox" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard
+                        Header="{helpers:StringRes Name='pref_title_userthememode'}"
+                        HeaderIcon="{mtui:FontIcon FontFamily={StaticResource MaterialIconsFontFamily},
+                                                   Glyph='&#xe40a;'}"
+                        IsEnabled="{x:Bind ThemeComboBox.IsEnabled, Mode=OneWay}">
+                        <ComboBox
+                            x:Name="ThemeComboBox"
+                            DisplayMemberPath="Display"
+                            SelectedValuePath="Value">
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='userthememode_default'}" Value="-1" />
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='userthememode_light'}" Value="0" />
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='userthememode_dark'}" Value="1" />
+                        </ComboBox>
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard
+                        Header="{helpers:StringRes Name='pref_title_language'}"
+                        HeaderIcon="{mtui:SymbolIcon Symbol=Globe}"
+                        IsEnabled="{x:Bind LanguageComboBox.IsEnabled, Mode=OneWay}">
+                        <ComboBox
+                            x:Name="LanguageComboBox"
+                            DisplayMemberPath="Display"
+                            SelectedValuePath="Value">
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='summary_default'}" Value="" />
+                            <controls:ComboBoxItem Value="en" />
+                            <controls:ComboBoxItem Value="es" />
+                            <controls:ComboBoxItem Value="fr" />
+                            <controls:ComboBoxItem Value="de" />
+                            <controls:ComboBoxItem Value="nl" />
+                            <controls:ComboBoxItem Value="pl" />
+                            <controls:ComboBoxItem Value="sk" />
+                            <controls:ComboBoxItem Value="zh-Hans" />
+                        </ComboBox>
+                    </mtuic:SettingsCard>
+
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{helpers:StringRes Name='pref_category_notification'}" />
+
+                    <mtuic:SettingsCard
+                        Description="{helpers:StringRes Name='pref_summary_alerts'}"
+                        Header="{helpers:StringRes Name='pref_title_alerts'}"
+                        HeaderIcon="{mtui:BitmapIcon ShowAsMonochrome=True,
+                                                     Source='ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_error.png'}"
+                        IsEnabled="{x:Bind AlertSwitch.IsEnabled, Mode=OneWay}">
+                        <ToggleSwitch x:Name="AlertSwitch" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='pref_title_minalertseverity'}" IsEnabled="{x:Bind AlertSwitch.IsEnabled, Mode=OneWay}">
+                        <ComboBox
+                            x:Name="MinAlertSeverity"
+                            DisplayMemberPath="Display"
+                            SelectedValuePath="Value">
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_all'}" Value="-1" />
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_moderate'}" Value="1" />
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_severe'}" Value="2" />
+                            <controls:ComboBoxItem Display="{helpers:StringRes Name='alertsev_extreme'}" Value="3" />
+                        </ComboBox>
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='not_channel_name_dailynotification'}" IsEnabled="{x:Bind DailyNotifSwitch.IsEnabled, Mode=OneWay}">
+                        <ToggleSwitch x:Name="DailyNotifSwitch" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='pref_title_time'}" IsEnabled="{x:Bind DailyNotifTimePicker.IsEnabled, Mode=OneWay}">
+                        <TimePicker
+                            x:Name="DailyNotifTimePicker"
+                            Padding="0,5"
+                            IsEnabled="{x:Bind DailyNotifSwitch.IsOn, Mode=OneWay}" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='not_channel_name_precipnotification'}" IsEnabled="{x:Bind PoPChanceNotifSwitch.IsEnabled, Mode=OneWay}">
+                        <ToggleSwitch x:Name="PoPChanceNotifSwitch" />
+                    </mtuic:SettingsCard>
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='label_chance'}" IsEnabled="{x:Bind PoPChancePct.IsEnabled, Mode=OneWay}">
+                        <ComboBox
+                            x:Name="PoPChancePct"
+                            DisplayMemberPath="Display"
+                            IsEnabled="{x:Bind PoPChanceNotifSwitch.IsOn, Mode=OneWay}"
+                            SelectedValuePath="Value">
+                            <controls:ComboBoxItem Display="&gt;= 40%" Value="40" />
+                            <controls:ComboBoxItem Display="&gt;= 50%" Value="50" />
+                            <controls:ComboBoxItem Display="&gt;= 60%" Value="60" />
+                            <controls:ComboBoxItem Display="&gt;= 70%" Value="70" />
+                            <controls:ComboBoxItem Display="&gt;= 80%" Value="80" />
+                            <controls:ComboBoxItem Display="&gt;= 90%" Value="90" />
+                        </ComboBox>
+                    </mtuic:SettingsCard>
+
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{helpers:StringRes Name='pref_title_api'}" />
+
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='api_label'}" IsEnabled="{x:Bind APIComboBox.IsEnabled, Mode=OneWay}">
+                        <ComboBox x:Name="APIComboBox" PlaceholderText="Select Weather Provider" />
+                    </mtuic:SettingsCard>
+
+                    <StackPanel x:Name="KeyPanel" Spacing="4">
+                        <mtuic:SettingsCard
+                            Description="{helpers:StringRes Name='pref_summary_personalkey'}"
+                            Header="{helpers:StringRes Name='pref_title_personalkey'}"
+                            IsEnabled="{x:Bind PersonalKeySwitch.IsEnabled, Mode=OneWay}">
+                            <ToggleSwitch x:Name="PersonalKeySwitch" />
+                        </mtuic:SettingsCard>
+                        <mtuic:SettingsCard Header="{helpers:StringRes Name='key_hint'}" Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
+                            <mtuic:SettingsCard.Description>
+                                <HyperlinkButton
+                                    x:Name="RegisterKeyButton"
+                                    Content="{helpers:StringRes Name='pref_summary_apiregister'}"
+                                    Foreground="{ThemeResource AppAccentColorBrush}" />
+                            </mtuic:SettingsCard.Description>
+                            <Border
+                                x:Name="KeyBorder"
+                                MinWidth="260"
+                                Padding="10,4"
+                                BorderBrush="DarkGray"
+                                BorderThickness="2">
+                                <TextBlock
+                                    x:Name="KeyEntry"
+                                    GotFocus="KeyEntry_GotFocus"
+                                    Tapped="KeyEntry_Tapped"
+                                    Text="{helpers:StringRes Name='key_hint'}"
+                                    Visibility="Visible" />
+                            </Border>
+                        </mtuic:SettingsCard>
                     </StackPanel>
-                    <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                    <TextBlock
-                        d:Text="API Key"
-                        Style="{StaticResource PrefTitleStyle}"
-                        Text="{helpers:StringRes Name='key_hint'}"
-                        Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
-                    <Border
-                        x:Name="KeyBorder"
-                        MinWidth="260"
-                        Padding="10,4"
-                        HorizontalAlignment="Left"
-                        BorderBrush="DarkGray"
-                        BorderThickness="2"
-                        Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}">
-                        <TextBlock
-                            x:Name="KeyEntry"
-                            GotFocus="KeyEntry_GotFocus"
-                            Tapped="KeyEntry_Tapped"
-                            Text="{helpers:StringRes Name='key_hint'}"
-                            Visibility="Visible" />
-                    </Border>
-                    <HyperlinkButton
-                        x:Name="RegisterKeyButton"
-                        Padding="0,10"
-                        d:Content="Register for API Key here"
-                        Content="{helpers:StringRes Name='pref_summary_apiregister'}"
-                        Style="{ThemeResource HyperlinkButtonStyle}"
-                        Visibility="{x:Bind KeyEntry.Visibility, Mode=OneWay}" />
+
+                    <mtuic:SettingsCard Header="{helpers:StringRes Name='label_radar'}" IsEnabled="{x:Bind RadarComboBox.IsEnabled, Mode=OneWay}">
+                        <mtuic:SettingsCard.HeaderIcon>
+                            <FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEB44;" />
+                        </mtuic:SettingsCard.HeaderIcon>
+                        <ComboBox x:Name="RadarComboBox" />
+                    </mtuic:SettingsCard>
                 </StackPanel>
-                <ComboBox
-                    x:Name="RadarComboBox"
-                    MinWidth="260"
-                    Margin="0,10"
-                    HorizontalAlignment="Left"
-                    d:Header="Radar"
-                    Header="{helpers:StringRes Name='label_radar'}">
-                    <ComboBox.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Style="{StaticResource PrefTitleStyle}" Text="{Binding}" />
-                        </DataTemplate>
-                    </ComboBox.HeaderTemplate>
-                </ComboBox>
-            </StackPanel>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>

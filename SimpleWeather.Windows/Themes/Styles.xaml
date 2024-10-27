@@ -349,6 +349,14 @@
         <Setter Property="Height" Value="1" />
         <Setter Property="Fill" Value="{ThemeResource DividerStrokeColorDefaultBrush}" />
     </Style>
+    <Style
+        x:Key="SettingsSectionHeaderTextBlockStyle"
+        BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+        TargetType="TextBlock">
+        <Style.Setters>
+            <Setter Property="Margin" Value="1,30,0,6" />
+        </Style.Setters>
+    </Style>
     <FontFamily x:Key="WeatherIconsFontFamily">ms-appx:///SimpleWeather.Shared/Resources/Fonts/weathericons-regular-webfont.ttf#Weather Icons</FontFamily>
     <FontFamily x:Key="MaterialIconsFontFamily">ms-appx:///Assets/Fonts/MaterialIcons-Regular.ttf#Material Icons</FontFamily>
     <!--  Custom Styles End  -->

@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Controls;
@@ -20,8 +21,11 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System.Globalization;
+using System.Linq;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
+using ComboBoxItem = SimpleWeather.Controls.ComboBoxItem;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.NET.Preferences
 {
@@ -40,24 +44,24 @@ namespace SimpleWeather.NET.Preferences
 
         private readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
-        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> RefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
-        {
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
-        };
+        private readonly IReadOnlyList<ComboBoxItem> RefreshOptions =
+        [
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
+        ];
 
-        private readonly IReadOnlyList<SimpleWeather.Controls.ComboBoxItem> PremiumRefreshOptions = new List<SimpleWeather.Controls.ComboBoxItem>
-        {
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_30min"), "30"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
-            new SimpleWeather.Controls.ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
-        };
+        private readonly IReadOnlyList<ComboBoxItem> PremiumRefreshOptions =
+        [
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_30min"), "30"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_60min"), "60"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_2hrs"), "120"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_3hrs"), "180"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_6hrs"), "360"),
+            new ComboBoxItem(App.Current.ResLoader.GetString("refresh_12hrs"), "720"),
+        ];
 
         public Settings_General()
         {
@@ -74,9 +78,7 @@ namespace SimpleWeather.NET.Preferences
             RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
             RadarComboBox.SelectionChanged += RadarComboBox_SelectionChanged;
             PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
-            LightMode.Checked += LightMode_Checked;
-            DarkMode.Checked += DarkMode_Checked;
-            SystemMode.Checked += SystemMode_Checked;
+            ThemeComboBox.SelectionChanged += ThemeComboBox_SelectionChanged;
             LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
             DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
             DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
@@ -217,13 +219,10 @@ namespace SimpleWeather.NET.Preferences
             RadarComboBox.SelectedValue = RadarProvider.GetRadarProvider();
 
             // Theme
-            UserThemeMode userTheme = SettingsManager.UserTheme;
-            SystemMode.IsChecked = userTheme == UserThemeMode.System;
-            LightMode.IsChecked = userTheme == UserThemeMode.Light;
-            DarkMode.IsChecked = userTheme == UserThemeMode.Dark;
+            ThemeComboBox.SelectedValue = ((int)SettingsManager.UserTheme).ToString();
 
             LanguageComboBox.SelectedValue = LocaleUtils.GetLocaleCode();
-            LanguageComboBox.Items.OfType<SimpleWeather.Controls.ComboBoxItem>().ForEach(it =>
+            LanguageComboBox.Items.OfType<ComboBoxItem>().ForEach(it =>
             {
                 var code = it.Value.ToString();
 
@@ -709,31 +708,31 @@ namespace SimpleWeather.NET.Preferences
             }));
         }
 
-        private void SystemMode_Checked(object sender, RoutedEventArgs e)
+        private void ThemeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            AnalyticsLogger.LogEvent("Settings_General: SystemMode_Checked");
+            ComboBox box = sender as ComboBox;
 
-            SettingsManager.UserTheme = UserThemeMode.System;
-            App.Current.UpdateAppTheme();
-            Shell.Instance.UpdateAppTheme();
-        }
+            if (int.TryParse(box.SelectedValue.ToString(), out int value))
+            {
+                UserThemeMode selectedTheme = (UserThemeMode)value;
 
-        private void DarkMode_Checked(object sender, RoutedEventArgs e)
-        {
-            AnalyticsLogger.LogEvent("Settings_General: DarkMode_Checked");
+                switch (selectedTheme)
+                {
+                    case UserThemeMode.System:
+                        AnalyticsLogger.LogEvent("Settings_General: SystemMode_Checked");
+                        break;
+                    case UserThemeMode.Light:
+                        AnalyticsLogger.LogEvent("Settings_General: LightMode_Checked");
+                        break;
+                    case UserThemeMode.Dark:
+                        AnalyticsLogger.LogEvent("Settings_General: DarkMode_Checked");
+                        break;
+                }
 
-            SettingsManager.UserTheme = UserThemeMode.Dark;
-            App.Current.UpdateAppTheme();
-            Shell.Instance.UpdateAppTheme();
-        }
-
-        private void LightMode_Checked(object sender, RoutedEventArgs e)
-        {
-            AnalyticsLogger.LogEvent("Settings_General: LightMode_Checked");
-
-            SettingsManager.UserTheme = UserThemeMode.Light;
-            App.Current.UpdateAppTheme();
-            Shell.Instance.UpdateAppTheme();
+                SettingsManager.UserTheme = selectedTheme;
+                App.Current.UpdateAppTheme();
+                Shell.Instance.UpdateAppTheme();
+            }
         }
 
         private void LanguageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

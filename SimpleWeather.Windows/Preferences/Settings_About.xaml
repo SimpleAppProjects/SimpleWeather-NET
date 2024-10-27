@@ -6,6 +6,8 @@
     xmlns:helpers="using:SimpleWeather.NET.Helpers"
     xmlns:local="using:SimpleWeather.NET.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mtuc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:mtui="using:CommunityToolkit.WinUI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     d:Background="{ThemeResource RegionBrush}"
     NavigationCacheMode="Required"
@@ -15,85 +17,109 @@
         <ResourceDictionary Source="ms-appx:///Preferences/Settings_About.Resources.xaml" />
     </Page.Resources>
 
-    <StackPanel Padding="16">
-        <TextBlock
-            Name="AppName"
-            d:Text="SimpleWeather"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Text="{helpers:StringRes Name='app_name'}" />
-        <TextBlock
-            Name="Version"
-            FontSize="14"
-            Foreground="{ThemeResource SystemBaseMediumHighColor}"
-            Style="{StaticResource CaptionTextBlockStyle}"
-            Tapped="Version_Tapped"
-            Text="v0.00" />
-        <StackPanel
-            x:Name="UpdateProgressPanel"
-            MinWidth="250"
-            Margin="0,8,0,8"
-            HorizontalAlignment="Left"
-            Orientation="Vertical">
-            <Button
-                x:Name="CheckUpdateButton"
-                MinWidth="250"
-                IsHitTestVisible="False">
-                <Button.Content>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <muxc:ProgressRing
-                            Grid.Column="0"
-                            Width="20"
-                            Height="20"
-                            Margin="8,0"
-                            IsActive="True"
-                            IsIndeterminate="True" />
-                        <TextBlock
-                            x:Uid="CheckUpdatePrompt"
-                            Grid.Column="1"
-                            Text="Checking for updates..." />
-                    </Grid>
-                </Button.Content>
-            </Button>
-            <Button
-                x:Name="InstallButton"
-                MinWidth="250"
-                d:Visibility="Visible"
-                Content="Downloading..."
-                Visibility="Collapsed" />
-            <muxc:ProgressBar
-                x:Name="UpdateProgressBar"
-                Margin="0,0,0,0"
-                d:Visibility="Visible"
-                Foreground="{ThemeResource ProgressPaintColorBrush}"
-                IsIndeterminate="True"
-                Maximum="1"
-                Minimum="0"
-                Visibility="Collapsed" />
-        </StackPanel>
-        <HyperlinkButton
-            x:Name="FeedbackButton"
-            d:Content="Feedback"
-            d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
-            Click="FeedbackButton_Click"
-            Content="{helpers:StringRes Name='pref_title_feedback'}"
-            Style="{ThemeResource FeedbackHyperlinkButton}" />
-        <HyperlinkButton
-            x:Name="ReviewButton"
-            d:Content="Rate and Review"
-            d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
-            Click="ReviewButton_Click"
-            Content="{helpers:StringRes Name='pref_title_rateandreview'}"
-            Style="{ThemeResource RateHyperlinkButton}" />
-        <HyperlinkButton
-            x:Name="TranslateButton"
-            d:Content="Help translate the app"
-            d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
-            Content="{helpers:StringRes Name='pref_summary_translate'}"
-            NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
-            Style="{ThemeResource TranslateHyperlinkButton}" />
-    </StackPanel>
+    <Grid>
+        <ScrollViewer
+            Padding="16,0"
+            HorizontalScrollMode="Disabled"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <Grid>
+                <StackPanel
+                    MaxWidth="1280"
+                    Margin="0,0,0,16"
+                    HorizontalAlignment="Stretch"
+                    Spacing="4">
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{helpers:StringRes Name='pref_title_about'}" />
+                    <mtuc:SettingsExpander
+                        Header="{helpers:StringRes Name='app_name'}"
+                        HeaderIcon="{mtui:BitmapIcon ShowAsMonochrome=False,
+                                                     Source='ms-appx:///Assets/Square44x44Logo.png'}"
+                        IsExpanded="True">
+                        <mtuc:SettingsExpander.Items>
+                            <mtuc:SettingsCard
+                                x:Name="Version"
+                                Description="v0.00"
+                                Header="{helpers:StringRes Name='pref_category_version'}"
+                                Tapped="Version_Tapped" />
+                            <mtuc:SettingsCard
+                                HorizontalContentAlignment="Left"
+                                ContentAlignment="Left"
+                                Visibility="{x:Bind UpdateProgressPanel.Visibility, Mode=OneWay}">
+                                <StackPanel
+                                    x:Name="UpdateProgressPanel"
+                                    Margin="-12,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    Orientation="Vertical">
+                                    <Button
+                                        x:Name="CheckUpdateButton"
+                                        MinWidth="250"
+                                        IsHitTestVisible="False">
+                                        <Button.Content>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <muxc:ProgressRing
+                                                    Grid.Column="0"
+                                                    Width="20"
+                                                    Height="20"
+                                                    Margin="8,0"
+                                                    IsActive="True"
+                                                    IsIndeterminate="True" />
+                                                <TextBlock
+                                                    x:Uid="CheckUpdatePrompt"
+                                                    Grid.Column="1"
+                                                    Text="Checking for updates..." />
+                                            </Grid>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button
+                                        x:Name="InstallButton"
+                                        MinWidth="250"
+                                        d:Visibility="Visible"
+                                        Content="Downloading..."
+                                        Visibility="Collapsed" />
+                                    <muxc:ProgressBar
+                                        x:Name="UpdateProgressBar"
+                                        Margin="0,0,0,0"
+                                        d:Visibility="Visible"
+                                        Foreground="{ThemeResource ProgressPaintColorBrush}"
+                                        IsIndeterminate="True"
+                                        Maximum="1"
+                                        Minimum="0"
+                                        Visibility="Collapsed" />
+                                </StackPanel>
+                            </mtuc:SettingsCard>
+                            <mtuc:SettingsCard HorizontalContentAlignment="Left" ContentAlignment="Left">
+                                <StackPanel Margin="-12,0,0,0" Orientation="Vertical">
+                                    <HyperlinkButton
+                                        x:Name="FeedbackButton"
+                                        d:Content="Feedback"
+                                        d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
+                                        Click="FeedbackButton_Click"
+                                        Content="{helpers:StringRes Name='pref_title_feedback'}"
+                                        Style="{ThemeResource FeedbackHyperlinkButton}" />
+                                    <HyperlinkButton
+                                        x:Name="ReviewButton"
+                                        d:Content="Rate and Review"
+                                        d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
+                                        Click="ReviewButton_Click"
+                                        Content="{helpers:StringRes Name='pref_title_rateandreview'}"
+                                        Style="{ThemeResource RateHyperlinkButton}" />
+                                    <HyperlinkButton
+                                        x:Name="TranslateButton"
+                                        d:Content="Help translate the app"
+                                        d:Foreground="{ThemeResource HyperlinkForegroundThemeBrush}"
+                                        Content="{helpers:StringRes Name='pref_summary_translate'}"
+                                        NavigateUri="https://poeditor.com/join/project?hash=x9AzamDQO8"
+                                        Style="{ThemeResource TranslateHyperlinkButton}" />
+                                </StackPanel>
+                            </mtuc:SettingsCard>
+                        </mtuc:SettingsExpander.Items>
+                    </mtuc:SettingsExpander>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
 </Page>

@@ -33,7 +33,7 @@ namespace SimpleWeather.NET.Preferences
 
             devSettingsController = new DevSettingsController();
 
-            Version.Text = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}.{3}",
+            Version.Description = string.Format(CultureInfo.InvariantCulture, "v{0}.{1}.{2}.{3}",
                 Package.Current.Id.Version.Major, Package.Current.Id.Version.Minor, Package.Current.Id.Version.Build, Package.Current.Id.Version.Revision);
 
             if (ApiInformation.IsTypePresent("Windows.Services.Store.StoreContext"))

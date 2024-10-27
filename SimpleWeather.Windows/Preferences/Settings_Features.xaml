@@ -132,8 +132,16 @@
         </DataTemplate>
     </Page.Resources>
 
-    <ScrollView ContentOrientation="Vertical">
-        <StackPanel>
+    <ScrollView
+        Padding="16,0"
+        ContentOrientation="Vertical"
+        HorizontalScrollMode="Disabled"
+        VerticalScrollBarVisibility="Auto"
+        VerticalScrollMode="Auto">
+        <StackPanel
+            MaxWidth="1280"
+            Margin="0,0,0,16"
+            HorizontalAlignment="Stretch">
             <StackPanel Padding="16,0">
                 <TextBlock
                     d:Text="Features"

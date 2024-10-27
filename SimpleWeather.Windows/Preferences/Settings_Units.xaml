@@ -7,6 +7,7 @@
     xmlns:local="using:SimpleWeather.NET.Preferences"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:mtuc="using:CommunityToolkit.WinUI.Controls"
+    xmlns:mtui="using:CommunityToolkit.WinUI"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:utils="using:SimpleWeather.Utils"
     xmlns:uwpUtils="using:SimpleWeather.NET.Utils"
@@ -43,59 +44,62 @@
             HorizontalScrollMode="Disabled"
             VerticalScrollBarVisibility="Auto"
             VerticalScrollMode="Auto">
-            <StackPanel>
-                <TextBlock
-                    d:Text="Units"
-                    Style="{ThemeResource SettingTitleStyle}"
-                    Text="{helpers:StringRes Name='pref_title_units'}" />
-                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_temperature'}" Style="{ThemeResource UnitHeaderStyle}">
-                    <mtuc:Segmented
-                        x:Name="TemperatureUnits"
-                        SelectionMode="Single"
-                        Style="{ThemeResource UnitsSegmentStyle}" />
-                </mtuc:HeaderedContentControl>
-                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_speed'}" Style="{ThemeResource UnitHeaderStyle}">
-                    <mtuc:Segmented
-                        x:Name="SpeedUnits"
-                        SelectionMode="Single"
-                        Style="{ThemeResource UnitsSegmentStyle}" />
-                </mtuc:HeaderedContentControl>
-                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_distance'}" Style="{ThemeResource UnitHeaderStyle}">
-                    <mtuc:Segmented
-                        x:Name="DistanceUnits"
-                        SelectionMode="Single"
-                        Style="{ThemeResource UnitsSegmentStyle}" />
-                </mtuc:HeaderedContentControl>
-                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_precipitation'}" Style="{ThemeResource UnitHeaderStyle}">
-                    <mtuc:Segmented
-                        x:Name="PrecipitationUnits"
-                        SelectionMode="Single"
-                        Style="{ThemeResource UnitsSegmentStyle}" />
-                </mtuc:HeaderedContentControl>
-                <mtuc:HeaderedContentControl Header="{helpers:StringRes Name='label_pressure'}" Style="{ThemeResource UnitHeaderStyle}">
-                    <mtuc:Segmented
-                        x:Name="PressureUnits"
-                        SelectionMode="Single"
-                        Style="{ThemeResource UnitsSegmentStyle}" />
-                </mtuc:HeaderedContentControl>
-                <Rectangle Style="{ThemeResource SettingsDividerStyle}" />
-                <TextBlock
-                    x:Name="ResetTitle"
-                    Style="{StaticResource PrefTitleStyle}"
-                    Text="Reset units to default values" />
-                <StackPanel Padding="0,5" Orientation="Horizontal">
-                    <Button
-                        x:Name="ResetImperialUnits"
-                        Margin="0,5,5,5"
-                        Click="ResetImperialUnits_Click"
-                        Content="°F, mph, in, inHg, mi" />
-                    <Button
-                        x:Name="ResetMetricUnits"
-                        Margin="5"
-                        Click="ResetMetricUnits_Click"
-                        Content="°C, km/h, mm, mb, km" />
+            <Grid>
+                <StackPanel
+                    MaxWidth="1280"
+                    Margin="0,0,0,16"
+                    HorizontalAlignment="Stretch"
+                    Spacing="4">
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="{helpers:StringRes Name='pref_title_units'}" />
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='label_temperature'}">
+                        <mtuc:Segmented
+                            x:Name="TemperatureUnits"
+                            SelectionMode="Single"
+                            Style="{ThemeResource UnitsSegmentStyle}" />
+                    </mtuc:SettingsCard>
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='label_speed'}">
+                        <mtuc:Segmented
+                            x:Name="SpeedUnits"
+                            SelectionMode="Single"
+                            Style="{ThemeResource UnitsSegmentStyle}" />
+                    </mtuc:SettingsCard>
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='label_distance'}">
+                        <mtuc:Segmented
+                            x:Name="DistanceUnits"
+                            SelectionMode="Single"
+                            Style="{ThemeResource UnitsSegmentStyle}" />
+                    </mtuc:SettingsCard>
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='label_precipitation'}">
+                        <mtuc:Segmented
+                            x:Name="PrecipitationUnits"
+                            SelectionMode="Single"
+                            Style="{ThemeResource UnitsSegmentStyle}" />
+                    </mtuc:SettingsCard>
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='label_pressure'}">
+                        <mtuc:Segmented
+                            x:Name="PressureUnits"
+                            SelectionMode="Single"
+                            Style="{ThemeResource UnitsSegmentStyle}" />
+                    </mtuc:SettingsCard>
+
+                    <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" />
+
+                    <mtuc:SettingsCard Header="{helpers:StringRes Name='pref_title_resetunits'}">
+                        <StackPanel Orientation="Horizontal">
+                            <Button
+                                Margin="0,5,5,5"
+                                d:Content="°F, mph, in, inHg, mi"
+                                Click="ResetImperialUnits_Click"
+                                Content="{helpers:StringRes Name='default_units_imperial'}" />
+                            <Button
+                                Margin="5"
+                                d:Content="°C, km/h, mm, mb, km"
+                                Click="ResetMetricUnits_Click"
+                                Content="{helpers:StringRes Name='default_units_metric'}" />
+                        </StackPanel>
+                    </mtuc:SettingsCard>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </ScrollViewer>
     </Grid>
 </Page>

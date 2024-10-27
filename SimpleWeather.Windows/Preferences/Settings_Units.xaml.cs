@@ -194,10 +194,6 @@ namespace SimpleWeather.NET.Preferences
                         break;
                 }
             }
-
-            ResetTitle.Text = App.Current.ResLoader.GetString("pref_title_resetunits");
-            ResetImperialUnits.Content = App.Current.ResLoader.GetString("default_units_imperial");
-            ResetMetricUnits.Content = App.Current.ResLoader.GetString("default_units_metric");
         }
 
         private void RegisterListeners()

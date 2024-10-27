@@ -3,6 +3,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
+using SimpleWeather.NET.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -55,10 +56,10 @@ namespace SimpleWeather.NET.Preferences
             IconContainer.Children.Clear();
             foreach (var icon in PREVIEW_ICONS)
             {
-                IconContainer.Children.Add(new Controls.IconControl()
+                IconContainer.Children.Add(new IconControl()
                 {
-                    Height = 30,
-                    Width = 30,
+                    IconHeight = 30,
+                    IconWidth = 30,
                     Margin = new Thickness(5, 0, 5, 0),
                     WeatherIcon = icon,
                     IconProvider = provider.Key,

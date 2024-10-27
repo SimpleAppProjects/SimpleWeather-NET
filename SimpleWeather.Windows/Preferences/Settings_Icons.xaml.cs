@@ -44,7 +44,6 @@ namespace SimpleWeather.NET.Preferences
             {
                 var radioBtn = new IconRadioPreference()
                 {
-                    Padding = new Thickness(0, 10, 0, 10),
                     RequestedTheme = this.ActualTheme
                 };
                 radioBtn.SetIconProvider(provider.Value);
