@@ -34,7 +34,7 @@
 
   <!-- Maui -->
   <PropertyGroup>
-    <MauiVersion>8.0.92</MauiVersion>
+    <MauiVersion>8.0.100</MauiVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -46,11 +46,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SentryVersion>4.12.1</SentryVersion>
+    <SentryVersion>4.13.0</SentryVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <SkiaSharpVersion>2.88.9-preview.2.2</SkiaSharpVersion>
+    <SkiaSharpVersion>2.88.9</SkiaSharpVersion>
   </PropertyGroup>
 
   <PropertyGroup>

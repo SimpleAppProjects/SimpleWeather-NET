@@ -88,7 +88,7 @@
     <PackageReference Include="ZCS.DataContractResolver" Version="1.2.2" />
   </ItemGroup>
   <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.0" />
+    <PackageReference Include="CommunityToolkit.Maui.Core" Version="9.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resources\Strings\AQIndex.Designer.cs">
