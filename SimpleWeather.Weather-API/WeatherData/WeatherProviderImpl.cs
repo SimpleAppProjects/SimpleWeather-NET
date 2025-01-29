@@ -135,10 +135,6 @@ namespace SimpleWeather.Weather_API.WeatherData
                 {
                     weather.condition.pollen = await new Google.GooglePollenProvider().GetPollenData(location);
                 }
-                else if (SettingsManager.DevSettingsEnabled)
-                {
-                    weather.condition.pollen = await new TomorrowIO.TomorrowIOWeatherProvider().GetPollenData(location);
-                }
             }
 
             return weather;
