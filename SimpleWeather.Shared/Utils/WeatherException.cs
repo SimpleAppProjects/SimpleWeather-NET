@@ -46,6 +46,10 @@ namespace SimpleWeather.Utils
                         errorMsg = ResStrings.werror_querynotfound;
                         break;
 
+                    case WeatherUtils.ErrorStatus.RateLimited:
+                        errorMsg = ResStrings.werror_ratelimited;
+                        break;
+
                     case WeatherUtils.ErrorStatus.Unknown:
                     default:
                         errorMsg = ResStrings.werror_unknown;

@@ -151,7 +151,7 @@ namespace SimpleWeather.Weather_API.Utils
                     SetNextRetryTime(apiID, retryTimeInMs);
                 }
 
-                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
+                throw new WeatherException(WeatherUtils.ErrorStatus.RateLimited,
                     await response.CreateException());
             }
         }
@@ -217,7 +217,7 @@ namespace SimpleWeather.Weather_API.Utils
 
             if (currentTime < nextRetryTime)
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.NetworkError,
+                throw new WeatherException(WeatherUtils.ErrorStatus.RateLimited,
                     new Exception($"Rate-limited: currentTime = {currentTime}, nextRetryTime = {nextRetryTime}"));
             }
         }
