@@ -141,4 +141,28 @@
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>zmenšujúci sa polmesiac</value>
   </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>Nov</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>Dorast.</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>1. štvrť</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>Dorast.</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>Spln</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>Zmenš.</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>3. štvrť</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>Zmenš.</value>
+  </data>
 </root>

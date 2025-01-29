@@ -141,4 +141,28 @@
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>Dernier croissant</value>
   </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>Nouvelle</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>Ascend.</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>1er qu.</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>Ascend.</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>Pleine</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>Descend.</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>Dern. qr.</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>Descend.</value>
+  </data>
 </root>

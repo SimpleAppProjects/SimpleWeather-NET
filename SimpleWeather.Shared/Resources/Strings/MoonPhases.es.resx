@@ -141,4 +141,28 @@
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>Luna menguante</value>
   </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>Nueva</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>Crec.</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>1/4 cr.</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>Crec.</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>Llena</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>Meng.</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>1/4 m.</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>Meng.</value>
+  </data>
 </root>

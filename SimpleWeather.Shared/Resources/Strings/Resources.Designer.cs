@@ -2059,6 +2059,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Too many requests. Please try again after a few minutes.
+        /// </summary>
+        public static string werror_ratelimited {
+            get {
+                return ResourceManager.GetString("werror_ratelimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown error occurred.
         /// </summary>
         public static string werror_unknown {

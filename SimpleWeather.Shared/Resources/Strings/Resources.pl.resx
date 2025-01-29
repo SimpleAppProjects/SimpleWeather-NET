@@ -813,4 +813,13 @@ Fuzzy</comment>
   <data name="action_reset" xml:space="preserve">
     <value>Resetuj</value>
   </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Zbyt wiele żądań. Spróbuj ponownie za kilka minut</value>
+  </data>
 </root>

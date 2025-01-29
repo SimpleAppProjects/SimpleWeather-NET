@@ -124,7 +124,7 @@
     <value>Zunehmender Sichelmond</value>
   </data>
   <data name="moonphase_firstqtr" xml:space="preserve">
-    <value>Zunehmender Halbmond</value>
+    <value>Erstes Viertel</value>
   </data>
   <data name="moonphase_waxgibbous" xml:space="preserve">
     <value>Zunehmender Mond</value>
@@ -136,9 +136,33 @@
     <value>Abnehmender Mond</value>
   </data>
   <data name="moonphase_lastqtr" xml:space="preserve">
-    <value>Abnehmender Halbmond</value>
+    <value>Letztes Viertel</value>
   </data>
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>Abnehmender Sichelmond</value>
+  </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>Neu</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>Zunehm.</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>Erstes V.</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>Zunehm.</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>Voll</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>Abnehm.</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>Letztes V.</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>Abnehm.</value>
   </data>
 </root>

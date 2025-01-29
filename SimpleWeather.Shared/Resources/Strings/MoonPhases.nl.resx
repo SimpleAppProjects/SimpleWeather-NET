@@ -141,4 +141,28 @@
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>Afnemende maansikkel</value>
   </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>Nieuw</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>Wassend</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>Eerste k</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>Wassend</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>Vol</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>Afnemend</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>Laatste k</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>Afnemend</value>
+  </data>
 </root>

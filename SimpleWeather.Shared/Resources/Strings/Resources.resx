@@ -813,4 +813,7 @@
   <data name="api_eccc" xml:space="preserve">
     <value>Environment and Climate Change Canada (ECCC)</value>
   </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Too many requests. Please try again after a few minutes</value>
+  </data>
 </root>

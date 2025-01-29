@@ -141,4 +141,28 @@
   <data name="moonphase_wancrescent" xml:space="preserve">
     <value>残月</value>
   </data>
+  <data name="moonphase_new_short" xml:space="preserve">
+    <value>新月</value>
+  </data>
+  <data name="moonphase_waxcrescent_short" xml:space="preserve">
+    <value>眉月</value>
+  </data>
+  <data name="moonphase_firstqtr_short" xml:space="preserve">
+    <value>上弦月</value>
+  </data>
+  <data name="moonphase_waxgibbous_short" xml:space="preserve">
+    <value>盈凸</value>
+  </data>
+  <data name="moonphase_full_short" xml:space="preserve">
+    <value>满月</value>
+  </data>
+  <data name="moonphase_wangibbous_short" xml:space="preserve">
+    <value>亏凸</value>
+  </data>
+  <data name="moonphase_lastqtr_short" xml:space="preserve">
+    <value>下弦月</value>
+  </data>
+  <data name="moonphase_wancrescent_short" xml:space="preserve">
+    <value>残月</value>
+  </data>
 </root>
