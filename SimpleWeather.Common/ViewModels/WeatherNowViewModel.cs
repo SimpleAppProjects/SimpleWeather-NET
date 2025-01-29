@@ -170,6 +170,13 @@ namespace SimpleWeather.Common.ViewModels
                         new WeatherRequest.Builder()
                         .ForceRefresh(forceRefresh)
                         .LoadAlerts()
+                        .Apply(it =>
+                        {
+                            if (forceRefresh)
+                            {
+                                it.LoadForecasts();
+                            }
+                        })
                         .Build());
                 }
                 else
