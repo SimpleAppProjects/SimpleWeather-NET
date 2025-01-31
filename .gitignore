@@ -257,6 +257,9 @@ ModelManifest.xml
 **/*.xcodeproj/xcuserdata
 **/*.xcworkspace/xcuserdata/
 
+# Rider
+.idea/
+
 # SimpleWeather
 API_KEY.txt
 /SimpleWeather.Windows/Package.StoreAssociation.xml

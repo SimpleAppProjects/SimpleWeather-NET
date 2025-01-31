@@ -1,0 +1,21 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
+        <PropertyGroup>
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'iOS' And '$(_SdkIsSimulator)' == 'true'">iphonesimulator</_SwiftTargetPlatform>
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'iOS' And '$(_SdkIsSimulator)' != 'true'">iphoneos</_SwiftTargetPlatform>
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'tvOS' And '$(_SdkIsSimulator)' == 'true'">appletvsimulator</_SwiftTargetPlatform>
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'tvOS' And '$(_SdkIsSimulator)' != 'true'">appletvos</_SwiftTargetPlatform>
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'MacCatalyst'">macosx</_SwiftTargetPlatform> <!-- yes, 'macosx' and not 'maccatalyst': even though the resulting maccatalyst directory exists, it doesn't have anything useful in it -->
+            <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'macOS'">macosx</_SwiftTargetPlatform>
+        </PropertyGroup>
+        <ItemGroup>
+            <_CustomLinkFlags Include="-L/usr/lib/swift/"/>
+            <_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(_SwiftTargetPlatform)/"/>
+            <_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.0/$(_SwiftTargetPlatform)/"/>
+            <_CustomLinkFlags Include="-L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift-5.5/$(_SwiftTargetPlatform)/"/>
+            <_CustomLinkFlags Include="-L/System/iOSSupport/usr/lib/swift/"/>
+            <_CustomLinkFlags Include="-Wl,-rpath"/>
+            <_CustomLinkFlags Include="-Wl,/usr/lib/swift"/>
+        </ItemGroup>
+    </Target>
+</Project>

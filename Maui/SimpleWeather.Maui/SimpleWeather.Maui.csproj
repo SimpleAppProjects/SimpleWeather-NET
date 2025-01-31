@@ -42,15 +42,6 @@
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
 		<CodesignKey>iPhone Developer</CodesignKey>
-		<CustomCommands>
-		  <CustomCommands>
-		    <Command>
-		      <type>BeforeBuild</type>
-		      <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
-		      <workingdir>${SolutionDir}</workingdir>
-		    </Command>
-		  </CustomCommands>
-		</CustomCommands>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
@@ -349,39 +340,9 @@
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
-	<PropertyGroup Condition=" $([MSBuild]::IsOSPlatform('OSX')) ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
-	        <workingdir>${SolutionDir}</workingdir>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
-	        <workingdir>${SolutionDir}</workingdir>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	  <CustomCommands>
-	    <CustomCommands>
-	      <Command>
-	        <type>BeforeBuild</type>
-	        <command>bash ${SolutionDir}/maui-preparebuild.sh "${ProjectConfig}"</command>
-	        <workingdir>${SolutionDir}</workingdir>
-	      </Command>
-	    </CustomCommands>
-	  </CustomCommands>
-	</PropertyGroup>
+	<Target Condition="$([MSBuild]::IsOSPlatform('OSX'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
+		<Exec Command="bash $(SolutionDir)maui-preparebuild.sh &quot;$(Configuration)&quot;" WorkingDirectory="$(SolutionDir)"/>
+	</Target>
 	<ProjectExtensions>
 		<VisualStudio>
 			<UserProperties XamarinHotReloadDebuggerTimeoutExceptionSimpleWeatherMauiHideInfoBar="True" />

@@ -1,3 +1,7 @@
+using System.Diagnostics;
+using System.Globalization;
+using System.Text;
+using System.Text.Json;
 using CacheCow.Client;
 using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
@@ -8,12 +12,13 @@ using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Images;
 using SimpleWeather.DI;
 using SimpleWeather.Extras;
-using SimpleWeather.Firebase;
 using SimpleWeather.Helpers;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.LocationData;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.AQICN;
 using SimpleWeather.Weather_API.HERE;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.Weather_API.NWS;
@@ -21,12 +26,16 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
-using System.Diagnostics;
-using System.Globalization;
-using System.Text;
-using System.Text.Json;
 using Xunit;
+using Debug = System.Diagnostics.Debug;
+using ThreadState = System.Threading.ThreadState;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
+#if __IOS__
+using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
+
+#else
+using SimpleWeather.Firebase;
+#endif
 
 namespace UnitTestProject
 {
@@ -50,9 +59,6 @@ namespace UnitTestProject
             // Add Json Resolvers
             JSONParser.DefaultSettings.AddWeatherAPIContexts();
 
-            CommonModule.Instance.Initialize();
-            ExtrasModule.Instance.Initialize();
-
             // Build DI Services
             SharedModule.Instance.GetServiceCollection().Apply(collection =>
             {
@@ -60,6 +66,10 @@ namespace UnitTestProject
                 ExtrasModule.Instance.ConfigureServices(collection);
             });
             SharedModule.Instance.BuildServiceProvider();
+
+            // Initialize post-DI setup; Migrations require rely on DI
+            CommonModule.Instance.Initialize();
+            ExtrasModule.Instance.Initialize();
         }
     }
 
@@ -109,12 +119,15 @@ namespace UnitTestProject
         {
             var location = await provider.GetLocation(coordinate);
             Assert.True(location != null && !location.IsEmpty);
-            if (string.IsNullOrWhiteSpace(location?.LocationTZLong) && location.LocationLat != 0 && location.LocationLong != 0)
+            if (string.IsNullOrWhiteSpace(location?.LocationTZLong) && location.LocationLat != 0 &&
+                location.LocationLong != 0)
             {
-                string tzId = await WeatherModule.Instance.TZDBService.GetTimeZone(location.LocationLat, location.LocationLong);
+                string tzId =
+                    await WeatherModule.Instance.TZDBService.GetTimeZone(location.LocationLat, location.LocationLong);
                 if (!string.IsNullOrWhiteSpace(tzId))
                     location.LocationTZLong = tzId;
             }
+
             var locData = location.ToLocationData();
             return await provider.GetWeather(locData);
         }
@@ -140,17 +153,12 @@ namespace UnitTestProject
             // Serialize hourly forecasts
             if (weather.hr_forecast?.Count > 0)
             {
-                var hrfcasts = weather.hr_forecast?.Select(hrf =>
-                {
-                    return new HourlyForecasts(weather.query, hrf);
-                }).ToList();
+                var hrfcasts = weather.hr_forecast?.Select(hrf => { return new HourlyForecasts(weather.query, hrf); })
+                    .ToList();
 
                 var serialHrfcasts = await JSONParser.SerializerAsync(hrfcasts);
                 var deserialHrfcasts = await JSONParser.DeserializerAsync<IList<HourlyForecasts>>(serialHrfcasts);
-                deserialWeather.hr_forecast = deserialHrfcasts.Select(hrfs =>
-                {
-                    return hrfs.hr_forecast;
-                }).ToList();
+                deserialWeather.hr_forecast = deserialHrfcasts.Select(hrfs => { return hrfs.hr_forecast; }).ToList();
             }
 
             // Serialize alerts
@@ -165,11 +173,11 @@ namespace UnitTestProject
             }
 
             bool testSuccess = Equals(weather, deserialWeather) &&
-                weather?.forecast?.Count == deserialWeather?.forecast?.Count &&
-                weather?.aqi_forecast?.Count == deserialWeather?.aqi_forecast?.Count &&
-                weather?.min_forecast?.Count == deserialWeather?.min_forecast?.Count &&
-                weather?.txt_forecast?.Count == deserialWeather?.txt_forecast?.Count &&
-                weather?.hr_forecast?.Count == deserialWeather?.hr_forecast?.Count;
+                               weather?.forecast?.Count == deserialWeather?.forecast?.Count &&
+                               weather?.aqi_forecast?.Count == deserialWeather?.aqi_forecast?.Count &&
+                               weather?.min_forecast?.Count == deserialWeather?.min_forecast?.Count &&
+                               weather?.txt_forecast?.Count == deserialWeather?.txt_forecast?.Count &&
+                               weather?.hr_forecast?.Count == deserialWeather?.hr_forecast?.Count;
 
             return testSuccess;
         }
@@ -190,7 +198,8 @@ namespace UnitTestProject
                 var customReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(customJson));
                 customWeather.FromJson(ref customReader);
                 watch1.Stop();
-                Debug.WriteLine("Deserialize #{2}: Weather - {0} (Custom): {1}", customWeather.source, watch1.Elapsed, i + 1);
+                Debug.WriteLine("Deserialize #{2}: Weather - {0} (Custom): {1}", customWeather.source, watch1.Elapsed,
+                    i + 1);
             }
 
             GC.Collect();
@@ -201,12 +210,14 @@ namespace UnitTestProject
                 var watch2 = Stopwatch.StartNew();
                 string utf8Json = JSONParser.Serializer(weather);
                 watch2.Stop();
-                Debug.WriteLine("Serialize #{2}: Weather - {0} (UTF8JsonGen): {1}", weather.source, watch2.Elapsed, i + 1);
+                Debug.WriteLine("Serialize #{2}: Weather - {0} (UTF8JsonGen): {1}", weather.source, watch2.Elapsed,
+                    i + 1);
 
                 watch2 = Stopwatch.StartNew();
                 var utf8Weather = JSONParser.Deserializer<Weather>(utf8Json);
                 watch2.Stop();
-                Debug.WriteLine("Deserialize #{2}: Weather - {0} (UTF8JsonGen): {1}", utf8Weather.source, watch2.Elapsed, i + 1);
+                Debug.WriteLine("Deserialize #{2}: Weather - {0} (UTF8JsonGen): {1}", utf8Weather.source,
+                    watch2.Elapsed, i + 1);
             }
         }
 
@@ -302,7 +313,7 @@ namespace UnitTestProject
         public async Task GetAQIData()
         {
             var tz_long = "America/Los_Angeles";
-            var aqi = await new SimpleWeather.Weather_API.AQICN.AQICNProvider().GetAirQualityData(
+            var aqi = await new AQICNProvider().GetAirQualityData(
                 new LocationData()
                 {
                     latitude = 47.6721646,
@@ -358,14 +369,16 @@ namespace UnitTestProject
                 Debug.WriteLine(String.Format("Moonphase: {0}", astro.moonphase.phase));
             }
 
-            Assert.True(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue && astro.moonrise != DateTime.MinValue && astro.moonset != DateTime.MinValue);
+            Assert.True(astro.sunrise != DateTime.MinValue && astro.sunset != DateTime.MinValue &&
+                        astro.moonrise != DateTime.MinValue && astro.moonset != DateTime.MinValue);
         }
 
         [Fact]
         public async Task WeatherAPILocationTest()
         {
             var locationProvider = new WeatherApiLocationProvider();
-            var locations = await locationProvider.GetLocations("Redmond, WA", WeatherAPI.WeatherApi).ConfigureAwait(false);
+            var locations = await locationProvider.GetLocations("Redmond, WA", WeatherAPI.WeatherApi)
+                .ConfigureAwait(false);
             Assert.True(locations?.Count > 0);
 
             var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond"));
@@ -402,7 +415,8 @@ namespace UnitTestProject
 
             Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = "TomorrowIo_REPLACE_VALUE";
 
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(34.0207305, -118.6919157))
+                .ConfigureAwait(false); // ~ Los Angeles
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
 
@@ -419,7 +433,8 @@ namespace UnitTestProject
 
             Utils.SettingsManager.APIKeys[WeatherAPI.WeatherBitIo] = "WeatherBitIo_REPLACE_VALUE";
 
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25)).ConfigureAwait(false); // ~ Nevada
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(36.23, -115.25))
+                .ConfigureAwait(false); // ~ Nevada
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
 
@@ -431,7 +446,8 @@ namespace UnitTestProject
         public async Task GetWeatherKitWeather()
         {
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple);
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.8589384, 2.264635)).ConfigureAwait(false); // ~ Paris, France
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.8589384, 2.264635))
+                .ConfigureAwait(false); // ~ Paris, France
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
         }
@@ -440,7 +456,8 @@ namespace UnitTestProject
         public async Task GetDWDWeather()
         {
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.DWD);
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(52.52, 13.4)).ConfigureAwait(false); // Berlin
+            var weather =
+                await GetWeather(provider, new WeatherUtils.Coordinate(52.52, 13.4)).ConfigureAwait(false); // Berlin
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
         }
@@ -449,7 +466,8 @@ namespace UnitTestProject
         public async Task GetECCCWeather()
         {
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.ECCC);
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984)).ConfigureAwait(false); // Banning, ON
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984))
+                .ConfigureAwait(false); // Banning, ON
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
         }
@@ -466,14 +484,12 @@ namespace UnitTestProject
             });
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.ECCC);
-            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984)).ConfigureAwait(false); // Banning, ON
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(48.737, -91.984))
+                .ConfigureAwait(false); // Banning, ON
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
             // Restore
-            await MainThread.InvokeOnMainThreadAsync(() =>
-            {
-                LocaleUtils.SetLocaleCode(locale.Name);
-            });
+            await MainThread.InvokeOnMainThreadAsync(() => { LocaleUtils.SetLocaleCode(locale.Name); });
         }
 
         /// <summary>
@@ -488,7 +504,8 @@ namespace UnitTestProject
             Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = "TomorrowIo_REPLACE_VALUE";
 
             var provider = new TomorrowIOWeatherProvider();
-            var location = await provider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157)).ConfigureAwait(false); // ~ Los Angeles
+            var location = await provider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157))
+                .ConfigureAwait(false); // ~ Los Angeles
             var locData = location.ToLocationData();
             Assert.NotNull(locData);
             var pollenData = await provider.GetPollenData(locData);
@@ -506,12 +523,15 @@ namespace UnitTestProject
             var response = await remoteConfig.GetRemoteConfig();
             Assert.True(response.entries.Count > 0);
 #else
-            var db = await FirebaseHelper.GetFirebaseDatabase();
 #if __IOS__
-            var uwpConfig = await db.Child("ios_remote_config").OnceAsync<object>();
+            var remoteConfig = FirebaseRemoteConfig.SharedInstance;
+            await remoteConfig.FetchAndActivateAsync();
+            var configJson = remoteConfig.GetConfigValue(WeatherAPI.WeatherApi)?.StringValue;
+            var config = JSONParser.Deserializer<WeatherProviderConfig>(configJson);
+            Assert.NotNull(config);
 #else
+            var db = await FirebaseHelper.GetFirebaseDatabase();
             var uwpConfig = await db.Child("uwp_remote_config").OnceAsync<object>();
-#endif
             if (uwpConfig?.Count > 0)
             {
                 foreach (var prop in uwpConfig)
@@ -526,6 +546,7 @@ namespace UnitTestProject
                 }
             }
 #endif
+#endif
         }
 
         [Fact]
@@ -536,7 +557,9 @@ namespace UnitTestProject
             {
                 Directory.Delete(CacheRootDir, true);
             }
-            var client = ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRootDir)));
+
+            var client =
+                ClientExtensions.CreateClient(new RemoveHeaderDelagatingCacheStore(new FileStore(CacheRootDir)));
             const string CacheableResource = "https://code.jquery.com/jquery-3.3.1.slim.min.js";
             var response = await client.GetAsync(CacheableResource);
             var responseFromCache = await client.GetAsync(CacheableResource);
@@ -554,11 +577,13 @@ namespace UnitTestProject
             var results = new List<ImageUtils.ImageType>();
 
             {
-                var ImageCacheFolder = new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
+                var ImageCacheFolder =
+                    new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
                 if (!ImageCacheFolder.Exists)
                 {
                     ImageCacheFolder.Create();
                 }
+
                 var CacheFiles = ImageCacheFolder.GetFiles();
 
                 foreach (var file in CacheFiles)
@@ -579,7 +604,8 @@ namespace UnitTestProject
 
             {
                 var AppFolder = AppDomain.CurrentDomain.BaseDirectory;
-                var AssetsFolder = new DirectoryInfo(Path.Combine(AppFolder, "SimpleWeather.Shared", "Resources", "Images", "Backgrounds"));
+                var AssetsFolder = new DirectoryInfo(Path.Combine(AppFolder, "SimpleWeather.Shared", "Resources",
+                    "Images", "Backgrounds"));
                 var AssetFiles = AssetsFolder.GetFiles();
 
                 foreach (var file in AssetFiles)
@@ -604,11 +630,13 @@ namespace UnitTestProject
         [Fact]
         public async Task ImageFileTest()
         {
-            var ImageCacheFolder = new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
+            var ImageCacheFolder =
+                new DirectoryInfo(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "images"));
             if (!ImageCacheFolder.Exists)
             {
                 ImageCacheFolder.Create();
             }
+
             var CacheFiles = ImageCacheFolder.GetFiles();
             var file = CacheFiles.First();
 
@@ -695,13 +723,12 @@ namespace UnitTestProject
                 do
                 {
                     completed =
-                    t1.ThreadState == System.Threading.ThreadState.Stopped &&
-                    t2.ThreadState == System.Threading.ThreadState.Stopped &&
-                    t3.ThreadState == System.Threading.ThreadState.Stopped &&
-                    t4.ThreadState == System.Threading.ThreadState.Stopped &&
-                    t5.ThreadState == System.Threading.ThreadState.Stopped;
-                }
-                while (!completed);
+                        t1.ThreadState == ThreadState.Stopped &&
+                        t2.ThreadState == ThreadState.Stopped &&
+                        t3.ThreadState == ThreadState.Stopped &&
+                        t4.ThreadState == ThreadState.Stopped &&
+                        t5.ThreadState == ThreadState.Stopped;
+                } while (!completed);
             });
         }
 
