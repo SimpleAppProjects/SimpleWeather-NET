@@ -39,7 +39,7 @@ public static class MauiProgram
             .UseMauiCommunityToolkit()
             .UseMauiCommunityToolkitMarkup()
             .UseMauiMaps()
-            .UseSkiaSharp(true)
+            .UseSkiaSharp()
             .UseMauiEmbedding<App>()
             .ConfigureFonts(fonts =>
             {

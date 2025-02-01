@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
     <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
     <RootNamespace>SimpleWeather.NET</RootNamespace>
@@ -46,20 +46,20 @@
   <!-- Sentry End -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.1" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="TimberLog" Version="2.0.0"/>
+    <PackageReference Include="TimberLog" Version="2.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
     <PackageReference Include="KeyedSemaphores" Version="5.0.0" />
-    <PackageReference Include="Mapsui.WinUI" Version="4.1.8" />
+    <PackageReference Include="Mapsui.WinUI" Version="$(MapsuiVersion)" />
     <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
-      <Version>8.0.0</Version>
+      <Version>9.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -77,9 +77,9 @@
     <PackageReference Include="SkiaSharp.Extended" Version="2.0.0" />
     <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.1" />
-    <PackageReference Include="UnitsNet" Version="5.60.0" />
-    <PackageReference Include="WinUIEx" Version="2.4.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
+    <PackageReference Include="UnitsNet" Version="5.67.0" />
+    <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

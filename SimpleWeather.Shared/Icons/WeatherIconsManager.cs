@@ -8,7 +8,7 @@ namespace SimpleWeather.Icons
     public sealed partial class WeatherIconsManager : IWeatherIconsProvider
     {
         private IWeatherIconsProvider _IconsProvider;
-        private readonly OrderedDictionary<string, WeatherIconProvider> _IconProviders = new();
+        private readonly OrderedDictionary<string, WeatherIconProvider> _IconProviders = [];
         public IReadOnlyDictionary<string, WeatherIconProvider> DefaultIcons;
 
         private readonly SettingsManager SettingsManager = DI.Utils.SettingsManager;
