@@ -1,9 +1,9 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Weather_API.ECCC
 {
@@ -37,10 +37,7 @@ namespace SimpleWeather.Weather_API.ECCC
                         var day = values.FirstOrDefault(it => it.temperature?.periodHigh != null);
                         var night = values.FirstOrDefault(it => it.temperature?.periodLow != null);
 
-                        fcasts.Add(_.CreateForecast(day, night).Apply(it =>
-                        {
-                            it.date = startDate.Value;
-                        }));
+                        fcasts.Add(_.CreateForecast(day, night).Apply(it => { it.date = startDate.Value; }));
                         txtFcasts.Add(_.CreateTextForecast(day, night).Apply(it =>
                         {
                             it.date = new DateTimeOffset(startDate.Value, TimeSpan.Zero);
@@ -53,10 +50,8 @@ namespace SimpleWeather.Weather_API.ECCC
                 });
             }
 
-            weather.hr_forecast = root.hourlyFcst?.hourly?.Select(it =>
-            {
-                return _.CreateHourlyForecast(it);
-            })?.ToList();
+            weather.hr_forecast =
+                root.hourlyFcst?.hourly?.Select(it => { return _.CreateHourlyForecast(it); })?.ToList();
 
             root.observation?.Let(it =>
             {
@@ -67,7 +62,7 @@ namespace SimpleWeather.Weather_API.ECCC
             weather.astronomy = _.CreateAstronomy(root.riseSet);
             weather.weather_alerts = _.CreateWeatherAlerts(root.alert);
 
-            weather.ttl = 180;
+            weather.ttl = 120;
 
             if ((!weather.condition.high_f.HasValue || !weather.condition.low_f.HasValue) && weather.forecast.Count > 0)
             {
@@ -104,8 +99,10 @@ namespace SimpleWeather.Weather_API.ECCC
 
             condition.weather = observation.condition;
 
-            condition.temp_f = (observation.temperature?.imperialUnrounded ?? observation.temperature?.imperial)?.TryParseFloat();
-            condition.temp_c = (observation.temperature?.metricUnrounded ?? observation.temperature?.metric)?.TryParseFloat();
+            condition.temp_f = (observation.temperature?.imperialUnrounded ?? observation.temperature?.imperial)
+                ?.TryParseFloat();
+            condition.temp_c = (observation.temperature?.metricUnrounded ?? observation.temperature?.metric)
+                ?.TryParseFloat();
 
             condition.wind_degrees = observation.windBearing?.TryParseFloat()?.RoundToInt();
 
@@ -154,8 +151,10 @@ namespace SimpleWeather.Weather_API.ECCC
             atmosphere.visibility_mi = observation.visibility?.imperial?.TryParseFloat();
             atmosphere.visibility_km = observation.visibility?.metric?.TryParseFloat();
 
-            atmosphere.dewpoint_f = (observation.dewpoint?.imperialUnrounded ?? observation.dewpoint?.imperial)?.TryParseFloat();
-            atmosphere.dewpoint_c = (observation.dewpoint?.metricUnrounded ?? observation.dewpoint?.metric)?.TryParseFloat();
+            atmosphere.dewpoint_f = (observation.dewpoint?.imperialUnrounded ?? observation.dewpoint?.imperial)
+                ?.TryParseFloat();
+            atmosphere.dewpoint_c =
+                (observation.dewpoint?.metricUnrounded ?? observation.dewpoint?.metric)?.TryParseFloat();
 
             return atmosphere;
         }
@@ -186,10 +185,8 @@ namespace SimpleWeather.Weather_API.ECCC
         {
             var hrf = new HourlyForecast();
 
-            hrf.date = item.epochTime?.Let(it =>
-            {
-                return DateTimeOffset.FromUnixTimeSeconds(it);
-            }) ?? DateTimeOffset.MinValue;
+            hrf.date = item.epochTime?.Let(it => { return DateTimeOffset.FromUnixTimeSeconds(it); }) ??
+                       DateTimeOffset.MinValue;
 
             hrf.high_f = item.temperature?.imperial?.TryParseFloat();
             hrf.high_c = item.temperature?.metric?.TryParseFloat();
@@ -310,16 +307,16 @@ namespace SimpleWeather.Weather_API.ECCC
                 if (dayItem != null)
                 {
                     sb.Append(dayItem.periodLabel)
-                      .Append(" : ")
-                      .Append(dayItem.text)
-                      .AppendLine();
+                        .Append(" : ")
+                        .Append(dayItem.text)
+                        .AppendLine();
                 }
 
                 if (nightItem != null)
                 {
                     sb.Append(nightItem.periodLabel)
-                      .Append(" : ")
-                      .Append(nightItem.text);
+                        .Append(" : ")
+                        .Append(nightItem.text);
                 }
             }).ToString();
 
@@ -333,7 +330,7 @@ namespace SimpleWeather.Weather_API.ECCC
                     })?.Replace(highC, $"{highF}°F");
 
                     sb.Append(dayItem.periodLabel)
-                      .Append(" : ");
+                        .Append(" : ");
                     if (dayItem.text != null && tempText != null)
                     {
                         sb.Append(dayItem.text.Replace(dayItem.temperatureText, tempText));
@@ -342,6 +339,7 @@ namespace SimpleWeather.Weather_API.ECCC
                     {
                         sb.Append(dayItem.text);
                     }
+
                     sb.AppendLine();
                 }
 
@@ -353,7 +351,7 @@ namespace SimpleWeather.Weather_API.ECCC
                     })?.Replace(lowC, $"{lowF}°F");
 
                     sb.Append(nightItem.periodLabel)
-                      .Append(" : ");
+                        .Append(" : ");
                     if (nightItem.text != null && tempText != null)
                     {
                         sb.Append(nightItem.text.Replace(nightItem.temperatureText, tempText));
@@ -362,6 +360,7 @@ namespace SimpleWeather.Weather_API.ECCC
                     {
                         sb.Append(nightItem.text);
                     }
+
                     sb.AppendLine();
                 }
             }).ToString();

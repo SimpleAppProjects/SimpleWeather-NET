@@ -1,9 +1,9 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.WeatherKit
@@ -21,33 +21,21 @@ namespace SimpleWeather.Weather_API.WeatherKit
             weather.location = _.CreateLocation(root.currentWeather);
             weather.update_time = now;
 
-            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>().Apply(l =>
+            weather.forecast = new List<Forecast>().Apply(l =>
             {
-                (root?.forecastDaily?.days?.Length ?? 0).Let(sz =>
-                {
-                    l.EnsureCapacity(sz);
-                });
+                (root?.forecastDaily?.days?.Length ?? 0).Let(sz => { l.EnsureCapacity(sz); });
             });
-            weather.txt_forecast = new List<SimpleWeather.WeatherData.TextForecast>().Apply(l =>
+            weather.txt_forecast = new List<TextForecast>().Apply(l =>
             {
-                (root?.forecastDaily?.days?.Length ?? 0).Let(sz =>
-                {
-                    l.EnsureCapacity(sz);
-                });
+                (root?.forecastDaily?.days?.Length ?? 0).Let(sz => { l.EnsureCapacity(sz); });
             });
             weather.hr_forecast = new List<SimpleWeather.WeatherData.HourlyForecast>().Apply(l =>
             {
-                (root?.forecastHourly?.hours?.Length ?? 0).Let(sz =>
-                {
-                    l.EnsureCapacity(sz);
-                });
+                (root?.forecastHourly?.hours?.Length ?? 0).Let(sz => { l.EnsureCapacity(sz); });
             });
-            weather.min_forecast = new List<SimpleWeather.WeatherData.MinutelyForecast>().Apply(l =>
+            weather.min_forecast = new List<MinutelyForecast>().Apply(l =>
             {
-                (root?.forecastNextHour?.minutes?.Length ?? 0).Let(sz =>
-                {
-                    l.EnsureCapacity(sz);
-                });
+                (root?.forecastNextHour?.minutes?.Length ?? 0).Let(sz => { l.EnsureCapacity(sz); });
             });
 
             // Forecast
@@ -67,10 +55,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
             });
 
             // Hourly Forecast
-            root?.forecastHourly?.hours?.ForEach(hour =>
-            {
-                weather.hr_forecast.Add(_.CreateHourlyForecast(hour));
-            });
+            root?.forecastHourly?.hours?.ForEach(hour => { weather.hr_forecast.Add(_.CreateHourlyForecast(hour)); });
 
             // Minutely Forecast
             root?.forecastNextHour?.minutes?.ForEach(minute =>
@@ -81,14 +66,18 @@ namespace SimpleWeather.Weather_API.WeatherKit
             weather.condition = _.CreateCondition(root.currentWeather, todaysForecast, todaysTxtForecast);
             weather.atmosphere = _.CreateAtmosphere(root.currentWeather);
 
-            if (root?.forecastDaily?.days?.FirstOrDefault(it => it.forecastStart.UtcDateTime.Date == weather.condition.observation_time.UtcDateTime.Date) is DayWeatherConditions today)
+            if (root?.forecastDaily?.days?.FirstOrDefault(it =>
+                    it.forecastStart.UtcDateTime.Date == weather.condition.observation_time.UtcDateTime.Date) is
+                DayWeatherConditions today)
             {
                 weather.astronomy = _.CreateAstronomy(today);
             }
-            weather.precipitation = _.CreatePrecipitation(root.currentWeather);
-            weather.ttl = 180;
 
-            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue) && weather.forecast.Count > 0)
+            weather.precipitation = _.CreatePrecipitation(root.currentWeather);
+            weather.ttl = 120;
+
+            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue) &&
+                weather.forecast.Count > 0)
             {
                 weather.condition.high_f = weather.forecast[0].high_f;
                 weather.condition.high_c = weather.forecast[0].high_c;
@@ -103,9 +92,9 @@ namespace SimpleWeather.Weather_API.WeatherKit
             return weather;
         }
 
-        public static SimpleWeather.WeatherData.Location CreateLocation(this WeatherKitProvider _, CurrentWeather current)
+        public static Location CreateLocation(this WeatherKitProvider _, CurrentWeather current)
         {
-            return new SimpleWeather.WeatherData.Location()
+            return new Location()
             {
                 /* Use name from location provider */
                 name = null,
@@ -115,9 +104,9 @@ namespace SimpleWeather.Weather_API.WeatherKit
             };
         }
 
-        public static SimpleWeather.WeatherData.Forecast CreateForecast(this WeatherKitProvider _, DayWeatherConditions day)
+        public static Forecast CreateForecast(this WeatherKitProvider _, DayWeatherConditions day)
         {
-            var forecast = new SimpleWeather.WeatherData.Forecast();
+            var forecast = new Forecast();
 
             forecast.date = day.forecastStart.UtcDateTime;
 
@@ -150,7 +139,8 @@ namespace SimpleWeather.Weather_API.WeatherKit
             return forecast;
         }
 
-        public static SimpleWeather.WeatherData.HourlyForecast CreateHourlyForecast(this WeatherKitProvider _, HourWeatherConditions hour)
+        public static SimpleWeather.WeatherData.HourlyForecast CreateHourlyForecast(this WeatherKitProvider _,
+            HourWeatherConditions hour)
         {
             var hrf = new SimpleWeather.WeatherData.HourlyForecast();
             hrf.date = hour.forecastStart;
@@ -179,9 +169,15 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 pop = (int)MathF.Round(hour.precipitationChance * 100),
                 cloudiness = (int)MathF.Round(hour.cloudCover),
                 qpf_rain_mm = hour.precipitationType != PrecipitationType.Snow ? hour.precipitationAmount : null,
-                qpf_rain_in = hour.precipitationType != PrecipitationType.Snow ? hour.precipitationAmount?.Let(ConversionMethods.MMToIn) : null,
-                qpf_snow_cm = hour.precipitationType == PrecipitationType.Snow ? hour.precipitationAmount?.Let(it => it * 10) : null,
-                qpf_snow_in = hour.precipitationType == PrecipitationType.Snow ? hour.precipitationAmount?.Let(ConversionMethods.MMToIn) : null,
+                qpf_rain_in = hour.precipitationType != PrecipitationType.Snow
+                    ? hour.precipitationAmount?.Let(ConversionMethods.MMToIn)
+                    : null,
+                qpf_snow_cm = hour.precipitationType == PrecipitationType.Snow
+                    ? hour.precipitationAmount?.Let(it => it * 10)
+                    : null,
+                qpf_snow_in = hour.precipitationType == PrecipitationType.Snow
+                    ? hour.precipitationAmount?.Let(ConversionMethods.MMToIn)
+                    : null,
                 pressure_mb = hour.pressure,
                 pressure_in = ConversionMethods.MBToInHg(hour.pressure),
                 wind_degrees = hour.windDirection,
@@ -196,16 +192,16 @@ namespace SimpleWeather.Weather_API.WeatherKit
             return hrf;
         }
 
-        public static SimpleWeather.WeatherData.MinutelyForecast CreateMinutelyForecast(this WeatherKitProvider _, ForecastMinute minute)
+        public static MinutelyForecast CreateMinutelyForecast(this WeatherKitProvider _, ForecastMinute minute)
         {
-            return new SimpleWeather.WeatherData.MinutelyForecast()
+            return new MinutelyForecast()
             {
                 date = minute.startTime,
                 rain_mm = minute.precipitationIntensity
             };
         }
 
-        public static SimpleWeather.WeatherData.TextForecast CreateTextForecast(this WeatherKitProvider _, DayWeatherConditions day)
+        public static TextForecast CreateTextForecast(this WeatherKitProvider _, DayWeatherConditions day)
         {
             var textForecast = new TextForecast
             {
@@ -217,18 +213,21 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 {
                     if (day.daytimeForecast != null)
                     {
-                        var dayConditionText = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
+                        var dayConditionText = WeatherModule.Instance.WeatherManager
+                            .GetWeatherProvider(WeatherAPI.Apple)
                             .GetWeatherCondition(day.daytimeForecast.conditionCode);
                         sb.Append($"{ResStrings.label_day}: {dayConditionText};");
-                        sb.AppendLine($" {ResStrings.label_chance}: {(int)MathF.Round(day.daytimeForecast.precipitationChance * 100)}%");
+                        sb.AppendLine(
+                            $" {ResStrings.label_chance}: {(int)MathF.Round(day.daytimeForecast.precipitationChance * 100)}%");
                     }
 
                     if (day.overnightForecast != null)
                     {
                         var ntConditionText = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
-                                .GetWeatherCondition(day.overnightForecast.conditionCode);
+                            .GetWeatherCondition(day.overnightForecast.conditionCode);
                         sb.Append($"{ResStrings.label_night}: {ntConditionText};");
-                        sb.AppendLine($" {ResStrings.label_chance}: {(int)MathF.Round(day.overnightForecast.precipitationChance * 100)}%");
+                        sb.AppendLine(
+                            $" {ResStrings.label_chance}: {(int)MathF.Round(day.overnightForecast.precipitationChance * 100)}%");
                     }
                 })
                 .ToString();
@@ -238,9 +237,10 @@ namespace SimpleWeather.Weather_API.WeatherKit
             return textForecast;
         }
 
-        public static SimpleWeather.WeatherData.Condition CreateCondition(this WeatherKitProvider _, CurrentWeather current, Forecast todaysForecast, TextForecast todaysTxtForecast)
+        public static Condition CreateCondition(this WeatherKitProvider _, CurrentWeather current,
+            Forecast todaysForecast, TextForecast todaysTxtForecast)
         {
-            return new SimpleWeather.WeatherData.Condition()
+            return new Condition()
             {
                 weather = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
                     .GetWeatherCondition(current.conditionCode),
@@ -309,14 +309,22 @@ namespace SimpleWeather.Weather_API.WeatherKit
 
             astronomy.moonphase = day.moonPhase switch
             {
-                MoonPhase.New => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.NewMoon),
-                MoonPhase.WaxingCrescent => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.WaxingCrescent),
-                MoonPhase.FirstQuarter => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.FirstQtr),
-                MoonPhase.WaxingGibbous => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.WaxingGibbous),
-                MoonPhase.Full => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.FullMoon),
-                MoonPhase.WaningGibbous => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.WaningGibbous),
-                MoonPhase.ThirdQuarter => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.LastQtr),
-                MoonPhase.WaningCrescent => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.WaningCrescent),
+                MoonPhase.New => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.NewMoon),
+                MoonPhase.WaxingCrescent => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.WaxingCrescent),
+                MoonPhase.FirstQuarter => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.FirstQtr),
+                MoonPhase.WaxingGibbous => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.WaxingGibbous),
+                MoonPhase.Full => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.FullMoon),
+                MoonPhase.WaningGibbous => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.WaningGibbous),
+                MoonPhase.ThirdQuarter => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.LastQtr),
+                MoonPhase.WaningCrescent => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase
+                    .MoonPhaseType.WaningCrescent),
                 _ => new SimpleWeather.WeatherData.MoonPhase(SimpleWeather.WeatherData.MoonPhase.MoonPhaseType.NewMoon),
             };
 

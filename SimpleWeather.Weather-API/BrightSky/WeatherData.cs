@@ -1,8 +1,8 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using LocData = SimpleWeather.LocationData.LocationData;
 
 namespace SimpleWeather.Weather_API.BrightSky
@@ -106,16 +106,14 @@ namespace SimpleWeather.Weather_API.BrightSky
                     {
                         dayMax = temp;
                     }
+
                     if (!float.IsNaN(temp) && (float.IsNaN(dayMin) || temp < dayMin))
                     {
                         dayMin = temp;
                     }
 
                     // Keep track of conditions
-                    item.icon?.Let(it =>
-                    {
-                        iconCountMap[it] = iconCountMap.GetValueOrDefault(it, 0) + 1;
-                    });
+                    item.icon?.Let(it => { iconCountMap[it] = iconCountMap.GetValueOrDefault(it, 0) + 1; });
                 }
 
                 fcast = weather.forecast.LastOrDefault();
@@ -135,12 +133,14 @@ namespace SimpleWeather.Weather_API.BrightSky
             weather.atmosphere = _.CreateAtmosphere(currRoot);
             weather.precipitation = _.CreatePrecipitation(currRoot);
 
-            weather.ttl = 180;
+            weather.ttl = 120;
 
             // Set feelslike temp
-            if (!weather.condition.feelslike_f.HasValue && weather.condition.temp_f.HasValue && weather.condition.wind_mph.HasValue && weather.atmosphere.humidity.HasValue)
+            if (!weather.condition.feelslike_f.HasValue && weather.condition.temp_f.HasValue &&
+                weather.condition.wind_mph.HasValue && weather.atmosphere.humidity.HasValue)
             {
-                weather.condition.feelslike_f = WeatherUtils.GetFeelsLikeTemp(weather.condition.temp_f.Value, weather.condition.wind_mph.Value, weather.atmosphere.humidity.Value);
+                weather.condition.feelslike_f = WeatherUtils.GetFeelsLikeTemp(weather.condition.temp_f.Value,
+                    weather.condition.wind_mph.Value, weather.atmosphere.humidity.Value);
                 weather.condition.feelslike_c = ConversionMethods.FtoC(weather.condition.feelslike_f.Value);
             }
 
@@ -241,7 +241,8 @@ namespace SimpleWeather.Weather_API.BrightSky
             precip.cloudiness = currRoot.weather?.cloud_cover?.RoundToInt();
 
             // Precipitation
-            (currRoot.weather?.precipitation_10 ?? currRoot.weather?.precipitation_30 ?? currRoot.weather?.precipitation_10)?.Let(it =>
+            (currRoot.weather?.precipitation_10 ??
+             currRoot.weather?.precipitation_30 ?? currRoot.weather?.precipitation_10)?.Let(it =>
             {
                 precip.qpf_rain_mm = it;
                 precip.qpf_rain_in = ConversionMethods.MMToIn(it);
@@ -278,6 +279,7 @@ namespace SimpleWeather.Weather_API.BrightSky
                 hrf.extras.feelslike_f = feelsLikeF;
                 hrf.extras.feelslike_c = ConversionMethods.FtoC(feelsLikeF);
             }
+
             hrf.extras.humidity = humidity;
             forecast.dew_point?.Let(it =>
             {

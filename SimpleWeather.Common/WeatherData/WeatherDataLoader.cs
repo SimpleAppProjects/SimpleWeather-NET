@@ -1,4 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -6,10 +10,6 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.TZDB;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.WeatherData
 {
@@ -110,7 +110,8 @@ namespace SimpleWeather.Common.WeatherData
                 return new WeatherResult.Error(wEx);
             }
 
-            Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(), result.Data?.IsValid());
+            Logger.WriteLine(LoggerLevel.Debug, "{0}: Weather data for {1} is valid = {2}", TAG, location?.ToString(),
+                result.Data?.IsValid());
 
             return result;
         };
@@ -161,7 +162,9 @@ namespace SimpleWeather.Common.WeatherData
                 request.ThrowIfCancellationRequested();
 
                 // Is the timezone valid? If not try to fetch a valid zone id
-                if (!wm.IsRegionSupported(location) && (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
+                if (!wm.IsRegionSupported(location) && (string.IsNullOrWhiteSpace(location.tz_long) ||
+                                                        Equals(location.tz_long, "unknown") ||
+                                                        Equals(location.tz_long, "UTC")))
                 {
                     if (location.latitude != 0 && location.longitude != 0)
                     {
@@ -193,7 +196,8 @@ namespace SimpleWeather.Common.WeatherData
                         if (weather == null)
                         {
                             Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
-                            throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new InvalidOperationException("Invalid location data"));
+                            throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                                new InvalidOperationException("Invalid location data"));
                         }
                     }
                 }
@@ -224,7 +228,8 @@ namespace SimpleWeather.Common.WeatherData
 
                 if (weather.weather_alerts == null)
                 {
-                    weather.weather_alerts = await SettingsManager.GetWeatherAlertData(location.query).ConfigureAwait(false);
+                    weather.weather_alerts =
+                        await SettingsManager.GetWeatherAlertData(location.query).ConfigureAwait(false);
                     loadedSavedAlertData = true;
                 }
             }
@@ -322,51 +327,58 @@ namespace SimpleWeather.Common.WeatherData
             switch (result)
             {
                 case WeatherResult.NoWeather:
+                {
+                    if (request.ShouldSaveData)
                     {
-                        if (request.ShouldSaveData)
+                        Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG,
+                            location?.ToString());
+                        Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
+                        var weather = result.Data;
+
+                        if (weather != null && weather.source != SettingsManager.API ||
+                            location.weatherSource != SettingsManager.API)
                         {
-                            Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG, location?.ToString());
-                            Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
-                            var weather = result.Data;
-
-                            if (weather != null && weather.source != SettingsManager.API || location.weatherSource != SettingsManager.API)
+                            // Only update location data if location region is supported by new API
+                            // If not don't update so we can use fallback (previously used API)
+                            if (wm.IsRegionSupported(location))
                             {
-                                // Only update location data if location region is supported by new API
-                                // If not don't update so we can use fallback (previously used API)
-                                if (wm.IsRegionSupported(location))
+                                // Update location query and source for new API
+                                string oldKey = location.query;
+
+                                if (location.latitude != 0.0 || location.longitude != 0.0)
                                 {
-                                    // Update location query and source for new API
-                                    string oldKey = location.query;
-
-                                    if (location.latitude != 0.0 || location.longitude != 0.0)
+                                    location.query = wm.UpdateLocationQuery(location);
+                                }
+                                else if (weather != null)
+                                {
+                                    if (weather.location?.latitude.GetValueOrDefault(0f) != 0f ||
+                                        weather.location?.longitude.GetValueOrDefault(0f) != 0f)
                                     {
-                                        location.query = wm.UpdateLocationQuery(location);
-                                    }
-                                    else if (weather != null)
-                                    {
-                                        if (weather.location?.latitude.GetValueOrDefault(0f) != 0f || weather.location?.longitude.GetValueOrDefault(0f) != 0f)
-                                        {
-                                            throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new Exception($"Invalid location data: {weather.location}"));
-                                        }
-
-                                        location.query = wm.UpdateLocationQuery(weather);
-                                    }
-                                    else
-                                    {
-                                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown, new Exception($"Invalid location state: location ({location}), weather ({weather})"));
+                                        throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
+                                            new Exception($"Invalid location data: {weather.location}"));
                                     }
 
-                                    location.weatherSource = SettingsManager.API;
+                                    location.query = wm.UpdateLocationQuery(weather);
+                                }
+                                else
+                                {
+                                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
+                                        new Exception(
+                                            $"Invalid location state: location ({location}), weather ({weather})"));
+                                }
 
-                                    // Update database as well
-                                    if (location.locationType == LocationType.GPS)
-                                    {
-                                        await SettingsManager.SaveLastGPSLocData(location);
-                                        SharedModule.Instance.RequestAction(CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE);
-                                    }
-                                    else
-                                    {
-                                        await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
+                                location.weatherSource = SettingsManager.API;
+
+                                // Update database as well
+                                if (location.locationType == LocationType.GPS)
+                                {
+                                    await SettingsManager.SaveLastGPSLocData(location);
+                                    SharedModule.Instance.RequestAction(CommonActions
+                                        .ACTION_WEATHER_SENDLOCATIONUPDATE);
+                                }
+                                else
+                                {
+                                    await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 #if (WINDOWS || __IOS__) && !UNIT_TEST
                                         // Update widget id for location
                                         SharedModule.Instance.RequestAction(
@@ -377,13 +389,13 @@ namespace SimpleWeather.Common.WeatherData
                                                 { Constants.WIDGETKEY_LOCATION, location },
                                             });
 #endif
-                                    }
                                 }
                             }
                         }
-
-                        return await GetWeatherData(request).ConfigureAwait(false);
                     }
+
+                    return await GetWeatherData(request).ConfigureAwait(false);
+                }
                 default:
                     return result;
             }
@@ -402,7 +414,8 @@ namespace SimpleWeather.Common.WeatherData
 
                 if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
                 {
-                    weather.weather_alerts = await SettingsManager.GetWeatherAlertData(location.query).ConfigureAwait(false);
+                    weather.weather_alerts =
+                        await SettingsManager.GetWeatherAlertData(location.query).ConfigureAwait(false);
                 }
 
                 request.ThrowIfCancellationRequested();
@@ -410,7 +423,8 @@ namespace SimpleWeather.Common.WeatherData
                 if (request.LoadForecasts && weather != null)
                 {
                     var forecasts = await SettingsManager.GetWeatherForecastData(location.query).ConfigureAwait(false);
-                    var hrForecasts = await SettingsManager.GetHourlyWeatherForecastData(location.query).ConfigureAwait(false);
+                    var hrForecasts = await SettingsManager.GetHourlyWeatherForecastData(location.query)
+                        .ConfigureAwait(false);
                     weather.forecast = forecasts?.forecast;
                     weather.hr_forecast = hrForecasts;
                     weather.txt_forecast = forecasts?.txt_forecast;
@@ -425,15 +439,18 @@ namespace SimpleWeather.Common.WeatherData
 
                     if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
                     {
-                        weather.weather_alerts = await SettingsManager.GetWeatherAlertData(weather.query).ConfigureAwait(false);
+                        weather.weather_alerts =
+                            await SettingsManager.GetWeatherAlertData(weather.query).ConfigureAwait(false);
                     }
 
                     request.ThrowIfCancellationRequested();
 
                     if (request.LoadForecasts && weather != null)
                     {
-                        var forecasts = await SettingsManager.GetWeatherForecastData(location.query).ConfigureAwait(false);
-                        var hrForecasts = await SettingsManager.GetHourlyWeatherForecastData(location.query).ConfigureAwait(false);
+                        var forecasts = await SettingsManager.GetWeatherForecastData(location.query)
+                            .ConfigureAwait(false);
+                        var hrForecasts = await SettingsManager.GetHourlyWeatherForecastData(location.query)
+                            .ConfigureAwait(false);
                         weather.forecast = forecasts?.forecast;
                         weather.hr_forecast = hrForecasts;
                         weather.txt_forecast = forecasts?.txt_forecast;
@@ -455,22 +472,28 @@ namespace SimpleWeather.Common.WeatherData
                 return new WeatherResult.NoWeather(weather, true);
             }
         }
+
         private async Task CheckForOutdatedObservation(Weather weather, WeatherRequest request)
         {
             if (weather != null)
             {
                 // Check for outdated observation
                 var now = DateTimeOffset.Now.ToOffset(location.tz_offset);
-                var durationMins = weather?.condition?.observation_time == null ? 61 : (now - weather.condition.observation_time).TotalMinutes;
-                if (durationMins > 90)
+                var durationMins = weather?.condition?.observation_time == null
+                    ? 61
+                    : (now - weather.condition.observation_time).TotalMinutes;
+                if (durationMins > 120)
                 {
                     var interval = wm.GetWeatherProvider(weather.source).HourlyForecastInterval;
 
                     var nowHour = now.Trim(TimeSpan.TicksPerHour);
-                    var hrf = await SettingsManager.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour).ConfigureAwait(false);
+                    var hrf = await SettingsManager.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour)
+                        .ConfigureAwait(false);
                     if (hrf == null || ((hrf.date - now) is TimeSpan dur && dur.TotalHours > (long)(interval * 0.5)))
                     {
-                        var prevHrf = await SettingsManager.GetFirstHourlyWeatherForecastDataByDate(location.query, nowHour.AddHours(-interval).Trim(TimeSpan.TicksPerHour)).ConfigureAwait(false);
+                        var prevHrf = await SettingsManager
+                            .GetFirstHourlyWeatherForecastDataByDate(location.query,
+                                nowHour.AddHours(-interval).Trim(TimeSpan.TicksPerHour)).ConfigureAwait(false);
                         if (prevHrf != null) hrf = prevHrf;
                     }
 
@@ -488,11 +511,15 @@ namespace SimpleWeather.Common.WeatherData
 
                         if (hrf.wind_mph.HasValue)
                         {
-                            weather.condition.beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
+                            weather.condition.beaufort =
+                                new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
                         }
+
                         weather.condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
                         weather.condition.feelslike_c = hrf.extras?.feelslike_c ?? 0.0f;
-                        weather.condition.uv = hrf.extras?.uv_index.HasValue == true && hrf.extras?.uv_index >= 0 ? new UV(hrf.extras.uv_index.Value) : null;
+                        weather.condition.uv = hrf.extras?.uv_index.HasValue == true && hrf.extras?.uv_index >= 0
+                            ? new UV(hrf.extras.uv_index.Value)
+                            : null;
 
                         weather.condition.observation_time = hrf.date;
 
@@ -528,10 +555,14 @@ namespace SimpleWeather.Common.WeatherData
                         {
                             weather.precipitation.pop = hrf.extras?.pop;
                             weather.precipitation.cloudiness = hrf.extras?.cloudiness;
-                            weather.precipitation.qpf_rain_in = hrf.extras?.qpf_rain_in >= 0 ? hrf.extras.qpf_rain_in : 0.0f;
-                            weather.precipitation.qpf_rain_mm = hrf.extras?.qpf_rain_mm >= 0 ? hrf.extras.qpf_rain_mm : 0.0f;
-                            weather.precipitation.qpf_snow_in = hrf.extras?.qpf_snow_in >= 0 ? hrf.extras.qpf_snow_in : 0.0f;
-                            weather.precipitation.qpf_snow_cm = hrf.extras?.qpf_snow_cm >= 0 ? hrf.extras.qpf_snow_cm : 0.0f;
+                            weather.precipitation.qpf_rain_in =
+                                hrf.extras?.qpf_rain_in >= 0 ? hrf.extras.qpf_rain_in : 0.0f;
+                            weather.precipitation.qpf_rain_mm =
+                                hrf.extras?.qpf_rain_mm >= 0 ? hrf.extras.qpf_rain_mm : 0.0f;
+                            weather.precipitation.qpf_snow_in =
+                                hrf.extras?.qpf_snow_in >= 0 ? hrf.extras.qpf_snow_in : 0.0f;
+                            weather.precipitation.qpf_snow_cm =
+                                hrf.extras?.qpf_snow_cm >= 0 ? hrf.extras.qpf_snow_cm : 0.0f;
                         }
 
                         await SaveWeatherData(weather).ConfigureAwait(false);
@@ -540,12 +571,14 @@ namespace SimpleWeather.Common.WeatherData
 
                 if (weather.forecast?.Count > 0)
                 {
-                    weather.forecast = weather.forecast.Where(f => f.date.Trim(TimeSpan.TicksPerDay) >= now.Date.Trim(TimeSpan.TicksPerDay)).ToList();
+                    weather.forecast = weather.forecast
+                        .Where(f => f.date.Trim(TimeSpan.TicksPerDay) >= now.Date.Trim(TimeSpan.TicksPerDay)).ToList();
                 }
 
                 if (weather.hr_forecast?.Count > 0)
                 {
-                    weather.hr_forecast = weather.hr_forecast.Where(f => f.date.Trim(TimeSpan.TicksPerHour) >= now.Trim(TimeSpan.TicksPerHour)).ToList();
+                    weather.hr_forecast = weather.hr_forecast
+                        .Where(f => f.date.Trim(TimeSpan.TicksPerHour) >= now.Trim(TimeSpan.TicksPerHour)).ToList();
                 }
             }
         }

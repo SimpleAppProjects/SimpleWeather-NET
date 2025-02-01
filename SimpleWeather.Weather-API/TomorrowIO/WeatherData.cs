@@ -1,8 +1,8 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using Condition = SimpleWeather.WeatherData.Condition;
 using Location = SimpleWeather.WeatherData.Location;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
@@ -11,7 +11,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 {
     public static partial class TomorrowIOWeatherProviderExtensions
     {
-        public static Weather CreateWeatherData(this TomorrowIOWeatherProvider _, TomorrowIO.Rootobject root, TomorrowIO.Rootobject minutelyRoot, AlertRootobject alertRoot)
+        public static Weather CreateWeatherData(this TomorrowIOWeatherProvider _, Rootobject root,
+            Rootobject minutelyRoot, AlertRootobject alertRoot)
         {
             var weather = new Weather();
 
@@ -31,7 +32,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 }
                 else if (timeline.timestep == "1d")
                 {
-                    weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(timeline.intervals.Length);
+                    weather.forecast = new List<Forecast>(timeline.intervals.Length);
                     weather.txt_forecast = new List<TextForecast>(timeline.intervals.Length);
                     weather.aqi_forecast = new List<AirQuality>(timeline.intervals.Length);
 
@@ -75,7 +76,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 }
             }
 
-            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue || weather.condition.high_f == weather.condition.low_f) && weather.forecast.Count > 0)
+            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue ||
+                 weather.condition.high_f == weather.condition.low_f) && weather.forecast.Count > 0)
             {
                 weather.condition.high_f = weather.forecast[0].high_f;
                 weather.condition.high_c = weather.forecast[0].high_c;
@@ -85,13 +87,13 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
             weather.weather_alerts = _.CreateWeatherAlerts(alertRoot);
 
-            weather.ttl = 180;
+            weather.ttl = 120;
             weather.source = WeatherAPI.TomorrowIo;
 
             return weather;
         }
 
-        public static Location CreateLocation(this TomorrowIOWeatherProvider _, TomorrowIO.Rootobject root)
+        public static Location CreateLocation(this TomorrowIOWeatherProvider _, Rootobject root)
         {
             return new Location()
             {
@@ -103,9 +105,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             };
         }
 
-        public static SimpleWeather.WeatherData.Forecast CreateForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static Forecast CreateForecast(this TomorrowIOWeatherProvider _, Interval item)
         {
-            var forecast = new SimpleWeather.WeatherData.Forecast();
+            var forecast = new Forecast();
 
             forecast.date = item.startTime.UtcDateTime;
 
@@ -114,6 +116,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 forecast.high_f = ConversionMethods.CtoF(item.values.temperatureMax.Value);
                 forecast.high_c = item.values.temperatureMax;
             }
+
             if (item.values.temperatureMin.HasValue)
             {
                 forecast.low_f = ConversionMethods.CtoF(item.values.temperatureMin.Value);
@@ -129,49 +132,59 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 forecast.extras.feelslike_f = ConversionMethods.CtoF(item.values.temperatureApparent.Value);
                 forecast.extras.feelslike_c = item.values.temperatureApparent;
             }
+
             if (item.values.humidity.HasValue)
             {
                 forecast.extras.humidity = (int)MathF.Round(item.values.humidity.Value);
             }
+
             if (item.values.dewPoint.HasValue)
             {
                 forecast.extras.dewpoint_c = item.values.dewPoint.Value;
                 forecast.extras.dewpoint_f = ConversionMethods.CtoF(item.values.dewPoint.Value);
             }
+
             forecast.extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
             {
                 forecast.extras.cloudiness = (int)MathF.Round(item.values.cloudCover.Value);
             }
+
             if (item.values.precipitationIntensity.HasValue)
             {
                 forecast.extras.qpf_rain_mm = item.values.precipitationIntensity.Value;
                 forecast.extras.qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
             }
+
             if (item.values.snowAccumulation.HasValue)
             {
                 forecast.extras.qpf_snow_cm = item.values.snowAccumulation.Value / 10;
                 forecast.extras.qpf_snow_in = ConversionMethods.MMToIn(item.values.snowAccumulation.Value);
             }
+
             if (item.values.pressureSeaLevel.HasValue)
             {
                 forecast.extras.pressure_mb = item.values.pressureSeaLevel.Value;
                 forecast.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value);
             }
+
             if (item.values.windDirection.HasValue)
             {
                 forecast.extras.wind_degrees = (int)MathF.Round(item.values.windDirection.Value);
             }
+
             if (item.values.windSpeed.HasValue)
             {
                 forecast.extras.wind_mph = ConversionMethods.MSecToMph(item.values.windSpeed.Value);
                 forecast.extras.wind_kph = ConversionMethods.MSecToKph(item.values.windSpeed.Value);
             }
+
             if (item.values.windGust.HasValue)
             {
                 forecast.extras.windgust_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
                 forecast.extras.windgust_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
             }
+
             if (item.values.visibility.HasValue)
             {
                 forecast.extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
@@ -181,7 +194,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return forecast;
         }
 
-        public static TextForecast CreateTextForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static TextForecast CreateTextForecast(this TomorrowIOWeatherProvider _, Interval item)
         {
             var txtForecast = new TextForecast();
 
@@ -191,9 +204,11 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             {
                 var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.TomorrowIo);
 
-                sb.AppendFormat("{0} - {1}", ResStrings.label_day, provider.GetWeatherCondition(item.values.weatherCodeDay?.ToString()));
+                sb.AppendFormat("{0} - {1}", ResStrings.label_day,
+                    provider.GetWeatherCondition(item.values.weatherCodeDay?.ToString()));
                 sb.AppendLine();
-                sb.AppendFormat("{0} - {1}", ResStrings.label_night, provider.GetWeatherCondition(item.values.weatherCodeNight?.ToString()));
+                sb.AppendFormat("{0} - {1}", ResStrings.label_night,
+                    provider.GetWeatherCondition(item.values.weatherCodeNight?.ToString()));
             }).ToString();
 
             txtForecast.fcttext = fcastStr;
@@ -202,7 +217,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return txtForecast;
         }
 
-        public static HourlyForecast CreateHourlyForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static HourlyForecast CreateHourlyForecast(this TomorrowIOWeatherProvider _, Interval item)
         {
             var hrf = new HourlyForecast();
 
@@ -223,40 +238,48 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 hrf.extras.feelslike_f = ConversionMethods.CtoF(item.values.temperatureApparent.Value);
                 hrf.extras.feelslike_c = item.values.temperatureApparent;
             }
+
             if (item.values.humidity.HasValue)
             {
                 hrf.extras.humidity = (int)MathF.Round(item.values.humidity.Value);
             }
+
             if (item.values.dewPoint.HasValue)
             {
                 hrf.extras.dewpoint_c = item.values.dewPoint.Value;
                 hrf.extras.dewpoint_f = ConversionMethods.CtoF(item.values.dewPoint.Value);
             }
+
             hrf.extras.pop = item.values.precipitationProbability?.RoundToInt();
             if (item.values.cloudCover.HasValue)
             {
                 hrf.extras.cloudiness = (int)MathF.Round(item.values.cloudCover.Value);
             }
+
             if (item.values.precipitationIntensity.HasValue)
             {
                 hrf.extras.qpf_rain_mm = item.values.precipitationIntensity.Value;
                 hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(item.values.precipitationIntensity.Value);
             }
+
             if (item.values.snowAccumulation.HasValue)
             {
                 hrf.extras.qpf_snow_cm = item.values.snowAccumulation.Value / 10;
                 hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(item.values.snowAccumulation.Value);
             }
+
             if (item.values.pressureSeaLevel.HasValue)
             {
                 hrf.extras.pressure_mb = item.values.pressureSeaLevel.Value;
                 hrf.extras.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value);
             }
+
             if (item.values.windDirection.HasValue)
             {
                 hrf.extras.wind_degrees = (int)MathF.Round(item.values.windDirection.Value);
                 hrf.wind_degrees = hrf.extras.wind_degrees;
             }
+
             if (item.values.windSpeed.HasValue)
             {
                 hrf.extras.wind_mph = ConversionMethods.MSecToMph(item.values.windSpeed.Value);
@@ -265,11 +288,13 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 hrf.extras.wind_kph = ConversionMethods.MSecToKph(item.values.windSpeed.Value);
                 hrf.wind_kph = hrf.extras.wind_kph;
             }
+
             if (item.values.windGust.HasValue)
             {
                 hrf.extras.windgust_mph = ConversionMethods.MSecToMph(item.values.windGust.Value);
                 hrf.extras.windgust_kph = ConversionMethods.MSecToKph(item.values.windGust.Value);
             }
+
             if (item.values.visibility.HasValue)
             {
                 hrf.extras.visibility_mi = ConversionMethods.KmToMi(item.values.visibility.Value);
@@ -279,7 +304,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return hrf;
         }
 
-        public static MinutelyForecast CreateMinutelyForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static MinutelyForecast CreateMinutelyForecast(this TomorrowIOWeatherProvider _, Interval item)
         {
             return new MinutelyForecast()
             {
@@ -288,7 +313,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             };
         }
 
-        public static Condition CreateCondition(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static Condition CreateCondition(this TomorrowIOWeatherProvider _, Interval item)
         {
             var condition = new Condition();
 
@@ -337,8 +362,10 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             condition.airQuality = new AirQuality()
             {
                 index = item.values.epaIndex,
-                pm25 = item.values.particulateMatter25?.Let(it => _.RunCatching(() => AirQualityUtils.AQIPM2_5(it)).GetOrNull()),
-                pm10 = item.values.particulateMatter10?.Let(it => _.RunCatching(() => AirQualityUtils.AQIPM10(it)).GetOrNull()),
+                pm25 = item.values.particulateMatter25?.Let(it =>
+                    _.RunCatching(() => AirQualityUtils.AQIPM2_5(it)).GetOrNull()),
+                pm10 = item.values.particulateMatter10?.Let(it =>
+                    _.RunCatching(() => AirQualityUtils.AQIPM10(it)).GetOrNull()),
                 o3 = item.values.pollutantO3?.Let(it => _.RunCatching(() => AirQualityUtils.AQIO3(it)).GetOrNull()),
                 no2 = item.values.pollutantNO2?.Let(it => _.RunCatching(() => AirQualityUtils.AQINO2(it)).GetOrNull()),
                 co = item.values.pollutantCO?.Let(it => _.RunCatching(() => AirQualityUtils.AQICO(it)).GetOrNull()),
@@ -378,7 +405,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return condition;
         }
 
-        public static Atmosphere CreateAtmosphere(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static Atmosphere CreateAtmosphere(this TomorrowIOWeatherProvider _, Interval item)
         {
             var atmosphere = new Atmosphere();
 
@@ -389,6 +416,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 atmosphere.pressure_mb = item.values.pressureSeaLevel;
                 atmosphere.pressure_in = ConversionMethods.MBToInHg(item.values.pressureSeaLevel.Value);
             }
+
             atmosphere.pressure_trend = string.Empty;
 
             if (item.values.visibility.HasValue)
@@ -406,7 +434,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return atmosphere;
         }
 
-        public static Astronomy CreateAstronomy(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static Astronomy CreateAstronomy(this TomorrowIOWeatherProvider _, Interval item)
         {
             var astronomy = new Astronomy();
 
@@ -414,13 +442,17 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             {
                 astronomy.sunrise = item.values.sunriseTime.UtcDateTime;
             }
-            catch { }
+            catch
+            {
+            }
 
             try
             {
                 astronomy.sunset = item.values.sunsetTime.UtcDateTime;
             }
-            catch { }
+            catch
+            {
+            }
 
             astronomy.moonphase = item.values.moonPhase switch
             {
@@ -440,14 +472,17 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             {
                 astronomy.sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
+
             if (astronomy.sunset == null)
             {
                 astronomy.sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
             }
+
             if (astronomy.moonrise == null)
             {
                 astronomy.moonrise = DateTime.MinValue;
             }
+
             if (astronomy.moonset == null)
             {
                 astronomy.moonset = DateTime.MinValue;
@@ -456,7 +491,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return astronomy;
         }
 
-        public static Precipitation CreatePrecipitation(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static Precipitation CreatePrecipitation(this TomorrowIOWeatherProvider _, Interval item)
         {
             var precip = new Precipitation();
 
@@ -472,21 +507,20 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return precip;
         }
 
-        public static AirQuality CreateAQIForecast(this TomorrowIOWeatherProvider _, TomorrowIO.Interval item)
+        public static AirQuality CreateAQIForecast(this TomorrowIOWeatherProvider _, Interval item)
         {
             return new AirQuality
             {
                 date = item.startTime.ToUniversalTime().Date,
-                pm25 = item.values.particulateMatter25?.Let(it => _.RunCatching(() => AirQualityUtils.AQIPM2_5(it)).GetOrNull()),
-                pm10 = item.values.particulateMatter10?.Let(it => _.RunCatching(() => AirQualityUtils.AQIPM10(it)).GetOrNull()),
+                pm25 = item.values.particulateMatter25?.Let(it =>
+                    _.RunCatching(() => AirQualityUtils.AQIPM2_5(it)).GetOrNull()),
+                pm10 = item.values.particulateMatter10?.Let(it =>
+                    _.RunCatching(() => AirQualityUtils.AQIPM10(it)).GetOrNull()),
                 o3 = item.values.pollutantO3?.Let(it => _.RunCatching(() => AirQualityUtils.AQIO3(it)).GetOrNull()),
                 no2 = item.values.pollutantNO2?.Let(it => _.RunCatching(() => AirQualityUtils.AQINO2(it)).GetOrNull()),
                 co = item.values.pollutantCO?.Let(it => _.RunCatching(() => AirQualityUtils.AQICO(it)).GetOrNull()),
                 so2 = item.values.pollutantSO2?.Let(it => _.RunCatching(() => AirQualityUtils.AQISO2(it)).GetOrNull()),
-            }.Apply(it =>
-            {
-                it.index = item.values.epaIndex ?? it.GetIndexFromData();
-            });
+            }.Apply(it => { it.index = item.values.epaIndex ?? it.GetIndexFromData(); });
         }
     }
 }

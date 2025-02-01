@@ -1,15 +1,20 @@
-﻿using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.NWS.Hourly;
+using SimpleWeather.Weather_API.NWS.Observation;
+using SimpleWeather.WeatherData;
+using Location = SimpleWeather.WeatherData.Location;
+using PeriodsItem = SimpleWeather.Weather_API.NWS.Observation.PeriodsItem;
 
 namespace SimpleWeather.Weather_API.NWS
 {
     public static partial class NWSWeatherProviderExtensions
     {
-        public static Weather CreateWeatherData(this NWSWeatherProvider _, NWS.Observation.ForecastRootobject forecastResponse, NWS.Hourly.HourlyForecastResponse hourlyForecastResponse)
+        public static Weather CreateWeatherData(this NWSWeatherProvider _, ForecastRootobject forecastResponse,
+            HourlyForecastResponse hourlyForecastResponse)
         {
             var weather = new Weather();
 
@@ -27,18 +32,19 @@ namespace SimpleWeather.Weather_API.NWS
                 int periodsSize = forecastResponse.time.startValidTime.Length;
                 for (int i = 0; i < periodsSize; i++)
                 {
-                    NWS.Observation.PeriodsItem forecastItem = new NWS.Observation.PeriodsItem(
-                            forecastResponse.time.startPeriodName[i],
-                            forecastResponse.time.startValidTime[i],
-                            forecastResponse.time.tempLabel[i],
-                            forecastResponse.data.temperature[i],
-                            forecastResponse.data.pop[i],
-                            forecastResponse.data.weather[i],
-                            forecastResponse.data.iconLink[i],
-                            forecastResponse.data.text[i]
-                        );
+                    PeriodsItem forecastItem = new PeriodsItem(
+                        forecastResponse.time.startPeriodName[i],
+                        forecastResponse.time.startValidTime[i],
+                        forecastResponse.time.tempLabel[i],
+                        forecastResponse.data.temperature[i],
+                        forecastResponse.data.pop[i],
+                        forecastResponse.data.weather[i],
+                        forecastResponse.data.iconLink[i],
+                        forecastResponse.data.text[i]
+                    );
 
-                    if ((!weather.forecast.Any() && !forecastItem.IsDaytime) || (weather.forecast.Count == periodsSize - 1 && forecastItem.IsDaytime))
+                    if ((!weather.forecast.Any() && !forecastItem.IsDaytime) ||
+                        (weather.forecast.Count == periodsSize - 1 && forecastItem.IsDaytime))
                     {
                         var fcast = _.CreateForecast(forecastItem);
                         var txtfcast = _.CreateTextForecast(forecastItem);
@@ -46,7 +52,8 @@ namespace SimpleWeather.Weather_API.NWS
                         weather.forecast.Add(fcast);
                         weather.txt_forecast.Add(txtfcast);
 
-                        if (weather.condition.summary == null && weather.condition.observation_time.UtcDateTime.Date >= txtfcast.date.UtcDateTime.Date)
+                        if (weather.condition.summary == null && weather.condition.observation_time.UtcDateTime.Date >=
+                            txtfcast.date.UtcDateTime.Date)
                         {
                             weather.condition.summary = String.Format(CultureInfo.InvariantCulture,
                                 "{0} - {1}", forecastItem.name, forecastItem.detailedForecast);
@@ -54,7 +61,7 @@ namespace SimpleWeather.Weather_API.NWS
                     }
                     else if (forecastItem.IsDaytime && (i + 1) < periodsSize)
                     {
-                        NWS.Observation.PeriodsItem nightForecastItem = new NWS.Observation.PeriodsItem(
+                        PeriodsItem nightForecastItem = new PeriodsItem(
                             forecastResponse.time.startPeriodName[i + 1],
                             forecastResponse.time.startValidTime[i + 1],
                             forecastResponse.time.tempLabel[i + 1],
@@ -71,7 +78,8 @@ namespace SimpleWeather.Weather_API.NWS
                         weather.forecast.Add(fcast);
                         weather.txt_forecast.Add(txtfcast);
 
-                        if (weather.condition.summary == null && weather.condition.observation_time.UtcDateTime.Date >= txtfcast.date.UtcDateTime.Date)
+                        if (weather.condition.summary == null && weather.condition.observation_time.UtcDateTime.Date >=
+                            txtfcast.date.UtcDateTime.Date)
                         {
                             weather.condition.summary = String.Format(CultureInfo.InvariantCulture,
                                 "{0} - {1}\n{2} - {3}",
@@ -88,7 +96,7 @@ namespace SimpleWeather.Weather_API.NWS
                 bool adjustDate = false;
                 var creationDate = hourlyForecastResponse.creationDate;
                 weather.hr_forecast = new List<HourlyForecast>(144);
-                foreach (NWS.Hourly.PeriodsItem period in hourlyForecastResponse.periodsItems)
+                foreach (Hourly.PeriodsItem period in hourlyForecastResponse.periodsItems)
                 {
                     int periodsSize = period.unixtime.Count;
                     for (int i = 0; i < periodsSize; i++)
@@ -98,7 +106,8 @@ namespace SimpleWeather.Weather_API.NWS
                         // BUG: NWS MapClick API
                         // The epoch time sometimes is a day ahead
                         // If this is the case, adjust all dates accordingly
-                        if (i == 0 && period.periodName?.ToLowerInvariant()?.Contains("night") == true && Equals("6 pm", period.time[i]))
+                        if (i == 0 && period.periodName?.ToLowerInvariant()?.Contains("night") == true &&
+                            Equals("6 pm", period.time[i]))
                         {
                             var hrDate = date.ToOffset(creationDate.Offset);
                             var futureDate = creationDate.AddDays(1).Date;
@@ -116,19 +125,19 @@ namespace SimpleWeather.Weather_API.NWS
                         if (date.UtcDateTime < now.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                             continue;
 
-                        NWS.Hourly.PeriodItem forecastItem = new NWS.Hourly.PeriodItem(
-                                period.unixtime[i],
-                                period.windChill[i],
-                                period.windSpeed[i],
-                                period.cloudAmount[i],
-                                period.pop[i],
-                                period.relativeHumidity[i],
-                                period.windGust[i],
-                                period.temperature[i],
-                                period.windDirection[i],
-                                period.iconLink[i],
-                                period.weather[i]
-                            );
+                        PeriodItem forecastItem = new PeriodItem(
+                            period.unixtime[i],
+                            period.windChill[i],
+                            period.windSpeed[i],
+                            period.cloudAmount[i],
+                            period.pop[i],
+                            period.relativeHumidity[i],
+                            period.windGust[i],
+                            period.temperature[i],
+                            period.windDirection[i],
+                            period.iconLink[i],
+                            period.weather[i]
+                        );
 
                         weather.hr_forecast.Add(_.CreateHourlyForecast(forecastItem, adjustDate));
                     }
@@ -138,13 +147,14 @@ namespace SimpleWeather.Weather_API.NWS
             weather.atmosphere = _.CreateAtmosphere(forecastResponse);
             //weather.astronomy = _.CreateAstronomy(obsCurrentRootObject);
             weather.precipitation = _.CreatePrecipitation(forecastResponse);
-            weather.ttl = 180;
+            weather.ttl = 120;
 
             if (!weather.condition.high_f.HasValue && weather.forecast.Count > 0)
             {
                 weather.condition.high_f = weather.forecast[0].high_f;
                 weather.condition.high_c = weather.forecast[0].high_c;
             }
+
             if (!weather.condition.low_f.HasValue && weather.forecast.Count > 0)
             {
                 weather.condition.low_f = weather.forecast[0].low_f;
@@ -156,7 +166,7 @@ namespace SimpleWeather.Weather_API.NWS
             return weather;
         }
 
-        public static Location CreateLocation(this NWSWeatherProvider _, NWS.Observation.ForecastRootobject forecastResponse)
+        public static Location CreateLocation(this NWSWeatherProvider _, ForecastRootobject forecastResponse)
         {
             return new Location()
             {
@@ -168,7 +178,7 @@ namespace SimpleWeather.Weather_API.NWS
             };
         }
 
-        public static Forecast CreateForecast(this NWSWeatherProvider _, NWS.Observation.PeriodsItem forecastItem)
+        public static Forecast CreateForecast(this NWSWeatherProvider _, PeriodsItem forecastItem)
         {
             var forecast = new Forecast();
 
@@ -190,7 +200,8 @@ namespace SimpleWeather.Weather_API.NWS
                 }
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+                culture.Equals(CultureInfo.InvariantCulture))
             {
                 forecast.condition = forecastItem.shortForecast;
             }
@@ -198,6 +209,7 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 forecast.condition = provider.GetWeatherCondition(forecastItem.icon);
             }
+
             forecast.icon = provider.GetWeatherIcon(!forecastItem.IsDaytime, forecastItem.icon);
 
             forecast.extras = new ForecastExtras();
@@ -213,7 +225,8 @@ namespace SimpleWeather.Weather_API.NWS
             return forecast;
         }
 
-        public static Forecast CreateForecast(this NWSWeatherProvider _, NWS.Observation.PeriodsItem forecastItem, NWS.Observation.PeriodsItem nightForecastItem)
+        public static Forecast CreateForecast(this NWSWeatherProvider _, PeriodsItem forecastItem,
+            PeriodsItem nightForecastItem)
         {
             var forecast = new Forecast();
 
@@ -226,13 +239,15 @@ namespace SimpleWeather.Weather_API.NWS
                 forecast.high_f = hiTemp;
                 forecast.high_c = ConversionMethods.FtoC(hiTemp);
             }
+
             if (float.TryParse(nightForecastItem.temperature, out float loTemp))
             {
                 forecast.low_f = loTemp;
                 forecast.low_c = ConversionMethods.FtoC(loTemp);
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+                culture.Equals(CultureInfo.InvariantCulture))
             {
                 forecast.condition = forecastItem.shortForecast;
             }
@@ -240,6 +255,7 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 forecast.condition = provider.GetWeatherCondition(forecastItem.icon);
             }
+
             forecast.icon = provider.GetWeatherIcon(false, forecastItem.icon);
 
             forecast.extras = new ForecastExtras();
@@ -255,7 +271,8 @@ namespace SimpleWeather.Weather_API.NWS
             return forecast;
         }
 
-        public static HourlyForecast CreateHourlyForecast(this NWSWeatherProvider _, NWS.Hourly.PeriodItem forecastItem, bool adjustDate = false)
+        public static HourlyForecast CreateHourlyForecast(this NWSWeatherProvider _, PeriodItem forecastItem,
+            bool adjustDate = false)
         {
             var hrf = new HourlyForecast();
 
@@ -274,7 +291,8 @@ namespace SimpleWeather.Weather_API.NWS
                 hrf.high_c = ConversionMethods.FtoC(temp);
             }
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+                culture.Equals(CultureInfo.InvariantCulture))
             {
                 hrf.condition = forecastItem.weather;
             }
@@ -282,6 +300,7 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 hrf.condition = provider.GetWeatherCondition(forecastItem.iconLink);
             }
+
             hrf.icon = forecastItem.iconLink;
 
             // Extras
@@ -324,7 +343,7 @@ namespace SimpleWeather.Weather_API.NWS
             return hrf;
         }
 
-        public static TextForecast CreateTextForecast(this NWSWeatherProvider _, NWS.Observation.PeriodsItem forecastItem)
+        public static TextForecast CreateTextForecast(this NWSWeatherProvider _, PeriodsItem forecastItem)
         {
             var textForecast = new TextForecast();
 
@@ -336,7 +355,8 @@ namespace SimpleWeather.Weather_API.NWS
             return textForecast;
         }
 
-        public static TextForecast CreateTextForecast(this NWSWeatherProvider _, NWS.Observation.PeriodsItem forecastItem, NWS.Observation.PeriodsItem ntForecastItem)
+        public static TextForecast CreateTextForecast(this NWSWeatherProvider _, PeriodsItem forecastItem,
+            PeriodsItem ntForecastItem)
         {
             var textForecast = new TextForecast();
 
@@ -350,14 +370,15 @@ namespace SimpleWeather.Weather_API.NWS
             return textForecast;
         }
 
-        public static Condition CreateCondition(this NWSWeatherProvider _, NWS.Observation.ForecastRootobject forecastResponse)
+        public static Condition CreateCondition(this NWSWeatherProvider _, ForecastRootobject forecastResponse)
         {
             var condition = new Condition();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.NWS);
             var culture = LocaleUtils.GetLocale();
 
-            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) || culture.Equals(CultureInfo.InvariantCulture))
+            if (culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
+                culture.Equals(CultureInfo.InvariantCulture))
             {
                 condition.weather = forecastResponse.currentobservation.Weather;
             }
@@ -365,6 +386,7 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 condition.weather = provider.GetWeatherCondition(forecastResponse.currentobservation.Weatherimage);
             }
+
             condition.icon = forecastResponse.currentobservation.Weatherimage;
 
             if (float.TryParse(forecastResponse.currentobservation.Temp, out float temp))
@@ -395,18 +417,21 @@ namespace SimpleWeather.Weather_API.NWS
                 condition.feelslike_f = windChill;
                 condition.feelslike_c = ConversionMethods.FtoC(windChill);
             }
-            else if (condition.temp_f.HasValue && !Equals(condition.temp_f, condition.temp_c) && condition.wind_mph.HasValue)
+            else if (condition.temp_f.HasValue && !Equals(condition.temp_f, condition.temp_c) &&
+                     condition.wind_mph.HasValue)
             {
                 if (float.TryParse(forecastResponse.currentobservation.Relh, out float humidity) && humidity >= 0)
                 {
-                    condition.feelslike_f = WeatherUtils.GetFeelsLikeTemp(condition.temp_f.Value, condition.wind_mph.Value, (int)Math.Round(humidity));
+                    condition.feelslike_f = WeatherUtils.GetFeelsLikeTemp(condition.temp_f.Value,
+                        condition.wind_mph.Value, (int)Math.Round(humidity));
                     condition.feelslike_c = ConversionMethods.FtoC(condition.feelslike_f.Value);
                 }
             }
 
             if (condition.wind_mph.HasValue)
             {
-                condition.beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(condition.wind_mph.Value)));
+                condition.beaufort =
+                    new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(condition.wind_mph.Value)));
             }
 
             condition.observation_time = forecastResponse.creationDate;
@@ -414,7 +439,7 @@ namespace SimpleWeather.Weather_API.NWS
             return condition;
         }
 
-        public static Atmosphere CreateAtmosphere(this NWSWeatherProvider _, NWS.Observation.ForecastRootobject forecastResponse)
+        public static Atmosphere CreateAtmosphere(this NWSWeatherProvider _, ForecastRootobject forecastResponse)
         {
             var atmosphere = new Atmosphere();
 
@@ -428,6 +453,7 @@ namespace SimpleWeather.Weather_API.NWS
                 atmosphere.pressure_in = pressure;
                 atmosphere.pressure_mb = ConversionMethods.InHgToMB(pressure);
             }
+
             atmosphere.pressure_trend = String.Empty;
 
             if (float.TryParse(forecastResponse.currentobservation.Visibility, out float visibility))
@@ -445,7 +471,7 @@ namespace SimpleWeather.Weather_API.NWS
             return atmosphere;
         }
 
-        public static Precipitation CreatePrecipitation(this NWSWeatherProvider _, NWS.Observation.ForecastRootobject forecastResponse)
+        public static Precipitation CreatePrecipitation(this NWSWeatherProvider _, ForecastRootobject forecastResponse)
         {
             // The rest DNE
             return new Precipitation();
