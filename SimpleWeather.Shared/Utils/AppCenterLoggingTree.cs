@@ -1,27 +1,32 @@
 ﻿#if !UNIT_TEST
-using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;
+using Microsoft.AppCenter.Crashes;
+using TimberLog;
 
 namespace SimpleWeather.Utils
 {
-    public class AppCenterLoggingTree : TimberLog.Timber.Tree
+    public class AppCenterLoggingTree : Timber.Tree
     {
-        private const String TAG = nameof(AppCenterLoggingTree);
-        private const String KEY_PRIORITY = "Priority";
-        private const String KEY_MESSAGE = "Message";
-        private const String KEY_EXCEPTION = "Exception";
+        private const string TAG = nameof(AppCenterLoggingTree);
+        private const string KEY_PRIORITY = "Priority";
+        private const string KEY_TAG = "Tag";
+        private const string KEY_MESSAGE = "Message";
 
-        protected override void Log(TimberLog.LoggerLevel loggerLevel, string message, Exception exception)
+        protected override bool IsLoggable(string category, TimberLog.LoggerLevel loggerLevel)
+        {
+            return loggerLevel >= TimberLog.LoggerLevel.Warn;
+        }
+
+        protected override void Log(TimberLog.LoggerLevel loggerLevel, string tag, string message, Exception exception)
         {
             try
             {
-                if (loggerLevel < TimberLog.LoggerLevel.Warn)
-                    return;
-
                 var properties = new Dictionary<string, string>
                 {
-                    { KEY_PRIORITY, loggerLevel.ToString()?.ToUpper() }
+                    { KEY_PRIORITY, loggerLevel.ToString()?.ToUpper() },
+                    { KEY_TAG, tag },
+                    { KEY_MESSAGE, message }
                 };
 
                 if (exception != null)
@@ -29,7 +34,8 @@ namespace SimpleWeather.Utils
                     Crashes.TrackError(exception, properties,
                         ErrorAttachmentLog.AttachmentWithText(message, "message.txt"),
                         ErrorAttachmentLog.AttachmentWithText(exception.ToString(), "exception.txt"),
-                        ErrorAttachmentLog.AttachmentWithText(exception.InnerException?.ToString(), "inner_exception.txt"));
+                        ErrorAttachmentLog.AttachmentWithText(exception.InnerException?.ToString(),
+                            "inner_exception.txt"));
                 }
                 else
                 {

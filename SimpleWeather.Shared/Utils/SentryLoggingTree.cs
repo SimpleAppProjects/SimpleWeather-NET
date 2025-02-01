@@ -1,22 +1,33 @@
 ﻿#if !UNIT_TEST && (WINDOWS || __MACCATALYST__)
-using Microsoft.AppCenter.Crashes;
-using Sentry;
 using System;
 using System.Collections.Generic;
+using Sentry;
 using TimberLog;
 
 namespace SimpleWeather.Utils
 {
-    public class SentryLoggingTree : TimberLog.Timber.Tree
+    public class SentryLoggingTree : Timber.Tree
     {
-        private const String TAG = nameof(SentryLoggingTree);
+        private const string TAG = nameof(SentryLoggingTree);
+        private const string KEY_PRIORITY = "priority";
+        private const string KEY_TAG = "tag";
+        private const string KEY_MESSAGE = "message";
 
-        protected override void Log(TimberLog.LoggerLevel loggerLevel, string message, Exception exception)
+        protected override bool IsLoggable(string category, TimberLog.LoggerLevel loggerLevel)
+        {
+            return loggerLevel >= TimberLog.LoggerLevel.Warn;
+        }
+
+        protected override void Log(TimberLog.LoggerLevel loggerLevel, string tag, string message, Exception exception)
         {
             try
             {
-                if (loggerLevel < TimberLog.LoggerLevel.Warn)
-                    return;
+                var properties = new Dictionary<string, string>
+                {
+                    { KEY_PRIORITY, loggerLevel.ToString()?.ToUpper() },
+                    { KEY_TAG, tag },
+                    { KEY_MESSAGE, message }
+                };
 
                 if (exception != null)
                 {
@@ -24,12 +35,14 @@ namespace SimpleWeather.Utils
                     {
                         s.Level = loggerLevel.ToSentryLevel();
 
-                        s.AddBreadcrumb(message, level: BreadcrumbLevel.Error);
+                        s.AddBreadcrumb(message, category: tag, level: loggerLevel.ToBreadcrumbLevel(),
+                            data: properties);
                     });
                 }
                 else
                 {
-                    SentrySdk.AddBreadcrumb(message, level: loggerLevel.ToBreadcrumbLevel());
+                    SentrySdk.AddBreadcrumb(message, category: tag, level: loggerLevel.ToBreadcrumbLevel(),
+                        data: properties);
                 }
             }
 #pragma warning disable CA1031 // Do not catch general exception types

@@ -1,11 +1,11 @@
-﻿using SimpleWeather.Helpers;
+﻿#if WINDOWS
+using Windows.Storage;
+#endif
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-#if WINDOWS
-using Windows.Storage;
-#endif
+using SimpleWeather.Helpers;
 using Timber = TimberLog.Timber;
 
 namespace SimpleWeather.Utils
@@ -21,6 +21,16 @@ namespace SimpleWeather.Utils
 
     public static class Logger
     {
+        internal static bool DEBUG_MODE_ENABLED
+        {
+#if DEBUG
+            get => true;
+            private set { }
+#else
+            get => DI.Utils.SettingsManager.DebugModeEnabled;
+            private set => DI.Utils.SettingsManager.DebugModeEnabled = value;
+#endif
+        }
 
         public static void Init()
         {
@@ -37,6 +47,7 @@ namespace SimpleWeather.Utils
 #if WINDOWS || __MACCATALYST__
             Timber.Plant(new SentryLoggingTree());
 #endif
+            EnableDebugLogger(DEBUG_MODE_ENABLED);
 #endif
         }
 
@@ -44,7 +55,7 @@ namespace SimpleWeather.Utils
         {
             return it is FileLoggingTree
 #if __IOS__
-                || it is ConsoleTree;
+                   || it is ConsoleTree;
 #else
                 || it is Timber.DebugTree;
 #endif
@@ -52,6 +63,8 @@ namespace SimpleWeather.Utils
 
         public static void EnableDebugLogger(bool enable)
         {
+            DEBUG_MODE_ENABLED = enable;
+
             if (enable)
             {
                 if (!Timber.Forest.Any(it => it is FileLoggingTree))
@@ -100,26 +113,78 @@ namespace SimpleWeather.Utils
             Timber.UprootAll();
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, string value, params object[] args)
+#nullable enable
+        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string message, params object[] args)
         {
-            WriteLine(loggerLevel, null, value, args);
+            Timber.Log((TimberLog.LoggerLevel)loggerLevel, ex, message, args);
+        }
+
+        public static void WriteLine(LoggerLevel loggerLevel, string message, params object[] args)
+        {
+            Timber.Log((TimberLog.LoggerLevel)loggerLevel, message, args);
         }
 
         public static void WriteLine(LoggerLevel loggerLevel, Exception ex)
         {
-            WriteLine(loggerLevel, ex, null, null);
+            Timber.Log((TimberLog.LoggerLevel)loggerLevel, ex);
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string value)
+        public static void Debug(string tag, string message, params object[] args)
         {
-            WriteLine(loggerLevel, ex, value, null);
+            Log(TimberLog.LoggerLevel.Debug, tag, message: message, args: args);
         }
 
-        public static void WriteLine(LoggerLevel loggerLevel, Exception ex, string format, params object[] args)
+        public static void Debug(string tag, Exception? ex = null, string? message = null, params object[] args)
         {
-            // ${longdate}|${level:uppercase=true}|${message}${when:when=length('${exception}')>0:Inner=${newline}}${exception:format=tostring}
-            Timber.Log((TimberLog.LoggerLevel)loggerLevel, ex, format, args);
+            Log(TimberLog.LoggerLevel.Debug, tag, ex, message, args);
         }
+
+        public static void Info(string tag, string message, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Info, tag, message: message, args: args);
+        }
+
+        public static void Info(string tag, Exception? ex = null, string? message = null, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Info, tag, ex, message, args);
+        }
+
+        public static void Warn(string tag, string message, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Warn, tag, message: message, args: args);
+        }
+
+        public static void Warn(string tag, Exception? ex = null, string? message = null, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Warn, tag, ex, message, args);
+        }
+
+        public static void Error(string tag, string message, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Error, tag, message: message, args: args);
+        }
+
+        public static void Error(string tag, Exception? ex = null, string? message = null, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Error, tag, ex, message, args);
+        }
+
+        public static void Fatal(string tag, string message, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Fatal, tag, message: message, args: args);
+        }
+
+        public static void Fatal(string tag, Exception? ex = null, string? message = null, params object[] args)
+        {
+            Log(TimberLog.LoggerLevel.Fatal, tag, ex, message, args);
+        }
+
+        private static void Log(TimberLog.LoggerLevel level, string tag, Exception? ex = null, string? message = null,
+            params object[] args)
+        {
+            Timber.Tag(tag).Log(level, ex, message, args);
+        }
+#nullable restore
 
         private static void CleanupLogs()
         {

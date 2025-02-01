@@ -95,7 +95,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="TimberLog" Version="1.0.0" />
+		<PackageReference Include="TimberLog" Version="2.0.0"/>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.1.1" />
 		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="4.2.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />

@@ -1,8 +1,8 @@
-﻿using SimpleWeather.Database;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
+﻿#if WINDOWS
+using Windows.Foundation.Metadata;
+#else
+using System.ComponentModel.DataAnnotations;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,20 +10,34 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-#if WINDOWS
-using Windows.Foundation.Metadata;
-#else
-using System.ComponentModel.DataAnnotations;
-#endif
+using SimpleWeather.Database;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Preferences
 {
     public sealed partial class SettingsManager : ISettingsService
     {
         // Settings Members
-        public bool WeatherLoaded { get => IsWeatherLoaded(); set => SetWeatherLoaded(value); }
-        public bool OnBoardComplete { get { return IsOnBoardingComplete(); } set { SetOnBoardingComplete(value); } }
-        public string API { get { return GetAPI(); } set { SetAPI(value); } }
+        public bool WeatherLoaded
+        {
+            get => IsWeatherLoaded();
+            set => SetWeatherLoaded(value);
+        }
+
+        public bool OnBoardComplete
+        {
+            get { return IsOnBoardingComplete(); }
+            set { SetOnBoardingComplete(value); }
+        }
+
+        public string API
+        {
+            get { return GetAPI(); }
+            set { SetAPI(value); }
+        }
 #if WINDOWS
         [Deprecated(
 #else
@@ -33,10 +47,20 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5530)]
 #else
-            )]
+        )]
 #endif
-        public string API_KEY { get { return GetAPIKEY(); } set { SetAPIKey(value); } }
-        public string APIKey { get { return API?.Let(it => APIKeys[it]); } set { API?.Let(it => APIKeys[it] = value); } }
+        public string API_KEY
+        {
+            get { return GetAPIKEY(); }
+            set { SetAPIKey(value); }
+        }
+
+        public string APIKey
+        {
+            get { return API?.Let(it => APIKeys[it]); }
+            set { API?.Let(it => APIKeys[it] = value); }
+        }
+
         public IAPIKeyMap APIKeys { get; }
 #if WINDOWS
         [Deprecated(
@@ -47,16 +71,51 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5530)]
 #else
-            )]
+        )]
 #endif
-        public bool KeyVerified { get { return IsKeyVerified(); } set { SetKeyVerified(value); } }
+        public bool KeyVerified
+        {
+            get { return IsKeyVerified(); }
+            set { SetKeyVerified(value); }
+        }
+
         public IProviderMap KeysVerified { get; }
-        public bool FollowGPS { get { return UseFollowGPS(); } set { SetFollowGPS(value); } }
-        private string LastGPSLocation { get { return GetLastGPSLocation(); } set { SetLastGPSLocation(value); } }
-        public DateTime UpdateTime { get { return GetUpdateTime(); } set { SetUpdateTime(value); } }
-        public int RefreshInterval { get { return GetRefreshInterval(); } set { SetRefreshInterval(value); } }
-        public bool ShowAlerts { get { return UseAlerts(); } set { SetAlerts(value); } }
-        public WeatherAlertSeverity MinimumAlertSeverity { get { return GetMinimumAlertSeverity(); } set { SetMinimumAlertSeverity(value); } }
+
+        public bool FollowGPS
+        {
+            get { return UseFollowGPS(); }
+            set { SetFollowGPS(value); }
+        }
+
+        private string LastGPSLocation
+        {
+            get { return GetLastGPSLocation(); }
+            set { SetLastGPSLocation(value); }
+        }
+
+        public DateTime UpdateTime
+        {
+            get { return GetUpdateTime(); }
+            set { SetUpdateTime(value); }
+        }
+
+        public int RefreshInterval
+        {
+            get { return GetRefreshInterval(); }
+            set { SetRefreshInterval(value); }
+        }
+
+        public bool ShowAlerts
+        {
+            get { return UseAlerts(); }
+            set { SetAlerts(value); }
+        }
+
+        public WeatherAlertSeverity MinimumAlertSeverity
+        {
+            get { return GetMinimumAlertSeverity(); }
+            set { SetMinimumAlertSeverity(value); }
+        }
 #if WINDOWS
         [Deprecated(
 #else
@@ -66,27 +125,115 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5810)]
 #else
-            )]
+        )]
 #endif
-        public bool UsePersonalKey { get { return IsPersonalKey(); } set { SetPersonalKey(value); } }
+        public bool UsePersonalKey
+        {
+            get { return IsPersonalKey(); }
+            set { SetPersonalKey(value); }
+        }
+
         public IProviderMap UsePersonalKeys { get; }
-        public int VersionCode { get { return GetVersionCode(); } set { SetVersionCode(value); } }
-        public bool DevSettingsEnabled { get { return IsDevSettingsEnabled(); } set { SetDevSettingsEnabled(value); } }
-        public string IconProvider { get { return GetIconsProvider(); } set { SetIconsProvider(value); } }
-        public UserThemeMode UserTheme { get { return GetUserThemeMode(); } set { SetUserThemeMode(value); } }
-        public bool DailyNotificationEnabled { get { return IsDailyNotificationEnabled(); } set { SetDailyNotificationEnabled(value); } }
-        public TimeSpan DailyNotificationTime { get { return GetDailyNotificationTime(); } set { SetDailyNotificationTime(value); } }
-        public bool PoPChanceNotificationEnabled { get { return IsPoPChanceNotificationEnabled(); } set { SetPoPChanceNotificationEnabled(value); } }
-        public DateTimeOffset LastPoPChanceNotificationTime { get { return GetLastPoPChanceNotificationTime(); } set { SetLastPoPChanceNotificationTime(value); } }
-        public int PoPChanceMinimumPercentage { get { return GetPoPChanceMinimumPercentage(); } set { SetPoPChanceMinimumPercentage(value); } }
+
+        public int VersionCode
+        {
+            get { return GetVersionCode(); }
+            set { SetVersionCode(value); }
+        }
+
+        public bool DevSettingsEnabled
+        {
+            get { return IsDevSettingsEnabled(); }
+            set { SetDevSettingsEnabled(value); }
+        }
+
+        public bool DebugModeEnabled
+        {
+            get => IsDebugModeEnabled();
+            set => SetDebugModeEnabled(value);
+        }
+
+        public string IconProvider
+        {
+            get { return GetIconsProvider(); }
+            set { SetIconsProvider(value); }
+        }
+
+        public UserThemeMode UserTheme
+        {
+            get { return GetUserThemeMode(); }
+            set { SetUserThemeMode(value); }
+        }
+
+        public bool DailyNotificationEnabled
+        {
+            get { return IsDailyNotificationEnabled(); }
+            set { SetDailyNotificationEnabled(value); }
+        }
+
+        public TimeSpan DailyNotificationTime
+        {
+            get { return GetDailyNotificationTime(); }
+            set { SetDailyNotificationTime(value); }
+        }
+
+        public bool PoPChanceNotificationEnabled
+        {
+            get { return IsPoPChanceNotificationEnabled(); }
+            set { SetPoPChanceNotificationEnabled(value); }
+        }
+
+        public DateTimeOffset LastPoPChanceNotificationTime
+        {
+            get { return GetLastPoPChanceNotificationTime(); }
+            set { SetLastPoPChanceNotificationTime(value); }
+        }
+
+        public int PoPChanceMinimumPercentage
+        {
+            get { return GetPoPChanceMinimumPercentage(); }
+            set { SetPoPChanceMinimumPercentage(value); }
+        }
 
         // Units
-        public string TemperatureUnit { get { return GetTempUnit(); } set { SetTempUnit(value); } }
-        public string SpeedUnit { get { return GetSpeedUnit(); } set { SetSpeedUnit(value); } }
-        public string PressureUnit { get { return GetPressureUnit(); } set { SetPressureUnit(value); } }
-        public string DistanceUnit { get { return GetDistanceUnit(); } set { SetDistanceUnit(value); } }
-        public string PrecipitationUnit { get { return GetPrecipitationUnit(); } set { SetPrecipitationUnit(value); } }
-        public string UnitString { get { return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3};{4}", TemperatureUnit, SpeedUnit, PressureUnit, DistanceUnit, PrecipitationUnit); } }
+        public string TemperatureUnit
+        {
+            get { return GetTempUnit(); }
+            set { SetTempUnit(value); }
+        }
+
+        public string SpeedUnit
+        {
+            get { return GetSpeedUnit(); }
+            set { SetSpeedUnit(value); }
+        }
+
+        public string PressureUnit
+        {
+            get { return GetPressureUnit(); }
+            set { SetPressureUnit(value); }
+        }
+
+        public string DistanceUnit
+        {
+            get { return GetDistanceUnit(); }
+            set { SetDistanceUnit(value); }
+        }
+
+        public string PrecipitationUnit
+        {
+            get { return GetPrecipitationUnit(); }
+            set { SetPrecipitationUnit(value); }
+        }
+
+        public string UnitString
+        {
+            get
+            {
+                return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3};{4}", TemperatureUnit, SpeedUnit,
+                    PressureUnit, DistanceUnit, PrecipitationUnit);
+            }
+        }
 
         // Data
         private const int CACHE_LIMIT = 25;
@@ -116,6 +263,7 @@ namespace SimpleWeather.Preferences
         private const string KEY_CURRENTVERSION = "key_currentversion";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
         public const string KEY_DEVSETTINGSENABLED = "key_devsettingsenabled";
+        private const string KEY_DEBUGMODEENABLED = "key_debugmodeenabled";
         public const string KEY_USERTHEME = "key_usertheme";
         public const string KEY_TEMPUNIT = "key_tempunit";
         public const string KEY_SPEEDUNIT = "key_speedunit";
@@ -184,6 +332,7 @@ namespace SimpleWeather.Preferences
         }
 
         #region Database
+
         public Task<IEnumerable<LocationData.LocationData>> GetFavorites()
         {
             return Task.Run<IEnumerable<LocationData.LocationData>>(async () =>
@@ -227,9 +376,9 @@ namespace SimpleWeather.Preferences
                 await LoadIfNeeded();
                 var culture = CultureInfo.InvariantCulture;
                 var escapedQuery = String.Format(culture, "\\\"latitude\\\":\\\"{0}\\\",\\\"longitude\\\":\\\"{1}\\\"",
-                        location.latitude.ToString(culture), location.longitude.ToString(culture));
+                    location.latitude.ToString(culture), location.longitude.ToString(culture));
                 var query = String.Format(culture, "\"latitude\":\"{0}\",\"longitude\":\"{1}\"",
-                        location.latitude.ToString(culture), location.longitude.ToString(culture));
+                    location.latitude.ToString(culture), location.longitude.ToString(culture));
                 return await WeatherDB.GetWeatherDataByCoord(escapedQuery, query);
             });
         }
@@ -274,7 +423,8 @@ namespace SimpleWeather.Preferences
             });
         }
 
-        public Task<IList<HourlyForecast>> GetHourlyForecastsByQueryOrderByDateByLimitFilterByDate(string key, int loadSize, DateTimeOffset date)
+        public Task<IList<HourlyForecast>> GetHourlyForecastsByQueryOrderByDateByLimitFilterByDate(string key,
+            int loadSize, DateTimeOffset date)
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
@@ -292,12 +442,14 @@ namespace SimpleWeather.Preferences
             });
         }
 
-        public Task<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(string key, int pageIndex, int loadSize, DateTimeOffset date)
+        public Task<IList<HourlyForecast>> GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(string key,
+            int pageIndex, int loadSize, DateTimeOffset date)
         {
             return Task.Run<IList<HourlyForecast>>(async () =>
             {
                 await LoadIfNeeded();
-                return await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(key, pageIndex, loadSize, date);
+                return await WeatherDB.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(key, pageIndex,
+                    loadSize, date);
             });
         }
 
@@ -369,7 +521,8 @@ namespace SimpleWeather.Preferences
 
                 _ = Task.Run(async () =>
                 {
-                    if (await WeatherDB.GetHourlyForecastCountGroupedByQuery() > CACHE_LIMIT / 2) await CleanupWeatherForecastData();
+                    if (await WeatherDB.GetHourlyForecastCountGroupedByQuery() > CACHE_LIMIT / 2)
+                        await CleanupWeatherForecastData();
                 });
             });
         }
@@ -386,7 +539,8 @@ namespace SimpleWeather.Preferences
 
                 _ = Task.Run(async () =>
                 {
-                    if (await WeatherDB.GetHourlyForecastCountGroupedByQuery() > CACHE_LIMIT / 2) await CleanupWeatherForecastData();
+                    if (await WeatherDB.GetHourlyForecastCountGroupedByQuery() > CACHE_LIMIT / 2)
+                        await CleanupWeatherForecastData();
                 });
             });
         }
@@ -527,10 +681,7 @@ namespace SimpleWeather.Preferences
         public async Task SaveLastGPSLocData(LocationData.LocationData data)
         {
             lastGPSLocData = data;
-            await Task.Run(() =>
-            {
-                LastGPSLocation = JSONParser.Serializer(lastGPSLocData);
-            });
+            await Task.Run(() => { LastGPSLocation = JSONParser.Serializer(lastGPSLocData); });
         }
 
         public Task<LocationData.LocationData> GetHomeData()
@@ -552,9 +703,11 @@ namespace SimpleWeather.Preferences
                 return homeData;
             });
         }
+
         #endregion
 
         #region Settings
+
         private string GetTempUnit()
         {
             var defaultUnit = GetValue(KEY_USECELSIUS, false) ? Units.CELSIUS : Units.FAHRENHEIT;
@@ -662,7 +815,7 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5530)]
 #else
-            )]
+        )]
 #endif
         private string GetAPIKEY()
         {
@@ -683,10 +836,7 @@ namespace SimpleWeather.Preferences
 
         private void SetAPIKey(string key)
         {
-            GetAPI()?.Let(api =>
-            {
-                SetAPIKey(api, key);
-            });
+            GetAPI()?.Let(api => { SetAPIKey(api, key); });
         }
 
         private string GetAPIKey(string provider)
@@ -737,7 +887,8 @@ namespace SimpleWeather.Preferences
             {
                 var value = GetValue<string>(KEY_UPDATETIME, null);
 
-                if (DateTime.TryParse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
+                if (DateTime.TryParse(value.ToString(), CultureInfo.InvariantCulture, DateTimeStyles.None,
+                        out DateTime result))
                 {
                     return result;
                 }
@@ -806,7 +957,7 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5530)]
 #else
-            )]
+        )]
 #endif
         private bool IsKeyVerified()
         {
@@ -829,7 +980,7 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5530)]
 #else
-            )]
+        )]
 #endif
         private void SetKeyVerified(bool value)
         {
@@ -872,7 +1023,7 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5810)]
 #else
-            )]
+        )]
 #endif
         private bool IsPersonalKey()
         {
@@ -895,7 +1046,7 @@ namespace SimpleWeather.Preferences
 #if WINDOWS
             , DeprecationType.Deprecate, 5810)]
 #else
-            )]
+        )]
 #endif
         private void SetPersonalKey(bool value)
         {
@@ -1006,7 +1157,8 @@ namespace SimpleWeather.Preferences
         {
             if (GetValue<string>(KEY_DAILYNOTIFICATIONTIME, null) is string value && value is not null)
             {
-                return TimeSpan.ParseExact(value.ToString(), "hh\\:mm", CultureInfo.InvariantCulture, TimeSpanStyles.None);
+                return TimeSpan.ParseExact(value.ToString(), "hh\\:mm", CultureInfo.InvariantCulture,
+                    TimeSpanStyles.None);
             }
 
             return DEFAULT_DAILYNOTIFICATION_TIME;
@@ -1031,7 +1183,8 @@ namespace SimpleWeather.Preferences
         {
             if (GetValue<string>(KEY_LASTCHANCENOTIFICATIONTIME, null) is string value && value is not null)
             {
-                return DateTimeOffset.ParseExact(value.ToString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                return DateTimeOffset.ParseExact(value.ToString(), DateTimeUtils.ISO8601_DATETIMEOFFSET_FORMAT,
+                    CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             }
 
             return DateTimeOffset.MinValue;
@@ -1068,6 +1221,18 @@ namespace SimpleWeather.Preferences
         {
             SetValue<int>(KEY_MINALERTSEVERITY, (int)alertSeverity);
         }
+
+        private bool IsDebugModeEnabled()
+        {
+            return DevSettings.GetValue(KEY_DEBUGMODEENABLED, false);
+        }
+
+        private void SetDebugModeEnabled(bool value)
+        {
+            DevSettings.SetValue(KEY_DEBUGMODEENABLED, value);
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_DEBUGMODEENABLED, NewValue = value });
+        }
+
         #endregion
     }
 }

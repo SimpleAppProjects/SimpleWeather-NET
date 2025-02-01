@@ -1,17 +1,18 @@
-﻿using SimpleWeather.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
+using SimpleWeather.Helpers;
+using TimberLog;
 
 namespace SimpleWeather.Utils
 {
 #pragma warning disable CA1063 // Implement IDisposable Correctly
 
-    public class FileLoggingTree : TimberLog.Timber.Tree, IDisposable
+    public class FileLoggingTree : Timber.Tree, IDisposable
 #pragma warning restore CA1063 // Implement IDisposable Correctly
     {
         private const string TAG = nameof(FileLoggingTree);
@@ -50,7 +51,8 @@ namespace SimpleWeather.Utils
             };
         }
 
-        protected override void Log(TimberLog.LoggerLevel loggerLevel, string message, Exception exception)
+        protected override void Log(TimberLog.LoggerLevel loggerLevel, string category, string message,
+            Exception exception)
         {
             try
             {
@@ -68,8 +70,7 @@ namespace SimpleWeather.Utils
 
                 var fileName = String.Format(culture, LOG_NAME_FORMAT, dateTimeStamp);
 
-                var priorityTAG = loggerLevel.ToString().ToUpper(culture);
-                var logMessage = logTimeStamp + "|" + priorityTAG + "|" + message/* + Environment.NewLine*/;
+                var priorityTag = loggerLevel.ToString().ToUpper(culture);
 
                 var path = Path.Combine(directory, fileName);
 
@@ -87,16 +88,15 @@ namespace SimpleWeather.Utils
                 lock (writer)
                 {
                     flushTimer.Stop();
-                    writer.WriteLine(logMessage);
+                    writer.Write(new StringBuilder().AppendJoin('|', logTimeStamp, priorityTag,
+                        category ?? string.Empty));
+                    writer.WriteLine(message);
                     flushTimer.Start();
                 }
 
                 if (!ranCleanup)
                 {
-                    Task.Run(() =>
-                    {
-                        CleanupLogs(logsDirectory: directory);
-                    });
+                    Task.Run(() => { CleanupLogs(logsDirectory: directory); });
                     ranCleanup = true;
                 }
             }

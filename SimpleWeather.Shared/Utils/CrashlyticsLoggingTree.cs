@@ -15,9 +15,15 @@ namespace SimpleWeather.Utils
     {
         private FirebaseCrashlytics crashlytics = FirebaseCrashlytics.SharedInstance;
         private readonly NSObject KEY_PRIORITY = NSString.FromObject("priority");
+        private readonly NSObject KEY_TAG = NSString.FromObject("tag");
         private readonly NSObject KEY_MESSAGE = NSString.FromObject("message");
 
-        protected override void Log(TimberLog.LoggerLevel loggerLevel, string message, Exception exception)
+        protected override bool IsLoggable(string category, TimberLog.LoggerLevel loggerLevel)
+        {
+            return loggerLevel > TimberLog.LoggerLevel.Debug;
+        }
+
+        protected override void Log(TimberLog.LoggerLevel loggerLevel, string tag, string message, Exception exception)
         {
             try
             {
@@ -34,9 +40,17 @@ namespace SimpleWeather.Utils
                 crashlytics ??= FirebaseCrashlytics.SharedInstance;
 
                 crashlytics.SetCustomValue(KEY_PRIORITY, priorityTAG);
+                if (tag != null) crashlytics.SetCustomValue(KEY_TAG, tag);
                 crashlytics.SetCustomValue(KEY_MESSAGE, message);
 
-                crashlytics.Log($"{priorityTAG} | {message}");
+                if (tag != null)
+                {
+                    crashlytics.Log($"{priorityTAG} | {tag}: {message}");
+                }
+                else
+                {
+                    crashlytics.Log($"{priorityTAG} | {message}");
+                }
 
                 if (exception != null)
                 {
@@ -56,7 +70,8 @@ namespace Plugin.Firebase.Crashlytics
 {
     public static class StackTraceParser
     {
-        private static readonly Regex _regex = new(@"^\s*at (?<className>.+)\.(?<methodName>.+\(.*\))( in (?<fileName>.+):line (?<lineNumber>\d+))?\s*$",
+        private static readonly Regex _regex =
+ new(@"^\s*at (?<className>.+)\.(?<methodName>.+\(.*\))( in (?<fileName>.+):line (?<lineNumber>\d+))?\s*$",
             RegexOptions.Multiline | RegexOptions.ExplicitCapture);
 
         public static IEnumerable<StackFrame> Parse(Exception exception)
