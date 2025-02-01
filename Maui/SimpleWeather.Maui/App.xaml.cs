@@ -15,10 +15,6 @@ using SimpleWeather.WeatherData.Images;
 #if __IOS__
 using UIKit;
 #endif
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.NET.Json;
 using System.Security;
@@ -65,9 +61,6 @@ public partial class App : Application
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();
-
-        AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-        AppCenter.Start($"ios={AppCenterConfig.GetiOSAppCenterSecret()};macos={AppCenterConfig.GetMacOSAppCenterSecret()}", typeof(Analytics), typeof(Crashes));
 
         // Initialize depencies for library
         InitializeDependencies();

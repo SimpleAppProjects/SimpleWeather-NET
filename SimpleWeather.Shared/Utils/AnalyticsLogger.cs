@@ -1,12 +1,10 @@
 ﻿#if !UNIT_TEST
 #if WINDOWS
 #if RELEASE
-using Microsoft.AppCenter.Analytics;
 #endif
 using SimpleWeather.Firebase;
 using System.Text.RegularExpressions;
 #else
-using Microsoft.AppCenter.Analytics;
 #endif
 
 #if __IOS__
@@ -32,18 +30,17 @@ namespace SimpleWeather.Utils
             return FirebaseHelper.GetFirebaseAnalytics();
         });
 
-        private static FirebaseAnalytics analytics => analyticsLazy.Value;
+        private static FirebaseAnalytics Analytics => analyticsLazy.Value;
 #endif
 
         public static void LogEvent(string eventName, IDictionary<string, string> properties = null)
         {
 #if DEBUG
             string append = properties == null ? String.Empty : Environment.NewLine + JSONParser.Serializer(properties);
-            Logger.WriteLine(LoggerLevel.Info, "EVENT | " + eventName + append);
+            Logger.WriteLine(LoggerLevel.Info, "EVENT|" + eventName + append);
 #elif !UNIT_TEST
-            Analytics.TrackEvent(eventName, properties);
 #if WINDOWS
-            analytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties);
+            Analytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties);
 #elif __IOS__
             FirebaseAnalytics.LogEvent(GAnalyticsRegex().Replace(eventName, "_"), properties?.ToDictionary(k => k.Key as object, v => v.Value as object));
 #endif
@@ -54,12 +51,12 @@ namespace SimpleWeather.Utils
 #if WINDOWS
         public static void SetUserProperty([MaxLength(24)] string property, [MaxLength(36)] string value)
         {
-            analytics.SetUserProperty(property, value);
+            Analytics.SetUserProperty(property, value);
         }
 
         public static void SetUserProperty([MaxLength(24)] string property, bool value)
         {
-            analytics.SetUserProperty(property, value);
+            Analytics.SetUserProperty(property, value);
         }
 #elif __IOS__
         public static void SetUserProperty([MaxLength(24)] string property, [MaxLength(36)] string value)

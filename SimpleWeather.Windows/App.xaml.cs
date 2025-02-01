@@ -2,9 +2,6 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using CommunityToolkit.WinUI.Notifications;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -35,7 +32,6 @@ using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.System;
 using Windows.UI.ViewManagement;
-using AppCenterLogLevel = Microsoft.AppCenter.LogLevel;
 using FirebaseAuth = Firebase.Auth;
 using FirebaseDb = Firebase.Database;
 using Package = Windows.ApplicationModel.Package;
@@ -121,10 +117,6 @@ namespace SimpleWeather.NET
             // under a memory target to maintain priority to keep running.
             // Subscribe to the event that informs the app of this change.
             MemoryManager.AppMemoryUsageIncreased += MemoryManager_AppMemoryUsageIncreased;
-
-            // AppCenter
-            AppCenter.LogLevel = AppCenterLogLevel.Verbose;
-            AppCenter.Start(AppCenterConfig.GetUWPAppCenterSecret(), typeof(Analytics), typeof(Crashes));
 
             // Sentry
             SentrySdk.Init(options =>

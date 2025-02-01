@@ -57,8 +57,6 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
     <PackageReference Include="KeyedSemaphores" Version="5.0.0" />
     <PackageReference Include="Mapsui.WinUI" Version="4.1.8" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="5.0.6" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="5.0.6" />
     <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
       <Version>8.0.0</Version>
