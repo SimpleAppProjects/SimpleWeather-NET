@@ -2,7 +2,6 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using BingMapsRESTToolkit;
 using Microsoft.Maui;
 
 namespace SimpleWeather.Maui.Controls

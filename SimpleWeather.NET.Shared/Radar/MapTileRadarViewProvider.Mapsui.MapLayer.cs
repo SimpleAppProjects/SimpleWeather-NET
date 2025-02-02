@@ -1,14 +1,12 @@
 ﻿//#if !(ANDROID || IOS || MACCATALYST)
 using BruTile.Cache;
 using Mapsui;
-using Mapsui.Tiling;
+using SimpleWeather.NET.MapsUi;
 #if !DEBUG
 #if WINDOWS
 using Microsoft.UI.Xaml;
 #endif
 using Mapsui.Layers;
-using SimpleWeather.Helpers;
-using SimpleWeather.NET.MapsUi;
 #endif
 
 namespace SimpleWeather.NET.Radar
@@ -26,11 +24,7 @@ namespace SimpleWeather.NET.Radar
 #if DEBUG
                 if (mapControl.Map.Layers.FindLayer("Root").FirstOrDefault() is null)
                 {
-                    OpenStreetMap.DefaultCache ??= new FileCache(
-                            Path.Combine(SimpleWeather.Helpers.ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenStreepMap"), "tile.png");
-
-                    var tileLayer = OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString());
-                    tileLayer.Name = "Root";
+                    var tileLayer = OpenStreetMap.CreateTileLayer();
                     tileLayer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
                     tileLayer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
 
@@ -70,7 +64,7 @@ namespace SimpleWeather.NET.Radar
                         false => BingMapsRESTToolkit.ImageryType.CanvasLight
                     };
 
-                    mapLayer = await BingMaps.CreateBingMapsLayer(imageryType, isDarkMode, userAgent: Constants.GetUserAgentString());
+                    mapLayer = await BingMaps.CreateBingMapsLayer(imageryType, isDarkMode);
 #if WINDOWS
                     mapLayer.Tag = RadarContainer.ActualTheme;
 #else

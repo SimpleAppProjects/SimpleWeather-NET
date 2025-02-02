@@ -10,6 +10,7 @@ using SimpleWeather.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -107,8 +108,15 @@ namespace SimpleWeather.NET.MapsUi
                         new BasicUrlBuilder(urlFormatter: tileUrl, serverNodes: metadata.ImageUrlSubdomains, apiKey: key), attribution: attribution,
                         name: name,
                         persistentCache: new FileCache(
-                            Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, name), "tile.png")
-                        );
+                            Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, name), "tile.png"),
+                        configureHttpRequestMessage: request =>
+                        {
+                            request.Headers.CacheControl = new CacheControlHeaderValue()
+                            {
+                                MaxAge = TimeSpan.FromDays(7)
+                            };
+                        }
+                    );
                 }
             }
             catch (Exception ex)

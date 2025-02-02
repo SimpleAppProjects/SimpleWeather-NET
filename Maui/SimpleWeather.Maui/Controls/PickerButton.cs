@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Runtime.CompilerServices;
-using BingMapsRESTToolkit;
 using CommunityToolkit.Maui.Markup;
-using CommunityToolkit.Mvvm.Messaging;
 using MauiIcons.Core;
 using SimpleWeather.Maui.Preferences;
 using UIKit;
 
 namespace SimpleWeather.Maui.Controls
 {
-	public class PickerButton : Button
+    public class PickerButton : Button
 	{
         public IEnumerable Items
         {

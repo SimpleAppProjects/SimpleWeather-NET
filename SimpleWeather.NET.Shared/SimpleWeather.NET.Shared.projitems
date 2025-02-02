@@ -51,6 +51,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\LocationPanelUiModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\JsonContextExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\CustomHttpTileSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MapsUi\OpenStreetMap.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.MapLayer.cs" />
