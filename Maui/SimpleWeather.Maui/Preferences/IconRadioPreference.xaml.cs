@@ -1,12 +1,18 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
+using SimpleWeather.Maui.Controls;
 
 namespace SimpleWeather.Maui.Preferences;
 
 public partial class IconRadioPreference : ContentView
 {
-    private readonly String[] PREVIEW_ICONS = { WeatherIcons.DAY_SUNNY, WeatherIcons.NIGHT_CLEAR, WeatherIcons.DAY_SUNNY_OVERCAST, WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY, WeatherIcons.RAIN };
+    private readonly String[] PREVIEW_ICONS =
+    {
+        WeatherIcons.DAY_SUNNY, WeatherIcons.NIGHT_CLEAR, WeatherIcons.DAY_SUNNY_OVERCAST,
+        WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY, WeatherIcons.RAIN
+    };
+
     public String Key { get; private set; }
 
     private IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
@@ -47,10 +53,10 @@ public partial class IconRadioPreference : ContentView
         IconContainer.Children.Clear();
         foreach (var icon in PREVIEW_ICONS)
         {
-            IconContainer.Children.Add(new Controls.IconControl()
+            IconContainer.Children.Add(new IconControl()
             {
-                HeightRequest = 30,
-                WidthRequest = 30,
+                IconHeight = 30,
+                IconWidth = 30,
                 Margin = new Thickness(5, 0, 5, 0),
                 IconProvider = provider.Key,
                 WeatherIcon = icon
