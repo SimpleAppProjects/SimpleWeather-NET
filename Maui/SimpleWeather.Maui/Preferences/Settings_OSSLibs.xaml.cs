@@ -6,8 +6,4 @@ public partial class Settings_OSSLibs : ContentPage
 	{
 		InitializeComponent();
 	}
-
-    void TapGestureRecognizer_Tapped(System.Object sender, Microsoft.Maui.Controls.TappedEventArgs e)
-    {
-    }
 }
