@@ -18,6 +18,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using System.Net.Http.Headers;
+using SimpleWeather.NET.MapsUi;
 
 namespace SimpleWeather.NET.Radar.OpenWeather
 {
@@ -63,48 +64,17 @@ namespace SimpleWeather.NET.Radar.OpenWeather
 
         private HttpTileSource CreateTileSource()
         {
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "OWMRadar"),
-                "https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid={k}",
-                apiKey: GetKey(), name: OWMAttribution.Text,
-                tileFetcher: FetchTileAsync,
-                attribution: OWMAttribution, userAgent: Constants.GetUserAgentString());
-        }
-
-        private async Task<byte[]> FetchTileAsync(Uri arg)
-        {
-            byte[] arr = null;
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "OWMRadar"),
+                new BasicUrlBuilder("https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid={k}", apiKey: GetKey()),
+                name: this.GetType().Name,
+                configureHttpRequestMessage: request =>
                 {
-                    MaxAge = TimeSpan.FromMinutes(15)
-                };
-
-                using var response = await WebClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-#if DEBUG
-                var cacheHeader = response.Headers.GetCacheCowHeader();
-                if (cacheHeader?.RetrievedFromCache == true)
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(OWMRadarViewProvider)}: tile fetched from cache");
-                }
-                else
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(OWMRadarViewProvider)}: tile fetched from web");
-                }
-#endif
-
-                arr = await response.Content.ReadAsByteArrayAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-
-            return arr;
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(15)
+                    };
+                },
+                attribution: OWMAttribution);
         }
 
         private string GetKey()

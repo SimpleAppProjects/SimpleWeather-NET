@@ -1,5 +1,6 @@
 ﻿//#if !(ANDROID || IOS || MACCATALYST)
 using BruTile.Cache;
+using Mapsui;
 using Mapsui.Tiling;
 #if !DEBUG
 #if WINDOWS
@@ -28,7 +29,12 @@ namespace SimpleWeather.NET.Radar
                     OpenStreetMap.DefaultCache ??= new FileCache(
                             Path.Combine(SimpleWeather.Helpers.ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenStreepMap"), "tile.png");
 
-                    mapControl?.Map?.Layers?.Insert(0, OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString())); // Default map layer
+                    var tileLayer = OpenStreetMap.CreateTileLayer(Constants.GetUserAgentString());
+                    tileLayer.Name = "Root";
+                    tileLayer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                    tileLayer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+
+                    mapControl?.Map?.Layers?.Insert(0, tileLayer); // Default map layer
                 }
 #else
                 bool changeMap = false;

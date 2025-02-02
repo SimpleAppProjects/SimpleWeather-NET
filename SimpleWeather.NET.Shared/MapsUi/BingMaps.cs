@@ -3,6 +3,7 @@ using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
+using Mapsui;
 using Mapsui.Providers.Wfs.Utilities;
 using Mapsui.Tiling.Layers;
 using SimpleWeather.Helpers;
@@ -16,30 +17,36 @@ namespace SimpleWeather.NET.MapsUi
     {
         private static readonly Dictionary<ImageryType, ImageryMetadata> ImageryMetadataCache = new();
 
-        public static async Task<TileLayer> CreateBingMapsLayer(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false, string? userAgent = null)
+        public static async Task<TileLayer> CreateBingMapsLayer(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false)
         {
-            var dynamicTileSource = await GetBingMapsTileSource(imageryType, isDarkMode, userAgent);
+            var dynamicTileSource = await GetBingMapsTileSource(imageryType, isDarkMode);
+            TileLayer tileLayer;
 
             if (dynamicTileSource != null)
             {
-                return new TileLayer(dynamicTileSource)
+                tileLayer = new TileLayer(dynamicTileSource)
                 {
                     Name = "Root"
                 };
             }
             else
             {
-                return new TileLayer(
+                tileLayer = new TileLayer(
                     tileSource: KnownTileSources.Create(KnownTileSource.BingRoads, APIKeys.GetBingMapsKey(), new FileCache(
                         Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, nameof(KnownTileSource.BingRoads)), "tile.png")
                     ))
                 {
-                    Name = "Root"
+                    Name = "Root",
                 };
             }
+
+            tileLayer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+            tileLayer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+
+            return tileLayer;
         }
 
-        public static async Task<ITileSource> GetBingMapsTileSource(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false, string? userAgent = null)
+        public static async Task<ITileSource> GetBingMapsTileSource(ImageryType imageryType = ImageryType.RoadOnDemand, bool isDarkMode = false)
         {
             var key = APIKeys.GetBingMapsKey();
             var culture = LocaleUtils.GetLocale();
@@ -95,10 +102,10 @@ namespace SimpleWeather.NET.MapsUi
 
                     string name = $"Bing{imageryType}";
 
-                    return new HttpTileSource(
+                    return new CustomHttpTileSource(
                         tileSchema: new GlobalSphericalMercator(Math.Max(1, metadata.ZoomMin), Math.Min(19, metadata.ZoomMax)),
-                        urlFormatter: tileUrl, serverNodes: metadata.ImageUrlSubdomains, apiKey: key, attribution: attribution,
-                        userAgent: userAgent, name: name,
+                        new BasicUrlBuilder(urlFormatter: tileUrl, serverNodes: metadata.ImageUrlSubdomains, apiKey: key), attribution: attribution,
+                        name: name,
                         persistentCache: new FileCache(
                             Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, name), "tile.png")
                         );
@@ -106,7 +113,7 @@ namespace SimpleWeather.NET.MapsUi
             }
             catch (Exception ex)
             {
-
+                Logger.Debug("BingMaps", ex);
             }
 
             return null;

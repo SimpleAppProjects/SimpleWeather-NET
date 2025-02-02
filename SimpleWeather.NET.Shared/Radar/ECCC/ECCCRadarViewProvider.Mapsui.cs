@@ -21,6 +21,8 @@ using System.Globalization;
 using SimpleWeather.Weather_API.Utils;
 using System.Linq;
 using System.Xml;
+using SimpleWeather.NET.MapsUi;
+using Mapsui;
 
 namespace SimpleWeather.NET.Radar.ECCC
 {
@@ -188,8 +190,11 @@ namespace SimpleWeather.NET.Radar.ECCC
                     Opacity = 0
                 };
                 layer.Attribution.Enabled = false;
-                layer.Attribution.MarginY = 18;
-                layer.Attribution.PaddingX = 5;
+                layer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                layer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                layer.Attribution.Margin = new MRect(10);
+                layer.Attribution.Padding = new MRect(4);
+
                 RadarLayers[mapFrame.timestamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
@@ -328,52 +333,21 @@ namespace SimpleWeather.NET.Radar.ECCC
 
         private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
         {
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "ECCC"),
-                new ECCCTileProvider(mapFrame), name: ECCCAttribution.Text,
-                tileFetcher: FetchTileAsync,
-                attribution: ECCCAttribution, userAgent: Constants.GetUserAgentString());
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "ECCC"),
+                new ECCCTileProvider(mapFrame), name: this.GetType().Name,
+                configureHttpRequestMessage: request =>
+                {
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(30)
+                    };
+                },
+                attribution: ECCCAttribution);
         }
 
-        private async Task<byte[]> FetchTileAsync(Uri arg)
+        private class ECCCTileProvider(RadarFrame mapFrame) : IUrlBuilder
         {
-            byte[] arr = null;
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromMinutes(30)
-                };
-
-                using var response = await WebClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-#if DEBUG
-                var cacheHeader = response.Headers.GetCacheCowHeader();
-                if (cacheHeader?.RetrievedFromCache == true)
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(ECCCRadarViewProvider)}: tile fetched from cache");
-                }
-                else
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(ECCCRadarViewProvider)}: tile fetched from web");
-                }
-#endif
-
-                arr = await response.Content.ReadAsByteArrayAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-
-            return arr;
-        }
-
-        private class ECCCTileProvider(RadarFrame mapFrame) : IRequest
-        {
-            public Uri GetUri(TileInfo info)
+            public Uri GetUrl(TileInfo info)
             {
                 var zoom = info.Index.Level;
                 var x = info.Index.Col;

@@ -21,6 +21,8 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using System.Globalization;
 using System.Net.Http.Headers;
+using SimpleWeather.NET.MapsUi;
+using Mapsui;
 
 namespace SimpleWeather.NET.Radar.TomorrowIo
 {
@@ -155,8 +157,11 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
                     Opacity = 0
                 };
                 layer.Attribution.Enabled = false;
-                layer.Attribution.MarginY = 18;
-                layer.Attribution.PaddingX = 5;
+                layer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                layer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                layer.Attribution.Margin = new MRect(10);
+                layer.Attribution.Padding = new MRect(4);
+
                 RadarLayers[mapFrame.timestamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
@@ -305,47 +310,16 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
                 uri = "about:blank";
             }
 
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "TomorrowIo"),
-                uri, apiKey: GetKey(), name: TomorrowIoAttribution.Text,
-                tileFetcher: FetchTileAsync,
-                attribution: TomorrowIoAttribution, userAgent: Constants.GetUserAgentString());
-        }
-
-        private async Task<byte[]> FetchTileAsync(Uri arg)
-        {
-            byte[] arr = null;
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "TomorrowIo"),
+                new BasicUrlBuilder(uri, apiKey: GetKey()), name: this.GetType().Name,
+                configureHttpRequestMessage: request =>
                 {
-                    MaxAge = TimeSpan.FromMinutes(30)
-                };
-
-                using var response = await WebClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-#if DEBUG
-                var cacheHeader = response.Headers.GetCacheCowHeader();
-                if (cacheHeader?.RetrievedFromCache == true)
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(TomorrowIoRadarViewProvider)}: tile fetched from cache");
-                }
-                else
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(TomorrowIoRadarViewProvider)}: tile fetched from web");
-                }
-#endif
-
-                arr = await response.Content.ReadAsByteArrayAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-
-            return arr;
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(30)
+                    };
+                },
+                attribution: TomorrowIoAttribution);
         }
 
         private string GetKey()

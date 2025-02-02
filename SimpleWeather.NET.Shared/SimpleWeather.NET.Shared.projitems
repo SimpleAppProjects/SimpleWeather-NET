@@ -50,6 +50,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\HourlyForecastNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\LocationPanelUiModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Json\JsonContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MapsUi\CustomHttpTileSource.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.Mapsui.MapLayer.cs" />
@@ -70,14 +71,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Radar\TomorrowIo\TomorrowIoRadarViewProvider.Mapsui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\FeatureSettings.SettingsChangedEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\MapControlExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\SkiaSharpExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\SunPhaseView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ViewModels\LocationsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Main\LocationPanelAdapter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.maui.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.maui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\RainViewer\RainViewerViewProvider.RadarFrame.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localization\CustomStringLocalizer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Localization\IResourceLoader.cs" />

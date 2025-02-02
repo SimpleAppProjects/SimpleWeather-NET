@@ -51,7 +51,7 @@ namespace SimpleWeather.NET.Radar
             if (mapControl == null || RadarMapContainer == null)
             {
                 mapControl = CreateMapControl();
-                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
+                mapControl.Map.Layers.Changed += Layers_Changed;
 #if WINDOWS
                 RadarContainer.Child = (RadarMapContainer = new RadarToolbar());
 #else
@@ -70,23 +70,23 @@ namespace SimpleWeather.NET.Radar
             {
                 markerLayer = new MemoryLayer("Point")
                 {
-                    Features = new[]
-                    {
+                    Features =
+                    [
                         new PointFeature(MapCameraPosition)
-                    },
-                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle(pinColor: Mapsui.Styles.Color.FromString("#FF4500"), symbolScale: 0.75d)
+                    ],
+                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle(fillColor: Mapsui.Styles.Color.FromString("#FF4500"), symbolScale: 0.75d)
                 };
-                mapControl.Map.Layers.LayerAdded -= Layers_LayerAdded;
+                mapControl.Map.Layers.Changed -= Layers_Changed;
                 mapControl.Map.Layers.Add(markerLayer);
-                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
+                mapControl.Map.Layers.Changed += Layers_Changed;
             }
 
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
 #if WINDOWS
-                mapControl.DispatcherQueue.EnqueueAsync(mapControl.NavigateHome);
+                mapControl.DispatcherQueue.EnqueueAsync(() => NavigateHome(mapControl));
 #else
-                mapControl.Dispatcher.Dispatch(mapControl.NavigateHome);
+                mapControl.Dispatcher.Dispatch(() => NavigateHome(mapControl));
 #endif
                 if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
                 {
@@ -116,15 +116,15 @@ namespace SimpleWeather.NET.Radar
         protected virtual void OnPlayRadarAnimation() { }
         protected virtual void OnPauseRadarAnimation() { }
 
-        private void Layers_LayerAdded(ILayer layer)
+        private void Layers_Changed(object _, LayerCollectionChangedEventArgs e)
         {
             // Make sure marker layer is always on top
-            if (mapControl?.Map != null && markerLayer != null && layer != markerLayer)
+            if (mapControl?.Map != null && markerLayer != null && e.AddedLayers.Any() && !e.AddedLayers.Contains(markerLayer))
             {
-                mapControl.Map.Layers.LayerAdded -= Layers_LayerAdded;
+                mapControl.Map.Layers.Changed -= Layers_Changed;
                 mapControl.Map.Layers.Remove(markerLayer);
                 mapControl.Map.Layers.Add(markerLayer);
-                mapControl.Map.Layers.LayerAdded += Layers_LayerAdded;
+                mapControl.Map.Layers.Changed += Layers_Changed;
             }
         }
 
@@ -159,15 +159,22 @@ namespace SimpleWeather.NET.Radar
         private MapControl CreateMapControl()
         {
             var mapControl = MapControlCreator.Instance.Map;
-            mapControl.Map.Home = n =>
-            {
-                n.ZoomLock = false;
-                n.PanLock = false;
-                n.CenterOnAndZoomTo(MapCameraPosition, DEFAULT_ZOOM_LEVEL.ToMapsuiResolution());
-                n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
-                n.PanLock = !InteractionsEnabled();
-            };
             mapControl.Map.Navigator.OverrideZoomBounds = new MMinMax(MIN_ZOOM_LEVEL.ToMapsuiResolution(), MAX_ZOOM_LEVEL.ToMapsuiResolution());
+            mapControl.Map.RefreshGraphicsRequest += (s, e) =>
+            {
+                int count = 0;
+                mapControl?.Map?.Layers?.ForEach(layer =>
+                {
+                    layer.Attribution?.Let(attribution =>
+                    {
+                        attribution.Margin = new MRect(attribution.Margin.Width, attribution.Margin.Height + (20 * count));
+                        count++;
+                    });
+                });
+            };
+
+            NavigateHome(mapControl);
+
             return mapControl;
         }
 
@@ -185,6 +192,15 @@ namespace SimpleWeather.NET.Radar
 
                 return SphericalMercator.FromLonLat(new MPoint());
             }
+        }
+
+        private void NavigateHome(MapControl mapControl)
+        {
+            mapControl.Map.Navigator.ZoomLock = false;
+            mapControl.Map.Navigator.PanLock = false;
+            mapControl.Map.Navigator.CenterOnAndZoomTo(MapCameraPosition, DEFAULT_ZOOM_LEVEL.ToMapsuiResolution());
+            mapControl.Map.Navigator.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
+            mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
         }
     }
 }

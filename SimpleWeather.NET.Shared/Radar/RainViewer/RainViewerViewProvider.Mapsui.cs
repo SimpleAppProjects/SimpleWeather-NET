@@ -19,6 +19,9 @@ using Microsoft.Maui.Dispatching;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;
 using System.Net.Http.Headers;
+using SimpleWeather.NET.MapsUi;
+using SimpleWeather.HttpClientExtensions;
+using Mapsui;
 
 namespace SimpleWeather.NET.Radar.RainViewer
 {
@@ -181,8 +184,11 @@ namespace SimpleWeather.NET.Radar.RainViewer
                     Opacity = 0
                 };
                 layer.Attribution.Enabled = false;
-                layer.Attribution.MarginY = 18;
-                layer.Attribution.PaddingX = 5;
+                layer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                layer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                layer.Attribution.Margin = new MRect(10);
+                layer.Attribution.Padding = new MRect(4);
+
                 RadarLayers[mapFrame.TimeStamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
@@ -330,47 +336,16 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 uri = "about:blank";
             }
 
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "RainViewer"),
-                uri, name: RainViewerAttribution.Text,
-                tileFetcher: FetchTileAsync,
-                attribution: RainViewerAttribution, userAgent: Constants.GetUserAgentString());
-        }
-
-        private async Task<byte[]> FetchTileAsync(Uri arg)
-        {
-            byte[] arr = null;
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "RainViewer"),
+                uri, name: this.GetType().Name,
+                configureHttpRequestMessage: request =>
                 {
-                    MaxAge = TimeSpan.FromMinutes(30)
-                };
-
-                using var response = await WebClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-#if DEBUG
-                var cacheHeader = response.Headers.GetCacheCowHeader();
-                if (cacheHeader?.RetrievedFromCache == true)
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from cache");
-                }
-                else
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(RainViewerViewProvider)}: tile fetched from web");
-                }
-#endif
-
-                arr = await response.Content.ReadAsByteArrayAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-
-            return arr;
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(30)
+                    };
+                },
+                attribution: RainViewerAttribution);
         }
 
         protected virtual void Dispose(bool disposing)

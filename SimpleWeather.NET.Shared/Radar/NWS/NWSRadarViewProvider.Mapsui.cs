@@ -17,6 +17,8 @@ using Microsoft.Maui.Dispatching;
 using SimpleWeather.Utils;
 using System.Net.Http.Headers;
 using BruTile;
+using SimpleWeather.NET.MapsUi;
+using Mapsui;
 
 namespace SimpleWeather.NET.Radar.NWS
 {
@@ -147,8 +149,11 @@ namespace SimpleWeather.NET.Radar.NWS
                     Opacity = 0
                 };
                 layer.Attribution.Enabled = false;
-                layer.Attribution.MarginY = 18;
-                layer.Attribution.PaddingX = 5;
+                layer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                layer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                layer.Attribution.Margin = new MRect(10);
+                layer.Attribution.Padding = new MRect(4);
+
                 RadarLayers[mapFrame.timestamp] = layer;
                 _mapControl.Map.Layers.Add(layer);
             }
@@ -287,52 +292,21 @@ namespace SimpleWeather.NET.Radar.NWS
 
         private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
         {
-            return new HttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "NWS"),
-                new NWSTileProvider(mapFrame), name: NWSAttribution.Text,
-                tileFetcher: FetchTileAsync,
-                attribution: NWSAttribution, userAgent: Constants.GetUserAgentString());
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "NWS"),
+                new NWSTileProvider(mapFrame), name: this.GetType().Name,
+                configureHttpRequestMessage: request =>
+                {
+                    request.Headers.CacheControl = new CacheControlHeaderValue()
+                    {
+                        MaxAge = TimeSpan.FromMinutes(30)
+                    };
+                },
+                attribution: NWSAttribution);
         }
 
-        private async Task<byte[]> FetchTileAsync(Uri arg)
+        private class NWSTileProvider(RadarFrame mapFrame) : IUrlBuilder
         {
-            byte[] arr = null;
-
-            try
-            {
-                using var request = new HttpRequestMessage(HttpMethod.Get, arg);
-                request.Headers.CacheControl = new CacheControlHeaderValue()
-                {
-                    MaxAge = TimeSpan.FromMinutes(30)
-                };
-
-                using var response = await WebClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
-
-#if DEBUG
-                var cacheHeader = response.Headers.GetCacheCowHeader();
-                if (cacheHeader?.RetrievedFromCache == true)
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(NWSRadarViewProvider)}: tile fetched from cache");
-                }
-                else
-                {
-                    Logger.WriteLine(LoggerLevel.Debug, $"{nameof(NWSRadarViewProvider)}: tile fetched from web");
-                }
-#endif
-
-                arr = await response.Content.ReadAsByteArrayAsync();
-            }
-            catch (Exception ex)
-            {
-                Logger.WriteLine(LoggerLevel.Error, ex);
-            }
-
-            return arr;
-        }
-
-        private class NWSTileProvider(RadarFrame mapFrame) : IRequest
-        {
-            public Uri GetUri(TileInfo info)
+            public Uri GetUrl(TileInfo info)
             {
                 var zoom = info.Index.Level;
                 var x = info.Index.Col;

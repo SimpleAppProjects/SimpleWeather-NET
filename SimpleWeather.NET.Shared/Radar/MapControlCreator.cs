@@ -5,6 +5,7 @@ using Mapsui.UI.WinUI;
 #else
 using Mapsui.UI.Maui;
 #endif
+using Mapsui.Widgets.InfoWidgets;
 
 namespace SimpleWeather.NET.Radar
 {
@@ -27,6 +28,8 @@ namespace SimpleWeather.NET.Radar
 #if MACCATALYST
             MapControl.UseGPU = false;
 #endif
+
+            LoggingWidget.ShowLoggingInMap = ShowLoggingInMap.No;
 
             var mapControl = new MapControl()
             {
