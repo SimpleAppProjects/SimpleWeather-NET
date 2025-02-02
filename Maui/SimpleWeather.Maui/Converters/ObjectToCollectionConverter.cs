@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Immutable;
 using System.Globalization;
-using CommunityToolkit.Maui.Converters;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class ObjectToCollectionConverter : BaseConverter<object, IEnumerable>
+    public class ObjectToCollectionConverter : BaseConverterTwoWay<object, IEnumerable>
     {
         public override IEnumerable DefaultConvertReturnValue { get; set; } = default;
         public override object DefaultConvertBackReturnValue { get; set; } = default;
@@ -27,4 +25,3 @@ namespace SimpleWeather.Maui.Converters
         }
     }
 }
-

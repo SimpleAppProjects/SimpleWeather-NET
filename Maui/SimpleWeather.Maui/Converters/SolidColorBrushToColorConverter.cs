@@ -1,9 +1,8 @@
-﻿using CommunityToolkit.Maui.Converters;
-using System.Globalization;
+﻿using System.Globalization;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class SolidColorBrushToColorConverter : BaseConverter<SolidColorBrush, Color>
+    public class SolidColorBrushToColorConverter : BaseConverterTwoWay<SolidColorBrush, Color>
     {
         public override Color DefaultConvertReturnValue { get; set; }
         public override SolidColorBrush DefaultConvertBackReturnValue { get; set; }
