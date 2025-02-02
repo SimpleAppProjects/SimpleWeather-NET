@@ -134,5 +134,25 @@ namespace SimpleWeather.Utils
             return dict.ContainsKey(NSObject.FromObject(key));
         }
 #endif
+
+        public static string ToString(this IEnumerable list)
+        {
+            return list.Cast<object>().ToString<object>();
+        }
+
+        public static string ToString(this IEnumerable list, Func<object, string> toStringConv)
+        {
+            return list.Cast<object>().ToString(toStringConv);
+        }
+
+        public static string ToString<T>(this IEnumerable<T> list)
+        {
+            return $"[{string.Join(',', list.Select(x => x.ToString()))}]";
+        }
+
+        public static string ToString<T>(this IEnumerable<T> list, Func<T, string> toStringConv)
+        {
+            return $"[{string.Join(',', list.Select(toStringConv))}]";
+        }
     }
 }
