@@ -32,6 +32,9 @@ namespace SimpleWeather.WeatherData
         // Radar
         public const string RainViewer = "rainviewer";
 
+        // Misc
+        public const string Google_Pollen = "google_pollen";
+
         /*
          * Note to self: Common steps to adding a new weather provider
          * 1) Implement WeatherProviderImpl class

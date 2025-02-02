@@ -366,59 +366,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 };
             });
 
-            if (daily?.AirAndPollen?.Length > 0)
-            {
-                int? treePollenValue = null;
-                int? grassPollenValue = null;
-                int? ragweedPollenValue = null;
-
-                foreach (var item in daily.AirAndPollen)
-                {
-                    if (item?.Name == "Grass")
-                    {
-                        grassPollenValue = item.Value;
-                    }
-                    if (item?.Name == "Tree")
-                    {
-                        treePollenValue = item.Value;
-                    }
-                    if (item?.Name == "Ragweed")
-                    {
-                        ragweedPollenValue = item.Value;
-                    }
-                }
-
-                if (grassPollenValue != null || treePollenValue != null || ragweedPollenValue != null)
-                {
-                    condition.pollen = new Pollen()
-                    {
-                        treePollenCount = treePollenValue switch
-                        {
-                            >= 0 and <= 14 => Pollen.PollenCount.Low,
-                            >= 15 and <= 89 => Pollen.PollenCount.Moderate,
-                            >= 90 and <= 1499 => Pollen.PollenCount.High,
-                            >= 1500 => Pollen.PollenCount.VeryHigh,
-                            _ => Pollen.PollenCount.Unknown
-                        },
-                        grassPollenCount = grassPollenValue switch
-                        {
-                            >= 0 and <= 4 => Pollen.PollenCount.Low,
-                            >= 5 and <= 19 => Pollen.PollenCount.Moderate,
-                            >= 20 and <= 199 => Pollen.PollenCount.High,
-                            >= 200 => Pollen.PollenCount.VeryHigh,
-                            _ => Pollen.PollenCount.Unknown
-                        },
-                        ragweedPollenCount = ragweedPollenValue switch
-                        {
-                            >= 0 and <= 9 => Pollen.PollenCount.Low,
-                            >= 10 and <= 49 => Pollen.PollenCount.Moderate,
-                            >= 50 and <= 499 => Pollen.PollenCount.High,
-                            >= 500 => Pollen.PollenCount.VeryHigh,
-                            _ => Pollen.PollenCount.Unknown
-                        }
-                    };
-                }
-            }
+            condition.pollen = daily?.Let(_.CreatePollen);
 
             condition.observation_time = current.LocalObservationDateTime;
 
@@ -501,6 +449,66 @@ namespace SimpleWeather.Weather_API.AccuWeather
             }
 
             return precip;
+        }
+
+        public static Pollen? CreatePollen(this AccuWeatherProvider _, Dailyforecast daily)
+        {
+            if (daily?.AirAndPollen?.Length > 0)
+            {
+                int? treePollenValue = null;
+                int? grassPollenValue = null;
+                int? ragweedPollenValue = null;
+
+                foreach (var item in daily.AirAndPollen)
+                {
+                    if (item?.Name == "Grass")
+                    {
+                        grassPollenValue = item.Value;
+                    }
+                    if (item?.Name == "Tree")
+                    {
+                        treePollenValue = item.Value;
+                    }
+                    if (item?.Name == "Ragweed")
+                    {
+                        ragweedPollenValue = item.Value;
+                    }
+                }
+
+                if (grassPollenValue != null || treePollenValue != null || ragweedPollenValue != null)
+                {
+                    return new Pollen()
+                    {
+                        treePollenCount = treePollenValue switch
+                        {
+                            >= 0 and <= 14 => Pollen.PollenCount.Low,
+                            >= 15 and <= 89 => Pollen.PollenCount.Moderate,
+                            >= 90 and <= 1499 => Pollen.PollenCount.High,
+                            >= 1500 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        },
+                        grassPollenCount = grassPollenValue switch
+                        {
+                            >= 0 and <= 4 => Pollen.PollenCount.Low,
+                            >= 5 and <= 19 => Pollen.PollenCount.Moderate,
+                            >= 20 and <= 199 => Pollen.PollenCount.High,
+                            >= 200 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        },
+                        ragweedPollenCount = ragweedPollenValue switch
+                        {
+                            >= 0 and <= 9 => Pollen.PollenCount.Low,
+                            >= 10 and <= 49 => Pollen.PollenCount.Moderate,
+                            >= 50 and <= 499 => Pollen.PollenCount.High,
+                            >= 500 => Pollen.PollenCount.VeryHigh,
+                            _ => Pollen.PollenCount.Unknown
+                        },
+                        attribution = "AccuWeather"
+                    };
+                }
+            }
+
+            return null;
         }
     }
 }

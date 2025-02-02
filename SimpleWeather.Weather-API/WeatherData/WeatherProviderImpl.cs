@@ -131,7 +131,11 @@ namespace SimpleWeather.Weather_API.WeatherData
             {
                 var ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
-                if (ExtrasService?.IsPremiumEnabled() == true && RemoteConfigService.IsProviderEnabled(WAPI.Google))
+                if (SettingsManager.DevSettingsEnabled && RemoteConfigService.IsProviderEnabled(WAPI.AccuWeather) && weather.source != WAPI.AccuWeather)
+                {
+                    weather.condition.pollen = await new AccuWeather.AccuWeatherProvider().GetPollenData(location);
+                }
+                else if (ExtrasService?.IsPremiumEnabled() == true && RemoteConfigService.IsProviderEnabled(WAPI.Google))
                 {
                     weather.condition.pollen = await new Google.GooglePollenProvider().GetPollenData(location);
                 }

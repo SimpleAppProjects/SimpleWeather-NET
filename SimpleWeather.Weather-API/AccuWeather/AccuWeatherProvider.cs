@@ -8,6 +8,7 @@ using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -18,8 +19,9 @@ using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.AccuWeather
 {
-    public partial class AccuWeatherProvider : WeatherProviderImpl
+    public partial class AccuWeatherProvider : WeatherProviderImpl, IPollenProvider
     {
+        private const string DAILY_1DAY_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/daily/1day";
         private const string DAILY_5DAY_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/daily/5day";
         private const string HOURLY_12HR_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour";
         private const string CURRENT_CONDITIONS_URL = "https://dataservice.accuweather.com/currentconditions/v1";
@@ -257,6 +259,72 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 throw wEx;
 
             return weather;
+        }
+
+        public async Task<Pollen> GetPollenData(LocData location)
+        {
+            Pollen pollenData = null;
+
+            var culture = LocaleUtils.GetLocale();
+            string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
+
+            var key = GetProviderKey();
+
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
+            string locationKey = location.locationSource == WAPI.AccuWeather ? location.query : await Task.Run(() => UpdateLocationQuery(location));
+
+            if (string.IsNullOrWhiteSpace(locationKey))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound);
+            }
+
+            try
+            {
+                this.CheckRateLimit();
+
+                DailyForecastRootobject dailyRoot;
+
+                var request1dayUri = DAILY_1DAY_FORECAST_URL.ToUriBuilderEx()
+                    .AppendPath(locationKey)
+                    .AppendQueryParameter("apikey", key)
+                    .AppendQueryParameter("language", locale)
+                    .AppendQueryParameter("details", "true")
+                    .AppendQueryParameter("metric", "true")
+                    .BuildUri();
+
+                using var request = new HttpRequestMessage(HttpMethod.Get, request1dayUri);
+                request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(3));
+
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
+                using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var response = await webClient.SendAsync(request, cts.Token);
+
+                await this.CheckForErrors(response);
+                response.EnsureSuccessStatusCode();
+
+                using var stream = await response.Content.ReadAsStreamAsync();
+
+                // Load weather
+                dailyRoot = await JSONParser.DeserializerAsync<DailyForecastRootobject>(stream);
+
+                var dailyForecast = dailyRoot?.DailyForecasts?.FirstOrDefault(it => it?.AirAndPollen?.Length > 0);
+                dailyForecast?.Let(it =>
+                {
+                    pollenData = this.CreatePollen(it);
+                });
+            }
+            catch (Exception ex)
+            {
+                pollenData = null;
+                Logger.WriteLine(LoggerLevel.Error, ex, "AccuWeatherProvider: error getting pollen data");
+            }
+
+            return pollenData;
         }
 
         protected override Task UpdateWeatherData(LocData location, Weather weather)
