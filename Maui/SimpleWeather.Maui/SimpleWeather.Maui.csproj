@@ -273,18 +273,18 @@
 	</ItemGroup>
 	<!-- Firebase Start -->
 	<ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
-		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.Auth" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.Core" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.Database" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.Installations" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="10.24.0.2" />
-		<PackageReference Include="AdamE.Firebase.iOS.Storage" Version="10.24.0.2" />
+		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Auth" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Core" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Database" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Installations" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="11.6.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Storage" Version="11.6.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('ios'))">
-		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="10.24.0.2" />
+		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="11.6.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
 	    <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />
