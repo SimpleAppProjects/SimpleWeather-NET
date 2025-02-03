@@ -35,6 +35,12 @@
         <AssemblyName>SimpleWeather</AssemblyName>
     </PropertyGroup>
 
+	<!-- Native AOT -->
+	<PropertyGroup>
+		<IsAotCompatible>true</IsAotCompatible>
+		<PublishAot>true</PublishAot>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
 		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 		<Registrar>static</Registrar>
