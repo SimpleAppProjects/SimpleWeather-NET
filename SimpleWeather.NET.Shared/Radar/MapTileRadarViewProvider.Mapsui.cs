@@ -1,23 +1,21 @@
 ﻿//#if !(ANDROID || IOS || MACCATALYST)
+
 using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Projections;
+using Mapsui.Styles;
+using SimpleWeather.Extras;
+using SimpleWeather.Utils;
+using Color = Mapsui.Styles.Color;
 #if WINDOWS
 using CommunityToolkit.WinUI;
-using Mapsui.UI.WinUI;
 using MapControl = Mapsui.UI.WinUI.MapControl;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 #else
-using Mapsui.UI.Maui;
 using SimpleWeather.Maui.Radar;
 using MapControl = Mapsui.UI.Maui.MapControl;
 #endif
-using SimpleWeather.Extras;
-using SimpleWeather.NET.Utils;
-using SimpleWeather.Utils;
 
 namespace SimpleWeather.NET.Radar
 {
@@ -74,7 +72,7 @@ namespace SimpleWeather.NET.Radar
                     [
                         new PointFeature(MapCameraPosition)
                     ],
-                    Style = Mapsui.Styles.SymbolStyles.CreatePinStyle(fillColor: Mapsui.Styles.Color.FromString("#FF4500"), symbolScale: 0.75d)
+                    Style = SymbolStyles.CreatePinStyle(fillColor: Color.FromString("#FF4500"), symbolScale: 0.75d)
                 };
                 mapControl.Map.Layers.Changed -= Layers_Changed;
                 mapControl.Map.Layers.Add(markerLayer);
@@ -84,9 +82,9 @@ namespace SimpleWeather.NET.Radar
             if (MapCameraPosition?.X != 0 && MapCameraPosition?.Y != 0)
             {
 #if WINDOWS
-                mapControl.DispatcherQueue.EnqueueAsync(() => NavigateHome(mapControl));
+                mapControl.DispatcherQueue.EnqueueAsync(() => mapControl?.Let(NavigateHome));
 #else
-                mapControl.Dispatcher.Dispatch(() => NavigateHome(mapControl));
+                mapControl.Dispatcher.Dispatch(() => mapControl?.Let(NavigateHome));
 #endif
                 if (markerLayer.Features.FirstOrDefault() is PointFeature markerFeature)
                 {
