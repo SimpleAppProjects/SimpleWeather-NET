@@ -1,31 +1,35 @@
-﻿using CommunityToolkit.Maui;
+﻿#if __MACCATALYST__
+using Sentry.Protocol;
+#endif
+using System.Net;
+using System.Runtime.InteropServices;
+using CommunityToolkit.Maui;
 using CommunityToolkit.Maui.Markup;
 using epj.ProgressBar.Maui;
 using MauiIcons.Cupertino;
 using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.Controls.Compatibility.Hosting;
-using Microsoft.Maui.Controls.Handlers.Compatibility;
 using Microsoft.Maui.Controls.Handlers.Items;
 using Microsoft.Maui.Embedding;
 using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
-using Microsoft.Maui.Platform;
+using Newtonsoft.Json;
 using Plugin.Maui.SegmentedControl;
-#if __MACCATALYST__
-using Sentry.Protocol;
-#endif
+using Sentry.Extensibility;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SimpleWeather.Keys;
 using SimpleWeather.Maui.Controls;
+using SimpleWeather.Maui.Maps;
 using SimpleWeather.Maui.MaterialIcons;
 using SimpleWeather.Maui.Preferences;
+using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using SQLite;
 using UIKit;
-using FirebaseAuth = Firebase.Auth;
-using FirebaseDb = Firebase.Database;
+using JsonException = System.Text.Json.JsonException;
+using Map = Microsoft.Maui.Controls.Maps.Map;
 
 namespace SimpleWeather.Maui;
 
@@ -68,6 +72,7 @@ public static class MauiProgram
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
                 handlers.AddHandler<ReorderableCollectionView, ReorderableCollectionViewHandler<ReorderableCollectionView>>();
+                handlers.AddHandler<Map, MapViewHandler>();
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
 #endif
@@ -113,7 +118,7 @@ public static class MauiProgram
 #endif
 
 #if MACCATALYST
-    private class ExceptionFilter : Sentry.Extensibility.IExceptionFilter
+    private class ExceptionFilter : IExceptionFilter
     {
         public bool Filter(Exception ex)
         {
@@ -143,11 +148,11 @@ public static class MauiProgram
                 return true;
             }
 
-            if (ex is System.Text.Json.JsonException || ex is System.Net.Http.HttpRequestException ||
-                ex is System.Net.WebException || ex is System.Runtime.InteropServices.COMException ||
-                ex is SimpleWeather.Utils.WeatherException || ex is System.IO.FileNotFoundException ||
-                ex is System.Threading.Tasks.TaskCanceledException || ex is System.TimeoutException ||
-                ex is SQLite.SQLiteException || ex is Newtonsoft.Json.JsonReaderException)
+            if (ex is JsonException || ex is HttpRequestException ||
+                ex is WebException || ex is COMException ||
+                ex is WeatherException || ex is FileNotFoundException ||
+                ex is TaskCanceledException || ex is TimeoutException ||
+                ex is SQLiteException || ex is JsonReaderException)
             {
                 return true;
             }

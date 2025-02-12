@@ -1,28 +1,29 @@
-﻿//#if !(ANDROID || IOS || MACCATALYST)
+﻿#if !__IOS__
+using System.Globalization;
+using System.Net.Http.Headers;
+using System.Xml;
+using BruTile;
+using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
-using CacheCow.Client.Headers;
+using Mapsui;
 using Mapsui.Tiling.Fetcher;
 using Mapsui.Tiling.Layers;
 using Mapsui.Tiling.Rendering;
+using SimpleWeather.Helpers;
+using SimpleWeather.NET.MapsUi;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Utils;
+using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
+using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 #else
 using Mapsui.UI.Maui;
 using MapControl = Mapsui.UI.Maui.MapControl;
 using Microsoft.Maui.Dispatching;
 #endif
-using SimpleWeather.Utils;
-using System.Net.Http.Headers;
-using BruTile;
-using System.Globalization;
-using SimpleWeather.Weather_API.Utils;
-using System.Linq;
-using System.Xml;
-using SimpleWeather.NET.MapsUi;
-using Mapsui;
 
 namespace SimpleWeather.NET.Radar.ECCC
 {
@@ -190,8 +191,8 @@ namespace SimpleWeather.NET.Radar.ECCC
                     Opacity = 0
                 };
                 layer.Attribution.Enabled = false;
-                layer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
-                layer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                layer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
+                layer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
                 layer.Attribution.Margin = new MRect(10);
                 layer.Attribution.Padding = new MRect(4);
 
@@ -329,11 +330,11 @@ namespace SimpleWeather.NET.Radar.ECCC
             cts = new CancellationTokenSource();
         }
 
-        private static readonly BruTile.Attribution ECCCAttribution = new("Environment and Climate Change Canada (ECCC)", "https://geo.weather.gc.ca");
+        private static readonly Attribution ECCCAttribution = new("Environment and Climate Change Canada (ECCC)", "https://geo.weather.gc.ca");
 
         private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
         {
-            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: BruTile.YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "ECCC"),
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "ECCC"),
                 new ECCCTileProvider(mapFrame), name: this.GetType().Name,
                 configureHttpRequestMessage: request =>
                 {
@@ -342,6 +343,7 @@ namespace SimpleWeather.NET.Radar.ECCC
                         MaxAge = TimeSpan.FromMinutes(30)
                     };
                 },
+                persistentCache: new FileCache(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "ECCC"), "tile.png"),
                 attribution: ECCCAttribution);
         }
 
@@ -426,4 +428,4 @@ namespace SimpleWeather.NET.Radar.ECCC
         }
     }
 }
-//#endif
+#endif

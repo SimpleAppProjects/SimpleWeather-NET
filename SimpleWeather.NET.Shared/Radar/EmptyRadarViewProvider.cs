@@ -1,9 +1,8 @@
 ﻿#if WINDOWS
-using Microsoft.UI.Xaml.Controls;
+using Border = Microsoft.UI.Xaml.Controls.Border;
 using MapControl = Mapsui.UI.WinUI.MapControl;
 #else
-using Mapsui.UI.Maui;
-using MapControl = Mapsui.UI.Maui.MapControl;
+using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #endif
 
 namespace SimpleWeather.NET.Radar

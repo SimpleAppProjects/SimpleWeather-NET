@@ -1,8 +1,8 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Toolkit.Parsers.Core;
-#if WINDOWS
-using Microsoft.UI.Xaml.Controls;
+﻿#if WINDOWS
+using Border = Microsoft.UI.Xaml.Controls.Border;
 #endif
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Parsers.Core;
 using SimpleWeather.Controls;
 using SimpleWeather.NET.Radar.ECCC;
 using SimpleWeather.NET.Radar.NWS;

@@ -58,10 +58,6 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <MapsuiVersion>5.0.0-beta.7</MapsuiVersion>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <WinToolkitVersion>8.1.240916</WinToolkitVersion>
     <WinAppSDKVersion>1.6.250108002</WinAppSDKVersion>
     <CsWinRTVersion>2.2.0</CsWinRTVersion>

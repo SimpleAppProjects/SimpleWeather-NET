@@ -1,11 +1,13 @@
 ﻿#if WINDOWS
 using Mapsui.UI.WinUI;
-//#elif ANDROID || IOS || MACCATALYST
-//using MapControl = Microsoft.Maui.Controls.Maps.Map;
+using Mapsui.Widgets.InfoWidgets;
+#elif __IOS__
+using Microsoft.Maui.Maps;
+using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #else
 using Mapsui.UI.Maui;
-#endif
 using Mapsui.Widgets.InfoWidgets;
+#endif
 
 namespace SimpleWeather.NET.Radar
 {
@@ -15,35 +17,33 @@ namespace SimpleWeather.NET.Radar
 
         public static MapControlCreator Instance => _instance ??= new MapControlCreator();
 
-#if __IOS__
-        public MapControl Map => CreateMapControl();
-#else
         private MapControl _mapControl;
 
         public MapControl Map => _mapControl ??= CreateMapControl();
-#endif
 
         private static MapControl CreateMapControl()
         {
 #if MACCATALYST
-            MapControl.UseGPU = false;
+            //MapControl.UseGPU = false;
 #endif
 
+#if !__IOS__
             LoggingWidget.ShowLoggingInMap = ShowLoggingInMap.No;
+#endif
 
             var mapControl = new MapControl()
             {
-#if false //ANDROID || IOS || MACCATALYST
-                MapType = Microsoft.Maui.Maps.MapType.Hybrid
+#if __IOS__
+                MapType = MapType.Street,
 #else
-                Map = new Mapsui.Map()
+                Map = new Map()
                 {
                     CRS = "EPSG:3857"
                 },
 #endif
             };
 
-#if false //ANDROID || IOS || MACCATALYST
+#if __IOS__
             mapControl.IsZoomEnabled = false;
             mapControl.IsScrollEnabled = false;
             mapControl.IsTrafficEnabled = false;
@@ -58,8 +58,7 @@ namespace SimpleWeather.NET.Radar
 
         public void RemoveMapControl()
         {
-#if !__IOS__
-#if false //ANDROID || IOS || MACCATALYST
+#if __IOS__
             _mapControl?.MapElements?.Clear();
             _mapControl?.Pins?.Clear();
 #else
@@ -67,10 +66,10 @@ namespace SimpleWeather.NET.Radar
             _mapControl?.Dispose();
 #endif
             _mapControl = null;
-#endif
         }
     }
 
+#if !__IOS__
     public static class ZoomLevelExtensions
     {
         /// <summary>
@@ -80,10 +79,11 @@ namespace SimpleWeather.NET.Radar
         /// <returns>Resolution in Mapsui format</returns>
         public static double ToMapsuiResolution(this double zoomLevel)
         {
-            if (zoomLevel < 0 || zoomLevel > 30)
+            if (zoomLevel is < 0 or > 30)
                 return 0;
 
-            return 156543.03392 / System.Math.Pow(2, zoomLevel);
+            return 156543.03392 / Math.Pow(2, zoomLevel);
         }
     }
+#endif
 }

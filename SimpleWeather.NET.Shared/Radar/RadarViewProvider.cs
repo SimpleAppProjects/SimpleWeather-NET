@@ -1,6 +1,6 @@
 ﻿using SimpleWeather.Utils;
 #if WINDOWS
-using Microsoft.UI.Xaml.Controls;
+using Border = Microsoft.UI.Xaml.Controls.Border;
 #endif
 
 namespace SimpleWeather.NET.Radar

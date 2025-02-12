@@ -1,12 +1,9 @@
-﻿//#if !(ANDROID || IOS || MACCATALYST)
-
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿#if !__IOS__
 using Mapsui;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Projections;
 using Mapsui.Styles;
-using SimpleWeather.Extras;
 using SimpleWeather.Utils;
 using Color = Mapsui.Styles.Color;
 #if WINDOWS
@@ -21,28 +18,7 @@ namespace SimpleWeather.NET.Radar
 {
     public abstract partial class MapTileRadarViewProvider : RadarViewProvider
     {
-        protected const double MIN_ZOOM_LEVEL = 2d;
-        protected const double MAX_ZOOM_LEVEL = 18d;
-        protected const double DEFAULT_ZOOM_LEVEL = 6d;
-
-        private MapControl mapControl;
-        private WeatherUtils.Coordinate locationCoords;
         private MemoryLayer markerLayer;
-        protected RadarToolbar RadarMapContainer { get; private set; }
-
-        protected readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
-
-        protected bool IsViewAlive { get; private set; }
-
-        public MapTileRadarViewProvider(Border container) : base(container)
-        {
-        }
-
-        public override void UpdateCoordinates(WeatherUtils.Coordinate coordinates, bool updateView = false)
-        {
-            locationCoords = coordinates;
-            if (updateView) UpdateRadarView();
-        }
 
         public override void UpdateRadarView()
         {
@@ -101,19 +77,6 @@ namespace SimpleWeather.NET.Radar
             UpdateMap(mapControl);
         }
 
-        private void RadarMapContainer_OnPlayAnimation(object sender, EventArgs e)
-        {
-            OnPlayRadarAnimation();
-        }
-
-        private void RadarMapContainer_OnPauseAnimation(object sender, EventArgs e)
-        {
-            OnPauseRadarAnimation();
-        }
-
-        protected virtual void OnPlayRadarAnimation() { }
-        protected virtual void OnPauseRadarAnimation() { }
-
         private void Layers_Changed(object _, LayerCollectionChangedEventArgs e)
         {
             // Make sure marker layer is always on top
@@ -126,32 +89,13 @@ namespace SimpleWeather.NET.Radar
             }
         }
 
-        public virtual void UpdateMap(MapControl mapControl)
+        public virtual partial void UpdateMap(MapControl mapControl)
         {
             mapControl?.Map?.Navigator?.Apply(n =>
             {
                 n.PanLock = !InteractionsEnabled();
                 n.ZoomLock = !(InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled());
             });
-        }
-
-        public override void OnDestroyView()
-        {
-            IsViewAlive = false;
-#if WINDOWS
-            RadarContainer.Child = null;
-#else
-            RadarContainer.Content = null;
-#endif
-            if (RadarMapContainer != null)
-            {
-                RadarMapContainer.OnPauseAnimation -= RadarMapContainer_OnPauseAnimation;
-                RadarMapContainer.OnPlayAnimation -= RadarMapContainer_OnPlayAnimation;
-                RadarMapContainer.MapContainerChild = null;
-                RadarMapContainer = null;
-            }
-            mapControl?.Map?.Layers?.Clear();
-            mapControl = null;
         }
 
         private MapControl CreateMapControl()
@@ -202,4 +146,4 @@ namespace SimpleWeather.NET.Radar
         }
     }
 }
-//#endif
+#endif

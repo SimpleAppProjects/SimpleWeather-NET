@@ -1,4 +1,5 @@
-﻿using BruTile;
+﻿#if !__IOS__
+using BruTile;
 using BruTile.Cache;
 using BruTile.Web;
 using CacheCow.Client.Headers;
@@ -65,3 +66,4 @@ namespace SimpleWeather.NET.MapsUi
         }
     }
 }
+#endif

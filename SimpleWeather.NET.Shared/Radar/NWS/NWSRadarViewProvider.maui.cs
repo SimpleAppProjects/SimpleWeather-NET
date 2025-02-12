@@ -1,27 +1,10 @@
-﻿#if !__IOS__
-#if WINDOWS
-using MapControl = Mapsui.UI.WinUI.MapControl;
-using Microsoft.UI.Xaml;
-#else
-using Mapsui.UI.Maui;
-using MapControl = Mapsui.UI.Maui.MapControl;
-using Microsoft.Maui.Dispatching;
-#endif
-using System.Net.Http.Headers;
-using BruTile;
-using BruTile.Cache;
-using BruTile.Predefined;
-using BruTile.Web;
-using Mapsui;
-using Mapsui.Tiling.Fetcher;
-using Mapsui.Tiling.Layers;
-using Mapsui.Tiling.Rendering;
-using SimpleWeather.Helpers;
-using SimpleWeather.NET.MapsUi;
+﻿#if __IOS__
+using Foundation;
+using MapKit;
+using SimpleWeather.Maui.Maps;
 using SimpleWeather.Utils;
-using Border = ABI.Microsoft.UI.Xaml.Controls.Border;
-using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
-using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
+using MapControl = Microsoft.Maui.Controls.Maps.Map;
+using TileLayer = SimpleWeather.Maui.Maps.ICustomTileOverlay;
 
 namespace SimpleWeather.NET.Radar.NWS
 {
@@ -33,11 +16,7 @@ namespace SimpleWeather.NET.Radar.NWS
         private MapControl _mapControl = null;
 
         private int AnimationPosition = 0;
-#if WINDOWS
-        private DispatcherTimer AnimationTimer;
-#else
         private IDispatcherTimer AnimationTimer;
-#endif
 
         private bool ProcessingFrames = false;
         private CancellationTokenSource cts;
@@ -54,13 +33,7 @@ namespace SimpleWeather.NET.Radar.NWS
         public override void UpdateRadarView()
         {
             base.UpdateRadarView();
-
-#if WINDOWS
-            RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled() ? Visibility.Visible : Visibility.Collapsed;
-#else
             RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
-#endif
         }
 
         public override void UpdateMap(MapControl mapControl)
@@ -84,13 +57,9 @@ namespace SimpleWeather.NET.Radar.NWS
             RadarLayers.Clear();
             layersToRemove.ForEach(layer =>
             {
-#if WINDOWS
-                _mapControl?.DispatcherQueue?.TryEnqueue(() =>
-#else
                 _mapControl?.Dispatcher?.Dispatch(() =>
-#endif
                 {
-                    _mapControl?.Map?.Layers?.Remove(layer);
+                    _mapControl?.RemoveOverlay(layer);
                 });
             });
 
@@ -127,11 +96,7 @@ namespace SimpleWeather.NET.Radar.NWS
 
             ProcessingFrames = false;
 
-#if WINDOWS
-            RadarMapContainer?.DispatcherQueue?.TryEnqueue(() =>
-#else
             RadarMapContainer?.Dispatcher?.Dispatch(() =>
-#endif
             {
                 if (IsViewAlive)
                 {
@@ -147,18 +112,15 @@ namespace SimpleWeather.NET.Radar.NWS
 
             if (!RadarLayers.ContainsKey(mapFrame.timestamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
+                var layer = new NWSTileProvider(GetUrlTemplate(mapFrame))
                 {
-                    Opacity = 0
+                    Alpha = 0,
+                    MinimumZ = (int)MIN_ZOOM_LEVEL,
+                    MaximumZ = (int)MAX_ZOOM_LEVEL,
                 };
-                layer.Attribution.Enabled = false;
-                layer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
-                layer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
-                layer.Attribution.Margin = new MRect(10);
-                layer.Attribution.Padding = new MRect(4);
 
                 RadarLayers[mapFrame.timestamp] = layer;
-                _mapControl.Map.Layers.Add(layer);
+                _mapControl.AddOverlay(layer);
             }
 
             RadarMapContainer?.UpdateSeekbarRange(0, AvailableRadarFrames.Count - 1);
@@ -202,17 +164,14 @@ namespace SimpleWeather.NET.Radar.NWS
             {
                 if (currentLayer != null)
                 {
-                    currentLayer.Opacity = 0;
-                    currentLayer.Attribution.Enabled = false;
+                    currentLayer.Alpha = 0;
                 }
             }
             var nextLayer = RadarLayers[nextTimeStamp];
             if (nextLayer != null)
             {
-                nextLayer.Opacity = 1;
-                nextLayer.Attribution.Enabled = true;
+                nextLayer.Alpha = 1;
             }
-            _mapControl.ForceUpdate();
 
             UpdateToolbar(position, nextFrame);
         }
@@ -255,15 +214,8 @@ namespace SimpleWeather.NET.Radar.NWS
         {
             if (AnimationTimer == null)
             {
-#if WINDOWS
-                AnimationTimer = new DispatcherTimer()
-                {
-                    Interval = TimeSpan.FromMilliseconds(500)
-                };
-#else
                 AnimationTimer = RadarMapContainer.Dispatcher.CreateTimer();
                 AnimationTimer.Interval = TimeSpan.FromMilliseconds(500);
-#endif
                 AnimationTimer.Tick += (s, ev) =>
                 {
                     // Update toolbar
@@ -291,46 +243,36 @@ namespace SimpleWeather.NET.Radar.NWS
             cts = new CancellationTokenSource();
         }
 
-        private static readonly Attribution NWSAttribution = new("National Weather Service (NOAA)", "https://radar.weather.gov/");
-
-        private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
+        private string GetUrlTemplate(RadarFrame mapFrame)
         {
-            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "NWS"),
-                new NWSTileProvider(mapFrame), name: this.GetType().Name,
-                configureHttpRequestMessage: request =>
-                {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
-                },
-                persistentCache: new FileCache(Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "NWS"), "tile.png"),
-                attribution: NWSAttribution);
+            var url =
+                "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer/exportImage"
+                    .ToUriBuilderEx()
+                    .AppendQueryParameter("bbox", "{bboxXMin},{bboxYMin},{bboxXMax},{bboxYMax}", encode: false)
+                    .AppendQueryParameter("bboxSR", "4326")
+                    .AppendQueryParameter("size", "256,256")
+                    .AppendQueryParameter("time", mapFrame.timestamp)
+                    .AppendQueryParameter("format", "png")
+                    .AppendQueryParameter("f", "image")
+                    .ToString();
+            
+            return url;
         }
-
-        private class NWSTileProvider(RadarFrame mapFrame) : IUrlBuilder
+        
+        private class NWSTileProvider(string urlTemplate) : CustomWmsTileOverlay("NWSTileProvider", urlTemplate, cacheTimeSeconds: 60 * 30)
         {
-            public Uri GetUrl(TileInfo info)
+            public override NSUrl URLForTilePath(MKTileOverlayPath path)
             {
-                var zoom = info.Index.Level;
-                var x = info.Index.Col;
-                var y = info.Index.Row;
+                var bbox = BoundingBox.FromTile(path.X.ToInt32(), path.Y.ToInt32(), path.Z.ToInt32());
 
-                if (mapFrame != null)
-                {
-                    var bbox = BoundingBox.FromTile(x, y, zoom);
-
-                    return "https://mapservices.weather.noaa.gov/eventdriven/rest/services/radar/radar_base_reflectivity_time/ImageServer/exportImage".ToUriBuilderEx()
-                        .AppendQueryParameter("bbox", bbox.ToString())
-                        .AppendQueryParameter("bboxSR", "4326")
-                        .AppendQueryParameter("size", "256,256")
-                        .AppendQueryParameter("time", mapFrame.timestamp)
-                        .AppendQueryParameter("format", "png")
-                        .AppendQueryParameter("f", "image")
-                        .BuildUri();
-                }
-
-                return null;
+                var url = URLTemplate!.Replace("{bboxXMin}", $"{bbox.xMin}")
+                    .Replace("{bboxYMin}", $"{bbox.yMin}")
+                    .Replace("{bboxXMax}", $"{bbox.xMax}")
+                    .Replace("{bboxYMax}", $"{bbox.yMax}")
+                    .ToUriBuilderEx()
+                    .BuildUri();
+            
+                return url;
             }
         }
 

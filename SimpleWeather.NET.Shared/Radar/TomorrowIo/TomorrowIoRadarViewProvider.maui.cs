@@ -1,49 +1,25 @@
-﻿#if !__IOS__
+﻿#if __IOS__
 using System.Globalization;
-using System.Net.Http.Headers;
-using BruTile;
-using BruTile.Predefined;
-using BruTile.Web;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Mapsui;
-using Mapsui.Tiling.Fetcher;
-using Mapsui.Tiling.Layers;
-using Mapsui.Tiling.Rendering;
-using SimpleWeather.NET.MapsUi;
+using SimpleWeather.Maui.Maps;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData;
-using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
-using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
-#if WINDOWS
-using MapControl = Mapsui.UI.WinUI.MapControl;
-using Microsoft.UI.Xaml;
-#else
-using Mapsui.UI.Maui;
-using MapControl = Mapsui.UI.Maui.MapControl;
-using Microsoft.Maui.Dispatching;
-#endif
+using MapControl = Microsoft.Maui.Controls.Maps.Map;
+using TileLayer = SimpleWeather.Maui.Maps.ICustomTileOverlay;
 
 namespace SimpleWeather.NET.Radar.TomorrowIo
 {
     public partial class TomorrowIoRadarViewProvider : MapTileRadarViewProvider, IDisposable
     {
-        private const string URLTemplate = "https://api.tomorrow.io/v4/map/tile/{z}/{x}/{y}/precipitationIntensity/{timestamp}.png?apikey={k}";
-
-        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
-
         private readonly List<RadarFrame> AvailableRadarFrames;
         private readonly Dictionary<string, TileLayer> RadarLayers;
 
         private MapControl _mapControl = null;
 
         private int AnimationPosition = 0;
-#if WINDOWS
-        private DispatcherTimer AnimationTimer;
-#else
         private IDispatcherTimer AnimationTimer;
-#endif
 
         private bool ProcessingFrames = false;
         private CancellationTokenSource cts;
@@ -64,13 +40,7 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
         public override void UpdateRadarView()
         {
             base.UpdateRadarView();
-
-#if WINDOWS
-            RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled()/* && ExtrasService.IsEnabled()*/ ? Visibility.Visible : Visibility.Collapsed;
-#else
             RadarMapContainer.IsToolbarVisible = InteractionsEnabled()/* && ExtrasService.IsEnabled()*/;
-#endif
         }
 
         public override void UpdateMap(MapControl mapControl)
@@ -79,8 +49,8 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
 
             this._mapControl = mapControl;
 
-            mapControl.Map.Navigator.PanLock = !InteractionsEnabled();
-            mapControl.Map.Navigator.ZoomLock = !InteractionsEnabled();
+            mapControl.IsScrollEnabled = InteractionsEnabled();
+            mapControl.IsZoomEnabled = InteractionsEnabled();
 
             GetRadarFrames();
         }
@@ -94,13 +64,9 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
             RadarLayers.Clear();
             layersToRemove.ForEach(layer =>
             {
-#if WINDOWS
-                _mapControl?.DispatcherQueue?.TryEnqueue(() =>
-#else
                 _mapControl?.Dispatcher?.Dispatch(() =>
-#endif
                 {
-                    _mapControl?.Map?.Layers?.Remove(layer);
+                    _mapControl?.RemoveOverlay(layer);
                 });
             });
 
@@ -131,11 +97,7 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
 
             ProcessingFrames = false;
 
-#if WINDOWS
-            RadarMapContainer?.DispatcherQueue?.TryEnqueue(() =>
-#else
             RadarMapContainer?.Dispatcher?.Dispatch(() =>
-#endif
             {
                 if (IsViewAlive)
                 {
@@ -153,18 +115,15 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
 
             if (!RadarLayers.ContainsKey(mapFrame.timestamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
+                var layer = new CustomTileOverlay("TomorrowIoRadarTileProvider", GetUrlTemplate(mapFrame), cacheTimeSeconds: 60 * 30)
                 {
-                    Opacity = 0
+                    Alpha = 0,
+                    MinimumZ = (int)MIN_ZOOM_LEVEL,
+                    MaximumZ = (int)MAX_ZOOM_LEVEL,
                 };
-                layer.Attribution.Enabled = false;
-                layer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
-                layer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
-                layer.Attribution.Margin = new MRect(10);
-                layer.Attribution.Padding = new MRect(4);
 
                 RadarLayers[mapFrame.timestamp] = layer;
-                _mapControl.Map.Layers.Add(layer);
+                _mapControl.AddOverlay(layer);
             }
 
             RadarMapContainer?.UpdateSeekbarRange(0, AvailableRadarFrames.Count - 1);
@@ -208,17 +167,14 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
             {
                 if (currentLayer != null)
                 {
-                    currentLayer.Opacity = 0;
-                    currentLayer.Attribution.Enabled = false;
+                    currentLayer.Alpha = 0;
                 }
             }
             var nextLayer = RadarLayers[nextTimeStamp];
             if (nextLayer != null)
             {
-                nextLayer.Opacity = 1;
-                nextLayer.Attribution.Enabled = true;
+                nextLayer.Alpha = 1;
             }
-            _mapControl.ForceUpdate();
 
             UpdateToolbar(position, nextFrame);
         }
@@ -261,15 +217,8 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
         {
             if (AnimationTimer == null)
             {
-#if WINDOWS
-                AnimationTimer = new DispatcherTimer()
-                {
-                    Interval = TimeSpan.FromMilliseconds(500)
-                };
-#else
                 AnimationTimer = RadarMapContainer.Dispatcher.CreateTimer();
                 AnimationTimer.Interval = TimeSpan.FromMilliseconds(500);
-#endif
                 AnimationTimer.Tick += (s, ev) =>
                 {
                     // Update toolbar
@@ -297,40 +246,16 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
             cts = new CancellationTokenSource();
         }
 
-        private static readonly Attribution TomorrowIoAttribution = new("Tomorrow.io", "https://www.tomorrow.io/weather-api/");
-
-        private HttpTileSource CreateTileSource(RadarFrame? mapFrame)
-        {
-            string uri;
-            if (mapFrame != null)
-            {
-                uri = URLTemplate.Replace("{timestamp}", mapFrame.timestamp);
-            }
-            else
-            {
-                uri = "about:blank";
-            }
-
-            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "TomorrowIo"),
-                new BasicUrlBuilder(uri, apiKey: GetKey()), name: this.GetType().Name,
-                configureHttpRequestMessage: request =>
-                {
-                    request.Headers.CacheControl = new CacheControlHeaderValue()
-                    {
-                        MaxAge = TimeSpan.FromMinutes(30)
-                    };
-                },
-                attribution: TomorrowIoAttribution);
-        }
-
-        private string GetKey()
-        {
+        private string GetUrlTemplate(RadarFrame mapFrame)
+        { 
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
             var key = SettingsManager.APIKeys[WeatherAPI.TomorrowIo];
 
             if (string.IsNullOrWhiteSpace(key))
-                return APIKeys.GetTomorrowIOKey();
+                key = APIKeys.GetTomorrowIOKey();
 
-            return key;
+            return
+                $"https://api.tomorrow.io/v4/map/tile/{{z}}/{{x}}/{{y}}/precipitationIntensity/{mapFrame.timestamp}.png?apikey={key}";
         }
 
         protected virtual void Dispose(bool disposing)

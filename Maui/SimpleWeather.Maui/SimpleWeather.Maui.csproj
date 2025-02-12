@@ -28,6 +28,7 @@
 		<!-- Distribution -->
 		<EnableMsixTooling Condition="$(TargetFramework.Contains('windows'))">true</EnableMsixTooling>
 		<PublishProfile Condition="$(TargetFramework.Contains('windows'))">Properties\PublishProfiles\win-$(Platform).pubxml</PublishProfile>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
     <PropertyGroup>
@@ -114,7 +115,6 @@
 		<PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
 		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.10" />
 		<PackageReference Include="SQLitePCLRaw.provider.dynamic_cdecl" Version="2.1.10" />
-		<PackageReference Include="Mapsui.Maui" Version="$(MapsuiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
 
@@ -126,11 +126,13 @@
 		<PackageReference Include="Maui.RevenueCat.iOS.Extensions" Version="4.39.0.0" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 		<PackageReference Include="com.thewizrd.StoreKit2Proxy.Maui" Version="1.0.1" />
+		<PackageReference Include="com.thewizrd.MapKitBinder.Maui" Version="1.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.39.0.0" />
 		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.39.0.0" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
+		<PackageReference Include="com.thewizrd.MapKitBinder.Maui" Version="1.0.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
 		<PackageReference Include="WinUIEx" Version="2.1.0" />

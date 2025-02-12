@@ -1,7 +1,7 @@
-﻿//#if !(ANDROID || IOS || MACCATALYST)
-using BruTile.Cache;
-using Mapsui;
+﻿#if !__IOS__
 using SimpleWeather.NET.MapsUi;
+using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
+using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
 #if !DEBUG
 #if WINDOWS
 using Microsoft.UI.Xaml;
@@ -25,8 +25,8 @@ namespace SimpleWeather.NET.Radar
                 if (mapControl.Map.Layers.FindLayer("Root").FirstOrDefault() is null)
                 {
                     var tileLayer = OpenStreetMap.CreateTileLayer();
-                    tileLayer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
-                    tileLayer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+                    tileLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
+                    tileLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
 
                     mapControl?.Map?.Layers?.Insert(0, tileLayer); // Default map layer
                 }
@@ -78,4 +78,4 @@ namespace SimpleWeather.NET.Radar
         }
     }
 }
-//#endif
+#endif

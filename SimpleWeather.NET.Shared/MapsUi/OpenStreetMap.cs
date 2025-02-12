@@ -1,12 +1,11 @@
-﻿using BruTile;
+﻿#if !__IOS__
+using System.Net.Http.Headers;
+using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
 using Mapsui.Tiling.Layers;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Text;
+using SimpleWeather.Helpers;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -29,7 +28,7 @@ namespace SimpleWeather.NET.MapsUi
                 uri: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 name: "OpenStreetMap", attribution: _openStreetMapAttribution,
                 persistentCache: new FileCache(
-                            Path.Combine(SimpleWeather.Helpers.ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenStreepMap"), "tile.png"),
+                            Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), Constants.TILE_CACHE_DIR, "OpenStreepMap"), "tile.png"),
                 configureHttpRequestMessage: request =>
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
@@ -41,3 +40,4 @@ namespace SimpleWeather.NET.MapsUi
         }
     }
 }
+#endif

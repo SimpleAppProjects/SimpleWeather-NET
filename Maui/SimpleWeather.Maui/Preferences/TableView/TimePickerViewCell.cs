@@ -1,24 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Extensions;
-using CommunityToolkit.Maui.Markup;
+﻿using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.Messaging;
-using CoreGraphics;
-using Foundation;
-using MauiIcons.Core;
-using MauiIcons.Cupertino;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
-using Microsoft.Maui.Platform;
-using NetTopologySuite.Index.HPRtree;
-using SimpleToolkit.SimpleShell.Controls;
-using SimpleWeather.Maui.Controls;
 using SimpleWeather.Utils;
-using UIKit;
+using Font = Microsoft.Maui.Font;
 using TimePicker = Microsoft.Maui.Controls.TimePicker;
 
 namespace SimpleWeather.Maui.Preferences
@@ -107,7 +92,7 @@ namespace SimpleWeather.Maui.Preferences
                     new Label()
                     {
                         FontSize = 17,
-                        FontFamily = Microsoft.Maui.Font.Default.Family
+                        FontFamily = Font.Default.Family
                     }
                     .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
                     .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)

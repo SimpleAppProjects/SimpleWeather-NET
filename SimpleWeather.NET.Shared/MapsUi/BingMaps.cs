@@ -1,16 +1,18 @@
-﻿using BingMapsRESTToolkit;
+﻿#if !__IOS__
+using System.Net.Http.Headers;
+using BingMapsRESTToolkit;
 using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
-using Mapsui;
 using Mapsui.Providers.Wfs.Utilities;
 using Mapsui.Tiling.Layers;
 using SimpleWeather.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
-using System.Net.Http.Headers;
+using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
+using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -41,8 +43,8 @@ namespace SimpleWeather.NET.MapsUi
                 };
             }
 
-            tileLayer.Attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
-            tileLayer.Attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+            tileLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
+            tileLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
 
             return tileLayer;
         }
@@ -130,3 +132,4 @@ namespace SimpleWeather.NET.MapsUi
         private const string BingMapsCanvasDarkStyleQuery = "st=g|lc:FF353F54_me|lbc:CCFFFFFF;loc:40000000_rd|fc:66FF7903;sc:66FF7903_wt|fc:FF162439;lbc:FF567D98;loc:33162439";
     }
 }
+#endif
