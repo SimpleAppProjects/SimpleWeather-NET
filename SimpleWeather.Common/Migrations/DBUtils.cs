@@ -1,9 +1,9 @@
-﻿using SimpleWeather.Preferences;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SQLite;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Migrations
 {
@@ -13,13 +13,14 @@ namespace SimpleWeather.Common.Migrations
         {
             var SettingsManager = new SettingsManager();
 
-            foreach (LocationData.LocationData location in await locationDB.Table<LocationData.LocationData>().ToListAsync()
-                        .ConfigureAwait(false))
+            foreach (LocationData.LocationData location in await locationDB.Table<LocationData.LocationData>()
+                         .ToListAsync()
+                         .ConfigureAwait(false))
             {
                 var oldKey = location.query;
 
-                location.query = WeatherModule.Instance.WeatherManager.GetWeatherProvider(location.weatherSource)
-                    .UpdateLocationQuery(location);
+                location.query = await WeatherModule.Instance.WeatherManager.GetWeatherProvider(location.weatherSource)
+                    .UpdateLocationQuery(location).ConfigureAwait(false);
 
                 await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 

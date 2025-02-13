@@ -1,12 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,6 +6,14 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using LocData = SimpleWeather.LocationData.LocationData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
@@ -23,7 +23,10 @@ namespace SimpleWeather.Weather_API.AccuWeather
     {
         private const string DAILY_1DAY_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/daily/1day";
         private const string DAILY_5DAY_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/daily/5day";
-        private const string HOURLY_12HR_FORECAST_URL = "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour";
+
+        private const string HOURLY_12HR_FORECAST_URL =
+            "https://dataservice.accuweather.com/forecasts/v1/hourly/12hour";
+
         private const string CURRENT_CONDITIONS_URL = "https://dataservice.accuweather.com/currentconditions/v1";
 
         public AccuWeatherProvider() : base()
@@ -115,7 +118,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        protected override async Task<Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
+        protected override async Task<Weather> GetWeatherData(LocData location)
         {
             Weather weather = null;
             WeatherException wEx = null;
@@ -275,7 +278,9 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
             }
 
-            string locationKey = location.locationSource == WAPI.AccuWeather ? location.query : await Task.Run(() => UpdateLocationQuery(location));
+            string locationKey = location.locationSource == WAPI.AccuWeather
+                ? location.query
+                : await UpdateLocationQuery(location);
 
             if (string.IsNullOrWhiteSpace(locationKey))
             {
@@ -313,10 +318,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
                 dailyRoot = await JSONParser.DeserializerAsync<DailyForecastRootobject>(stream);
 
                 var dailyForecast = dailyRoot?.DailyForecasts?.FirstOrDefault(it => it?.AirAndPollen?.Length > 0);
-                dailyForecast?.Let(it =>
-                {
-                    pollenData = this.CreatePollen(it);
-                });
+                dailyForecast?.Let(it => { pollenData = this.CreatePollen(it); });
             }
             catch (Exception ex)
             {
@@ -334,20 +336,20 @@ namespace SimpleWeather.Weather_API.AccuWeather
         }
 
         /// <exception cref="WeatherException">Ignore.</exception>
-        public override string UpdateLocationQuery(Weather weather)
+        public override async Task<string> UpdateLocationQuery(Weather weather)
         {
-            // TODO: make a task?
-            var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(weather.location.latitude.Value, weather.location.longitude.Value), WeatherAPI).Result;
-
+            var locationModel = await LocationProvider.GetLocation(
+                new WeatherUtils.Coordinate(weather.location.latitude.Value, weather.location.longitude.Value),
+                WeatherAPI);
             return locationModel.Location_Query;
         }
 
         /// <exception cref="WeatherException">Ignore.</exception>
-        public override string UpdateLocationQuery(LocData location)
+        public override async Task<string> UpdateLocationQuery(LocData location)
         {
-            // TODO: make a task?
-            var locationModel = LocationProvider.GetLocation(new WeatherUtils.Coordinate(location.latitude, location.longitude), WeatherAPI).Result;
-
+            var locationModel =
+                await LocationProvider.GetLocation(new WeatherUtils.Coordinate(location.latitude, location.longitude),
+                    WeatherAPI);
             return locationModel.Location_Query;
         }
 

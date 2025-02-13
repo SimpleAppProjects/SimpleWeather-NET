@@ -1,28 +1,32 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using System.Collections.Generic;
+using System.Globalization;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Maui.ApplicationModel;
+using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using SQLite;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Migrations
 {
     internal partial class DataMigrations
     {
-        internal static async Task PerformVersionMigrations(SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
+        internal static async Task PerformVersionMigrations(SQLiteAsyncConnection weatherDB,
+            SQLiteAsyncConnection locationDB)
         {
             var SettingsMgr = DI.Utils.SettingsManager;
 
 #if WINUI
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
 #else
-            var PackageVersion = Microsoft.Maui.ApplicationModel.AppInfo.Version;
+            var PackageVersion = AppInfo.Version;
 #endif
             var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
-                PackageVersion.Major, PackageVersion.Minor, PackageVersion.Build); // Exclude revision number used by Xbox & others
+                PackageVersion.Major, PackageVersion.Minor,
+                PackageVersion.Build); // Exclude revision number used by Xbox & others
             var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
 
             if (SettingsMgr.WeatherLoaded && SettingsMgr.VersionCode < CurrentVersionCode)
@@ -40,6 +44,7 @@ namespace SimpleWeather.Common.Migrations
                         SettingsMgr.SetDefaultUnits(Units.FAHRENHEIT);
                     }
                 }
+
                 // v4.3.3 (OWM)
                 // Temporarily disable OWM for now; we're going over the quota
                 if (SettingsMgr.VersionCode < 4330)
@@ -53,6 +58,7 @@ namespace SimpleWeather.Common.Migrations
                         SettingsMgr.KeyVerified = true;
                     }
                 }
+
                 if (SettingsMgr.VersionCode < 5010)
                 {
                     if (WeatherAPI.Here.Equals(SettingsMgr.API) || WeatherAPI.Yahoo.Equals(SettingsMgr.API))
@@ -69,7 +75,8 @@ namespace SimpleWeather.Common.Migrations
                     {
                         var oldKey = locData.query;
 
-                        locData.query = WeatherModule.Instance.WeatherManager.GetWeatherProvider(locData.weatherSource)
+                        locData.query = await WeatherModule.Instance.WeatherManager
+                            .GetWeatherProvider(locData.weatherSource)
                             .UpdateLocationQuery(locData);
                         await SettingsMgr.SaveLastGPSLocData(locData);
 
@@ -89,6 +96,7 @@ namespace SimpleWeather.Common.Migrations
                         await SettingsMgr.SaveLastGPSLocData(new LocationData.LocationData());
                     }
                 }
+
                 // API_KEY -> GetAPIKey(String)
                 if (SettingsMgr.VersionCode < 5520)
                 {
@@ -114,6 +122,7 @@ namespace SimpleWeather.Common.Migrations
                     SettingsMgr.ClearDevSettingsPreferences();
 #endif
                 }
+
                 AnalyticsLogger.LogEvent("App upgrading", new Dictionary<string, string>()
                 {
                     { "API", SettingsMgr.API },
@@ -124,9 +133,11 @@ namespace SimpleWeather.Common.Migrations
 
                 // Capture user props on every update
                 AnalyticsLogger.SetUserProperty(AnalyticsProps.WEATHER_PROVIDER, SettingsMgr.API);
-                AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY, SettingsMgr.UsePersonalKeys[SettingsMgr.API]);
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY,
+                    SettingsMgr.UsePersonalKeys[SettingsMgr.API]);
                 AnalyticsLogger.SetUserProperty(AnalyticsProps.USER_LOCALE, LocaleUtils.GetLocale()?.Name);
             }
+
             // TZ Refresh
             if (SettingsMgr.VersionCode < 5700)
             {
@@ -135,11 +146,13 @@ namespace SimpleWeather.Common.Migrations
 
                 foreach (var location in locations)
                 {
-                    if (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC"))
+                    if (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") ||
+                        Equals(location.tz_long, "UTC"))
                     {
                         if (location.latitude != 0 && location.longitude != 0)
                         {
-                            var tzId = await WeatherModule.Instance.TZDBService.GetTimeZone(location.latitude, location.longitude);
+                            var tzId = await WeatherModule.Instance.TZDBService.GetTimeZone(location.latitude,
+                                location.longitude);
                             if (!Equals("unknown", tzId))
                             {
                                 location.tz_long = tzId;
@@ -150,12 +163,13 @@ namespace SimpleWeather.Common.Migrations
                     }
                 }
             }
+
             // v5.8.0
             // Clear image cache due to file path change
             // Windows: unregister all bg tasks
             if (SettingsMgr.VersionCode < 5801)
             {
-                var ImageDataContainer = new Preferences.SettingsContainer("images");
+                var ImageDataContainer = new SettingsContainer("images");
                 ImageDataContainer.Clear();
 
 #if WINDOWS || WINUI
@@ -180,12 +194,14 @@ namespace SimpleWeather.Common.Migrations
                 catch { }
 #endif
             }
+
             // v5.8.1
             // Settings.UsePersonalKey
             if (SettingsMgr.VersionCode < 5810)
             {
                 SettingsMgr.UsePersonalKeys[SettingsMgr.API] = SettingsMgr.UsePersonalKey;
             }
+
             // v5.8.6
             if (SettingsMgr.VersionCode < 5860)
             {
@@ -212,6 +228,7 @@ namespace SimpleWeather.Common.Migrations
                 catch { }
 #endif
             }
+
             // v5.9.3
             // Reset ImageDatabase
             if (SettingsMgr.VersionCode < 5930)

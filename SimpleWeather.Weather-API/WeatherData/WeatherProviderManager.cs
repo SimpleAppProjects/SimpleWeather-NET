@@ -1,27 +1,28 @@
-﻿using SimpleWeather.LocationData;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+using Location = SimpleWeather.LocationData.Location;
 
 namespace SimpleWeather.Weather_API.WeatherData
 {
     public sealed class WeatherProviderManager : IWeatherProvider
     {
         private IWeatherProvider _weatherProvider = null;
-        private readonly SettingsManager SettingsManager;
+        private readonly SettingsManager _settingsManager;
 
         internal WeatherProviderManager(SettingsManager settingsManager)
         {
-            this.SettingsManager = settingsManager;
+            this._settingsManager = settingsManager;
             UpdateAPI();
         }
 
         public void UpdateAPI()
         {
-            string API = SettingsManager.API;
+            string API = _settingsManager.API;
             _weatherProvider = GetWeatherProvider(API);
         }
 
@@ -71,7 +72,7 @@ namespace SimpleWeather.Weather_API.WeatherData
             return _weatherProvider.IsRegionSupported(location);
         }
 
-        public bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        public bool IsRegionSupported(LocationQuery location)
         {
             return _weatherProvider.IsRegionSupported(location);
         }
@@ -81,12 +82,12 @@ namespace SimpleWeather.Weather_API.WeatherData
             return _weatherProvider.UpdateLocationData(location);
         }
 
-        public string UpdateLocationQuery(SimpleWeather.WeatherData.Weather weather)
+        public Task<string> UpdateLocationQuery(Weather weather)
         {
             return _weatherProvider.UpdateLocationQuery(weather);
         }
 
-        public string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
             return _weatherProvider.UpdateLocationQuery(location);
         }
@@ -98,7 +99,7 @@ namespace SimpleWeather.Weather_API.WeatherData
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<LocationQuery> GetLocation(SimpleWeather.LocationData.Location location)
+        public Task<LocationQuery> GetLocation(Location location)
         {
             return GetLocation(new WeatherUtils.Coordinate(location));
         }
@@ -110,7 +111,7 @@ namespace SimpleWeather.Weather_API.WeatherData
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public Task<SimpleWeather.WeatherData.Weather> GetWeather(SimpleWeather.LocationData.LocationData location)
+        public Task<Weather> GetWeather(SimpleWeather.LocationData.LocationData location)
         {
             return _weatherProvider.GetWeather(location);
         }
@@ -151,7 +152,7 @@ namespace SimpleWeather.Weather_API.WeatherData
             return _weatherProvider.GetAPIKey();
         }
 
-        public bool IsNight(SimpleWeather.WeatherData.Weather weather)
+        public bool IsNight(Weather weather)
         {
             return _weatherProvider.IsNight(weather);
         }

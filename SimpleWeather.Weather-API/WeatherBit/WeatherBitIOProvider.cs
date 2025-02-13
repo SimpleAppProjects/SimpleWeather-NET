@@ -1,12 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -15,6 +7,16 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherBit
@@ -36,7 +38,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -119,12 +121,12 @@ namespace SimpleWeather.Weather_API.WeatherBit
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
             var key = GetProviderKey();
 
-            if (String.IsNullOrWhiteSpace(key))
+            if (string.IsNullOrWhiteSpace(key))
             {
                 throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
             }
 
-            var query = UpdateLocationQuery(location);
+            var query = await UpdateLocationQuery(location);
 
             try
             {
@@ -177,13 +179,13 @@ namespace SimpleWeather.Weather_API.WeatherBit
             {
                 weather = null;
 
-                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
+                if (ex is HttpRequestException or WebException or SocketException or IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
-                else if (ex is WeatherException)
+                else if (ex is WeatherException exception)
                 {
-                    wEx = ex as WeatherException;
+                    wEx = exception;
                 }
                 else
                 {
@@ -211,7 +213,8 @@ namespace SimpleWeather.Weather_API.WeatherBit
             return weather;
         }
 
-        public override async Task<ICollection<WeatherAlert>> GetAlerts(SimpleWeather.LocationData.LocationData location)
+        public override async Task<ICollection<WeatherAlert>> GetAlerts(
+            SimpleWeather.LocationData.LocationData location)
         {
             ICollection<WeatherAlert> alerts = null;
 
@@ -230,7 +233,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
                     throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
                 }
 
-                Uri alertsURL = new(string.Format(ALERTS_QUERY_URL, UpdateLocationQuery(location), key));
+                Uri alertsURL = new(string.Format(ALERTS_QUERY_URL, await UpdateLocationQuery(location), key));
 
                 using var request = new HttpRequestMessage(HttpMethod.Get, alertsURL);
                 request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
@@ -254,7 +257,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 #if !NETSTANDARD2_0
                         root.alerts.Length
 #endif
-                        );
+                    );
 
                     var tzOffset = DateTimeUtils.TzidToOffset(root.timezone);
 
@@ -286,14 +289,16 @@ namespace SimpleWeather.Weather_API.WeatherBit
             return Task.CompletedTask;
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -301,39 +306,39 @@ namespace SimpleWeather.Weather_API.WeatherBit
             string code = iso switch
             {
                 "ar" or // Arabic
-                "az" or // Azerbaijani
-                "be" or // Belarusian
-                "bg" or // Bulgarian
-                "bs" or // Bosnian
-                "ca" or // Catalan
-                "da" or // Danish
-                "de" or // German
-                "fi" or // Finnish
-                "fr" or // French
-                "el" or // Greek
-                "es" or // Spanish
-                "et" or // Estonian
-                "ja" or // Japanese
-                "hr" or // Croatian
-                "hu" or // Hungarian
-                "id" or // Indonesian
-                "it" or // Italian
-                "is" or // Icelandic
-                "kw" or // Cornish
-                "lt" or // Lithuanian
-                "nb" or // Norwegian Bokmål
-                "nl" or // Dutch
-                "pl" or // Polish
-                "pt" or // Portuguese
-                "ro" or // Romanian
-                "ru" or // Russian
-                "sk" or // Slovak
-                "sl" or // Slovenian
-                "sr" or // Serbian
-                "sv" or // Swedish
-                "tr" or // Turkish
-                "uk" // Ukrainian
-                => iso,
+                    "az" or // Azerbaijani
+                    "be" or // Belarusian
+                    "bg" or // Bulgarian
+                    "bs" or // Bosnian
+                    "ca" or // Catalan
+                    "da" or // Danish
+                    "de" or // German
+                    "fi" or // Finnish
+                    "fr" or // French
+                    "el" or // Greek
+                    "es" or // Spanish
+                    "et" or // Estonian
+                    "ja" or // Japanese
+                    "hr" or // Croatian
+                    "hu" or // Hungarian
+                    "id" or // Indonesian
+                    "it" or // Italian
+                    "is" or // Icelandic
+                    "kw" or // Cornish
+                    "lt" or // Lithuanian
+                    "nb" or // Norwegian Bokmål
+                    "nl" or // Dutch
+                    "pl" or // Polish
+                    "pt" or // Portuguese
+                    "ro" or // Romanian
+                    "ru" or // Russian
+                    "sk" or // Slovak
+                    "sl" or // Slovenian
+                    "sr" or // Serbian
+                    "sv" or // Swedish
+                    "tr" or // Turkish
+                    "uk" // Ukrainian
+                    => iso,
                 // Chinese
                 "zh" => name switch
                 {
@@ -344,7 +349,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 },
                 "cs" => "cz", // Czech
                 "he" => "iw", // Ukrainian
-                _ => "en",// Default is English
+                _ => "en", // Default is English
             };
             return code;
         }
@@ -500,7 +505,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
         // Some conditions can be for any time of day
         // So use sunrise/set data as fallback
-        public override bool IsNight(SimpleWeather.WeatherData.Weather weather)
+        public override bool IsNight(Weather weather)
         {
             bool isNight = base.IsNight(weather);
 
@@ -512,36 +517,37 @@ namespace SimpleWeather.Weather_API.WeatherBit
                     if (!isNight)
                     {
                         // Fallback to sunset/rise time just in case
-                        NodaTime.LocalTime sunrise;
-                        NodaTime.LocalTime sunset;
+                        LocalTime sunrise;
+                        LocalTime sunset;
                         if (weather.astronomy != null)
                         {
-                            sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                            sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                            sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                            sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                         }
                         else
                         {
-                            sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                            sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                            sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                            sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                         }
 
-                        NodaTime.DateTimeZone tz = null;
+                        DateTimeZone tz = null;
 
                         if (weather.location.tz_long != null)
                         {
-                            tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                            tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                         }
 
                         if (tz == null)
-                            tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                            tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                        var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                                    .InZone(tz).TimeOfDay;
+                        var now = SystemClock.Instance.GetCurrentInstant()
+                            .InZone(tz).TimeOfDay;
 
                         // Determine whether its night using sunset/rise times
                         if (now < sunrise || now > sunset)
                             isNight = true;
                     }
+
                     break;
 
                 default:

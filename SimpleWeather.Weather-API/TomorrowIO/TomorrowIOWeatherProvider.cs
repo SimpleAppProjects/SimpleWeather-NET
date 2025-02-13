@@ -1,15 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Resources.Strings;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,6 +8,19 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.TomorrowIO
@@ -37,7 +39,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -128,7 +130,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
             }
 
-            var query = UpdateLocationQuery(location);
+            var query = await UpdateLocationQuery(location);
 
             try
             {
@@ -141,7 +143,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 var requestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", query)
-                    .AppendQueryParameter("fields", "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
+                    .AppendQueryParameter("fields",
+                        "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
                     .AppendQueryParameter("timesteps", "current,1h,1d")
                     .AppendQueryParameter("units", "metric")
                     .AppendQueryParameter("timezone", "UTC")
@@ -213,7 +216,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                         minutelyRoot = await JSONParser.DeserializerAsync<Rootobject>(stream);
                     }
                 }
-                catch { }
+                catch
+                {
+                }
 
                 try
                 {
@@ -236,7 +241,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                         alertsRoot = await JSONParser.DeserializerAsync<AlertRootobject>(stream);
                     }
                 }
-                catch { }
+                catch
+                {
+                }
 
                 weather = this.CreateWeatherData(root, minutelyRoot, alertsRoot);
             }
@@ -297,7 +304,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
 
                 var requestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
-                    .AppendQueryParameter("location", UpdateLocationQuery(location))
+                    .AppendQueryParameter("location", await UpdateLocationQuery(location))
                     .AppendQueryParameter("fields", "treeIndex,grassIndex,weedIndex")
                     .AppendQueryParameter("timesteps", "current")
                     .AppendQueryParameter("units", "metric")
@@ -361,7 +368,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return pollenData;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             var offset = location.tz_offset;
 
@@ -369,7 +377,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             weather.update_time = weather.update_time.ToOffset(offset);
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);
 
-            var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            var newAstro =
+                await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             if (weather.astronomy == null)
             {
                 weather.astronomy = newAstro;
@@ -443,14 +452,16 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override string GetWeatherIcon(string icon)
@@ -597,7 +608,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
                  * Condition 2: Drizzle / Light Rain
                  */
-                4203 or 4204 or 4205 or 4213 or 4214 or 4215 => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
+                4203 or 4204 or 4205 or 4213 or 4214 or 4215 => isNight
+                    ? WeatherIcons.NIGHT_ALT_SPRINKLE
+                    : WeatherIcons.DAY_SPRINKLE,
                 42030 or 42040 or 42050 or 42130 or 42140 or 42150 => WeatherIcons.DAY_SPRINKLE,
                 42031 or 42041 or 42051 or 42131 or 42141 or 42151 => WeatherIcons.NIGHT_ALT_SPRINKLE,
 
@@ -643,8 +656,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * 50000, 50001: Snow
                  */
                 50010 or 50011 or
-                51000 or 51001 or
-                50000 or 50001 => WeatherIcons.SNOW,
+                    51000 or 51001 or
+                    50000 or 50001 => WeatherIcons.SNOW,
 
                 /*
                  * Full  D      Nt
@@ -661,9 +674,12 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
                  * Condition 2: Flurries / Light Snow / Snow
                  */
-                5115 or 5116 or 5117 or 5102 or 5103 or 5104 or 5105 or 5106 or 5107 => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
+                5115 or 5116 or 5117 or 5102 or 5103 or 5104 or 5105 or 5106 or 5107 => isNight
+                    ? WeatherIcons.NIGHT_ALT_SNOW
+                    : WeatherIcons.DAY_SNOW,
                 51150 or 51160 or 51170 or 51020 or 51030 or 51040 or 51050 or 51060 or 51070 => WeatherIcons.DAY_SNOW,
-                51151 or 51161 or 51171 or 51021 or 51031 or 51041 or 51051 or 51061 or 51071 => WeatherIcons.NIGHT_ALT_SNOW,
+                51151 or 51161 or 51171 or 51021 or 51031 or 51041 or 51051 or 51061 or 51071 => WeatherIcons
+                    .NIGHT_ALT_SNOW,
 
                 /*
                  * 5122, 51220, 51221
@@ -685,18 +701,18 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * 62010, 62011: Heavy Freezing Rain
                  */
                 5122 or 51220 or 51221 or
-                5110 or 51100 or 51101 or
-                5108 or 51080 or 51081 or
-                5114 or 51140 or 51141 or
-                60000 or 60001 or
-                62000 or 62001 or
-                60010 or 60011 or
-                62010 or 62011 or
-                6204 or 62040 or 62041 or
-                6206 or 62060 or 62061 or
-                6212 or 62120 or 62121 or
-                6220 or 62200 or 62201 or
-                6222 or 62220 or 62221 => WeatherIcons.RAIN_MIX,
+                    5110 or 51100 or 51101 or
+                    5108 or 51080 or 51081 or
+                    5114 or 51140 or 51141 or
+                    60000 or 60001 or
+                    62000 or 62001 or
+                    60010 or 60011 or
+                    62010 or 62011 or
+                    6204 or 62040 or 62041 or
+                    6206 or 62060 or 62061 or
+                    6212 or 62120 or 62121 or
+                    6220 or 62200 or 62201 or
+                    6222 or 62220 or 62221 => WeatherIcons.RAIN_MIX,
 
                 /*
                  * Full  D      Nt
@@ -716,9 +732,13 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
                  * Condition 2: Freezing Drizzle / Light Freezing Rain / Freezing Rain / Heavy Freezing Rain
                  */
-                6003 or 6002 or 6004 or 6205 or 6203 or 6209 or 6213 or 6214 or 6215 or 6207 or 6202 or 6208 => isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX,
-                60030 or 60020 or 60040 or 62050 or 62030 or 62090 or 62130 or 62140 or 62150 or 62070 or 62020 or 62080 => WeatherIcons.DAY_RAIN_MIX,
-                60031 or 60021 or 60041 or 62051 or 62031 or 62091 or 62131 or 62141 or 62151 or 62071 or 62021 or 62081 => WeatherIcons.NIGHT_ALT_RAIN_MIX,
+                6003 or 6002 or 6004 or 6205 or 6203 or 6209 or 6213 or 6214 or 6215 or 6207 or 6202 or 6208 => isNight
+                    ? WeatherIcons.NIGHT_ALT_RAIN_MIX
+                    : WeatherIcons.DAY_RAIN_MIX,
+                60030 or 60020 or 60040 or 62050 or 62030 or 62090 or 62130 or 62140 or 62150 or 62070 or 62020 or 62080
+                    => WeatherIcons.DAY_RAIN_MIX,
+                60031 or 60021 or 60041 or 62051 or 62031 or 62091 or 62131 or 62141 or 62151 or 62071 or 62021 or 62081
+                    => WeatherIcons.NIGHT_ALT_RAIN_MIX,
 
                 /*
                  * 51010, 51011: Heavy snow
@@ -749,9 +769,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * 71010, 71011: Heavy Ice Pellets
                  */
                 5112 or 51120 or 51121 or
-                71020 or 71021 or
-                70000 or 70001 or
-                71010 or 71011 => WeatherIcons.HAIL,
+                    71020 or 71021 or
+                    70000 or 70001 or
+                    71010 or 71011 => WeatherIcons.HAIL,
 
                 /*
                  * Full  D      Nt
@@ -768,9 +788,12 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
                  * Condition 2: Light Ice Pellets / Ice Pellets / Heavy Ice Pellets
                  */
-                7110 or 7111 or 7112 or 7108 or 7107 or 7109 or 7113 or 7114 or 7116 => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
+                7110 or 7111 or 7112 or 7108 or 7107 or 7109 or 7113 or 7114 or 7116 => isNight
+                    ? WeatherIcons.NIGHT_ALT_HAIL
+                    : WeatherIcons.DAY_HAIL,
                 71100 or 71110 or 71120 or 71080 or 71070 or 71090 or 71130 or 71140 or 71160 => WeatherIcons.DAY_HAIL,
-                71101 or 71111 or 71121 or 71081 or 71071 or 71091 or 71131 or 71141 or 71161 => WeatherIcons.NIGHT_ALT_HAIL,
+                71101 or 71111 or 71121 or 71081 or 71071 or 71091 or 71131 or 71141 or 71161 => WeatherIcons
+                    .NIGHT_ALT_HAIL,
 
                 /*
                  * 7105, 71050, 71051
@@ -783,10 +806,10 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                  * Condition 2: Ice Pellets / Heavy Ice Pellets
                  */
                 7105 or 71050 or 71051 or
-                7115 or 71150 or 71151 or
-                7117 or 71170 or 71171 or
-                7106 or 71060 or 71061 or
-                7103 or 71030 or 71031 => WeatherIcons.RAIN_MIX,
+                    7115 or 71150 or 71151 or
+                    7117 or 71170 or 71171 or
+                    7106 or 71060 or 71061 or
+                    7103 or 71030 or 71031 => WeatherIcons.RAIN_MIX,
 
                 /*
                  * 80000, 80001: Thunderstorm
@@ -844,112 +867,112 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 1103 or 11030 or 11031 => WeatherConditions.weather_mostlyclear,
                 /* Light Fog */
                 2100 or 21000 or 21001 or
-                2101 or 21010 or 21011 or
-                2102 or 21020 or 21021 or
-                2103 or 21030 or 21031 => WeatherConditions.weather_lightfog,
+                    2101 or 21010 or 21011 or
+                    2102 or 21020 or 21021 or
+                    2103 or 21030 or 21031 => WeatherConditions.weather_lightfog,
                 /* Fog */
                 2000 or 20000 or 20001 or
-                2106 or 21060 or 21061 or
-                2107 or 21070 or 21071 or
-                2108 or 21080 or 21081 => WeatherConditions.weather_fog,
+                    2106 or 21060 or 21061 or
+                    2107 or 21070 or 21071 or
+                    2108 or 21080 or 21081 => WeatherConditions.weather_fog,
                 /* Drizzle */
                 4000 or 40000 or 40001 or
-                4203 or 42030 or 42031 or
-                4204 or 42040 or 42041 or
-                4205 or 42050 or 42051 => WeatherConditions.weather_drizzle,
+                    4203 or 42030 or 42031 or
+                    4204 or 42040 or 42041 or
+                    4205 or 42050 or 42051 => WeatherConditions.weather_drizzle,
                 /* Light Rain */
                 4200 or 42000 or 42001 or
-                4213 or 42130 or 42131 or
-                4214 or 42140 or 42141 or
-                4215 or 42150 or 42151 => WeatherConditions.weather_lightrain,
+                    4213 or 42130 or 42131 or
+                    4214 or 42140 or 42141 or
+                    4215 or 42150 or 42151 => WeatherConditions.weather_lightrain,
                 /* Rain */
                 4001 or 40010 or 40011 or
-                4209 or 42090 or 42091 or
-                4208 or 42080 or 42081 or
-                4210 or 42100 or 42101 => WeatherConditions.weather_rain,
+                    4209 or 42090 or 42091 or
+                    4208 or 42080 or 42081 or
+                    4210 or 42100 or 42101 => WeatherConditions.weather_rain,
                 /* Heavy Rain */
                 4201 or 42010 or 42011 or
-                4211 or 42110 or 42111 => WeatherConditions.weather_heavyrain,
+                    4211 or 42110 or 42111 => WeatherConditions.weather_heavyrain,
                 /* Flurries */
                 5001 or 50010 or 50011 or
-                5115 or 51150 or 51151 or
-                5116 or 51160 or 51161 or
-                5117 or 51170 or 51171 => WeatherConditions.weather_snowflurries,
+                    5115 or 51150 or 51151 or
+                    5116 or 51160 or 51161 or
+                    5117 or 51170 or 51171 => WeatherConditions.weather_snowflurries,
                 /* Light Snow */
                 5100 or 51000 or 51001 or
-                5102 or 51020 or 51021 or
-                5103 or 51030 or 51031 or
-                5104 or 51040 or 51041 => WeatherConditions.weather_lightsnowshowers,
+                    5102 or 51020 or 51021 or
+                    5103 or 51030 or 51031 or
+                    5104 or 51040 or 51041 => WeatherConditions.weather_lightsnowshowers,
                 /* Snow */
                 5000 or 50000 or 50001 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Snow
-                 */
-                5105 or 51050 or 51051 or
-                5106 or 51060 or 51061 or
-                5107 or 51070 or 51071 => WeatherConditions.weather_snow,
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Snow
+                     */
+                    5105 or 51050 or 51051 or
+                    5106 or 51060 or 51061 or
+                    5107 or 51070 or 51071 => WeatherConditions.weather_snow,
                 /* Heavy Snow */
                 5101 or 51010 or 51011 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Snow
-                 */
-                5119 or 51190 or 51191 or
-                5120 or 51200 or 51201 or
-                5121 or 51210 or 51211 => WeatherConditions.weather_heavysnow,
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Snow
+                     */
+                    5119 or 51190 or 51191 or
+                    5120 or 51200 or 51201 or
+                    5121 or 51210 or 51211 => WeatherConditions.weather_heavysnow,
                 /*
                  * Mixed conditions:
                  * Condition 1: Drizzle / Rain
                  * Condition 2: Light Snow / Snow
                  */
                 5122 or 51220 or 51221 or
-                5110 or 51100 or 51101 or
-                5108 or 51080 or 51081 => WeatherConditions.weather_rainandsnow,
+                    5110 or 51100 or 51101 or
+                    5108 or 51080 or 51081 => WeatherConditions.weather_rainandsnow,
                 /*
                  * Mixed conditions:
                  * Condition 1: Snow
                  * Condition 2: Freezing Rain
                  */
                 5114 or 51140 or 51141 or
-                /* Freezing Drizzle / Light Freezing Drizzle / Freezing Rain / Heavy Freezing Rain */
-                6000 or 60000 or 60001 or
-                6200 or 62000 or 62001 or
-                6001 or 60010 or 60011 or
-                6201 or 62010 or 62011 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Freezing Drizzle / Light Freezing Rain / Freezing Rain
-                 */
-                6003 or 60030 or 60031 or
-                6002 or 60020 or 60021 or
-                6004 or 60040 or 60041 or
-                6204 or 62040 or 62041 or
-                6206 or 62060 or 62061 or
-                6205 or 62050 or 62051 or
-                6203 or 62030 or 62031 or
-                6209 or 62090 or 62091 or
-                6213 or 62130 or 62131 or
-                6214 or 62140 or 62141 or
-                6215 or 62150 or 62151 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Drizzle / Light Rain / Rain
-                 * Condition 2: Freezing Rain
-                 */
-                6212 or 62120 or 62121 or
-                6222 or 62220 or 62221 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Heavy Freezing Rain
-                 */
-                6207 or 62070 or 62071 or
-                6202 or 62020 or 62021 or
-                6208 or 62080 or 62081 => WeatherConditions.weather_freezingrain,
+                    /* Freezing Drizzle / Light Freezing Drizzle / Freezing Rain / Heavy Freezing Rain */
+                    6000 or 60000 or 60001 or
+                    6200 or 62000 or 62001 or
+                    6001 or 60010 or 60011 or
+                    6201 or 62010 or 62011 or
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Freezing Drizzle / Light Freezing Rain / Freezing Rain
+                     */
+                    6003 or 60030 or 60031 or
+                    6002 or 60020 or 60021 or
+                    6004 or 60040 or 60041 or
+                    6204 or 62040 or 62041 or
+                    6206 or 62060 or 62061 or
+                    6205 or 62050 or 62051 or
+                    6203 or 62030 or 62031 or
+                    6209 or 62090 or 62091 or
+                    6213 or 62130 or 62131 or
+                    6214 or 62140 or 62141 or
+                    6215 or 62150 or 62151 or
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Drizzle / Light Rain / Rain
+                     * Condition 2: Freezing Rain
+                     */
+                    6212 or 62120 or 62121 or
+                    6222 or 62220 or 62221 or
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Heavy Freezing Rain
+                     */
+                    6207 or 62070 or 62071 or
+                    6202 or 62020 or 62021 or
+                    6208 or 62080 or 62081 => WeatherConditions.weather_freezingrain,
                 /*
                  * Mixed conditions:
                  * Condition 1: Snow
@@ -958,42 +981,42 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 5112 or 51120 or 51121 => WeatherConditions.weather_snowandsleet,
                 /* Light Ice Pellets / Ice Pellets / Heavy Ice Pellets / [Sleet] */
                 7102 or 71020 or 71021 or
-                7000 or 70000 or 70001 or
-                7101 or 71010 or 71011 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Light Ice Pellets / Ice Pellets / Heavy Ice Pellets
-                 */
-                7110 or 71100 or 71101 or
-                7111 or 71110 or 71111 or
-                7112 or 71120 or 71121 or
-                7108 or 71080 or 71081 or
-                7107 or 71070 or 71071 or
-                7109 or 71090 or 71091 or
-                7113 or 71130 or 71131 or
-                7114 or 71140 or 71141 or
-                7116 or 71160 or 71161 => WeatherConditions.weather_sleet,
+                    7000 or 70000 or 70001 or
+                    7101 or 71010 or 71011 or
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Light Ice Pellets / Ice Pellets / Heavy Ice Pellets
+                     */
+                    7110 or 71100 or 71101 or
+                    7111 or 71110 or 71111 or
+                    7112 or 71120 or 71121 or
+                    7108 or 71080 or 71081 or
+                    7107 or 71070 or 71071 or
+                    7109 or 71090 or 71091 or
+                    7113 or 71130 or 71131 or
+                    7114 or 71140 or 71141 or
+                    7116 or 71160 or 71161 => WeatherConditions.weather_sleet,
                 /*
                  * Mixed conditions:
                  * Condition 1: Drizzle / Light Rain / Rain / Freezing Rain
                  * Condition 2: Light Ice Pellets / Ice Pellets / Heavy Ice Pellets
                  */
                 7105 or 71050 or 71051 or
-                7115 or 71150 or 71151 or
-                7117 or 71170 or 71171 or
-                7106 or 71060 or 71061 or
-                7103 or 71030 or 71031 => WeatherConditions.weather_rainandsleet,
+                    7115 or 71150 or 71151 or
+                    7117 or 71170 or 71171 or
+                    7106 or 71060 or 71061 or
+                    7103 or 71030 or 71031 => WeatherConditions.weather_rainandsleet,
                 /* Thunderstorm */
                 8000 or 80000 or 80001 or
-                /*
-                 * Mixed conditions:
-                 * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
-                 * Condition 2: Thunderstorm
-                 */
-                8001 or 80010 or 80011 or
-                8003 or 80030 or 80031 or
-                8002 or 80020 or 80021 => WeatherConditions.weather_tstorms,
+                    /*
+                     * Mixed conditions:
+                     * Condition 1: Mostly Clear / Partly Cloudy / Mostly Cloudy
+                     * Condition 2: Thunderstorm
+                     */
+                    8001 or 80010 or 80011 or
+                    8003 or 80030 or 80031 or
+                    8002 or 80020 or 80021 => WeatherConditions.weather_tstorms,
                 _ => WeatherConditions.weather_notavailable,
             };
         }
@@ -1007,31 +1030,31 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)

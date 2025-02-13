@@ -347,7 +347,7 @@ namespace SimpleWeather.Common.WeatherData
 
                                 if (location.latitude != 0.0 || location.longitude != 0.0)
                                 {
-                                    location.query = wm.UpdateLocationQuery(location);
+                                    location.query = await wm.UpdateLocationQuery(location);
                                 }
                                 else if (weather != null)
                                 {
@@ -358,7 +358,7 @@ namespace SimpleWeather.Common.WeatherData
                                             new Exception($"Invalid location data: {weather.location}"));
                                     }
 
-                                    location.query = wm.UpdateLocationQuery(weather);
+                                    location.query = await wm.UpdateLocationQuery(weather);
                                 }
                                 else
                                 {
@@ -380,14 +380,14 @@ namespace SimpleWeather.Common.WeatherData
                                 {
                                     await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 #if (WINDOWS || __IOS__) && !UNIT_TEST
-                                        // Update widget id for location
-                                        SharedModule.Instance.RequestAction(
-                                            CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION,
-                                            new Dictionary<string, object>
-                                            {
-                                                { Constants.WIDGETKEY_OLDKEY, oldKey },
-                                                { Constants.WIDGETKEY_LOCATION, location },
-                                            });
+                                    // Update widget id for location
+                                    SharedModule.Instance.RequestAction(
+                                        CommonActions.ACTION_WEATHER_UPDATEWIDGETLOCATION,
+                                        new Dictionary<string, object>
+                                        {
+                                            { Constants.WIDGETKEY_OLDKEY, oldKey },
+                                            { Constants.WIDGETKEY_LOCATION, location },
+                                        });
 #endif
                                 }
                             }

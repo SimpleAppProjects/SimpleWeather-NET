@@ -1,14 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.NWS;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,6 +7,18 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.NWS;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.BrightSky
@@ -36,7 +38,7 @@ namespace SimpleWeather.Weather_API.BrightSky
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -51,7 +53,7 @@ namespace SimpleWeather.Weather_API.BrightSky
             return LocationUtils.IsGermany(location);
         }
 
-        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        public override bool IsRegionSupported(LocationQuery location)
         {
             return LocationUtils.IsGermany(location);
         }
@@ -77,10 +79,12 @@ namespace SimpleWeather.Weather_API.BrightSky
             // DWD is best in Germany
             if (!LocationUtils.IsGermany(location))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                    new Exception(
+                        $"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }
 
-            var query = UpdateLocationQuery(location);
+            var query = await UpdateLocationQuery(location);
 
             try
             {
@@ -140,8 +144,10 @@ namespace SimpleWeather.Weather_API.BrightSky
                 var alertStream = await alertsResponse.Content.ReadAsStringAsync();
 
                 // Load weather
-                var currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream) ?? throw new ArgumentNullException("currRoot");
-                var foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream) ?? throw new ArgumentNullException("foreRoot");
+                var currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream) ??
+                               throw new ArgumentNullException("currRoot");
+                var foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream) ??
+                               throw new ArgumentNullException("foreRoot");
                 var alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertStream);
 
                 weather = this.CreateWeatherData(currRoot, foreRoot, location);
@@ -182,7 +188,8 @@ namespace SimpleWeather.Weather_API.BrightSky
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             // DWD reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
@@ -192,11 +199,13 @@ namespace SimpleWeather.Weather_API.BrightSky
             // Calculate astronomy
             try
             {
-                weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+                weather.astronomy =
+                    await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             }
             catch (WeatherException)
             {
-                weather.astronomy = await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+                weather.astronomy =
+                    await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
             }
 
             // Set condition here
@@ -244,14 +253,16 @@ namespace SimpleWeather.Weather_API.BrightSky
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override string LocaleToLangCode(string iso, string name)
@@ -281,7 +292,9 @@ namespace SimpleWeather.Weather_API.BrightSky
             {
                 "clear-day" or "clear-night" => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
 
-                "partly-cloudy-day" or "partly-cloudy-night" => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
+                "partly-cloudy-day" or "partly-cloudy-night" => isNight
+                    ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY
+                    : WeatherIcons.DAY_PARTLY_CLOUDY,
 
                 "cloudy" => WeatherIcons.CLOUDY,
                 "fog" => WeatherIcons.FOG,
@@ -311,31 +324,31 @@ namespace SimpleWeather.Weather_API.BrightSky
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)

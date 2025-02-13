@@ -1,18 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SimpleWeather.Extras;
-using SimpleWeather.HttpClientExtensions;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Resources.Strings;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.NWS.Hourly;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -23,6 +9,25 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.HttpClientExtensions;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.NWS.Hourly;
+using SimpleWeather.Weather_API.NWS.Observation;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
+using Location = SimpleWeather.Weather_API.NWS.Hourly.Location;
+using PeriodsItem = SimpleWeather.Weather_API.NWS.Hourly.PeriodsItem;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.NWS
@@ -30,7 +35,10 @@ namespace SimpleWeather.Weather_API.NWS
     public partial class NWSWeatherProvider : WeatherProviderImpl
     {
         private const string FORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=json";
-        private const string HRFORECAST_QUERY_URL = "https://forecast.weather.gov/MapClick.php?{0}&FcstType=digitalJSON";
+
+        private const string HRFORECAST_QUERY_URL =
+            "https://forecast.weather.gov/MapClick.php?{0}&FcstType=digitalJSON";
+
         private const string POINTS_QUERY_URL = "https://api.weather.gov/points/{0}";
         private const int MAX_ATTEMPTS = 2;
 
@@ -42,7 +50,7 @@ namespace SimpleWeather.Weather_API.NWS
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -55,7 +63,7 @@ namespace SimpleWeather.Weather_API.NWS
             return LocationUtils.IsNWSSupported(location);
         }
 
-        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        public override bool IsRegionSupported(LocationQuery location)
         {
             return LocationUtils.IsNWSSupported(location);
         }
@@ -81,10 +89,12 @@ namespace SimpleWeather.Weather_API.NWS
             // NWS only supports locations in U.S. or U.S. territories
             if (!LocationUtils.IsNWSSupported(location))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                    new Exception(
+                        $"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }
 
-            var query = UpdateLocationQuery(location);
+            var query = await UpdateLocationQuery(location);
 
             try
             {
@@ -114,7 +124,8 @@ namespace SimpleWeather.Weather_API.NWS
                 Stream observationStream = await observationResponse.Content.ReadAsStreamAsync();
 
                 // Load point json data
-                Observation.ForecastRootobject observationData = await JSONParser.DeserializerAsync<Observation.ForecastRootobject>(observationStream);
+                ForecastRootobject observationData =
+                    await JSONParser.DeserializerAsync<ForecastRootobject>(observationStream);
 
                 using var ctsF = new CancellationTokenSource((int)(SettingsManager.READ_TIMEOUT * 1.5f));
                 using var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token);
@@ -125,7 +136,7 @@ namespace SimpleWeather.Weather_API.NWS
                 Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
 
                 // Load point json data
-                Hourly.HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
+                HourlyForecastResponse forecastData = await CreateHourlyForecastResponse(forecastStream);
 
                 if (forecastData?.periodsItems?.Count <= 0)
                 {
@@ -179,14 +190,15 @@ namespace SimpleWeather.Weather_API.NWS
                 var fcastRoot = forecastObj.Root.ToObject<JObject>();
 
                 forecastData.creationDate = fcastRoot.Property("creationDate").Value.ToObject<DateTimeOffset>();
-                forecastData.location = new Hourly.Location();
+                forecastData.location = new Location();
 
                 var location = fcastRoot.Property("location").Value.ToObject<JObject>();
                 forecastData.location.latitude = location.Property("latitude").Value.ToObject<double>();
                 forecastData.location.longitude = location.Property("longitude").Value.ToObject<double>();
 
                 var periodNameList = fcastRoot.Property("PeriodNameList").Value.ToObject<JObject>();
-                SortedSet<string> sortedKeys = new SortedSet<string>(periodNameList.Properties().Select(p => p.Name), new StrNumComparator());
+                SortedSet<string> sortedKeys = new SortedSet<string>(periodNameList.Properties().Select(p => p.Name),
+                    new StrNumComparator());
 
                 forecastData.periodsItems = new List<PeriodsItem>(sortedKeys.Count);
 
@@ -199,12 +211,18 @@ namespace SimpleWeather.Weather_API.NWS
 
                     var item = new PeriodsItem();
 
-                    var periodObj = fcastRoot.Property(periodName)?.Value?.ToObject<JObject>(); if (periodObj == null) continue;
-                    var timeArr = periodObj.Property("time")?.Value?.ToObject<JArray>(); if (timeArr == null) continue;
-                    var unixTimeArr = periodObj.Property("unixtime")?.Value?.ToObject<JArray>(); if (unixTimeArr == null) continue;
-                    var tempArr = periodObj.Property("temperature")?.Value?.ToObject<JArray>(); if (tempArr == null) continue;
-                    var iconArr = periodObj.Property("iconLink")?.Value?.ToObject<JArray>(); if (iconArr == null) continue;
-                    var conditionTxtArr = periodObj.Property("weather")?.Value?.ToObject<JArray>(); if (conditionTxtArr == null) continue;
+                    var periodObj = fcastRoot.Property(periodName)?.Value?.ToObject<JObject>();
+                    if (periodObj == null) continue;
+                    var timeArr = periodObj.Property("time")?.Value?.ToObject<JArray>();
+                    if (timeArr == null) continue;
+                    var unixTimeArr = periodObj.Property("unixtime")?.Value?.ToObject<JArray>();
+                    if (unixTimeArr == null) continue;
+                    var tempArr = periodObj.Property("temperature")?.Value?.ToObject<JArray>();
+                    if (tempArr == null) continue;
+                    var iconArr = periodObj.Property("iconLink")?.Value?.ToObject<JArray>();
+                    if (iconArr == null) continue;
+                    var conditionTxtArr = periodObj.Property("weather")?.Value?.ToObject<JArray>();
+                    if (conditionTxtArr == null) continue;
                     var windChillArr = periodObj.Property("windChill")?.Value?.ToObject<JArray>();
                     var windSpeedArr = periodObj.Property("windSpeed")?.Value?.ToObject<JArray>();
                     var cloudAmtArr = periodObj.Property("cloudAmount")?.Value?.ToObject<JArray>();
@@ -355,7 +373,8 @@ namespace SimpleWeather.Weather_API.NWS
             return forecastData;
         }
 
-        private Task<HourlyForecastResponse> GetPointsHourlyForecastResponse(SimpleWeather.LocationData.LocationData location)
+        private Task<HourlyForecastResponse> GetPointsHourlyForecastResponse(
+            SimpleWeather.LocationData.LocationData location)
         {
             return Task.Run(async () =>
             {
@@ -377,9 +396,11 @@ namespace SimpleWeather.Weather_API.NWS
                     Stream pointsStream = await pointsResponse.Content.ReadAsStreamAsync();
 
                     // Load point json data
-                    PointsRootobject pointsRootobject = await JSONParser.DeserializerAsync<PointsRootobject>(pointsStream);
+                    PointsRootobject pointsRootobject =
+                        await JSONParser.DeserializerAsync<PointsRootobject>(pointsStream);
 
-                    using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, pointsRootobject.forecastHourly + "?units=us");
+                    using var forecastRequest =
+                        new HttpRequestMessage(HttpMethod.Get, pointsRootobject.forecastHourly + "?units=us");
                     forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
                     forecastRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/ld+json"));
                     forecastRequest.Headers.UserAgent.AddAppUserAgent();
@@ -403,7 +424,9 @@ namespace SimpleWeather.Weather_API.NWS
                                 forecastResponseData = JSONParser.Deserializer<HourlyPointsRootobject>(forecastStream);
                             }
                         }
-                        catch { }
+                        catch
+                        {
+                        }
 
                         if (forecastResponseData == null)
                         {
@@ -415,7 +438,8 @@ namespace SimpleWeather.Weather_API.NWS
                         }
                     }
 
-                    return forecastResponseData?.ToResponse(pointsRootobject) ?? throw new ArgumentNullException(nameof(forecastResponseData));
+                    return forecastResponseData?.ToResponse(pointsRootobject) ??
+                           throw new ArgumentNullException(nameof(forecastResponseData));
                 }
                 catch
                 {
@@ -439,7 +463,8 @@ namespace SimpleWeather.Weather_API.NWS
             }
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             var offset = location.tz_offset;
 
@@ -447,8 +472,10 @@ namespace SimpleWeather.Weather_API.NWS
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(location.tz_offset);
 
             // NWS does not provide astrodata; calculate this ourselves (using their calculator)
-            var solCalcData = await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
-            weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            var solCalcData =
+                await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+            weather.astronomy =
+                await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             weather.astronomy.sunrise = solCalcData.sunrise;
             weather.astronomy.sunset = solCalcData.sunset;
 
@@ -469,27 +496,31 @@ namespace SimpleWeather.Weather_API.NWS
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
-            return str;
+            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(str);
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
-            return str;
+            var str = string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude,
+                location.longitude);
+            return Task.FromResult(str);
         }
 
         private string UpdatePointsLocationQuery(Weather weather)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude,
+                weather.location.longitude);
             return str;
         }
 
         private string UpdatePointsLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            var str = string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude,
+                location.longitude);
             return str;
         }
 
@@ -506,7 +537,8 @@ namespace SimpleWeather.Weather_API.NWS
             if (icon == null)
                 return WeatherIcons.NA;
 
-            if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") || icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
+            if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") ||
+                icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
             {
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_FOG;
@@ -531,22 +563,27 @@ namespace SimpleWeather.Weather_API.NWS
                 else
                     WeatherIcon = WeatherIcons.DAY_HOT;
             }
-            else if (icon.Contains("haze") || icon.Equals("hz.png") || icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("haze") || icon.Equals("hz.png") ||
+                     icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
             {
                 if (isNight)
                     WeatherIcon = WeatherIcons.NIGHT_HAZE;
                 else
                     WeatherIcon = WeatherIcons.DAY_HAZE;
             }
-            else if (icon.Contains("smoke") || icon.Equals("fu.png") || icon.Equals("nfu.png") || icon.Contains("nfu") || icon.Matches(".*([/]?)([n]?)fu([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("smoke") || icon.Equals("fu.png") || icon.Equals("nfu.png") ||
+                     icon.Contains("nfu") || icon.Matches(".*([/]?)([n]?)fu([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.SMOKE;
             }
-            else if (icon.Contains("dust") || icon.Equals("du.png") || icon.Equals("ndu.png") || icon.Contains("ndu") || icon.Matches(".*([/]?)([n]?)du([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("dust") || icon.Equals("du.png") || icon.Equals("ndu.png") || icon.Contains("ndu") ||
+                     icon.Matches(".*([/]?)([n]?)du([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.DUST;
             }
-            else if (icon.Contains("tropical_storm") || icon.Contains("hurricane") || icon.Contains("hur_warn") || icon.Contains("hur_watch") || icon.Contains("ts_warn") || icon.Contains("ts_watch") || icon.Contains("ts_nowarn"))
+            else if (icon.Contains("tropical_storm") || icon.Contains("hurricane") || icon.Contains("hur_warn") ||
+                     icon.Contains("hur_watch") || icon.Contains("ts_warn") || icon.Contains("ts_watch") ||
+                     icon.Contains("ts_nowarn"))
             {
                 WeatherIcon = WeatherIcons.HURRICANE;
             }
@@ -557,7 +594,9 @@ namespace SimpleWeather.Weather_API.NWS
                 else
                     WeatherIcon = WeatherIcons.DAY_THUNDERSTORM;
             }
-            else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") || icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") || icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") ||
+                     icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") ||
+                     icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.TORNADO;
             }
@@ -568,7 +607,8 @@ namespace SimpleWeather.Weather_API.NWS
                 else
                     WeatherIcon = WeatherIcons.DAY_SHOWERS;
             }
-            else if (icon.Contains("fzra") || icon.Contains("rain_sleet") || icon.Contains("rain_snow") || icon.Contains("ra_sn"))
+            else if (icon.Contains("fzra") || icon.Contains("rain_sleet") || icon.Contains("rain_snow") ||
+                     icon.Contains("ra_sn"))
             {
                 WeatherIcon = WeatherIcons.RAIN_MIX;
             }
@@ -583,15 +623,18 @@ namespace SimpleWeather.Weather_API.NWS
                 else
                     WeatherIcon = WeatherIcons.DAY_SPRINKLE;
             }
-            else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") || icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") ||
+                     icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.RAIN;
             }
-            else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") || icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") ||
+                     icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.SNOW;
             }
-            else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") || icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") ||
+                     icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
             {
                 WeatherIcon = WeatherIcons.HAIL;
             }
@@ -663,7 +706,8 @@ namespace SimpleWeather.Weather_API.NWS
                 return base.GetWeatherCondition(icon);
             }
 
-            if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") || icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
+            if (icon.Contains("fog") || icon.Equals("fg.png") || icon.Equals("nfg.png") || icon.Contains("nfg") ||
+                icon.Matches(".*([/]?)([n]?)fg([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_fog;
             }
@@ -679,19 +723,23 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 return WeatherConditions.weather_hot;
             }
-            else if (icon.Contains("haze") || icon.Equals("hz.png") || icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("haze") || icon.Equals("hz.png") ||
+                     icon.Matches(".*([/]?)hz([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_haze;
             }
-            else if (icon.Contains("smoke") || icon.Equals("fu.png") || icon.Equals("nfu.png") || icon.Contains("nfu") || icon.Matches(".*([/]?)([n]?)fu([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("smoke") || icon.Equals("fu.png") || icon.Equals("nfu.png") ||
+                     icon.Contains("nfu") || icon.Matches(".*([/]?)([n]?)fu([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_smoky;
             }
-            else if (icon.Contains("dust") || icon.Equals("du.png") || icon.Equals("ndu.png") || icon.Contains("ndu") || icon.Matches(".*([/]?)([n]?)du([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("dust") || icon.Equals("du.png") || icon.Equals("ndu.png") || icon.Contains("ndu") ||
+                     icon.Matches(".*([/]?)([n]?)du([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_dust;
             }
-            else if (icon.Contains("tropical_storm") || icon.Contains("ts_warn") || icon.Contains("ts_watch") || icon.Contains("ts_nowarn"))
+            else if (icon.Contains("tropical_storm") || icon.Contains("ts_warn") || icon.Contains("ts_watch") ||
+                     icon.Contains("ts_nowarn"))
             {
                 return WeatherConditions.weather_tropicalstorm;
             }
@@ -703,7 +751,9 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 return WeatherConditions.weather_tstorms;
             }
-            else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") || icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") || icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("tornado") || icon.Contains("tor") || icon.Equals("tor.png") ||
+                     icon.Equals("fc.png") || icon.Equals("nfc.png") || icon.Contains("nfc") ||
+                     icon.Matches(".*([/]?)([n]?)fc([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_tornado;
             }
@@ -731,19 +781,23 @@ namespace SimpleWeather.Weather_API.NWS
             {
                 return WeatherConditions.weather_sleet;
             }
-            else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") || icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("rain") || icon.Equals("ra.png") || icon.Equals("nra.png") || icon.Contains("nra") ||
+                     icon.Matches(".*([/]?)([n]?)ra([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_rain;
             }
-            else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") || icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("snow") || icon.Equals("sn.png") || icon.Equals("nsn.png") || icon.Contains("nsn") ||
+                     icon.Matches(".*([/]?)([n]?)sn([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_snow;
             }
-            else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") || icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
+            else if (icon.Contains("snip") || icon.Equals("ip.png") || icon.Equals("nip.png") || icon.Contains("nip") ||
+                     icon.Matches(".*([/]?)([n]?)ip([0-9]{0,3})((.png)?).*"))
             {
                 return WeatherConditions.weather_hail;
             }
-            else if (icon.Contains("wind_bkn") || icon.Contains("wind_ovc") || icon.Contains("wind_sct") || icon.Contains("wind"))
+            else if (icon.Contains("wind_bkn") || icon.Contains("wind_ovc") || icon.Contains("wind_sct") ||
+                     icon.Contains("wind"))
             {
                 return WeatherConditions.weather_windy;
             }
@@ -792,36 +846,37 @@ namespace SimpleWeather.Weather_API.NWS
                     if (!isNight)
                     {
                         // Fallback to sunset/rise time just in case
-                        NodaTime.LocalTime sunrise;
-                        NodaTime.LocalTime sunset;
+                        LocalTime sunrise;
+                        LocalTime sunset;
                         if (weather.astronomy != null)
                         {
-                            sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                            sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                            sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                            sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                         }
                         else
                         {
-                            sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                            sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                            sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                            sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                         }
 
-                        NodaTime.DateTimeZone tz = null;
+                        DateTimeZone tz = null;
 
                         if (weather.location.tz_long != null)
                         {
-                            tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                            tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                         }
 
                         if (tz == null)
-                            tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                            tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                        var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                                    .InZone(tz).TimeOfDay;
+                        var now = SystemClock.Instance.GetCurrentInstant()
+                            .InZone(tz).TimeOfDay;
 
                         // Determine whether its night using sunset/rise times
                         if (now < sunrise || now > sunset)
                             isNight = true;
                     }
+
                     break;
             }
 

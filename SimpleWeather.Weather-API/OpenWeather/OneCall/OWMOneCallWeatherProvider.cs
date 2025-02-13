@@ -1,14 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -17,11 +7,24 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.OpenWeather.OneCall
 {
-    [Obsolete("Access to One Call 2.5 will be closed in June 2024. Disable or migrate by then as it will require payment info")]
+    [Obsolete(
+        "Access to One Call 2.5 will be closed in June 2024. Disable or migrate by then as it will require payment info")]
     public partial class OWMOneCallWeatherProvider : WeatherProviderImpl, IAirQualityProvider
     {
         private const String BASE_URL = "https://api.openweathermap.org/data/2.5/";
@@ -37,7 +40,7 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -111,7 +114,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
+        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(
+            SimpleWeather.LocationData.LocationData location)
         {
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
@@ -123,11 +127,11 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             string query;
             if (int.TryParse(location.query, NumberStyles.Integer, CultureInfo.InvariantCulture, out int id))
             {
-                query = string.Format("id={0}", id);
+                query = $"id={id}";
             }
             else
             {
-                query = UpdateLocationQuery(location);
+                query = await UpdateLocationQuery(location);
             }
 
             var key = GetProviderKey();
@@ -202,7 +206,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, SimpleWeather.WeatherData.Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            SimpleWeather.WeatherData.Weather weather)
         {
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
@@ -212,10 +217,12 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             {
                 hr_forecast.date = hr_forecast.date.ToOffset(offset);
             }
+
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
             }
+
             if (weather.min_forecast?.Any() == true)
             {
                 foreach (MinutelyForecast min_forecast in weather.min_forecast)
@@ -230,7 +237,8 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             if (weather.astronomy.moonrise == DateTime.MinValue || weather.astronomy.moonset == DateTime.MinValue)
             {
                 var old = weather.astronomy;
-                var newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+                var newAstro =
+                    await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
                 newAstro.sunrise = old.sunrise;
                 newAstro.sunset = old.sunset;
                 weather.astronomy = newAstro;
@@ -305,14 +313,16 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             return aqiData;
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.WeatherData.Weather weather)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.WeatherData.Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -321,50 +331,50 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
             {
                 // Arabic
                 "af" or // Afrikaans
-                "ar" or // Arabic
-                "az" or // Azerbaijani
-                "bg" or // Bulgarian
-                "ca" or // Catalan
-                "da" or // Danish
-                "de" or // German
-                "el" or // Greek
-                "eu" or // Basque
-                "fa" or // Persian (Farsi)
-                "fi" or // Finnish
-                "fr" or // French
-                "gl" or // Galician
-                "he" or // Hebrew
-                "hi" or // Hindi
-                "hr" or // Croatian
-                "hu" or // Hungarian
-                "id" or // Indonesian
-                "it" or // Italian
-                "ja" or // Japanese
-                "lt" or // Lithuanian
-                "mk" or // Macedonian
-                "no" or // Norwegian
-                "nl" or // Dutch
-                "pl" or // Polish
-                "ro" or // Romanian
-                "ru" or // Russian
-                "sv" or // Swedish (sv or se)
-                "sk" or // Slovak
-                "sl" or // Slovenian
-                "es" or // Spanish
-                "sr" or // Serbian
-                "th" or // Thai
-                "tr" or // Turkish
-                "uk" or // Ukrainian
-                "vi" or // Vietnamese
-                "zu" /* Zulu */ => iso,
+                    "ar" or // Arabic
+                    "az" or // Azerbaijani
+                    "bg" or // Bulgarian
+                    "ca" or // Catalan
+                    "da" or // Danish
+                    "de" or // German
+                    "el" or // Greek
+                    "eu" or // Basque
+                    "fa" or // Persian (Farsi)
+                    "fi" or // Finnish
+                    "fr" or // French
+                    "gl" or // Galician
+                    "he" or // Hebrew
+                    "hi" or // Hindi
+                    "hr" or // Croatian
+                    "hu" or // Hungarian
+                    "id" or // Indonesian
+                    "it" or // Italian
+                    "ja" or // Japanese
+                    "lt" or // Lithuanian
+                    "mk" or // Macedonian
+                    "no" or // Norwegian
+                    "nl" or // Dutch
+                    "pl" or // Polish
+                    "ro" or // Romanian
+                    "ru" or // Russian
+                    "sv" or // Swedish (sv or se)
+                    "sk" or // Slovak
+                    "sl" or // Slovenian
+                    "es" or // Spanish
+                    "sr" or // Serbian
+                    "th" or // Thai
+                    "tr" or // Turkish
+                    "uk" or // Ukrainian
+                    "vi" or // Vietnamese
+                    "zu" /* Zulu */ => iso,
                 // Chinese
                 "zh" => name switch
                 {
                     // Chinese - Traditional
                     "zh-Hant" or
-                    "zh-HK" or
-                    "zh-MO" or
-                    "zh-TW" => "zh_tw",
+                        "zh-HK" or
+                        "zh-MO" or
+                        "zh-TW" => "zh_tw",
                     // Chinese - Simplified
                     _ => "zh_cn",
                 },
@@ -643,36 +653,37 @@ namespace SimpleWeather.Weather_API.OpenWeather.OneCall
                     if (!isNight)
                     {
                         // Fallback to sunset/rise time just in case
-                        NodaTime.LocalTime sunrise;
-                        NodaTime.LocalTime sunset;
+                        LocalTime sunrise;
+                        LocalTime sunset;
                         if (weather.astronomy != null)
                         {
-                            sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                            sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                            sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                            sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                         }
                         else
                         {
-                            sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                            sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                            sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                            sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                         }
 
-                        NodaTime.DateTimeZone tz = null;
+                        DateTimeZone tz = null;
 
                         if (weather.location.tz_long != null)
                         {
-                            tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                            tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                         }
 
                         if (tz == null)
-                            tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                            tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                        var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                                    .InZone(tz).TimeOfDay;
+                        var now = SystemClock.Instance.GetCurrentInstant()
+                            .InZone(tz).TimeOfDay;
 
                         // Determine whether its night using sunset/rise times
                         if (now < sunrise || now > sunset)
                             isNight = true;
                     }
+
                     break;
 
                 default:

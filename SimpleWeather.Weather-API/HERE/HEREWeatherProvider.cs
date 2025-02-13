@@ -1,12 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -15,6 +7,16 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.HERE
@@ -31,7 +33,7 @@ namespace SimpleWeather.Weather_API.HERE
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -61,14 +63,16 @@ namespace SimpleWeather.Weather_API.HERE
             var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-            string query = UpdateLocationQuery(location);
+            string query = await UpdateLocationQuery(location);
 
             try
             {
                 this.CheckRateLimit();
 
                 var requestUri = BASE_URL.ToUriBuilderEx()
-                    .AppendQueryParameter("products", "forecast7daysSimple,forecastHourly,forecastAstronomy,observation," + (LocationUtils.IsUSorCanada(location) ? "nwsAlerts" : "alerts"))
+                    .AppendQueryParameter("products",
+                        "forecast7daysSimple,forecastHourly,forecastAstronomy,observation," +
+                        (LocationUtils.IsUSorCanada(location) ? "nwsAlerts" : "alerts"))
                     .AppendQueryParameter("location", query)
                     .AppendQueryParameter("units", "imperial")
                     .AppendQueryParameter("oneObservation", "true")
@@ -82,7 +86,8 @@ namespace SimpleWeather.Weather_API.HERE
                     if (!String.IsNullOrWhiteSpace(token))
                         request.Headers.Add("Authorization", token);
                     else
-                        throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey, new Exception($"Invalid bearer token: {token}"));
+                        throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey,
+                            new Exception($"Invalid bearer token: {token}"));
 
                     request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
@@ -106,22 +111,27 @@ namespace SimpleWeather.Weather_API.HERE
                             {
                                 @base.alerts = item.alerts;
                             }
+
                             if (item.hourlyForecasts != null)
                             {
                                 @base.hourlyForecasts = item.hourlyForecasts;
                             }
+
                             if (item.observations != null)
                             {
                                 @base.observations = item.observations;
                             }
+
                             if (item.astronomyForecasts != null)
                             {
                                 @base.astronomyForecasts = item.astronomyForecasts;
                             }
+
                             if (item.nwsAlerts != null)
                             {
                                 @base.nwsAlerts = item.nwsAlerts;
                             }
+
                             if (item.dailyForecasts != null)
                             {
                                 @base.dailyForecasts = item.dailyForecasts;
@@ -175,7 +185,8 @@ namespace SimpleWeather.Weather_API.HERE
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             var offset = location.tz_offset;
 
@@ -202,7 +213,8 @@ namespace SimpleWeather.Weather_API.HERE
             var old = weather.astronomy;
             if (DateTime.Equals(old.moonset, DateTime.MinValue) || DateTime.Equals(old.moonrise, DateTime.MinValue))
             {
-                var newAstro = await new SMC.SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+                var newAstro =
+                    await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
                 newAstro.sunrise = old.sunrise;
                 newAstro.sunset = old.sunset;
                 weather.astronomy = newAstro;
@@ -214,14 +226,16 @@ namespace SimpleWeather.Weather_API.HERE
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -259,35 +273,46 @@ namespace SimpleWeather.Weather_API.HERE
                 "sunny" or "clear" => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
 
                 "mostly_sunny" or "passing_clounds" or "passing_clouds" or "more_sun_than_clouds" or
-                "mostly_clear" or "scattered_clouds" or "partly_cloudy" or "decreasing_cloudiness" or
-                "clearing_skies" => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
+                    "mostly_clear" or "scattered_clouds" or "partly_cloudy" or "decreasing_cloudiness" or
+                    "clearing_skies" => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
 
                 "a_mixture_of_sun_and_clouds" or "increasing_cloudiness" or "breaks_of_sun_late" or
-                "afternoon_clouds" or "morning_clouds" or "partly_sunny" or "more_clouds_than_sun" or
-                "broken_clouds" or "mostly_cloudy" => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
+                    "afternoon_clouds" or "morning_clouds" or "partly_sunny" or "more_clouds_than_sun" or
+                    "broken_clouds"
+                    or "mostly_cloudy" => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
 
-                "high_level_clouds" or "high_clouds" => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY_HIGH : WeatherIcons.DAY_CLOUDY_HIGH,
+                "high_level_clouds" or "high_clouds" => isNight
+                    ? WeatherIcons.NIGHT_ALT_CLOUDY_HIGH
+                    : WeatherIcons.DAY_CLOUDY_HIGH,
 
                 "rain_early" or "rain" or "rain_late" => WeatherIcons.RAIN,
 
                 "strong_thunderstorms" or "severe_thunderstorms" or "thunderstorms" or "tstorms_early" or
-                "isolated_tstorms_late" or "tstorms" or "tstorms_late" => WeatherIcons.THUNDERSTORM,
+                    "isolated_tstorms_late" or "tstorms" or "tstorms_late" => WeatherIcons.THUNDERSTORM,
 
                 "widely_scattered_tstorms" or "isolated_tstorms" or "a_few_tstorms" or
-                "scattered_tstorms" or "scattered_tstorms_late" => isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM,
+                    "scattered_tstorms"
+                    or "scattered_tstorms_late" => isNight
+                        ? WeatherIcons.NIGHT_ALT_THUNDERSTORM
+                        : WeatherIcons.DAY_THUNDERSTORM,
 
                 "thundershowers" => WeatherIcons.STORM_SHOWERS,
 
                 "ice_fog" => WeatherIcons.FOG,
 
                 "scattered_showers" or "a_few_showers" or "light_showers" or "passing_showers" or "rain_showers" or
-                "showers" or "numerous_showers" or "showery" or "showers_early" or "showers_late" => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
+                    "showers" or "numerous_showers" or "showery" or "showers_early"
+                    or "showers_late" => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
 
-                "hazy_sunshine" or "haze" or "low_level_haze" => isNight ? WeatherIcons.NIGHT_HAZE : WeatherIcons.DAY_HAZE,
+                "hazy_sunshine" or "haze" or "low_level_haze" => isNight
+                    ? WeatherIcons.NIGHT_HAZE
+                    : WeatherIcons.DAY_HAZE,
 
                 "smoke" => WeatherIcons.SMOKE,
 
-                "early_fog_followed_by_sunny_skies" or "early_fog" or "light_fog" => isNight ? WeatherIcons.NIGHT_FOG : WeatherIcons.DAY_FOG,
+                "early_fog_followed_by_sunny_skies" or "early_fog" or "light_fog" => isNight
+                    ? WeatherIcons.NIGHT_FOG
+                    : WeatherIcons.DAY_FOG,
 
                 "fog" or "dense_fog" => WeatherIcons.FOG,
 
@@ -300,22 +325,25 @@ namespace SimpleWeather.Weather_API.HERE
                 "sleet" => WeatherIcons.SLEET,
 
                 "light_mixture_of_precip" or "icy_mix" or "mixture_of_precip" or "heavy_mixture_of_precip" or
-                "snow_changing_to_rain" or "snow_changing_to_an_icy_mix" or "an_icy_mix_changing_to_snow" or
-                "an_icy_mix_changing_to_rain" or "rain_changing_to_snow" or "rain_changing_to_an_icy_mix" or
-                "light_icy_mix_early" or "icy_mix_early" or "light_icy_mix_late" or "icy_mix_late" or
-                "snow_rain_mix" or "light_freezing_rain" or "freezing_rain" => WeatherIcons.RAIN_MIX,
+                    "snow_changing_to_rain" or "snow_changing_to_an_icy_mix" or "an_icy_mix_changing_to_snow" or
+                    "an_icy_mix_changing_to_rain" or "rain_changing_to_snow" or "rain_changing_to_an_icy_mix" or
+                    "light_icy_mix_early" or "icy_mix_early" or "light_icy_mix_late" or "icy_mix_late" or
+                    "snow_rain_mix" or "light_freezing_rain" or "freezing_rain" => WeatherIcons.RAIN_MIX,
 
                 "scattered_flurries" or "snow_flurries" or "light_snow_showers" or "snow_showers" or "light_snow" or
-                "flurries_early" or "snow_showers_early" or "light_snow_early" or "flurries_late" or "snow_showers_late" or
-                "light_snow_late" or "snow" or "moderate_snow" or "snow_early" or "snow_late" => WeatherIcons.SNOW,
+                    "flurries_early" or "snow_showers_early" or "light_snow_early" or "flurries_late"
+                    or "snow_showers_late" or
+                    "light_snow_late" or "snow" or "moderate_snow" or "snow_early" or "snow_late" => WeatherIcons.SNOW,
 
                 "heavy_rain_early" or "heavy_rain" or "lots_of_rain" or "tons_of_rain" or "heavy_rain_late" or
-                "flash_floods" or "flood" => WeatherIcons.RAIN_WIND,
+                    "flash_floods" or "flood" => WeatherIcons.RAIN_WIND,
 
                 "drizzle" or "light_rain" or "sprinkles_early" or "light_rain_early" or "sprinkles_late" or
-                "light_rain_late" or "sprinkles" => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
+                    "light_rain_late"
+                    or "sprinkles" => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
 
-                "heavy_snow" or "heavy_snow_early" or "heavy_snow_late" or "snowstorm" or "blizzard" => WeatherIcons.SNOW_WIND,
+                "heavy_snow" or "heavy_snow_early" or "heavy_snow_late" or "snowstorm" or "blizzard" => WeatherIcons
+                    .SNOW_WIND,
 
                 "tornado" => WeatherIcons.TORNADO,
 
@@ -338,17 +366,22 @@ namespace SimpleWeather.Weather_API.HERE
                         WeatherIcon = WeatherIcons.NIGHT_OVERCAST;
                     else
                         WeatherIcon = WeatherIcons.DAY_SUNNY_OVERCAST;
-                else if (icon.Contains("mostly_sunny") || icon.Contains("mostly_clear") || icon.Contains("partly_cloudy")
-                        || icon.Contains("passing_clounds") || icon.Contains("more_sun_than_clouds") || icon.Contains("scattered_clouds")
-                        || icon.Contains("decreasing_cloudiness") || icon.Contains("clearing_skies")
-                        || icon.Contains("low_clouds") || icon.Contains("passing_clouds"))
+                else if (icon.Contains("mostly_sunny") || icon.Contains("mostly_clear") ||
+                         icon.Contains("partly_cloudy")
+                         || icon.Contains("passing_clounds") || icon.Contains("more_sun_than_clouds") ||
+                         icon.Contains("scattered_clouds")
+                         || icon.Contains("decreasing_cloudiness") || icon.Contains("clearing_skies")
+                         || icon.Contains("low_clouds") || icon.Contains("passing_clouds"))
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY;
                     else
                         WeatherIcon = WeatherIcons.DAY_PARTLY_CLOUDY;
-                else if (icon.Contains("cloudy") || icon.Contains("a_mixture_of_sun_and_clouds") || icon.Contains("increasing_cloudiness")
-                         || icon.Contains("breaks_of_sun_late") || icon.Contains("afternoon_clouds") || icon.Contains("morning_clouds")
-                         || icon.Contains("partly_sunny") || icon.Contains("more_clouds_than_sun") || icon.Contains("broken_clouds"))
+                else if (icon.Contains("cloudy") || icon.Contains("a_mixture_of_sun_and_clouds") ||
+                         icon.Contains("increasing_cloudiness")
+                         || icon.Contains("breaks_of_sun_late") || icon.Contains("afternoon_clouds") ||
+                         icon.Contains("morning_clouds")
+                         || icon.Contains("partly_sunny") || icon.Contains("more_clouds_than_sun") ||
+                         icon.Contains("broken_clouds"))
                     if (isNight)
                         WeatherIcon = WeatherIcons.NIGHT_ALT_CLOUDY;
                     else
@@ -367,11 +400,13 @@ namespace SimpleWeather.Weather_API.HERE
                         WeatherIcon = WeatherIcons.NIGHT_HAZE;
                     else
                         WeatherIcon = WeatherIcons.DAY_HAZE;
-                else if (icon.Contains("sleet") || icon.Contains("snow_changing_to_an_icy_mix") || icon.Contains("an_icy_mix_changing_to_snow")
-                        || icon.Contains("rain_changing_to_snow"))
+                else if (icon.Contains("sleet") || icon.Contains("snow_changing_to_an_icy_mix") ||
+                         icon.Contains("an_icy_mix_changing_to_snow")
+                         || icon.Contains("rain_changing_to_snow"))
                     WeatherIcon = WeatherIcons.SLEET;
-                else if (icon.Contains("mixture_of_precip") || icon.Contains("icy_mix") || icon.Contains("snow_changing_to_rain")
-                        || icon.Contains("snow_rain_mix") || icon.Contains("freezing_rain"))
+                else if (icon.Contains("mixture_of_precip") || icon.Contains("icy_mix") ||
+                         icon.Contains("snow_changing_to_rain")
+                         || icon.Contains("snow_rain_mix") || icon.Contains("freezing_rain"))
                     WeatherIcon = WeatherIcons.RAIN_MIX;
                 else if (icon.Contains("hail"))
                     WeatherIcon = WeatherIcons.HAIL;
@@ -384,7 +419,7 @@ namespace SimpleWeather.Weather_API.HERE
                 else if (icon.Contains("rain") || icon.Contains("flood"))
                     WeatherIcon = WeatherIcons.RAIN;
                 else if (icon.Contains("tstorms") || icon.Contains("thunderstorms") || icon.Contains("thundershowers")
-                        || icon.Contains("tropical_storm"))
+                         || icon.Contains("tropical_storm"))
                     WeatherIcon = WeatherIcons.THUNDERSTORM;
                 else if (icon.Contains("smoke"))
                     WeatherIcon = WeatherIcons.SMOKE;

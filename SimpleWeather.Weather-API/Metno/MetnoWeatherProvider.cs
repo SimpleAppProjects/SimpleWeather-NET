@@ -1,14 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.HttpClientExtensions;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Resources.Strings;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -17,15 +7,31 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.HttpClientExtensions;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.Metno
 {
     public partial class MetnoWeatherProvider : WeatherProviderImpl
     {
-        private const string FORECAST_QUERY_URL = "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
+        private const string FORECAST_QUERY_URL =
+            "https://api.met.no/weatherapi/locationforecast/2.0/complete.json?{0}";
+
         private const string SUN_QUERY_URL = "https://api.met.no/weatherapi/sunrise/3.0/sun?{0}&date={1}&offset=+00:00";
-        private const string MOON_QUERY_URL = "https://api.met.no/weatherapi/sunrise/3.0/moon?{0}&date={1}&offset=+00:00";
+
+        private const string MOON_QUERY_URL =
+            "https://api.met.no/weatherapi/sunrise/3.0/moon?{0}&date={1}&offset=+00:00";
 
         public MetnoWeatherProvider() : base()
         {
@@ -35,7 +41,7 @@ namespace SimpleWeather.Weather_API.Metno
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -59,7 +65,7 @@ namespace SimpleWeather.Weather_API.Metno
             Weather weather = null;
             WeatherException wEx = null;
 
-            var query = UpdateLocationQuery(location);
+            var query = await UpdateLocationQuery(location);
 
             try
             {
@@ -158,7 +164,8 @@ namespace SimpleWeather.Weather_API.Metno
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
@@ -207,19 +214,22 @@ namespace SimpleWeather.Weather_API.Metno
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}",
+                location.latitude, location.longitude));
         }
 
         private static string GetNeutralIconName(string icon_variant)
         {
-            return icon_variant?.Replace("_day", string.Empty).Replace("_night", string.Empty).Replace("_polartwilight", string.Empty);
+            return icon_variant?.Replace("_day", string.Empty).Replace("_night", string.Empty)
+                .Replace("_polartwilight", string.Empty);
         }
 
         public override string GetWeatherIcon(string icon)
@@ -270,12 +280,12 @@ namespace SimpleWeather.Weather_API.Metno
                     _ => WeatherIcons.DAY_SLEET_STORM,
                 },
                 "heavysleetshowersandthunder" or "lightssleetshowersandthunder" or
-                "sleetshowersandthunder" => icon switch
-                {
-                    _ when isDay => WeatherIcons.DAY_SLEET_STORM,
-                    _ when isNight => WeatherIcons.NIGHT_ALT_SLEET_STORM,
-                    _ => WeatherIcons.DAY_SLEET_STORM,
-                },
+                    "sleetshowersandthunder" => icon switch
+                    {
+                        _ when isDay => WeatherIcons.DAY_SLEET_STORM,
+                        _ when isNight => WeatherIcons.NIGHT_ALT_SLEET_STORM,
+                        _ => WeatherIcons.DAY_SLEET_STORM,
+                    },
                 "heavysleetshowers" => icon switch
                 {
                     _ when isDay => WeatherIcons.DAY_SLEET,
@@ -284,11 +294,11 @@ namespace SimpleWeather.Weather_API.Metno
                 },
                 "heavysnow" => WeatherIcons.SNOW_WIND,
                 "heavysnowandthunder" or "heavysnowshowersandthunder" or "lightsnowandthunder" or
-                "lightssnowshowersandthunder" or "snowandthunder" or "snowshowersandthunder" => icon switch
-                {
-                    _ when isNight => WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM,
-                    _ => WeatherIcons.DAY_SNOW_THUNDERSTORM,
-                },
+                    "lightssnowshowersandthunder" or "snowandthunder" or "snowshowersandthunder" => icon switch
+                    {
+                        _ when isNight => WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM,
+                        _ => WeatherIcons.DAY_SNOW_THUNDERSTORM,
+                    },
                 "heavysnowshowers" => icon switch
                 {
                     _ when isDay => WeatherIcons.DAY_SNOW_WIND,
@@ -356,19 +366,22 @@ namespace SimpleWeather.Weather_API.Metno
                 "heavyrain" => WeatherConditions.weather_heavyrain,
 
                 "heavyrainandthunder" or "heavyrainshowersandthunder" or "lightrainandthunder" or
-                "lightrainshowersandthunder" or "rainandthunder" or "rainshowersandthunder" => WeatherConditions.weather_tstorms,
+                    "lightrainshowersandthunder" or "rainandthunder"
+                    or "rainshowersandthunder" => WeatherConditions.weather_tstorms,
 
                 "heavyrainshowers" or "lightrainshowers" or "rainshowers" => WeatherConditions.weather_rainshowers,
 
                 "heavysleet" or "heavysleetshowers" => WeatherConditions.weather_sleet,
 
                 "heavysleetandthunder" or "heavysleetshowersandthunder" or "lightsleetandthunder" or
-                "lightssleetshowersandthunder" or "sleetandthunder" or "sleetshowersandthunder" => WeatherConditions.weather_sleet_tstorms,
+                    "lightssleetshowersandthunder" or "sleetandthunder"
+                    or "sleetshowersandthunder" => WeatherConditions.weather_sleet_tstorms,
 
                 "heavysnow" or "heavysnowshowers" => WeatherConditions.weather_heavysnow,
 
                 "heavysnowandthunder" or "heavysnowshowersandthunder" or "lightsnowandthunder" or
-                "lightssnowshowersandthunder" or "snowandthunder" or "snowshowersandthunder" => WeatherConditions.weather_snow_tstorms,
+                    "lightssnowshowersandthunder" or "snowandthunder"
+                    or "snowshowersandthunder" => WeatherConditions.weather_snow_tstorms,
 
                 "lightrain" => WeatherConditions.weather_lightrain,
 
@@ -395,31 +408,31 @@ namespace SimpleWeather.Weather_API.Metno
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)

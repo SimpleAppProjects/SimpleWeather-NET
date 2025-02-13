@@ -1,14 +1,4 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Common.Utils;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API;
-using SimpleWeather.Weather_API.TZDB;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-#if __ANDROID__
+﻿#if __ANDROID__
 using Android.Locations;
 using AndroidX.Core.Content;
 #endif
@@ -18,6 +8,15 @@ using Windows.Devices.Geolocation;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Devices.Sensors;
 #endif
+using System;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Utils;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.TZDB;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Common.Location
@@ -33,7 +32,8 @@ namespace SimpleWeather.Common.Location
 
         public LocationProvider()
         {
-            LocationMgr = Platform.AppContext.GetSystemService(Android.Content.Context.LocationService) as LocationManager;
+            LocationMgr =
+ Platform.AppContext.GetSystemService(Android.Content.Context.LocationService) as LocationManager;
         }
 #endif
 
@@ -136,13 +136,14 @@ namespace SimpleWeather.Common.Location
 
                 geolocator.AllowFallbackToConsentlessPositions();
 
-                var geoposition = await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
+                var geoposition =
+ await geolocator.GetGeopositionAsync(TimeSpan.FromMinutes(15), TimeSpan.FromSeconds(10));
 
                 Logger.WriteLine(LoggerLevel.Info, $"{TAG}: Location update received...");
 
                 return geoposition.ToLocation();
 #else
-                var request = new GeolocationRequest(GeolocationAccuracy.Default, TimeSpan.FromMinutes(15));
+                var request = new GeolocationRequest(GeolocationAccuracy.Default, TimeSpan.FromSeconds(10));
 
                 var geoposition = await Geolocation.Default.GetLocationAsync(request);
 
@@ -166,10 +167,7 @@ namespace SimpleWeather.Common.Location
         {
             if (!await CheckPermissions()) return new LocationResult.PermissionDenied();
 
-            var location = (await this.RunCatching(async () =>
-            {
-                return await GetLastLocation();
-            })).GetOrNull();
+            var location = (await this.RunCatching(async () => { return await GetLastLocation(); })).GetOrNull();
 
             location ??= await GetCurrentLocation();
 
@@ -179,7 +177,8 @@ namespace SimpleWeather.Common.Location
 
                 // Check previous location difference
                 if (lastGPSLocData?.IsValid() == true
-                    && previousLocation != null && ConversionMethods.CalculateGeopositionDistance(previousLocation.ToLocation(), location) < 1600)
+                    && previousLocation != null &&
+                    ConversionMethods.CalculateGeopositionDistance(previousLocation.ToLocation(), location) < 1600)
                 {
                     return new LocationResult.NotChanged(previousLocation);
                 }
@@ -187,8 +186,8 @@ namespace SimpleWeather.Common.Location
                 if (lastGPSLocData?.IsValid() == true
                     && Math.Abs(
                         ConversionMethods.CalculateHaversine(lastGPSLocData.latitude, lastGPSLocData.longitude,
-                        location.Latitude, location.Longitude)
-                        ) < 1600)
+                            location.Latitude, location.Longitude)
+                    ) < 1600)
                 {
                     return new LocationResult.NotChanged(lastGPSLocData);
                 }
@@ -210,7 +209,8 @@ namespace SimpleWeather.Common.Location
                 {
                     return new LocationResult.Error(new ErrorMessage.String(ResStrings.error_retrieve_location));
                 }
-                else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 && view.LocationLong != 0)
+                else if (String.IsNullOrWhiteSpace(view.LocationTZLong) && view.LocationLat != 0 &&
+                         view.LocationLong != 0)
                 {
                     String tzId = await TZDBService.GetTimeZone(view.LocationLat, view.LocationLong);
                     if (!Equals("unknown", tzId))

@@ -1,13 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Net;
@@ -16,6 +7,17 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherUnlocked
@@ -28,7 +30,7 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
 
         public WeatherUnlockedProvider() : base()
         {
-            LocationProvider = new Bing.BingMapsLocationProvider();
+            LocationProvider = new BingMapsLocationProvider();
         }
 
         public override string WeatherAPI => WAPI.WeatherUnlocked;
@@ -69,7 +71,7 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
 
             var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-            string query = UpdateLocationQuery(location);
+            string query = await UpdateLocationQuery(location);
 
             try
             {
@@ -104,8 +106,10 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
                         Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
 
                         // Load weather
-                        CurrentRootobject currRoot = await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream);
-                        ForecastRootobject foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
+                        CurrentRootobject currRoot =
+                            await JSONParser.DeserializerAsync<CurrentRootobject>(currentStream);
+                        ForecastRootobject foreRoot =
+                            await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
 
                         weather = this.CreateWeatherData(currRoot, foreRoot);
                     }
@@ -115,13 +119,13 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             {
                 weather = null;
 
-                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
+                if (ex is HttpRequestException or WebException or SocketException or IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
-                else if (ex is WeatherException)
+                else if (ex is WeatherException exception)
                 {
-                    wEx = ex as WeatherException;
+                    wEx = exception;
                 }
                 else
                 {
@@ -149,14 +153,16 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             // OWM reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);
 
-            weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            weather.astronomy =
+                await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
 
             // Update icons
             var now = DateTimeOffset.UtcNow.ToOffset(offset).TimeOfDay;
@@ -175,14 +181,16 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}", location.latitude,
+                location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -251,104 +259,104 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             string WeatherIcon = code switch
             {
                 0 /* Sunny skies/Clear skies */
-                => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
+                    => isNight ? WeatherIcons.NIGHT_CLEAR : WeatherIcons.DAY_SUNNY,
 
                 1 /* Partly cloudy skies */
-                => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
+                    => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
 
                 2 /* Cloudy skies */
-                => WeatherIcons.CLOUDY,
+                    => WeatherIcons.CLOUDY,
 
                 3 /* Overcast skies */
-                => WeatherIcons.OVERCAST,
+                    => WeatherIcons.OVERCAST,
 
                 10 or // Mist
-                45 or // Fog
-                49 // Freezing fog
-                => WeatherIcons.FOG,
+                    45 or // Fog
+                    49 // Freezing fog
+                    => WeatherIcons.FOG,
 
                 21 or // Patchy rain possible
-                50 or // Patchy light drizzle
-                60 // Patchy light rain
-                => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
+                    50 or // Patchy light drizzle
+                    60 // Patchy light rain
+                    => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
 
                 22 or // Patchy snow possible
-                70 or // Patchy light snow
-                72 // Patchy moderate snow
-                => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
+                    70 or // Patchy light snow
+                    72 // Patchy moderate snow
+                    => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
 
                 23 // Patchy sleet possible
-                => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
+                    => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
 
                 24 // Patchy freezing drizzle possible
-                => isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX,
+                    => isNight ? WeatherIcons.NIGHT_ALT_RAIN_MIX : WeatherIcons.DAY_RAIN_MIX,
 
                 29 /* Thundery outbreaks possible */
-                => isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING,
+                    => isNight ? WeatherIcons.NIGHT_ALT_LIGHTNING : WeatherIcons.DAY_LIGHTNING,
 
                 38 or // Blowing snow
-                39 or // Blizzard
-                74 or // Patchy heavy snow
-                75 // Heavy snow
-                => WeatherIcons.SNOW_WIND,
+                    39 or // Blizzard
+                    74 or // Patchy heavy snow
+                    75 // Heavy snow
+                    => WeatherIcons.SNOW_WIND,
 
                 51 or // Light drizzle
-                61 // Light rain
-                => WeatherIcons.SPRINKLE,
+                    61 // Light rain
+                    => WeatherIcons.SPRINKLE,
 
                 56 or // Freezing drizzle
-                57 or // Heavy freezing drizzle
-                66 or // Light freezing rain
-                67 // Moderate or heavy freezing rain
-                => WeatherIcons.RAIN_MIX,
+                    57 or // Heavy freezing drizzle
+                    66 or // Light freezing rain
+                    67 // Moderate or heavy freezing rain
+                    => WeatherIcons.RAIN_MIX,
 
                 62 or // Moderate rain at times
-                63 /* Moderate rain */
-                => WeatherIcons.RAIN,
+                    63 /* Moderate rain */
+                    => WeatherIcons.RAIN,
 
                 64 or // Heavy rain at times
-                65 // Heavy rain
-                => WeatherIcons.RAIN_WIND,
+                    65 // Heavy rain
+                    => WeatherIcons.RAIN_WIND,
 
                 68 or // Light sleet
-                69 // Moderate or heavy sleet
-                => WeatherIcons.SLEET,
+                    69 // Moderate or heavy sleet
+                    => WeatherIcons.SLEET,
 
                 71 or // Light snow
-                73 // Moderate snow
-                => WeatherIcons.SNOW,
+                    73 // Moderate snow
+                    => WeatherIcons.SNOW,
 
                 79 // Ice pellets
-                => WeatherIcons.HAIL,
+                    => WeatherIcons.HAIL,
 
                 80 or // Light rain shower
-                81 or // Moderate or heavy rain shower
-                82 // Torrential rain shower
-                => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
+                    81 or // Moderate or heavy rain shower
+                    82 // Torrential rain shower
+                    => isNight ? WeatherIcons.NIGHT_ALT_SHOWERS : WeatherIcons.DAY_SHOWERS,
 
                 83 or // Light sleet showers
-                84 // Moderate or heavy sleet showers
-                => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
+                    84 // Moderate or heavy sleet showers
+                    => isNight ? WeatherIcons.NIGHT_ALT_SLEET : WeatherIcons.DAY_SLEET,
 
                 85 or // Light snow showers
-                86 // Moderate or heavy snow showers
-                => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
+                    86 // Moderate or heavy snow showers
+                    => isNight ? WeatherIcons.NIGHT_ALT_SNOW : WeatherIcons.DAY_SNOW,
 
                 87 or // Light showers of ice pellets
-                88 /* Moderate or heavy showers of ice pellets */
-                => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
+                    88 /* Moderate or heavy showers of ice pellets */
+                    => isNight ? WeatherIcons.NIGHT_ALT_HAIL : WeatherIcons.DAY_HAIL,
 
                 91 // Patchy light rain with thunder
-                => isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM,
+                    => isNight ? WeatherIcons.NIGHT_ALT_THUNDERSTORM : WeatherIcons.DAY_THUNDERSTORM,
 
                 92 /* Moderate or heavy rain with thunder */
-                => WeatherIcons.THUNDERSTORM,
+                    => WeatherIcons.THUNDERSTORM,
 
                 93 // Patchy light snow with thunder
-                => isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM,
+                    => isNight ? WeatherIcons.NIGHT_ALT_SNOW_THUNDERSTORM : WeatherIcons.DAY_SNOW_THUNDERSTORM,
 
                 94 /* Moderate or heavy snow with thunder */
-                => WeatherIcons.SNOW_THUNDERSTORM,
+                    => WeatherIcons.SNOW_THUNDERSTORM,
 
                 _ => WeatherIcons.NA,
             };
@@ -371,31 +379,31 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)

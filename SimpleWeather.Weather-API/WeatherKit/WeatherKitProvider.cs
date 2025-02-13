@@ -1,14 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Resources.Strings;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -18,6 +8,18 @@ using System.Net.Http.Headers;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Resources.Strings;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Maui;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherKit
@@ -26,7 +28,9 @@ namespace SimpleWeather.Weather_API.WeatherKit
     {
         private const String BASE_URL = "https://weatherkit.apple.com/api/v1/";
         private const String AVAILABILITY_QUERY_URL = BASE_URL + "availability/{0}?country={2}";
-        private const String WEATHER_QUERY_URL = BASE_URL + "weather/{0}/{1}?countryCode={2}&dataSets=currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts&timezone={timezone}";
+
+        private const String WEATHER_QUERY_URL = BASE_URL +
+                                                 "weather/{0}/{1}?countryCode={2}&dataSets=currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts&timezone={timezone}";
 
         public WeatherKitProvider() : base()
         {
@@ -36,7 +40,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Maui.MauiLocationProvider();
+                return new MauiLocationProvider();
             });
         }
 
@@ -60,7 +64,8 @@ namespace SimpleWeather.Weather_API.WeatherKit
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(SimpleWeather.LocationData.LocationData location)
+        protected override async Task<SimpleWeather.WeatherData.Weather> GetWeatherData(
+            SimpleWeather.LocationData.LocationData location)
         {
             SimpleWeather.WeatherData.Weather weather = null;
             WeatherException wEx = null;
@@ -76,9 +81,10 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 Uri weatherURL = BASE_URL.ToUriBuilderEx()
                     .AppendPath("weather")
                     .AppendPath(locale)
-                    .AppendPath(UpdateLocationQuery(location), encode: false)
+                    .AppendPath(await UpdateLocationQuery(location), encode: false)
                     .AppendQueryParameter("country", location.country_code)
-                    .AppendQueryParameter("dataSets", "currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts")
+                    .AppendQueryParameter("dataSets",
+                        "currentWeather,forecastDaily,forecastHourly,forecastNextHour,weatherAlerts")
                     .AppendQueryParameter("timezone", location.tz_long)
                     .BuildUri();
 
@@ -88,7 +94,8 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 if (!String.IsNullOrWhiteSpace(token))
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
                 else
-                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey, new Exception($"Invalid bearer token: {token}"));
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey,
+                        new Exception($"Invalid bearer token: {token}"));
 
                 request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
@@ -110,13 +117,13 @@ namespace SimpleWeather.Weather_API.WeatherKit
             {
                 weather = null;
 
-                if (ex is HttpRequestException || ex is WebException || ex is SocketException || ex is IOException)
+                if (ex is HttpRequestException or WebException or SocketException or IOException)
                 {
                     wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
                 }
-                else if (ex is WeatherException)
+                else if (ex is WeatherException exception)
                 {
-                    wEx = ex as WeatherException;
+                    wEx = exception;
                 }
                 else
                 {
@@ -144,7 +151,8 @@ namespace SimpleWeather.Weather_API.WeatherKit
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, SimpleWeather.WeatherData.Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            SimpleWeather.WeatherData.Weather weather)
         {
             var offset = location.tz_offset;
 
@@ -156,14 +164,17 @@ namespace SimpleWeather.Weather_API.WeatherKit
             {
                 hr_forecast.date = hr_forecast.date.ToOffset(offset);
             }
+
             foreach (Forecast forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
             }
+
             foreach (TextForecast forecast in weather.txt_forecast)
             {
                 forecast.date = forecast.date.ToOffset(offset);
             }
+
             if (weather.min_forecast?.Any() == true)
             {
                 foreach (MinutelyForecast min_forecast in weather.min_forecast)
@@ -171,6 +182,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                     min_forecast.date = min_forecast.date.ToOffset(offset);
                 }
             }
+
             if (weather.weather_alerts?.Any() == true)
             {
                 foreach (var alert in weather.weather_alerts)
@@ -200,18 +212,21 @@ namespace SimpleWeather.Weather_API.WeatherKit
             }
             else
             {
-                weather.astronomy = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+                weather.astronomy =
+                    await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
             }
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.WeatherData.Weather weather)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.WeatherData.Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####}/{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####}/{1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####}/{1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####}/{1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -254,6 +269,7 @@ namespace SimpleWeather.Weather_API.WeatherKit
                             code = "zh";
                             break;
                     }
+
                     break;
                 default:
                     code = name;
@@ -277,7 +293,9 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 "Cloudy" => WeatherIcons.CLOUDY,
                 "Foggy" => WeatherIcons.FOG,
                 "Haze" => WeatherIcons.HAZE,
-                "MostlyClear" or "PartlyCloudy" => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
+                "MostlyClear" or "PartlyCloudy" => isNight
+                    ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY
+                    : WeatherIcons.DAY_PARTLY_CLOUDY,
                 "MostlyCloudy" => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
                 "Smoky" => WeatherIcons.SMOKE,
 
@@ -374,31 +392,31 @@ namespace SimpleWeather.Weather_API.WeatherKit
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)

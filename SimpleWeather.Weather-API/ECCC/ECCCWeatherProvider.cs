@@ -1,13 +1,4 @@
-﻿using SimpleWeather.Extras;
-using SimpleWeather.Icons;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.SMC;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.Weather_API.WeatherData;
-using SimpleWeather.WeatherData;
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -16,6 +7,18 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using NodaTime;
+using SimpleWeather.Extras;
+using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.NWS;
+using SimpleWeather.Weather_API.SMC;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using ResConditions = SimpleWeather.Resources.Strings.WeatherConditions;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
@@ -33,7 +36,7 @@ namespace SimpleWeather.Weather_API.ECCC
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new Bing.BingMapsLocationProvider();
+                return new BingMapsLocationProvider();
             });
         }
 
@@ -49,7 +52,7 @@ namespace SimpleWeather.Weather_API.ECCC
             return LocationUtils.IsCanada(location);
         }
 
-        public override bool IsRegionSupported(SimpleWeather.LocationData.LocationQuery location)
+        public override bool IsRegionSupported(LocationQuery location)
         {
             return LocationUtils.IsCanada(location);
         }
@@ -73,13 +76,15 @@ namespace SimpleWeather.Weather_API.ECCC
             // ECCC
             if (!LocationUtils.IsCanada(location))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound, new Exception($"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
+                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
+                    new Exception(
+                        $"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
             }
 
             var culture = LocaleUtils.GetLocale();
 
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
-            string query = UpdateLocationQuery(location);
+            string query = await UpdateLocationQuery(location);
 
             try
             {
@@ -144,7 +149,8 @@ namespace SimpleWeather.Weather_API.ECCC
             return weather;
         }
 
-        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
+            Weather weather)
         {
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
@@ -155,11 +161,13 @@ namespace SimpleWeather.Weather_API.ECCC
 
             try
             {
-                newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+                newAstro = await new SunMoonCalcProvider().GetAstronomyData(location,
+                    weather.condition.observation_time);
             }
             catch (WeatherException)
             {
-                newAstro = await new NWS.SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+                newAstro = await new SolCalcAstroProvider().GetAstronomyData(location,
+                    weather.condition.observation_time);
             }
 
             if (weather.astronomy != null)
@@ -181,7 +189,8 @@ namespace SimpleWeather.Weather_API.ECCC
             {
                 weather.condition.weather = GetWeatherCondition(weather.condition.icon);
             }
-            weather.condition.icon = GetWeatherIcon(/*now < sunrise || now > sunset, */weather.condition.icon);
+
+            weather.condition.icon = GetWeatherIcon( /*now < sunrise || now > sunset, */weather.condition.icon);
 
             foreach (var forecast in weather.forecast)
             {
@@ -216,14 +225,16 @@ namespace SimpleWeather.Weather_API.ECCC
             }
         }
 
-        public override string UpdateLocationQuery(Weather weather)
+        public override Task<string> UpdateLocationQuery(Weather weather)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", weather.location.latitude, weather.location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                weather.location.latitude, weather.location.longitude));
         }
 
-        public override string UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
+        public override Task<string> UpdateLocationQuery(SimpleWeather.LocationData.LocationData location)
         {
-            return string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", location.latitude, location.longitude);
+            return Task.FromResult(string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}",
+                location.latitude, location.longitude));
         }
 
         public override String LocaleToLangCode(String iso, String name)
@@ -266,7 +277,8 @@ namespace SimpleWeather.Weather_API.ECCC
 
                 2 or 32 => isNight ? WeatherIcons.NIGHT_ALT_PARTLY_CLOUDY : WeatherIcons.DAY_PARTLY_CLOUDY,
 
-                3 or 4 or 5 or 22 or 33 or 34 or 35 => isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
+                3 or 4 or 5 or 22 or 33 or 34 or 35 =>
+                    isNight ? WeatherIcons.NIGHT_ALT_CLOUDY : WeatherIcons.DAY_CLOUDY,
 
                 6 or 36 => isNight ? WeatherIcons.NIGHT_ALT_SPRINKLE : WeatherIcons.DAY_SPRINKLE,
 
@@ -351,31 +363,31 @@ namespace SimpleWeather.Weather_API.ECCC
             if (!isNight)
             {
                 // Fallback to sunset/rise time just in case
-                NodaTime.LocalTime sunrise;
-                NodaTime.LocalTime sunset;
+                LocalTime sunrise;
+                LocalTime sunset;
                 if (weather.astronomy != null)
                 {
-                    sunrise = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
-                    sunset = NodaTime.LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
+                    sunrise = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunrise.TimeOfDay.Ticks);
+                    sunset = LocalTime.FromTicksSinceMidnight(weather.astronomy.sunset.TimeOfDay.Ticks);
                 }
                 else
                 {
-                    sunrise = NodaTime.LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
-                    sunset = NodaTime.LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
+                    sunrise = LocalTime.FromHourMinuteSecondTick(6, 0, 0, 0);
+                    sunset = LocalTime.FromHourMinuteSecondTick(18, 0, 0, 0);
                 }
 
-                NodaTime.DateTimeZone tz = null;
+                DateTimeZone tz = null;
 
                 if (weather.location.tz_long != null)
                 {
-                    tz = NodaTime.DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
+                    tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                 }
 
                 if (tz == null)
-                    tz = NodaTime.DateTimeZone.ForOffset(NodaTime.Offset.FromTimeSpan(weather.location.tz_offset));
+                    tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
-                var now = NodaTime.SystemClock.Instance.GetCurrentInstant()
-                            .InZone(tz).TimeOfDay;
+                var now = SystemClock.Instance.GetCurrentInstant()
+                    .InZone(tz).TimeOfDay;
 
                 // Determine whether its night using sunset/rise times
                 if (now < sunrise || now > sunset)
