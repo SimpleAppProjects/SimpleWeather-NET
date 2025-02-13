@@ -1,16 +1,26 @@
+using System.Diagnostics;
+using System.Net;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.Security;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
+using Windows.Storage;
+using Windows.System;
+using Windows.UI.ViewManagement;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using CommunityToolkit.WinUI.Notifications;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
+using Newtonsoft.Json;
+using Sentry.Extensibility;
 using Sentry.Protocol;
+using SimpleWeather.Backgrounds;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
-using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Helpers;
@@ -18,6 +28,7 @@ using SimpleWeather.NET.Json;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.NET.Main;
 using SimpleWeather.NET.Preferences;
+using SimpleWeather.NET.Radar;
 using SimpleWeather.NET.Setup;
 using SimpleWeather.NET.Shared.Helpers;
 using SimpleWeather.NET.Widgets.Json;
@@ -26,16 +37,17 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
-using System.Security;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Core;
-using Windows.System;
-using Windows.UI.ViewManagement;
+using SQLite;
+using Application = Microsoft.Maui.Controls.Application;
 using FirebaseAuth = Firebase.Auth;
 using FirebaseDb = Firebase.Database;
+using JsonException = System.Text.Json.JsonException;
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+using Launcher = Microsoft.Maui.ApplicationModel.Launcher;
 using Package = Windows.ApplicationModel.Package;
+using Shell = Microsoft.Maui.Controls.Shell;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
+using Window = Microsoft.Maui.Controls.Window;
 
 namespace SimpleWeather.NET
 {
@@ -142,6 +154,7 @@ namespace SimpleWeather.NET
             RegisterSettingsListener();
 
             AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, DeviceTypeHelper.DeviceType.ToString().ToLowerInvariant());
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "Windows");
             AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION, DeviceTypeHelper.OSVersion.ToFormattedString());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION_CODE, DeviceTypeHelper.OSVersion.ToVersionCode());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION, Package.Current.Id.Version.ToFormattedString());
@@ -178,7 +191,7 @@ namespace SimpleWeather.NET
 
         private void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton<IImageDataService, Backgrounds.ImageDataHelperRes>();
+            serviceCollection.AddSingleton<IImageDataService, ImageDataHelperRes>();
             serviceCollection.AddLogging();
             serviceCollection.AddLocalization();
             serviceCollection.AddSingleton<CustomStringLocalizer>();
@@ -292,7 +305,7 @@ namespace SimpleWeather.NET
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
             // Register for toast activation. Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
             ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
@@ -344,7 +357,7 @@ namespace SimpleWeather.NET
             Initialize(args);
 
 #if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 // this.DebugSettings.EnableFrameRateCounter = true;
             }
@@ -486,7 +499,7 @@ namespace SimpleWeather.NET
                                         Shell.Instance.AppFrame.BackStack.Add(new PageStackEntry(typeof(WeatherNow), new WeatherNowArgs()
                                         {
                                             Location = locData,
-                                            IsHome = Object.Equals(locData, await SettingsManager.GetHomeData())
+                                            IsHome = Equals(locData, await SettingsManager.GetHomeData())
                                         }, null));
                                     }
                                 }
@@ -745,7 +758,7 @@ namespace SimpleWeather.NET
             SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
         }
 
-        private void OnDomainFirstChanceException(object sender, System.Runtime.ExceptionServices.FirstChanceExceptionEventArgs e)
+        private void OnDomainFirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
             LastFirstChanceException = e.Exception;
         }
@@ -863,7 +876,7 @@ namespace SimpleWeather.NET
 
         private void App_OnSettingsChanged(SettingsChangedEventArgs e)
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            var localSettings = ApplicationData.Current.LocalSettings;
             var isWeatherLoaded = localSettings.Values[SettingsManager.KEY_WEATHERLOADED] as bool? ?? false;
 
             switch (e.Key)
@@ -913,7 +926,7 @@ namespace SimpleWeather.NET
 
         private void Window_Closed(object sender, WindowEventArgs args)
         {
-            Radar.MapControlCreator.Instance?.RemoveMapControl();
+            MapControlCreator.Instance?.RemoveMapControl();
             MainWindow.Current = null;
             if (_window != null)
             {
@@ -938,7 +951,7 @@ namespace SimpleWeather.NET
             }
         }
 
-        private class ExceptionFilter : Sentry.Extensibility.IExceptionFilter
+        private class ExceptionFilter : IExceptionFilter
         {
             public bool Filter(Exception ex)
             {
@@ -968,13 +981,13 @@ namespace SimpleWeather.NET
                     return true;
                 }
 
-                if (ex is System.Text.Json.JsonException || ex is System.Net.Http.HttpRequestException ||
-                    ex is System.Net.WebException || ex is System.Runtime.InteropServices.COMException ||
-                    ex is SimpleWeather.Utils.WeatherException || ex is System.IO.FileNotFoundException ||
-                    ex is System.Threading.Tasks.TaskCanceledException || ex is System.TimeoutException ||
+                if (ex is JsonException || ex is HttpRequestException ||
+                    ex is WebException || ex is COMException ||
+                    ex is WeatherException || ex is FileNotFoundException ||
+                    ex is TaskCanceledException || ex is TimeoutException ||
                     ex is FirebaseAuth.FirebaseAuthException || ex is FirebaseAuth.FirebaseAuthHttpException ||
-                    ex is FirebaseDb.FirebaseException || ex is SQLite.SQLiteException ||
-                    ex is Newtonsoft.Json.JsonReaderException)
+                    ex is FirebaseDb.FirebaseException || ex is SQLiteException ||
+                    ex is JsonReaderException)
                 {
                     return true;
                 }

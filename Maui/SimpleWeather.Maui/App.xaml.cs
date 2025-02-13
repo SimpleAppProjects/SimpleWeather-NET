@@ -1,24 +1,25 @@
-﻿using CommunityToolkit.Maui;
+﻿using System.Security;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using ObjCRuntime;
+using Sentry.Protocol;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
-using SimpleWeather.Keys;
+using SimpleWeather.Maui.Images;
 using SimpleWeather.Maui.Main;
 using SimpleWeather.Maui.Resources.Styles;
 using SimpleWeather.Maui.Setup;
 using SimpleWeather.Maui.Updates;
+using SimpleWeather.NET.Json;
 using SimpleWeather.NET.Localization;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
+using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
+using Runtime = ObjCRuntime.Runtime;
 #if __IOS__
 using UIKit;
 #endif
-using SimpleWeather.Weather_API.Json;
-using SimpleWeather.NET.Json;
-using System.Security;
-using SimpleWeather.Maui.Images;
 
 namespace SimpleWeather.Maui;
 
@@ -34,7 +35,7 @@ public partial class App : Application
         get
         {
 #if __IOS__
-            return UIKit.UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark;
+            return UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark;
 #else
             return Current.RequestedTheme == AppTheme.Dark;
 #endif
@@ -53,9 +54,9 @@ public partial class App : Application
     public App()
     {
 #if __IOS__
-        ObjCRuntime.Runtime.MarshalManagedException += (_, args) =>
+        Runtime.MarshalManagedException += (_, args) =>
         {
-            args.ExceptionMode = ObjCRuntime.MarshalManagedExceptionMode.UnwindNativeCode;
+            args.ExceptionMode = MarshalManagedExceptionMode.UnwindNativeCode;
         };
 #endif
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
@@ -85,6 +86,23 @@ public partial class App : Application
             AnalyticsLogger.SetUserProperty(AnalyticsProps.DEVICE_TYPE, "phone");
         }
 
+        if (DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "iOS");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.MacCatalyst)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "MacCatalyst");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "Android");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
+        {
+            AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "Windows");
+        }
+        
         this.UserAppTheme = SettingsManager.UserTheme switch
         {
             UserThemeMode.Light => AppTheme.Light,
@@ -167,8 +185,8 @@ public partial class App : Application
         {
 #if __MACCATALYST__
             // Tell Sentry this was an unhandled exception
-            exception.Data[Sentry.Protocol.Mechanism.HandledKey] = false;
-            exception.Data[Sentry.Protocol.Mechanism.MechanismKey] = "AppDomain.CurrentDomain.UnhandledException";
+            exception.Data[Mechanism.HandledKey] = false;
+            exception.Data[Mechanism.MechanismKey] = "AppDomain.CurrentDomain.UnhandledException";
 #endif
 
             Logger.WriteLine(LoggerLevel.Fatal, exception, "Unhandled Exception: {0}", exception);
@@ -198,8 +216,8 @@ public partial class App : Application
         {
 #if __MACCATALYST__
             // Tell Sentry this was an unhandled exception
-            exception.Data[Sentry.Protocol.Mechanism.HandledKey] = false;
-            exception.Data[Sentry.Protocol.Mechanism.MechanismKey] = "TaskScheduler.UnobservedTaskException";
+            exception.Data[Mechanism.HandledKey] = false;
+            exception.Data[Mechanism.MechanismKey] = "TaskScheduler.UnobservedTaskException";
 #endif
 
             Logger.WriteLine(LoggerLevel.Fatal, exception, "Unobserved Task Exception: Observed = {0}", e.Observed);

@@ -1,20 +1,17 @@
 ﻿#if __IOS__
-using System;
-using System.Linq;
-using SimpleWeather.Utils;
 
-using FirebaseApp = Firebase.Core.App;
-using FirebaseCore = Firebase.Core;
-using FirebaseAnalytics = Firebase.Analytics.Analytics;
-using System.Globalization;
 using System.Collections;
+using System.Globalization;
+using Foundation;
 using SimpleWeather.Resources.Strings;
+using SimpleWeather.Utils;
+using FirebaseApp = Firebase.Core.App;
+using FirebaseAnalytics = Firebase.Analytics.Analytics;
 #if IOS
 using FirebaseCrashlytics = Firebase.Crashlytics.Crashlytics;
 #endif
 using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
 using FirebaseMessaging = Firebase.CloudMessaging.Messaging;
-using Foundation;
 
 namespace SimpleWeather.Maui;
 
@@ -40,6 +37,23 @@ public static class FirebaseConfigurator
         else if (DeviceInfo.Idiom == DeviceIdiom.Phone)
         {
             FirebaseAnalytics.SetUserProperty(name: AnalyticsProps.DEVICE_TYPE, value: "phone");
+        }
+        
+        if (DeviceInfo.Platform == DevicePlatform.iOS)
+        {
+            FirebaseAnalytics.SetUserProperty(name: AnalyticsProps.PLATFORM, value: "iOS");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.MacCatalyst)
+        {
+            FirebaseAnalytics.SetUserProperty(name: AnalyticsProps.PLATFORM, value: "MacCatalyst");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.Android)
+        {
+            FirebaseAnalytics.SetUserProperty(name: AnalyticsProps.PLATFORM, value: "Android");
+        }
+        else if (DeviceInfo.Platform == DevicePlatform.WinUI)
+        {
+            FirebaseAnalytics.SetUserProperty(name: AnalyticsProps.PLATFORM, value: "Windows");
         }
 
 #if IOS

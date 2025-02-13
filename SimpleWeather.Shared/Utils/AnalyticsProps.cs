@@ -6,6 +6,7 @@
         public const string USING_PERSONAL_KEY = "using_personal_key";
         public const string USER_LOCALE = "user_locale";
         public const string DEVICE_TYPE = "device_type";
+        public const string PLATFORM = "platform";
         public const string IS_PREMIUM = "is_premium";
         public const string IS_PRO = "is_pro";
 
