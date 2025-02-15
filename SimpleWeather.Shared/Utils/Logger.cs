@@ -35,11 +35,7 @@ namespace SimpleWeather.Utils
         public static void Init()
         {
 #if DEBUG
-#if __IOS__
             Timber.Plant(new ConsoleTree());
-#else
-            Timber.Plant(new Timber.DebugTree());
-#endif
             Timber.Plant(new FileLoggingTree());
 #elif !UNIT_TEST
             CleanupLogs();
@@ -52,12 +48,7 @@ namespace SimpleWeather.Utils
 
         public static bool IsDebugLoggerEnabled() => Timber.Forest.Any(it =>
         {
-            return it is FileLoggingTree
-#if __IOS__
-                   || it is ConsoleTree;
-#else
-                || it is Timber.DebugTree;
-#endif
+            return it is FileLoggingTree || it is ConsoleTree;
         });
 
         public static void EnableDebugLogger(bool enable)
@@ -70,17 +61,11 @@ namespace SimpleWeather.Utils
                 {
                     Timber.Plant(new FileLoggingTree());
                 }
-#if __IOS__
+
                 if (!Timber.Forest.Any(it => it is ConsoleTree))
                 {
                     Timber.Plant(new ConsoleTree());
                 }
-#else
-                if (!Timber.Forest.Any(it => it is Timber.DebugTree))
-                {
-                    Timber.Plant(new Timber.DebugTree());
-                }
-#endif
             }
             else
             {
@@ -90,11 +75,8 @@ namespace SimpleWeather.Utils
                     {
                         Timber.Uproot(tree);
                     }
-#if __IOS__
+
                     if (tree is ConsoleTree)
-#else
-                    if (tree is Timber.DebugTree)
-#endif
                     {
                         Timber.Uproot(tree);
                     }
