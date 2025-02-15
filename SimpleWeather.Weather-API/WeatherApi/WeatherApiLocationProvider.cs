@@ -59,7 +59,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromDays(1)
+                        MaxAge = TimeSpan.FromDays(14)
                     };
 
                     // Connect to webstream
@@ -163,7 +163,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromDays(1)
+                        MaxAge = TimeSpan.FromDays(14)
                     };
 
                     // Connect to webstream
