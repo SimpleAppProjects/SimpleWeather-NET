@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Weather_API.AccuWeather
 {
-    internal class AccuWeatherLocationProvider : Bing.BingMapsLocationProvider
+    internal class AccuWeatherLocationProvider : WeatherApi.WeatherApiLocationProvider
     {
         private const string BASE_URL = "https://dataservice.accuweather.com/locations/v1/cities/geoposition/search";
 

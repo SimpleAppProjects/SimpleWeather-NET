@@ -2,15 +2,15 @@
 using MapControl = Mapsui.UI.WinUI.MapControl;
 using Border = Microsoft.UI.Xaml.Controls.Border;
 #elif __IOS__
-using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Extras;
 using SimpleWeather.Maui.Radar;
-using SimpleWeather.Utils;
 using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #else
 using SimpleWeather.Maui.Radar;
 using MapControl = Mapsui.UI.Maui.MapControl;
 #endif
+using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Extras;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.NET.Radar
 {

@@ -50,7 +50,7 @@ namespace SimpleWeather.Weather_API.NWS
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new BingMapsLocationProvider();
+                return new WeatherApi.WeatherApiLocationProvider();
             });
         }
 

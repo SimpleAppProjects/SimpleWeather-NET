@@ -130,7 +130,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
         public override Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
-            return base.GetLocationFromName(model);
+            return Task.FromResult(model);
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

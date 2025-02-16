@@ -21,12 +21,13 @@ using SimpleWeather.Weather_API.TZDB;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
-using Color = Microsoft.Maui.Graphics.Color;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 #if WINUI
 using Windows.UI;
+using Color = Windows.UI.Color;
 #else
+using Color = Microsoft.Maui.Graphics.Color;
 #endif
 using LocData = SimpleWeather.LocationData.LocationData;
 

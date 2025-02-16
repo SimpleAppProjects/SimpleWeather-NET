@@ -38,7 +38,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new BingMapsLocationProvider();
+                return new WeatherApi.WeatherApiLocationProvider();
             });
         }
 

@@ -28,9 +28,12 @@ namespace SimpleWeather.WeatherData
         public const string BingMaps = "Bing";
         public const string Google = "google";
         public const string WeatherApi = "weatherapi";
+        public const string Radar = "radar";
 
         // Radar
         public const string RainViewer = "rainviewer";
+        public const string MapBox = "mapbox";
+        public const string OpenStreetMap = "osm";
 
         // Misc
         public const string Google_Pollen = "google_pollen";

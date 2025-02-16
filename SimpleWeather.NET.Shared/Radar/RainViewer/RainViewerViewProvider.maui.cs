@@ -142,7 +142,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
             if (!RadarLayers.ContainsKey(mapFrame.TimeStamp))
             {
-                var layer = new CustomTileOverlay("RainViewerTileProvider", GetUrlTemplate(mapFrame), cacheTimeSeconds: 60 * 30)
+                var layer = new CustomTileOverlay("RainViewerTileProvider", GetUrlTemplate(mapFrame), cacheTimeSeconds: 172800) // 48hrs
                 {
                     Alpha = 0,
                     CanReplaceMapContent = false,

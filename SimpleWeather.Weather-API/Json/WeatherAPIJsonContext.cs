@@ -17,6 +17,7 @@ namespace SimpleWeather.Weather_API.Json
             options.TypeInfoResolverChain.Add(NWSJsonContext.Default);
             options.TypeInfoResolverChain.Add(OWMJsonContext.Default);
             options.TypeInfoResolverChain.Add(OWMOneCallJsonContext.Default);
+            options.TypeInfoResolverChain.Add(RadarApiJsonContext.Default);
             options.TypeInfoResolverChain.Add(TomorrowIoJsonContext.Default);
             options.TypeInfoResolverChain.Add(WeatherApiJsonContext.Default);
             options.TypeInfoResolverChain.Add(WeatherBitJsonContext.Default);
@@ -127,6 +128,16 @@ namespace SimpleWeather.Weather_API.Json
     [JsonSerializable(typeof(OpenWeather.OneCall.Rootobject))]
     [JsonSerializable(typeof(OpenWeather.OneCall.AirPollutionRootobject))]
     public partial class OWMOneCallJsonContext : JsonSerializerContext
+    {
+    }
+
+    [JsonSourceGenerationOptions(
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        WriteIndented = false)]
+    [JsonSerializable(typeof(Radar.AutocompleteRootobject))]
+    [JsonSerializable(typeof(Radar.GeocodeRootobject))]
+    public partial class RadarApiJsonContext : JsonSerializerContext
     {
     }
 

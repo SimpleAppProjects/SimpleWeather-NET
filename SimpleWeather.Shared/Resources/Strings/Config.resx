@@ -232,4 +232,13 @@
     "newWeatherSource": ""
 }</value>
   </data>
+  <data name="mapbox" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="osm" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="radar" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
 </root>

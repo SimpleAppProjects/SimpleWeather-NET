@@ -30,6 +30,8 @@ using Xunit;
 using Debug = System.Diagnostics.Debug;
 using ThreadState = System.Threading.ThreadState;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
+using SimpleWeather.Weather_API.Radar;
+
 #if __IOS__
 using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
 
@@ -386,6 +388,22 @@ namespace UnitTestProject
 
             var nameModel = await locationProvider.GetLocationFromName(queryVM).ConfigureAwait(false);
             Assert.NotNull(nameModel);
+        }
+
+        [Fact]
+        public async Task RadarAPILocationTest()
+        {
+            var locationProvider = new RadarLocationProvider();
+            var locations = await locationProvider.GetLocations("Redmond, WA", WeatherAPI.WeatherApi)
+                .ConfigureAwait(false);
+            Assert.True(locations?.Count > 0);
+
+            var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond"));
+            Assert.NotNull(queryVM);
+
+            var geocodeVM = await locationProvider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157), WeatherAPI.WeatherApi);
+            Assert.NotNull(geocodeVM);
+            Assert.True(geocodeVM.LocationName != null && geocodeVM.LocationName.StartsWith("Malibu"));
         }
 
         [Fact]

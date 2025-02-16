@@ -1,12 +1,13 @@
-﻿#if WINDOWS
-using Mapsui.UI.WinUI;
-using Mapsui.Widgets.InfoWidgets;
-#elif __IOS__
+﻿#if __IOS__
 using Microsoft.Maui.Maps;
 using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #else
-using Mapsui.UI.Maui;
+using Mapsui;
+using Mapsui.UI.WinUI;
+using Mapsui.Widgets.ButtonWidgets;
 using Mapsui.Widgets.InfoWidgets;
+using SimpleWeather.NET.MapsUi;
+using SimpleWeather.Utils;
 #endif
 
 namespace SimpleWeather.NET.Radar
@@ -52,6 +53,18 @@ namespace SimpleWeather.NET.Radar
             mapControl.Map.Navigator.PanLock = false;
             mapControl.Map.Navigator.RotationLock = true;
             mapControl.Map.Navigator.ZoomTo(6d.ToMapsuiResolution());
+
+            Mapsui.Logging.Logger.LogDelegate = (loggerLevel, message, exception) =>
+            {
+                Logger.WriteLine(loggerLevel switch
+                {
+                    Mapsui.Logging.LogLevel.Error => LoggerLevel.Error,
+                    Mapsui.Logging.LogLevel.Warning => LoggerLevel.Warn,
+                    Mapsui.Logging.LogLevel.Information => LoggerLevel.Info,
+                    Mapsui.Logging.LogLevel.Debug or Mapsui.Logging.LogLevel.Trace => LoggerLevel.Debug,
+                    _ => LoggerLevel.Info,
+                }, exception, message);
+            };
 #endif
             return mapControl;
         }

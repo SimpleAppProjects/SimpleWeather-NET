@@ -3,6 +3,7 @@ using Android.Locations;
 using AndroidX.Core.Content;
 #endif
 #if WINUI
+using System.Threading;
 using Windows.Devices.Geolocation;
 #else
 using Microsoft.Maui.ApplicationModel;

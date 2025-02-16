@@ -12,6 +12,8 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
+using Microsoft.UI.Xaml.Controls;
+
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;
@@ -340,7 +342,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromMinutes(30)
+                        MaxAge = TimeSpan.FromDays(2)
                     };
                 },
                 attribution: RainViewerAttribution);

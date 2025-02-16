@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
+using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Bing;
@@ -30,7 +31,14 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
 
         public WeatherUnlockedProvider() : base()
         {
-            LocationProvider = new BingMapsLocationProvider();
+            LocationProvider = this.RunCatching(() =>
+            {
+                return WeatherModule.Instance.LocationProviderFactory.GetLocationProvider(
+                    RemoteConfigService.GetLocationProvider(WeatherAPI));
+            }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
+            {
+                return new WeatherApi.WeatherApiLocationProvider();
+            });
         }
 
         public override string WeatherAPI => WAPI.WeatherUnlocked;

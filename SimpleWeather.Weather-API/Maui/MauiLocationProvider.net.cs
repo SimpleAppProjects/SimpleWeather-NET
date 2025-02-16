@@ -25,6 +25,11 @@ namespace SimpleWeather.Weather_API.Maui
         {
             throw new System.NotImplementedException();
         }
+
+        public override Task<LocationQuery> GetLocationFromName(LocationQuery model)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
 #endif

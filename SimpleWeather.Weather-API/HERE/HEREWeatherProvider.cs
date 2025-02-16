@@ -13,6 +13,7 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Bing;
+using SimpleWeather.Weather_API.Radar;
 using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
@@ -33,7 +34,7 @@ namespace SimpleWeather.Weather_API.HERE
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new BingMapsLocationProvider();
+                return new RadarLocationProvider();
             });
         }
 

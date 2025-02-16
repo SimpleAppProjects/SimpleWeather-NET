@@ -2,6 +2,7 @@
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;
+using Border = Microsoft.UI.Xaml.Controls.Border;
 #else
 using Mapsui.UI.Maui;
 using MapControl = Mapsui.UI.Maui.MapControl;
@@ -19,7 +20,6 @@ using Mapsui.Tiling.Rendering;
 using SimpleWeather.Helpers;
 using SimpleWeather.NET.MapsUi;
 using SimpleWeather.Utils;
-using Border = ABI.Microsoft.UI.Xaml.Controls.Border;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
 

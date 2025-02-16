@@ -94,9 +94,7 @@ namespace SimpleWeather.Firebase
         {
 #if WINUI
             var cacheFolder = Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path;
-            var CacheRoot = System.IO.Path.Combine(
-                cacheFolder,
-                "CacheCow");
+            var CacheRoot = System.IO.Path.Combine(cacheFolder, "CacheCow");
 #else
             var CacheRoot = System.IO.Path.Combine(ApplicationDataHelper.GetLocalCacheFolderPath(), "CacheCow");
 #endif

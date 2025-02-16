@@ -73,5 +73,10 @@ namespace SimpleWeather.Weather_API.Keys
         {
             return null;
         }
+
+        public static string GetRadarKey()
+        {
+            return null;
+        }
     }
 }

@@ -6,6 +6,8 @@ using Mapsui.Projections;
 using Mapsui.Styles;
 using SimpleWeather.Utils;
 using Color = Mapsui.Styles.Color;
+using SkiaSharp;
+
 #if WINDOWS
 using CommunityToolkit.WinUI;
 using MapControl = Mapsui.UI.WinUI.MapControl;
@@ -105,12 +107,56 @@ namespace SimpleWeather.NET.Radar
             mapControl.Map.RefreshGraphicsRequest += (s, e) =>
             {
                 int count = 0;
-                mapControl?.Map?.Layers?.ForEach(layer =>
+                double maxHeight = 1;
+                double previousWidth = 1;
+
+                var rootLayers = mapControl?.Map.Layers?.Where(layer => layer.Name?.StartsWith("Root") == true);
+                rootLayers?.ForEachIndexed((index, layer) =>
                 {
                     layer.Attribution?.Let(attribution =>
                     {
-                        attribution.Margin = new MRect(attribution.Margin.Width, attribution.Margin.Height + (20 * count));
-                        count++;
+                        attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                        attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+
+                        if (!string.IsNullOrWhiteSpace(attribution.Text))
+                        {
+                            using var textPaint = new SKFont(SKTypeface.Default, (float)attribution.TextSize) { Edging = SKFontEdging.SubpixelAntialias };
+                            textPaint.MeasureText(attribution.Text, out SKRect textBounds);
+
+                            maxHeight = Math.Max(maxHeight, textBounds.Height);
+
+                            attribution.Height = textBounds.Height;
+                            attribution.Margin = new MRect(previousWidth + (4 * count), 5 + (index == 0 ? 5 : 0));
+                            attribution.Padding = new MRect(8);
+
+                            previousWidth += textBounds.Width;
+                            count++;
+                        }
+                    });
+                });
+
+                count = 0;
+
+                mapControl?.Map?.Layers?.Except(rootLayers)?.ForEach(layer =>
+                {
+                    layer.Attribution?.Let(attribution =>
+                    {
+                        attribution.VerticalAlignment = Mapsui.Widgets.VerticalAlignment.Bottom;
+                        attribution.HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment.Right;
+
+                        if (!string.IsNullOrWhiteSpace(attribution.Text))
+                        {
+                            using var textPaint = new SKFont(SKTypeface.Default, (float)attribution.TextSize) { Edging = SKFontEdging.SubpixelAntialias };
+                            textPaint.MeasureText(attribution.Text, out SKRect textBounds);
+
+                            attribution.Margin = new MRect(attribution.Margin.Width, attribution.Margin.Height + maxHeight + (textBounds.Height * (count + 1)) / 2);
+                            attribution.Padding = new MRect(8);
+                            attribution.BackColor = Color.Transparent;
+#if WINDOWS
+                            attribution.TextColor = Color.LightSkyBlue;
+#endif
+                            count++;
+                        }
                     });
                 });
             };

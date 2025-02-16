@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Globalization;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Maui.ApplicationModel;
-using SimpleWeather.Preferences;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using SQLite;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Migrations
 {
@@ -22,7 +20,7 @@ namespace SimpleWeather.Common.Migrations
 #if WINUI
             var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
 #else
-            var PackageVersion = AppInfo.Version;
+            var PackageVersion = Microsoft.Maui.ApplicationModel.AppInfo.Version;
 #endif
             var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
                 PackageVersion.Major, PackageVersion.Minor,
@@ -169,7 +167,7 @@ namespace SimpleWeather.Common.Migrations
             // Windows: unregister all bg tasks
             if (SettingsMgr.VersionCode < 5801)
             {
-                var ImageDataContainer = new SettingsContainer("images");
+                var ImageDataContainer = new Preferences.SettingsContainer("images");
                 ImageDataContainer.Clear();
 
 #if WINDOWS || WINUI

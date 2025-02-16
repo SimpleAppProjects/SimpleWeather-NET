@@ -24,7 +24,7 @@ namespace SimpleWeather.NET.MapsUi
         private static HttpTileSource CreateTileSource()
         {
             return new CustomHttpTileSource(
-                new GlobalSphericalMercator(),
+                new GlobalSphericalMercator(name: "OpenStreetMap", minZoomLevel: 2, maxZoomLevel: 18),
                 uri: "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
                 name: "OpenStreetMap", attribution: _openStreetMapAttribution,
                 persistentCache: new FileCache(
@@ -33,7 +33,7 @@ namespace SimpleWeather.NET.MapsUi
                 {
                     request.Headers.CacheControl = new CacheControlHeaderValue()
                     {
-                        MaxAge = TimeSpan.FromDays(7)
+                        MaxAge = TimeSpan.FromDays(30)
                     };
                 }
             );

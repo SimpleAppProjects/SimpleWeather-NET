@@ -36,7 +36,7 @@ namespace SimpleWeather.LocationData
         public abstract Task<LocationQuery> GetLocationFromID(LocationQuery model);
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public virtual partial Task<LocationQuery> GetLocationFromName(LocationQuery model);
+        public abstract Task<LocationQuery> GetLocationFromName(LocationQuery model);
 
         // KeyCheck
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

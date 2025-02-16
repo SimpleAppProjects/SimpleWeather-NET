@@ -38,16 +38,16 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
 using SQLite;
-using Application = Microsoft.Maui.Controls.Application;
 using FirebaseAuth = Firebase.Auth;
 using FirebaseDb = Firebase.Database;
 using JsonException = System.Text.Json.JsonException;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
-using Launcher = Microsoft.Maui.ApplicationModel.Launcher;
 using Package = Windows.ApplicationModel.Package;
-using Shell = Microsoft.Maui.Controls.Shell;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
-using Window = Microsoft.Maui.Controls.Window;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using SimpleWeather.Extras.BackgroundTasks;
+using CommunityToolkit.WinUI;
 
 namespace SimpleWeather.NET
 {

@@ -41,7 +41,7 @@ namespace SimpleWeather.Weather_API.Metno
                     RemoteConfigService.GetLocationProvider(WeatherAPI));
             }).GetOrElse<IWeatherLocationProvider, IWeatherLocationProvider>((t) =>
             {
-                return new BingMapsLocationProvider();
+                return new WeatherApi.WeatherApiLocationProvider();
             });
         }
 
