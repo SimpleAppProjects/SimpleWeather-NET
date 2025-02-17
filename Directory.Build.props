@@ -2,10 +2,10 @@
 <Project>
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <Version>5.10.0</Version>
+    <Version>5.11.0</Version>
     <!-- Version Code Format (.NET Version, App Version, Build Number) -->
     <!-- Note: Update here as well as Maui.AppWidget xproj -->
-    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">85100001</VersionCode>
+    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">95110000</VersionCode>
     <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
   </PropertyGroup>
 
