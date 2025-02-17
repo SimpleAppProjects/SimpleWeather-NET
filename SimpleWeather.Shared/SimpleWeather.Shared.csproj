@@ -20,80 +20,80 @@
         <CreatePackage>false</CreatePackage>
     </PropertyGroup>
     <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
-        <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)"/>
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
 
-        <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="$(WinToolkitVersion)"/>
-        <PackageReference Include="CommunityToolkit.WinUI.Helpers" Version="$(WinToolkitVersion)"/>
-        <PackageReference Include="Sentry" Version="$(SentryVersion)"/>
+        <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="$(WinToolkitVersion)" />
+        <PackageReference Include="CommunityToolkit.WinUI.Helpers" Version="$(WinToolkitVersion)" />
+        <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
-        <PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.Auth" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.Core" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.Database" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Firebase.iOS.Storage" Version="11.6.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Auth" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Core" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Database" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="11.6.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Storage" Version="11.6.0" />
         <!-- Google Addons -->
-        <PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="11.6.0"/>
-        <PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0"/>
-        <PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.0.2"/>
-        <PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="4.1.0"/>
-        <PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0"/>
-        <PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0"/>
+        <PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="11.6.0" />
+        <PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0" />
+        <PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.0.2" />
+        <PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="4.1.0" />
+        <PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0" />
+        <PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
-        <PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="11.6.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="11.6.0" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
-        <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)"/>
+        <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
         <!-- Images -->
-        <Content Include="Resources\Images\**"/>
+        <Content Include="Resources\Images\**" />
         <!-- Custom Fonts -->
-        <Content Include="Resources\Fonts\**"/>
+        <Content Include="Resources\Fonts\**" />
     </ItemGroup>
     <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
         <!-- Images -->
-        <MauiImage Include="Resources\Images\Backgrounds\**" Resize="false"/>
-        <MauiImage Include="Resources\Images\Providers\**" Resize="false"/>
-        <MauiAsset Include="Resources\Images\WeatherIcons\png\dark\*" Resize="false" LogicalName="%(Filename)_dark.png"/>
-        <MauiAsset Include="Resources\Images\WeatherIcons\png\light\*" Resize="false" LogicalName="%(Filename)_light.png"/>
-        <MauiAsset Include="Resources\Images\WeatherIcons\svg\dark\*" Resize="false" LogicalName="%(Filename)_dark.svg"/>
-        <MauiAsset Include="Resources\Images\WeatherIcons\svg\light\*" Resize="false" LogicalName="%(Filename)_light.svg"/>
+        <MauiImage Include="Resources\Images\Backgrounds\**" Resize="false" />
+        <MauiImage Include="Resources\Images\Providers\**" Resize="false" />
+        <MauiAsset Include="Resources\Images\WeatherIcons\png\dark\*" Resize="false" LogicalName="%(Filename)_dark.png" />
+        <MauiAsset Include="Resources\Images\WeatherIcons\png\light\*" Resize="false" LogicalName="%(Filename)_light.png" />
+        <MauiAsset Include="Resources\Images\WeatherIcons\svg\dark\*" Resize="false" LogicalName="%(Filename)_dark.svg" />
+        <MauiAsset Include="Resources\Images\WeatherIcons\svg\light\*" Resize="false" LogicalName="%(Filename)_light.svg" />
         <!-- Custom Fonts -->
-        <MauiFont Include="Resources\Fonts\**"/>
+        <MauiFont Include="Resources\Fonts\**" />
         <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="CacheCow.Client" Version="2.13.1"/>
-        <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)"/>
-        <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseAuthentication.net" Version="4.1.0"/>
-        <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseDatabase.net" Version="4.2.0"/>
-        <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0"/>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="NodaTime" Version="3.2.1"/>
-        <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)"/>
-        <PackageReference Include="sqlite-net-pcl" Version="1.9.172"/>
-        <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.1"/>
-        <PackageReference Include="Svg.Skia" Version="2.0.0.4"/>
-        <PackageReference Include="System.Net.Http" Version="4.3.4"/>
-        <PackageReference Include="System.Text.Json" Version="9.0.1"/>
-        <PackageReference Include="TimberLog" Version="2.0.0"/>
-        <PackageReference Condition="$(TargetFramework.Contains('windows'))" Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1"/>
-        <PackageReference Include="ZCS.DataContractResolver" Version="1.3.0"/>
+        <PackageReference Include="CacheCow.Client" Version="2.13.1" />
+        <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
+        <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseAuthentication.net" Version="4.1.0" />
+        <PackageReference Condition="!$(TargetFramework.Contains('ios')) And !$(TargetFramework.Contains('maccatalyst'))" Include="FirebaseDatabase.net" Version="4.2.0" />
+        <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="NodaTime" Version="3.2.1" />
+        <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
+        <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+        <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.1" />
+        <PackageReference Include="Svg.Skia" Version="2.0.0.4" />
+        <PackageReference Include="System.Net.Http" Version="4.3.4" />
+        <PackageReference Include="System.Text.Json" Version="9.0.2" />
+        <PackageReference Include="TimberLog" Version="2.0.0" />
+        <PackageReference Condition="$(TargetFramework.Contains('windows'))" Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.2" />
+        <PackageReference Include="ZCS.DataContractResolver" Version="1.3.0" />
     </ItemGroup>
     <ItemGroup Condition="!$(TargetFramework.Contains('windows'))">
-        <PackageReference Include="CommunityToolkit.Maui.Core" Version="11.0.0"/>
+        <PackageReference Include="CommunityToolkit.Maui.Core" Version="11.1.0" />
     </ItemGroup>
     <ItemGroup>
         <Compile Update="Resources\Strings\AQIndex.Designer.cs">
