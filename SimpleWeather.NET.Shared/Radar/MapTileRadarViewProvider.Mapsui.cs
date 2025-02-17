@@ -126,7 +126,7 @@ namespace SimpleWeather.NET.Radar
                             maxHeight = Math.Max(maxHeight, textBounds.Height);
 
                             attribution.Height = textBounds.Height;
-                            attribution.Margin = new MRect(previousWidth + (4 * count), 5 + (index == 0 ? 5 : 0));
+                            attribution.Margin = new MRect(previousWidth + (4 * count), 5);
                             attribution.Padding = new MRect(8);
 
                             previousWidth += textBounds.Width;

@@ -46,15 +46,26 @@ namespace SimpleWeather.Utils
 
         public static T Deserializer<T>(String response)
         {
+            var obj = default(T);
+
             try
             {
-                return JsonSerializer.Deserialize<T>(response, options: DefaultSettings);
+                try
+                {
+                    return JsonSerializer.Deserialize<T>(response, options: DefaultSettings);
+                }
+                catch (JsonException formatEx)
+                {
+                    Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
+                    return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(response, GetNewtonsoftSettings());
+                }
             }
-            catch (JsonException formatEx)
+            catch (Exception ex)
             {
-                Logger.WriteLine(LoggerLevel.Warn, formatEx, "SimpleWeather: JSONParser: falling back to Newtonsoft.Json");
-                return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(response, GetNewtonsoftSettings());
+                Logger.WriteLine(LoggerLevel.Error, ex, "SimpleWeather: JSONParser: error deserializing");
             }
+
+            return obj;
         }
 
         public static T Deserializer<T>(Stream stream)

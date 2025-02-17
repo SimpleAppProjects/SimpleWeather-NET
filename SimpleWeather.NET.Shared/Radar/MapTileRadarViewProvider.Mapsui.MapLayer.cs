@@ -10,6 +10,8 @@ using Mapsui.Widgets.ButtonWidgets;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.RemoteConfig;
 using WApi = SimpleWeather.WeatherData.WeatherAPI;
+using Mapsui;
+
 
 
 #if WINDOWS
@@ -109,6 +111,16 @@ namespace SimpleWeather.NET.Radar
                         mapLayer.Tag = RadarContainer.ClassId;
 #endif
 
+                        if (mapLayer.Attribution != null)
+                        {
+                            mapLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
+                            mapLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
+                            mapLayer.Attribution.BackColor = Color.Transparent;
+                            mapLayer.Attribution.TextColor = Color.LightSkyBlue;
+                            mapLayer.Attribution.Margin = new(0);
+                            mapLayer.Attribution.Padding = new(0);
+                        }
+
                         mapControl?.Map?.Layers?.Insert(0, mapLayer);
                     }
                     else if (baseMapLayerProvider == WApi.MapBox)
@@ -122,8 +134,12 @@ namespace SimpleWeather.NET.Radar
 
                         if (mapLayer.Attribution != null)
                         {
+                            mapLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
+                            mapLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
                             mapLayer.Attribution.BackColor = Color.Transparent;
-                            mapLayer.Attribution.TextColor = Color.White;
+                            mapLayer.Attribution.TextColor = Color.LightSkyBlue;
+                            mapLayer.Attribution.Margin = new(0);
+                            mapLayer.Attribution.Padding = new(0);
                         }
 
                         mapControl?.Map?.Layers?.Insert(0, mapLayer);
@@ -140,8 +156,12 @@ namespace SimpleWeather.NET.Radar
 
                         if (mapLayer.Attribution != null)
                         {
+                            mapLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
+                            mapLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
                             mapLayer.Attribution.BackColor = Color.Transparent;
                             mapLayer.Attribution.TextColor = Color.LightSkyBlue;
+                            mapLayer.Attribution.Margin = new(0);
+                            mapLayer.Attribution.Padding = new(0);
                         }
 
                         mapControl?.Map?.Layers?.Insert(0, mapLayer);
