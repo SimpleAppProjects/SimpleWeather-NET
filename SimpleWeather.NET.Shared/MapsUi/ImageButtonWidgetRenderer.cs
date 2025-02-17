@@ -1,6 +1,6 @@
-﻿using Mapsui;
+﻿#if !__IOS__
+using Mapsui;
 using Mapsui.Extensions;
-using Mapsui.Rendering.Skia;
 using Mapsui.Rendering.Skia.Cache;
 using Mapsui.Rendering.Skia.Extensions;
 using Mapsui.Rendering.Skia.Images;
@@ -11,7 +11,6 @@ using Mapsui.Widgets.ButtonWidgets;
 using SimpleWeather.SkiaSharp;
 using SkiaSharp;
 using Svg.Skia;
-using System;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -119,3 +118,4 @@ namespace SimpleWeather.NET.MapsUi
         }
     }
 }
+#endif

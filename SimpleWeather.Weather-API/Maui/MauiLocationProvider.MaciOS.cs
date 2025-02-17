@@ -1,15 +1,4 @@
 ﻿#if __IOS__
-using CloudKit;
-using CoreLocation;
-using Foundation;
-using Microsoft.Maui.Devices.Sensors;
-using SimpleWeather.LocationData;
-using SimpleWeather.Preferences;
-using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Bing;
-using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.Utils;
-using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +9,13 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using static SimpleWeather.Weather_API.Utils.APIRequestUtils;
+using CoreLocation;
+using Foundation;
+using SimpleWeather.LocationData;
+using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Utils;
+using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Weather_API.Maui
 {
@@ -112,7 +107,7 @@ namespace SimpleWeather.Weather_API.Maui
 
         public override Task<LocationQuery> GetLocationFromName(LocationQuery model)
         {
-            return base.GetLocationFromName(model);
+            return Task.FromResult<LocationQuery>(null);
         }
 
         public override async Task<LocationQuery> GetLocation(WeatherUtils.Coordinate coordinate, string weatherAPI)
