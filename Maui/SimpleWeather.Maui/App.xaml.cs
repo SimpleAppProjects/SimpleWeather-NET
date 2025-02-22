@@ -1,7 +1,6 @@
 ﻿using System.Security;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using ObjCRuntime;
-using Sentry.Protocol;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.Images;
@@ -19,6 +18,9 @@ using SimpleWeather.WeatherData.Images;
 using Runtime = ObjCRuntime.Runtime;
 #if __IOS__
 using UIKit;
+#endif
+#if MACCATALYST
+using Sentry.Protocol;
 #endif
 
 namespace SimpleWeather.Maui;

@@ -1,4 +1,5 @@
 ﻿#if __MACCATALYST__
+using Sentry.Extensibility;
 using Sentry.Protocol;
 #endif
 using System.Net;
@@ -15,7 +16,6 @@ using Microsoft.Maui.Handlers;
 using Microsoft.Maui.LifecycleEvents;
 using Newtonsoft.Json;
 using Plugin.Maui.SegmentedControl;
-using Sentry.Extensibility;
 using SimpleToolkit.Core;
 using SimpleToolkit.SimpleShell;
 using SimpleWeather.Keys;
