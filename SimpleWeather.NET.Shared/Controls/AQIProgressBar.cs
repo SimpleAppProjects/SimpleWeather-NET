@@ -1,10 +1,18 @@
-﻿#if WINDOWS
+﻿using SimpleWeather.NET.Utils;
+using SimpleWeather.Utils;
+using SkiaSharp;
+#if WINDOWS
 using CommunityToolkit.WinUI;
+using Microsoft.UI;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 #endif
 #if WINDOWS
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Text;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 #else
@@ -14,8 +22,6 @@ using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
 #if !WINDOWS
 using RoutedEventArgs = System.EventArgs;
 #endif
-using SimpleWeather.Utils;
-using SkiaSharp;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
