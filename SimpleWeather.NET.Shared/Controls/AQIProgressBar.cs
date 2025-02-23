@@ -1,29 +1,21 @@
 ﻿#if WINDOWS
 using CommunityToolkit.WinUI;
-using Microsoft.UI;
-using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 #endif
-using SimpleWeather.NET.Utils;
-using SimpleWeather.Utils;
-using SkiaSharp;
 #if WINDOWS
-using Windows.Foundation;
-using Windows.UI;
-using Windows.UI.Text;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 #else
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
-using Microsoft.Maui.Layouts;
-using System.Diagnostics;
 #endif
 #if !WINDOWS
 using RoutedEventArgs = System.EventArgs;
 #endif
+using SimpleWeather.Utils;
+using SkiaSharp;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
 
@@ -56,6 +48,7 @@ namespace SimpleWeather.NET.Controls
 
         private float sideLineLength = 45f / 3f * 2f; // 45dp / 3 * 2
         private float backgroundGridWidth = 45f; // 45dp
+        private float longestTextWidth = 0f;
 
         public Color ThumbColor
         {
@@ -66,10 +59,12 @@ namespace SimpleWeather.NET.Controls
 #if WINDOWS
         // Using a DependencyProperty as the backing store for ThumbColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ThumbColorProperty =
-            DependencyProperty.Register(nameof(ThumbColor), typeof(Color), typeof(AQIProgressBar), new PropertyMetadata(Colors.GhostWhite, OnThumbColorChanged));
+            DependencyProperty.Register(nameof(ThumbColor), typeof(Color), typeof(AQIProgressBar),
+                new PropertyMetadata(Colors.GhostWhite, OnThumbColorChanged));
 #else
         public static readonly BindableProperty ThumbColorProperty =
-            BindableProperty.Create(nameof(ThumbColor), typeof(Color), typeof(AQIProgressBar), Colors.White, propertyChanged: OnThumbColorChanged);
+            BindableProperty.Create(nameof(ThumbColor), typeof(Color), typeof(AQIProgressBar), Colors.White,
+                propertyChanged: OnThumbColorChanged);
 #endif
 
         public Color BottomTextColor
@@ -81,10 +76,12 @@ namespace SimpleWeather.NET.Controls
 #if WINDOWS
         // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BottomTextColorProperty =
-            DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(AQIProgressBar), new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
+            DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(AQIProgressBar),
+                new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
 #else
         public static readonly BindableProperty BottomTextColorProperty =
-            BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(AQIProgressBar), Colors.White, propertyChanged: OnBottomTextColorChanged);
+            BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(AQIProgressBar), Colors.White,
+                propertyChanged: OnBottomTextColorChanged);
 #endif
 
         public int Progress
@@ -96,10 +93,12 @@ namespace SimpleWeather.NET.Controls
 #if WINDOWS
         // Using a DependencyProperty as the backing store for Progress.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ProgressProperty =
-            DependencyProperty.Register(nameof(Progress), typeof(int), typeof(AQIProgressBar), new PropertyMetadata((int)0, OnProgressChanged));
+            DependencyProperty.Register(nameof(Progress), typeof(int), typeof(AQIProgressBar),
+                new PropertyMetadata((int)0, OnProgressChanged));
 #else
         public static readonly BindableProperty ProgressProperty =
-            BindableProperty.Create(nameof(Progress), typeof(int), typeof(AQIProgressBar), (int)0, propertyChanged: OnProgressChanged);
+            BindableProperty.Create(nameof(Progress), typeof(int), typeof(AQIProgressBar), (int)0,
+                propertyChanged: OnProgressChanged);
 #endif
 
         private static readonly List<(Range, Color)> COLOR_MAP =
@@ -279,7 +278,6 @@ namespace SimpleWeather.NET.Controls
             {
                 if (obj is AQIProgressBar aqiBar)
                 {
-
                     if (!aqiBar.IsInitialized) return;
 
 #if WINDOWS
@@ -307,7 +305,9 @@ namespace SimpleWeather.NET.Controls
                 {
                     canvas.PaintSurface -= Canvas_PaintSurface;
                 }
-                catch { }
+                catch
+                {
+                }
             });
         }
 
@@ -395,6 +395,7 @@ namespace SimpleWeather.NET.Controls
 
         private void OnDraw(SKCanvas canvas)
         {
+            longestTextWidth = 0f;
             DrawLabels(canvas);
             DrawTrack(canvas);
             DrawThumb(canvas);
@@ -417,7 +418,9 @@ namespace SimpleWeather.NET.Controls
                 {
                     var text = pair.Item1.Start.Value.ToString();
                     var bounds = bottomTextPaint.MeasureText(text);
-                    canvas.DrawText(text, bounds / 2 + thumbSize / 4f, y, bottomTextFont, bottomTextPaint);
+                    canvas.DrawText(text, bounds / 2 + thumbSize + (float)Margin.Left, y, bottomTextFont,
+                        bottomTextPaint);
+                    longestTextWidth = Math.Max(longestTextWidth, bounds);
                 }
                 else
                 {
@@ -427,10 +430,12 @@ namespace SimpleWeather.NET.Controls
 
                     canvas.DrawText(
                         text,
-                        ViewWidth * pct,
+                        ViewWidth * pct - trackPaint.StrokeWidth / 2f -
+                        (pct >= 1f ? (float)Margin.Right + longestTextWidth / 2 : 0),
                         y,
                         bottomTextFont, bottomTextPaint
                     );
+                    longestTextWidth = Math.Max(longestTextWidth, bounds);
                 }
 
                 if (i == COLOR_MAP.Count - 1)
@@ -440,10 +445,11 @@ namespace SimpleWeather.NET.Controls
 
                     canvas.DrawText(
                         text,
-                        ViewWidth - bounds / 2,
+                        ViewWidth - bounds / 2 - longestTextWidth / 2,
                         y,
                         bottomTextFont, bottomTextPaint
                     );
+                    longestTextWidth = Math.Max(longestTextWidth, bounds);
                 }
             }
         }
@@ -451,7 +457,9 @@ namespace SimpleWeather.NET.Controls
         private void DrawTrack(SKCanvas canvas)
         {
 #if WINDOWS
-            var y = ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent - trackPaint.StrokeWidth;
+            var y =
+                ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent -
+                trackPaint.StrokeWidth;
 #else
             var y = GraphTop;
 #endif
@@ -462,13 +470,14 @@ namespace SimpleWeather.NET.Controls
                 var pct = Math.Min(pair.Item1.End.Value / 500f, 1f);
                 canvas.DrawRoundRect(
                     new SKRect(
-                        pair.Item1.Start.Value > 0 ? trackPaint.StrokeWidth * 2f : trackPaint.StrokeWidth * 1.5f,
+                        trackPaint.StrokeWidth / 2f + longestTextWidth / 2 + (float)Margin.Left,
 #if WINDOWS
                         y + trackPaint.StrokeWidth / 2f,
 #else
                         y - trackPaint.StrokeWidth / 2f,
 #endif
-                        ViewWidth * pct - trackPaint.StrokeWidth * 1.5f,
+                        ViewWidth * pct - trackPaint.StrokeWidth / 2f -
+                        (pct >= 1f ? (float)Margin.Right + longestTextWidth / 2 : 0),
 #if WINDOWS
                         y - trackPaint.StrokeWidth / 2f
 #else
@@ -485,9 +494,13 @@ namespace SimpleWeather.NET.Controls
         private void DrawThumb(SKCanvas canvas)
         {
             var progress = Math.Min(Progress, 500);
-            var x = ViewWidth * (progress / 500f) + (progress == 0 ? thumbSize / 1.75f : 0f) - (progress >= 500 ? thumbSize / 1.75f : 0);
+            var x = ViewWidth * (progress / 500f) +
+                    (progress == 0 ? thumbSize / 2f + longestTextWidth + (float)Margin.Left : 0f) -
+                    (progress >= 500 ? thumbSize / 1.75f + longestTextWidth / 2 : 0);
 #if WINDOWS
-            var y = ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent - trackPaint.StrokeWidth / 2f;
+            var y =
+                ViewHeight - bottomTextTopMargin - bottomTextBottomMargin - bottomTextHeight - bottomTextDescent -
+                trackPaint.StrokeWidth / 2f;
 #else
             var y = GraphTop + trackPaint.StrokeWidth / 2f;
 #endif
@@ -499,42 +512,56 @@ namespace SimpleWeather.NET.Controls
         protected sealed override Size MeasureOverride(Size availableSize)
         {
             Size size = base.MeasureOverride(availableSize);
-#else
-        protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
-        {
-            Size size = base.MeasureOverride(widthConstraint, heightConstraint);
-            Size availableSize = size;
-#endif
 
             if (this.Canvas == null)
             {
                 return size;
             }
 
-#if WINDOWS
             Canvas.Width = availableSize.Width;
-            Canvas.Height = double.IsFinite(availableSize.Height) ? availableSize.Height : Math.Max(MinHeight, ((bottomTextTopMargin + bottomTextHeight + bottomTextDescent)) + trackPaint.StrokeWidth * 3 + thumbSize);
+            Canvas.Height =
+                double.IsFinite(availableSize.Height)
+                    ? availableSize.Height
+                    : Math.Max(MinHeight,
+                        ((bottomTextTopMargin + bottomTextHeight + bottomTextDescent)) + trackPaint.StrokeWidth * 3 +
+                        thumbSize);
 
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
-#else
-
-            Canvas.WidthRequest = Width - Margin.HorizontalThickness;
-            Canvas.HeightRequest = Math.Max(MinimumHeightRequest, GraphTop + trackPaint.StrokeWidth + bottomTextTopMargin + bottomTextHeight * 2 + bottomTextDescent + bottomTextBottomMargin);
-
-            ViewHeight = (float)Canvas.HeightRequest;
-            ViewWidth = (float)Canvas.WidthRequest;
-#endif
 
             // Redraw View
-#if WINDOWS
             Canvas?.Invalidate();
-#else
-            Canvas?.InvalidateSurface();
-#endif
 
             return new Size(ViewWidth, ViewHeight);
         }
+#else
+        protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
+        {
+            var desiredHeight = Math.Max(MinimumHeightRequest,
+                GraphTop + trackPaint.StrokeWidth + bottomTextTopMargin + bottomTextHeight * 2 + bottomTextDescent +
+                bottomTextBottomMargin) + Margin.VerticalThickness;
+
+            var size = base.MeasureOverride(widthConstraint, desiredHeight);
+
+            return new Size(size.Width, desiredHeight);
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+
+            if (this.Canvas == null)
+            {
+                return;
+            }
+
+            ViewWidth = (float)(Canvas.WidthRequest = width);
+            ViewHeight = (float)(Canvas.HeightRequest = height);
+
+            // Redraw View
+            Canvas?.InvalidateSurface();
+        }
+#endif
 
         public void Dispose()
         {

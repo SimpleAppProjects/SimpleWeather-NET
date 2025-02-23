@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Maui.Markup;
+﻿using System.ComponentModel;
+using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using Microsoft.Maui.Controls.Shapes;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.Location;
 using SimpleWeather.Common.Utils;
@@ -8,10 +8,8 @@ using SimpleWeather.Common.ViewModels;
 using SimpleWeather.LocationData;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
-using SimpleWeather.Maui.DataBinding;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
-using SimpleWeather.Maui.Utils;
 using SimpleWeather.Maui.WeatherAlerts;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Radar;
@@ -20,16 +18,14 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using FeatureSettings = SimpleWeather.NET.Utils.FeatureSettings;
+using PropertyChangingEventArgs = Microsoft.Maui.Controls.PropertyChangingEventArgs;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
-public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManager, ISnackbarPage, IBannerManager, IBannerPage
+public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManager, ISnackbarPage, IBannerManager,
+    IBannerPage
 {
     private SnackbarManager SnackMgr { get; set; }
     private BannerManager BannerMgr { get; set; }
@@ -95,17 +91,12 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     public void ShowSnackbar(Snackbar snackbar)
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.Show(snackbar);
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.Show(snackbar); });
     }
+
     public void DismissAllSnackbars()
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.DismissAll();
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.DismissAll(); });
     }
 
     public void UnloadSnackManager()
@@ -124,18 +115,12 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
 
     public void ShowBanner(Banner banner)
     {
-        Dispatcher.Dispatch(() =>
-        {
-            BannerMgr?.Show(banner);
-        });
+        Dispatcher.Dispatch(() => { BannerMgr?.Show(banner); });
     }
 
     public void DismissBanner()
     {
-        Dispatcher.Dispatch(() =>
-        {
-            BannerMgr?.Dismiss();
-        });
+        Dispatcher.Dispatch(() => { BannerMgr?.Dismiss(); });
     }
 
     public void UnloadBannerManager()
@@ -188,10 +173,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                     {
                         var banner = Banner.Make(ResStrings.prompt_location_not_set);
                         banner.Icon = new MaterialIcon(MaterialSymbol.Map);
-                        banner.SetAction(ResStrings.label_fab_add_location, async () =>
-                        {
-                            await Navigation.PushAsync(new LocationsPage());
-                        });
+                        banner.SetAction(ResStrings.label_fab_add_location,
+                            async () => { await Navigation.PushAsync(new LocationsPage()); });
                         ShowBanner(banner);
                     });
                 }
@@ -199,6 +182,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 {
                     DismissBanner();
                 }
+
                 break;
 
             case nameof(WNowViewModel.Weather):
@@ -213,7 +197,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                         if (isHome)
                         {
                             // Update widgets if they haven't been already
-                            if ((TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks)).TotalMinutes > SettingsManager.RefreshInterval))
+                            if ((TimeSpan.FromTicks((long)(DateTime.Now.Ticks - SettingsManager.UpdateTime.Ticks))
+                                    .TotalMinutes > SettingsManager.RefreshInterval))
                             {
                                 // Enqueue weather update task
 #if __IOS__
@@ -240,35 +225,35 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 break;
 
             case nameof(WNowViewModel.Alerts):
-                {
-                    var weatherAlerts = WNowViewModel.Alerts;
-                    var locationData = WNowViewModel.UiState?.LocationData;
+            {
+                var weatherAlerts = WNowViewModel.Alerts;
+                var locationData = WNowViewModel.UiState?.LocationData;
 
-                    if (wm.SupportsAlerts && locationData != null)
+                if (wm.SupportsAlerts && locationData != null)
+                {
+                    _ = Task.Run(async () =>
                     {
-                        _ = Task.Run(async () =>
-                        {
-                            // Alerts are posted to the user here. Set them as notified.
+                        // Alerts are posted to the user here. Set them as notified.
 #if DEBUG
-                            await WeatherAlertHandler.PostAlerts(locationData, weatherAlerts);
+                        await WeatherAlertHandler.PostAlerts(locationData, weatherAlerts);
 #endif
-                            await WeatherAlertHandler.SetasNotified(locationData, weatherAlerts);
-                        });
-                    }
+                        await WeatherAlertHandler.SetasNotified(locationData, weatherAlerts);
+                    });
                 }
+            }
                 break;
 
             case nameof(WNowViewModel.ErrorMessages):
+            {
+                var errorMessages = WNowViewModel.ErrorMessages;
+
+                var error = errorMessages.FirstOrDefault();
+
+                if (error != null)
                 {
-                    var errorMessages = WNowViewModel.ErrorMessages;
-
-                    var error = errorMessages.FirstOrDefault();
-
-                    if (error != null)
-                    {
-                        OnErrorMessage(error);
-                    }
+                    OnErrorMessage(error);
                 }
+            }
                 break;
         }
     }
@@ -277,12 +262,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
     {
         base.OnSizeAllocated(width, height);
 
-        Dispatcher.Dispatch(() =>
-        {
-            ListLayout.WidthRequest = width;
-
-            AdjustViewsLayout(width);
-        });
+        Dispatcher.Dispatch(() => { AdjustViewsLayout(width); });
     }
 
     private void AdjustViewsLayout(double? width = null)
@@ -302,7 +282,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             {
                 if (element is View v)
                 {
-                    v.Margins(left: requestedPadding, right: requestedPadding, top: v.Margin.Top, bottom: v.Margin.Bottom);
+                    v.Margins(left: requestedPadding, right: requestedPadding, top: v.Margin.Top,
+                        bottom: v.Margin.Bottom);
                 }
             }
         }
@@ -354,10 +335,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             UpdateBindings = false;
         }
 
-        await Dispatcher.DispatchAsync(async () =>
-        {
-            await InitializeState();
-        });
+        await Dispatcher.DispatchAsync(async () => { await InitializeState(); });
     }
 
     private void OnErrorMessage(ErrorMessage error)
@@ -367,14 +345,14 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             switch (error)
             {
                 case ErrorMessage.String err:
-                    {
-                        ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
-                    }
+                {
+                    ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
+                }
                     break;
                 case ErrorMessage.WeatherError err:
-                    {
-                        OnWeatherError(err.Exception);
-                    }
+                {
+                    OnWeatherError(err.Exception);
+                }
                     break;
             }
         });
@@ -390,10 +368,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             case WeatherUtils.ErrorStatus.NoWeather:
                 // Show error message and prompt to refresh
                 Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                snackbar.SetAction(ResStrings.action_retry, () =>
-                {
-                    WNowViewModel.RefreshWeather(false);
-                });
+                snackbar.SetAction(ResStrings.action_retry, () => { WNowViewModel.RefreshWeather(false); });
                 ShowSnackbar(snackbar);
                 break;
 
@@ -469,10 +444,8 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 if (!await this.LocationPermissionEnabled())
                 {
                     var snackbar = Snackbar.Make(ResStrings.Msg_LocDeniedSettings, SnackbarDuration.Short);
-                    snackbar.SetAction(ResStrings.action_settings, async () =>
-                    {
-                        await this.LaunchLocationSettings();
-                    });
+                    snackbar.SetAction(ResStrings.action_settings,
+                        async () => { await this.LaunchLocationSettings(); });
                     ShowSnackbar(snackbar);
                     return;
                 }
@@ -586,6 +559,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             {
                 GradientOverlay.IsVisible = false;
             }
+
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             if (CurTemp != null)
             {
@@ -627,7 +601,7 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         UpdateControlTheme(bgImage.Source != null ? !bgImage.Source.IsEmpty : false);
     }
 
-    private void BackgroundOverlay_PropertyChanging(object sender, Microsoft.Maui.Controls.PropertyChangingEventArgs e)
+    private void BackgroundOverlay_PropertyChanging(object sender, PropertyChangingEventArgs e)
     {
         var bgImage = sender as Image;
         if (e.PropertyName == nameof(bgImage.Source))

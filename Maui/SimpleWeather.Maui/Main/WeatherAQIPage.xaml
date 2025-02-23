@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <viewModels:ViewModelPage
     x:Class="SimpleWeather.Maui.Main.WeatherAQIPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -9,15 +10,14 @@
     xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
     xmlns:graphPanels="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
-    xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+    xmlns:devices="clr-namespace:Microsoft.Maui.Devices;assembly=Microsoft.Maui.Essentials"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     Title="{x:Static res_strings:Resources.label_airquality}"
     local:AppShell.AppBarIsVisible="True"
     x:Name="AQIPage">
 
     <ContentPage.Resources>
-        <converters:DoubleToBooleanConverter x:Key="invValueBooleanConverter" GreaterThan="0" IsInverse="True" />
-        <converters:ObjectToCollectionConverter x:Key="objToCollectionConv" />
+        <local:AQIItemSelector x:Key="aqiItemSelector" />
         <DataTemplate x:Key="AQIForecastTemplate" x:DataType="{x:Type controls:AirQualityViewModel}">
             <VerticalStackLayout>
                 <Label
@@ -73,6 +73,7 @@
                 </VerticalStackLayout>
                 <VerticalStackLayout
                     x:Name="AQIContainer"
+                    BindableLayout.ItemsSource="{x:Bind devices:DeviceInfo.Idiom eq devices:DeviceIdiom.Phone ? AQIView.AQIGraphData : AQIView.AQIForecastData, IsItemsSource=True}"
                     BindableLayout.ItemTemplateSelector="{StaticResource aqiTemplateSelector}" />
             </VerticalStackLayout>
         </ScrollView>
@@ -81,6 +82,6 @@
             Grid.Row="1"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            IsRunning="True" />
+            IsRunning="{x:Bind devices:DeviceInfo.Idiom eq devices:DeviceIdiom.Phone ? AQIView.AQIGraphData.Count le 0 : AQIView.AQIForecastData.Count le 0, TargetNullValue=true, FallbackValue=true}" />
     </Grid>
 </viewModels:ViewModelPage>

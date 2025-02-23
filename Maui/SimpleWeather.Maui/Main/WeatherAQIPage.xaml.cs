@@ -1,16 +1,12 @@
-using CommunityToolkit.Maui.Markup;
-using Microsoft.Maui.Controls;
+using System.Collections.Immutable;
+using System.ComponentModel;
+using System.Globalization;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Common.ViewModels;
-using SimpleWeather.Maui.Controls;
-using SimpleWeather.Maui.Helpers;
-using SimpleWeather.Maui.IncrementalLoadingCollection;
 using SimpleWeather.Maui.ViewModels;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API;
-using SimpleWeather.Weather_API.WeatherData;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -18,13 +14,33 @@ public partial class WeatherAQIPage : ViewModelPage
 {
     private LocationData.LocationData locationData { get; set; }
     public WeatherNowViewModel WNowViewModel { get; } = AppShell.Instance.GetViewModel<WeatherNowViewModel>();
-    public AirQualityForecastViewModel AQIView { get; private set; }
+
+    public AirQualityForecastViewModel AQIView
+    {
+        get => (AirQualityForecastViewModel)GetValue(AQIViewProperty);
+        private set => SetValue(AQIViewProperty, value);
+    }
+
+    public static readonly BindableProperty AQIViewProperty =
+        BindableProperty.Create(nameof(AQIView), typeof(AirQualityForecastViewModel), typeof(WeatherAQIPage), null);
+
     private WeatherPageArgs Args { get; set; }
+
+    public int AQIItemCount
+    {
+        get
+        {
+            if (AQIContainer != null)
+                return BindableLayout.GetItemsSource(AQIContainer)?.Cast<object>()?.Count() ?? 0;
+
+            return 0;
+        }
+    }
 
     public WeatherAQIPage()
     {
         InitializeComponent();
-        AnalyticsLogger.LogEvent("WeatherAQIPage");
+        AnalyticsLogger.LogEvent(nameof(WeatherAQIPage));
 
         AQILayout.SizeChanged += (s, e) =>
         {
@@ -66,7 +82,7 @@ public partial class WeatherAQIPage : ViewModelPage
         WNowViewModel.PropertyChanged -= WNowViewModel_PropertyChanged;
     }
 
-    private void WNowViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    private void WNowViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
     {
         if (e.PropertyName == nameof(WNowViewModel.UiState))
         {
@@ -77,43 +93,12 @@ public partial class WeatherAQIPage : ViewModelPage
 
     private void Initialize()
     {
-        if (locationData == null)
-        {
-            locationData = WNowViewModel.UiState.LocationData;
-        }
+        locationData ??= WNowViewModel.UiState.LocationData;
 
         if (locationData != null)
         {
             AQIView.UpdateForecasts(locationData);
         }
-
-        Dispatcher.Dispatch(() =>
-        {
-            AQIContainer.Bind(
-                BindableLayout.ItemsSourceProperty, mode: BindingMode.OneWay, source: AQIView,
-                path: DeviceInfo.Idiom == DeviceIdiom.Phone ? nameof(AQIView.AQIGraphData) : nameof(AQIView.AQIForecastData));
-            ContentIndicator.Bind(
-                ActivityIndicator.IsRunningProperty, mode: BindingMode.OneWay, source: BindableLayout.GetItemsSource(AQIContainer),
-                path: "Count", converter: Resources["invValueBooleanConverter"] as IValueConverter);
-        });
-
-        AQIContainer.ChildAdded += (s, e) =>
-        {
-            Dispatcher.Dispatch(() =>
-            {
-                (AQIContainer as IView)?.InvalidateMeasure();
-            });
-        };
-    }
-
-    protected override void OnSizeAllocated(double width, double height)
-    {
-        base.OnSizeAllocated(width, height);
-
-        Dispatcher.Dispatch(() =>
-        {
-            (AQIContainer as IView)?.InvalidateMeasure();
-        });
     }
 }
 
@@ -134,5 +119,23 @@ public class AQIDataTemplateSelector : DataTemplateSelector
         }
 
         return null;
+    }
+}
+
+public class AQIItemSelector : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return value switch
+        {
+            AirQualityForecastViewModel vm when DeviceInfo.Idiom == DeviceIdiom.Phone => vm.AQIGraphData,
+            AirQualityForecastViewModel vm => vm.AQIForecastData,
+            _ => ImmutableList<AirQualityViewModel>.Empty,
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

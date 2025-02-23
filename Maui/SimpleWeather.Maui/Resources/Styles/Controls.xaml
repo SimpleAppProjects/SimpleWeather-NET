@@ -1,5 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <?xaml-comp compile="true" ?>
+
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
@@ -43,7 +44,7 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup>
-                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Normal" />
                                     <VisualState x:Name="Pressed">
                                         <VisualState.Setters>
                                             <Setter TargetName="BackBtnLabel" Property="Opacity" Value="0.5" />
@@ -86,7 +87,7 @@
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroupList>
                                 <VisualStateGroup>
-                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="Normal" />
                                     <VisualState x:Name="Pressed">
                                         <VisualState.Setters>
                                             <Setter TargetName="NextBtnLabel" Property="Opacity" Value="0.5" />
@@ -143,7 +144,8 @@
                     IsVisible="{Binding IsEmpty, Converter={StaticResource inverseBoolConverter}}"
                     VerticalOptions="Center">
                     <Image.Source>
-                        <maticons:MaterialIcon Symbol="Place" Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                        <maticons:MaterialIcon Symbol="Place"
+                                               Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
                     </Image.Source>
                 </Image>
                 <Grid Grid.Column="1" VerticalOptions="Center">
@@ -192,10 +194,14 @@
 
     <Style x:Key="DefaultProgressAutoSuggestBoxStyle" TargetType="controls:ProgressAutoSuggestBox">
         <Setter Property="BackgroundColor" Value="Transparent" />
-        <Setter Property="PlaceholderTextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-        <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-        <Setter Property="ProgressBarTrackColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
-        <Setter Property="ProgressBarIndicatorColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+        <Setter Property="PlaceholderTextColor"
+                Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+        <Setter Property="TextColor"
+                Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+        <Setter Property="ProgressBarTrackColor"
+                Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+        <Setter Property="ProgressBarIndicatorColor"
+                Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
         <Setter Property="HorizontalOptions" Value="Center" />
         <Setter Property="ControlTemplate">
             <ControlTemplate>
@@ -417,6 +423,7 @@
                             xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
                             x:Name="Canvas"
                             BackgroundColor="Transparent"
+                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
                             IgnorePixelScaling="True" />
                     </Border>
                 </ControlTemplate>
