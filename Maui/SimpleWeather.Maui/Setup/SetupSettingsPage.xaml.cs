@@ -55,7 +55,7 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
         wm.UpdateAPI();
 
         // Refresh interval
-        RefreshComboBox.ItemDisplayBinding = new Binding("Display");
+        RefreshComboBox.ItemDisplayBinding = BindingBase.Create(static (ComboBoxItem item) => item.Display, BindingMode.OneWay);
         if (ExtrasService.IsPremiumEnabled())
         {
             RefreshComboBox.ItemsSource = PremiumRefreshOptions;

@@ -94,15 +94,10 @@ namespace SimpleWeather.Maui.Preferences
                         FontSize = 17,
                         FontFamily = Font.Default.Family
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this, convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -114,8 +109,8 @@ namespace SimpleWeather.Maui.Preferences
                         MinimumWidthRequest = 0,
                         Margin = 0
                     }
-                    .Bind(TimePicker.TimeProperty, nameof(Time), BindingMode.TwoWay, source: this)
-                    .Bind(TimePicker.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                    .Bind(TimePicker.TimeProperty, static src => src.Time, mode: BindingMode.TwoWay, source: this)
+                    .Bind(TimePicker.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                     .CenterVertical()
                     .Column(1)
                     .Row(0)

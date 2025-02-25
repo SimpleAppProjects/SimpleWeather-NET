@@ -44,6 +44,7 @@
                 IconWidth="50"
                 IconHeight="50"
                 VerticalOptions="Center"
+                x:DataType="{x:Type controls:WeatherDetailViewModel}"
                 WeatherIcon="{Binding Icon, Mode=OneWay}" />
             <VerticalStackLayout
                 Grid.Column="1"
@@ -55,6 +56,7 @@
                     FontAttributes="Bold"
                     TextColor="{AppThemeBinding Light=Black, Dark=White}"
                     MaxLines="1"
+                    x:DataType="{x:Type controls:WeatherDetailViewModel}"
                     Text="{Binding Date, Mode=OneWay}"
                     LineBreakMode="TailTruncation" />
                 <Label
@@ -65,6 +67,7 @@
                     FontAttributes="Bold"
                     TextColor="{AppThemeBinding Light=Black, Dark=White}"
                     MaxLines="1"
+                    x:DataType="{x:Type controls:WeatherDetailViewModel}"
                     Text="{Binding HiLo, Mode=OneWay}"
                     LineBreakMode="TailTruncation" />
                 <Label
@@ -74,6 +77,7 @@
                     FontSize="14"
                     TextColor="{AppThemeBinding Light=Black, Dark=White}"
                     MaxLines="1"
+                    x:DataType="{x:Type controls:WeatherDetailViewModel}"
                     Text="{Binding Condition, Mode=OneWay}"
                     LineBreakMode="TailTruncation" />
             </VerticalStackLayout>
@@ -100,6 +104,7 @@
                 FontSize="14"
                 LineBreakMode="WordWrap"
                 IsVisible="False"
+                x:DataType="{x:Type controls:WeatherDetailViewModel}"
                 Text="{Binding ConditionLongDesc, Mode=OneWay}" />
             <FlexLayout
                 x:Name="DetailsLayout"
@@ -110,6 +115,7 @@
                 VerticalOptions="Fill"
                 Wrap="Wrap"
                 JustifyContent="Center"
+                x:DataType="{x:Type controls:WeatherDetailViewModel}"
                 BindableLayout.ItemsSource="{Binding Extras, Mode=OneWay}"
                 IsVisible="False">
                 <BindableLayout.ItemTemplate>

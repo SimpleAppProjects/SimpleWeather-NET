@@ -9,7 +9,8 @@
              xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
              WidthRequest="{OnIdiom Default=150, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=90, GreaterThanEq=100}, Tablet=110}"
              HeightRequest="{OnIdiom Default=250, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=200, GreaterThanEq=175}, Tablet=192}"
-             BindingContextChanged="HourlyForecastItem_BindingContextChanged">
+             BindingContextChanged="HourlyForecastItem_BindingContextChanged"
+             x:Name="Control">
     <VerticalStackLayout VerticalOptions="Center">
         <HorizontalStackLayout
             MinimumHeightRequest="20"
@@ -46,7 +47,7 @@
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             Margin="5"
             HorizontalOptions="Center"
-            IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItem}}, Path=IconProvider}"
+            IconProvider="{Binding Source={x:Reference Control}, Path=IconProvider, x:DataType={x:Type controls:HourlyForecastItem}}"
             WeatherIcon="{Binding Icon}" />
         <Label
             Padding="{OnIdiom Default='10,0', Phone='4'}"

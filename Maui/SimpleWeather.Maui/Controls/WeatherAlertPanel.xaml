@@ -67,7 +67,7 @@
                 <VerticalStackLayout BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}">
                     <Label
                         Padding="24"
-                        FontSize="{Binding Source={x:Reference Title}, Path=FontSize}"
+                        FontSize="{Binding Source={x:Reference Title}, Path=FontSize, x:DataType={x:Type Label}}"
                         LineBreakMode="WordWrap"
                         TextColor="{AppThemeBinding Light={StaticResource LightOnSurfaceVariant},
                                                     Dark={StaticResource DarkOnSurfaceVariant}}">

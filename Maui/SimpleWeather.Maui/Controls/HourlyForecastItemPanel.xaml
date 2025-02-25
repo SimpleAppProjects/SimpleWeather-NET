@@ -32,7 +32,7 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <controls:HourlyForecastItem IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItemPanel}}, Path=IconProvider, Mode=OneWay}">
+                        <controls:HourlyForecastItem IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItemPanel}}, Path=IconProvider, Mode=OneWay, x:DataType={x:Type controls:HourlyForecastItemPanel}}">
                             <controls:HourlyForecastItem.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="HourlyItem_Tapped" />
                             </controls:HourlyForecastItem.GestureRecognizers>

@@ -9,8 +9,8 @@ namespace SimpleWeather.Maui.Preferences
 	{
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
 
         public static readonly BindableProperty TextProperty =
@@ -18,8 +18,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public Color TextColor
         {
-            get { return (Color)GetValue(TextColorProperty); }
-            set { SetValue(TextColorProperty, value); }
+            get => (Color)GetValue(TextColorProperty);
+            set => SetValue(TextColorProperty, value);
         }
 
         public static readonly BindableProperty TextColorProperty =
@@ -27,8 +27,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public string Detail
         {
-            get { return (string)GetValue(DetailProperty); }
-            set { SetValue(DetailProperty, value); }
+            get => (string)GetValue(DetailProperty);
+            set => SetValue(DetailProperty, value);
         }
 
         public static readonly BindableProperty DetailProperty =
@@ -36,8 +36,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public Color DetailColor
         {
-            get { return (Color)GetValue(DetailColorProperty); }
-            set { SetValue(DetailColorProperty, value); }
+            get => (Color)GetValue(DetailColorProperty);
+            set => SetValue(DetailColorProperty, value);
         }
 
         public static readonly BindableProperty DetailColorProperty =
@@ -45,14 +45,14 @@ namespace SimpleWeather.Maui.Preferences
 
 		public ICommand Command
         {
-            get { return (ICommand)GetValue(CommandProperty); }
-            set { SetValue(CommandProperty, value); }
+            get => (ICommand)GetValue(CommandProperty);
+            set => SetValue(CommandProperty, value);
         }
 
         public object CommandParameter
         {
-            get { return GetValue(CommandParameterProperty); }
-            set { SetValue(CommandParameterProperty, value); }
+            get => GetValue(CommandParameterProperty);
+            set => SetValue(CommandParameterProperty, value);
         }
 
         /// <summary>Bindable property for <see cref="Command"/>.</summary>
@@ -105,15 +105,10 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family,
                         VerticalTextAlignment = TextAlignment.Center
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this, convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -123,21 +118,11 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Paddings(top: 4)
-                    .Bind(Label.TextProperty, nameof(Detail), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
-                    .Bind<Label, string, bool>(Label.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,
-                        convert: (s) =>
-                        {
-                            return !string.IsNullOrWhiteSpace(s?.ToString());
-                        }
-                    )
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this, convert: (s) => !string.IsNullOrWhiteSpace(s?.ToString()))
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this, convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(1)

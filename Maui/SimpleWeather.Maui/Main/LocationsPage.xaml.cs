@@ -79,7 +79,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
             });
         };
 
-        MainGrid.Bind<Grid, double, Thickness>(Grid.MarginProperty, nameof(AddLocationsButton.Height), BindingMode.OneWay,
+        MainGrid.Bind(Grid.MarginProperty, static src => src.Height, mode: BindingMode.OneWay,
             source: AddLocationsButton, convert: (height) => new Thickness(0, 0, 0, height));
 
         MainGrid.Children.Cast<VisualElement>().ForEach(v => ResizeElements.Add(v));

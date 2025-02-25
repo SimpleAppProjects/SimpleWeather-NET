@@ -1,19 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="SimpleWeather.Maui.Controls.LocationPanel"
-             xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
              xmlns:databinding="clr-namespace:SimpleWeather.Maui.DataBinding"
-             xmlns:helpers="clr-namespace:SimpleWeather.Maui.Helpers"
              xmlns:local="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
              xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
-             xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils"
              xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
              x:DataType="sharedControls:LocationPanelUiModel"
              x:Name="Control">
-
     <Border BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}"
             StrokeThickness="1"
             Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}">
@@ -56,7 +51,7 @@
             <ActivityIndicator
                 Grid.RowSpan="2"
                 Grid.ColumnSpan="3"
-                Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                Color="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                 IsRunning="{Binding IsLoading, FallbackValue=true, TargetNullValue=true, Mode=OneWay}" />
             <HorizontalStackLayout
                 Grid.Row="0"
@@ -65,7 +60,7 @@
                 VerticalOptions="Center">
                 <Image
                     x:Name="GPSIcon"
-                    WidthRequest="{Binding Source={RelativeSource Mode=Self}, Path=HeightRequest}"
+                    WidthRequest="20"
                     HeightRequest="20"
                     Aspect="AspectFit"
                     Margin="0,0,8,0"
@@ -73,7 +68,7 @@
                     IsVisible="{x:Bind databinding:WeatherNowBinding.ShowGPSIcon(LocationType), TargetNullValue=false, FallbackValue=false, Mode=OneWay}">
                     <Image.Source>
                         <matIcons:MaterialIcon Symbol="MyLocation" Size="24"
-                                               Color="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
+                                               Color="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}" />
                     </Image.Source>
                 </Image>
                 <Label
@@ -82,7 +77,7 @@
                     FontFamily="OpenSansSemibold"
                     MaxLines="1"
                     Text="{Binding LocationName}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                    TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                     LineBreakMode="TailTruncation" />
             </HorizontalStackLayout>
             <VerticalStackLayout
@@ -99,7 +94,7 @@
                     FontFamily="OpenSansSemibold"
                     VerticalOptions="Center"
                     Text="{Binding CurrTemp}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
+                    TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}" />
                 <Label
                     x:Name="CurWeather"
                     Padding="5,0"
@@ -107,7 +102,7 @@
                     FontFamily="OpenSansSemibold"
                     MaxLines="1"
                     Text="{Binding CurrWeather}"
-                    TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                    TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                     LineBreakMode="TailTruncation" />
             </VerticalStackLayout>
             <VerticalStackLayout
@@ -128,15 +123,15 @@
                         FontFamily="OpenSansSemibold"
                         HorizontalTextAlignment="End"
                         Text="{Binding HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         VerticalOptions="End" />
                     <local:IconControl
                         Grid.Column="1"
-                        IconHeight="{Binding Source={x:Reference HiTemp}, Path=Height}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
-                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        ForceDarkTheme="{x:Bind ForceIconDarkTheme, Mode=OneWay, DataType={x:Null}}"
+                        IconHeight="{x:Bind HiTemp.Height, DataType={x:Null}}"
+                        IconWidth="{x:Bind HiTemp.Height, DataType={x:Null}}"
                         IconProvider="wi-erik-flowers"
-                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        IconColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         ShowAsMonochrome="True"
                         WeatherIcon="&#xf058;"
                         VerticalOptions="End" />
@@ -153,15 +148,15 @@
                         FontFamily="OpenSansSemibold"
                         HorizontalTextAlignment="End"
                         Text="{Binding LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         VerticalOptions="End" />
                     <local:IconControl
                         Grid.Column="1"
-                        IconHeight="{Binding Source={x:Reference LoTemp}, Path=Height}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
-                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
+                        ForceDarkTheme="{x:Bind ForceIconDarkTheme, Mode=OneWay, DataType={x:Null}}"
+                        IconHeight="{x:Bind LoTemp.Height, DataType={x:Null}}"
+                        IconWidth="{x:Bind LoTemp.Height, DataType={x:Null}}"
                         IconProvider="wi-erik-flowers"
-                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        IconColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         ShowAsMonochrome="True"
                         WeatherIcon="&#xf044;" />
                 </Grid>
@@ -179,11 +174,11 @@
                     VerticalOptions="Center"
                     IsVisible="{Binding PoP, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
                     <local:IconControl
-                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                        IconHeight="{Binding Source={x:Reference PoPCondition}, Path=Height}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
+                        ForceDarkTheme="{x:Bind ForceIconDarkTheme, Mode=OneWay, DataType={x:Null}}"
+                        IconHeight="{x:Bind PoPCondition.Height, DataType={x:Null}}"
+                        IconWidth="{x:Bind PoPCondition.Height, DataType={x:Null}}"
                         IconProvider="wi-erik-flowers"
-                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        IconColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         ShowAsMonochrome="True"
                         WeatherIcon="{Binding PoPIcon, Mode=OneWay}" />
                     <Label
@@ -193,7 +188,7 @@
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
                         Text="{Binding PoP, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
+                        TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}" />
                 </HorizontalStackLayout>
                 <HorizontalStackLayout
                     Grid.Column="1"
@@ -201,11 +196,12 @@
                     VerticalOptions="Center"
                     IsVisible="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}">
                     <local:IconControl
-                        ForceDarkTheme="{Binding Source={x:Reference Control}, Path=ForceIconDarkTheme, Mode=OneWay}"
-                        IconHeight="{Binding Source={x:Reference WindCondition}, Path=Height}"
-                        IconWidth="{Binding Source={RelativeSource Mode=Self}, Path=IconHeight}"
+                        ClassId="weathericon-locationpanel"
+                        ForceDarkTheme="{x:Bind ForceIconDarkTheme, Mode=OneWay, DataType={x:Null}}"
+                        IconHeight="{x:Bind WindCondition.Height, DataType={x:Null}}"
+                        IconWidth="{x:Bind WindCondition.Height, DataType={x:Null}}"
                         IconProvider="wi-erik-flowers"
-                        IconColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                        IconColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                         ShowAsMonochrome="True"
                         Rotation="{Binding WindDirection, Mode=OneWay}"
                         WeatherIcon="{Binding WindIcon, Mode=OneWay}" />
@@ -216,7 +212,7 @@
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
                         Text="{Binding WindSpeed, TargetNullValue='&#x2022;'}"
-                        TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}" />
+                        TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}" />
                 </HorizontalStackLayout>
             </VerticalStackLayout>
             <Label
@@ -227,7 +223,7 @@
                 VerticalOptions="Center"
                 FontSize="Title"
                 Text="{x:Static res_strings:Resources.label_nodata}"
-                TextColor="{Binding Source={x:Reference Control}, Path=ConditionPanelTextColor, Mode=OneWay}"
+                TextColor="{x:Bind ConditionPanelTextColor, Mode=OneWay, DataType={x:Null}}"
                 IsVisible="{x:Bind (not IsWeatherValid) and (not IsLoading)}"/>
         </Grid>
     </Border>

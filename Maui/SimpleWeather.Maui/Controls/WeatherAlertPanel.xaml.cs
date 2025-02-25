@@ -71,6 +71,7 @@ public partial class WeatherAlertPanel : ContentView
     }
 }
 
+[AcceptEmptyServiceProvider]
 internal class AlertSeverityColorConverter : BaseConverterOneWay<WeatherAlertSeverity, Color>
 {
     public override Color DefaultConvertReturnValue { get; set; } = default;
@@ -81,6 +82,7 @@ internal class AlertSeverityColorConverter : BaseConverterOneWay<WeatherAlertSev
     }
 }
 
+[AcceptEmptyServiceProvider]
 internal class AlertTypeIconConverter : BaseConverterOneWay<WeatherAlertType, ImageSource>
 {
     public override ImageSource DefaultConvertReturnValue { get; set; } = default;

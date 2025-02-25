@@ -6,6 +6,7 @@ using SimpleWeather.Maui.Helpers;
 namespace SimpleWeather.Maui.MarkupExtensions
 {
     [ContentProperty(nameof(Default))]
+    [RequireService([typeof(IProvideValueTarget), typeof(IXmlLineInfoProvider)])]
     public class OnDeviceWidthExtension : IMarkupExtension
     {
         private static readonly object s_notset = new();

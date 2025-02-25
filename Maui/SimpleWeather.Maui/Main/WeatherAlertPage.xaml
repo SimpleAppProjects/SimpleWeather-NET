@@ -18,8 +18,9 @@
         </Grid.RowDefinitions>
         <VerticalStackLayout Grid.Row="0">
             <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
-                                   BindingContext="{Binding Source={x:Reference AlertsPage}, Path=WNowViewModel}">
+                                   BindingContext="{x:Bind WNowViewModel, DataType={x:Null}}">
                 <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
+                       x:DataType="{x:Type viewModels:WeatherNowViewModel}"
                        Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </localControls:ViewBox>
             <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
@@ -27,8 +28,9 @@
 
         <ScrollView Grid.Row="1" Orientation="Vertical" Padding="8"
                     HorizontalScrollBarVisibility="Never"
-                    BindingContext="{Binding Source={x:Reference AlertsPage}, Path=AlertsView}">
+                    BindingContext="{x:Bind AlertsView, DataType={x:Null}}">
             <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand"
+                                 x:DataType="{x:Type controls:WeatherAlertsViewModel}"
                                  BindableLayout.ItemsSource="{Binding Alerts, Mode=OneWay}"
                                  Padding="0,0,0,16">
                 <BindableLayout.EmptyView>

@@ -1,3 +1,4 @@
+using System.Collections;
 using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
@@ -107,13 +108,17 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
         Dispatcher.Dispatch(() =>
         {
             ForecastsView.SelectForecast(Args?.IsHourly ?? false);
-            ListControl.Bind(CollectionView.ItemsSourceProperty, mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts);
-            ContentIndicator.Bind(
-                ActivityIndicator.IsRunningProperty, mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts,
-                path: "Count", converter: Resources["invValueBooleanConverter"] as IValueConverter);
+            ListControl.Bind(
+                CollectionView.ItemsSourceProperty, static src => src.SelectedForecasts,
+                mode: BindingMode.OneWay, source: ForecastsView);
+            ContentIndicator.SetBinding(
+                ActivityIndicator.IsRunningProperty, static (IEnumerable src) => (src as IList).Count,
+                mode: BindingMode.OneWay,
+                converter: Resources["invValueBooleanConverter"] as IValueConverter,
+                source: ForecastsView.SelectedForecasts);
             IncrementalIndicator.Bind(
-                IndeterminateProgressBar.IsActiveProperty, mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts,
-                path: "IsLoading");
+                IndeterminateProgressBar.IsActiveProperty, static src => (src as ISupportIncrementalLoading).IsLoading,
+                mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts);
 
 #if __IOS__
             // Scroll to item

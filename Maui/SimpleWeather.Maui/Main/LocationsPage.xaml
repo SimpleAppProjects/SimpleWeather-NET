@@ -29,7 +29,7 @@
                 </Border.GestureRecognizers>
                 <SwipeView
                     ios:SwipeView.SwipeTransitionMode="Reveal"
-                    RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay}">
+                    RightItems="{Binding Source={RelativeSource Mode=Self}, Path=LeftItems, Mode=OneWay, x:DataType={x:Type SwipeView}}">
                     <SwipeView.LeftItems>
                         <SwipeItems Mode="Reveal">
                             <SwipeItem
@@ -158,7 +158,8 @@
                     Padding="20,8,20,4"
                     FontFamily="OpenSansSemibold"
                     FontSize="16"
-                    IsVisible="{Binding Source={x:Reference LocationsPanel}, Path=IsVisible, Mode=OneWay}"
+                    x:DataType="{x:Null}"
+                    IsVisible="{x:Bind LocationsPanel.IsVisible, Mode=OneWay}"
                     Text="{x:Static res_strings:Resources.label_favoritelocations}"
                     TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                                 Dark={StaticResource DarkOnBackground}}" />

@@ -3,12 +3,13 @@ using System.Globalization;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class DoubleToBooleanConverter : BaseConverterOneWay<object, bool>
+    [AcceptEmptyServiceProvider]
+    public class DoubleToBooleanConverter : BaseConverterOneWay<object?, bool>
     {
         public double GreaterThan
         {
-            get { return (double)GetValue(GreaterThanProperty); }
-            set { SetValue(GreaterThanProperty, value); }
+            get => (double)GetValue(GreaterThanProperty);
+            set => SetValue(GreaterThanProperty, value);
         }
 
         public static readonly BindableProperty GreaterThanProperty =
@@ -16,8 +17,8 @@ namespace SimpleWeather.Maui.Converters
 
         public double LessThan
         {
-            get { return (double)GetValue(LessThanProperty); }
-            set { SetValue(LessThanProperty, value); }
+            get => (double)GetValue(LessThanProperty);
+            set => SetValue(LessThanProperty, value);
         }
 
         public static readonly BindableProperty LessThanProperty =
@@ -25,8 +26,8 @@ namespace SimpleWeather.Maui.Converters
 
         public bool IsInverse
         {
-            get { return (bool)GetValue(IsInverseProperty); }
-            set { SetValue(IsInverseProperty, value); }
+            get => (bool)GetValue(IsInverseProperty);
+            set => SetValue(IsInverseProperty, value);
         }
 
         public static readonly BindableProperty IsInverseProperty =
@@ -34,7 +35,7 @@ namespace SimpleWeather.Maui.Converters
 
         public override bool DefaultConvertReturnValue { get; set; } = false;
 
-        public override bool ConvertFrom(object value, CultureInfo culture)
+        public override bool ConvertFrom(object? value, CultureInfo? culture)
         {
             if (value == null)
             {
@@ -53,16 +54,16 @@ namespace SimpleWeather.Maui.Converters
 
             var boolValue = false;
 
-            if (GreaterThan != double.NaN && LessThan != double.NaN &&
+            if (!double.IsNaN(GreaterThan) && !double.IsNaN(LessThan) &&
                 vd > GreaterThan && vd < LessThan)
             {
                 boolValue = true;
             }
-            else if (GreaterThan != double.NaN && vd > GreaterThan)
+            else if (!double.IsNaN(GreaterThan) && vd > GreaterThan)
             {
                 boolValue = true;
             }
-            else if (LessThan != double.NaN && vd < LessThan)
+            else if (!double.IsNaN(LessThan) && vd < LessThan)
             {
                 boolValue = true;
             }

@@ -29,7 +29,7 @@
         <Setter Property="NextButtonIcon" Value="{mext:MaterialIcon Symbol=ChevronRight, Size=24}" />
         <Setter Property="CompleteButtonIcon" Value="{mext:MaterialIcon Symbol=Done, Size=24}" />
         <Setter Property="ControlTemplate">
-            <ControlTemplate>
+            <ControlTemplate x:DataType="stepper:BottomStepperNavigationBar">
                 <AbsoluteLayout
                     x:Name="RootGrid"
                     Background="{TemplateBinding Background}"
@@ -203,7 +203,7 @@
         <Setter Property="ProgressBarIndicatorColor"
                 Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
         <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="ControlTemplate">
+        <Setter Property="ControlTemplate" x:DataType="controls:ProgressAutoSuggestBox">
             <ControlTemplate>
                 <Border
                     Margin="{TemplateBinding Margin}"
@@ -259,7 +259,7 @@
         <Setter Property="IsLightTheme" Value="{AppThemeBinding Light='True', Dark='False'}" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="controls:IconControl">
                     <controls:ViewBox
                         x:Name="IconBox"
                         HeightRequest="{TemplateBinding IconHeight}"
@@ -285,7 +285,7 @@
         <Setter Property="HeightRequest" Value="275" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="localGraphs:BaseGraphViewControl">
                     <Grid Background="{TemplateBinding Background}" BackgroundColor="{TemplateBinding BackgroundColor}">
                         <ScrollView
                             x:Name="InternalScrollViewer"
@@ -330,7 +330,7 @@
     <Style x:Key="DefaultHeaderedContentControlStyle" TargetType="controls:HeaderedContentControl">
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="controls:HeaderedContentControl">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -382,7 +382,7 @@
         <Setter Property="MaximumWidthRequest" Value="560" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="sharedControls:SunPhaseView">
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
@@ -411,7 +411,7 @@
         <Setter Property="ThumbColor" Value="White" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="sharedControls:AQIProgressBar">
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
@@ -443,7 +443,7 @@
         <Setter Property="VerticalOptions" Value="Center" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="controls:ToggleButtonGroup">
                     <Border StrokeThickness="1"
                             Stroke="{AppThemeBinding Light={StaticResource LightOutline}, Dark={StaticResource DarkOutline}}"
                             BackgroundColor="{TemplateBinding BackgroundColor}"

@@ -281,7 +281,7 @@
         </Setter>
         <Setter Property="ControlTemplate">
             <Setter.Value>
-                <ControlTemplate>
+                <ControlTemplate x:DataType="RadioButton">
                     <Frame
                         Margin="{TemplateBinding Margin}"
                         Padding="0"
@@ -562,7 +562,7 @@
         <Setter Property="Padding" Value="4,0" />
         <Setter Property="ImageSource">
             <Setter.Value>
-                <matIcons:MaterialIcon Glyph="&#xe5d7;" Color="{TemplateBinding TextColor}" />
+                <matIcons:MaterialIcon Glyph="&#xe5d7;" Color="{TemplateBinding TextColor, x:DataType={x:Type controls:PickerButton}}" />
             </Setter.Value>
         </Setter>
         <Setter Property="ContentLayout" Value="Right, 4" />

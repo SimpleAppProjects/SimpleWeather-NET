@@ -9,6 +9,7 @@
     xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
     xmlns:graphPanels="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
+    xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     Title="{x:Static res_strings:Resources.pref_title_feature_charts}"
@@ -51,8 +52,9 @@
         </Grid.RowDefinitions>
         <VerticalStackLayout Grid.Row="0">
             <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
-                                   BindingContext="{Binding Source={x:Reference ChartsPage}, Path=WNowViewModel}">
+                                   BindingContext="{x:Bind WNowViewModel}">
                 <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
+                       x:DataType="commonVM:WeatherNowViewModel"
                        Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
             </localControls:ViewBox>
             <Rectangle Style="{DynamicResource AppBarBorderStyle}" />

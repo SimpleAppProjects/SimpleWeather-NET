@@ -177,7 +177,7 @@
                 ExpandedWidth="420"
                 Items="{StaticResource DesktopTabItems}"
                 FooterItems="{StaticResource FooterTabItems}"
-                SelectedItem="{Binding Source={x:Reference _Shell}, Path=CurrentShellContent}"
+                SelectedItem="{x:Bind _Shell.CurrentShellContent}"
                 ItemSelected="ShellSideBar_ItemSelected"
                 Style="{StaticResource DefaultAppShellSideBarStyle}"
                 IsVisible="{OnIdiom Default=false, Desktop=true}"/>
@@ -211,7 +211,7 @@
                 IsScrollable="False"
                 ItemSelected="ShellTabBar_ItemSelected"
                 ItemsAlignment="Center"
-                SelectedItem="{Binding Source={x:Reference _Shell}, Path=CurrentShellContent}"
+                SelectedItem="{x:Bind _Shell.CurrentShellContent}"
                 ShowButtonWhenMoreItemsDoNotFit="True"
                 ShowMenuOnMoreButtonClick="True"
                 Style="{OnIdiom Default={StaticResource MobileAppShellTabBarStyle},

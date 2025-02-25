@@ -10,6 +10,7 @@
     xmlns:mauiIcons="http://www.aathifmahir.com/dotnet/2022/maui/icons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:uwpUtils="clr-namespace:SimpleWeather.NET.Utils;assembly=SimpleWeather"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
@@ -28,7 +29,7 @@
                                             LongPressed="ReorderableCollectionView_LongPressed"
                                             ReorderCompleted="ReorderableCollectionView_ReorderCompleted">
             <CollectionView.HeaderTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="system:String">
                     <Grid RowDefinitions="*,Auto" Padding="0,24,0,0">
                         <Label FontSize="13" Text="{Binding}" Opacity="0.6"
                                Padding="16,4"
@@ -40,7 +41,7 @@
                 </DataTemplate>
             </CollectionView.HeaderTemplate>
             <CollectionView.FooterTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="{x:Type system:String}">
                     <Grid>
                         <Button Text="{Binding}"
                                 FontAttributes="Bold"

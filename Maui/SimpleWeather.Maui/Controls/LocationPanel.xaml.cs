@@ -7,10 +7,7 @@ namespace SimpleWeather.Maui.Controls;
 
 public partial class LocationPanel : ContentView
 {
-    public LocationPanelUiModel ViewModel
-    {
-        get => this.BindingContext as LocationPanelUiModel;
-    }
+    public LocationPanelUiModel ViewModel => this.BindingContext as LocationPanelUiModel;
 
     public Color ConditionPanelTextColor
     {
@@ -44,9 +41,9 @@ public partial class LocationPanel : ContentView
     {
         if (bindable is LocationPanel panel)
         {
-            if (panel.IsLoaded)
+            if (panel.BackgroundOverlay is { } bgImage)
             {
-                panel.UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && panel?.BackgroundOverlay?.Source != null);
+                panel.UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
             }
             else
             {
@@ -76,7 +73,7 @@ public partial class LocationPanel : ContentView
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             ForceIconDarkTheme = false;
         }
-        ApplyBindings();
+        Dispatcher.Dispatch(ApplyBindings);
     }
 
     private void BackgroundOverlay_Loaded(object sender, EventArgs e)
@@ -97,7 +94,7 @@ public partial class LocationPanel : ContentView
         var bgImage = sender as Image;
         if (e.PropertyName == nameof(bgImage.Source))
         {
-            UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && bgImage.Source != null);
+            UpdateControlTheme(FeatureSettings.LocationPanelBackgroundImage && bgImage?.Source != null);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using CommunityToolkit.Maui.Markup;
+using Microsoft.Maui.Controls.Internals;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Controls.Xaml;
 using SimpleToolkit.Core;
@@ -101,7 +102,7 @@ public class ToggleButton : ContentButton
     public ToggleButton()
     {
         StrokeShape = new RoundRectangle()
-            .Bind(RoundRectangle.CornerRadiusProperty, nameof(CornerRadius), BindingMode.OneWay, source: this);
+            .Bind(RoundRectangle.CornerRadiusProperty, static src => src.CornerRadius, mode: BindingMode.OneWay, source: this);
         StrokeThickness = 0.5;
         this.AppThemeBinding(StrokeProperty, new SolidColorBrush(Color.FromArgb("#73777F")), new SolidColorBrush(Color.FromArgb("#8D9199")));
 
@@ -118,13 +119,13 @@ public class ToggleButton : ContentButton
             {
                 new Icon()
                     .Margins(4, 4, 8, 4)
-                    .Bind(Icon.SourceProperty, nameof(IconSource), BindingMode.OneWay, source: this)
-                    .Bind(Icon.TintColorProperty, nameof(IconTint), BindingMode.OneWay, source: this)
+                    .Bind(Icon.SourceProperty, static src => src.IconSource, mode: BindingMode.OneWay, source: this)
+                    .Bind(Icon.TintColorProperty, static src => src.IconTint, mode: BindingMode.OneWay, source: this)
                     .Apply(it => Icon = it),
                 new Label()
                     .Padding(4)
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
                     .Apply(it => Label = it),
             }
         };
@@ -143,7 +144,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = Icon.TintColorProperty,
-                                Value = new Binding(nameof(CheckedIconTint), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.CheckedIconTint, mode: BindingMode.OneWay, source: this),
                             }
                         }
                     },
@@ -155,7 +156,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = Icon.TintColorProperty,
-                                Value = new Binding(nameof(IconTint), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.IconTint, mode: BindingMode.OneWay, source: this),
                             }
                         }
                     },
@@ -177,7 +178,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = Label.TextColorProperty,
-                                Value = new Binding(nameof(CheckedTextColor), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.CheckedTextColor, mode: BindingMode.OneWay, source: this),
                             }
                         }
                     },
@@ -189,7 +190,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = Label.TextColorProperty,
-                                Value = new Binding(nameof(TextColor), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.TextColor, mode: BindingMode.OneWay, source: this),
                             }
                         }
                     },
@@ -211,7 +212,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = VisualElement.BackgroundColorProperty,
-                                Value = new Binding(nameof(CheckedBackgroundColor), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.CheckedBackgroundColor, mode: BindingMode.OneWay, source: this),
                             }
                         }
                     },
@@ -223,7 +224,7 @@ public class ToggleButton : ContentButton
                             new Setter()
                             {
                                 Property = VisualElement.BackgroundColorProperty,
-                                Value = new Binding(nameof(BackgroundColor), BindingMode.OneWay, source: this)
+                                Value = BindingBase.Create(static (ToggleButton src) => src.BackgroundColor, BindingMode.OneWay, source: this),
                             }
                         }
                     },

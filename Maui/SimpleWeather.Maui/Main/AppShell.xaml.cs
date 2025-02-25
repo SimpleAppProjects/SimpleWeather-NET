@@ -193,8 +193,8 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
         if (this.CurrentPage is Page currentPage)
         {
-            ShellAppBar.Bind(AppBar.TitleProperty, nameof(currentPage.Title), BindingMode.OneWay, source: currentPage);
-            ShellAppBar.Bind(AppBar.ToolbarItemsProperty, nameof(currentPage.ToolbarItems), BindingMode.OneWay, source: currentPage);
+            ShellAppBar.Bind(AppBar.TitleProperty, static page => page.Title, mode: BindingMode.OneWay, source: currentPage);
+            ShellAppBar.Bind(AppBar.ToolbarItemsProperty, static page => page.ToolbarItems, mode: BindingMode.OneWay, source: currentPage);
             ShellAppBar.TitleView = Shell.GetTitleView(currentPage);
 
             if (currentPage.ToolbarItems is INotifyCollectionChanged notifyColl)

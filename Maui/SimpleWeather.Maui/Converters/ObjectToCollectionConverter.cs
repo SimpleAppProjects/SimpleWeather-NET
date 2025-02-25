@@ -4,21 +4,22 @@ using System.Globalization;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class ObjectToCollectionConverter : BaseConverterTwoWay<object, IEnumerable>
+    [AcceptEmptyServiceProvider]
+    public class ObjectToCollectionConverter : BaseConverterTwoWay<object?, IEnumerable?>
     {
-        public override IEnumerable DefaultConvertReturnValue { get; set; } = default;
-        public override object DefaultConvertBackReturnValue { get; set; } = default;
+        public override IEnumerable? DefaultConvertReturnValue { get; set; } = null;
+        public override object? DefaultConvertBackReturnValue { get; set; } = null;
 
-        public override object ConvertBackTo(IEnumerable value, CultureInfo culture)
+        public override object? ConvertBackTo(IEnumerable? value, CultureInfo? culture)
         {
             return value;
         }
 
-        public override IEnumerable ConvertFrom(object value, CultureInfo culture)
+        public override IEnumerable? ConvertFrom(object? value, CultureInfo? culture)
         {
             if (value is not null)
             {
-                return value is IEnumerable enumerable ? enumerable : ImmutableList.Create(value);
+                return value as IEnumerable ?? ImmutableList.Create(value);
             }
 
             return null;

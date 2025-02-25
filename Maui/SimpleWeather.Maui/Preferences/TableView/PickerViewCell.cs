@@ -114,15 +114,11 @@ namespace SimpleWeather.Maui.Preferences
                         FontSize = 17,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
+                        convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -131,17 +127,17 @@ namespace SimpleWeather.Maui.Preferences
                         HorizontalOptions = LayoutOptions.End,
                         FontSize = 15,
                     }
-                    .Bind(Button.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
-                    .Bind(Button.TextProperty, nameof(Detail), BindingMode.TwoWay, source: this)
-                    .Bind<Button, string, bool>(Button.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,
+                    .Bind(Button.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Button.TextProperty, static src => src.Detail, mode: BindingMode.TwoWay, source: this)
+                    .Bind(Button.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
                         convert: (s) =>
                         {
                             return !string.IsNullOrWhiteSpace(s?.ToString());
                         }
                     )
-                    .Bind(Button.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind(PickerButton.SelectedItemProperty, nameof(SelectedItem), BindingMode.TwoWay, source: this)
-                    .Bind(PickerButton.ItemsProperty, nameof(Items), BindingMode.OneWay, source: this)
+                    .Bind(Button.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(PickerButton.SelectedItemProperty, static src => src.SelectedItem, mode: BindingMode.TwoWay, source: this)
+                    .Bind(PickerButton.ItemsProperty, static src => src.Items, mode: BindingMode.OneWay, source: this)
                     .Paddings()
                     .Margins()
                     .CenterVertical()
@@ -169,16 +165,13 @@ namespace SimpleWeather.Maui.Preferences
                 {
                     if (IsEnabled)
                     {
-                        MenuButton.Bind(Button.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this);
+                        MenuButton.Bind(Button.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this);
                     }
                     else
                     {
-                        MenuButton.Bind<Button, Color, Color>(
-                            Button.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this,
-                            convert: c1 =>
-                            {
-                                return c1?.WithAlpha((float)0x30/0xff);
-                            });
+                        MenuButton.Bind(
+                            Button.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this,
+                            convert: c1 => c1?.WithAlpha((float)0x30/0xff));
                     }
                 }
             };

@@ -78,10 +78,13 @@ public partial class WeatherChartsPage : ViewModelPage
 
         Dispatcher.Dispatch(() =>
         {
-            ListControl.Bind(CollectionView.ItemsSourceProperty, mode: BindingMode.OneWay, source: ChartsView.GraphModels);
-            ContentIndicator.Bind(
-                ActivityIndicator.IsRunningProperty, mode: BindingMode.OneWay, source: ChartsView.GraphModels,
-                path: "Count", converter: Resources["invValueBooleanConverter"] as IValueConverter);
+            ListControl.Bind(CollectionView.ItemsSourceProperty, static src => src.GraphModels,
+                mode: BindingMode.OneWay, source: ChartsView);
+            ContentIndicator.SetBinding(
+                ActivityIndicator.IsRunningProperty, static (ICollection<object> src) => src.Count,
+                mode: BindingMode.OneWay,
+                converter: Resources["invValueBooleanConverter"] as IValueConverter,
+                source: ChartsView.GraphModels);
         });
     }
 

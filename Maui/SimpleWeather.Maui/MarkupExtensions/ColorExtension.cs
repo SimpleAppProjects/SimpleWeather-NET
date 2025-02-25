@@ -1,5 +1,6 @@
 ﻿namespace SimpleWeather.Maui.MarkupExtensions
 {
+    [AcceptEmptyServiceProvider]
     public class ColorExtension : BindableObject, IMarkupExtension<Color>
     {
         public float Alpha { get; set; } = 1f;

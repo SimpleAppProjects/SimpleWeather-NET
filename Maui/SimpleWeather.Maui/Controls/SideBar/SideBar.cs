@@ -168,7 +168,7 @@ namespace SimpleWeather.Maui.Controls
 						ColumnDefinitions =
 						{
 							new ColumnDefinition(new GridLength(CollapsedWidth))
-								.Bind(ColumnDefinition.WidthProperty, path: nameof(CollapsedWidth), mode: BindingMode.OneWay, source: this),
+								.Bind(ColumnDefinition.WidthProperty, static src => src.CollapsedWidth, mode: BindingMode.OneWay, source: this),
 							new ColumnDefinition(GridLength.Star)
 						},
                         Margin = new Thickness(-4, 0, 0, 0),
@@ -179,11 +179,11 @@ namespace SimpleWeather.Maui.Controls
 								HeightRequest = 24,
 								WidthRequest = 24
 							}
-							.Bind(Icon.SourceProperty, nameof(BaseShellItem.Icon))
+							.Bind(Icon.SourceProperty, static (BaseShellItem item) => item.Icon)
 							.Apply(it =>
 							{
-								it.Bind<Icon, BaseShellItem, Color>(Icon.TintColorProperty, path: nameof(SelectedItem), mode: BindingMode.OneWay, source: this,
-									convert: (item) =>
+								it.Bind(Icon.TintColorProperty, static src => src.SelectedItem, mode: BindingMode.OneWay, source: this,
+									convert: (_) =>
 									{
 										return IsSelected(it) ? IconSelectionColor : IconColor;
 									}
@@ -197,16 +197,16 @@ namespace SimpleWeather.Maui.Controls
 								VerticalOptions = LayoutOptions.Center,
 								LineBreakMode = LineBreakMode.NoWrap
 							}
-							.Bind(Label.TextProperty, nameof(BaseShellItem.Title))
+							.Bind(Label.TextProperty, static (BaseShellItem item) => item.Title)
                             .Column(1)
 						}
 					}
 				}
                 .Behaviors(
                     new TouchBehavior()
-                        .Bind(TouchBehavior.HoveredBackgroundColorProperty, path: nameof(SelectionBackgroundColor), mode: BindingMode.OneWay, source: this)
-                        .Bind<TouchBehavior, Color, Color>(
-                            TouchBehavior.PressedBackgroundColorProperty, path: nameof(SelectionBackgroundColor), mode: BindingMode.OneWay, source: this,
+                        .Bind(TouchBehavior.HoveredBackgroundColorProperty, static src => src.SelectionBackgroundColor, mode: BindingMode.OneWay, source: this)
+                        .Bind(
+                            TouchBehavior.PressedBackgroundColorProperty, static src => src.SelectionBackgroundColor, mode: BindingMode.OneWay, source: this,
                             convert: (color) =>
                             {
                                 return color.WithLuminosity(0.2f);
@@ -261,15 +261,15 @@ namespace SimpleWeather.Maui.Controls
                                     WidthRequest = 24,
                                     Source = MauiIcons.Cupertino.CupertinoIcons.SidebarLeft.ToImageSource(iconSize: 24)
                                 }
-                                .Bind(Icon.TintColorProperty, path: nameof(IconColor), mode: BindingMode.OneWay, source: this),
+                                .Bind(Icon.TintColorProperty, static src => src.IconColor, mode: BindingMode.OneWay, source: this),
                             }
                         },
                     }
                     .Behaviors(
                         new TouchBehavior()
-                            .Bind(TouchBehavior.HoveredBackgroundColorProperty, path: nameof(SelectionBackgroundColor), mode: BindingMode.OneWay, source: this)
-                            .Bind<TouchBehavior, Color, Color>(
-                                TouchBehavior.PressedBackgroundColorProperty, path: nameof(SelectionBackgroundColor), mode: BindingMode.OneWay, source: this,
+                            .Bind(TouchBehavior.HoveredBackgroundColorProperty, static src => src.SelectionBackgroundColor, mode: BindingMode.OneWay, source: this)
+                            .Bind(
+                                TouchBehavior.PressedBackgroundColorProperty, static src => src.SelectionBackgroundColor, mode: BindingMode.OneWay, source: this,
                                 convert: (color) =>
                                 {
                                     return color.WithLuminosity(0.2f);
@@ -281,19 +281,19 @@ namespace SimpleWeather.Maui.Controls
                         IsExpanded = !IsExpanded;
                     }),
                     new VerticalStackLayout()
-                        .Bind(BindableLayout.ItemsSourceProperty, path: nameof(Items), mode: BindingMode.OneWay, source: this)
+                        .Bind(BindableLayout.ItemsSourceProperty, static src => src.Items, mode: BindingMode.OneWay, source: this)
                         .ItemTemplate(ItemTemplate)
                         .Apply(it => ListContainer = it)
                         .Row(1),
                     new VerticalStackLayout()
-						.Bind(BindableLayout.ItemsSourceProperty, path: nameof(FooterItems), mode: BindingMode.OneWay, source: this)
+						.Bind(BindableLayout.ItemsSourceProperty, static src => src.FooterItems, mode: BindingMode.OneWay, source: this)
 						.ItemTemplate(ItemTemplate)
                         .Margins(bottom: 8)
                         .Apply(it => FooterContainer = it)
                         .Row(2)
                 }
             }
-			.Bind(MinimumWidthRequestProperty, path: nameof(CollapsedWidth), mode: BindingMode.OneWay, source: this);
+			.Bind(MinimumWidthRequestProperty, static src => src.CollapsedWidth, mode: BindingMode.OneWay, source: this);
         }
 
         private void ShellItemPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -314,11 +314,11 @@ namespace SimpleWeather.Maui.Controls
 
 				if (IsSelected(item))
 				{
-					icon.Bind(Icon.TintColorProperty, path: nameof(IconSelectionColor), mode: BindingMode.OneWay, source: this);
+					icon.Bind(Icon.TintColorProperty, static src => src.IconSelectionColor, mode: BindingMode.OneWay, source: this);
                 }
 				else
 				{
-                    icon.Bind(Icon.TintColorProperty, path: nameof(IconColor), mode: BindingMode.OneWay, source: this);
+                    icon.Bind(Icon.TintColorProperty, static src => src.IconColor, mode: BindingMode.OneWay, source: this);
                 }
             }
         }

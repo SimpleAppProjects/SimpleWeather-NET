@@ -30,7 +30,7 @@ namespace SimpleWeather.Maui.Controls
         public PickerButton()
         {
             ImageSource = MauiIcons.Material.MaterialIcons.UnfoldMore.ToImageSource(iconColor: Colors.White, iconSize: 24, iconAutoScaling: true)
-                .Bind(FontImageSource.ColorProperty, nameof(TextColor), BindingMode.OneWay, source: this);
+                .Bind(FontImageSource.ColorProperty, static color => color.TextColor, mode: BindingMode.OneWay, source: this);
         }
 
         protected override void OnHandlerChanged()

@@ -14,10 +14,7 @@ public partial class MoonPhaseControl : ContentView
     private MoonPhase.MoonPhaseType SelectedMoonPhaseType { get; set; } = MoonPhase.MoonPhaseType.FullMoon;
     private int SelectedIndex => (int)SelectedMoonPhaseType + _moonPhaseTypes.Length;
 
-    public MoonPhaseViewModel ViewModel
-    {
-        get { return (this.BindingContext as MoonPhaseViewModel); }
-    }
+    public MoonPhaseViewModel ViewModel => this.BindingContext as MoonPhaseViewModel;
 
     public MoonPhaseControl()
     {

@@ -78,12 +78,8 @@ namespace SimpleWeather.Maui.Preferences
                 {
                     new RowDefinition(GridLength.Star),
                     new RowDefinition(GridLength.Star)
-                        .Bind<RowDefinition, string, GridLength>(RowDefinition.HeightProperty, nameof(Detail), BindingMode.OneWay, source: this,
-                            convert: (s) =>
-                            {
-                                return !string.IsNullOrWhiteSpace(s) ? GridLength.Star : new GridLength(0);
-                            }
-                        ),
+                        .Bind(RowDefinition.HeightProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
+                            convert: (s) => !string.IsNullOrWhiteSpace(s) ? GridLength.Star : new GridLength(0)),
                 },
                 ColumnDefinitions =
                 {
@@ -98,15 +94,11 @@ namespace SimpleWeather.Maui.Preferences
                         FontSize = 17,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
+                        convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -116,28 +108,20 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Paddings(top: 4)
-                    .Bind(Label.TextProperty, nameof(Detail), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
-                    .Bind<Label, string, bool>(Label.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,
-                        convert: (s) =>
-                        {
-                            return !string.IsNullOrWhiteSpace(s?.ToString());
-                        }
-                    )
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
+                        convert: (s) => !string.IsNullOrWhiteSpace(s?.ToString()))
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
+                        convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(1),
                     new Switch()
-                        .Bind(Switch.OnColorProperty, nameof(OnColor), BindingMode.OneWay, source: this)
-                        .Bind(Switch.IsToggledProperty, nameof(On), BindingMode.TwoWay, source: this)
-                        .Bind(Switch.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                        .Bind(Switch.OnColorProperty, static src => src.OnColor, mode: BindingMode.OneWay, source: this)
+                        .Bind(Switch.IsToggledProperty, static src => src.On, mode: BindingMode.TwoWay, source: this)
+                        .Bind(Switch.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)
                         .RowSpan(2)

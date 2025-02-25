@@ -17,12 +17,9 @@ public partial class RadarToolbar : ContentView
     public RadarToolbar()
     {
         this.InitializeComponent();
-        PlayIcon.Bind<MaterialIcon, bool, MaterialSymbol>(
-            MaterialIcon.SymbolProperty, path: nameof(IsPlaying), BindingMode.OneWay, source: this,
-            convert: (isPlaying) =>
-            {
-                return isPlaying ? MaterialSymbol.Pause : MaterialSymbol.Play;
-            },
+        PlayIcon.Bind(
+            MaterialIcon.SymbolProperty, static src => src.IsPlaying, mode: BindingMode.OneWay, source: this,
+            convert: (isPlaying) => isPlaying ? MaterialSymbol.Pause : MaterialSymbol.Play,
             targetNullValue: MaterialSymbol.Play,
             fallbackValue: MaterialSymbol.Play
         );

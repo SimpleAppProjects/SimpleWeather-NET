@@ -125,15 +125,11 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family,
                         VerticalTextAlignment = TextAlignment.Center
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
+                        convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(0),
@@ -143,21 +139,13 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Paddings(top: 4)
-                    .Bind(Label.TextProperty, nameof(Detail), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
-                    .Bind<Label, string, bool>(Label.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,
-                        convert: (s) =>
-                        {
-                            return !string.IsNullOrWhiteSpace(s?.ToString());
-                        }
-                    )
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
-                        convert: (enabled) =>
-                        {
-                            return enabled ? 1.0d : 0.5d;
-                        }
-                     )
+                    .Bind(Label.TextProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
+                        convert: (s) => !string.IsNullOrWhiteSpace(s?.ToString()))
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
+                        convert: (enabled) => enabled ? 1.0d : 0.5d)
                     .CenterVertical()
                     .Column(0)
                     .Row(1),
@@ -165,8 +153,8 @@ namespace SimpleWeather.Maui.Preferences
                     .Margin(0, 10)
                     .FillHorizontal()
                     .OnIdiom(Image.MaximumHeightRequestProperty, 75, Phone: 60)
-                    .Bind(Image.BackgroundColorProperty, nameof(ImageBackgroundColor), BindingMode.OneWay, source: this)
-                    .Bind(Image.SourceProperty, nameof(ImageSource), BindingMode.OneWay, source: this)
+                    .Bind(Image.BackgroundColorProperty, static src => src.ImageBackgroundColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Image.SourceProperty, static src => src.ImageSource, mode: BindingMode.OneWay, source: this)
                     .Column(0)
                     .Row(2)
                 }

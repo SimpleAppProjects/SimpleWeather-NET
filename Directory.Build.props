@@ -3,6 +3,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <Version>5.11.0</Version>
+    <Nullable>warnings</Nullable>
     <!-- Version Code Format (.NET Version, App Version, Build Number) -->
     <!-- Note: Update here as well as Maui.AppWidget xproj -->
     <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">95110000</VersionCode>
@@ -39,6 +40,11 @@
   <!-- Maui -->
   <PropertyGroup>
     <MauiVersion>9.0.40</MauiVersion>
+    <_MauiBindingInterceptorsSupport>true</_MauiBindingInterceptorsSupport>
+    <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
+    <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
+    <NoWarn Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(NoWarn);MT7091</NoWarn>
+    <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(WarningsAsErrors);XC0022;XC0023;IL2026</WarningsAsErrors>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -547,11 +547,6 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
                 this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             else
                 ConditionPanelTextColor = Colors.White;
-
-            if (CurTemp != null)
-            {
-                CurTemp.TextColor = GetTempColor();
-            }
         }
         else
         {
@@ -561,10 +556,11 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
             }
 
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
-            if (CurTemp != null)
-            {
-                CurTemp.TextColor = GetTempColor();
-            }
+        }
+
+        if (CurTemp != null)
+        {
+            CurTemp.TextColor = GetTempColor();
         }
     }
 

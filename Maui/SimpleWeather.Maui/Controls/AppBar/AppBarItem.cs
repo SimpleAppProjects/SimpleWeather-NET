@@ -196,7 +196,7 @@ namespace SimpleWeather.Maui.Controls.AppBar
                     _appbarItemText.Text = _originalText;
                 else
                 {
-                    if (Device.RuntimePlatform == Device.Android && !string.IsNullOrEmpty(_originalText))
+                    if (DeviceInfo.Platform == DevicePlatform.Android && !string.IsNullOrEmpty(_originalText))
                         _appbarItemText.Text = _originalText.ToUpper();
                 }
             }

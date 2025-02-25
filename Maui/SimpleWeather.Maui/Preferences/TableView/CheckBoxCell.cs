@@ -12,8 +12,8 @@ namespace SimpleWeather.Maui.Preferences
     {
         public bool IsChecked
         {
-            get { return (bool)GetValue(IsCheckedProperty); }
-            set { SetValue(IsCheckedProperty, value); }
+            get => (bool)GetValue(IsCheckedProperty);
+            set => SetValue(IsCheckedProperty, value);
         }
 
         public static readonly BindableProperty IsCheckedProperty =
@@ -25,8 +25,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public Color Color
         {
-            get { return (Color)GetValue(ColorProperty); }
-            set { SetValue(ColorProperty, value); }
+            get => (Color)GetValue(ColorProperty);
+            set => SetValue(ColorProperty, value);
         }
 
         public static readonly BindableProperty ColorProperty =
@@ -34,8 +34,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public string Text
         {
-            get { return (string)GetValue(TextProperty); }
-            set { SetValue(TextProperty, value); }
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
 
         public static readonly BindableProperty TextProperty =
@@ -43,8 +43,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public Color TextColor
         {
-            get { return (Color)GetValue(TextColorProperty); }
-            set { SetValue(TextColorProperty, value); }
+            get => (Color)GetValue(TextColorProperty);
+            set => SetValue(TextColorProperty, value);
         }
 
         public static readonly BindableProperty TextColorProperty =
@@ -52,8 +52,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public string Detail
         {
-            get { return (string)GetValue(DetailProperty); }
-            set { SetValue(DetailProperty, value); }
+            get => (string)GetValue(DetailProperty);
+            set => SetValue(DetailProperty, value);
         }
 
         public static readonly BindableProperty DetailProperty =
@@ -61,8 +61,8 @@ namespace SimpleWeather.Maui.Preferences
 
         public Color DetailColor
         {
-            get { return (Color)GetValue(DetailColorProperty); }
-            set { SetValue(DetailColorProperty, value); }
+            get => (Color)GetValue(DetailColorProperty);
+            set => SetValue(DetailColorProperty, value);
         }
 
         public static readonly BindableProperty DetailColorProperty =
@@ -87,7 +87,7 @@ namespace SimpleWeather.Maui.Preferences
                 {
                     new RowDefinition(GridLength.Star),
                     new RowDefinition(GridLength.Star)
-                        .Bind<RowDefinition, string, GridLength>(RowDefinition.HeightProperty, nameof(Detail), BindingMode.OneWay, source: this,
+                        .Bind(RowDefinition.HeightProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
                             convert: (s) =>
                             {
                                 return !string.IsNullOrWhiteSpace(s) ? GridLength.Star : new GridLength(0);
@@ -107,10 +107,10 @@ namespace SimpleWeather.Maui.Preferences
                         FontSize = 17,
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
-                    .Bind(Label.TextProperty, nameof(Text), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(TextColor), BindingMode.OneWay, source: this)
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
                         convert: (enabled) =>
                         {
                             return enabled ? 1.0d : 0.5d;
@@ -125,16 +125,16 @@ namespace SimpleWeather.Maui.Preferences
                         FontFamily = Microsoft.Maui.Font.Default.Family
                     }
                     .Paddings(top: 4)
-                    .Bind(Label.TextProperty, nameof(Detail), BindingMode.OneWay, source: this)
-                    .Bind(Label.TextColorProperty, nameof(DetailColor), BindingMode.OneWay, source: this)
-                    .Bind<Label, string, bool>(Label.IsVisibleProperty, nameof(Detail), BindingMode.OneWay, source: this,
+                    .Bind(Label.TextProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
                         convert: (s) =>
                         {
                             return !string.IsNullOrWhiteSpace(s?.ToString());
                         }
                     )
-                    .Bind(Label.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
-                    .Bind<Label, bool, double>(Label.OpacityProperty, nameof(IsEnabled), BindingMode.OneWay, source: this,
+                    .Bind(Label.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
+                    .Bind(Label.OpacityProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this,
                         convert: (enabled) =>
                         {
                             return enabled ? 1.0d : 0.5d;
@@ -144,14 +144,14 @@ namespace SimpleWeather.Maui.Preferences
                     .Column(0)
                     .Row(1),
                     new CheckBox()
-                        .Bind(CheckBox.ColorProperty, nameof(Color), BindingMode.OneWay, source: this)
-                        .Bind(CheckBox.IsCheckedProperty, nameof(IsChecked), BindingMode.TwoWay, source: this)
-                        .Bind(CheckBox.IsEnabledProperty, nameof(IsEnabled), BindingMode.OneWay, source: this)
+                        .Bind(CheckBox.ColorProperty, static src => src.Color, mode: BindingMode.OneWay, source: this)
+                        .Bind(CheckBox.IsCheckedProperty, static src => src.IsChecked, mode: BindingMode.TwoWay, source: this)
+                        .Bind(CheckBox.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)
                         .RowSpan(2)
                 }
-            }.Bind<Grid, bool, Thickness>(Grid.PaddingProperty, nameof(IsCompact), BindingMode.OneWay, source: this,
+            }.Bind(Grid.PaddingProperty, static src => src.IsCompact, mode: BindingMode.OneWay, source: this,
                 convert: (isCompact) =>
                 {
                     return new Thickness(16, isCompact ? 0 : 8);

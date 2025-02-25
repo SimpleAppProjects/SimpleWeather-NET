@@ -105,25 +105,17 @@ public partial class WeatherNow
                             ListLayout = it;
                         })
                     }
-                    .Bind<ScrollView, WeatherUiModel, bool>(ScrollView.IsVisibleProperty, path: nameof(WNowViewModel.Weather), mode: BindingMode.OneWay, source: WNowViewModel,
-                        convert: (model) =>
-                        {
-                            return model?.Location != null;
-                        }
-                    )
+                    .Bind(ScrollView.IsVisibleProperty, static src => src.Weather, mode: BindingMode.OneWay, source: WNowViewModel, convert: (model) => model?.Location != null)
                     .Apply(it =>
                     {
                         MainViewer = it;
                     })
                 }
                 .AppThemeBinding(RefreshView.RefreshColorProperty, LightPrimary, DarkPrimary)
-                .Bind<RefreshView, WeatherNowState, bool>(RefreshView.IsRefreshingProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
-                    convert: (uiState) =>
-                    {
-                        return uiState?.IsLoading ?? true;
-                    }, targetNullValue: true, fallbackValue: true
+                .Bind(RefreshView.IsRefreshingProperty, static src => src.UiState, mode: BindingMode.OneWay, source: WNowViewModel,
+                    convert: (uiState) => uiState?.IsLoading ?? true, targetNullValue: true, fallbackValue: true
                 )
-                .Bind<RefreshView, WeatherNowState, bool>(RefreshView.IsVisibleProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
+                .Bind(RefreshView.IsVisibleProperty, static src => src.UiState, mode: BindingMode.OneWay, source: WNowViewModel,
                     convert: WeatherNowBinding.IsViewVisible
                 )
                 .Row(2)
@@ -137,7 +129,7 @@ public partial class WeatherNow
                 new ActivityIndicator()
                 .RowSpan(3)
                 .Center()
-                .Bind<ActivityIndicator, WeatherNowState, bool>(ActivityIndicator.IsRunningProperty, path: nameof(WNowViewModel.UiState), mode: BindingMode.OneWay, source: WNowViewModel,
+                .Bind(ActivityIndicator.IsRunningProperty, static src => src.UiState, mode: BindingMode.OneWay, source: WNowViewModel,
                     convert: WeatherNowBinding.IsLoadingRingActive, targetNullValue: true, fallbackValue: true
                 )
                 .Apply(it =>
@@ -201,9 +193,7 @@ public partial class WeatherNow
                             Aspect = Aspect.AspectFill,
                             IsVisible = FeatureSettings.BackgroundImage
                         }
-                        .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
-                            BindingMode.OneWay, source: WNowViewModel
-                        )
+                        .Bind(Image.SourceProperty, static src => src.ImageData, convert: imageData => imageData?.ImageSource, mode: BindingMode.OneWay, source: WNowViewModel)
                         .Row(0)
                         .RowSpan(3)
                         .Apply(it =>
@@ -397,7 +387,7 @@ public partial class WeatherNow
             }.AppThemeColorBinding(MaterialIcon.ColorProperty, LightPrimary as Color, DarkPrimary as Color),
             Order = ToolbarItemOrder.Primary,
         }
-        .Bind(ToolbarItem.IsEnabledProperty, nameof(RefreshLayout.IsRefreshing), BindingMode.OneWay, inverseBoolConverter as IValueConverter, source: RefreshLayout)
+        .Bind(ToolbarItem.IsEnabledProperty, static layout => !layout.IsRefreshing, mode: BindingMode.OneWay, source: RefreshLayout)
         .Apply(it =>
         {
             it.Clicked += RefreshBtn_Clicked;
@@ -423,8 +413,8 @@ public partial class WeatherNow
                     WidthRequest = 24,
                     Margin = new Thickness(16, 0)
                 }
-                .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
-                    BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
+                .Bind(VisualElement.IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
+                    mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
                 )
                 .LayoutFlags(AbsoluteLayoutFlags.PositionProportional)
                 .LayoutBounds(0, 0.5),
@@ -446,8 +436,8 @@ public partial class WeatherNow
                             CharacterSpacing = 0,
                             Padding = new Thickness(8, 0)
                         }
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
-                            BindingMode.OneWay, source: WNowViewModel, fallbackValue: ResStrings.label_nav_weathernow, targetNullValue: ResStrings.label_nav_weathernow
+                        .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.Location,
+                            mode: BindingMode.OneWay, source: WNowViewModel, fallbackValue: ResStrings.label_nav_weathernow, targetNullValue: ResStrings.label_nav_weathernow
                         )
                         .AppThemeColorBinding(Label.TextColorProperty, LightOnSurface as Color, DarkOnSurface as Color),
                         // Clock
@@ -539,11 +529,11 @@ public partial class WeatherNow
                 }
                 .LayoutFlags(AbsoluteLayoutFlags.PositionProportional)
                 .LayoutBounds(0.5, 0.5)
-                .Bind<VerticalStackLayout, bool, Thickness>(
-                    VerticalStackLayout.MarginProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
-                    BindingMode.OneWay, convert: (isGPS) =>
+                .Bind(
+                    VerticalStackLayout.MarginProperty, getter: static viewModel => viewModel.UiState,
+                    mode: BindingMode.OneWay, convert: (uiState) =>
                     {
-                        return isGPS ? new Thickness(40, 0) : Thickness.Zero;
+                        return uiState?.IsGPSLocation == true ? new Thickness(40, 0) : Thickness.Zero;
                     }, source: WNowViewModel, targetNullValue: new Thickness(40, 0), fallbackValue: new Thickness(40, 0))
             }
         };
@@ -583,8 +573,8 @@ public partial class WeatherNow
                             {
                                 Aspect = Aspect.AspectFill
                             }
-                            .Bind(Image.SourceProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.ImageSource)}",
-                                BindingMode.OneWay, source: WNowViewModel
+                            .Bind(Image.SourceProperty, static viewModel => viewModel.ImageData, convert: imageData => imageData?.ImageSource,
+                                mode: BindingMode.OneWay, source: WNowViewModel
                             ),
                             new Label()
                                 .End()
@@ -709,11 +699,11 @@ public partial class WeatherNow
                             FontSize = 60,
                         }
                         .Column(0)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, getter: viewModel => viewModel.Weather, convert: weather => weather?.CurTemp,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind<Label, string, Color>(Label.TextColorProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
-                            BindingMode.OneWay, source: WNowViewModel, convert: (p) => GetTempColor()
+                        .Bind(Label.TextColorProperty, getter: viewModel => viewModel.Weather,
+                            mode: BindingMode.OneWay, source: WNowViewModel, convert: (p) => GetTempColor()
                         )
                         .Apply(it =>
                         {
@@ -744,8 +734,8 @@ public partial class WeatherNow
                                             .TextCenterHorizontal()
                                             .CenterVertical()
                                             .TextCenterVertical()
-                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.HiTemp)}",
-                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.HiTemp,
+                                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: "\u2022"
                                             )
                                             .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                                         new IconControl()
@@ -755,8 +745,7 @@ public partial class WeatherNow
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_UP,
                                             IconWidth = 25,
-                                            IconHeight = 25,
-                                            WidthRequest = 25
+                                            IconHeight = 25
                                         }
                                     },
                                 }.Row(0),
@@ -772,8 +761,8 @@ public partial class WeatherNow
                                             .TextCenterHorizontal()
                                             .CenterVertical()
                                             .TextCenterVertical()
-                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.LoTemp)}",
-                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.LoTemp,
+                                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: "\u2022"
                                             )
                                             .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                                         new IconControl()
@@ -783,29 +772,26 @@ public partial class WeatherNow
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_DOWN,
                                             IconWidth = 25,
-                                            IconHeight = 25,
-                                            WidthRequest = 25
+                                            IconHeight = 25
                                         }
                                     },
                                 }.Row(1),
                             }
                         }
                         .Column(1)
-                        .Bind(VisualElement.HeightRequestProperty, nameof(Height), source: CurTemp),
+                        .Bind(VisualElement.HeightRequestProperty, static temp => temp.Height, source: CurTemp),
                         // WeatherBox
                         new IconControl()
                         {
-                            HeightRequest = 88,
                             HorizontalOptions = LayoutOptions.End,
                             VerticalOptions = LayoutOptions.Center,
                             IconHeight = 88,
                             IconWidth = 88,
-                            WidthRequest = 88
                         }
                         .Margins(right: 16)
                         .Column(3)
-                        .Bind(IconControl.WeatherIconProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherIcon)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(IconControl.WeatherIconProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.WeatherIcon,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
                         .AppThemeColorBinding(IconControl.IconColorProperty, Colors.Black, Colors.White)
                         .Apply(it =>
@@ -819,8 +805,8 @@ public partial class WeatherNow
                             .Font(size: 18)
                             .Row(1)
                             .ColumnSpan(4)
-                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurCondition)}",
-                                BindingMode.OneWay, source: WNowViewModel
+                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.CurCondition,
+                                mode: BindingMode.OneWay, source: WNowViewModel
                             )
                             .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                         // FeelsLike
@@ -835,12 +821,12 @@ public partial class WeatherNow
                             .Font(size: 16)
                             .Row(2)
                             .ColumnSpan(4)
-                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
-                                BindingMode.OneWay, source: WNowViewModel
+                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.FeelsLike,
+                                mode: BindingMode.OneWay, source: WNowViewModel
                             )
-                            .Bind<Label, string, bool>(Label.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
-                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
-                                convert: (feelsLike) => !string.IsNullOrWhiteSpace(feelsLike)
+                            .Bind(Label.IsVisibleProperty, getter: static viewModel => viewModel.Weather,
+                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
+                                convert: (weather) => !string.IsNullOrWhiteSpace(weather?.FeelsLike)
                             )
                             .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                         // Summary
@@ -855,8 +841,8 @@ public partial class WeatherNow
                         .Padding(4)
                         .Font(size: 12)
                         .Opacity(0.75)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherSummary)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.WeatherSummary,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
                         .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White)
                         .Apply(it =>
@@ -885,8 +871,8 @@ public partial class WeatherNow
                         .Padding(4)
                         .Font(size: 12)
                         .Opacity(0.75)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UpdateDate)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.UpdateDate,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
                         .AppThemeColorBinding(Label.TextColorProperty, Colors.Black, Colors.White),
                     }
@@ -897,10 +883,6 @@ public partial class WeatherNow
 
     private VerticalStackLayout CreateDesktopConditionPanel()
     {
-        App.Current.Resources.TryGetValue("objectBooleanConverter", out var objectBooleanConverter);
-        App.Current.Resources.TryGetValue("stringBooleanConverter", out var stringBooleanConverter);
-        App.Current.Resources.TryGetValue("collectionBooleanConverter", out var collectionBooleanConverter);
-
         View ConditionPanelLayout = null;
         View Spacer = null;
 
@@ -930,13 +912,13 @@ public partial class WeatherNow
                                 HeightRequest = 24,
                                 WidthRequest = 24,
                                 Source = new MaterialIcon(MaterialSymbol.MyLocation)
-                                    .Bind(FontImageSource.ColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                                    .Bind(FontImageSource.ColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                             },
                             Stroke = new SolidColorBrush(Colors.Transparent)
                         }
                         .Column(0)
-                        .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.UiState)}.{nameof(WNowViewModel.UiState.IsGPSLocation)}",
-                            BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
+                        .Bind(VisualElement.IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
+                            mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
                         ),
                         new Label()
                         {
@@ -950,10 +932,10 @@ public partial class WeatherNow
                             VerticalTextAlignment = TextAlignment.Center
                         }
                         .Column(1)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, static viewModel => viewModel.Weather, convert: weather => weather?.Location,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                        .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                     }
                 },
                 // UpDate
@@ -970,32 +952,22 @@ public partial class WeatherNow
                         HorizontalOptions = LayoutOptions.Center,
                         HorizontalTextAlignment = TextAlignment.Center
                     }
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UpdateDate)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, static viewModel => viewModel.Weather, convert: weather => weather?.UpdateDate,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                        .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                 },
                 // Alert Button
                 CreateAlertButton(),
                 // Spacer
                 new Rectangle()
                 .Margin(new Thickness(8))
+                .Bind(IsVisibleProperty, static viewModel => viewModel.ImageData,
+                    convert: imageData => FeatureSettings.BackgroundImage && imageData != null,
+                    source: WNowViewModel)
                 .Apply(it =>
                 {
                     Spacer = it;
-
-                    WNowViewModel.PropertyChanged += (s, e) =>
-                    {
-                        if (e.PropertyName == nameof(WNowViewModel.ImageData))
-                        {
-                            it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
-                        }
-                    };
-
-                    it.Loaded += (s, e) =>
-                    {
-                        it.IsVisible = FeatureSettings.BackgroundImage && WNowViewModel.ImageData != null;
-                    };
                 }),
                 // Condition Panel
                 new Grid()
@@ -1028,8 +1000,8 @@ public partial class WeatherNow
                             TextColor = Colors.White,
                         }
                         .Column(0)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurTemp)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, getter: viewModel => viewModel.Weather, convert: weather => weather?.CurTemp,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
                         .Apply(it =>
                         {
@@ -1060,10 +1032,10 @@ public partial class WeatherNow
                                             .TextCenterHorizontal()
                                             .CenterVertical()
                                             .TextCenterVertical()
-                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.HiTemp)}",
-                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            .Bind(Label.TextProperty, getter: viewModel => viewModel.Weather, convert: weather => weather?.HiTemp,
+                                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: "\u2022"
                                             )
-                                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
+                                            .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this),
                                         new IconControl()
                                         {
                                             IconColor = Colors.OrangeRed,
@@ -1071,8 +1043,14 @@ public partial class WeatherNow
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_UP,
                                             IconWidth = 25,
-                                            IconHeight = 25,
-                                        }
+                                            IconHeight = 25
+                                        }.Apply(it =>
+                                        {
+                                            it.Loaded += (s, e) =>
+                                            {
+                                                it.UpdateWeatherIcon();
+                                            };
+                                        }),
                                     },
                                 }.Row(0),
                                 new HorizontalStackLayout()
@@ -1087,10 +1065,10 @@ public partial class WeatherNow
                                             .TextCenterHorizontal()
                                             .CenterVertical()
                                             .TextCenterVertical()
-                                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.LoTemp)}",
-                                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: '\u2022'
+                                            .Bind(Label.TextProperty, getter: viewModel => viewModel.Weather, convert: weather => weather?.LoTemp,
+                                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: "\u2022"
                                             )
-                                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
+                                            .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this),
                                         new IconControl()
                                         {
                                             IconColor = Colors.DeepSkyBlue,
@@ -1098,14 +1076,20 @@ public partial class WeatherNow
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_DOWN,
                                             IconWidth = 25,
-                                            IconHeight = 25,
-                                        }
+                                            IconHeight = 25
+                                        }.Apply(it =>
+                                        {
+                                            it.Loaded += (s, e) =>
+                                            {
+                                                it.UpdateWeatherIcon();
+                                            };
+                                        })
                                     },
                                 }.Row(1),
                             }
                         }
                         .Column(1)
-                        .Bind(VisualElement.HeightRequestProperty, nameof(Height), source: CurTemp),
+                        .Bind(VisualElement.HeightRequestProperty, static temp => temp.Height, source: CurTemp),
                         // WeatherBox
                         new IconControl()
                         {
@@ -1116,10 +1100,10 @@ public partial class WeatherNow
                             IconWidth = 108,
                         }
                         .Column(3)
-                        .Bind(IconControl.WeatherIconProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherIcon)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(IconControl.WeatherIconProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.WeatherIcon,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind(IconControl.IconColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                        .Bind(IconControl.IconColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                         .Apply(it =>
                         {
                             WeatherBox = it;
@@ -1130,10 +1114,10 @@ public partial class WeatherNow
                             .Font(size: 24)
                             .Row(1)
                             .ColumnSpan(4)
-                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.CurCondition)}",
-                                BindingMode.OneWay, source: WNowViewModel
+                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.CurCondition,
+                                mode: BindingMode.OneWay, source: WNowViewModel
                             )
-                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
+                            .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this),
                         // FeelsLike
                         new Label()
                             {
@@ -1144,14 +1128,14 @@ public partial class WeatherNow
                             .Font(size: 14)
                             .Row(2)
                             .ColumnSpan(4)
-                            .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
-                                BindingMode.OneWay, source: WNowViewModel
+                            .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.FeelsLike,
+                                mode: BindingMode.OneWay, source: WNowViewModel
                             )
-                            .Bind<Label, string, bool>(Label.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.FeelsLike)}",
-                                BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
-                                convert: (feelsLike) => !string.IsNullOrWhiteSpace(feelsLike)
+                            .Bind(Label.IsVisibleProperty, getter: static viewModel => viewModel.Weather,
+                                mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false,
+                                convert: (weather) => !string.IsNullOrWhiteSpace(weather?.FeelsLike)
                             )
-                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this),
+                            .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this),
                         // Summary
                         new Label()
                         {
@@ -1162,10 +1146,10 @@ public partial class WeatherNow
                         .Margin(0, 10)
                         .Padding(5)
                         .Font(size: 12)
-                        .Bind(Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherSummary)}",
-                            BindingMode.OneWay, source: WNowViewModel
+                        .Bind(Label.TextProperty, getter: static viewModel => viewModel.Weather, convert: weather => weather?.WeatherSummary,
+                            mode: BindingMode.OneWay, source: WNowViewModel
                         )
-                        .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                        .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                         .Apply(it =>
                         {
                             it.Loaded += (s, e) =>
@@ -1182,11 +1166,16 @@ public partial class WeatherNow
                             .Padding(5)
                             .BackgroundColor(Colors.Transparent)
                             .Font(size: 11)
-                            .Text($"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})")
-                            .Bind(Label.IsVisibleProperty, $"{nameof(WNowViewModel.ImageData)}.{nameof(WNowViewModel.ImageData.OriginalLink)}",
-                                BindingMode.OneWay, source: WNowViewModel, converter: objectBooleanConverter as IValueConverter
+                            .Bind(Label.IsVisibleProperty, static viewModel => viewModel.ImageData,
+                                mode: BindingMode.OneWay, source: WNowViewModel, convert: imageData => FeatureSettings.BackgroundImage && imageData?.OriginalLink != null,
+                                targetNullValue: false, fallbackValue: false
                             )
-                            .Bind(Label.TextColorProperty, nameof(ConditionPanelTextColor), BindingMode.OneWay, source: this)
+                            .Bind(Label.TextProperty, static viewModel => viewModel.ImageData,
+                                mode: BindingMode.OneWay, source: WNowViewModel,
+                                convert: imageData => $"{ResStrings.attrib_prefix} {imageData?.ArtistName} ({imageData?.SiteName})",
+                                targetNullValue: null, fallbackValue: null
+                            )
+                            .Bind(Label.TextColorProperty, static src => src.ConditionPanelTextColor, mode: BindingMode.OneWay, source: this)
                             .TapGesture(() =>
                             {
                                 WNowViewModel?.ImageData?.OriginalLink?.Let(async uri =>
@@ -1200,27 +1189,14 @@ public partial class WeatherNow
                             })
                             .Apply(it =>
                             {
-                                it.Loaded += (s, e) =>
-                                {
-                                    it.IsVisible = FeatureSettings.BackgroundImage;
-                                };
-
                                 it.LineBreakMode = LineBreakMode.NoWrap;
-
-                                WNowViewModel.PropertyChanged += (s, e) =>
-                                {
-                                    if (e.PropertyName == nameof(WNowViewModel.ImageData))
-                                    {
-                                        it.Text = $"{ResStrings.attrib_prefix} {WNowViewModel?.ImageData?.ArtistName} ({WNowViewModel?.ImageData?.SiteName})";
-                                    }
-                                };
                             })
                     }
                 }
             }
         }
-        .Bind(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Location)}",
-            BindingMode.OneWay, source: WNowViewModel, converter: stringBooleanConverter as IValueConverter
+        .Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+            mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => !string.IsNullOrWhiteSpace(weather?.Location)
         )
         .Padding(16, 0)
         .Apply(it =>
@@ -1338,7 +1314,7 @@ public partial class WeatherNow
                 .Row(0),
                 // Content
                 new ForecastRangeBarGraphView()
-                .Bind(BindingContextProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView)
+                .Bind(BindingContextProperty, getter: forecast => forecast.ForecastGraphData, mode: BindingMode.OneWay, source: ForecastView)
                 .Row(1)
                 .ColumnSpan(2)
                 .Apply(it =>
@@ -1354,13 +1330,8 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<VisualElement, ForecastRangeBarGraphDataSet, bool>(
-                    VisualElement.IsVisibleProperty, $"{nameof(ForecastView.ForecastGraphData)}", BindingMode.OneWay, source: ForecastView,
-                    convert: (data) =>
-                    {
-                        return FeatureSettings.Forecast && data?.IsEmpty != true;
-                    }
-                 );
+                it.Bind(VisualElement.IsVisibleProperty, getter: forecast => forecast.ForecastGraphData,
+                    mode: BindingMode.OneWay, source: ForecastView, convert: (data) => FeatureSettings.Forecast && data?.IsEmpty != true);
             };
 
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
@@ -1423,8 +1394,8 @@ public partial class WeatherNow
                 }.Column(2)
             }
         }
-        .Bind(VisualElement.IsVisibleProperty, $"{nameof(AlertsView.Alerts)}",
-            BindingMode.OneWay, source: AlertsView, converter: collectionBooleanConverter as IValueConverter
+        .Bind(VisualElement.IsVisibleProperty, getter: alerts => alerts.Alerts,
+            mode: BindingMode.OneWay, source: AlertsView, convert: alerts => alerts?.Count > 0
         )
         .TapGesture(GotoAlertsPage);
     }
@@ -1472,8 +1443,8 @@ public partial class WeatherNow
                 .Row(0),
                 // Content
                 new HourlyForecastItemPanel()
-                .Bind(HourlyForecastItemPanel.ForecastDataProperty, $"{nameof(ForecastView.HourlyForecastData)}",
-                        BindingMode.OneWay, source: ForecastView
+                .Bind(HourlyForecastItemPanel.ForecastDataProperty, static forecast => forecast.HourlyForecastData,
+                        mode: BindingMode.OneWay, source: ForecastView
                 )
                 .Row(1)
                 .ColumnSpan(2)
@@ -1504,10 +1475,10 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<VisualElement, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyForecastData)}",
-                    BindingMode.OneWay, source: ForecastView, convert: (collection) =>
+                it.Bind(VisualElement.IsVisibleProperty, static forecast => forecast.HourlyForecastData,
+                    mode: BindingMode.OneWay, source: ForecastView, convert: (collection) =>
                     {
-                        return FeatureSettings.HourlyForecast && (bool)((IValueConverter)collectionBooleanConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
+                        return FeatureSettings.HourlyForecast && collection?.Count > 0;
                     }
                 );
             };
@@ -1568,12 +1539,12 @@ public partial class WeatherNow
                     RowDefinitions =
                     {
                         new RowDefinition()
-                            .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataGridLengthConv, source: ForecastView
+                            .Bind(RowDefinition.HeightProperty, forecast => forecast.MinutelyPrecipitationGraphData, null,
+                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(LineViewData)
                             ),
                         new RowDefinition()
-                            .Bind(RowDefinition.HeightProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                BindingMode.OneWay, graphDataGridLengthConv, source: ForecastView
+                            .Bind(RowDefinition.HeightProperty, forecast => forecast.HourlyPrecipitationGraphData, null,
+                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(LineViewData)
                             ),
                     },
                     Children =
@@ -1584,15 +1555,15 @@ public partial class WeatherNow
                             Margin = new Thickness(0, 5)
                         }
                         .Row(0)
-                        .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                BindingMode.OneWay, source: ForecastView
+                        .Bind(ForecastGraphPanel.GraphDataProperty, forecast => forecast.MinutelyPrecipitationGraphData,
+                                mode: BindingMode.OneWay, source: ForecastView
                         )
                         .Apply(it =>
                         {
                             it.Loaded += (s,e) =>
                             {
-                                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.MinutelyPrecipitationGraphData)}",
-                                        BindingMode.OneWay, graphDataConv, source: ForecastView
+                                it.Bind(VisualElement.IsVisibleProperty, forecast => forecast.MinutelyPrecipitationGraphData, null,
+                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(LineViewData)
                                 );
                             };
                             it.GraphViewTapped += async (s, e) =>
@@ -1606,15 +1577,15 @@ public partial class WeatherNow
                             Margin = new Thickness(0, 5)
                         }
                         .Row(1)
-                        .Bind(ForecastGraphPanel.GraphDataProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                BindingMode.OneWay, source: ForecastView
+                        .Bind(ForecastGraphPanel.GraphDataProperty, forecast => forecast.HourlyPrecipitationGraphData,
+                               mode: BindingMode.OneWay, source: ForecastView
                         )
                         .Apply(it =>
                         {
                             it.Loaded += (s,e) =>
                             {
-                                it.Bind(VisualElement.IsVisibleProperty, $"{nameof(ForecastView.HourlyPrecipitationGraphData)}",
-                                        BindingMode.OneWay, graphDataConv, source: ForecastView
+                                it.Bind(VisualElement.IsVisibleProperty, forecast => forecast.HourlyPrecipitationGraphData, null, 
+                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(LineViewData)
                                 );
                             };
                             it.GraphViewTapped += async (s, e) =>
@@ -1632,13 +1603,10 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<VisualElement, bool, bool>(
-                    VisualElement.IsVisibleProperty, $"{nameof(ForecastView.IsPrecipitationDataPresent)}", BindingMode.OneWay, source: ForecastView,
-                    convert: (isPresent) =>
-                    {
-                        return FeatureSettings.Charts && isPresent;
-                    }
-                 );
+                it.Bind(
+                    VisualElement.IsVisibleProperty, static forecast => forecast.IsPrecipitationDataPresent,
+                    mode: BindingMode.OneWay, source: ForecastView,
+                    convert: (isPresent) => FeatureSettings.Charts && isPresent);
             };
 
             ResizeElements.Add(it);
@@ -1684,8 +1652,9 @@ public partial class WeatherNow
                     JustifyContent = FlexJustify.Center,
                 }
                 .Paddings(12, 8, 12, 8) // 16,8
-                .Bind(BindableLayout.ItemsSourceProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
-                        BindingMode.OneWay, detailsFilter, source: WNowViewModel
+                .Bind(BindableLayout.ItemsSourceProperty, static viewModel => viewModel.Weather,
+                    convert: (weather) => detailsFilter.ConvertFrom(weather?.WeatherDetails, CultureInfo.CurrentUICulture),
+                    mode: BindingMode.OneWay, source: WNowViewModel
                 )                
                 .ItemTemplate(new DataTemplate(() =>
                 {
@@ -1698,12 +1667,9 @@ public partial class WeatherNow
                 {
                     it.Loaded += (s, e) =>
                     {
-                        it.Bind<VisualElement, IEnumerable, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherDetails)}",
-                            BindingMode.OneWay, source: WNowViewModel, convert: (collection) =>
-                            {
-                                return FeatureSettings.WeatherDetails && (bool)(collectionBooleanConverter as IValueConverter).Convert(collection, typeof(bool), null, CultureInfo.InvariantCulture);
-                            }
-                        );
+                        it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                            mode: BindingMode.OneWay, source: WNowViewModel,
+                            convert: (weather) => FeatureSettings.WeatherDetails && weather?.WeatherDetails?.Count > 0);
                     };
                 })
             }
@@ -1722,17 +1688,17 @@ public partial class WeatherNow
     private Frame CreateUVControl()
     {
         return CreateWeatherNowFrame(new UVControl()
-            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                    BindingMode.OneWay, source: WNowViewModel
+            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                    mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.UVIndex
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.UVIndex)}",
-                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
-                            return FeatureSettings.UV && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.UV && !string.IsNullOrWhiteSpace(weather?.UVIndex?.ToString());
                         }
                     );
                 };
@@ -1744,17 +1710,17 @@ public partial class WeatherNow
     private Frame CreateBeaufortControl()
     {
         return CreateWeatherNowFrame(new BeaufortControl()
-            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                    BindingMode.OneWay, source: WNowViewModel
+            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather, 
+                mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.Beaufort
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Beaufort)}",
-                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
-                            return FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(weather?.Beaufort?.ToString());
                         }
                     );
                 };
@@ -1766,8 +1732,8 @@ public partial class WeatherNow
     private Frame CreateAQIControl()
     {
         return CreateWeatherNowFrame(new AQIControl()
-            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                    BindingMode.OneWay, source: WNowViewModel
+            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.AirQuality
             )
             .TapGesture(async () =>
             {
@@ -1778,10 +1744,10 @@ public partial class WeatherNow
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.AirQuality)}",
-                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
-                            return FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(weather?.AirQuality?.ToString());
                         }
                     );
                 };
@@ -1793,17 +1759,17 @@ public partial class WeatherNow
     private Frame CreatePollenCountControl()
     {
         return CreateWeatherNowFrame(new PollenCountControl()
-            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                    BindingMode.OneWay, source: WNowViewModel
+            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather, 
+                mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) => weather?.Pollen
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.Pollen)}",
-                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
-                            return FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(weather?.Pollen?.ToString());
                         }
                     );
                 };
@@ -1815,17 +1781,17 @@ public partial class WeatherNow
     private Frame CreateMoonPhaseControl()
     {
         return CreateWeatherNowFrame(new MoonPhaseControl()
-            .Bind(VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                    BindingMode.OneWay, source: WNowViewModel
+            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.MoonPhase
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind<VisualElement, object, bool>(VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.MoonPhase)}",
-                        BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
-                            return FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                            return FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(weather?.MoonPhase?.ToString());
                         }
                     );
                 };
@@ -1861,8 +1827,8 @@ public partial class WeatherNow
                 new SunPhaseView()
                     .Row(1)
                     .Bind(
-                        VisualElement.BindingContextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
-                        BindingMode.OneWay, source: WNowViewModel
+                        VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                        mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.SunPhase
                     )
                     .FillHorizontal()
                     .Apply(it =>
@@ -1903,11 +1869,11 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind<VisualElement, object, bool>(
-                    VisualElement.IsVisibleProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.SunPhase)}",
-                    BindingMode.OneWay, source: WNowViewModel, convert: (value) =>
+                it.Bind(
+                    VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                     {
-                        return FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(value?.ToString());
+                        return FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(weather?.SunPhase?.ToString());
                     }
                 );
             };
@@ -2022,8 +1988,10 @@ public partial class WeatherNow
             HorizontalOptions = LayoutOptions.Center,
             FontSize = 14
         }.Bind(
-            Label.TextProperty, $"{nameof(WNowViewModel.Weather)}.{nameof(WNowViewModel.Weather.WeatherCredit)}",
-            BindingMode.OneWay, source: WNowViewModel, fallbackValue: "Data from Weather Provider"
+            Label.TextProperty, static viewModel => viewModel.Weather,
+            mode: BindingMode.OneWay, source: WNowViewModel,
+            convert: weather => weather?.WeatherCredit,
+            fallbackValue: "Data from Weather Provider"
         );
     }
 }

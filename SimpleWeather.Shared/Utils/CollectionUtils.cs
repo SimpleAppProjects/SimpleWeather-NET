@@ -154,5 +154,16 @@ namespace SimpleWeather.Utils
         {
             return $"[{string.Join(',', list.Select(toStringConv))}]";
         }
+
+        public static bool IsEmpty(this IEnumerable enumerable)
+        {
+            if (enumerable is ICollection collection)
+            {
+                return collection.Count == 0;
+            }
+
+            var e = enumerable.GetEnumerator();
+            return !e.MoveNext();
+        }
     }
 }

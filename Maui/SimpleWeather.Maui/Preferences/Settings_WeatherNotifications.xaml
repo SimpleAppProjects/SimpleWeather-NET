@@ -44,7 +44,8 @@
                 <TableSection Title="{x:Static res_strings:Resources.pref_category_notification}">
                     <prefs:SwitchCell x:Name="DailyNotifPref" Text="{x:Static res_strings:Resources.not_channel_name_dailynotification}" />
                     <prefs:TimePickerViewCell x:Name="DailyNotifTimePref" Text="{x:Static res_strings:Resources.pref_title_time}"
-                                              IsEnabled="{Binding Source={x:Reference DailyNotifPref}, Path=On, Mode=OneWay}"
+                                              x:DataType="{x:Null}"
+                                              IsEnabled="{x:Bind DailyNotifPref.On, Mode=OneWay}"
                                               PreferenceKey="{x:Static settings:SettingsManager.KEY_DAILYNOTIFICATIONTIME}" />
                 </TableSection>
             </TableRoot>

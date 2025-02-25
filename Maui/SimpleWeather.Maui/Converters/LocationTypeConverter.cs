@@ -5,11 +5,12 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Converters
 {
-    public class LocationTypeConverter : BaseConverterOneWay<LocationType, string>
+    [AcceptEmptyServiceProvider]
+    public class LocationTypeConverter : BaseConverterOneWay<LocationType, string?>
     {
-        public override string DefaultConvertReturnValue { get; set; }
+        public override string? DefaultConvertReturnValue { get; set; }
 
-        public override string ConvertFrom(LocationType value, CultureInfo culture)
+        public override string? ConvertFrom(LocationType value, CultureInfo? culture)
         {
             return value switch
             {
