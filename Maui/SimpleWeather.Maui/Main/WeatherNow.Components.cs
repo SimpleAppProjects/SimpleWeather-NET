@@ -1044,13 +1044,7 @@ public partial class WeatherNow
                                             WeatherIcon = WeatherIcons.DIRECTION_UP,
                                             IconWidth = 25,
                                             IconHeight = 25
-                                        }.Apply(it =>
-                                        {
-                                            it.Loaded += (s, e) =>
-                                            {
-                                                it.UpdateWeatherIcon();
-                                            };
-                                        }),
+                                        }
                                     },
                                 }.Row(0),
                                 new HorizontalStackLayout()
@@ -1077,13 +1071,7 @@ public partial class WeatherNow
                                             WeatherIcon = WeatherIcons.DIRECTION_DOWN,
                                             IconWidth = 25,
                                             IconHeight = 25
-                                        }.Apply(it =>
-                                        {
-                                            it.Loaded += (s, e) =>
-                                            {
-                                                it.UpdateWeatherIcon();
-                                            };
-                                        })
+                                        }
                                     },
                                 }.Row(1),
                             }

@@ -268,7 +268,17 @@
                         MaximumWidthRequest="{TemplateBinding MaximumWidthRequest}"
                         MinimumHeightRequest="{TemplateBinding MinimumHeightRequest}"
                         MinimumWidthRequest="{TemplateBinding MinimumWidthRequest}"
-                        Stretch="Uniform" />
+                        Stretch="Uniform">
+                        <skiaSharp:SKCanvasView
+                            xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                            x:Name="Canvas"
+                            BackgroundColor="Transparent"
+                            HeightRequest="{TemplateBinding IconHeight}"
+                            WidthRequest="{TemplateBinding IconWidth}"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            IgnorePixelScaling="True" />
+                    </controls:ViewBox>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

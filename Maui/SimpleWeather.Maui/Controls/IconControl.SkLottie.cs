@@ -31,10 +31,7 @@ namespace SimpleWeather.Maui.Controls
 
         private void IconControl_InvalidateDrawable(object sender, EventArgs e)
         {
-            if (IconBox.Children.FirstOrDefault() is SKCanvasView canvas)
-            {
-                canvas.InvalidateSurface();
-            }
+            Canvas?.InvalidateSurface();
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Maui.Markup;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
@@ -7,12 +6,13 @@ using SimpleWeather.Utils;
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
 using SkiaSharp.Views.Maui.Controls;
+using SKDrawable = SimpleWeather.SkiaSharp.SKDrawable;
 
 namespace SimpleWeather.Maui.Controls
 {
     public partial class IconControl : TemplatedView
     {
-        private ViewBox IconBox;
+        private SKCanvasView Canvas;
 
         public string WeatherIcon
         {
@@ -96,6 +96,8 @@ namespace SimpleWeather.Maui.Controls
             BindableProperty.Create(nameof(IconWidth), typeof(double), typeof(IconControl), -1d, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
 
         private readonly SettingsManager _settingsManager = Ioc.Default.GetService<SettingsManager>();
+        
+        private SKDrawable? Drawable = null;
 
         public IconControl()
         {
@@ -105,22 +107,24 @@ namespace SimpleWeather.Maui.Controls
         {
             base.OnApplyTemplate();
 
-            IconBox = GetTemplateChild(nameof(IconBox)) as ViewBox;
+            Canvas = GetTemplateChild(nameof(Canvas)) as SKCanvasView;
+            if (Canvas != null) 
+                Canvas.PaintSurface += CanvasOnPaintSurface;
 
             UpdateWeatherIcon();
         }
 
         public async void UpdateWeatherIcon()
         {
-            if (IconBox == null) return;
+            if (Canvas == null) return;
+
+            Drawable = null;
 
             if (WeatherIcon == null)
             {
-                IconBox?.Children?.Clear();
+                Canvas?.InvalidateSurface();
                 return;
             }
-
-            IView iconElement;
 
             // Remove any animatable drawables
             RemoveAnimatedDrawables();
@@ -129,26 +133,26 @@ namespace SimpleWeather.Maui.Controls
 
             if (ForceBitmapIcon)
             {
-                iconElement = await CreateBitmapIcon(wip);
+                Drawable = await CreateBitmapIcon(wip);
             }
             else if (wip is IXamlWeatherIconProvider xamlProvider)
             {
                 var iconUri = xamlProvider.GetXamlIconUri(WeatherIcon);
                 if (iconUri == null || !iconUri.EndsWith(".xaml"))
                 {
-                    iconElement = await CreateBitmapIcon(wip);
+                    Drawable = await CreateBitmapIcon(wip);
                 }
                 else
                 {
                     try
                     {
-                        iconElement = await CreateXAMLIconElement(iconUri);
+                        Drawable = await CreateXAMLIconElement(iconUri);
                     }
                     catch (Exception e)
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                         Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
-                        iconElement = await CreateBitmapIcon(wip);
+                        Drawable = await CreateBitmapIcon(wip);
                     }
                 }
             }
@@ -158,51 +162,26 @@ namespace SimpleWeather.Maui.Controls
                 var iconUri = lottieProvider.GetLottieIconURI(WeatherIcon, isLight: isLight);
                 if (iconUri == null || !iconUri.EndsWith(".json"))
                 {
-                    iconElement = await CreateBitmapIcon(wip);
+                    Drawable = await CreateBitmapIcon(wip);
                 }
                 else
                 {
                     try
                     {
                         var drawable = await wip.GetDrawable(WeatherIcon, isLight: isLight);
-                        var canvas = new SKCanvasView()
-                        {
-                            VerticalOptions = LayoutOptions.Center,
-                            HorizontalOptions = LayoutOptions.Center
-                        };
-                        canvas.PaintSurface += (s, e) =>
-                        {
-                            e.Surface.Canvas.Clear();
-
-                            var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
-                            var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                            var cnt = e.Surface.Canvas.Save();
-
-                            drawable.Bounds = bounds;
-
-                            if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                            drawable.Draw(e.Surface.Canvas);
-
-                            e.Surface.Canvas.RestoreToCount(cnt);
-
-                            e.Surface.Flush(true);
-                        };
-                        canvas.Bind(HeightRequestProperty, static src => src.IconHeight, mode: BindingMode.OneWay, source: this);
-                        canvas.Bind(WidthRequestProperty, static src => src.IconWidth, mode: BindingMode.OneWay, source: this);
-                        iconElement = canvas;
 
                         if (drawable is SKLottieDrawable lottieDrawable)
                         {
                             AddAnimatedDrawable(lottieDrawable);
                         }
+                        
+                        Drawable = drawable;
                     }
                     catch (Exception e)
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                         Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
-                        iconElement = await CreateBitmapIcon(wip);
+                        Drawable = await CreateBitmapIcon(wip);
                     }
                 }
             }
@@ -210,49 +189,44 @@ namespace SimpleWeather.Maui.Controls
             {
                 try
                 {
-                    var drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                    var canvas = new SKCanvasView()
-                    {
-                        VerticalOptions = LayoutOptions.Center,
-                        HorizontalOptions = LayoutOptions.Center
-                    };
-                    canvas.PaintSurface += (s, e) =>
-                    {
-                        e.Surface.Canvas.Clear();
-
-                        var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
-                        var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                        var cnt = e.Surface.Canvas.Save();
-
-                        drawable.Bounds = bounds;
-
-                        if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                        drawable.Draw(e.Surface.Canvas);
-
-                        e.Surface.Canvas.RestoreToCount(cnt);
-
-                        e.Surface.Flush(true);
-                    };
-                    canvas.Bind(HeightRequestProperty, static src => src.IconHeight, mode: BindingMode.OneWay, source: this);
-                    canvas.Bind(WidthRequestProperty, static src => src.IconWidth, mode: BindingMode.OneWay, source: this);
-                    iconElement = canvas;
+                    Drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
                 }
                 catch (Exception e)
                 {
                     Logger.WriteLine(LoggerLevel.Error, e);
                     Logger.WriteLine(LoggerLevel.Info, "Falling back to bitmap icon...");
-                    iconElement = await CreateBitmapIcon(wip);
+                    Drawable = await CreateBitmapIcon(wip);
                 }
             }
             else
             {
-                iconElement = await CreateBitmapIcon(wip);
+                Drawable = await CreateBitmapIcon(wip);
             }
 
-            IconBox.Children.Clear();
-            IconBox.Children.Add(iconElement);
+            Canvas?.InvalidateSurface();
+        }
+
+        private void CanvasOnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            e.Surface.Canvas.Clear();
+
+            if (Drawable != null)
+            {
+                var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
+                var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
+
+                var cnt = e.Surface.Canvas.Save();
+
+                Drawable.Bounds = bounds;
+
+                if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
+
+                Drawable.Draw(e.Surface.Canvas);
+
+                e.Surface.Canvas.RestoreToCount(cnt);
+            }
+
+            e.Surface.Flush(true);
         }
 
         private bool ShouldUseBitmap()
@@ -265,46 +239,20 @@ namespace SimpleWeather.Maui.Controls
             return (c.Red == 1f && c.Green == 1f && c.Blue == 1f) || (c.Red == 0f && c.Green == 0f && c.Blue == 0f);
         }
 
-        private async Task<IView> CreateBitmapIcon(IWeatherIconsProvider provider)
+        private async Task<SKDrawable> CreateBitmapIcon(IWeatherIconsProvider provider)
         {
-            var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+            var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme).ConfigureAwait(false);
             if (ShowAsMonochrome && drawable is SKBitmapDrawable bmpDrawable)
             {
                 bmpDrawable.TintColor = IconColor.ToSKColor();
             }
-            var canvas = new SKCanvasView()
-            {
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center
-            };
-            canvas.PaintSurface += (s, e) =>
-            {
-                e.Surface.Canvas.Clear();
 
-                var padding = (float)Math.Max(Padding.HorizontalThickness, Padding.VerticalThickness) / 2;
-                var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                var cnt = e.Surface.Canvas.Save();
-
-                drawable.Bounds = bounds;
-
-                if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                drawable.Draw(e.Surface.Canvas);
-
-                e.Surface.Canvas.RestoreToCount(cnt);
-
-                e.Surface.Flush(true);
-            };
-            canvas.Bind(HeightRequestProperty, static src => src.IconHeight, mode: BindingMode.OneWay, source: this);
-            canvas.Bind(WidthRequestProperty, static src => src.IconWidth, mode: BindingMode.OneWay, source: this);
-
-            return canvas;
+            return drawable;
         }
 
-        private Task<IView> CreateXAMLIconElement(string uri)
+        private Task<SKDrawable> CreateXAMLIconElement(string _)
         {
-            return Task.FromResult<IView>(null);
+            return Task.FromResult<SKDrawable>(null);
         }
     }
 }
