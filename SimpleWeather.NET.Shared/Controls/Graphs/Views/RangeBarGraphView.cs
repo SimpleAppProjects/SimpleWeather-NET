@@ -12,450 +12,462 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public sealed partial class RangeBarGraphView : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
+    public class RangeBarGraphView : BaseGraphScrollView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
     {
-        private bool disposedValue;
-
-        private List<Bar> drawDotLists; // Y data
-
-        private readonly SKPaint linePaint;
-
-        public RangeBarGraphView() : base()
+        public override BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry> CreateGraphView()
         {
-#if WINDOWS
-            this.DefaultStyleKey = typeof(RangeBarGraphView);
-#endif
-
-            drawDotLists = new List<Bar>();
-
-            ResetData(false);
-
-            linePaint = new SKPaint()
-            {
-                IsAntialias = true,
-                StrokeWidth = 6f, // 6dp
-                StrokeCap = SKStrokeCap.Round
-            };
+            return new RangeBarChartGraph(ScrollViewer);
         }
+        
+        internal override RangeBarChartGraph Graph => (RangeBarChartGraph)base.Graph;
 
-        private float GraphTop
+        internal sealed class RangeBarChartGraph : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
         {
-            get
+            private bool disposedValue;
+
+            private List<Bar> drawDotLists; // Y data
+
+            private readonly SKPaint linePaint;
+
+            public RangeBarChartGraph(ScrollView scrollViewer) : base(scrollViewer)
             {
-                float graphTop = (float)Padding.Top;
-                graphTop += bottomTextTopMargin + bottomTextHeight * 2f + bottomTextDescent * 2f;
+    #if WINDOWS
+                this.DefaultStyleKey = typeof(RangeBarChartGraph);
+    #endif
 
-                return graphTop;
-            }
-        }
+                drawDotLists = new List<Bar>();
 
-        private float GraphHeight
-        {
-            get
-            {
-                float graphHeight = ViewHeight - bottomTextTopMargin - bottomTextHeight - bottomTextDescent - linePaint.StrokeWidth;
-                if (DrawIconLabels) graphHeight = graphHeight - IconHeight - iconBottomMargin;
-                if (DrawDataLabels)
-                    graphHeight = graphHeight - bottomTextTopMargin - linePaint.StrokeWidth;
+                ResetData(false);
 
-                return graphHeight;
-            }
-        }
-
-        public override void ResetData(bool invalidate = false)
-        {
-            this.drawDotLists.Clear();
-            bottomTextDescent = 0;
-            longestTextWidth = 0;
-            horizontalGridNum = MIN_HORIZONTAL_GRID_NUM;
-            base.ResetData(invalidate);
-        }
-
-        public override void UpdateGraph()
-        {
-            bottomTextDescent = 0;
-            longestTextWidth = 0;
-
-            if (!IsDataEmpty)
-            {
-                var r = new SKRect();
-                float longestWidth = 0;
-
-                var set = Data.GetDataSet();
-                foreach (var entry in set.EntryData)
+                linePaint = new SKPaint()
                 {
-                    String s = entry.XLabel;
-                    if (s != null)
-                    {
-                        bottomTextPaint.MeasureText(s, ref r);
-                        if (bottomTextHeight < r.Height)
-                        {
-                            bottomTextHeight = r.Height;
-                        }
-                        if (longestWidth < r.Width)
-                        {
-                            longestWidth = r.Width;
-                        }
-                        if (bottomTextDescent < Math.Abs(r.Bottom))
-                        {
-                            bottomTextDescent = Math.Abs(r.Bottom);
-                        }
-                    }
-                }
-
-                if (longestTextWidth < longestWidth)
-                {
-                    longestTextWidth = longestWidth;
-                }
-                if (sideLineLength < longestWidth / 1.5f)
-                {
-                    sideLineLength = longestWidth / 1.5f;
-                }
-
-                // Add padding
-                backgroundGridWidth = longestTextWidth + 8f; // 8dp
+                    IsAntialias = true,
+                    StrokeWidth = 6f, // 6dp
+                    StrokeCap = SKStrokeCap.Round
+                };
             }
-            else
+
+            private float GraphTop
+            {
+                get
+                {
+                    float graphTop = (float)Padding.Top;
+                    graphTop += bottomTextTopMargin + bottomTextHeight * 2f + bottomTextDescent * 2f;
+
+                    return graphTop;
+                }
+            }
+
+            private float GraphHeight
+            {
+                get
+                {
+                    float graphHeight = ViewHeight - bottomTextTopMargin - bottomTextHeight - bottomTextDescent - linePaint.StrokeWidth;
+                    if (DrawIconLabels) graphHeight = graphHeight - IconSize - iconBottomMargin;
+                    if (DrawDataLabels)
+                        graphHeight = graphHeight - bottomTextTopMargin - linePaint.StrokeWidth;
+
+                    return graphHeight;
+                }
+            }
+
+            public override void ResetData(bool invalidate = false)
+            {
+                this.drawDotLists.Clear();
+                bottomTextDescent = 0;
+                longestTextWidth = 0;
+                horizontalGridNum = MIN_HORIZONTAL_GRID_NUM;
+                base.ResetData(invalidate);
+            }
+
+            public override void UpdateGraph()
             {
                 bottomTextDescent = 0;
                 longestTextWidth = 0;
+
+                if (!IsDataEmpty)
+                {
+                    var r = new SKRect();
+                    float longestWidth = 0;
+
+                    var set = Data.GetDataSet();
+                    foreach (var entry in set.EntryData)
+                    {
+                        String s = entry.XLabel;
+                        if (s != null)
+                        {
+                            bottomTextPaint.MeasureText(s, ref r);
+                            if (bottomTextHeight < r.Height)
+                            {
+                                bottomTextHeight = r.Height;
+                            }
+                            if (longestWidth < r.Width)
+                            {
+                                longestWidth = r.Width;
+                            }
+                            if (bottomTextDescent < Math.Abs(r.Bottom))
+                            {
+                                bottomTextDescent = Math.Abs(r.Bottom);
+                            }
+                        }
+                    }
+
+                    if (longestTextWidth < longestWidth)
+                    {
+                        longestTextWidth = longestWidth;
+                    }
+                    if (sideLineLength < longestWidth / 1.5f)
+                    {
+                        sideLineLength = longestWidth / 1.5f;
+                    }
+
+                    // Add padding
+                    backgroundGridWidth = longestTextWidth + 8f; // 8dp
+                }
+                else
+                {
+                    bottomTextDescent = 0;
+                    longestTextWidth = 0;
+                }
+
+                UpdateHorizontalGridNum();
+                RefreshXCoordinateList();
+                RefreshDrawDotList();
+                Invalidate();
             }
 
-            UpdateHorizontalGridNum();
-            RefreshXCoordinateList();
-            RefreshDrawDotList();
-            InvalidateMeasure();
-        }
-
-        private void RefreshGridWidth()
-        {
-            // Reset the grid width
-            backgroundGridWidth = longestTextWidth;
-#if __MACCATALYST__
-            var defaultPadding = 32f; // 32dp
-#else
-            var defaultPadding = 8f; // 8dp
-#endif
-
-            if (GetGraphExtentWidth() < ScrollViewer.Width)
+            private void RefreshGridWidth()
             {
-                float freeSpace = (float)(ScrollViewer.Width - GetGraphExtentWidth());
-                float availableAdditionalSpace = freeSpace / MaxEntryCount;
+                // Reset the grid width
+                backgroundGridWidth = longestTextWidth;
+    #if __MACCATALYST__
+                var defaultPadding = 32f; // 32dp
+    #else
+                var defaultPadding = 8f; // 8dp
+    #endif
 #if WINDOWS
-                if (HorizontalAlignment == HorizontalAlignment.Stretch)
+                var parentWidth = ScrollViewer.DesiredSize.IsEmpty
 #else
-                if (HorizontalOptions.Alignment == LayoutAlignment.Fill)
+                var parentWidth = ScrollViewer.DesiredSize.IsZero
 #endif
+                    ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width;
+
+                if (GetGraphExtentWidth() < parentWidth)
                 {
-                    if (availableAdditionalSpace > 0)
+                    float freeSpace = (float)(parentWidth - GetGraphExtentWidth());
+                    float availableAdditionalSpace = freeSpace / MaxEntryCount;
+                    if (FillParentWidth)
                     {
-                        backgroundGridWidth += availableAdditionalSpace;
+                        if (availableAdditionalSpace > 0)
+                        {
+                            backgroundGridWidth += availableAdditionalSpace;
+                        }
+                        else
+                        {
+                            backgroundGridWidth += defaultPadding;
+                        }
                     }
                     else
                     {
-                        backgroundGridWidth += defaultPadding;
+                        var requestedPadding = 48f; // 48dp
+                        if (availableAdditionalSpace > 0 && requestedPadding < availableAdditionalSpace)
+                        {
+                            backgroundGridWidth += requestedPadding;
+                        }
+                        else
+                        {
+                            backgroundGridWidth += defaultPadding;
+                        }
                     }
                 }
                 else
                 {
-                    var requestedPadding = 48f; // 48dp
-                    if (availableAdditionalSpace > 0 && requestedPadding < availableAdditionalSpace)
-                    {
-                        backgroundGridWidth += requestedPadding;
-                    }
-                    else
-                    {
-                        backgroundGridWidth += defaultPadding;
-                    }
+                    backgroundGridWidth += defaultPadding;
                 }
             }
-            else
+
+            private void RefreshXCoordinateList()
             {
-                backgroundGridWidth += defaultPadding;
-            }
-        }
+                xCoordinateList.Clear();
+                xCoordinateList.EnsureCapacity(MaxEntryCount);
 
-        private void RefreshXCoordinateList()
-        {
-            xCoordinateList.Clear();
-            xCoordinateList.EnsureCapacity(MaxEntryCount);
-
-            for (int i = 0; i < MaxEntryCount; i++)
-            {
-                float x = sideLineLength + backgroundGridWidth * i;
-                xCoordinateList.Add(x);
-            }
-        }
-
-        private void RefreshDrawDotList()
-        {
-            if (!IsDataEmpty)
-            {
-                drawDotLists.Clear();
-
-                float maxValue = Data.YMax;
-                float minValue = Data.YMin;
-
-                float graphHeight = GraphHeight;
-                float graphTop = GraphTop;
-
-                int drawDotSize = drawDotLists.Count;
-
-                if (drawDotSize > 0)
+                for (int i = 0; i < MaxEntryCount; i++)
                 {
-                    drawDotLists.EnsureCapacity(Data.GetDataSet().DataCount);
-                }
-
-                for (int i = 0; i < Data.GetDataSet().DataCount; i++)
-                {
-                    var entry = Data.GetDataSet().GetEntryForIndex(i);
-                    float x = xCoordinateList[i];
-                    float? hiY = null, loY = null;
-
-                    /*
-                     * Scaling formula
-                     *
-                     * ((value - minValue) / (maxValue - minValue)) * (scaleMax - scaleMin) + scaleMin
-                     * graphTop is scaleMax & graphHeight is scaleMin due to View coordinate system
-                     */
-                    if (entry.HiTempData != null)
-                    {
-                        hiY = ((entry.HiTempData.Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
-                    }
-
-                    if (entry.LoTempData != null)
-                    {
-                        loY = ((entry.LoTempData.Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
-                    }
-
-                    // Skip empty entry
-                    if (hiY == null && loY == null)
-                    {
-                        continue;
-                    }
-
-                    if (hiY == null)
-                    {
-                        hiY = loY;
-                    }
-
-                    if (loY == null)
-                    {
-                        loY = hiY;
-                    }
-
-                    if (i > drawDotSize - 1)
-                    {
-                        drawDotLists.Add(new Bar(x, hiY.Value, loY.Value));
-                    }
-                    else
-                    {
-                        drawDotLists[i] = new Bar(x, hiY.Value, loY.Value);
-                    }
+                    float x = sideLineLength + backgroundGridWidth * i;
+                    xCoordinateList.Add(x);
                 }
             }
-        }
 
-        protected override void OnDraw(SKCanvas canvas)
-        {
-            if (visibleRect.IsEmpty)
+            private void RefreshDrawDotList()
             {
-#if WINDOWS
-                visibleRect.Set(
-                    (float)ScrollViewer.HorizontalOffset,
-                    (float)ScrollViewer.VerticalOffset,
-                    (float)(ScrollViewer.HorizontalOffset + ScrollViewer.ActualWidth),
-                    (float)(ScrollViewer.VerticalOffset + ScrollViewer.ActualHeight)
-                );
-#else
-                visibleRect.Set(
-                    (float)ScrollViewer.ScrollX,
-                    (float)ScrollViewer.ScrollY,
-                    (float)(ScrollViewer.ScrollX + ScrollViewer.Width),
-                    (float)(ScrollViewer.ScrollY + ScrollViewer.Height)
-                );
-#endif
-            }
-
-            if (!IsDataEmpty)
-            {
-                DrawTextAndIcons(canvas);
-                DrawLines(canvas);
-            }
-        }
-
-        private void DrawTextAndIcons(SKCanvas canvas)
-        {
-            // Draw Bottom Text
-            if (!IsDataEmpty)
-            {
-                var dataLabels = Data.DataLabels;
-                for (int i = 0; i < dataLabels.Count; i++)
+                if (!IsDataEmpty)
                 {
-                    float x = xCoordinateList[i];
-                    float y = ViewHeight - bottomTextDescent;
-                    GraphEntry entry = dataLabels[i];
+                    drawDotLists.Clear();
 
-                    if (!string.IsNullOrWhiteSpace(entry.XLabel))
+                    float maxValue = Data.YMax;
+                    float minValue = Data.YMin;
+
+                    float graphHeight = GraphHeight;
+                    float graphTop = GraphTop;
+
+                    int drawDotSize = drawDotLists.Count;
+
+                    if (drawDotSize > 0)
                     {
-                        var drwTextRect = new SKRect();
-                        float drwTextWidth = bottomTextPaint.MeasureText(entry.XLabel, ref drwTextRect);
-                        drawingRect.X = x - drwTextWidth / 2;
-                        drawingRect.Y = y - drwTextRect.Height / 2;
-
-                        if (drawingRect.Intersects(visibleRect))
-                            canvas.DrawText(entry.XLabel, x, y, bottomTextFont, bottomTextPaint);
+                        drawDotLists.EnsureCapacity(Data.GetDataSet().DataCount);
                     }
 
-                    if (DrawIconLabels && entry.XIcon != null)
+                    for (int i = 0; i < Data.GetDataSet().DataCount; i++)
                     {
-                        var rotation = entry.XIconRotation;
+                        var entry = Data.GetDataSet().GetEntryForIndex(i);
+                        float x = xCoordinateList[i];
+                        float? hiY = null, loY = null;
 
-                        var bounds = new SKRect(0, 0, IconHeight, IconHeight);
-                        entry.XIcon.Bounds = bounds;
-                        drawingRect.Set(x - bounds.Width / 2, y - bounds.Height / 2, x + bounds.Width / 2, y + bounds.Height / 2);
-
-                        if (drawingRect.Intersects(visibleRect))
+                        /*
+                         * Scaling formula
+                         *
+                         * ((value - minValue) / (maxValue - minValue)) * (scaleMax - scaleMin) + scaleMin
+                         * graphTop is scaleMax & graphHeight is scaleMin due to View coordinate system
+                         */
+                        if (entry.HiTempData != null)
                         {
-                            if (entry.XIcon is SKLottieDrawable animatable)
-                            {
-                                AddAnimatedDrawable(animatable);
-                            }
-
-                            canvas.Save();
-                            canvas.Translate(x - bounds.Width / 2f, y - bounds.Height - bottomTextHeight - bottomTextDescent - iconBottomMargin);
-                            canvas.RotateDegrees(rotation, bounds.Width / 2f, bounds.Height / 2f);
-                            entry.XIcon.Draw(canvas);
-                            canvas.Restore();
+                            hiY = ((entry.HiTempData.Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
                         }
-                    }
-                }
-            }
-        }
 
-        private void DrawLines(SKCanvas canvas)
-        {
-            if (drawDotLists.Any() && !IsDataEmpty)
-            {
-                var HiTempColor = SKColors.OrangeRed;
-                var LoTempColor = SKColors.LightSkyBlue;
-
-                RangeBarGraphDataSet set = Data.GetDataSet();
-                for (int i = 0; i < drawDotLists.Count; i++)
-                {
-                    var bar = drawDotLists[i];
-                    var entry = set.GetEntryForIndex(i);
-                    var drawLine = true;
-
-                    if (entry.HiTempData != null && entry.LoTempData != null)
-                    {
-                        var shader = SKShader.CreateLinearGradient(new SKPoint(0, bar.HiY), new SKPoint(0, bar.LoY), new SKColor[] { HiTempColor, LoTempColor }, SKShaderTileMode.Clamp);
-                        linePaint.Shader = shader;
-                    }
-                    else if (entry.HiTempData != null)
-                    {
-                        linePaint.Shader = null;
-                        linePaint.Color = HiTempColor;
-                        drawLine = false;
-                    }
-                    else if (entry.LoTempData != null)
-                    {
-                        linePaint.Shader = null;
-                        linePaint.Color = LoTempColor;
-                        drawLine = false;
-                    }
-
-                    drawingRect.Set(bar.X - linePaint.StrokeWidth / 2f,
-                        bar.HiY - bottomTextHeight - bottomTextDescent,
-                        bar.X + linePaint.StrokeWidth / 2f,
-                        bar.LoY + bottomTextHeight + bottomTextDescent
-                    );
-
-                    if (drawingRect.Intersects(visibleRect))
-                    {
-                        if (drawLine)
+                        if (entry.LoTempData != null)
                         {
-                            canvas.DrawLine(bar.X, bar.HiY, bar.X, bar.LoY, linePaint);
+                            loY = ((entry.LoTempData.Y - minValue) / (maxValue - minValue)) * (graphTop - graphHeight) + graphHeight;
+                        }
+
+                        // Skip empty entry
+                        if (hiY == null && loY == null)
+                        {
+                            continue;
+                        }
+
+                        if (hiY == null)
+                        {
+                            hiY = loY;
+                        }
+
+                        if (loY == null)
+                        {
+                            loY = hiY;
+                        }
+
+                        if (i > drawDotSize - 1)
+                        {
+                            drawDotLists.Add(new Bar(x, hiY.Value, loY.Value));
                         }
                         else
                         {
-                            canvas.DrawLine(bar.X, bar.HiY - linePaint.StrokeWidth / 4f, bar.X, bar.HiY, linePaint);
+                            drawDotLists[i] = new Bar(x, hiY.Value, loY.Value);
+                        }
+                    }
+                }
+            }
+
+            protected override void OnDraw(SKCanvas canvas)
+            {
+                if (visibleRect.IsEmpty)
+                {
+    #if WINDOWS
+                    visibleRect.Set(
+                        (float)ScrollViewer.HorizontalOffset,
+                        (float)ScrollViewer.VerticalOffset,
+                        (float)(ScrollViewer.HorizontalOffset + ScrollViewer.ActualWidth),
+                        (float)(ScrollViewer.VerticalOffset + ScrollViewer.ActualHeight)
+                    );
+    #else
+                    visibleRect.Set(
+                        (float)ScrollViewer.ScrollX,
+                        (float)ScrollViewer.ScrollY,
+                        (float)(ScrollViewer.ScrollX + ScrollViewer.Width),
+                        (float)(ScrollViewer.ScrollY + ScrollViewer.Height)
+                    );
+    #endif
+                }
+
+                if (!IsDataEmpty)
+                {
+                    DrawTextAndIcons(canvas);
+                    DrawLines(canvas);
+                }
+            }
+
+            private void DrawTextAndIcons(SKCanvas canvas)
+            {
+                // Draw Bottom Text
+                if (!IsDataEmpty)
+                {
+                    var dataLabels = Data.DataLabels;
+                    for (int i = 0; i < dataLabels.Count; i++)
+                    {
+                        float x = xCoordinateList[i];
+                        float y = ViewHeight - bottomTextDescent;
+                        GraphEntry entry = dataLabels[i];
+
+                        if (!string.IsNullOrWhiteSpace(entry.XLabel))
+                        {
+                            var drwTextRect = new SKRect();
+                            float drwTextWidth = bottomTextPaint.MeasureText(entry.XLabel, ref drwTextRect);
+                            drawingRect.X = x - drwTextWidth / 2;
+                            drawingRect.Y = y - drwTextRect.Height / 2;
+
+                            if (drawingRect.Intersects(visibleRect))
+                                canvas.DrawText(entry.XLabel, x, y, bottomTextFont, bottomTextPaint);
                         }
 
-                        if (DrawDataLabels)
+                        if (DrawIconLabels && entry.XIcon != null)
                         {
-                            if (entry.HiTempData != null)
+                            var rotation = entry.XIconRotation;
+
+                            var bounds = new SKRect(0, 0, IconSize, IconSize);
+                            entry.XIcon.Bounds = bounds;
+                            drawingRect.Set(x - bounds.Width / 2, y - bounds.Height / 2, x + bounds.Width / 2, y + bounds.Height / 2);
+
+                            if (drawingRect.Intersects(visibleRect))
                             {
-                                canvas.DrawText(entry.HiTempData.YLabel, bar.X, bar.HiY - bottomTextHeight - bottomTextDescent, bottomTextFont, bottomTextPaint);
-                            }
-                            if (entry.LoTempData != null)
-                            {
-#if WINDOWS
-                                canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth * 1.5f, bottomTextFont, bottomTextPaint);
-#else
-                                canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth, bottomTextFont, bottomTextPaint);
-#endif
+                                if (entry.XIcon is SKLottieDrawable animatable)
+                                {
+                                    AddAnimatedDrawable(animatable);
+                                }
+
+                                canvas.Save();
+                                canvas.Translate(x - bounds.Width / 2f, y - bounds.Height - bottomTextHeight - bottomTextDescent - iconBottomMargin);
+                                canvas.RotateDegrees(rotation, bounds.Width / 2f, bounds.Height / 2f);
+                                entry.XIcon.Draw(canvas);
+                                canvas.Restore();
                             }
                         }
                     }
                 }
             }
-        }
 
-        protected override float GetGraphExtentWidth()
-        {
-            return longestTextWidth * MaxEntryCount;
-        }
-
-        protected override float GetPreferredWidth()
-        {
-            if (!xCoordinateList.Any())
+            private void DrawLines(SKCanvas canvas)
             {
-                return backgroundGridWidth * MaxEntryCount;
-            }
-            else
-            {
-                return xCoordinateList.Last() + sideLineLength;
-            }
-        }
-
-        protected override void OnPreMeasure()
-        {
-            RefreshGridWidth();
-            RefreshXCoordinateList();
-        }
-
-        protected override void OnPostMeasure()
-        {
-            // Redraw View
-            RefreshDrawDotList();
-        }
-
-        internal class Bar
-        {
-            public float X { get; set; }
-            public float HiY { get; set; }
-            public float LoY { get; set; }
-
-            public Bar(float x, float hiY, float loY)
-            {
-                this.X = x;
-                this.HiY = hiY;
-                this.LoY = loY;
-            }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-            if (!disposedValue)
-            {
-                if (disposing)
+                if (drawDotLists.Any() && !IsDataEmpty)
                 {
-                    linePaint?.Dispose();
-                }
+                    var HiTempColor = SKColors.OrangeRed;
+                    var LoTempColor = SKColors.LightSkyBlue;
 
-                disposedValue = true;
+                    RangeBarGraphDataSet set = Data.GetDataSet();
+                    for (int i = 0; i < drawDotLists.Count; i++)
+                    {
+                        var bar = drawDotLists[i];
+                        var entry = set.GetEntryForIndex(i);
+                        var drawLine = true;
+
+                        if (entry.HiTempData != null && entry.LoTempData != null)
+                        {
+                            var shader = SKShader.CreateLinearGradient(new SKPoint(0, bar.HiY), new SKPoint(0, bar.LoY), new SKColor[] { HiTempColor, LoTempColor }, SKShaderTileMode.Clamp);
+                            linePaint.Shader = shader;
+                        }
+                        else if (entry.HiTempData != null)
+                        {
+                            linePaint.Shader = null;
+                            linePaint.Color = HiTempColor;
+                            drawLine = false;
+                        }
+                        else if (entry.LoTempData != null)
+                        {
+                            linePaint.Shader = null;
+                            linePaint.Color = LoTempColor;
+                            drawLine = false;
+                        }
+
+                        drawingRect.Set(bar.X - linePaint.StrokeWidth / 2f,
+                            bar.HiY - bottomTextHeight - bottomTextDescent,
+                            bar.X + linePaint.StrokeWidth / 2f,
+                            bar.LoY + bottomTextHeight + bottomTextDescent
+                        );
+
+                        if (drawingRect.Intersects(visibleRect))
+                        {
+                            if (drawLine)
+                            {
+                                canvas.DrawLine(bar.X, bar.HiY, bar.X, bar.LoY, linePaint);
+                            }
+                            else
+                            {
+                                canvas.DrawLine(bar.X, bar.HiY - linePaint.StrokeWidth / 4f, bar.X, bar.HiY, linePaint);
+                            }
+
+                            if (DrawDataLabels)
+                            {
+                                if (entry.HiTempData != null)
+                                {
+                                    canvas.DrawText(entry.HiTempData.YLabel, bar.X, bar.HiY - bottomTextHeight - bottomTextDescent, bottomTextFont, bottomTextPaint);
+                                }
+                                if (entry.LoTempData != null)
+                                {
+    #if WINDOWS
+                                    canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth * 1.5f, bottomTextFont, bottomTextPaint);
+    #else
+                                    canvas.DrawText(entry.LoTempData.YLabel, bar.X, bar.LoY + bottomTextHeight + bottomTextDescent + linePaint.StrokeWidth, bottomTextFont, bottomTextPaint);
+    #endif
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            protected override float GetGraphExtentWidth()
+            {
+                return longestTextWidth * MaxEntryCount;
+            }
+
+            protected override float GetPreferredWidth()
+            {
+                if (!xCoordinateList.Any())
+                {
+                    return backgroundGridWidth * MaxEntryCount;
+                }
+                else
+                {
+                    return xCoordinateList.Last() + sideLineLength;
+                }
+            }
+
+            protected override void OnPreMeasure()
+            {
+                RefreshGridWidth();
+                RefreshXCoordinateList();
+            }
+
+            protected override void OnPostMeasure()
+            {
+                // Redraw View
+                RefreshDrawDotList();
+            }
+
+            internal class Bar
+            {
+                public float X { get; set; }
+                public float HiY { get; set; }
+                public float LoY { get; set; }
+
+                public Bar(float x, float hiY, float loY)
+                {
+                    this.X = x;
+                    this.HiY = hiY;
+                    this.LoY = loY;
+                }
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+                if (!disposedValue)
+                {
+                    if (disposing)
+                    {
+                        linePaint?.Dispose();
+                    }
+
+                    disposedValue = true;
+                }
             }
         }
     }

@@ -121,21 +121,3 @@ public class AQIDataTemplateSelector : DataTemplateSelector
         return null;
     }
 }
-
-public class AQIItemSelector : IValueConverter
-{
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        return value switch
-        {
-            AirQualityForecastViewModel vm when DeviceInfo.Idiom == DeviceIdiom.Phone => vm.AQIGraphData,
-            AirQualityForecastViewModel vm => vm.AQIForecastData,
-            _ => ImmutableList<AirQualityViewModel>.Empty,
-        };
-    }
-
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
-}

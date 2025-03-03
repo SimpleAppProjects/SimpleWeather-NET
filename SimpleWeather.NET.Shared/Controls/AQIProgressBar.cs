@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 using SkiaSharp;
+using Font = Microsoft.Maui.Font;
 #if WINDOWS
 using CommunityToolkit.WinUI;
 using Microsoft.UI;
@@ -106,6 +107,26 @@ namespace SimpleWeather.NET.Controls
             BindableProperty.Create(nameof(Progress), typeof(int), typeof(AQIProgressBar), (int)0,
                 propertyChanged: OnProgressChanged);
 #endif
+        
+#if !WINDOWS
+        public double FontSize
+        {
+            get => (double)GetValue(FontSizeProperty);
+            set => SetValue(FontSizeProperty, value);
+        }
+
+        public static readonly BindableProperty FontSizeProperty =
+            BindableProperty.Create(nameof(FontSize), typeof(double), typeof(AQIProgressBar), 14d, propertyChanged: OnFontChanged);
+
+        public FontAttributes FontAttributes
+        {
+            get => (FontAttributes)GetValue(FontAttributesProperty);
+            set => SetValue(FontAttributesProperty, value);
+        }
+
+        public static readonly BindableProperty FontAttributesProperty =
+            BindableProperty.Create(nameof(FontAttributes), typeof(FontAttributes), typeof(AQIProgressBar), FontAttributes.None, propertyChanged: OnFontChanged);
+#endif
 
         private static readonly List<(Range, Color)> COLOR_MAP =
         [
@@ -159,12 +180,6 @@ namespace SimpleWeather.NET.Controls
             bottomTextPaint = new SKPaint()
             {
                 IsAntialias = true,
-#if WINDOWS
-                TextSize = FontSizeToTextSize(FontSize),
-                Typeface = GetSKTypeface(FontFamily, FontWeight),
-#else
-                TextSize = 14, // 14sp
-#endif
                 TextAlign = SKTextAlign.Center,
                 Style = SKPaintStyle.Fill,
                 Color = BottomTextColor.ToSKColor()
@@ -173,7 +188,13 @@ namespace SimpleWeather.NET.Controls
             bottomTextFont = new SKFont
             {
                 Edging = SKFontEdging.SubpixelAntialias,
-                Size = bottomTextPaint.TextSize
+#if WINDOWS
+                Size = FontSizeToTextSize(FontSize),
+                Typeface = GetSKTypeface(FontFamily, FontWeight),
+#else
+                Size = FontSizeToTextSize(FontSize),
+                Typeface = GetSKTypeface(FontAttributes),
+#endif
             };
 
             thumbPaint = new SKPaint()
@@ -318,7 +339,7 @@ namespace SimpleWeather.NET.Controls
         }
 
 #if WINDOWS
-        private SKTypeface GetSKTypeface(FontFamily fontFamily, FontWeight fontWeight)
+        private static SKTypeface GetSKTypeface(FontFamily fontFamily, FontWeight fontWeight)
         {
             if (fontWeight.Weight >= FontWeights.Medium.Weight)
             {
@@ -330,7 +351,12 @@ namespace SimpleWeather.NET.Controls
             }
         }
 #else
-        private SKTypeface GetSKTypeface(string fontFamily, FontAttributes fontAttribs)
+        private static SKTypeface GetSKTypeface(FontAttributes fontAttribs)
+        {
+            return GetSKTypeface(Font.Default.Family, fontAttribs);
+        }
+
+        private static SKTypeface GetSKTypeface(string fontFamily, FontAttributes fontAttribs)
         {
             if (fontAttribs == FontAttributes.Bold)
             {
@@ -343,9 +369,9 @@ namespace SimpleWeather.NET.Controls
         }
 #endif
 
-        private float FontSizeToTextSize(double fontSize)
+        private static float FontSizeToTextSize(double fontSize)
         {
-            return (float)fontSize /** (1f / 0.75f)*/;
+            return (float)fontSize;
         }
 
 #if WINDOWS
@@ -353,23 +379,38 @@ namespace SimpleWeather.NET.Controls
         {
             if (property == FontSizeProperty)
             {
-                this.bottomTextPaint.TextSize = FontSizeToTextSize(FontSize);
+                this.bottomTextFont.Size = FontSizeToTextSize(FontSize);
                 OnTextPaintUpdated();
                 Canvas?.Invalidate();
             }
             else if (property == FontWeightProperty)
             {
-                this.bottomTextPaint.Typeface = GetSKTypeface(FontFamily, FontWeight);
+                this.bottomTextFont.Typeface = GetSKTypeface(FontFamily, FontWeight);
                 OnTextPaintUpdated();
                 Canvas?.Invalidate();
+            }
+        }
+#else
+        private static void OnFontChanged(BindableObject obj, object oldValue, object newValue)
+        {
+            if (oldValue != newValue)
+            {
+                if (obj is AQIProgressBar aqiBar)
+                {
+                    if (!aqiBar.IsInitialized) return;
+
+                    aqiBar.bottomTextFont.Size = FontSizeToTextSize(aqiBar.FontSize);
+                    aqiBar.bottomTextFont.Typeface = GetSKTypeface(aqiBar.FontAttributes);
+                    aqiBar.OnTextPaintUpdated();
+                    aqiBar.Canvas?.InvalidateSurface();
+                }
             }
         }
 #endif
 
         private void OnTextPaintUpdated()
         {
-            var r = new SKRect();
-            bottomTextPaint.MeasureText("T", ref r);
+            bottomTextFont.MeasureText("T", out var r);
             bottomTextHeight = r.Height;
             bottomTextDescent = Math.Abs(r.Bottom);
         }
@@ -423,7 +464,7 @@ namespace SimpleWeather.NET.Controls
                 if (i == 0)
                 {
                     var text = pair.Item1.Start.Value.ToString();
-                    var bounds = bottomTextPaint.MeasureText(text);
+                    var bounds = bottomTextFont.MeasureText(text);
                     canvas.DrawText(text, bounds / 2 + thumbSize + (float)Margin.Left, y, bottomTextFont,
                         bottomTextPaint);
                     longestTextWidth = Math.Max(longestTextWidth, bounds);
@@ -431,7 +472,7 @@ namespace SimpleWeather.NET.Controls
                 else
                 {
                     var text = (pair.Item1.Start.Value - 1).ToString();
-                    var bounds = bottomTextPaint.MeasureText(text);
+                    var bounds = bottomTextFont.MeasureText(text);
                     var pct = (pair.Item1.Start.Value - 1) / 500f;
 
                     canvas.DrawText(
@@ -447,7 +488,7 @@ namespace SimpleWeather.NET.Controls
                 if (i == COLOR_MAP.Count - 1)
                 {
                     var text = (pair.Item1.End.Value - 1).ToString();
-                    var bounds = bottomTextPaint.MeasureText(text);
+                    var bounds = bottomTextFont.MeasureText(text);
 
                     canvas.DrawText(
                         text,

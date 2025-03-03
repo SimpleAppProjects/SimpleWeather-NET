@@ -291,25 +291,20 @@
         TargetType="controls:IconControl" />
 
     <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
-        <Setter Property="HorizontalOptions" Value="Center" />
-        <Setter Property="HeightRequest" Value="275" />
+        <Setter Property="BackgroundColor" Value="Transparent" />
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate x:DataType="localGraphs:BaseGraphViewControl">
-                    <Grid Background="{TemplateBinding Background}" BackgroundColor="{TemplateBinding BackgroundColor}">
-                        <ScrollView
-                            x:Name="InternalScrollViewer"
-                            HorizontalScrollBarVisibility="Never"
-                            Orientation="Horizontal"
-                            VerticalScrollBarVisibility="Never">
-                            <skiaSharp:SKCanvasView
-                                xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
-                                x:Name="Canvas"
-                                BackgroundColor="Transparent"
-                                HorizontalOptions="{TemplateBinding HorizontalOptions}"
-                                IgnorePixelScaling="True" />
-                        </ScrollView>
-                    </Grid>
+                    <Border Background="{TemplateBinding Background}" BackgroundColor="{TemplateBinding BackgroundColor}"
+                            Stroke="Transparent" StrokeThickness="0" HorizontalOptions="{TemplateBinding HorizontalOptions}">
+                        <skiaSharp:SKCanvasView
+                            xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
+                            x:Name="Canvas"
+                            BackgroundColor="Transparent"
+                            HorizontalOptions="Center"
+                            IgnorePixelScaling="True" />
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

@@ -22,7 +22,6 @@ using System.Diagnostics;
 namespace SimpleWeather.NET.Controls.Graphs
 {
 #if WINDOWS
-    [TemplatePart(Name = nameof(InternalScrollViewer), Type = typeof(ScrollViewer))]
     [TemplatePart(Name = nameof(Canvas), Type = typeof(SKXamlCanvas))]
 #endif
     public abstract partial class BaseGraphViewControl
@@ -32,28 +31,8 @@ namespace SimpleWeather.NET.Controls.Graphs
         : TemplatedView
 #endif
     {
-#if WINDOWS
-        //
-        // Summary:
-        //     Occurs when manipulations such as scrolling and zooming have caused the view
-        //     to change.
-        public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
-
-        //
-        // Summary:
-        //     Occurs when manipulations such as scrolling and zooming cause the view to change.
-        public event EventHandler<ScrollViewerViewChangingEventArgs> ViewChanging;
-#else
-        //
-        // Summary:
-        //     Occurs when manipulations such as scrolling and zooming have caused the view
-        //     to change.
-        public event EventHandler<ScrolledEventArgs> ViewChanged;
-#endif
-
         public event EventHandler<ItemSizeChangedEventArgs> ItemWidthChanged;
 
-        protected ScrollViewer InternalScrollViewer { get; private set; }
         protected SKXamlCanvas Canvas { get; private set; }
 
         protected float ViewHeight;
@@ -88,7 +67,6 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             base.OnApplyTemplate();
 
-            InternalScrollViewer = GetTemplateChild(nameof(InternalScrollViewer)) as ScrollViewer;
             Canvas = GetTemplateChild(nameof(Canvas)) as SKXamlCanvas;
 
             if (Canvas != null)
@@ -96,36 +74,6 @@ namespace SimpleWeather.NET.Controls.Graphs
                 OnCanvasLoaded(Canvas);
                 Canvas.PaintSurface += Canvas_PaintSurface;
             }
-
-            if (InternalScrollViewer != null)
-            {
-#if WINDOWS
-                InternalScrollViewer.ViewChanged += InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
-#else
-                InternalScrollViewer.Scrolled += InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.HandlerChanged += InternalScrollViewer_HandlerChanged;
-#endif
-            }
-        }
-
-#if WINDOWS
-        protected virtual void OnViewChanging(ScrollViewerViewChangingEventArgs e) { }
-#endif
-        protected virtual void OnViewChanged() { }
-
-#if WINDOWS
-        private void InternalScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
-        {
-            OnViewChanging(e);
-            ViewChanging?.Invoke(sender, e);
-        }
-#endif
-
-        private void InternalScrollViewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            OnViewChanged();
-            ViewChanged?.Invoke(sender, e);
         }
 
         private void BaseGraphViewControl_Loaded(object sender, RoutedEventArgs e)
@@ -134,16 +82,6 @@ namespace SimpleWeather.NET.Controls.Graphs
             {
                 OnCanvasLoaded(Canvas);
                 Canvas.PaintSurface += Canvas_PaintSurface;
-            }
-            if (InternalScrollViewer != null)
-            {
-#if WINDOWS
-                InternalScrollViewer.ViewChanged += InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.ViewChanging += InternalScrollViewer_ViewChanging;
-#else
-                InternalScrollViewer.Scrolled += InternalScrollViewer_ViewChanged;
-                InternalScrollViewer.HandlerChanged += InternalScrollViewer_HandlerChanged;
-#endif
             }
         }
 
@@ -157,36 +95,7 @@ namespace SimpleWeather.NET.Controls.Graphs
                 }
                 catch { }
             });
-            InternalScrollViewer?.Let(scrollv =>
-            {
-                try
-                {
-#if WINDOWS
-                    scrollv.ViewChanged -= InternalScrollViewer_ViewChanged;
-                    scrollv.ViewChanging -= InternalScrollViewer_ViewChanging;
-#else
-                    scrollv.Scrolled -= InternalScrollViewer_ViewChanged;
-                    scrollv.HandlerChanged -= InternalScrollViewer_HandlerChanged;
-#endif
-                }
-                catch { }
-            });
         }
-
-#if !WINDOWS
-        private void InternalScrollViewer_HandlerChanged(object sender, RoutedEventArgs e)
-        {
-            if (sender is VisualElement element && element.Handler is IPlatformViewHandler handler)
-            {
-#if IOS || MACCATALYST
-                if (handler.PlatformView is UIKit.UIScrollView v)
-                {
-                    v.Bounces = false;
-                }
-#endif
-            }
-        }
-#endif
 
         private void Canvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -216,6 +125,15 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             OnPreDraw(canvas);
             OnDraw(canvas);
+        }
+
+        public void Invalidate()
+        {
+#if WINDOWS
+            Canvas?.Invalidate();
+#else
+            Canvas?.InvalidateSurface();
+#endif
         }
 
         protected virtual void OnCanvasLoaded(SKXamlCanvas canvas) { }

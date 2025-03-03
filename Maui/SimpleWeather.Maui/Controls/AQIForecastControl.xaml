@@ -68,7 +68,8 @@
             VerticalOptions="Center" />
         <sharedControls:AQIProgressBar
             x:Name="AQIProgressBar"
-            Margin="8,0"
+            FontSize="{OnIdiom Default=14, Phone=12}"
+            Margin="4,0"
             Progress="{Binding Progress}" />
         <FlexLayout
             HorizontalOptions="Center"

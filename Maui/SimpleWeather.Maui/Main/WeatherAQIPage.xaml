@@ -18,7 +18,6 @@
     x:Name="AQIPage">
 
     <ContentPage.Resources>
-        <local:AQIItemSelector x:Key="aqiItemSelector" />
         <DataTemplate x:Key="AQIForecastTemplate" x:DataType="{x:Type controls:AirQualityViewModel}">
             <VerticalStackLayout>
                 <Label
@@ -37,8 +36,9 @@
                     FontFamily="OpenSansSemibold"
                     Text="{Binding GraphLabel}" />
                 <graphPanels:BarGraphPanel GraphData="{Binding}"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
+                                           ScrollingEnabled="False" DrawIconLabels="False"
+                                           FillParentWidth="{OnIdiom Default=false, Phone=true}"
+                                           GraphMaxWidth="{OnIdiom Default=-1, Phone=720}"/>
             </VerticalStackLayout>
         </DataTemplate>
         <local:AQIDataTemplateSelector

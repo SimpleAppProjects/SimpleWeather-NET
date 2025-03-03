@@ -5,7 +5,7 @@ using SimpleWeather.NET.Controls.Graphs;
 
 namespace SimpleWeather.Maui.Controls.Graphs
 {
-    public sealed partial class ForecastGraphPanel : ContentView
+    public sealed partial class ForecastGraphPanel : ContentView, IGraphPanel
     {
         //
         // Summary:
@@ -22,9 +22,9 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
         private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
         {
-            if (sender is IGraph graph && graph.Control.IsVisible)
+            if (sender is View { IsVisible: true } graph)
             {
-                UpdateScrollButtons(graph.ScrollViewer);
+                UpdateScrollButtons(graph.Parent as ScrollView);
             }
         }
 
@@ -72,12 +72,12 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
         private void LeftButton_Click(object sender, EventArgs e)
         {
-            ScrollViewerHelper.ScrollLeft(LineGraphView.ScrollViewer);
+            ScrollViewerHelper.ScrollLeft(LineGraphView);
         }
 
         private void RightButton_Click(object sender, EventArgs e)
         {
-            ScrollViewerHelper.ScrollRight(LineGraphView.ScrollViewer);
+            ScrollViewerHelper.ScrollRight(LineGraphView);
         }
 
         public LineViewData GraphData
@@ -108,7 +108,8 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
             if (resetOffset)
             {
-                await LineGraphView.ScrollViewer?.ScrollToAsync(0, 0, false);
+                if (LineGraphView != null)
+                    await LineGraphView.ScrollToAsync(0, 0, false);
             }
         }
 
@@ -132,5 +133,16 @@ namespace SimpleWeather.Maui.Controls.Graphs
             GraphViewTapped?.Invoke(sender, e);
 #endif
         }
+
+        public int GetItemPositionFromPoint(float xCoordinate) => LineGraphView.GetItemPositionFromPoint(xCoordinate);
+        public double GraphMaxWidth { get => LineGraphView.GraphMaxWidth; set => LineGraphView.GraphMaxWidth = value; }
+        public bool FillParentWidth { set => LineGraphView.FillParentWidth = value; }
+        public Color BottomTextColor { get => LineGraphView.BottomTextColor; set => LineGraphView.BottomTextColor = value; }
+        public double BottomTextSize { get => LineGraphView.BottomTextSize; set => LineGraphView.BottomTextSize = value; }
+        public float IconSize { get => LineGraphView.IconSize; set => LineGraphView.IconSize = value; }
+        public bool DrawIconLabels { set => LineGraphView.DrawIconLabels = value; }
+        public bool DrawDataLabels { set => LineGraphView.DrawDataLabels = value; }
+        public bool ScrollingEnabled { get => !LineGraphView.InputTransparent; set => LineGraphView.InputTransparent = !value; }
+        public void RequestGraphLayout() => LineGraphView.RequestGraphLayout();
     }
 }

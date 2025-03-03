@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\RangeBarGraphEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\YEntryData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BarGraphView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphScrollView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphView.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\BaseGraphViewControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Views\ItemSizeChangedEventArgs.cs" />

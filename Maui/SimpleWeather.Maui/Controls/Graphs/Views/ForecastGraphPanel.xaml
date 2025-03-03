@@ -37,10 +37,9 @@
             DrawGridLines="False"
             DrawIconLabels="False"
             DrawSeriesLabels="False"
-            FontSize="{OnIdiom Phone=13,
-                               Default=15}"
+            BottomTextSize="{OnIdiom Phone=13, Default=15}"
             HeightRequest="{OnIdiom Default=275, Phone=225}"
-            HorizontalOptions="FillAndExpand"
+            FillParentWidth="True"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged">

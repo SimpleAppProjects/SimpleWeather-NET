@@ -79,6 +79,7 @@
             x:Name="AQIProgressBar"
             Grid.Row="2"
             Grid.ColumnSpan="2"
+            FontSize="{OnIdiom Default=14, Phone=12}"
             Margin="4,0,4,12"
             Progress="{Binding Progress}" />
         <Label

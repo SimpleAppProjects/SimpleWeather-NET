@@ -32,9 +32,8 @@
             BottomTextColor="{AppThemeBinding Light=Black, Dark=White}"
             DrawDataLabels="True"
             DrawIconLabels="False"
-            FontSize="{OnIdiom Phone=13, Default=15}"
+            BottomTextSize="{OnIdiom Phone=13, Default=15}"
             HeightRequest="{OnIdiom Default=275, Tablet=225, Phone=150}"
-            HorizontalOptions="FillAndExpand"
             ItemWidthChanged="GraphView_ItemWidthChanged"
             Loaded="GraphView_Loaded"
             ViewChanged="GraphView_ViewChanged">

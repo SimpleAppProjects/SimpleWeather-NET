@@ -9,6 +9,12 @@ using SimpleWeather.NET.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
+using Color = Windows.UI.Color;
+using Colors = Microsoft.UI.Colors;
+using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
+using Size = Windows.Foundation.Size;
+using FontWeight = Windows.UI.Text.FontWeight;
+using FontWeights = Microsoft.UI.Text.FontWeights;
 #else
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Platform;
@@ -16,6 +22,7 @@ using Microsoft.Maui.Primitives;
 using SimpleWeather.Maui;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
+using ScrollView = Microsoft.Maui.Controls.ScrollView;
 #endif
 using SimpleWeather.NET.Utils;
 using SimpleWeather.SkiaSharp;
@@ -24,17 +31,15 @@ using RectF = System.Drawing.RectangleF;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-#if WINDOWS
-    [TemplatePart(Name = nameof(InternalScrollViewer), Type = typeof(ScrollViewer))]
-#endif
     public abstract partial class BaseGraphView<T, S, E> : BaseGraphViewControl, IGraph, IDisposable
         where T : GraphData<S, E> where S : GraphDataSet<E> where E : GraphEntry
     {
         private bool disposedValue;
 
         protected RectF visibleRect = new();
+        protected readonly ScrollView ScrollViewer;
 
-        protected T Data { get; set; }
+        internal T Data { get; set; }
         private int MaxXEntries { get; set; }
 
         protected RectF drawingRect;
@@ -56,13 +61,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         protected float backgroundGridWidth = 45f; // 45dp
         protected float longestTextWidth;
 
-#if WINDOWS
-        protected float IconHeight = 48f; // 30dp // 48dp
-#else
-        protected readonly float IconHeight;
-#endif
-
-        public BaseGraphView() : base()
+        protected BaseGraphView(ScrollView scrollViewer) : base()
         {
             xCoordinateList = new List<float>();
 
@@ -100,10 +99,12 @@ namespace SimpleWeather.NET.Controls.Graphs
 
 #if !WINDOWS
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                IconHeight = 36f;
+                IconSize = 36f;
             else
-                IconHeight = 48f;
+                IconSize = 48f;
 #endif
+
+            this.ScrollViewer = scrollViewer;
         }
 
 #if !WINDOWS
@@ -145,26 +146,33 @@ namespace SimpleWeather.NET.Controls.Graphs
         }
 #endif
 
-#if WINDOWS
-        public ScrollViewer ScrollViewer => InternalScrollViewer;
-        public FrameworkElement Control => this;
-#else
-        public ScrollView ScrollViewer => InternalScrollViewer;
-        public VisualElement Control => this;
-#endif
-
         public Color BottomTextColor
         {
             get => (Color)GetValue(BottomTextColorProperty);
             set => SetValue(BottomTextColorProperty, value);
         }
 
+        public float IconSize
+        {
+            get => (float)GetValue(IconSizeProperty);
+            set => SetValue(IconSizeProperty, value);
+        }
+
+        public bool FillParentWidth
+        {
+            get => (bool)GetValue(FillParentWidthProperty);
+            set => SetValue(FillParentWidthProperty, value);
+        }
 #if WINDOWS
-        // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty BottomTextColorProperty =
             DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(Colors.White, OnBottomTextColorChanged));
+
+        public static readonly DependencyProperty IconSizeProperty =
+            DependencyProperty.Register(nameof(IconSize), typeof(double), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(48f));
+
+        public static readonly DependencyProperty FillParentWidthProperty =
+            DependencyProperty.Register(nameof(FillParentWidth), typeof(bool), typeof(BaseGraphView<T, S, E>), new PropertyMetadata(false, (obj, args) => (obj as FrameworkElement)?.InvalidateMeasure()));
 #else
-        // Using a DependencyProperty as the backing store for BottomTextColor.  This enables animation, styling, binding, etc...
         public static readonly BindableProperty BottomTextColorProperty =
             BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(BaseGraphView<T, S, E>), Colors.White, propertyChanged: OnBottomTextColorChanged);
 
@@ -194,6 +202,12 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         public static readonly BindableProperty FontAttributesProperty =
             BindableProperty.Create(nameof(FontAttributes), typeof(FontAttributes), typeof(BaseGraphView<T, S, E>), FontAttributes.None, propertyChanged: (obj, _, _) => (obj as BaseGraphView<T, S, E>)?.UpdateFontFamily());
+
+        public static readonly BindableProperty IconSizeProperty =
+            BindableProperty.Create(nameof(IconSize), typeof(float), typeof(BaseGraphView<T, S, E>), 48f);
+
+        public static readonly BindableProperty FillParentWidthProperty =
+            BindableProperty.Create(nameof(FillParentWidth), typeof(bool), typeof(BaseGraphView<T,S,E>), false, propertyChanged: (obj, _, _) => (obj as BaseGraphView<T, S, E>)?.InvalidateMeasure());
 #endif
 
         public bool DrawIconLabels { get; set; }
@@ -280,31 +294,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         private void UpdateBottomTextColor()
         {
             bottomTextPaint.Color = BottomTextColor.ToSKColor();
-#if WINDOWS
-            Canvas?.Invalidate();
-#else
-            Canvas?.InvalidateSurface();
-#endif
-        }
-
-        protected IconControl CreateIconControl(string WeatherIcon)
-        {
-            return new IconControl()
-            {
-                WeatherIcon = WeatherIcon,
-                ShowAsMonochrome = false,
-#if WINDOWS
-                Height = IconHeight,
-                Width = IconHeight,
-                RenderTransformOrigin = new Point(0.5, 0.5)
-#else
-                HeightRequest = IconHeight,
-                WidthRequest = IconHeight,
-                IconWidth = 30,
-                IconHeight = 30,
-                VerticalOptions = LayoutOptions.Center,
-#endif
-            };
+            Invalidate();
         }
 
         public void SetData(T data)
@@ -326,7 +316,7 @@ namespace SimpleWeather.NET.Controls.Graphs
             RemoveAnimatedDrawables();
             if (invalidate)
             {
-                InvalidateMeasure();
+                Invalidate();
             }
         }
 
@@ -341,7 +331,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             var count = 0;
 
-            if (!IsDataEmpty)
+            if (Data is { IsEmpty: false })
             {
                 foreach (var set in Data.DataSets)
                 {
@@ -409,75 +399,65 @@ namespace SimpleWeather.NET.Controls.Graphs
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
         {
-            Size size = base.MeasureOverride(availableSize);
 #else
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
-            Size size = base.MeasureOverride(widthConstraint, heightConstraint);
+            var availableSize = base.MeasureOverride(widthConstraint, heightConstraint);
+            availableSize.Width = Math.Floor(availableSize.Width <= 0 ? widthConstraint : availableSize.Width);
+            availableSize.Height = Math.Floor(availableSize.Height <= 0 ? heightConstraint : availableSize.Height);
 #endif
-
-            if (this.ScrollViewer == null || this.Canvas == null)
-            {
-                return size;
-            }
-
-#if WINDOWS
-            ScrollViewer.Height = double.IsInfinity(availableSize.Height) ? double.NaN : availableSize.Height;
-            ScrollViewer.Width = double.IsInfinity(availableSize.Width) ? double.NaN : availableSize.Width;
-#else
-            ScrollViewer.HeightRequest = double.IsInfinity(heightConstraint) ? -1d : size.Height;
-            ScrollViewer.WidthRequest = double.IsInfinity(widthConstraint) ? -1d : double.NaN;
-#endif
-
             OnPreMeasure();
 
+            var desiredWidth = GetPreferredWidth();
 #if WINDOWS
-            Canvas.Width =
+            var resolvedWidth = Math.Ceiling(double.IsInfinity(availableSize.Width)
+                ? (MaxCanvasWidth > 0 ? Math.Min(desiredWidth, MaxCanvasWidth) : desiredWidth)
+                : (MaxCanvasWidth > 0 ? Math.Min(Math.Min(desiredWidth, availableSize.Width), MaxCanvasWidth) : Math.Min(desiredWidth, availableSize.Width)));
 #else
-            Canvas.WidthRequest =
-#endif
-                MaxCanvasWidth > 0
-                    ? Math.Min(MaxCanvasWidth, GetPreferredWidth())
-                    : GetPreferredWidth();
-#if WINDOWS
-            Canvas.Height = availableSize.Height;
-#else
-            Canvas.HeightRequest = size.Height;
+            var measureMode = (BaseGraphScrollView<T,S,E>.MeasureMode)(GetValue(BaseGraphScrollView<T, S, E>.MeasureModeProperty) ?? BaseGraphScrollView<T,S,E>.MeasureMode.Undefined);
+            var resolvedWidth = measureMode switch
+            {
+                BaseGraphScrollView<T, S, E>.MeasureMode.AtMost => MaxCanvasWidth > 0 ? Math.Min(Math.Min(desiredWidth, availableSize.Width), MaxCanvasWidth) : desiredWidth,
+                BaseGraphScrollView<T, S, E>.MeasureMode.Exactly => MaxCanvasWidth > 0 ? Math.Min(MaxCanvasWidth, availableSize.Width) : availableSize.Width,
+                _ => MaxCanvasWidth > 0 ? Math.Min(desiredWidth, MaxCanvasWidth) : desiredWidth
+            };
 #endif
 
+            ViewWidth = MathF.Floor((float)resolvedWidth);
 #if WINDOWS
-            ViewHeight = (float)Canvas.Height;
-            ViewWidth = (float)Canvas.Width;
+            ViewHeight = (float)availableSize.Height;
 #else
-            ViewHeight = (float)Canvas.HeightRequest;
-            ViewWidth = (float)Canvas.WidthRequest;
+            ViewHeight = MathF.Floor((float)availableSize.Height);
+            Canvas.WidthRequest = float.IsInfinity(ViewWidth) ? -1 : ViewWidth;
+            Canvas.HeightRequest = float.IsInfinity(ViewHeight) ? -1 : ViewHeight;
 #endif
 
             OnPostMeasure();
 
             // Redraw View
-#if WINDOWS
-            Canvas.Invalidate();
-#else
-            Canvas.InvalidateSurface();
-#endif
+            Invalidate();
 
             // Post the event to the dispatcher to allow the method to complete first
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 #if WINDOWS
             DispatcherQueue.EnqueueAsync(() =>
 #else
-            MainThread.InvokeOnMainThreadAsync(() =>
+            Dispatcher.Dispatch(() =>
 #endif
             {
                 OnItemWidthChanged(new ItemSizeChangedEventArgs()
                 {
-                    NewSize = new System.Drawing.Size(xCoordinateList.Count > 0 ? (int)xCoordinateList.Last() : 0, (int)Canvas.Height)
+                    NewSize = new System.Drawing.Size(xCoordinateList.Count > 0 ? (int)xCoordinateList.Last() : 0,
+                        (int)(Canvas?.Height ?? 0))
                 });
             });
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
 
-            return size;
+#if WINDOWS
+            return new Size(resolvedWidth, availableSize.Height);
+#else
+            return new Size(ViewWidth + Margin.HorizontalThickness, availableSize.Height/* + Margin.VerticalThickness*/);
+#endif
         }
 
         protected virtual void OnPreMeasure()
@@ -502,34 +482,6 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             base.OnPreDraw(canvas);
             visibleRect.SetEmpty();
-        }
-
-#if WINDOWS
-        protected override void OnViewChanging(ScrollViewerViewChangingEventArgs e)
-        {
-            base.OnViewChanging(e);
-#else
-        protected override void OnViewChanged()
-        {
-            base.OnViewChanged();
-#endif
-#if WINDOWS
-            visibleRect.Set(
-                    (float)e.NextView.HorizontalOffset,
-                    (float)e.NextView.VerticalOffset,
-                    (float)(e.NextView.HorizontalOffset + ScrollViewer.ActualWidth),
-                    (float)(e.NextView.VerticalOffset + ScrollViewer.ActualHeight)
-            );
-            Canvas.Invalidate();
-#else
-            visibleRect.Set(
-                    (float)ScrollViewer.ScrollX,
-                    (float)ScrollViewer.ScrollY,
-                    (float)(ScrollViewer.ScrollX + ScrollViewer.Width),
-                    (float)(ScrollViewer.ScrollY + ScrollViewer.Height)
-            );
-            Canvas.InvalidateSurface();
-#endif
         }
 
         /* Drawables */
@@ -559,11 +511,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
             try
             {
-#if WINDOWS
-                Canvas?.Invalidate();
-#else
-                Canvas?.InvalidateSurface();
-#endif
+                Invalidate();
             }
             // Note: May occur if window is closed and canvas not disposed?
             catch (NullReferenceException)

@@ -5,7 +5,7 @@ using SimpleWeather.NET.Controls.Graphs;
 
 namespace SimpleWeather.Maui.Controls.Graphs
 {
-    public sealed partial class RangeBarGraphPanel : ContentView
+    public sealed partial class RangeBarGraphPanel : ContentView, IGraphPanel
     {
         //
         // Summary:
@@ -22,9 +22,9 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
         private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
         {
-            if (sender is IGraph graph && graph.Control.IsVisible)
+            if (sender is View { IsVisible: true } graph)
             {
-                UpdateScrollButtons(graph.ScrollViewer);
+                UpdateScrollButtons(graph.Parent as ScrollView);
             }
         }
 
@@ -72,12 +72,12 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
         private void LeftButton_Click(object sender, EventArgs e)
         {
-            ScrollViewerHelper.ScrollLeft(BarChartView.ScrollViewer);
+            ScrollViewerHelper.ScrollLeft(BarChartView);
         }
 
         private void RightButton_Click(object sender, EventArgs e)
         {
-            ScrollViewerHelper.ScrollRight(BarChartView.ScrollViewer);
+            ScrollViewerHelper.ScrollRight(BarChartView);
         }
 
         public RangeBarGraphData ForecastData
@@ -108,7 +108,8 @@ namespace SimpleWeather.Maui.Controls.Graphs
 
             if (resetOffset)
             {
-                await BarChartView.ScrollViewer?.ScrollToAsync(0, 0, false);
+                if (BarChartView != null)
+                    await BarChartView.ScrollToAsync(0, 0, false);
             }
         }
 
@@ -124,5 +125,16 @@ namespace SimpleWeather.Maui.Controls.Graphs
         {
             GraphViewTapped?.Invoke(sender, e);
         }
+
+        public int GetItemPositionFromPoint(float xCoordinate) => BarChartView.GetItemPositionFromPoint(xCoordinate);
+        public double GraphMaxWidth { get => BarChartView.GraphMaxWidth; set => BarChartView.GraphMaxWidth = value; }
+        public bool FillParentWidth { set => BarChartView.FillParentWidth = value; }
+        public Color BottomTextColor { get => BarChartView.BottomTextColor; set => BarChartView.BottomTextColor = value; }
+        public double BottomTextSize { get => BarChartView.BottomTextSize; set => BarChartView.BottomTextSize = value; }
+        public float IconSize { get => BarChartView.IconSize; set => BarChartView.IconSize = value; }
+        public bool DrawIconLabels { set => BarChartView.DrawIconLabels = value; }
+        public bool DrawDataLabels { set => BarChartView.DrawDataLabels = value; }
+        public bool ScrollingEnabled { get => !BarChartView.InputTransparent; set => BarChartView.InputTransparent = !value; }
+        public void RequestGraphLayout() => BarChartView.RequestGraphLayout();
     }
 }
