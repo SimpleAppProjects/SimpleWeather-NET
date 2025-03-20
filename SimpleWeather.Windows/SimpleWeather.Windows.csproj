@@ -46,7 +46,7 @@
   <!-- Sentry End -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="9.0.3" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -77,7 +77,7 @@
     <PackageReference Include="SkiaSharp.Extended" Version="2.0.0" />
     <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
     <PackageReference Include="UnitsNet" Version="5.69.0" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
