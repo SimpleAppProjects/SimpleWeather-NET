@@ -78,7 +78,7 @@
     <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
-    <PackageReference Include="UnitsNet" Version="5.69.0" />
+    <PackageReference Include="UnitsNet" Version="5.73.0" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>

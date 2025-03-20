@@ -21,7 +21,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
-    <PackageReference Include="Vanara.PInvoke.Ole" Version="4.0.5" />
+    <PackageReference Include="Vanara.PInvoke.Ole" Version="4.1.1" />
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">

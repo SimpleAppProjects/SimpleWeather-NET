@@ -65,10 +65,9 @@
 
   <PropertyGroup>
     <WinToolkitVersion>8.1.240916</WinToolkitVersion>
-    <WinAppSDKVersion>1.6.250205002</WinAppSDKVersion>
+    <WinAppSDKVersion>1.7.250310001</WinAppSDKVersion>
     <CsWinRTVersion>2.2.0</CsWinRTVersion>
-    <WinSDKBuildToolsVersion>10.0.22621.3233</WinSDKBuildToolsVersion>
-    <WindowsSdkPackageVersion>10.0.22621.56</WindowsSdkPackageVersion>
+    <WinSDKBuildToolsVersion>10.0.26100.1742</WinSDKBuildToolsVersion>
     <MvvmToolkitVersion>8.4.0</MvvmToolkitVersion>
   </PropertyGroup>
 
