@@ -6,7 +6,7 @@ using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET.BackgroundTasks
 {
-    public sealed class UpdateTask : IBackgroundTask
+    public sealed partial class UpdateTask : IBackgroundTask
     {
         private const string taskName = nameof(UpdateTask);
 

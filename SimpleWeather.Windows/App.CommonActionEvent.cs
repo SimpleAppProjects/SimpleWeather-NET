@@ -56,7 +56,7 @@ namespace SimpleWeather.NET
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEUNIT)
             {
 #if WINDOWS
-                await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
+                await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
 #endif
             }
             else if (e.Action == CommonActions.ACTION_SETTINGS_UPDATEREFRESH)
@@ -121,7 +121,7 @@ namespace SimpleWeather.NET
                 SettingsManager.LastPoPChanceNotificationTime = DateTimeOffset.MinValue;
 
                 // Update tiles and widgets
-                await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
+                await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_SENDLOCATIONUPDATE)
             {
@@ -153,7 +153,7 @@ namespace SimpleWeather.NET
             {
                 // Update locale for string resources
                 UpdateAppLocale();
-                await Task.Run(WeatherTileUpdaterTask.RequestAppTrigger);
+                await Task.Run(WeatherUpdateBackgroundTask.RequestAppTrigger);
             }
             else if (e.Action == CommonActions.ACTION_WEATHER_LOCATIONREMOVED)
             {

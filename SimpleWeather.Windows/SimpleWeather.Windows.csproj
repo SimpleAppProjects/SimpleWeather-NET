@@ -20,6 +20,7 @@
     <Title>SimpleWeather</Title>
     <ApplicationIcon>Assets\logo.ico</ApplicationIcon>
     <ImplicitUsings>enable</ImplicitUsings>
+    <WindowsAppSDKBackgroundTask>true</WindowsAppSDKBackgroundTask>
     
     <!-- Build and Package -->
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
@@ -79,6 +80,7 @@
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.3" />
     <PackageReference Include="UnitsNet" Version="5.73.0" />
+    <PackageReference Include="Vanara.PInvoke.Ole" Version="4.1.1" />
     <PackageReference Include="WinUIEx" Version="2.5.1" />
   </ItemGroup>
   <ItemGroup>
@@ -170,7 +172,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
-    <ProjectReference Include="..\SimpleWeather.BackgroundTasks\SimpleWeather.BackgroundTasks.csproj" />
     <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
     <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
     <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
@@ -179,7 +180,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="powershell.exe -file &quot;$(ProjectDir)end-process.ps1&quot;&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)InProcBackgroundTask\InProcBackgroundTask.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Widgets\WidgetProvider.cs&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
+    <Exec Command="powershell.exe -file &quot;$(ProjectDir)end-process.ps1&quot;&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;&quot;$(SolutionDir)EditManifest.exe&quot; &quot;$(ProjectDir)Package.appxmanifest&quot; $(ConfigurationName) &quot;WinUI&quot;&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
   </Target>
 
   <Import Project="..\SimpleWeather.NET.Extras\SimpleWeather.NET.Extras.projitems" Label="Shared" />

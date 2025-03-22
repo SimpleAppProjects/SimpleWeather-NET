@@ -5,7 +5,6 @@
       "EditManifest\\EditManifest.csproj",
       "KeyCheck\\KeyCheck.csproj",
       "MauiUnitTestProject\\MauiUnitTestProject.csproj",
-      "SimpleWeather.BackgroundTasks\\SimpleWeather.BackgroundTasks.csproj",
       "SimpleWeather.Backgrounds\\SimpleWeather.Backgrounds.csproj",
       "SimpleWeather.Common\\SimpleWeather.Common.csproj",
       "SimpleWeather.Extras\\SimpleWeather.Extras.csproj",

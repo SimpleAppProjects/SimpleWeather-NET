@@ -7,7 +7,11 @@ namespace SimpleWeather.NET.Widgets
 {
     [ComVisible(true)]
     [ClassInterface(ClassInterfaceType.None)]
+#if DEBUG
+    [Guid("09FC0937-C728-40D3-8C0E-AAB1AA0C61C8")]
+#else
     [Guid("1D453922-87B3-41AB-9D61-1A73C4360E71")]
+#endif
     internal partial class WidgetProvider : IWidgetProvider, IWidgetProvider2, IWidgetProviderAnalytics, IWidgetProviderErrors
     {
         private static bool HaveRecoveredWidgets { get; set; } = false;

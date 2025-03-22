@@ -15,11 +15,10 @@ using Windows.UI.StartScreen;
 
 namespace SimpleWeather.NET.BackgroundTasks
 {
-    public sealed class WeatherTileUpdaterTask : IBackgroundTask
+    public sealed partial class WeatherTileUpdaterTask : IBackgroundTask
     {
         private const string taskName = nameof(WeatherTileUpdaterTask);
         private readonly WeatherProviderManager wm;
-        private static ApplicationTrigger AppTrigger;
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -214,44 +213,6 @@ namespace SimpleWeather.NET.BackgroundTasks
             return weather;
         }
 
-        public static async Task RequestAppTrigger()
-        {
-            if (AppTrigger == null)
-                AppTrigger = new ApplicationTrigger();
-
-            // Request access
-            var backgroundAccessStatus = BackgroundAccessStatus.Unspecified;
-
-            try
-            {
-                BackgroundExecutionManager.RemoveAccess();
-                backgroundAccessStatus = await BackgroundExecutionManager.RequestAccessAsync();
-            }
-            catch (UnauthorizedAccessException)
-            {
-                // An access denied exception may be thrown if two requests are issued at the same time
-                // For this specific sample, that could be if the user double clicks "Request access"
-            }
-
-            // If allowed
-            if (backgroundAccessStatus == BackgroundAccessStatus.AlwaysAllowed ||
-                backgroundAccessStatus == BackgroundAccessStatus.AllowedSubjectToSystemPolicy)
-            {
-                try
-                {
-                    await AppTrigger.RequestAsync();
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteLine(LoggerLevel.Error, ex, "{0}: Error requesting ApplicationTrigger", taskName);
-                }
-            }
-            else
-            {
-                Logger.WriteLine(LoggerLevel.Error, "{0}: Can't trigger ApplicationTrigger, background access not allowed", taskName);
-            }
-        }
-
         public static async Task RegisterBackgroundTask(bool reregister = true)
         {
             var taskRegistration = GetTaskRegistration();
@@ -268,9 +229,6 @@ namespace SimpleWeather.NET.BackgroundTasks
                     return;
                 }
             }
-
-            if (AppTrigger == null)
-                AppTrigger = new ApplicationTrigger();
 
             // Enable task if dependent features are enabled
             if (!await IsTaskFeaturesEnabled())
@@ -303,8 +261,6 @@ namespace SimpleWeather.NET.BackgroundTasks
                     .Trigger(new SystemTrigger(SystemTriggerType.LockScreenApplicationAdded, false));
                 var tb4 = BackgroundTaskUtils.CreateTask(taskName)
                     .Trigger(new SystemTrigger(SystemTriggerType.UserPresent, false));
-                var tb5 = BackgroundTaskUtils.CreateTask(taskName)
-                    .Trigger(AppTrigger);
 
                 try
                 {
@@ -312,7 +268,6 @@ namespace SimpleWeather.NET.BackgroundTasks
                     tb2.Register();
                     tb3.Register();
                     tb4.Register();
-                    tb5.Register();
                 }
                 catch (Exception ex)
                 {

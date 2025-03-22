@@ -9,7 +9,7 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 namespace SimpleWeather.NET.BackgroundTasks
 {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Safety", "UWP001:Platform-specific", Justification = "<Pending>")]
-    public sealed class AppUpdaterTask : IBackgroundTask
+    public sealed partial class AppUpdaterTask : IBackgroundTask
     {
         private const string taskName = nameof(AppUpdaterTask);
         private StoreContext context = null;

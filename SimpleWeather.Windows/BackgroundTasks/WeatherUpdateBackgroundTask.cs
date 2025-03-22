@@ -15,7 +15,7 @@ using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET.BackgroundTasks
 {
-    public sealed class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
+    public sealed partial class WeatherUpdateBackgroundTask : IBackgroundTask, IDisposable
     {
         private const string taskName = nameof(WeatherUpdateBackgroundTask);
         private readonly CancellationTokenSource cts;

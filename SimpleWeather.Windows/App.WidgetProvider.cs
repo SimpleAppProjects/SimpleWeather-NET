@@ -5,18 +5,23 @@ namespace SimpleWeather.NET
 {
     public partial class App
     {
-        private ClassFactory<WidgetProvider> widgetProviderFactory;
+        private static uint _WidgetProviderRegistrationToken;
 
-        private void RegisterWidgetProvider()
+        private static void RegisterWidgetProvider()
         {
-            this.widgetProviderFactory = new ClassFactory<WidgetProvider>(
+            var widgetProviderFactory = new ClassFactory<WidgetProvider>(
                 () => new WidgetProvider(),
                 new Dictionary<Guid, Func<object, IntPtr>>()
                 {
                     { typeof(WidgetProvider).GUID, obj => MarshalInterface<WidgetProvider>.FromManaged((WidgetProvider)obj) },
                 });
 
-            COMUtilities.RegisterClass<WidgetProvider>(this.widgetProviderFactory);
+            _WidgetProviderRegistrationToken = COMUtilities.RegisterClass<WidgetProvider>(widgetProviderFactory);
+        }
+
+        private static void UnregisterWidgetProvider()
+        {
+            COMUtilities.UnregisterClassObject(_WidgetProviderRegistrationToken);
         }
     }
 }

@@ -103,6 +103,8 @@ namespace SimpleWeather.NET
 
         private static Exception LastFirstChanceException;
 
+        private readonly SynchronizationContext syncContext;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -159,6 +161,13 @@ namespace SimpleWeather.NET
             AnalyticsLogger.SetUserProperty(AnalyticsProps.WINDOWS_OS_VERSION_CODE, DeviceTypeHelper.OSVersion.ToVersionCode());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION, Package.Current.Id.Version.ToFormattedString());
             AnalyticsLogger.SetUserProperty(AnalyticsProps.APP_VERSION_CODE, Package.Current.Id.Version.ToVersionCode());
+        }
+
+        ~App()
+        {
+            UnregisterSettingsListener();
+            UnregisterWidgetProvider();
+            UnregisterInProcBackgroundTask();
         }
 
         private void InitializeDependencies()
@@ -334,8 +343,11 @@ namespace SimpleWeather.NET
 
                 if (launchArgs?.Arguments?.Contains("RegisterProcessAsComServer") == true)
                 {
-                    RegisterCOMServer();
                     RegisterWidgetProvider();
+                }
+                else if (launchArgs?.Arguments?.Contains("RegisterForBGTaskServer") == true)
+                {
+                    RegisterInProcBackgroundTask();
                 }
                 else
                 {
@@ -599,61 +611,6 @@ namespace SimpleWeather.NET
 
                 UpdateAppTheme();
             });
-        }
-
-        internal async Task OnBackgroundActivatedAsync(IBackgroundTaskInstance instance)
-        {
-            await TaskEx.YieldToBackground();
-
-            Initialize(instance);
-
-            AnalyticsLogger.LogEvent("App: Background Activated",
-                new Dictionary<string, string>()
-                {
-                    { "Task", instance.Task?.Name }
-                });
-
-            switch (instance.Task?.Name)
-            {
-                case nameof(WeatherUpdateBackgroundTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherUpdateBackgroundTask");
-                    new WeatherUpdateBackgroundTask().Run(instance);
-                    break;
-
-                case nameof(UpdateTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting UpdateTask");
-                    new UpdateTask().Run(instance);
-                    break;
-
-                case nameof(AppUpdaterTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting AppUpdaterTask");
-                    new AppUpdaterTask().Run(instance);
-                    break;
-
-                case nameof(RemoteConfigUpdateTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting RemoteConfigUpdateTask");
-                    new RemoteConfigUpdateTask().Run(instance);
-                    break;
-
-                case nameof(WeatherTileUpdaterTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting WeatherTileUpdaterTask");
-                    new WeatherTileUpdaterTask().Run(instance);
-                    break;
-
-                case nameof(DailyNotificationTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting DailyNotificationTask");
-                    new DailyNotificationTask().Run(instance);
-                    break;
-
-                case nameof(PremiumStatusTask):
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Starting PremiumStatusTask");
-                    new PremiumStatusTask().Run(instance);
-                    break;
-
-                default:
-                    Logger.WriteLine(LoggerLevel.Debug, "App: Unknown task: {0}", instance.Task.Name);
-                    break;
-            }
         }
 
         private void Initialize(LaunchActivatedEventExArgs? e = null)

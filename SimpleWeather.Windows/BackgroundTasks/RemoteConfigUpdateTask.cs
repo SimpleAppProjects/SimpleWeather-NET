@@ -5,7 +5,7 @@ using Windows.ApplicationModel.Background;
 
 namespace SimpleWeather.NET.BackgroundTasks
 {
-    public class RemoteConfigUpdateTask : IBackgroundTask
+    public partial class RemoteConfigUpdateTask : IBackgroundTask
     {
         private const string taskName = nameof(RemoteConfigUpdateTask);
 
