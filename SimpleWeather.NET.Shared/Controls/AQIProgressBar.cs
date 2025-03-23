@@ -1,7 +1,6 @@
 ﻿using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 using SkiaSharp;
-using Font = Microsoft.Maui.Font;
 #if WINDOWS
 using CommunityToolkit.WinUI;
 using Microsoft.UI;
@@ -17,6 +16,7 @@ using Windows.UI.Text;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Windows.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Windows.SKXamlCanvas;
 #else
+using Font = Microsoft.Maui.Font;
 using SKPaintSurfaceEventArgs = SkiaSharp.Views.Maui.SKPaintSurfaceEventArgs;
 using SKXamlCanvas = SkiaSharp.Views.Maui.Controls.SKCanvasView;
 #endif

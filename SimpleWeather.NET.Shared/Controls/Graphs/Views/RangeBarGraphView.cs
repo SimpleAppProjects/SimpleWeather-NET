@@ -1,6 +1,7 @@
 ﻿using SimpleWeather.SkiaSharp;
 #if WINDOWS
 using SimpleWeather.NET.Helpers;
+using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 #else
 using SimpleWeather.Maui.Helpers;
 #endif
@@ -8,11 +9,13 @@ using SkiaSharp;
 #if WINDOWS
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using CommunityToolkit.WinUI;
+using Windows.Foundation;
 #endif
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class RangeBarGraphView : BaseGraphScrollView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
+    public sealed partial class RangeBarGraphView : BaseGraphScrollView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
     {
         public override BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry> CreateGraphView()
         {
@@ -21,7 +24,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         
         internal override RangeBarChartGraph Graph => (RangeBarChartGraph)base.Graph;
 
-        internal sealed class RangeBarChartGraph : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
+        internal sealed partial class RangeBarChartGraph : BaseGraphView<RangeBarGraphData, RangeBarGraphDataSet, RangeBarGraphEntry>
         {
             private bool disposedValue;
 
@@ -31,9 +34,10 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             public RangeBarChartGraph(ScrollView scrollViewer) : base(scrollViewer)
             {
-    #if WINDOWS
+#if WINDOWS
+                //this.Style = this.TryFindResource("RangeBarChartGraphStyle") as Style;
                 this.DefaultStyleKey = typeof(RangeBarChartGraph);
-    #endif
+#endif
 
                 drawDotLists = new List<Bar>();
 
@@ -140,17 +144,16 @@ namespace SimpleWeather.NET.Controls.Graphs
             {
                 // Reset the grid width
                 backgroundGridWidth = longestTextWidth;
-    #if __MACCATALYST__
+#if __MACCATALYST__
                 var defaultPadding = 32f; // 32dp
-    #else
-                var defaultPadding = 8f; // 8dp
-    #endif
-#if WINDOWS
-                var parentWidth = ScrollViewer.DesiredSize.IsEmpty
 #else
-                var parentWidth = ScrollViewer.DesiredSize.IsZero
+                var defaultPadding = 8f; // 8dp
 #endif
-                    ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width;
+#if WINDOWS
+                var parentWidth = Math.Floor(ScrollViewer.MeasuredSize.IsEmpty ? (ScrollViewer.DesiredSize.IsEmpty ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width) : ScrollViewer.MeasuredSize.Width);
+#else
+                var parentWidth = Math.Floor(ScrollViewer.DesiredSize.IsZero ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width);
+#endif
 
                 if (GetGraphExtentWidth() < parentWidth)
                 {

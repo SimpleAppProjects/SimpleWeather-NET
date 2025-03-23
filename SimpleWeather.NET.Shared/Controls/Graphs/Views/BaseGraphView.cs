@@ -11,7 +11,7 @@ using Windows.UI;
 using Windows.UI.Text;
 using Color = Windows.UI.Color;
 using Colors = Microsoft.UI.Colors;
-using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
+using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 using Size = Windows.Foundation.Size;
 using FontWeight = Windows.UI.Text.FontWeight;
 using FontWeights = Microsoft.UI.Text.FontWeights;
@@ -399,6 +399,10 @@ namespace SimpleWeather.NET.Controls.Graphs
 #if WINDOWS
         protected sealed override Size MeasureOverride(Size availableSize)
         {
+            var size = base.MeasureOverride(availableSize);
+            size.Width = Math.Floor(size.Width <= 0 ? availableSize.Width : size.Width);
+            size.Height = Math.Floor(size.Height <= 0 ? availableSize.Height : size.Height);
+            availableSize = size;
 #else
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
@@ -409,23 +413,20 @@ namespace SimpleWeather.NET.Controls.Graphs
             OnPreMeasure();
 
             var desiredWidth = GetPreferredWidth();
-#if WINDOWS
-            var resolvedWidth = Math.Ceiling(double.IsInfinity(availableSize.Width)
-                ? (MaxCanvasWidth > 0 ? Math.Min(desiredWidth, MaxCanvasWidth) : desiredWidth)
-                : (MaxCanvasWidth > 0 ? Math.Min(Math.Min(desiredWidth, availableSize.Width), MaxCanvasWidth) : Math.Min(desiredWidth, availableSize.Width)));
-#else
-            var measureMode = (BaseGraphScrollView<T,S,E>.MeasureMode)(GetValue(BaseGraphScrollView<T, S, E>.MeasureModeProperty) ?? BaseGraphScrollView<T,S,E>.MeasureMode.Undefined);
+
+            var measureMode = (BaseGraphScrollView<T, S, E>.MeasureMode)(GetValue(BaseGraphScrollView<T, S, E>.MeasureModeProperty) ?? BaseGraphScrollView<T, S, E>.MeasureMode.Undefined);
             var resolvedWidth = measureMode switch
             {
                 BaseGraphScrollView<T, S, E>.MeasureMode.AtMost => MaxCanvasWidth > 0 ? Math.Min(Math.Min(desiredWidth, availableSize.Width), MaxCanvasWidth) : desiredWidth,
                 BaseGraphScrollView<T, S, E>.MeasureMode.Exactly => MaxCanvasWidth > 0 ? Math.Min(MaxCanvasWidth, availableSize.Width) : availableSize.Width,
                 _ => MaxCanvasWidth > 0 ? Math.Min(desiredWidth, MaxCanvasWidth) : desiredWidth
             };
-#endif
 
             ViewWidth = MathF.Floor((float)resolvedWidth);
 #if WINDOWS
             ViewHeight = (float)availableSize.Height;
+            Canvas.Width = float.IsInfinity(ViewWidth) ? -1 : ViewWidth;
+            Canvas.Height = float.IsInfinity(ViewHeight) ? -1 : ViewHeight;
 #else
             ViewHeight = MathF.Floor((float)availableSize.Height);
             Canvas.WidthRequest = float.IsInfinity(ViewWidth) ? -1 : ViewWidth;

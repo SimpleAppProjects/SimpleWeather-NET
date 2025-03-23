@@ -8,6 +8,7 @@ using SkiaSharp.Views.Maui.Controls;
 #endif
 using SimpleWeather.Utils;
 using SkiaSharp;
+using CommunityToolkit.WinUI;
 #if WINDOWS
 #else
 using ScrollViewer = Microsoft.Maui.Controls.ScrollView;
@@ -58,6 +59,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         {
 #if WINDOWS
             this.DefaultStyleKey = typeof(BaseGraphViewControl);
+            this.Template = this.TryFindResource("BaseGraphViewTemplate") as ControlTemplate;
 #endif
             this.Loaded += BaseGraphViewControl_Loaded;
             this.Unloaded += BaseGraphViewControl_Unloaded;

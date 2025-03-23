@@ -267,46 +267,54 @@
     </Style>
 
     <Style x:Key="BaseGraphViewControlStyle" TargetType="localGraphs:BaseGraphViewControl">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         <Setter Property="Height" Value="275" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="localGraphs:BaseGraphViewControl">
-                    <Border
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
-                        <ScrollViewer
-                            x:Name="InternalScrollViewer"
-                            HorizontalScrollBarVisibility="Hidden"
-                            HorizontalScrollMode="Enabled"
-                            VerticalScrollBarVisibility="Disabled"
-                            VerticalScrollMode="Disabled">
-                            <Grid>
-                                <skiaSharp:SKXamlCanvas
-                                    xmlns:skiaSharp="using:SkiaSharp.Views.Windows"
-                                    x:Name="Canvas"
-                                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                                    Background="Transparent"
-                                    IgnorePixelScaling="True" />
-                            </Grid>
-                        </ScrollViewer>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
+        <Setter Property="Template" Value="{StaticResource BaseGraphViewTemplate}" />
     </Style>
 
-    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:LineView">
+    <ControlTemplate x:Key="BaseGraphViewTemplate">
+        <Border
+            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+            Background="{TemplateBinding Background}"
+            BorderBrush="{TemplateBinding BorderBrush}"
+            BorderThickness="{TemplateBinding BorderThickness}">
+            <skiaSharp:SKXamlCanvas
+                xmlns:skiaSharp="using:SkiaSharp.Views.Windows"
+                x:Name="Canvas"
+                HorizontalAlignment="Center"
+                Background="Transparent"
+                IgnorePixelScaling="True" />
+        </Border>
+    </ControlTemplate>
+
+    <Style
+        x:Key="LineViewGraphStyle"
+        BasedOn="{StaticResource BaseGraphViewControlStyle}"
+        TargetType="localGraphs:LineView+LineViewGraph">
         <Setter Property="BackgroundLineColor" Value="{ThemeResource LineViewBackgroundLineColor}" />
         <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
     </Style>
 
-    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:RangeBarGraphView">
+    <Style
+        x:Key="RangeBarChartGraphStyle"
+        BasedOn="{StaticResource BaseGraphViewControlStyle}"
+        TargetType="localGraphs:RangeBarGraphView+RangeBarChartGraph">
         <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
         <Setter Property="HorizontalAlignment" Value="Center" />
         <Setter Property="HorizontalContentAlignment" Value="Center" />
+    </Style>
+
+    <Style
+        x:Key="BarChartGraphStyle"
+        BasedOn="{StaticResource BaseGraphViewControlStyle}"
+        TargetType="localGraphs:BarGraphView+BarChartGraph">
+        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Height" Value="225" />
     </Style>
 
     <Style TargetType="localControls:SunPhaseView">
@@ -334,13 +342,6 @@
         </Setter>
     </Style>
 
-    <Style BasedOn="{StaticResource BaseGraphViewControlStyle}" TargetType="localGraphs:BarGraphView">
-        <Setter Property="BottomTextColor" Value="{ThemeResource LineViewBottomTextColor}" />
-        <Setter Property="HorizontalAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="Height" Value="225" />
-    </Style>
-
     <Style TargetType="localControls:AQIProgressBar">
         <Setter Property="BottomTextColor" Value="{ThemeResource TextFillColorPrimary}" />
         <Setter Property="ThumbColor" Value="White" />
@@ -364,4 +365,24 @@
         </Setter>
     </Style>
 
+
+    <Style TargetType="localGraphs:GraphScrollView">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="localGraphs:GraphScrollView">
+                    <ScrollViewer
+                        x:Name="InternalScrollViewer"
+                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        HorizontalScrollBarVisibility="Hidden"
+                        HorizontalScrollMode="Enabled"
+                        VerticalScrollBarVisibility="Disabled"
+                        VerticalScrollMode="Disabled" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

@@ -4,17 +4,19 @@ using Microsoft.UI;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using SimpleWeather.NET.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
 using HorizontalAlignment = Microsoft.UI.Xaml.HorizontalAlignment;
-using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
+using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 using Color = Windows.UI.Color;
-using ScrollViewerViewChangedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
+using ScrollViewerViewChangedEventArgs = Microsoft.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs;
 using Size = Windows.Foundation.Size;
 #else
+using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Platform;
 using Microsoft.Maui.Primitives;
@@ -29,7 +31,6 @@ using RoutedEventArgs = System.EventArgs;
 using System.Diagnostics;
 using Color = Microsoft.Maui.Graphics.Color;
 #endif
-using CommunityToolkit.Maui.Markup;
 using SimpleWeather.NET.Utils;
 using SimpleWeather.SkiaSharp;
 using SkiaSharp;
@@ -47,17 +48,16 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
     protected BaseGraphScrollView()
     {
 #if WINDOWS
-        this.ContentOrientation = ScrollingContentOrientation.Horizontal;
-        this.VerticalScrollBarVisibility = ScrollingScrollBarVisibility.Hidden;
-        this.HorizontalScrollBarVisibility = ScrollingScrollBarVisibility.Hidden;
-        ScrollCompleted += ScrollView_ViewChanged;
+        this.ViewChanging += ScrollView_ViewChanging;
+        this.ViewChanged += ScrollView_ViewChanged;
+        this.HorizontalAlignment = this.HorizontalContentAlignment = HorizontalAlignment.Stretch;
         this.Height = 275;
 #else
         this.Orientation = ScrollOrientation.Horizontal;
         this.VerticalScrollBarVisibility = ScrollBarVisibility.Never;
         this.HorizontalScrollBarVisibility = ScrollBarVisibility.Never;
-        Scrolled += ScrollView_ViewChanged;
-        HandlerChanged += ScrollView_HandlerChanged;
+        this.Scrolled += ScrollView_ViewChanged;
+        this.HandlerChanged += ScrollView_HandlerChanged;
         this.HeightRequest = 275;
 #endif
         _scrollView = this;
@@ -79,6 +79,37 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
     {
         this.Content = graph = CreateGraphView();
 #if WINDOWS
+        Graph.SetBinding(BaseGraphViewControl.MaxCanvasWidthProperty,
+            new Binding()
+            {
+                Mode = BindingMode.OneWay,
+                Path = new PropertyPath(nameof(GraphMaxWidth)),
+                Source = this,
+            });
+
+        Graph.SetBinding(BaseGraphView<T,S,E>.BottomTextColorProperty,
+            new Binding()
+            {
+                Mode = BindingMode.OneWay,
+                Path = new PropertyPath(nameof(BottomTextColor)),
+                Source = this,
+            });
+
+        Graph.SetBinding(BaseGraphView<T, S, E>.FontSizeProperty,
+            new Binding()
+            {
+                Mode = BindingMode.OneWay,
+                Path = new PropertyPath(nameof(BottomTextSize)),
+                Source = this,
+            });
+
+        Graph.SetBinding(BaseGraphView<T, S, E>.IconSizeProperty,
+            new Binding()
+            {
+                Mode = BindingMode.OneWay,
+                Path = new PropertyPath(nameof(IconSize)),
+                Source = this,
+            });
 #else
         Graph.Bind(BaseGraphViewControl.MaxCanvasWidthProperty, 
             getter: view => view.GraphMaxWidth,
@@ -101,32 +132,14 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
             BindingMode.OneWay, source: this);
 #endif
     }
-    
+
     public bool FillParentWidth { set => graph.FillParentWidth = value; }
-    
-#if WINDOWS
-    public double GraphMaxWidth
-    {
-        set => this.graph.MaxCanvasWidth = value;
-    }
 
-    public Color BottomTextColor
-    {
-        set => graph.BottomTextColor = value;
-    }
-
-    public double BottomTextSize { set => graph.FontSize = value; }
-
-    public float IconSize { set => graph.IconSize = value; }
-#else
     public double GraphMaxWidth
     {
         get => (double)GetValue(GraphMaxWidthProperty);
         set => SetValue(GraphMaxWidthProperty, value);
     }
-
-    public static readonly BindableProperty GraphMaxWidthProperty =
-        BindableProperty.Create(nameof(GraphMaxWidth), typeof(double), typeof(BaseGraphScrollView<T,S,E>), 0d);
 
     public Color BottomTextColor
     {
@@ -134,17 +147,11 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         set => SetValue(BottomTextColorProperty, value);
     }
 
-    public static readonly BindableProperty BottomTextColorProperty =
-        BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(BaseGraphScrollView<T,S,E>), Colors.White);
-
     public double BottomTextSize
     {
         get => (double)GetValue(BottomTextSizeProperty);
         set => SetValue(BottomTextSizeProperty, value);
     }
-
-    public static readonly BindableProperty BottomTextSizeProperty =
-        BindableProperty.Create(nameof(BottomTextSize), typeof(double), typeof(BaseGraphScrollView<T,S,E>), 13d);
 
     public float IconSize
     {
@@ -152,13 +159,38 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         set => SetValue(IconSizeProperty, value);
     }
 
+#if WINDOWS
+    public static readonly DependencyProperty GraphMaxWidthProperty =
+        DependencyProperty.Register(nameof(GraphMaxWidth), typeof(double), typeof(BaseGraphScrollView<T, S, E>), new PropertyMetadata(0d));
+
+    public static readonly DependencyProperty BottomTextColorProperty =
+        DependencyProperty.Register(nameof(BottomTextColor), typeof(Color), typeof(BaseGraphScrollView<T, S, E>), new PropertyMetadata(Colors.White));
+
+    public static readonly DependencyProperty BottomTextSizeProperty =
+        DependencyProperty.Register(nameof(BottomTextSize), typeof(double), typeof(BaseGraphScrollView<T, S, E>), new PropertyMetadata(13d));
+
+    public static readonly DependencyProperty IconSizeProperty =
+        DependencyProperty.Register(nameof(IconSize), typeof(float), typeof(BaseGraphScrollView<T, S, E>), new PropertyMetadata(48f));
+
+    internal static readonly DependencyProperty MeasureModeProperty =
+        DependencyProperty.Register(nameof(MeasureMode), typeof(MeasureMode), typeof(BaseGraphScrollView<T, S, E>), new PropertyMetadata(MeasureMode.Undefined));
+#else
+    public static readonly BindableProperty GraphMaxWidthProperty =
+        BindableProperty.Create(nameof(GraphMaxWidth), typeof(double), typeof(BaseGraphScrollView<T,S,E>), 0d);
+
+    public static readonly BindableProperty BottomTextColorProperty =
+        BindableProperty.Create(nameof(BottomTextColor), typeof(Color), typeof(BaseGraphScrollView<T,S,E>), Colors.White);
+
+    public static readonly BindableProperty BottomTextSizeProperty =
+        BindableProperty.Create(nameof(BottomTextSize), typeof(double), typeof(BaseGraphScrollView<T,S,E>), 13d);
+
     public static readonly BindableProperty IconSizeProperty =
         BindableProperty.Create(nameof(IconSize), typeof(float), typeof(BaseGraphScrollView<T,S,E>), 48f);
     
     internal static readonly BindableProperty MeasureModeProperty =
         BindableProperty.Create(nameof(MeasureMode), typeof(MeasureMode), typeof(BaseGraphScrollView<T,S,E>), MeasureMode.Undefined);
 #endif
-    
+
     internal enum MeasureMode
     {
         Undefined,
@@ -169,25 +201,14 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
     public bool DrawIconLabels { set => graph.DrawIconLabels = value; }
     public bool DrawDataLabels { set => graph.DrawDataLabels = value; }
     
-    //
-    // Summary:
-    //     Occurs when manipulations such as scrolling and zooming have caused the view
-    //     to change.
-#if WINDOWS
-    public new event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
-#else
+#if !WINDOWS
     public event EventHandler<ScrollViewerViewChangedEventArgs> ViewChanged;
 #endif
 
 #if WINDOWS
     protected virtual void OnViewChanging(ScrollViewerViewChangingEventArgs e) 
     {
-        visibleRect.Set(
-                (float)e.NextView.HorizontalOffset,
-                (float)e.NextView.VerticalOffset,
-                (float)(e.NextView.HorizontalOffset + ScrollViewer.ActualWidth),
-                (float)(e.NextView.VerticalOffset + ScrollViewer.ActualHeight)
-        );
+        Invalidate();
     }
 #endif
     protected virtual void OnViewChanged(ScrollViewerViewChangedEventArgs e)
@@ -195,10 +216,14 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         Invalidate();
     }
 
+    private void ScrollView_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+    {
+        OnViewChanging(e);
+    }
+
     private void ScrollView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
     {
         OnViewChanged(e);
-        ViewChanged?.Invoke(sender, e);
     }
 #if !WINDOWS
     private void ScrollView_HandlerChanged(object sender, RoutedEventArgs e)
@@ -234,7 +259,10 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
 #if WINDOWS
     protected override Size MeasureOverride(Size availableSize)
     {
-        var size = base.MeasureOverride(availableSize);
+        this.MeasuredSize = Size.Empty;
+        base.MeasureOverride(availableSize);
+        var size = availableSize;
+        this.MeasuredSize = size;
 #else
     protected override Size MeasureOverride(double widthConstraint, double heightConstraint)
     {
@@ -243,35 +271,43 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         if (size.Width <= 0) size.Width = widthConstraint;
         this.DesiredSize = size;
 #endif
-        
+
+        double widthPadding =
+#if WINDOWS
+            Padding.Left + Padding.Right;
+#else
+                Padding.HorizontalThickness;
+#endif
+        double heightPadding =
+#if WINDOWS
+            Padding.Top + Padding.Bottom;
+#else
+                Padding.VerticalThickness;
+#endif
+
 #if WINDOWS
         if (Content is FrameworkElement child)
 #else
         if (Content is { } child)
 #endif
         {
-            double widthPadding = 
-#if WINDOWS
-                Padding.Left + Padding.Right;
-#else
-                Padding.HorizontalThickness;
-#endif
-            double heightPadding = 
-#if WINDOWS
-                Padding.Top + Padding.Bottom;
-#else
-                Padding.VerticalThickness;
-#endif
-            
             double desiredWidth = size.Width - widthPadding;
 
+            Content.ClearValue(MeasureModeProperty);
 #if WINDOWS
-            if (child.ActualWidth < desiredWidth)
+            child.Measure(size);
+            var childMeasuredSize = child.DesiredSize;
+            if (childMeasuredSize.Width < desiredWidth)
             {
+                Content.SetValue(MeasureModeProperty, MeasureMode.Undefined);
                 Content.Measure(new Size(desiredWidth, size.Height));
             }
+            else
+            {
+                Content.SetValue(MeasureModeProperty, MeasureMode.AtMost);
+                Content.Measure(new Size(childMeasuredSize.Width, size.Height));
+            }
 #else
-            Content.ClearValue(MeasureModeProperty);
             var childMeasuredSize = child.Measure(widthConstraint, heightConstraint);
             if (childMeasuredSize.Width < desiredWidth)
             {
@@ -285,10 +321,10 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
             }
 #endif
         }
-        
+
         Invalidate();
         
-        return size;
+        return new Size(Content.DesiredSize.Width + widthPadding, Content.DesiredSize.Height + heightPadding);
     }
 
 #if WINDOWS
@@ -316,7 +352,7 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
 
             if (width < size.Width)
             {
-                double childLeft = parentLeft + (parentRight - parentLeft - width) / 2 + Margin.Left + Margin.Right;
+                double childLeft = parentLeft + (parentRight - parentLeft - width) / 2 + (Margin.Left + Margin.Right);
                 
                 Content.Arrange(new Rect(childLeft, Margin.Top, width, height));
             }
@@ -339,9 +375,11 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         return size;
     }
 
+#if !WINDOWS
     protected override void OnSizeAllocated(double width, double height)
     {
         base.OnSizeAllocated(width, height);
         InvalidateMeasure();
     }
+#endif
 }

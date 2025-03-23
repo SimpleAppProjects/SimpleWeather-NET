@@ -2,12 +2,13 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using SimpleWeather.NET.Helpers;
+using Windows.UI;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public sealed partial class BarGraphPanel : UserControl
+    public sealed partial class BarGraphPanel : GraphPanel
     {
         //
         // Summary:
@@ -24,68 +25,6 @@ namespace SimpleWeather.NET.Controls.Graphs
             }
         }
 
-        private void GraphView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            if (sender is ScrollViewer scroller)
-            {
-                UpdateScrollButtons(scroller);
-            }
-        }
-
-        private void GraphView_ItemWidthChanged(object sender, ItemSizeChangedEventArgs e)
-        {
-            if (sender is IGraph graph && graph.Control.Visibility == Visibility.Visible)
-            {
-                UpdateScrollButtons(graph.ScrollViewer);
-            }
-        }
-
-        private void UpdateScrollButtons(ScrollViewer scroller)
-        {
-            CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
-            CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
-            if (scroller.ExtentWidth > scroller.ViewportWidth)
-            {
-                LeftButton.Visibility = Visibility.Visible;
-                RightButton.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                LeftButton.Visibility = Visibility.Collapsed;
-                RightButton.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        public bool CanScrollToStart
-        {
-            get => (bool)GetValue(CanScrollToStartProperty);
-            set => SetValue(CanScrollToStartProperty, value);
-        }
-
-        public static readonly DependencyProperty CanScrollToStartProperty =
-            DependencyProperty.Register(nameof(CanScrollToStart), typeof(bool),
-            typeof(BarGraphPanel), new PropertyMetadata(false));
-
-        public bool CanScrollToEnd
-        {
-            get => (bool)GetValue(CanScrollToEndProperty);
-            set => SetValue(CanScrollToEndProperty, value);
-        }
-
-        public static readonly DependencyProperty CanScrollToEndProperty =
-            DependencyProperty.Register(nameof(CanScrollToEnd), typeof(bool),
-            typeof(BarGraphPanel), new PropertyMetadata(false));
-
-        private void LeftButton_Click(object sender, RoutedEventArgs e)
-        {
-            ScrollViewerHelper.ScrollLeft(BarChartView.ScrollViewer);
-        }
-
-        private void RightButton_Click(object sender, RoutedEventArgs e)
-        {
-            ScrollViewerHelper.ScrollRight(BarChartView.ScrollViewer);
-        }
-
         public BarGraphData GraphData
         {
             get => (BarGraphData)GetValue(GraphDataProperty);
@@ -95,6 +34,10 @@ namespace SimpleWeather.NET.Controls.Graphs
         public static readonly DependencyProperty GraphDataProperty =
             DependencyProperty.Register(nameof(GraphData), typeof(BarGraphData),
             typeof(BarGraphPanel), new PropertyMetadata(null, (o, e) => (o as BarGraphPanel)?.UpdateView(false)));
+
+        protected override GraphScrollView GraphScrollView => BarChartView;
+        protected override UIElement LeftScrollButton => this.LeftButton;
+        protected override UIElement RightScrollButton => this.RightButton;
 
         public BarGraphPanel()
         {
@@ -114,7 +57,7 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             if (resetOffset)
             {
-                BarChartView.ScrollViewer?.ChangeView(0, null, null);
+                BarChartView?.ScrollTo(0, 0);
             }
         }
 
@@ -125,5 +68,16 @@ namespace SimpleWeather.NET.Controls.Graphs
                 BarChartView.SetData(GraphData);
             }
         }
+
+        public override int GetItemPositionFromPoint(float xCoordinate) => BarChartView.GetItemPositionFromPoint(xCoordinate);
+        public override double GraphMaxWidth { get => BarChartView.GraphMaxWidth; set => BarChartView.GraphMaxWidth = value; }
+        public override bool FillParentWidth { set => BarChartView.FillParentWidth = value; }
+        public override Color BottomTextColor { get => BarChartView.BottomTextColor; set => BarChartView.BottomTextColor = value; }
+        public override double BottomTextSize { get => BarChartView.BottomTextSize; set => BarChartView.BottomTextSize = value; }
+        public override float IconSize { get => BarChartView.IconSize; set => BarChartView.IconSize = value; }
+        public override bool DrawIconLabels { set => BarChartView.DrawIconLabels = value; }
+        public override bool DrawDataLabels { set => BarChartView.DrawDataLabels = value; }
+        public override bool ScrollingEnabled { get => BarChartView.IsHitTestVisible; set => BarChartView.IsHitTestVisible = value; }
+        public override void RequestGraphLayout() => BarChartView.RequestGraphLayout();
     }
 }

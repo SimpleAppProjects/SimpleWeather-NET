@@ -131,7 +131,7 @@ namespace SimpleWeather.NET.Main
         }
     }
 
-    public class AQIDataTemplateSelector : DataTemplateSelector
+    public partial class AQIDataTemplateSelector : DataTemplateSelector
     {
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {

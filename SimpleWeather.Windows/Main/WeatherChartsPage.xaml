@@ -45,7 +45,10 @@
             SelectionMode="None">
             <ListView.Resources>
                 <DataTemplate x:Key="LineViewDataTemplate" x:DataType="graphs:LineViewData">
-                    <toolkitControls:HeaderedContentControl Header="{Binding GraphLabel}">
+                    <toolkitControls:HeaderedContentControl
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Header="{Binding GraphLabel}">
                         <toolkitControls:HeaderedContentControl.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -57,11 +60,18 @@
                                 </StackPanel>
                             </DataTemplate>
                         </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                        <graphs:ForecastGraphPanel Margin="16,0" GraphData="{Binding}" />
+                        <graphs:ForecastGraphPanel
+                            Margin="16,0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            GraphData="{Binding}" />
                     </toolkitControls:HeaderedContentControl>
                 </DataTemplate>
                 <DataTemplate x:Key="BarChartDataTemplate" x:DataType="graphs:BarGraphData">
-                    <toolkitControls:HeaderedContentControl Header="{Binding GraphLabel}">
+                    <toolkitControls:HeaderedContentControl
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        Header="{Binding GraphLabel}">
                         <toolkitControls:HeaderedContentControl.HeaderTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -73,7 +83,11 @@
                                 </StackPanel>
                             </DataTemplate>
                         </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                        <graphs:BarGraphPanel Margin="16,0" GraphData="{Binding}" />
+                        <graphs:BarGraphPanel
+                            Margin="16,0"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            GraphData="{Binding}" />
                     </toolkitControls:HeaderedContentControl>
                 </DataTemplate>
             </ListView.Resources>

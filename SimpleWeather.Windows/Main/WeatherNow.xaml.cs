@@ -759,13 +759,13 @@ namespace SimpleWeather.NET.Main
         {
             AnalyticsLogger.LogEvent("WeatherNow: ForecastGraphPanel_Tapped");
 
-            if (sender is IGraph control)
+            /*if (sender is IGraph control)
             {
                 GotoDetailsPage(false,
                     control.GetItemPositionFromPoint((float)(e.GetPosition(control.Control).X + control.ScrollViewer.HorizontalOffset)));
                 e.Handled = true;
             }
-            else if (sender is ForecastRangeBar rangeBar)
+            else */if (sender is ForecastRangeBar rangeBar)
             {
                 GotoDetailsPage(false, ForecastGraphPanel.GetItemPosition(rangeBar));
                 e.Handled = true;

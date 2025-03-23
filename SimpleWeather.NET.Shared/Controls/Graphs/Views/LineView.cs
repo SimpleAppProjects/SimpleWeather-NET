@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.NET.Helpers;
 using Windows.UI;
+using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 #else
 using SimpleWeather.Maui.Helpers;
 #endif
@@ -12,10 +13,12 @@ using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using SkiaSharp;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using CommunityToolkit.WinUI;
+using Windows.Foundation;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public sealed class LineView : BaseGraphScrollView<LineViewData, LineDataSeries, LineGraphEntry>
+    public sealed partial class LineView : BaseGraphScrollView<LineViewData, LineDataSeries, LineGraphEntry>
     {
         public override BaseGraphView<LineViewData, LineDataSeries, LineGraphEntry> CreateGraphView()
         {
@@ -89,9 +92,10 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             public LineViewGraph(ScrollView scrollViewer) : base(scrollViewer)
             {
-    #if WINDOWS
+#if WINDOWS
+                //this.Style = this.TryFindResource("LineViewGraphStyle") as Style;
                 this.DefaultStyleKey = typeof(LineViewGraph);
-    #endif
+#endif
 
                 bigCirPaint = new SKPaint();
                 yCoordinateList = new List<float>();
@@ -314,7 +318,11 @@ namespace SimpleWeather.NET.Controls.Graphs
             {
                 // Reset the grid width
                 backgroundGridWidth = longestTextWidth;
-                var parentWidth = ScrollViewer.DesiredSize.IsZero ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width;
+#if WINDOWS
+                var parentWidth = Math.Floor(ScrollViewer.MeasuredSize.IsEmpty ? (ScrollViewer.DesiredSize.IsEmpty ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width) : ScrollViewer.MeasuredSize.Width);
+#else
+                var parentWidth = Math.Floor(ScrollViewer.DesiredSize.IsZero ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width);
+#endif
 
                 if (GetGraphExtentWidth() < parentWidth)
                 {

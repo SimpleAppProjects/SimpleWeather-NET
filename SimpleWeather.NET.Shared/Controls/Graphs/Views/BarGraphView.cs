@@ -3,7 +3,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.NET.Helpers;
-using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
+using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 #else
 using SimpleWeather.Maui.Helpers;
 using ScrollView = Microsoft.Maui.Controls.ScrollView;
@@ -11,10 +11,12 @@ using ScrollView = Microsoft.Maui.Controls.ScrollView;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.NET.Utils;
 using SkiaSharp;
+using CommunityToolkit.WinUI;
+using Windows.Foundation;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class BarGraphView : BaseGraphScrollView<BarGraphData, BarGraphDataSet, BarGraphEntry>
+    public partial class BarGraphView : BaseGraphScrollView<BarGraphData, BarGraphDataSet, BarGraphEntry>
     {
         public override BaseGraphView<BarGraphData, BarGraphDataSet, BarGraphEntry> CreateGraphView()
         {
@@ -23,7 +25,7 @@ namespace SimpleWeather.NET.Controls.Graphs
 
         internal override BarChartGraph Graph => (BarChartGraph)base.Graph;
 
-        internal sealed class BarChartGraph : BaseGraphView<BarGraphData, BarGraphDataSet, BarGraphEntry>
+        internal sealed partial class BarChartGraph : BaseGraphView<BarGraphData, BarGraphDataSet, BarGraphEntry>
         {
             private bool disposedValue;
 
@@ -33,9 +35,10 @@ namespace SimpleWeather.NET.Controls.Graphs
 
             public BarChartGraph(ScrollView scrollViewer) : base(scrollViewer)
             {
-    #if WINDOWS
+#if WINDOWS
+                //this.Style = this.TryFindResource("BarChartGraphStyle") as Style;
                 this.DefaultStyleKey = typeof(BarChartGraph);
-    #endif
+#endif
 
                 drawDotLists = new List<Bar>();
 
@@ -141,11 +144,10 @@ namespace SimpleWeather.NET.Controls.Graphs
                 backgroundGridWidth = longestTextWidth;
                 var defaultPadding = 8f; // 8dp
 #if WINDOWS
-                var parentWidth = Math.Floor(ScrollViewer.DesiredSize.IsEmpty
+                var parentWidth = Math.Floor(ScrollViewer.MeasuredSize.IsEmpty ? (ScrollViewer.DesiredSize.IsEmpty ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width) : ScrollViewer.MeasuredSize.Width);
 #else
-                var parentWidth = Math.Floor(ScrollViewer.DesiredSize.IsZero
+                var parentWidth = Math.Floor(ScrollViewer.DesiredSize.IsZero ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width);
 #endif
-                    ? ScrollViewer.Width : ScrollViewer.DesiredSize.Width);
 
                 if (GetGraphExtentWidth() < parentWidth)
                 {
