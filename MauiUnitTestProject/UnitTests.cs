@@ -100,7 +100,7 @@ namespace UnitTestProject
                 WasUsingPersonalKey = false;
             }
 
-            SharedModule.Instance.Dispose();
+            //SharedModule.Instance.Dispose();
 
             return Task.CompletedTask;
         }
