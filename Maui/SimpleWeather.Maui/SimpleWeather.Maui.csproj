@@ -353,7 +353,7 @@
 	<Target Condition="$([MSBuild]::IsOSPlatform('Windows'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Shared\Keys&quot;&#xD;&#xA;&quot;$(SolutionDir)KeyCheck.exe&quot; &quot;$(SolutionDir)SimpleWeather.Weather-API\Keys&quot;&#xD;&#xA;&#xD;&#xA;if errorlevel 1 goto Error&#xD;&#xA;&#xD;&#xA;goto Success&#xD;&#xA;&#xD;&#xA;:Error&#xD;&#xA;exit /b 1&#xD;&#xA;&#xD;&#xA;:Success&#xD;&#xA;exit /b 0" />
 	</Target>
-	<Target Condition="$([MSBuild]::IsOSPlatform('OSX'))" Name="PreBuild" BeforeTargets="PreBuildEvent">
+	<Target Condition="$([MSBuild]::IsOSPlatform('OSX')) AND $(SkipPrebuild) != true" Name="PreBuild" BeforeTargets="PreBuildEvent">
 		<Exec Command="bash $(SolutionDir)maui-preparebuild.sh &quot;$(Configuration)&quot;" WorkingDirectory="$(SolutionDir)" />
 	</Target>
 	<ProjectExtensions>

@@ -45,6 +45,7 @@
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <NoWarn Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(NoWarn);MT7091</NoWarn>
     <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(WarningsAsErrors);XC0022;XC0023;IL2026</WarningsAsErrors>
+    <SkipPrebuild>false</SkipPrebuild>
   </PropertyGroup>
 
   <PropertyGroup>
