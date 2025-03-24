@@ -1,4 +1,4 @@
-﻿#if NET8_0_IOS
+﻿#if NET9_0_IOS || IOS
 using System;
 using System.Collections.Generic;
 using System.Linq;

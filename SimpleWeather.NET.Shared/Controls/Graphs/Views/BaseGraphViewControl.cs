@@ -1,4 +1,5 @@
 ﻿#if WINDOWS
+using CommunityToolkit.WinUI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp.Views.Windows;
@@ -8,7 +9,6 @@ using SkiaSharp.Views.Maui.Controls;
 #endif
 using SimpleWeather.Utils;
 using SkiaSharp;
-using CommunityToolkit.WinUI;
 #if WINDOWS
 #else
 using ScrollViewer = Microsoft.Maui.Controls.ScrollView;

@@ -44,7 +44,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net9.0-ios|AnyCPU'">
 		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-		<Registrar>static</Registrar>
+		<Registrar>managed-static</Registrar>
 		<MtouchExtraArgs>--require-pinvoke-wrappers=true</MtouchExtraArgs>
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Debug</CodesignProvision>
@@ -53,7 +53,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-ios|AnyCPU'">
 		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 		<WarningLevel>4</WarningLevel>
-		<Registrar>static</Registrar>
+		<Registrar>managed-static</Registrar>
 		<MtouchExtraArgs>--require-pinvoke-wrappers=true</MtouchExtraArgs>
 		<CreatePackage>false</CreatePackage>
 		<CodesignProvision>SimpleWeather - Release (iOS - Debug)</CodesignProvision>

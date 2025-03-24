@@ -1,8 +1,10 @@
 ﻿#if WINDOWS
+using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.NET.Helpers;
+using Windows.Foundation;
 using Windows.UI;
 using ScrollView = SimpleWeather.NET.Controls.Graphs.GraphScrollView;
 #else
@@ -13,8 +15,6 @@ using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using SkiaSharp;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
-using CommunityToolkit.WinUI;
-using Windows.Foundation;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {

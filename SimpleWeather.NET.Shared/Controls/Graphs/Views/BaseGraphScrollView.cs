@@ -216,10 +216,12 @@ public abstract class BaseGraphScrollView<T, S, E> : ScrollView, IGraph where T 
         Invalidate();
     }
 
+#if WINDOWS
     private void ScrollView_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
     {
         OnViewChanging(e);
     }
+#endif
 
     private void ScrollView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
     {
