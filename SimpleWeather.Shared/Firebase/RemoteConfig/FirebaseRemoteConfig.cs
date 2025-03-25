@@ -21,7 +21,7 @@ using NodaTime.TimeZones;
 
 namespace SimpleWeather.Firebase
 {
-    public sealed class FirebaseRemoteConfig : IDisposable
+    public sealed partial class FirebaseRemoteConfig : IDisposable
     {
         private const string BASE_URL = "https://firebaseremoteconfig.googleapis.com";
 

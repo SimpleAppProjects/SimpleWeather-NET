@@ -14,6 +14,9 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 namespace SimpleWeather.NET.Controls
 {
     [Bindable(true)]
+#if WINDOWS
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class AirQualityForecastViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;
@@ -21,10 +24,10 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<Forecasts> currentForecastsData;
 
         [ObservableProperty]
-        private ICollection<BarGraphData> aQIGraphData;
+        public partial ICollection<BarGraphData> AQIGraphData { get; set; }
 
         [ObservableProperty]
-        private ICollection<AirQualityViewModel> aQIForecastData;
+        public partial ICollection<AirQualityViewModel> AQIForecastData { get; set; }
 
         private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;
 

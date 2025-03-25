@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class GridLengthConverter : IValueConverter
+    public partial class GridLengthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

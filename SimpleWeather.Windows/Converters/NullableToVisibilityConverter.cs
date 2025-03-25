@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace SimpleWeather.NET.Converters
 {
 #nullable enable
-    public class NullableToVisibilityConverter : IValueConverter
+    public partial class NullableToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

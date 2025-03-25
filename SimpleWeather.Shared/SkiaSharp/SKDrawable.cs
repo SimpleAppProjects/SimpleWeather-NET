@@ -11,7 +11,7 @@ namespace SimpleWeather.SkiaSharp
         public abstract void Draw(SKCanvas canvas);
     }
 
-    public class SKBitmapDrawable : SKDrawable, IDisposable
+    public partial class SKBitmapDrawable : SKDrawable, IDisposable
     {
         private readonly SKBitmap _bitmap;
         private readonly SKPaint _paint;
@@ -83,7 +83,7 @@ namespace SimpleWeather.SkiaSharp
         }
     }
 
-    public class SKSvgDrawable : SKDrawable, IDisposable
+    public partial class SKSvgDrawable : SKDrawable, IDisposable
     {
         private readonly SKSvg svg;
         private readonly SKPaint _paint;

@@ -22,7 +22,7 @@
             ExpandDirection="Down"
             IsExpanded="False">
             <muxc:Expander.Resources>
-                <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{Binding AlertSeverity, Converter={StaticResource alertSeverityColorConv}, Mode=OneWay}" />
+                <SolidColorBrush x:Key="ExpanderHeaderBackground" Color="{x:Bind WeatherAlert.AlertSeverity, Converter={StaticResource alertSeverityColorConv}, Mode=OneWay}" />
                 <SolidColorBrush x:Key="ExpanderHeaderForeground" Color="White" />
                 <SolidColorBrush x:Key="ExpanderHeaderForegroundPointerOver" Color="White" />
                 <SolidColorBrush x:Key="ExpanderHeaderForegroundPressed" Color="White" />
@@ -45,31 +45,31 @@
                         Grid.Column="0"
                         Width="25"
                         Margin="2,0,0,0"
-                        UriSource="{Binding AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
+                        UriSource="{x:Bind WeatherAlert.AlertType, FallbackValue='ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/dark/ic_error.png', Converter={StaticResource alertTypeIconConv}, Mode=OneWay}" />
                     <TextBlock
                         x:Name="Title"
                         Grid.Column="1"
                         Padding="5"
                         FontWeight="SemiBold"
-                        Text="{Binding Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
+                        Text="{x:Bind WeatherAlert.Title, Mode=OneWay, FallbackValue='Flood Warning, Areal Flood Advisory'}" />
                     <TextBlock
                         x:Name="Date"
                         Grid.Column="2"
                         Padding="5"
                         FontWeight="SemiBold"
-                        Text="{Binding PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
+                        Text="{x:Bind WeatherAlert.PostDate, Mode=OneWay, FallbackValue='1hr ago'}" />
                 </Grid>
             </muxc:Expander.Header>
             <muxc:Expander.Content>
                 <StackPanel>
                     <RichTextBlock
-                        FontSize="{Binding ElementName=Title, Path=FontSize, Mode=OneWay}"
+                        FontSize="{x:Bind Title.FontSize, Mode=OneWay}"
                         Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
                         IsTextSelectionEnabled="False"
                         TextWrapping="WrapWholeWords">
                         <Paragraph>
                             <Span>
-                                <Run Text="{Binding ExpireDate, Mode=OneWay}" />
+                                <Run Text="{x:Bind WeatherAlert.ExpireDate, Mode=OneWay}" />
                                 <LineBreak />
                             </Span>
                         </Paragraph>
@@ -78,7 +78,7 @@
                         </Paragraph>
                         <Paragraph>
                             <Span>
-                                <Run Text="{Binding Attribution, Mode=OneWay}" />
+                                <Run Text="{x:Bind WeatherAlert.Attribution, Mode=OneWay}" />
                             </Span>
                         </Paragraph>
                     </RichTextBlock>

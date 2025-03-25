@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class GraphDataVisibilityConverter : IValueConverter
+    public partial class GraphDataVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

@@ -14,7 +14,7 @@ using Windows.Foundation;
 
 namespace SimpleWeather.NET.Controls
 {
-    public class ForecastRangeBarGraphView : StackPanel
+    public partial class ForecastRangeBarGraphView : StackPanel
     {
         private int MaxItemCount = 7;
         private float scale = 1f;

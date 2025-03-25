@@ -25,7 +25,7 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 namespace SimpleWeather.Common.ViewModels
 {
     [Bindable(BindableSupport.Default)]
-    public class LocationSearchViewModel : BaseViewModel, IDisposable
+    public partial class LocationSearchViewModel : BaseViewModel, IDisposable
     {
         private readonly WeatherProviderManager wm;
         private readonly SettingsManager SettingsManager;

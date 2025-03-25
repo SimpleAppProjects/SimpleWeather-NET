@@ -3,7 +3,7 @@ using SimpleWeather.Common.Controls;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class DetailMapConverter : IValueConverter
+    public partial class DetailMapConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

@@ -311,7 +311,7 @@
                                 FontSize="14"
                                 FontWeight="Normal"
                                 Foreground="{ThemeResource ForegroundColor}"
-                                Text="{Binding Weather.FeelsLike, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.FeelsLike, Mode=OneWay}"
                                 TextWrapping="Wrap" />
                         </Border>
                         <Border
@@ -331,7 +331,7 @@
                                 FontSize="12"
                                 FontWeight="Normal"
                                 Foreground="{ThemeResource ForegroundColor}"
-                                Text="{Binding Weather.WeatherSummary, Mode=OneWay}"
+                                Text="{x:Bind WNowViewModel.Weather.WeatherSummary, Mode=OneWay}"
                                 TextWrapping="Wrap" />
                         </Border>
                         <HyperlinkButton

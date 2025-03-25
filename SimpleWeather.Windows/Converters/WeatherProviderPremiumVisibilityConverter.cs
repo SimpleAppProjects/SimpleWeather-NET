@@ -5,7 +5,7 @@ using SimpleWeather.Extras;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class WeatherProviderPremiumVisibilityConverter : IValueConverter
+    public partial class WeatherProviderPremiumVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

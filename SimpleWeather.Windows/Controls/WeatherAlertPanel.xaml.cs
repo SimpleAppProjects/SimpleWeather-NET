@@ -60,7 +60,7 @@ namespace SimpleWeather.NET.Controls
         }
     }
 
-    internal class AlertSeverityColorConverter : IValueConverter
+    internal partial class AlertSeverityColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -80,7 +80,7 @@ namespace SimpleWeather.NET.Controls
         }
     }
 
-    internal class AlertTypeIconConverter : IValueConverter
+    internal partial class AlertTypeIconConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

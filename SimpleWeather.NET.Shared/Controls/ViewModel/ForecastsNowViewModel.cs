@@ -19,6 +19,9 @@ using System.ComponentModel;
 namespace SimpleWeather.NET.Controls
 {
     [Bindable(true)]
+#if WINDOWS
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class ForecastsNowViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;
@@ -29,26 +32,26 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         [ObservableProperty]
-        private ForecastRangeBarGraphDataSet forecastGraphData;
+        public partial ForecastRangeBarGraphDataSet ForecastGraphData { get; set; }
 
         [ObservableProperty]
-        private List<HourlyForecastNowViewModel> hourlyForecastData;
+        public partial List<HourlyForecastNowViewModel> HourlyForecastData { get; set; }
 
         [ObservableProperty]
-        private LineViewData hourlyPrecipitationGraphData;
+        public partial LineViewData HourlyPrecipitationGraphData { get; set; }
 
         [ObservableProperty]
-        private LineViewData minutelyPrecipitationGraphData;
+        public partial LineViewData MinutelyPrecipitationGraphData { get; set; }
 
         [ObservableProperty]
-        private bool isPrecipitationDataPresent;
+        public partial bool IsPrecipitationDataPresent { get; set; }
 
 #if WINDOWS
         [ObservableProperty]
-        private ElementTheme requestedTheme;
+        public partial ElementTheme RequestedTheme { get; set; }
 #else
         [ObservableProperty]
-        private bool isLight;
+        public partial bool IsLight { get; set; }
 #endif
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();

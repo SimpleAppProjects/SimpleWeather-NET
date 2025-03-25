@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class LocationTypeConverter : IValueConverter
+    public partial class LocationTypeConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

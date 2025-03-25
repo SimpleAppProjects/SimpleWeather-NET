@@ -81,7 +81,7 @@
                 HorizontalAlignment="Left"
                 FontFamily="{StaticResource WeatherIconsFontFamily}"
                 MaxLines="1"
-                Text="{Binding Value, FallbackValue='50.00 in', Mode=OneWay}" />
+                Text="{x:Bind Details.Value, FallbackValue='50.00 in', Mode=OneWay}" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

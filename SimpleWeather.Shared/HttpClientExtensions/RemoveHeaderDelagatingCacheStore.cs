@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.HttpClientExtensions
 {
-    public class RemoveHeaderDelagatingCacheStore : ICacheStore
+    public partial class RemoveHeaderDelagatingCacheStore : ICacheStore
     {
         private readonly ICacheStore _innerCacheStore;
 

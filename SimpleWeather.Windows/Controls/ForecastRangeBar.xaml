@@ -33,7 +33,7 @@
                 HorizontalAlignment="Center"
                 FontSize="16"
                 MaxLines="1"
-                Text="{Binding HiTempData.YLabel, Mode=OneWay}" />
+                Text="{x:Bind Data.HiTempData.YLabel, Mode=OneWay}" />
             <Rectangle
                 x:Name="RangeBar"
                 Grid.Row="1"
@@ -47,7 +47,7 @@
                 HorizontalAlignment="Center"
                 FontSize="16"
                 MaxLines="1"
-                Text="{Binding LoTempData.YLabel, Mode=OneWay}" />
+                Text="{x:Bind Data.LoTempData.YLabel, Mode=OneWay}" />
         </Grid>
         <StackPanel
             MinHeight="16"
@@ -61,7 +61,7 @@
                 IconProvider="wi-erik-flowers"
                 IconWidth="16"
                 ShowAsMonochrome="True"
-                Visibility="{Binding PoP, Converter={StaticResource null2VisibilityConverter}}"
+                Visibility="{x:Bind Data.PoP, Converter={StaticResource null2VisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <TextBlock
                 Margin="5,0,0,0"
@@ -77,9 +77,9 @@
             IconHeight="50"
             IconWidth="50"
             RenderTransformOrigin="0.5,0.5"
-            WeatherIcon="{Binding XIcon, Mode=OneWay}">
+            WeatherIcon="{x:Bind Data.XIcon, Mode=OneWay}">
             <local:IconControl.RenderTransform>
-                <RotateTransform Angle="{Binding XIconRotation, Mode=OneWay}" />
+                <RotateTransform Angle="{x:Bind Data.XIconRotation, Mode=OneWay}" />
             </local:IconControl.RenderTransform>
         </local:IconControl>
         <TextBlock
@@ -88,6 +88,6 @@
             FontSize="16"
             HorizontalTextAlignment="Center"
             MaxLines="1"
-            Text="{Binding XLabel, Mode=OneWay}" />
+            Text="{x:Bind Data.XLabel, Mode=OneWay}" />
     </StackPanel>
 </UserControl>

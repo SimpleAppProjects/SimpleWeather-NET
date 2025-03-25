@@ -5,7 +5,7 @@ using SimpleWeather.NET.Localization;
 namespace SimpleWeather.NET.Helpers
 {
     [MarkupExtensionReturnType(ReturnType = typeof(string))]
-    public class StringRes : MarkupExtension
+    public partial class StringRes : MarkupExtension
     {
         private readonly CustomStringLocalizer localizer = Ioc.Default.GetService<CustomStringLocalizer>();
 

@@ -21,16 +21,16 @@
         CornerRadius="{ThemeResource ControlCornerRadius}">
         <muxc:InfoBar
             x:Name="Infobar"
-            Title="{Binding Title, Mode=OneWay}"
+            Title="{x:Bind SnackbarModel.Title, Mode=OneWay}"
             d:IsOpen="True"
             d:Message="This is a snackbar test message for the snackbar"
             d:Title="SnackTitle"
             CloseButtonClick="Infobar_CloseButtonClick"
-            IconSource="{Binding Icon, Mode=OneWay}"
+            IconSource="{x:Bind SnackbarModel.Icon, Mode=OneWay}"
             IsClosable="True"
-            IsIconVisible="{Binding Icon, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
+            IsIconVisible="{x:Bind SnackbarModel.Icon, Mode=OneWay, Converter={StaticResource stringBooleanConverter}}"
             IsOpen="False"
-            Message="{Binding Message, Mode=OneWay}"
+            Message="{x:Bind SnackbarModel.Message, Mode=OneWay}"
             Severity="{x:Bind local:SnackbarContent.ToSeverity(SnackbarModel.InfoType), Mode=OneWay}">
             <muxc:InfoBar.ActionButton>
                 <Button
@@ -40,8 +40,8 @@
                     d:Visibility="Visible"
                     BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                     BorderThickness="{ThemeResource ButtonBorderThemeThickness}"
-                    Content="{Binding ButtonLabel, Mode=OneWay}"
-                    Visibility="{Binding ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                    Content="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay}"
+                    Visibility="{x:Bind SnackbarModel.ButtonLabel, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
             </muxc:InfoBar.ActionButton>
         </muxc:InfoBar>
     </Grid>

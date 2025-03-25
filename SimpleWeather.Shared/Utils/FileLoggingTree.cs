@@ -12,7 +12,7 @@ namespace SimpleWeather.Utils
 {
 #pragma warning disable CA1063 // Implement IDisposable Correctly
 
-    public class FileLoggingTree : Timber.Tree, IDisposable
+    public partial class FileLoggingTree : Timber.Tree, IDisposable
 #pragma warning restore CA1063 // Implement IDisposable Correctly
     {
         private const string TAG = nameof(FileLoggingTree);

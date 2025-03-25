@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class BooleanToGridLengthConverter : IValueConverter
+    public partial class BooleanToGridLengthConverter : IValueConverter
     {
         public bool IsInverse { get; set; }
 

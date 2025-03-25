@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace SimpleWeather.NET.Converters
 {
-    internal class UriToImageSourceConverter : IValueConverter
+    internal partial class UriToImageSourceConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

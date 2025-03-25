@@ -44,7 +44,7 @@
                 IconProvider="wi-erik-flowers"
                 IconWidth="20"
                 ShowAsMonochrome="True"
-                Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <TextBlock
                 Grid.Column="1"
@@ -53,8 +53,8 @@
                 FontSize="14"
                 Foreground="{ThemeResource SimpleBlueLight}"
                 MaxLines="1"
-                Text="{Binding PoPChance, Mode=OneWay}"
-                Visibility="{Binding PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                Text="{x:Bind ViewModel.PoPChance, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
         </Grid>
         <TextBlock
             x:Name="DateBlock"
@@ -65,7 +65,7 @@
             FontWeight="Medium"
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding ShortDate, Mode=OneWay, TargetNullValue='&#x2014;'}" />
+            Text="{x:Bind ViewModel.ShortDate, Mode=OneWay, TargetNullValue='&#x2014;'}" />
         <Border Style="{ThemeResource Divider}" Visibility="Collapsed" />
         <local:IconControl
             x:Name="WeatherIconControl"
@@ -83,7 +83,7 @@
             FontWeight="SemiLight"
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding Temperature, Mode=OneWay, TargetNullValue='&#x2022;'}" />
+            Text="{x:Bind ViewModel.Temperature, Mode=OneWay, TargetNullValue='&#x2022;'}" />
         <TextBlock
             x:Name="ConditionBlock"
             MinHeight="52"
@@ -93,7 +93,7 @@
             FontSize="14"
             MaxLines="2"
             OpticalMarginAlignment="TrimSideBearings"
-            Text="{Binding Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
+            Text="{x:Bind ViewModel.Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
             TextTrimming="CharacterEllipsis" />
         <Grid
             MinHeight="20"
@@ -111,10 +111,10 @@
                 IconWidth="20"
                 RenderTransformOrigin="0.5,0.5"
                 ShowAsMonochrome="True"
-                Visibility="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
+                Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.DIRECTION_UP, Mode=OneTime}">
                 <local:IconControl.RenderTransform>
-                    <RotateTransform Angle="{Binding WindDirection, Mode=OneWay}" />
+                    <RotateTransform Angle="{x:Bind ViewModel.WindDirection, Mode=OneWay}" />
                 </local:IconControl.RenderTransform>
             </local:IconControl>
             <TextBlock
@@ -124,8 +124,8 @@
                 FontSize="14"
                 Foreground="LightSeaGreen"
                 MaxLines="1"
-                Text="{Binding WindSpeed, Mode=OneWay}"
-                Visibility="{Binding WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
+                Text="{x:Bind ViewModel.WindSpeed, Mode=OneWay}"
+                Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

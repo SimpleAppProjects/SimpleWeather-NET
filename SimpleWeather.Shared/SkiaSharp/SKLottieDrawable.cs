@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace SimpleWeather.SkiaSharp
 {
-    public class SKLottieDrawable : SKDrawable, ISKAnimatable, IDisposable
+    public partial class SKLottieDrawable : SKDrawable, ISKAnimatable, IDisposable
     {
         private readonly Animation animation;
 #if WINUI

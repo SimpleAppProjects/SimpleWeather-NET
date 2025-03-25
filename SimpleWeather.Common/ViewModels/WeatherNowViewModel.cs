@@ -20,7 +20,7 @@ using ResStrings = SimpleWeather.Resources.Strings.Resources;
 namespace SimpleWeather.Common.ViewModels
 {
     [Bindable(true)]
-    public class WeatherNowViewModel : BaseViewModel
+    public partial class WeatherNowViewModel : BaseViewModel
     {
         private readonly SettingsManager SettingsManager;
         private readonly WeatherProviderManager wm;

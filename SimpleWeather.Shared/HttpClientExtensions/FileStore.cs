@@ -11,7 +11,7 @@ namespace CacheCow.Client.FileCacheStore
     /// <summary>
     /// A simple 'cache-to-file' storage with persistanty over multiple runs.
     /// </summary>
-    public class FileStore : ICacheStore
+    public partial class FileStore : ICacheStore
     {
         private readonly MessageContentHttpMessageSerializer _serializer = new MessageContentHttpMessageSerializer();
 

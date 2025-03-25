@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Controls
 {
+#if WINUI
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class WeatherAlertsViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData = null;
@@ -22,7 +25,7 @@ namespace SimpleWeather.Common.Controls
         private ObservableItem<ICollection<WeatherAlert>> currentAlertsData;
 
         [ObservableProperty]
-        private SimpleObservableList<WeatherAlertViewModel> alerts;
+        public partial SimpleObservableList<WeatherAlertViewModel> Alerts { get; set; }
 
         public WeatherAlertsViewModel()
         {

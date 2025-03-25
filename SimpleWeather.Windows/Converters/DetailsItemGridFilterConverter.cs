@@ -7,7 +7,7 @@ using FeatureSettings = SimpleWeather.NET.Utils.FeatureSettings;
 
 namespace SimpleWeather.NET.Converters
 {
-    public class DetailsItemGridFilterConverter : IValueConverter
+    public partial class DetailsItemGridFilterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {

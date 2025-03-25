@@ -23,22 +23,25 @@ using System.Collections;
 namespace SimpleWeather.NET.Controls
 {
     [Bindable(true)]
+#if WINDOWS
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class ForecastsListViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;
         private string unitCode;
 
         [ObservableProperty]
-        private IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> forecasts;
+        public partial IncrementalLoadingCollection<ForecastSource, ForecastItemViewModel> Forecasts { get; set; }
 
         [ObservableProperty]
-        private IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> hourlyForecasts;
+        public partial IncrementalLoadingCollection<HourlyForecastSource, HourlyForecastItemViewModel> HourlyForecasts { get; set; }
 
         [ObservableProperty]
 #if WINDOWS
-        private object selectedForecasts;
+        public partial object SelectedForecasts { get; set; }
 #else
-        private IEnumerable selectedForecasts;
+        public partial IEnumerable SelectedForecasts { get; set; }
 #endif
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();

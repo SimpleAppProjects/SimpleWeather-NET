@@ -3,9 +3,12 @@ using SimpleWeather.ComponentModel;
 
 namespace SimpleWeather.NET.Setup
 {
+#if WINDOWS
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class SetupViewModel : BaseViewModel
     {
         [ObservableProperty]
-        private LocationData.LocationData locationData = null;
+        public partial LocationData.LocationData LocationData { get; set; } = null;
     }
 }

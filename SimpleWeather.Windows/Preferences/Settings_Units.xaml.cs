@@ -54,10 +54,10 @@ namespace SimpleWeather.NET.Preferences
 
         private void AddUnits()
         {
-            var tempValues = Enum.GetValues(typeof(Units.TemperatureUnits));
+            var tempValues = Enum.GetValues<Units.TemperatureUnits>();
             foreach (var enumVal in tempValues)
             {
-                var tempUnit = (Units.TemperatureUnits)enumVal;
+                var tempUnit = enumVal;
                 switch (tempUnit)
                 {
                     default:
@@ -78,10 +78,10 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            var speedValues = Enum.GetValues(typeof(Units.SpeedUnits));
+            var speedValues = Enum.GetValues<Units.SpeedUnits>();
             foreach (var enumVal in speedValues)
             {
-                var speedUnit = (Units.SpeedUnits)enumVal;
+                var speedUnit = enumVal;
                 switch (speedUnit)
                 {
                     default:
@@ -116,10 +116,10 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            var distanceValues = Enum.GetValues(typeof(Units.DistanceUnits));
+            var distanceValues = Enum.GetValues<Units.DistanceUnits>();
             foreach (var enumVal in distanceValues)
             {
-                var distanceUnit = (Units.DistanceUnits)enumVal;
+                var distanceUnit = enumVal;
                 switch (distanceUnit)
                 {
                     default:
@@ -140,10 +140,10 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            var precipitationValues = Enum.GetValues(typeof(Units.PrecipitationUnits));
+            var precipitationValues = Enum.GetValues<Units.PrecipitationUnits>();
             foreach (var enumVal in precipitationValues)
             {
-                var precipitationUnit = (Units.PrecipitationUnits)enumVal;
+                var precipitationUnit = enumVal;
                 switch (precipitationUnit)
                 {
                     default:
@@ -164,10 +164,10 @@ namespace SimpleWeather.NET.Preferences
                 }
             }
 
-            var pressureValues = Enum.GetValues(typeof(Units.PressureUnits));
+            var pressureValues = Enum.GetValues<Units.PressureUnits>();
             foreach (var enumVal in pressureValues)
             {
-                var pressureUnit = (Units.PressureUnits)enumVal;
+                var pressureUnit = enumVal;
                 switch (pressureUnit)
                 {
                     default:

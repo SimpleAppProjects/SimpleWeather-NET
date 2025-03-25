@@ -18,6 +18,9 @@ using MathF = System.MathF;
 namespace SimpleWeather.NET.Controls
 {
     [Bindable(true)]
+#if WINDOWS
+    [WinRT.GeneratedBindableCustomProperty]
+#endif
     public partial class ChartsViewModel : BaseViewModel, IDisposable
     {
         private LocationData.LocationData locationData;
@@ -28,7 +31,7 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         [ObservableProperty]
-        private ICollection<object> graphModels;
+        public partial ICollection<object> GraphModels { get; set; }
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly WeatherDatabase WeatherDB = WeatherDatabase.Instance;

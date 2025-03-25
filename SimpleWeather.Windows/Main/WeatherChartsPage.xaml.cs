@@ -107,7 +107,7 @@ namespace SimpleWeather.NET.Main
         }
     }
 
-    public class ChartsDataTemplateSelector : DataTemplateSelector
+    public partial class ChartsDataTemplateSelector : DataTemplateSelector
     {
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
