@@ -22,10 +22,6 @@
     <RuntimeIdentifiers Condition="'$(_TargetPlatformIsWindows)' == 'True'">win-x86;win-x64;win-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(_TargetPlatformIsWindows)' == 'True'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <!-- Build acceleration -->
   <PropertyGroup>
     <AccelerateBuildsInVisualStudio Condition="'$(Configuration)' == 'Debug'">true</AccelerateBuildsInVisualStudio>
@@ -35,6 +31,11 @@
   <!-- System.Text.Json -->
   <PropertyGroup>
     <JsonSerializerIsReflectionEnabledByDefault>false</JsonSerializerIsReflectionEnabledByDefault>
+  </PropertyGroup>
+
+  <!-- Windows -->
+  <PropertyGroup>
+    <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' == 'True'">$(WarningsAsErrors);CsWinRT1028;WMC1510</WarningsAsErrors>
   </PropertyGroup>
 
   <!-- Maui -->

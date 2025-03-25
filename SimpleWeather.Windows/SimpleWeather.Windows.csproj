@@ -35,6 +35,13 @@
     <PackageCertificateThumbprint>3434A4F000E4B2BE5E1382C1AD5102328A8D6DAD</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
+  
+  <!-- Native AOT -->
+  <PropertyGroup>
+    <IsAotCompatible>true</IsAotCompatible>
+    <PublishAot>true</PublishAot>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
 
   <!-- Sentry Start -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
