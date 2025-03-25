@@ -826,8 +826,6 @@ namespace SimpleWeather.NET
                         window.RequestedTheme = ElementTheme.Dark;
                         break;
                 }
-
-                (_window as MainWindow)?.UpdateMicaTheme(window.RequestedTheme);
             }
         }
 
