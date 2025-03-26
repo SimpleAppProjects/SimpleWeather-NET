@@ -60,6 +60,12 @@ public partial class Settings_Features : ContentPage
         };
 
         FeatureSettings.SetFeatureOrder(null);
+
+        // Re-enable all features
+        OrderableFeatures.Union(NonOrderableFeatures).ForEach(f =>
+        {
+            f.IsEnabled = true;
+        });
     }
 
     private void ReorderableCollectionView_LongPressed(object sender, Controls.LongPressEventArgs e)

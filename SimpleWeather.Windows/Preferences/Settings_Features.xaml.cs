@@ -53,6 +53,12 @@ namespace SimpleWeather.NET.Preferences
             });
 
             FeatureSettings.SetFeatureOrder(null);
+
+            // Re-enable all features
+            OrderableFeatures.Union(NonOrderableFeatures).ForEach(f =>
+            {
+                f.IsEnabled = true;
+            });
         }
 
         private void Features_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
