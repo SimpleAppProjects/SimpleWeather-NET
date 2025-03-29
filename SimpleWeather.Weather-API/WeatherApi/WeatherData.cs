@@ -102,6 +102,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
             forecast.extras.pop = day.day.daily_chance_of_rain ?? day.day.daily_chance_of_snow;
             forecast.extras.qpf_rain_mm = day.day.totalprecip_mm;
             forecast.extras.qpf_rain_in = day.day.totalprecip_in;
+            forecast.extras.qpf_snow_cm = day.day.totalsnow_cm;
+            forecast.extras.qpf_snow_in = day.day.totalsnow_cm?.Let(it => ConversionMethods.MMToIn(it * 10));
             forecast.extras.wind_mph = day.day.maxwind_mph;
             forecast.extras.wind_kph = day.day.maxwind_kph;
             forecast.extras.visibility_mi = day.day.avgvis_miles;
@@ -140,6 +142,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
                     cloudiness = hour.cloud,
                     qpf_rain_in = hour.precip_in,
                     qpf_rain_mm = hour.precip_mm,
+                    qpf_snow_cm = hour.snow_cm,
+                    qpf_snow_in = hour.snow_cm?.Let(it => ConversionMethods.MMToIn(it * 10)),
                     pressure_in = hour.pressure_in,
                     pressure_mb = hour.pressure_mb,
                     wind_degrees = hour.wind_degree,

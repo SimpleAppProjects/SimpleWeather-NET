@@ -97,6 +97,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public float maxwind_kph { get; set; }
         public float totalprecip_mm { get; set; }
         public float totalprecip_in { get; set; }
+        public float? totalsnow_cm { get; set; }
         public float avgvis_km { get; set; }
         public float avgvis_miles { get; set; }
         public float avghumidity { get; set; }
@@ -134,6 +135,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public float pressure_in { get; set; }
         public float precip_mm { get; set; }
         public float precip_in { get; set; }
+        public float? snow_cm { get; set; }
         public int humidity { get; set; }
         public int cloud { get; set; }
         public float feelslike_c { get; set; }
