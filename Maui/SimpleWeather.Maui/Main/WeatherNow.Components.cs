@@ -1813,43 +1813,35 @@ public partial class WeatherNow
                 .DynamicResource(Label.StyleProperty, "WeatherNowSectionLabel"),
                 // Content
                 new SunPhaseView()
-                    .Row(1)
-                    .Bind(
-                        VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
-                        mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.SunPhase
-                    )
-                    .FillHorizontal()
-                    .Apply(it =>
+                .Row(1)
+                .Bind(
+                    VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                    mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.SunPhase
+                )
+                .FillHorizontal()
+                .MinWidth(350)
+                .Apply(it =>
+                {
+                    var maxHeight = 225;
+
+                    void ResizeSunView()
                     {
-                        var maxHeight = DeviceInfo.Idiom == DeviceIdiom.Phone ? 200 : 250;
+                        var parentHorizMargin = new Thickness(20, 0);
 
-                        void ResizeSunView()
+                        it.HeightRequest = maxHeight - parentHorizMargin.HorizontalThickness;
+                        it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width) - parentHorizMargin.HorizontalThickness;
+                    }
+
+                    ListLayout.SizeChanged += (s, e) =>
+                    {
+                        Dispatcher.Dispatch(() =>
                         {
-                            Thickness parentHorizMargin;
+                            ResizeSunView();
+                        });
+                    };
 
-                            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-                            {
-                                parentHorizMargin = new Thickness(20, 0);
-                            }
-                            else
-                            {
-                                parentHorizMargin = new Thickness(0);
-                            }
-
-                            it.HeightRequest = Math.Min(maxHeight, Math.Max(0, ListLayout.Width / 2)) - parentHorizMargin.HorizontalThickness;
-                            it.WidthRequest = Math.Min(it.HeightRequest * 2, DeviceDisplay.MainDisplayInfo.Width);
-                        }
-
-                        ListLayout.SizeChanged += (s, e) =>
-                        {
-                            Dispatcher.Dispatch(() =>
-                            {
-                                ResizeSunView();
-                            });
-                        };
-
-                        ResizeSunView();
-                    })
+                    ResizeSunView();
+                })
             }
         }
         .FillHorizontal())

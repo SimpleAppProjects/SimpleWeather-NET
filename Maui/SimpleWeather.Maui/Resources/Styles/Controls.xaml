@@ -383,21 +383,24 @@
         <Setter Property="PaintColor" Value="{AppThemeBinding Light=Orange, Dark=Yellow}" />
         <Setter Property="PhaseArcColor" Value="{AppThemeBinding Light='#40000000', Dark='#40FFFFFF'}" />
         <Setter Property="BottomTextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
-        <Setter Property="HeightRequest" Value="225" />
+        <Setter Property="HeightRequest" Value="{OnIdiom Default=225, Phone=200}" />
+        <Setter Property="MinimumWidthRequest" Value="{OnIdiom Default=375, Phone=350}" />
         <Setter Property="MaximumWidthRequest" Value="560" />
+        <Setter Property="HorizontalOptions" Value="FillAndExpand" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate x:DataType="sharedControls:SunPhaseView">
                     <Border
                         Background="{TemplateBinding Background}"
                         BackgroundColor="{TemplateBinding BackgroundColor}"
+                        HorizontalOptions="{TemplateBinding HorizontalOptions}"
                         Stroke="Transparent"
                         StrokeThickness="0">
                         <skiaSharp:SKCanvasView
                             xmlns:skiaSharp="clr-namespace:SkiaSharp.Views.Maui.Controls;assembly=SkiaSharp.Views.Maui.Controls"
                             x:Name="Canvas"
                             BackgroundColor="Transparent"
-                            HorizontalOptions="{TemplateBinding HorizontalOptions}"
+                            HorizontalOptions="Center"
                             IgnorePixelScaling="True" />
                     </Border>
                 </ControlTemplate>

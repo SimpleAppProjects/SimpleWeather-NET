@@ -668,9 +668,11 @@ namespace SimpleWeather.NET.Controls
 #else
         protected sealed override Size MeasureOverride(double widthConstraint, double heightConstraint)
         {
-            Size size = base.MeasureOverride(widthConstraint, heightConstraint);
-            Size availableSize = size;
+            var size = base.MeasureOverride(widthConstraint, heightConstraint);
+            var availableSize = size;
 #endif
+
+            Logger.Debug("SunPhaseView", $"MeasureOverride - size = {size}");
 
             if (this.Canvas == null)
             {
@@ -684,12 +686,12 @@ namespace SimpleWeather.NET.Controls
             ViewHeight = (float)Canvas.Height;
             ViewWidth = (float)Canvas.Width;
 #else
+            ViewHeight = (float)availableSize.Height;
+            ViewWidth = (float)availableSize.Width;
 
-            Canvas.WidthRequest = availableSize.Width;
-            Canvas.HeightRequest = availableSize.Height;
-
-            ViewHeight = (float)Canvas.HeightRequest;
-            ViewWidth = (float)Canvas.WidthRequest;
+            Canvas.WidthRequest = float.IsInfinity(ViewWidth) ? -1 : ViewWidth;
+            Canvas.HeightRequest = float.IsInfinity(ViewHeight) ? -1 : ViewHeight;
+            Logger.Debug("SunPhaseView", $"MeasureOverride - ViewSize = {ViewHeight}x{ViewWidth}");
 #endif
 
             RefreshXCoordinateList();
@@ -701,6 +703,7 @@ namespace SimpleWeather.NET.Controls
             Canvas?.InvalidateSurface();
 #endif
 
+            Logger.Debug("SunPhaseView", $"MeasureOverride - availableSize = {availableSize}");
             return availableSize;
         }
 
