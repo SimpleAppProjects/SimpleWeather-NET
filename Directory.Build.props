@@ -6,7 +6,7 @@
     <Nullable>warnings</Nullable>
     <!-- Version Code Format (.NET Version, App Version, Build Number) -->
     <!-- Note: Update here as well as Maui.AppWidget xproj: CURRENT_PROJECT_VERSION, MARKETING_VERSION -->
-    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">95110001</VersionCode>
+    <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">95110002</VersionCode>
     <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">0</VersionCode>
   </PropertyGroup>
 
