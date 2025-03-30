@@ -128,7 +128,7 @@ namespace SimpleWeather.Maui.Preferences
                         FontSize = 15,
                     }
                     .Bind(Button.TextColorProperty, static src => src.DetailColor, mode: BindingMode.OneWay, source: this)
-                    .Bind(Button.TextProperty, static src => src.Detail, mode: BindingMode.TwoWay, source: this)
+                    .Bind(Button.TextProperty, static src => src.Detail, (cell, value) => cell.Detail = value, mode: BindingMode.TwoWay, source: this)
                     .Bind(Button.IsVisibleProperty, static src => src.Detail, mode: BindingMode.OneWay, source: this,
                         convert: (s) =>
                         {
@@ -136,7 +136,7 @@ namespace SimpleWeather.Maui.Preferences
                         }
                     )
                     .Bind(Button.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
-                    .Bind(PickerButton.SelectedItemProperty, static src => src.SelectedItem, mode: BindingMode.TwoWay, source: this)
+                    .Bind(PickerButton.SelectedItemProperty, static src => src.SelectedItem, (cell, value) => cell.SelectedItem = value, mode: BindingMode.TwoWay, source: this)
                     .Bind(PickerButton.ItemsProperty, static src => src.Items, mode: BindingMode.OneWay, source: this)
                     .Paddings()
                     .Margins()
@@ -184,6 +184,18 @@ namespace SimpleWeather.Maui.Preferences
             if (!IsEnabled) return;
 
             base.OnTapped();
+
+            if (MenuButton.Handler is IPlatformViewHandler { PlatformView: UIButton btn })
+            {
+                if (OperatingSystem.IsIOSVersionAtLeast(17, 4))
+                {
+                    btn.PerformPrimaryAction();
+                }
+                else
+                {
+                    btn.SendActionForControlEvents(UIControlEvent.TouchUpInside);
+                }
+            }
         }
     }
 }

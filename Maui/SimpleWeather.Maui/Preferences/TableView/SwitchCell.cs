@@ -120,7 +120,7 @@ namespace SimpleWeather.Maui.Preferences
                     .Row(1),
                     new Switch()
                         .Bind(Switch.OnColorProperty, static src => src.OnColor, mode: BindingMode.OneWay, source: this)
-                        .Bind(Switch.IsToggledProperty, static src => src.On, mode: BindingMode.TwoWay, source: this)
+                        .Bind(Switch.IsToggledProperty, static src => src.On, (cell, value) => cell.On = value, mode: BindingMode.TwoWay, source: this)
                         .Bind(Switch.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)

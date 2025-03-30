@@ -145,7 +145,7 @@ namespace SimpleWeather.Maui.Preferences
                     .Row(1),
                     new CheckBox()
                         .Bind(CheckBox.ColorProperty, static src => src.Color, mode: BindingMode.OneWay, source: this)
-                        .Bind(CheckBox.IsCheckedProperty, static src => src.IsChecked, mode: BindingMode.TwoWay, source: this)
+                        .Bind(CheckBox.IsCheckedProperty, static src => src.IsChecked, (cell, value) => cell.IsChecked = value, mode: BindingMode.TwoWay, source: this)
                         .Bind(CheckBox.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                         .CenterVertical()
                         .Column(1)

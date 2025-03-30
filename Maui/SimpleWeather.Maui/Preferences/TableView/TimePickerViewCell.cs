@@ -109,7 +109,7 @@ namespace SimpleWeather.Maui.Preferences
                         MinimumWidthRequest = 0,
                         Margin = 0
                     }
-                    .Bind(TimePicker.TimeProperty, static src => src.Time, mode: BindingMode.TwoWay, source: this)
+                    .Bind(TimePicker.TimeProperty, static src => src.Time, (cell, value) => cell.Time = value, mode: BindingMode.TwoWay, source: this)
                     .Bind(TimePicker.IsEnabledProperty, static src => src.IsEnabled, mode: BindingMode.OneWay, source: this)
                     .CenterVertical()
                     .Column(1)

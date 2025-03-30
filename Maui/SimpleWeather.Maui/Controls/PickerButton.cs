@@ -66,7 +66,7 @@ namespace SimpleWeather.Maui.Controls
 
         private void UpdateMenuItems()
         {
-            if (Handler is IPlatformViewHandler handler && handler.PlatformView is UIButton btn)
+            if (Handler is IPlatformViewHandler { PlatformView: UIButton btn })
             {
                 btn.Menu = UIMenu.Create(Items?.OfType<PreferenceListItem>()?.Select(item =>
                 {
@@ -78,7 +78,7 @@ namespace SimpleWeather.Maui.Controls
                     element.State = Equals(item.Value, SelectedItem) ? UIMenuElementState.On : UIMenuElementState.Off;
 
                     return element;
-                })?.ToArray() ?? Array.Empty<UIMenuElement>());
+                })?.ToArray<UIMenuElement>() ?? []);
                 btn.ChangesSelectionAsPrimaryAction = true;
                 btn.ShowsMenuAsPrimaryAction = true;
                 btn.SetTitle(Text, UIControlState.Normal);
