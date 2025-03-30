@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls.Shapes;
 using SimpleToolkit.Core;
 using SimpleWeather.Maui.Helpers;
@@ -128,7 +129,7 @@ public partial class BottomStepperNavigationBar : TemplatedView
 
     private static bool OnValidateItemCount(BindableObject bindable, object newValue)
     {
-        if (newValue is int value && value < 0)
+        if (newValue is < 0)
         {
             throw new ArgumentOutOfRangeException(nameof(ItemCount), "value must be >= 0");
         }
@@ -280,24 +281,24 @@ public partial class BottomStepperNavigationBar : TemplatedView
             ShowBackButton(false);
             ShowNextButton(true);
 
-            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, NextButtonIcon);
-            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, StartButtonText);
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, static src => src.NextButtonIcon, source: this);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, static src => src.StartButtonText, source: this);
         }
         else if (SelectedIndex == (ItemCount - 1))
         {
             ShowBackButton(true);
             ShowNextButton(true);
 
-            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, CompleteButtonIcon);
-            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, CompleteButtonText);
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, static src => src.CompleteButtonIcon, source: this);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, static src => src.CompleteButtonText, source: this);
         }
         else
         {
             ShowBackButton(true);
             ShowNextButton(true);
 
-            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, NextButtonIcon);
-            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, NextButtonText);
+            NextBtnIcon?.SetOneWayBinding(Image.SourceProperty, static src => src.NextButtonIcon, source: this);
+            NextBtnLabel?.SetOneWayBinding(Label.TextProperty, static src => src.NextButtonText, source: this);
         }
     }
 

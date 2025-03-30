@@ -1,20 +1,22 @@
-﻿using CommunityToolkit.Maui.Markup;
+﻿using System.Linq.Expressions;
+using CommunityToolkit.Maui.Markup;
 
 namespace SimpleWeather.Maui.Helpers
 {
     public static class BindableObjectExtensions
     {
-        public static void SetOneWayBinding(this BindableObject bindableObject, BindableProperty property, object source)
+#nullable enable
+        public static TBindable SetOneWayBinding<TBindable, TBindingContext, TSource>(
+            this TBindable bindable,
+            BindableProperty targetProperty,
+            Expression<Func<TBindingContext, TSource>> getter,
+            TBindingContext? source = default)
+            where TBindable : BindableObject
+            where TBindingContext : class?
         {
-            bindableObject.Bind(property, static src => src, mode: BindingMode.OneWay, source: source);
+            return bindable.Bind(targetProperty, getter, mode: BindingMode.OneWay, source: source);
         }
-
-        public static T SetOneWayBinding<T>(this T bindableObject, BindableProperty property, object source) where T : BindableObject
-        {
-            bindableObject.Bind(property, static src => src, mode: BindingMode.OneWay, source: source);
-
-            return bindableObject;
-        }
+#nullable restore
 
         public static T OnIdiom<T>(this T bindableObject, BindableProperty property,
             object Default, object Desktop = null, object Phone = null, object Tablet = null, object TV = null, object Watch = null
