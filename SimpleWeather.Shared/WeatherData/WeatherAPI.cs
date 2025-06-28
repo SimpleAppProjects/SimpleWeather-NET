@@ -86,15 +86,12 @@ namespace SimpleWeather.WeatherData
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)
         {
-            new ProviderEntry("Bing Maps", BingMaps,
-                    "https://bing.com/maps", "https://bing.com/maps"),
             new ProviderEntry("WeatherAPI.com", WeatherApi,
                 "https://weatherapi.com", "https://weatherapi.com/api"),
-            new ProviderEntry("Bing Maps", AccuWeather,
-                /* Uses BingMapsLocationProvider | accuweather is used for locationid only */
-                "https://bing.com/maps", "https://bing.com/maps"),
             new ProviderEntry("Apple Maps", Apple,
                 "https://www.apple.com/maps/", "https://www.apple.com/maps/"),
+            new ProviderEntry("Radar.com", Radar,
+                "https://radar.com/", "https://radar.com/product/maps-platform"),
         };
 
         private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(2)

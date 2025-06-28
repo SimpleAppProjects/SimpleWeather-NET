@@ -1,6 +1,5 @@
 ﻿using SimpleWeather.LocationData;
 using SimpleWeather.Weather_API.AccuWeather;
-using SimpleWeather.Weather_API.Bing;
 using SimpleWeather.Weather_API.Maui;
 using SimpleWeather.Weather_API.Radar;
 using SimpleWeather.Weather_API.Utils;
@@ -16,7 +15,6 @@ namespace SimpleWeather.Weather_API.LocationData
         {
             return provider switch
             {
-                WeatherAPI.BingMaps => new BingMapsLocationProvider(),
                 WeatherAPI.WeatherApi => new WeatherApiLocationProvider(),
                 WeatherAPI.AccuWeather => new AccuWeatherLocationProvider(),
                 WeatherAPI.Radar => new RadarLocationProvider(),

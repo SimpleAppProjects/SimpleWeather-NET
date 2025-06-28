@@ -79,11 +79,7 @@ namespace SimpleWeather.NET.Radar
 
                     string baseMapLayerProvider;
 
-                    if (remoteConfigSvc.IsProviderEnabled(WApi.BingMaps))
-                    {
-                        baseMapLayerProvider = WApi.BingMaps;
-                    }
-                    else if (remoteConfigSvc.IsProviderEnabled(WApi.MapBox))
+                    if (remoteConfigSvc.IsProviderEnabled(WApi.MapBox))
                     {
                         baseMapLayerProvider = WApi.MapBox;
                     }
@@ -96,34 +92,7 @@ namespace SimpleWeather.NET.Radar
                         baseMapLayerProvider = null;
                     }
 
-                    if (baseMapLayerProvider == WApi.BingMaps)
-                    {
-                        var imageryType = isDarkMode switch
-                        {
-                            true => BingMapsRESTToolkit.ImageryType.CanvasDark,
-                            false => BingMapsRESTToolkit.ImageryType.CanvasLight
-                        };
-
-                        mapLayer = await BingMaps.CreateBingMapsLayer(imageryType, isDarkMode);
-#if WINDOWS
-                        mapLayer.Tag = RadarContainer.ActualTheme;
-#else
-                        mapLayer.Tag = RadarContainer.ClassId;
-#endif
-
-                        if (mapLayer.Attribution != null)
-                        {
-                            mapLayer.Attribution.HorizontalAlignment = HorizontalAlignment.Right;
-                            mapLayer.Attribution.VerticalAlignment = VerticalAlignment.Bottom;
-                            mapLayer.Attribution.BackColor = Color.Transparent;
-                            mapLayer.Attribution.TextColor = Color.LightSkyBlue;
-                            mapLayer.Attribution.Margin = new(0);
-                            mapLayer.Attribution.Padding = new(0);
-                        }
-
-                        mapControl?.Map?.Layers?.Insert(0, mapLayer);
-                    }
-                    else if (baseMapLayerProvider == WApi.MapBox)
+                    if (baseMapLayerProvider == WApi.MapBox)
                     {
                         mapLayer = MapBox.CreateMapBoxLayer(isDarkMode);
 #if WINDOWS

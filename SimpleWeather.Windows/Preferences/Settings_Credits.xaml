@@ -15,13 +15,11 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Dark">
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here_dark.png</x:String>
-                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/bingmaps_dark.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo_dark.png</x:String>
                     <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored_dark.png</x:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here.png</x:String>
-                    <x:String x:Key="BingImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/bingmaps.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo.png</x:String>
                     <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored.png</x:String>
                 </ResourceDictionary>
@@ -93,15 +91,6 @@
                             Height="25"
                             HorizontalAlignment="Left"
                             Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/openweathermap.png" />
-                    </HyperlinkButton>
-                </StackPanel>
-                <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Bing Maps" />
-                    <HyperlinkButton Padding="0,10" NavigateUri="https://www.bing.com/maps">
-                        <Image
-                            Height="50"
-                            HorizontalAlignment="Left"
-                            Source="{ThemeResource BingImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">

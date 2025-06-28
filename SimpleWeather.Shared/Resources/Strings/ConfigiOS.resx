@@ -120,7 +120,7 @@
   <data name="accuweather" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "accuweather",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -144,21 +144,21 @@
   <data name="Here" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="meteofrance" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "weatherapi",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="Metno" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "weatherapi",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -169,24 +169,24 @@
         "newWeatherSource": ""
 }</value>
   </data>
-  <data name="OpenWeather" xml:space="preserve">
+  <data name="openweather" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "weatherapi",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="openweather_onecall" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "weatherapi",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="tomorrowio" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "weatherapi",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -200,7 +200,7 @@
   <data name="weatherbitio" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -221,15 +221,33 @@
   <data name="dwd" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "Bing",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="eccc" xml:space="preserve">
     <value>{
     "enabled": true,
-    "locSource": "Bing",
+    "locSource": "apple",
     "newWeatherSource": ""
 }</value>
+  </data>
+  <data name="Bing" xml:space="preserve">
+    <value>{"enabled":false,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="google_pollen" xml:space="preserve">
+    <value>{ "enabled": false, "locSource": "apple", "newWeatherSource": "" }</value>
+  </data>
+  <data name="mapbox" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="osm" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="radar" xml:space="preserve">
+    <value>{"enabled":true,"locSource":"","newWeatherSource":""}</value>
+  </data>
+  <data name="Yahoo" xml:space="preserve">
+    <value>{ "enabled": false, "locSource": "weatherapi", "newWeatherSource": "Metno" }</value>
   </data>
 </root>

@@ -87,14 +87,6 @@
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
-                        Text="Bing Maps"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
-                        CommandParameter="https://www.bing.com/maps">
-                        <prefs:ProviderCreditViewCell.ImageSource>
-                            <FileImageSource File="{AppThemeBinding Light='bingmaps.png', Dark='bingmaps_dark.png'}" />
-                        </prefs:ProviderCreditViewCell.ImageSource>
-                    </prefs:ProviderCreditViewCell>
-                    <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_waqi}"
                         Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
                         CommandParameter="https://aqicn.org/">

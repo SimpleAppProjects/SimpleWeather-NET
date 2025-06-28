@@ -13,7 +13,6 @@ using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Bing;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;

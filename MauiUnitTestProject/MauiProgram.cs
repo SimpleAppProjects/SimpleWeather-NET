@@ -15,12 +15,6 @@ namespace MauiUnitTestProject
                         typeof(MauiProgram).Assembly
                     }
                 })
-                .ConfigureEssentials(essentials =>
-                {
-#if WINDOWS
-                    essentials.UseMapServiceToken(APIKeys.GetBingMapsKey());
-#endif
-                })
                 .UseVisualRunner()
                 .Build();
         }

@@ -15,7 +15,11 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.Weather_API.AccuWeather
 {
+#if __IOS__
     internal class AccuWeatherLocationProvider : WeatherApi.WeatherApiLocationProvider
+#else
+    internal class AccuWeatherLocationProvider : Radar.RadarLocationProvider
+#endif
     {
         private const string BASE_URL = "https://dataservice.accuweather.com/locations/v1/cities/geoposition/search";
 

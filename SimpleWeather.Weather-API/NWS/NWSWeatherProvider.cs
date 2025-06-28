@@ -19,7 +19,6 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Bing;
 using SimpleWeather.Weather_API.NWS.Hourly;
 using SimpleWeather.Weather_API.NWS.Observation;
 using SimpleWeather.Weather_API.SMC;

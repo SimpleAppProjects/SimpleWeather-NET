@@ -1,5 +1,4 @@
 ﻿#if !__IOS__
-using BingMapsRESTToolkit;
 using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
