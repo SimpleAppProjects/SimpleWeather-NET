@@ -114,6 +114,14 @@ namespace SimpleWeather.RemoteConfig
             {
                 return WeatherAPI.MeteoFrance;
             }
+            else if (LocationUtils.IsGermany(location) && IsProviderEnabled(WeatherAPI.DWD))
+            {
+                return WeatherAPI.DWD;
+            }
+            else if (LocationUtils.IsCanada(location) && IsProviderEnabled(WeatherAPI.ECCC))
+            {
+                return WeatherAPI.ECCC;
+            }
             else
             {
                 return GetDefaultWeatherProvider();
@@ -129,6 +137,14 @@ namespace SimpleWeather.RemoteConfig
             else if (LocationUtils.IsFrance(location) && IsProviderEnabled(WeatherAPI.MeteoFrance))
             {
                 return WeatherAPI.MeteoFrance;
+            }
+            else if (LocationUtils.IsGermany(location) && IsProviderEnabled(WeatherAPI.DWD))
+            {
+                return WeatherAPI.DWD;
+            }
+            else if (LocationUtils.IsCanada(location) && IsProviderEnabled(WeatherAPI.ECCC))
+            {
+                return WeatherAPI.ECCC;
             }
             else
             {
@@ -194,6 +210,7 @@ namespace SimpleWeather.RemoteConfig
                 }
 #endif
 
+                // Update weather provider if needed
                 UpdateWeatherProvider();
             });
         }
