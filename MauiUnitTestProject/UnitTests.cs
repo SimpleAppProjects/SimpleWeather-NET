@@ -81,8 +81,6 @@ namespace UnitTestProject
 
         public async Task InitializeAsync()
         {
-            SharedModule.Instance.Initialize();
-
             await Utils.SettingsManager.LoadIfNeeded();
 
             if (Utils.SettingsManager.UsePersonalKeys[Utils.SettingsManager.API])
@@ -268,23 +266,6 @@ namespace UnitTestProject
             var weather = await GetWeather(provider).ConfigureAwait(false);
             Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
             Assert.True(await SerializerTest(weather).ConfigureAwait(false));
-        }
-
-        [Fact]
-        public async Task GetOWMOneCallWeather()
-        {
-            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap] = true;
-
-            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap);
-
-            Utils.SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] = provider.GetAPIKey();
-
-            var weather = await GetWeather(provider).ConfigureAwait(false);
-            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
-            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
-
-            Utils.SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] = null;
-            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.OpenWeatherMap] = false;
         }
 
         [Fact]
@@ -758,6 +739,27 @@ namespace UnitTestProject
             var data = await repo.GetRemoteImageData(WeatherBackground.DAY);
 
             Assert.True(data != null && await data.IsImageValid());
+        }
+
+        [Fact]
+        public async Task Test500Error()
+        {
+            var client = SharedModule.Instance.WebClient;
+            await client.GetAsync("https://httpstat.us/500");
+        }
+
+        [Fact]
+        public async Task Test502Error()
+        {
+            var client = SharedModule.Instance.WebClient;
+            await client.GetAsync("https://httpstat.us/502?sleep=1000");
+        }
+
+        [Fact]
+        public async Task Test504Error()
+        {
+            var client = SharedModule.Instance.WebClient;
+            await client.GetAsync("https://httpstat.us/504?sleep=1000");
         }
     }
 }

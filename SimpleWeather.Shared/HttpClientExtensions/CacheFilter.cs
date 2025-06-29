@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimpleWeather.HttpClientExtensions
 {
-    public partial class CacheFilter : DelegatingHandler
+    public partial class CacheFilter : RetryPolicyHandler
     {
-        private const string CACHE_CONTROL_HEADER = "Cache-Control";
         private const string CACHE_CONTROL_NO_CACHE = "no-cache";
 
         public CacheFilter() :

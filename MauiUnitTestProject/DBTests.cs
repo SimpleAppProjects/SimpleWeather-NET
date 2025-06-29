@@ -9,7 +9,7 @@ using Xunit;
 
 namespace UnitTestProject
 {
-    public class DBTests : IDisposable
+    public partial class DBTests : IDisposable
     {
         // App data files
         private static string LocalFolderPath = ApplicationDataHelper.GetLocalFolderPath();
