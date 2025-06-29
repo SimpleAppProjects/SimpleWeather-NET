@@ -4,6 +4,7 @@ using CoreLocation;
 using Firebase.CloudMessaging;
 using Foundation;
 using SimpleWeather.Common.Helpers;
+using SimpleWeather.Extras;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Notifications;
 using SimpleWeather.Utils;
@@ -69,6 +70,13 @@ public partial class AppDelegate : IMessagingDelegate, IUNUserNotificationCenter
 
         Logger.WriteLine(LoggerLevel.Info, $"{nameof(AppDelegate)}: BackgroundTimeRemaining - {UIApplication.SharedApplication.BackgroundTimeRemaining}");
 #endif
+
+        // Load data if needed
+        _ = Task.Run(DI.Utils.SettingsManager.LoadIfNeeded);
+
+        _ = Task.Run(DI.Utils.RemoteConfigService.CheckConfig);
+
+        Ioc.Default.GetService<IExtrasService>()?.CheckPremiumStatus();
 
         return ret;
     }

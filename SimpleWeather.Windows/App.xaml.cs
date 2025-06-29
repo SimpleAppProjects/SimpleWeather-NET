@@ -653,7 +653,7 @@ namespace SimpleWeather.NET
             // Load data if needed
             _ = Task.Run(SettingsManager.LoadIfNeeded);
 
-            DI.Utils.RemoteConfigService.UpdateWeatherProvider();
+            _ = Task.Run(DI.Utils.RemoteConfigService.CheckConfig);
 
             ExtrasService.CheckPremiumStatus();
 
