@@ -151,7 +151,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                         weather.condition.pollen = await new AccuWeatherProvider().GetPollenData(location);
                     }
                     else if (extrasService?.IsPremiumEnabled() == true &&
-                             RemoteConfigService.IsProviderEnabled(WAPI.Google))
+                             RemoteConfigService.IsProviderEnabled(WAPI.Google_Pollen))
                     {
                         weather.condition.pollen = await new GooglePollenProvider().GetPollenData(location);
                     }

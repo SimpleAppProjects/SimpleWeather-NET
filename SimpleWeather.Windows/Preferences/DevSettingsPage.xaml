@@ -42,6 +42,9 @@
                     <mtuc:SettingsCard Header="Tomorrow.io Key">
                         <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" />
                     </mtuc:SettingsCard>
+                    <mtuc:SettingsCard Header="Google Pollen Key">
+                        <controls:DevKeyEntry API="{x:Bind weather:WeatherAPI.Google_Pollen, Mode=OneTime}" />
+                    </mtuc:SettingsCard>
 
                     <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Misc" />
                     <mtuc:SettingsCard Header="Enable Debug Logger">

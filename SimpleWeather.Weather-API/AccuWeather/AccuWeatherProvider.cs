@@ -271,7 +271,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
             var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = GetProviderKey();
+            var key = SettingsManager.APIKeys[WeatherAPI] ?? GetAPIKey();
 
             if (string.IsNullOrWhiteSpace(key))
             {

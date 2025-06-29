@@ -30,7 +30,7 @@ namespace SimpleWeather.Weather_API.Google
         {
             Pollen pollenData = null;
 
-            var key = APIKeys.GetGPollenKey();
+            var key = DI.Utils.SettingsManager.APIKeys[WeatherAPI.Google_Pollen] ?? APIKeys.GetGPollenKey();
 
             try
             {

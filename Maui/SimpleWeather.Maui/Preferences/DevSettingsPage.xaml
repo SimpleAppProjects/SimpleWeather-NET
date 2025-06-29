@@ -46,6 +46,7 @@
                 <TableSection Title="API Keys">
                     <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" Text="AccuWeather Key" />
                     <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" Text="Tomorrow.io Key" />
+                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.Google_Pollen, Mode=OneTime}" Text="Google Pollen Key" />
                 </TableSection>
                 <TableSection Title="Misc">
                     <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />
