@@ -97,7 +97,7 @@ public partial class Settings_About : ContentPage, ISnackbarManager
                                 await Email.Default.ComposeAsync(
                                     subject: $"{ResStrings.pref_title_feedback} - ${ResStrings.app_name}",
                                     body: "",
-                                    "thewizrd.dev+SimpleWeatherMaui@gmail.com");
+                                    Constants.SUPPORT_EMAIL_ADDRESS);
                             }
                         }
                         catch { }

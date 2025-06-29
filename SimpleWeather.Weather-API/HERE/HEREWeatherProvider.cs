@@ -190,21 +190,18 @@ namespace SimpleWeather.Weather_API.HERE
         {
             var offset = location.tz_offset;
 
-            if (weather.weather_alerts?.Any() == true)
+            weather.weather_alerts?.ForEach(alert =>
             {
-                foreach (WeatherAlert alert in weather.weather_alerts)
+                if (!alert.Date.Offset.Equals(offset))
                 {
-                    if (!alert.Date.Offset.Equals(offset))
-                    {
-                        alert.Date = new DateTimeOffset(alert.Date.DateTime, offset);
-                    }
-
-                    if (!alert.ExpiresDate.Offset.Equals(offset))
-                    {
-                        alert.ExpiresDate = new DateTimeOffset(alert.ExpiresDate.DateTime, offset);
-                    }
+                    alert.Date = new DateTimeOffset(alert.Date.DateTime, offset);
                 }
-            }
+
+                if (!alert.ExpiresDate.Offset.Equals(offset))
+                {
+                    alert.ExpiresDate = new DateTimeOffset(alert.ExpiresDate.DateTime, offset);
+                }
+            });
 
             // Update tz for weather properties
             weather.update_time = weather.update_time.ToOffset(offset);
@@ -220,10 +217,18 @@ namespace SimpleWeather.Weather_API.HERE
                 weather.astronomy = newAstro;
             }
 
-            foreach (SimpleWeather.WeatherData.Forecast forecast in weather.forecast)
+            weather.forecast?.ForEach(forecast => 
             {
                 forecast.date = forecast.date.Add(offset);
-            }
+            });
+            weather.txt_forecast?.ForEach(forecast =>
+            {
+                forecast.date = forecast.date.ToOffset(offset);
+            });
+            weather.hr_forecast?.ForEach(forecast =>
+            {
+                forecast.date = forecast.date.ToOffset(offset);
+            });
         }
 
         public override Task<string> UpdateLocationQuery(Weather weather)

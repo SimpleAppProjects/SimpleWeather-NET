@@ -197,7 +197,7 @@ namespace SimpleWeather.NET.Preferences
 
         private async void FeedbackButton_Click(object sender, RoutedEventArgs e)
         {
-            await Windows.System.Launcher.LaunchUriAsync(new Uri("mailto://thewizrd.dev+SimpleWeatherWindows@gmail.com"));
+            await Windows.System.Launcher.LaunchUriAsync(new Uri($"mailto://{Constants.SUPPORT_EMAIL_ADDRESS}"));
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

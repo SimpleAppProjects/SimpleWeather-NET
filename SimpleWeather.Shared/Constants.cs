@@ -22,6 +22,13 @@ namespace SimpleWeather
         // Mapsui
         public const string TILE_CACHE_DIR = "TileCache";
 
+        public const string SUPPORT_EMAIL_ADDRESS
+#if WINUI
+            = "thewizrd.dev+SimpleWeatherWindows@gmail.com";
+#else
+            = "thewizrd.dev+SimpleWeatherMaui@gmail.com";
+#endif
+
         public static string GetUserAgentString()
         {
 #if WINUI

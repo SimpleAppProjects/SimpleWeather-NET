@@ -41,6 +41,7 @@ public partial class DevKeyEntryCell : TextViewCell
             string key = diag.Key;
             Detail = key ?? string.Empty;
             SettingsManager.APIKeys[API] = key;
+            SettingsManager.UsePersonalKeys[API] = true;
 
             diag.Close();
         };

@@ -211,15 +211,15 @@ namespace SimpleWeather.LocationData
 
         public bool IsValid()
         {
-            if (String.IsNullOrWhiteSpace(query) || String.IsNullOrWhiteSpace(weatherSource) || String.IsNullOrWhiteSpace(locationSource))
-                return false;
-            else
-                return true;
+            return !String.IsNullOrWhiteSpace(query) &&
+                !String.IsNullOrWhiteSpace(weatherSource) &&
+                !String.IsNullOrWhiteSpace(locationSource) &&
+                !(latitude == 0d && longitude == 0d);
         }
 
         public override string ToString()
         {
-            return String.Format("{0}|{1}|{2}", this.query, this.name, this.locationType.ToString());
+            return String.Format("{0}|{1}|{2}", this.query, this.name, this.locationType);
         }
     }
 

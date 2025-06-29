@@ -51,6 +51,7 @@ namespace SimpleWeather.NET.Controls
                 string key = diag.Key;
                 KeyEntryTextBlock.Text = key ?? string.Empty;
                 SettingsManager.APIKeys[API] = key;
+                SettingsManager.UsePersonalKeys[API] = true;
 
                 diag.CanClose = true;
                 diag.Hide();

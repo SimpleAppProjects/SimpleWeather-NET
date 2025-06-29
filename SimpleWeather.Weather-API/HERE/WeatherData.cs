@@ -15,7 +15,7 @@ namespace SimpleWeather.Weather_API.HERE
         {
             var weather = new Weather();
 
-            var now = DateTimeOffset.Now;
+            var now = DateTimeOffset.UtcNow;
             SimpleWeather.WeatherData.Forecast todaysForecast = null;
             TextForecast todaysTxtForecast = null;
 
@@ -460,7 +460,14 @@ namespace SimpleWeather.Weather_API.HERE
             if (TimeOnly.TryParse(astroData.moonRise, CultureInfo.InvariantCulture, out TimeOnly moonrise))
                 astro.moonrise = new DateTime(DateOnly.FromDateTime(now.Date), moonrise);
             if (TimeOnly.TryParse(astroData.moonSet, CultureInfo.InvariantCulture, out TimeOnly moonset))
+            {
                 astro.moonset = new DateTime(DateOnly.FromDateTime(now.Date), moonset);
+                if ((astro.moonrise != null && astro.moonrise != DateTime.MinValue) && astro.moonset < astro.moonrise)
+                {
+                    // Is next day
+                    astro.moonset = astro.moonset.AddDays(1);
+                }
+            }
 
             // If the sun won't set/rise, set time to the future
             if (astro.sunrise == null)

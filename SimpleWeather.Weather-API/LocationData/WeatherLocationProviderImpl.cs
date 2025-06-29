@@ -43,6 +43,18 @@ namespace SimpleWeather.LocationData
         public abstract Task<bool> IsKeyValid(String key);
         public abstract String GetAPIKey();
 
+        protected string GetProviderKey()
+        {
+            if (SettingsManager.UsePersonalKeys[LocationAPI])
+            {
+                return SettingsManager.APIKeys[LocationAPI];
+            }
+            else
+            {
+                return GetAPIKey();
+            }
+        }
+
         // Utils Methods
         public virtual async Task UpdateLocationData(LocationData location, String weatherAPI)
         {

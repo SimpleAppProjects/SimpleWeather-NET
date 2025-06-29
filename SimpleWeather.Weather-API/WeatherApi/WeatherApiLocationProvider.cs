@@ -38,7 +38,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = GetAPIKey();
+            var key = GetProviderKey();
 
             WeatherException wEx = null;
             // Limit amount of results shown
@@ -141,7 +141,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             var culture = LocaleUtils.GetLocale();
             string locale = LocaleToLangCode(culture.TwoLetterISOLanguageName, culture.Name);
 
-            var key = GetAPIKey();
+            var key = GetProviderKey();
 
             string location_query = string.Format(CultureInfo.InvariantCulture, "{0:0.##},{1:0.##}", coord.Latitude, coord.Longitude);
 

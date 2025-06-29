@@ -288,7 +288,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
         {
             Pollen pollenData = null;
 
-            var key = SettingsManager.APIKeys[WAPI.TomorrowIo] ?? GetAPIKey();
+            var key = GetProviderKey();
 
             try
             {
