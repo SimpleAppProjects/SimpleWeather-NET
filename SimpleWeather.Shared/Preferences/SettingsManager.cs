@@ -16,6 +16,8 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 
+using Version = SimpleWeather.Utils.Version;
+
 namespace SimpleWeather.Preferences
 {
     public sealed partial class SettingsManager : ISettingsService
@@ -135,10 +137,17 @@ namespace SimpleWeather.Preferences
 
         public IProviderMap UsePersonalKeys { get; }
 
-        public int VersionCode
+        [Obsolete]
+        public long VersionCode
         {
             get { return GetVersionCode(); }
             set { SetVersionCode(value); }
+        }
+
+        public Version Version
+        {
+            get { return GetVersionCodeV2(); }
+            set { SetVersionCodeV2(value); }
         }
 
         public bool DevSettingsEnabled
@@ -261,6 +270,7 @@ namespace SimpleWeather.Preferences
         public const string KEY_USEALERTS = "key_usealerts";
         public const string KEY_USEPERSONALKEY = "key_usepersonalkey";
         private const string KEY_CURRENTVERSION = "key_currentversion";
+        private const string KEY_CURRENTVERSION_V2 = "key_currentversion_v2";
         private const string KEY_ONBOARDINGCOMPLETE = "key_onboardcomplete";
         public const string KEY_DEVSETTINGSENABLED = "key_devsettingsenabled";
         private const string KEY_DEBUGMODEENABLED = "key_debugmodeenabled";
@@ -1077,15 +1087,35 @@ namespace SimpleWeather.Preferences
             if (!value) WUSharedSettings.Remove(key);
         }
 
-        private int GetVersionCode()
+        [Obsolete]
+        private long GetVersionCode()
         {
             return VersionSettings.GetValue(KEY_CURRENTVERSION, 0);
         }
 
-        private void SetVersionCode(int value)
+        [Obsolete]
+        private void SetVersionCode(long value)
         {
             VersionSettings.SetValue(KEY_CURRENTVERSION, value);
             OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_CURRENTVERSION, NewValue = value });
+        }
+
+        private Version GetVersionCodeV2()
+        {
+            string versionString = VersionSettings.GetValue<string>(KEY_CURRENTVERSION_V2, null);
+
+            if (string.IsNullOrWhiteSpace(versionString))
+            {
+                return Version.Default;
+            }
+
+            return Version.Parse(versionString);
+        }
+
+        private void SetVersionCodeV2(Version value)
+        {
+            VersionSettings.SetValue(KEY_CURRENTVERSION_V2, value.ToString());
+            OnSettingsChanged?.Invoke(new SettingsChangedEventArgs { Key = KEY_CURRENTVERSION_V2, NewValue = value });
         }
 
         private bool IsOnBoardingComplete()

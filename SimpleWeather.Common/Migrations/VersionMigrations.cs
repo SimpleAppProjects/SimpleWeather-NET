@@ -1,12 +1,16 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.Common.Utils;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+
+using Version = SimpleWeather.Utils.Version;
 
 namespace SimpleWeather.Common.Migrations
 {
@@ -18,14 +22,48 @@ namespace SimpleWeather.Common.Migrations
             var SettingsMgr = DI.Utils.SettingsManager;
 
 #if WINUI
-            var PackageVersion = Windows.ApplicationModel.Package.Current.Id.Version;
+            var CurrentVersion = Windows.ApplicationModel.Package.Current.Id.Version.ToVersion();
 #else
-            var PackageVersion = Microsoft.Maui.ApplicationModel.AppInfo.Version;
+            var CurrentVersion = Microsoft.Maui.ApplicationModel.AppInfo.Version.ToVersion();
 #endif
+
+            // Perform migrations for v0-v5.9.9
+            if (SettingsMgr.VersionCode < 5990)
+            {
+                await PerformLegacyVersionMigrations(SettingsMgr, CurrentVersion, weatherDB, locationDB);
+            }
+
+            // v5.12.0
+            // Update settings for OWM
+            if (SettingsMgr.Version.IsNotAtLeast(5, 12))
+            {
+                if (WeatherAPI.OpenWeatherMap.Equals(SettingsMgr.API, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var oldKey = SettingsMgr.API;
+                    SettingsMgr.APIKeys[WeatherAPI.OpenWeatherMap] = SettingsMgr.APIKeys[oldKey];
+                    SettingsMgr.KeysVerified[WeatherAPI.OpenWeatherMap] = SettingsMgr.KeysVerified[oldKey];
+                    SettingsMgr.UsePersonalKeys[WeatherAPI.OpenWeatherMap] = SettingsMgr.UsePersonalKeys[oldKey];
+                    SettingsMgr.API = WeatherAPI.OpenWeatherMap;
+                }
+            }
+
+#if !UNIT_TEST
+            if (SettingsMgr.Version < CurrentVersion)
+            {
+                UpdateSettings.IsUpdateAvailable = false;
+            }
+#endif
+            SettingsMgr.Version = CurrentVersion;
+        }
+
+        private static async Task PerformLegacyVersionMigrations(
+            Preferences.SettingsManager SettingsMgr, Version CurrentVersion,
+            SQLiteAsyncConnection weatherDB, SQLiteAsyncConnection locationDB)
+        {
             var version = string.Format(CultureInfo.InvariantCulture, "{0}{1}{2}0",
-                PackageVersion.Major, PackageVersion.Minor,
-                PackageVersion.Build); // Exclude revision number used by Xbox & others
-            var CurrentVersionCode = int.Parse(version, CultureInfo.InvariantCulture);
+                CurrentVersion.Major, CurrentVersion.Minor,
+                CurrentVersion.Build); // Exclude revision number used by Xbox & others
+            var CurrentVersionCode = long.Parse(version, CultureInfo.InvariantCulture);
 
             if (SettingsMgr.WeatherLoaded && SettingsMgr.VersionCode < CurrentVersionCode)
             {
@@ -236,13 +274,6 @@ namespace SimpleWeather.Common.Migrations
                 await imageDataService.ClearCachedImageData();
 #endif
             }
-#if !UNIT_TEST
-            if (SettingsMgr.VersionCode < CurrentVersionCode)
-            {
-                UpdateSettings.IsUpdateAvailable = false;
-            }
-#endif
-            SettingsMgr.VersionCode = CurrentVersionCode;
         }
     }
 }

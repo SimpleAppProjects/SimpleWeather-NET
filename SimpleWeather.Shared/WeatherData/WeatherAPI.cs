@@ -10,7 +10,7 @@ namespace SimpleWeather.WeatherData
         // APIs
         public const string Yahoo = "Yahoo";
         public const string WeatherUnderground = "WUnderground";
-        public const string OpenWeatherMap = "OpenWeather";
+        public const string OpenWeatherMap = "openweather";
         public const string OpenWeatherMap_OneCall = "openweather_onecall";
         public const string MetNo = "Metno";
         public const string Here = "Here";
