@@ -183,13 +183,6 @@ namespace SimpleWeather.Common.ViewModels
                         return;
                     }
 
-                    if (!wm.IsRegionSupported(locQuery))
-                    {
-                        PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
-                        UiState = UiState with { IsLoading = false };
-                        return;
-                    }
-
                     UiState = UiState with { CurrentLocation = locQuery.ToLocationData(LocationType.GPS) };
                 }
 
@@ -315,13 +308,6 @@ namespace SimpleWeather.Common.ViewModels
                     SettingsManager.API = provider;
                     queryResult.UpdateWeatherSource(provider);
                     wm.UpdateAPI();
-                }
-
-                if (!wm.IsRegionSupported(queryResult))
-                {
-                    PostErrorMessage(new ErrorMessage.String(ResStrings.error_message_weather_region_unsupported));
-                    UiState = UiState with { IsLoading = false };
-                    return;
                 }
 
                 // Check if location already exists

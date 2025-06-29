@@ -4,18 +4,11 @@ using System.Text;
 
 namespace SimpleWeather.Utils
 {
-    public class CustomException : Exception
+    public static class CustomException
     {
-        public CustomException()
+        public static Exception CreateUnsupportedLocationException(string weatherApi, LocationData.LocationData location)
         {
-        }
-
-        public CustomException(string message) : base(message)
-        {
-        }
-
-        public CustomException(string message, Exception innerException) : base(message, innerException)
-        {
+            return new Exception($"Unsupported location - weatherapi: {weatherApi}, countryCode: {location.country_code}, query: [{location.query}]");
         }
     }
 }

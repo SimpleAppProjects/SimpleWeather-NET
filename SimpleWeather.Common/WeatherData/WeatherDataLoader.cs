@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
+using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.TZDB;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.WeatherData
 {
@@ -162,11 +167,9 @@ namespace SimpleWeather.Common.WeatherData
                 request.ThrowIfCancellationRequested();
 
                 // Is the timezone valid? If not try to fetch a valid zone id
-                if (!wm.IsRegionSupported(location) && (string.IsNullOrWhiteSpace(location.tz_long) ||
-                                                        Equals(location.tz_long, "unknown") ||
-                                                        Equals(location.tz_long, "UTC")))
+                if (!wm.IsRegionSupported(location) && (string.IsNullOrWhiteSpace(location.tz_long) || Equals(location.tz_long, "unknown") || Equals(location.tz_long, "UTC")))
                 {
-                    if (location.latitude != 0 && location.longitude != 0)
+                    if (location.latitude != 0.0 && location.longitude != 0.0)
                     {
                         var tzId = await TZDBService.GetTimeZone(location.latitude, location.longitude);
                         if (!Equals("unknown", tzId))
@@ -180,24 +183,24 @@ namespace SimpleWeather.Common.WeatherData
 
                 if (!wm.IsRegionSupported(location))
                 {
-                    if (location.latitude != 0 && location.longitude != 0)
+                    if (location.latitude != 0.0 && location.longitude != 0.0)
                     {
-                        // If location data hasn't been updated, try loading weather from the previous provider
-                        if (!String.IsNullOrWhiteSpace(location.weatherSource))
+                        // If location data hasn't been updated, try loading weather from the default provider
+                        var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+                        var provider = remoteConfigService?.GetDefaultWeatherProvider()
+                            ?.TakeIf(it => !string.IsNullOrWhiteSpace(it) && remoteConfigService.IsProviderEnabled(it))
+                            ?.Let(it => wm.GetWeatherProvider(it));
+
+                        if (provider?.IsRegionSupported(location) == true)
                         {
-                            var provider = wm.GetWeatherProvider(location.weatherSource);
-                            if (provider.IsRegionSupported(location))
-                            {
-                                weather = await provider.GetWeather(location).ConfigureAwait(false);
-                            }
+                            weather = await provider.GetWeather(location).ConfigureAwait(false);
                         }
 
                         // Nothing to fallback on; error out
                         if (weather == null)
                         {
-                            Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(location));
-                            throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
-                                new InvalidOperationException("Invalid location data"));
+                            throw new WeatherException(WeatherUtils.ErrorStatus.LocationNotSupported,
+                                CustomException.CreateUnsupportedLocationException(wm.WeatherAPI, location));
                         }
                     }
                 }
@@ -214,9 +217,16 @@ namespace SimpleWeather.Common.WeatherData
             }
             catch (Exception ex)
             {
-                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
+                if (ex is HttpRequestException or WebException or SocketException or IOException)
+                {
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NetworkError, ex);
+                }
+                else
+                {
+                    Logger.WriteLine(LoggerLevel.Error, ex, "WeatherDataLoader: error getting weather data");
+                    wEx = new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
+                }
                 weather = null;
-                throw new WeatherException(WeatherUtils.ErrorStatus.NoWeather, ex);
             }
 
             if (request.LoadAlerts && weather != null && wm.SupportsAlerts)
@@ -569,6 +579,7 @@ namespace SimpleWeather.Common.WeatherData
                     }
                 }
 
+                // Check for outdated forecasts
                 if (weather.forecast?.Count > 0)
                 {
                     weather.forecast = weather.forecast

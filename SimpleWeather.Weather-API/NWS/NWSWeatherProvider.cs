@@ -88,9 +88,9 @@ namespace SimpleWeather.Weather_API.NWS
             // NWS only supports locations in U.S. or U.S. territories
             if (!LocationUtils.IsNWSSupported(location))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
-                    new Exception(
-                        $"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
+                throw new WeatherException(
+                    WeatherUtils.ErrorStatus.LocationNotSupported,
+                    CustomException.CreateUnsupportedLocationException(WeatherAPI, location));
             }
 
             var query = await UpdateLocationQuery(location);

@@ -10,6 +10,7 @@ using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
 using SimpleWeather.Maui.MaterialIcons;
+using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Maui.WeatherAlerts;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Radar;
@@ -366,14 +367,24 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         {
             case WeatherUtils.ErrorStatus.NetworkError:
             case WeatherUtils.ErrorStatus.NoWeather:
-                // Show error message and prompt to refresh
-                Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                snackbar.SetAction(ResStrings.action_retry, () => { WNowViewModel.RefreshWeather(false); });
-                ShowSnackbar(snackbar);
+                {
+                    // Show error message and prompt to refresh
+                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                    snackbar.SetAction(ResStrings.action_retry, () => { WNowViewModel.RefreshWeather(false); });
+                    ShowSnackbar(snackbar);
+                }
                 break;
 
             case WeatherUtils.ErrorStatus.QueryNotFound:
-                ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
+                {
+                    // Show error message and prompt to refresh
+                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                    snackbar.SetAction(ResStrings.action_settings, async () =>
+                    {
+                        await Navigation.PushAsync(new Settings_General());
+                    });
+                    ShowSnackbar(snackbar);
+                }
                 break;
 
             default:

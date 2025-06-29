@@ -26,37 +26,16 @@ namespace SimpleWeather.Utils
         {
             get
             {
-                string errorMsg;
-
-                switch (ErrorStatus)
+                return ErrorStatus switch
                 {
-                    case WeatherUtils.ErrorStatus.NoWeather:
-                        errorMsg = ResStrings.werror_noweather;
-                        break;
-
-                    case WeatherUtils.ErrorStatus.NetworkError:
-                        errorMsg = ResStrings.werror_networkerror;
-                        break;
-
-                    case WeatherUtils.ErrorStatus.InvalidAPIKey:
-                        errorMsg = ResStrings.werror_invalidkey;
-                        break;
-
-                    case WeatherUtils.ErrorStatus.QueryNotFound:
-                        errorMsg = ResStrings.werror_querynotfound;
-                        break;
-
-                    case WeatherUtils.ErrorStatus.RateLimited:
-                        errorMsg = ResStrings.werror_ratelimited;
-                        break;
-
-                    case WeatherUtils.ErrorStatus.Unknown:
-                    default:
-                        errorMsg = ResStrings.werror_unknown;
-                        break;
-                }
-
-                return errorMsg;
+                    WeatherUtils.ErrorStatus.NoWeather => ResStrings.werror_noweather,
+                    WeatherUtils.ErrorStatus.NetworkError => ResStrings.werror_networkerror,
+                    WeatherUtils.ErrorStatus.InvalidAPIKey => ResStrings.werror_invalidkey,
+                    WeatherUtils.ErrorStatus.QueryNotFound => ResStrings.werror_querynotfound,
+                    WeatherUtils.ErrorStatus.LocationNotSupported => ResStrings.werror_locationnotsupported,
+                    WeatherUtils.ErrorStatus.RateLimited => ResStrings.werror_ratelimited,
+                    _ => ResStrings.werror_unknown,
+                };
             }
         }
     }

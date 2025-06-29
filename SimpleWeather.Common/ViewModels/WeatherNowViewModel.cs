@@ -196,12 +196,6 @@ namespace SimpleWeather.Common.ViewModels
                     {
                         var state = UiState;
 
-                        if (state.LocationData?.Let(it => !wm.IsRegionSupported(it)) == true)
-                        {
-                            Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
-                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));
-                        }
-
                         var errorMessages = new List<ErrorMessage>(state.ErrorMessages)
                         {
                             new ErrorMessage.WeatherError(wrError.Exception)
@@ -263,12 +257,6 @@ namespace SimpleWeather.Common.ViewModels
                         var weatherData = result.Data.ToUiModel();
 
                         var state = UiState;
-
-                        if (state.LocationData?.Let(it => !wm.IsRegionSupported(it)) == true)
-                        {
-                            Logger.WriteLine(LoggerLevel.Warn, "Location: {0}", JSONParser.Serializer(state.LocationData));
-                            Logger.WriteLine(LoggerLevel.Warn, new CustomException(ResStrings.error_message_weather_region_unsupported));
-                        }
 
                         var errorMessages = new List<ErrorMessage>(state.ErrorMessages)
                         {

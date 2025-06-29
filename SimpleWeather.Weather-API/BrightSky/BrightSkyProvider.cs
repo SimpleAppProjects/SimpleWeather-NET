@@ -78,9 +78,9 @@ namespace SimpleWeather.Weather_API.BrightSky
             // DWD is best in Germany
             if (!LocationUtils.IsGermany(location))
             {
-                throw new WeatherException(WeatherUtils.ErrorStatus.QueryNotFound,
-                    new Exception(
-                        $"Unsupported country code: provider ({WeatherAPI}), country ({location.country_code})"));
+                throw new WeatherException(
+                    WeatherUtils.ErrorStatus.LocationNotSupported,
+                    CustomException.CreateUnsupportedLocationException(WeatherAPI, location));
             }
 
             var query = await UpdateLocationQuery(location);

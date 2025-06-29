@@ -11,6 +11,7 @@ using SimpleWeather.Common.Utils;
 using SimpleWeather.LocationData;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Helpers;
+using SimpleWeather.NET.Preferences;
 using SimpleWeather.NET.ViewModels;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -213,17 +214,26 @@ namespace SimpleWeather.NET.Main
             {
                 case WeatherUtils.ErrorStatus.NetworkError:
                 case WeatherUtils.ErrorStatus.NoWeather:
-                    // Show error message and prompt to refresh
-                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                    snackbar.SetAction(App.Current.ResLoader.GetString("action_retry"), () =>
                     {
-                        LocationsViewModel.RefreshLocations();
-                    });
-                    ShowSnackbar(snackbar);
+                        // Show error message and prompt to refresh
+                        Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                        snackbar.SetAction(App.Current.ResLoader.GetString("action_retry"), () =>
+                        {
+                            LocationsViewModel.RefreshLocations();
+                        });
+                        ShowSnackbar(snackbar);
+                    }
                     break;
 
-                case WeatherUtils.ErrorStatus.QueryNotFound:
-                    ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
+                case WeatherUtils.ErrorStatus.LocationNotSupported:
+                    {
+                        Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                        snackbar.SetAction(App.Current.ResLoader.GetString("action_settings"), () =>
+                        {
+                            Shell.Instance.AppFrame.Navigate(typeof(SettingsPage));
+                        });
+                        ShowSnackbar(snackbar);
+                    }
                     break;
 
                 default:

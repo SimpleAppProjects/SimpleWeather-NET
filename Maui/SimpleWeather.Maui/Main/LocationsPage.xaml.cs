@@ -3,6 +3,7 @@ using SimpleWeather.Common.Utils;
 using SimpleWeather.LocationData;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.Maui.Helpers;
+using SimpleWeather.Maui.Preferences;
 using SimpleWeather.Maui.ViewModels;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -292,17 +293,27 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         {
             case WeatherUtils.ErrorStatus.NetworkError:
             case WeatherUtils.ErrorStatus.NoWeather:
-                // Show error message and prompt to refresh
-                Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                snackbar.SetAction(ResStrings.action_retry, () =>
                 {
-                    LocationsViewModel.RefreshLocations();
-                });
-                ShowSnackbar(snackbar);
+                    // Show error message and prompt to refresh
+                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                    snackbar.SetAction(ResStrings.action_retry, () =>
+                    {
+                        LocationsViewModel.RefreshLocations();
+                    });
+                    ShowSnackbar(snackbar);
+                }
                 break;
 
             case WeatherUtils.ErrorStatus.QueryNotFound:
-                ShowSnackbar(Snackbar.MakeError(wEx.Message, SnackbarDuration.Long));
+                {
+                    // Show error message and prompt to refresh
+                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                    snackbar.SetAction(ResStrings.action_settings, async () =>
+                    {
+                        await Navigation.PushAsync(new Settings_General());
+                    });
+                    ShowSnackbar(snackbar);
+                }
                 break;
 
             default:

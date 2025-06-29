@@ -14,6 +14,7 @@ namespace SimpleWeather.Utils
             NetworkError,
             InvalidAPIKey,
             QueryNotFound,
+            LocationNotSupported,
             RateLimited,
         }
     }
