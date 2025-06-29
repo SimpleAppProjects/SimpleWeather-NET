@@ -40,7 +40,7 @@
 
   <!-- Maui -->
   <PropertyGroup>
-    <MauiVersion>9.0.50</MauiVersion>
+    <MauiVersion>9.0.80</MauiVersion>
     <_MauiBindingInterceptorsSupport>true</_MauiBindingInterceptorsSupport>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
@@ -58,17 +58,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SentryVersion>5.4.0</SentryVersion>
+    <SentryVersion>5.11.2</SentryVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <SkiaSharpVersion>3.116.1</SkiaSharpVersion>
+    <SkiaSharpVersion>3.119.0</SkiaSharpVersion>
   </PropertyGroup>
 
   <PropertyGroup>
-    <WinToolkitVersion>8.1.240916</WinToolkitVersion>
-    <WinAppSDKVersion>1.7.250310001</WinAppSDKVersion>
-    <WinSDKBuildToolsVersion>10.0.26100.1742</WinSDKBuildToolsVersion>
+    <WinToolkitVersion>8.2.250402</WinToolkitVersion>
+    <WinAppSDKVersion>1.7.250606001</WinAppSDKVersion>
+    <WinSDKBuildToolsVersion>10.0.26100.4188</WinSDKBuildToolsVersion>
     <MvvmToolkitVersion>8.4.0</MvvmToolkitVersion>
   </PropertyGroup>
 
