@@ -168,19 +168,22 @@
   </data>
   <data name="label_next" xml:space="preserve">
     <value>Vorwärts</value>
-    <comment>This could only be shortened as &quot;Vor&quot; but wouldn&apos;t be a good replacement.</comment>
   </data>
   <data name="label_back" xml:space="preserve">
     <value>Zurück</value>
-    <comment>This is the shortest possible string</comment>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Wetter</value>
+    <comment>MainActivity</comment>
   </data>
   <data name="action_settings" xml:space="preserve">
     <value>Einstellungen</value>
-    <comment>This would be the shortest translation.</comment>
   </data>
   <data name="action_retry" xml:space="preserve">
     <value>Erneut versuchen</value>
-    <comment>Even &quot;Erneut&quot; would be too long.</comment>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
   </data>
   <data name="label_details" xml:space="preserve">
     <value>Details</value>
@@ -188,11 +191,9 @@
   </data>
   <data name="label_humidity" xml:space="preserve">
     <value>Luftfeuchtigkeit</value>
-    <comment>Too long and ideally it would be &quot;Luftfeuchtigkeit&quot;</comment>
   </data>
   <data name="label_pressure" xml:space="preserve">
     <value>Luftdruck</value>
-    <comment>Could be shortened with &quot;Druck&quot;</comment>
   </data>
   <data name="label_visibility" xml:space="preserve">
     <value>Sichtweite</value>
@@ -205,7 +206,6 @@
   </data>
   <data name="label_forecast" xml:space="preserve">
     <value>Vorhersage</value>
-    <comment>Could only be replaced by &quot;Prognose&quot; but this isn&apos;t really used in this case.</comment>
   </data>
   <data name="label_condition" xml:space="preserve">
     <value>Bedingung</value>
@@ -227,18 +227,16 @@
   </data>
   <data name="label_chance" xml:space="preserve">
     <value>Niederschlagsgefahr</value>
-    <comment>&quot;Chance&quot; could be used as well but isn&apos;t really used in this case.</comment>
+    <comment>Chance of Precipitation</comment>
   </data>
   <data name="label_cloudiness" xml:space="preserve">
     <value>Bewölkung</value>
   </data>
   <data name="label_qpf_rain" xml:space="preserve">
     <value>Regen</value>
-    <comment>There is no better word for it.</comment>
   </data>
   <data name="label_qpf_snow" xml:space="preserve">
     <value>Schnee</value>
-    <comment>The only German word for snow.</comment>
   </data>
   <data name="credit_prefix" xml:space="preserve">
     <value>Daten von</value>
@@ -273,6 +271,9 @@
   <data name="label_airquality" xml:space="preserve">
     <value>Luftqualitätsindex</value>
   </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Luftqualität</value>
+  </data>
   <data name="label_radar" xml:space="preserve">
     <value>Radar</value>
   </data>
@@ -290,7 +291,6 @@
   </data>
   <data name="label_temp" xml:space="preserve">
     <value>Temp</value>
-    <comment>Abbreviated from temperature or from temporary?</comment>
   </data>
   <data name="label_nav_weathernow" xml:space="preserve">
     <value>Wetter</value>
@@ -323,7 +323,6 @@
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
     <value>Einheiten in Celsius</value>
-    <comment>Maybe leave out the bracketed metric?</comment>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>Über</value>
@@ -340,6 +339,9 @@
   <data name="pref_category_providers" xml:space="preserve">
     <value>Datenanbieter</value>
   </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Standortzugriff per GPS erlauben</value>
   </data>
@@ -349,23 +351,32 @@
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Anbieterschlüssel eingeben</value>
   </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Schlüssel bestätigt</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Schlüssel ungültig</value>
+  </data>
   <data name="pref_title_onnotification" xml:space="preserve">
     <value>Wetter-Benachrichtigung</value>
-    <comment>Or &quot;Laufende Benachrichtigung&quot; in a less formal way.</comment>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Dauerhafte Benachrichtigung der aktuellen Wetterbedingungen anzeigen</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Wetteranbieter</value>
-    <comment>Sometimes the title is Weather Provider sometimes it is Data Provider. It could also be titled more precisely as Weather Data Provider. Maybe we should unify this?</comment>
   </data>
   <data name="pref_category_notification" xml:space="preserve">
     <value>Benachrichtigungen</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Benachrichtigungssymbol</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Wetterwarnungen</value>
   </data>
   <data name="pref_summary_alerts" xml:space="preserve">
     <value>Benachrichtigungen für Wetterwarnungen anzeigen</value>
-    <comment>Or dismiss the trailing &quot;anzeigen&quot;</comment>
   </data>
   <data name="pref_summary_alerts_disabled" xml:space="preserve">
     <value>Wetterwarnungen werden von diesem Wetteranbieter nicht unterstützt</value>
@@ -399,6 +410,9 @@
   <data name="error_retrieve_location" xml:space="preserve">
     <value>Standort nicht verfügbar</value>
   </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Standortdienste in den Einstellungen aktivieren</value>
+  </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Keine Ergebnisse gefunden</value>
   </data>
@@ -416,6 +430,10 @@
   </data>
   <data name="delete" xml:space="preserve">
     <value>Löschen</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Standortzugriff im Hintergrund für Benachrichtigungen und Widgets erlauben</value>
+    <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
     <value>Laden von Wetterdaten nicht möglich</value>
@@ -458,6 +476,45 @@
   <data name="update_prefix_day" xml:space="preserve">
     <value>Aktualisiert um</value>
   </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Temperatur</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Wetterbedingung</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Wetterbenachrichtigungen</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Wetterbenachrichtigungen</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Wetterwarnungen</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Benachrichtigungen für Wetterwarnungen</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Service-Meldungen</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>vor %1$d Tagen</value>
+    <comment>Alerts
+Fuzzy</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>vor %1$d Stunden</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>vor %1$d Minuten</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>vor %1$d Sekunden</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Gültig bis</value>
   </data>
@@ -477,6 +534,9 @@
   </data>
   <data name="userthememode_dark" xml:space="preserve">
     <value>Dunkel</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Schwarz (AMOLED)</value>
   </data>
   <data name="userthememode_light" xml:space="preserve">
     <value>Hell</value>
@@ -514,7 +574,6 @@
   </data>
   <data name="pref_title_feature_sunphase" xml:space="preserve">
     <value>Sonnenphase</value>
-    <comment>Sun Phase or Sunrise/Sunset</comment>
   </data>
   <data name="pref_title_feature_radar" xml:space="preserve">
     <value>Wetterradar</value>
@@ -530,6 +589,28 @@
   </data>
   <data name="summary_default" xml:space="preserve">
     <value>Standard</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Wetteranbieter auswählen</value>
@@ -570,11 +651,9 @@
   </data>
   <data name="Label_Pin.Text" xml:space="preserve">
     <value>Fixieren</value>
-    <comment>Pin</comment>
   </data>
   <data name="Label_Unpin.Text" xml:space="preserve">
     <value>Lösen</value>
-    <comment>Unpin</comment>
   </data>
   <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
     <value>Ok</value>
@@ -598,6 +677,14 @@
   <data name="label_windgust" xml:space="preserve">
     <value>Windböe</value>
     <comment>Fuzzy</comment>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
     <value>Prüfung auf Aktualisierungen...</value>
@@ -641,8 +728,7 @@
   </data>
   <data name="pref_summary_rateandreview" xml:space="preserve">
     <value>Mag die App? Helfen Sie bei der Unterstützung durch eine Rezension</value>
-    <comment>Gefällt die Anwendung? Die Entwicklung durch eine Bewertung unterstützen
-Fuzzy</comment>
+    <comment>Fuzzy</comment>
   </data>
   <data name="pref_title_translate" xml:space="preserve">
     <value>Übersetzung</value>
@@ -650,7 +736,6 @@ Fuzzy</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
     <value>Bei der Übersetzung der Anwendung helfen</value>
-    <comment>Can be changed to &apos;Help us translate the app&apos;</comment>
   </data>
   <data name="pref_title_language" xml:space="preserve">
     <value>Sprache</value>
@@ -673,6 +758,12 @@ Fuzzy</comment>
   </data>
   <data name="default_units_metric" xml:space="preserve">
     <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Aktualisierung des Wetters…</value>
   </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Kachel-Hintergrundbild</value>
@@ -766,8 +857,23 @@ Fuzzy</comment>
   <data name="title_dev_settings" xml:space="preserve">
     <value>Dev Settings</value>
   </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Um den Standort im Hintergrund für Benachrichtigungen und Widgets zu aktualisieren, setzen Sie bitte die Standortberechtigung auf &apos;%1$s&apos;</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Ort nicht festgelegt. Bitte fügen Sie einen Ort hinzu</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Hintergrund Standort Zugang</value>
+    <comment>Background Location Permission
+Fuzzy</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Standortzugriff im Hintergrund für Kacheln und Komplikationen zulassen</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Um den Standort im Hintergrund für Kacheln und Komplikationen zu aktualisieren, setzen Sie bitte die Standortberechtigung auf &apos;%1$s&apos;</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Aktuell</value>
@@ -778,6 +884,10 @@ Fuzzy</comment>
   </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Vorhersage im Minutentakt</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
     <value>Regen wird in etwa {0} einsetzen</value>
@@ -841,7 +951,40 @@ Fuzzy</comment>
   <data name="api_eccc" xml:space="preserve">
     <value>Environment and Climate Change Canada (ECCC)</value>
   </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Niedrig</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Moderat</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Hoch</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Hoch</value>
+  </data>
   <data name="werror_ratelimited" xml:space="preserve">
     <value>Zu viele Anfragen. Bitte versuchen Sie es nach ein paar Minuten erneut</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Dieser Standort wird von diesem Wetteranbieter nicht unterstützt</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Regen wahrscheinlich gegen {0} ({1}% Chance)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Regenbeginn voraussichtlich um {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Regenende voraussichtlich um {0}</value>
+    <comment>{0} - Time</comment>
   </data>
 </root>

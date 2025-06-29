@@ -172,11 +172,18 @@
   <data name="label_back" xml:space="preserve">
     <value>返回</value>
   </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>天气</value>
+    <comment>MainActivity</comment>
+  </data>
   <data name="action_settings" xml:space="preserve">
     <value>设置</value>
   </data>
   <data name="action_retry" xml:space="preserve">
     <value>重试</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
   </data>
   <data name="label_details" xml:space="preserve">
     <value>详情</value>
@@ -220,6 +227,7 @@
   </data>
   <data name="label_chance" xml:space="preserve">
     <value>概率</value>
+    <comment>Chance of Precipitation</comment>
   </data>
   <data name="label_cloudiness" xml:space="preserve">
     <value>云量</value>
@@ -262,6 +270,9 @@
   </data>
   <data name="label_airquality" xml:space="preserve">
     <value>空气质量指数</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>空气质量</value>
   </data>
   <data name="label_radar" xml:space="preserve">
     <value>雷达</value>
@@ -328,6 +339,9 @@
   <data name="pref_category_providers" xml:space="preserve">
     <value>数据提供商</value>
   </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>允许通过 GPS 获取当前位置</value>
   </data>
@@ -337,14 +351,26 @@
   <data name="message_enter_apikey" xml:space="preserve">
     <value>请输入密钥</value>
   </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>密钥验证成功</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>密钥错误</value>
+  </data>
   <data name="pref_title_onnotification" xml:space="preserve">
     <value>天气通知</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>持续显示当前天气的通知</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>天气提供商</value>
   </data>
   <data name="pref_category_notification" xml:space="preserve">
     <value>通知</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>通知图标</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>天气预警</value>
@@ -385,6 +411,9 @@
   <data name="error_retrieve_location" xml:space="preserve">
     <value>无法获取位置</value>
   </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>位置服务被禁用，请在设置中启用</value>
+  </data>
   <data name="error_noresults" xml:space="preserve">
     <value>无结果</value>
   </data>
@@ -402,6 +431,10 @@
   </data>
   <data name="delete" xml:space="preserve">
     <value>删除</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>允许在后台更新位置以获取通知和更新小部件</value>
+    <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
     <value>无法加载天气数据</value>
@@ -444,6 +477,41 @@
   <data name="update_prefix_day" xml:space="preserve">
     <value>更新于</value>
   </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>温度</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>天气情况</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>天气通知</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>天气通知</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>天气预警</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>天气预警通知</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>通知服务</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$dd 前</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$dh 前</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$dm 前</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$ds 前</value>
+  </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>有效期至</value>
   </data>
@@ -463,6 +531,9 @@
   </data>
   <data name="userthememode_dark" xml:space="preserve">
     <value>深色</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>深色 (AMOLED)</value>
   </data>
   <data name="userthememode_light" xml:space="preserve">
     <value>亮色</value>
@@ -515,6 +586,28 @@
   </data>
   <data name="summary_default" xml:space="preserve">
     <value>默认</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>选择数据提供商</value>
@@ -580,6 +673,14 @@
   <data name="label_windgust" xml:space="preserve">
     <value>阵风</value>
     <comment>Fuzzy</comment>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
     <value>检查更新中…</value>
@@ -655,6 +756,12 @@ Fuzzy</comment>
   </data>
   <data name="default_units_metric" xml:space="preserve">
     <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>更新天气中…</value>
   </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>磁贴背景图片</value>
@@ -758,8 +865,25 @@ Fuzzy</comment>
   <data name="title_dev_settings" xml:space="preserve">
     <value>Dev Settings</value>
   </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>要在后台更新通知和小部件的位置，请将位置权限设置为&apos;%1$s&apos;</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>未设置位置，请添加位置</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>背景位置访问</value>
+    <comment>Background Location Permission
+Fuzzy</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>允许磁贴和控件在后台更新位置</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>要在后台更新磁贴和控件的位置，请将位置权限设置为 &apos;%1$s&apos;</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
@@ -773,6 +897,10 @@ Fuzzy</comment>
   </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>分钟预报</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
     <value>大约{0}后将开始下雨</value>
@@ -842,7 +970,40 @@ Fuzzy</comment>
   <data name="api_eccc" xml:space="preserve">
     <value>Environment and Climate Change Canada (ECCC)</value>
   </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>很高</value>
+  </data>
   <data name="werror_ratelimited" xml:space="preserve">
     <value>请求太多。请几分钟后再试一次</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>此天气提供商不支持该位置</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>{0}左右可能下雨（{1}%的几率）</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>预计{0}左右开始下雨</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>预计{0}左右雨停</value>
+    <comment>{0} - Time</comment>
   </data>
 </root>

@@ -167,5 +167,11 @@ namespace SimpleWeather.Utils
         {
             return new DateTimeOffset(date, TzidToOffset(tzID));
         }
+
+        public static bool Is24HourFormat()
+        {
+            var culture = LocaleUtils.GetLocale() ?? CultureInfo.CurrentUICulture;
+            return culture.DateTimeFormat.ShortTimePattern.Contains("H");
+        }
     }
 }

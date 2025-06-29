@@ -1227,7 +1227,7 @@ namespace SimpleWeather.Preferences
 
         private int GetPoPChanceMinimumPercentage()
         {
-            return GetValue<int>(KEY_POPCHANCEPCT, 60);
+            return GetValue<int>(KEY_POPCHANCEPCT, 50);
         }
 
         private void SetPoPChanceMinimumPercentage([Range(40, 90)] int value)
@@ -1238,7 +1238,7 @@ namespace SimpleWeather.Preferences
             }
             else
             {
-                SetValue(KEY_POPCHANCEPCT, 60);
+                SetValue(KEY_POPCHANCEPCT, 50);
             }
         }
 

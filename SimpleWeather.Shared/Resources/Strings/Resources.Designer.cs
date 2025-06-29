@@ -142,6 +142,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AccuWeather.
+        /// </summary>
+        public static string api_accuweather {
+            get {
+                return ResourceManager.GetString("api_accuweather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apple Weather.
         /// </summary>
         public static string api_apple_weather {
@@ -295,11 +304,56 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow access to update location in the background for notifications and widgets.
+        /// </summary>
+        public static string bg_location_permission_rationale {
+            get {
+                return ResourceManager.GetString("bg_location_permission_rationale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To update location in the background for notifications and widgets, please set location permission to &apos;%1$s&apos;.
+        /// </summary>
+        public static string bg_location_permission_rationale_settings {
+            get {
+                return ResourceManager.GetString("bg_location_permission_rationale_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking for updates....
         /// </summary>
         public static string CheckUpdatePrompt_Text {
             get {
                 return ResourceManager.GetString("CheckUpdatePrompt.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to h:mm&lt;small&gt;a&lt;/small&gt;.
+        /// </summary>
+        public static string clock_12_hours_ampm_format {
+            get {
+                return ResourceManager.GetString("clock_12_hours_ampm_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to h:mm.
+        /// </summary>
+        public static string clock_12_hours_format {
+            get {
+                return ResourceManager.GetString("clock_12_hours_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HH:mm.
+        /// </summary>
+        public static string clock_24_hours_format {
+            get {
+                return ResourceManager.GetString("clock_24_hours_format", resourceCulture);
             }
         }
         
@@ -322,11 +376,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The HERE Logo is a trademark or registered trademark of HERE Global B.V..
+        /// </summary>
+        public static string copyright_here {
+            get {
+                return ResourceManager.GetString("copyright_here", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Data from.
         /// </summary>
         public static string credit_prefix {
             get {
                 return ResourceManager.GetString("credit_prefix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %1$dd ago.
+        /// </summary>
+        public static string datetime_day_ago {
+            get {
+                return ResourceManager.GetString("datetime_day_ago", resourceCulture);
             }
         }
         
@@ -340,6 +412,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %1$dh ago.
+        /// </summary>
+        public static string datetime_hr_ago {
+            get {
+                return ResourceManager.GetString("datetime_hr_ago", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}h ago.
         /// </summary>
         public static string DateTime_HrAgo {
@@ -349,11 +430,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %1$dm ago.
+        /// </summary>
+        public static string datetime_min_ago {
+            get {
+                return ResourceManager.GetString("datetime_min_ago", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}m ago.
         /// </summary>
         public static string DateTime_MinAgo {
             get {
                 return ResourceManager.GetString("DateTime_MinAgo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %1$ds ago.
+        /// </summary>
+        public static string datetime_sec_ago {
+            get {
+                return ResourceManager.GetString("datetime_sec_ago", resourceCulture);
             }
         }
         
@@ -408,6 +507,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string DownloadingPrompt {
             get {
                 return ResourceManager.GetString("DownloadingPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location Services disabled. Please enable in Settings.
+        /// </summary>
+        public static string error_enable_location_services {
+            get {
+                return ResourceManager.GetString("error_enable_location_services", resourceCulture);
             }
         }
         
@@ -471,6 +579,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string FeebackButton_Content {
             get {
                 return ResourceManager.GetString("FeebackButton.Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EEE dd.
+        /// </summary>
+        public static string forecast_date_format {
+            get {
+                return ResourceManager.GetString("forecast_date_format", resourceCulture);
             }
         }
         
@@ -556,6 +673,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Air Quality.
+        /// </summary>
+        public static string label_airquality_short {
+            get {
+                return ResourceManager.GetString("label_airquality_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back.
         /// </summary>
         public static string label_back {
@@ -628,11 +754,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to High.
+        /// </summary>
+        public static string label_count_high_short {
+            get {
+                return ResourceManager.GetString("label_count_high_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Low.
         /// </summary>
         public static string label_count_low {
             get {
                 return ResourceManager.GetString("label_count_low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Low.
+        /// </summary>
+        public static string label_count_low_short {
+            get {
+                return ResourceManager.GetString("label_count_low_short", resourceCulture);
             }
         }
         
@@ -646,11 +790,29 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Medium.
+        /// </summary>
+        public static string label_count_moderate_short {
+            get {
+                return ResourceManager.GetString("label_count_moderate_short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Very High.
         /// </summary>
         public static string label_count_veryhigh {
             get {
                 return ResourceManager.GetString("label_count_veryhigh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to V. High.
+        /// </summary>
+        public static string label_count_veryhigh_short {
+            get {
+                return ResourceManager.GetString("label_count_veryhigh_short", resourceCulture);
             }
         }
         
@@ -813,6 +975,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string label_low {
             get {
                 return ResourceManager.GetString("label_low", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minutely.
+        /// </summary>
+        public static string label_minutelyforecast {
+            get {
+                return ResourceManager.GetString("label_minutelyforecast", resourceCulture);
             }
         }
         
@@ -1168,6 +1339,24 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Key Invalid.
+        /// </summary>
+        public static string message_keyinvalid {
+            get {
+                return ResourceManager.GetString("message_keyinvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Key Verified.
+        /// </summary>
+        public static string message_keyverified {
+            get {
+                return ResourceManager.GetString("message_keyverified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location removed.
         /// </summary>
         public static string message_locationremoved {
@@ -1204,6 +1393,33 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notifications for weather alerts.
+        /// </summary>
+        public static string not_channel_desc_alerts {
+            get {
+                return ResourceManager.GetString("not_channel_desc_alerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather notifications.
+        /// </summary>
+        public static string not_channel_desc_weather {
+            get {
+                return ResourceManager.GetString("not_channel_desc_weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather Alerts.
+        /// </summary>
+        public static string not_channel_name_alerts {
+            get {
+                return ResourceManager.GetString("not_channel_name_alerts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Daily Notification.
         /// </summary>
         public static string not_channel_name_dailynotification {
@@ -1213,11 +1429,56 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service notifications.
+        /// </summary>
+        public static string not_channel_name_general {
+            get {
+                return ResourceManager.GetString("not_channel_name_general", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Precipitation Notification.
         /// </summary>
         public static string not_channel_name_precipnotification {
             get {
                 return ResourceManager.GetString("not_channel_name_precipnotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather Notifications.
+        /// </summary>
+        public static string not_channel_name_weather {
+            get {
+                return ResourceManager.GetString("not_channel_name_weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating weather….
+        /// </summary>
+        public static string not_title_weather_update {
+            get {
+                return ResourceManager.GetString("not_title_weather_update", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather Condition.
+        /// </summary>
+        public static string notificationicon_condition {
+            get {
+                return ResourceManager.GetString("notificationicon_condition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temperature.
+        /// </summary>
+        public static string notificationicon_temperature {
+            get {
+                return ResourceManager.GetString("notificationicon_temperature", resourceCulture);
             }
         }
         
@@ -1236,6 +1497,42 @@ namespace SimpleWeather.Resources.Strings {
         public static string NoWeatherAlerts_Prompt_Text {
             get {
                 return ResourceManager.GetString("NoWeatherAlerts_Prompt.Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to •.
+        /// </summary>
+        public static string placeholder_text {
+            get {
+                return ResourceManager.GetString("placeholder_text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rain expected to start around {0}.
+        /// </summary>
+        public static string Precipitation_Likely_Minutely_Starting_Text_Format {
+            get {
+                return ResourceManager.GetString("Precipitation_Likely_Minutely_Starting_Text_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rain expected to stop around {0}.
+        /// </summary>
+        public static string Precipitation_Likely_Minutely_Stopping_Text_Format {
+            get {
+                return ResourceManager.GetString("Precipitation_Likely_Minutely_Stopping_Text_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rain likely around {0} ({1}% chance).
+        /// </summary>
+        public static string Precipitation_Likely_Text_Format {
+            get {
+                return ResourceManager.GetString("Precipitation_Likely_Text_Format", resourceCulture);
             }
         }
         
@@ -1416,6 +1713,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string pref_summary_feedback {
             get {
                 return ResourceManager.GetString("pref_summary_feedback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show persistent notification displaying current weather conditions.
+        /// </summary>
+        public static string pref_summary_notification {
+            get {
+                return ResourceManager.GetString("pref_summary_notification", resourceCulture);
             }
         }
         
@@ -1699,6 +2005,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Notification Icon.
+        /// </summary>
+        public static string pref_title_notificationicon {
+            get {
+                return ResourceManager.GetString("pref_title_notificationicon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather Notification.
         /// </summary>
         public static string pref_title_onnotification {
@@ -1834,6 +2149,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to RainViewer.
+        /// </summary>
+        public static string radar_rainviewer {
+            get {
+                return ResourceManager.GetString("radar_rainviewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 12 hours.
         /// </summary>
         public static string refresh_12hrs {
@@ -1933,6 +2257,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to %1$s %2$s.
+        /// </summary>
+        public static string text_label_value {
+            get {
+                return ResourceManager.GetString("text_label_value", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Current.
         /// </summary>
         public static string time_current {
@@ -1947,6 +2280,24 @@ namespace SimpleWeather.Resources.Strings {
         public static string title_activity_settings {
             get {
                 return ResourceManager.GetString("title_activity_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Weather.
+        /// </summary>
+        public static string title_activity_weather_now {
+            get {
+                return ResourceManager.GetString("title_activity_weather_now", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background Location Access.
+        /// </summary>
+        public static string title_bg_location_access {
+            get {
+                return ResourceManager.GetString("title_bg_location_access", resourceCulture);
             }
         }
         
@@ -1996,6 +2347,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dark (AMOLED).
+        /// </summary>
+        public static string userthememode_black {
+            get {
+                return ResourceManager.GetString("userthememode_black", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dark.
         /// </summary>
         public static string userthememode_dark {
@@ -2023,11 +2383,38 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow access to update location in the background for tiles and complications.
+        /// </summary>
+        public static string wear_bg_location_permission_rationale {
+            get {
+                return ResourceManager.GetString("wear_bg_location_permission_rationale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To update location in the background for tiles and complications, please set location permission to &apos;%1$s&apos;.
+        /// </summary>
+        public static string wear_bg_location_permission_rationale_settings {
+            get {
+                return ResourceManager.GetString("wear_bg_location_permission_rationale_settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Provider Key.
         /// </summary>
         public static string werror_invalidkey {
             get {
                 return ResourceManager.GetString("werror_invalidkey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location not supported by this weather provider.
+        /// </summary>
+        public static string werror_locationnotsupported {
+            get {
+                return ResourceManager.GetString("werror_locationnotsupported", resourceCulture);
             }
         }
         
@@ -2073,6 +2460,42 @@ namespace SimpleWeather.Resources.Strings {
         public static string werror_unknown {
             get {
                 return ResourceManager.GetString("werror_unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cccc, MMM dd.
+        /// </summary>
+        public static string widget_4x1_date_format {
+            get {
+                return ResourceManager.GetString("widget_4x1_date_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ccc, MMMM dd.
+        /// </summary>
+        public static string widget_4x2_date_format {
+            get {
+                return ResourceManager.GetString("widget_4x2_date_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cccc, MMMM dd.
+        /// </summary>
+        public static string widget_long_date_format {
+            get {
+                return ResourceManager.GetString("widget_long_date_format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ccc, MMM dd.
+        /// </summary>
+        public static string widget_short_date_format {
+            get {
+                return ResourceManager.GetString("widget_short_date_format", resourceCulture);
             }
         }
     }

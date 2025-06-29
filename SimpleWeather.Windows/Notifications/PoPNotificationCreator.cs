@@ -43,8 +43,8 @@ namespace SimpleWeather.NET.Notifications
             var now = DateTimeOffset.UtcNow;
             var lastPostTime = SettingsManager.LastPoPChanceNotificationTime;
 
-            // We already posted today; post any chance tomorrow
-            if (now.Date == lastPostTime.ToUniversalTime().Date) return;
+            // We already posted recently; skip for now
+            if (now < lastPostTime) return;
 
             var offsetNow = now.ToOffset(location.tz_offset);
 
@@ -58,19 +58,17 @@ namespace SimpleWeather.NET.Notifications
             var toastNotifier = await ToastNotificationManager.GetDefault()
                 .GetToastNotifierForToastCollectionIdAsync(TAG);
 
-            if (!await CreateMinutelyToastContent(toastNotifier, location, minForecasts, offsetNow))
+            if (!await CreateMinutelyToastContent(toastNotifier, location, minForecasts, now))
             {
                 // If not fallback to PoP% notification
                 var nowHour = offsetNow.Trim(TimeSpan.TicksPerHour);
                 var hrForecasts = await SettingsManager.GetHourlyWeatherForecastDataByPageIndexByLimitFilterByDate(location.query, 0, 12, nowHour);
 
-                if (!await CreatePoPToastContent(toastNotifier, location, hrForecasts, offsetNow))
+                if (!await CreatePoPToastContent(toastNotifier, location, hrForecasts, now))
                 {
                     return;
                 }
             }
-
-            SettingsManager.LastPoPChanceNotificationTime = now;
         }
 
         private static async Task<bool> CreatePoPToastContent(ToastNotifier toastNotifier, LocationData.LocationData location, IEnumerable<HourlyForecast> hrForecasts, DateTimeOffset now)
@@ -80,23 +78,22 @@ namespace SimpleWeather.NET.Notifications
             var SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
             // Find the next hour with a 60% or higher chance of precipitation
-            var forecast = hrForecasts?.FirstOrDefault(h => h?.extras?.pop >= SettingsManager.PoPChanceMinimumPercentage);
+            var forecast = hrForecasts?.FirstOrDefault(h =>
+            {
+                return h.date >= now.Trim(TimeSpan.TicksPerHour).AddHours(1) &&
+                    h?.extras?.pop.GetValueOrDefault(0) >= SettingsManager.PoPChanceMinimumPercentage;
+            });
 
-            // Proceed if within the next 3hrs
-            if (forecast == null || (forecast.date - now.Trim(TimeSpan.TicksPerHour)).TotalHours > 3) return false;
+            // Proceed if within the next 2hrs
+            if (forecast == null || (forecast.date - now.Trim(TimeSpan.TicksPerHour)).TotalHours > 2) return false;
 
             var wim = SharedModule.Instance.WeatherIconsManager;
 
             // Should be within 0-3 hours
-            var duration = (int)Math.Round((forecast.date - now).TotalMinutes);
-            string duraStr = duration switch
-            {
-                <= 60 => string.Format(App.Current.ResLoader.GetString("Precipitation_NextHour_Text_Format"), forecast.extras.pop),
-                < 120 => string.Format(App.Current.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                                            App.Current.ResLoader.GetString("refresh_30min").Replace("30", duration.ToString())),
-                _ => string.Format(App.Current.ResLoader.GetString("Precipitation_Text_Format"), forecast.extras.pop,
-                                            App.Current.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
-            };
+            var dt = forecast.date.Trim(TimeSpan.TicksPerHour).ToLocalTime();
+            var time = dt.ToString("t", LocaleUtils.GetLocale());
+
+            var duraStr = string.Format(App.Current.ResLoader.GetString("Precipitation_Likely_Text_Format"), time, forecast.extras.pop);
 
             var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
             {
@@ -141,11 +138,20 @@ namespace SimpleWeather.NET.Notifications
             {
                 Group = TAG,
                 Tag = notID,
-                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
+                ExpirationTime = DateTimeOffset.Now.AddHours(3)
             };
 
             // And send the notification
             toastNotifier.Show(toastNotif);
+
+            // Find the next hour with < 60% or higher chance of precipitation
+            var stopForecast = hrForecasts.FirstOrDefault(h =>
+            {
+                return h.date > forecast.date && (h.extras?.pop == null || h.extras.pop < SettingsManager.PoPChanceMinimumPercentage);
+            });
+            // Delay further notifications until this time
+            var nextTime = stopForecast?.date.Trim(TimeSpan.TicksPerHour) ?? now.AddHours(1);
+            SettingsManager.LastPoPChanceNotificationTime = nextTime.AddMinutes(-5);
 
             return true;
         }
@@ -182,18 +188,17 @@ namespace SimpleWeather.NET.Notifications
 
             if (minute == null) return false;
 
-            var formatStr = isRainingMinute switch
+            var formatStrTemplate = isRainingMinute switch
             {
-                not null => App.Current.ResLoader.GetString("Precipitation_Minutely_Stopping_Text_Format"),
-                _ => App.Current.ResLoader.GetString("Precipitation_Minutely_Starting_Text_Format")
+                not null => App.Current.ResLoader.GetString("Precipitation_Likely_Minutely_Stopping_Text_Format"),
+                _ => App.Current.ResLoader.GetString("Precipitation_Likely_Minutely_Starting_Text_Format")
             };
 
+            var dt = minute.date.Trim(TimeSpan.TicksPerMinute).ToLocalTime();
+            var time = dt.ToString("t", LocaleUtils.GetLocale());
+            var formatStr = string.Format(formatStrTemplate, time);
+
             var duration = (int)Math.Round((minute.date - now).Duration().TotalMinutes);
-            string duraStr = duration switch
-            {
-                < 120 => string.Format(formatStr, App.Current.ResLoader.GetString("refresh_30min").Replace("30", duration.ToString())),
-                _ => string.Format(formatStr, App.Current.ResLoader.GetString("refresh_12hrs").Replace("12", (duration / 60).ToString())),
-            };
 
             var isLight = await SharedModule.Instance.DispatcherQueue.EnqueueAsync(() =>
             {
@@ -210,7 +215,7 @@ namespace SimpleWeather.NET.Notifications
                         {
                             new AdaptiveText()
                             {
-                                Text = duraStr
+                                Text = formatStr
                             }
                         },
                         AppLogoOverride = new ToastGenericAppLogo()
@@ -238,11 +243,16 @@ namespace SimpleWeather.NET.Notifications
             {
                 Group = TAG,
                 Tag = notID,
-                ExpirationTime = DateTime.Now.AddDays(1), // Expires the next day
+                ExpirationTime = now.AddMinutes(duration * 2), // Expires the next day
             };
 
             // And send the notification
             toastNotifier.Show(toastNotif);
+
+            // Delay further notifications until this time
+            var SettingsManager = Ioc.Default.GetService<SettingsManager>();
+            var nextTime = minute.date.Trim(TimeSpan.TicksPerMinute);
+            SettingsManager.LastPoPChanceNotificationTime = nextTime;
 
             return true;
         }

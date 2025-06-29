@@ -172,11 +172,18 @@
   <data name="label_back" xml:space="preserve">
     <value>Terug</value>
   </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Weer</value>
+    <comment>MainActivity</comment>
+  </data>
   <data name="action_settings" xml:space="preserve">
     <value>Instellingen</value>
   </data>
   <data name="action_retry" xml:space="preserve">
     <value>Opnieuw proberen</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
   </data>
   <data name="label_details" xml:space="preserve">
     <value>Details</value>
@@ -220,6 +227,7 @@
   </data>
   <data name="label_chance" xml:space="preserve">
     <value>Kans</value>
+    <comment>Chance of Precipitation</comment>
   </data>
   <data name="label_cloudiness" xml:space="preserve">
     <value>Bewolking</value>
@@ -262,6 +270,9 @@
   </data>
   <data name="label_airquality" xml:space="preserve">
     <value>Luchtkwaliteitsindex</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Luchtkwaliteit</value>
   </data>
   <data name="label_radar" xml:space="preserve">
     <value>Radar</value>
@@ -328,6 +339,9 @@
   <data name="pref_category_providers" xml:space="preserve">
     <value>Data Aanbieders</value>
   </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Toegang tot huidige locatie via GPS toestaan</value>
   </data>
@@ -337,14 +351,26 @@
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Voer alsjeblieft een providersleutel in</value>
   </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Sleutel Geverifieerd</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Sleutel Onjuist</value>
+  </data>
   <data name="pref_title_onnotification" xml:space="preserve">
     <value>Weer Meldingen</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Persistente melding met het huidige weer tonen</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Weeraanbieder</value>
   </data>
   <data name="pref_category_notification" xml:space="preserve">
     <value>Meldingen</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Meldingsicoon</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Weerwaarschuwingen</value>
@@ -383,6 +409,9 @@
   <data name="error_retrieve_location" xml:space="preserve">
     <value>Locatie opvragen mislukt</value>
   </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Locatietoegang uitgeschakeld. Graag aanzetten in instellingen</value>
+  </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Geen resultaten</value>
   </data>
@@ -400,6 +429,10 @@
   </data>
   <data name="delete" xml:space="preserve">
     <value>Verwijderen</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Doorlopende toegang tot locatie op de achtergrond voor meldingen en widgets</value>
+    <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
     <value>Kan weerdata niet laden</value>
@@ -442,6 +475,41 @@
   <data name="update_prefix_day" xml:space="preserve">
     <value>Vernieuwd om</value>
   </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Temperatuur</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Weersomstandigheden</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Weermeldingen</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Weermeldingen</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Weeralarmen</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Meldingen voor weeralarmen</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Servicemeldingen</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$dd geleden</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$du geleden</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$dm geleden</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$ds geleden</value>
+  </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Geldig tot</value>
   </data>
@@ -461,6 +529,9 @@
   </data>
   <data name="userthememode_dark" xml:space="preserve">
     <value>Donker</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Donker (AMOLED)</value>
   </data>
   <data name="userthememode_light" xml:space="preserve">
     <value>Licht</value>
@@ -513,6 +584,28 @@
   </data>
   <data name="summary_default" xml:space="preserve">
     <value>Standaard</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Kies Weeraanbieder</value>
@@ -574,6 +667,14 @@
   </data>
   <data name="label_windgust" xml:space="preserve">
     <value>Windstoten</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
     <value>Controleren op updates...</value>
@@ -645,6 +746,12 @@
   </data>
   <data name="default_units_metric" xml:space="preserve">
     <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Weer updaten...</value>
   </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Achtergrondafbeelding herhalen</value>
@@ -739,8 +846,24 @@ Fuzzy</comment>
   <data name="title_dev_settings" xml:space="preserve">
     <value>Dev Settings</value>
   </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Om de locatie op de achtergrond te updaten voor meldingen en widgets, stel de locatietoestemming in op &apos;%1$s&apos;</value>
+  </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Locatie niet ingesteld. Gelieve een locatie toe te voegen</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Achtergrond Locatie Toegang</value>
+    <comment>Background Location Permission
+Fuzzy</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Doorlopende toegang tot locatie op achtergrond voor tegels en complicaties</value>
+    <comment>Fuzzy</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Om de locatie op de achtergrond te updaten voor tiles en complicaties, stel de locatietoestemming in op &apos;%1$s&apos;</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Huidige</value>
@@ -751,6 +874,9 @@ Fuzzy</comment>
   </data>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Minuut Voorspelling</value>
   </data>
   <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
     <value>De regen zal over ongeveer {0} beginnen</value>
@@ -814,7 +940,40 @@ Fuzzy</comment>
   <data name="api_eccc" xml:space="preserve">
     <value>Environment and Climate Change Canada (ECCC)</value>
   </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Laag</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Matig</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Hoog</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Hoog</value>
+  </data>
   <data name="werror_ratelimited" xml:space="preserve">
     <value>Te veel aanvragen. Probeer het opnieuw na een paar minuten</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Locatie wordt niet ondersteund door huidige weerprovider</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Waarschijnlijk regen rond {0} ({1}% kans)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Regen begint naar verwachting rond {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Regen stopt naar verwachting rond {0}</value>
+    <comment>{0} - Time</comment>
   </data>
 </root>

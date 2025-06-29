@@ -172,11 +172,18 @@
   <data name="label_back" xml:space="preserve">
     <value>Wstecz</value>
   </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Pogoda</value>
+    <comment>MainActivity</comment>
+  </data>
   <data name="action_settings" xml:space="preserve">
     <value>Ustawienia</value>
   </data>
   <data name="action_retry" xml:space="preserve">
     <value>Ponów</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
   </data>
   <data name="label_details" xml:space="preserve">
     <value>Szczegóły</value>
@@ -220,6 +227,7 @@
   </data>
   <data name="label_chance" xml:space="preserve">
     <value>Szansa na opady</value>
+    <comment>Chance of Precipitation</comment>
   </data>
   <data name="label_cloudiness" xml:space="preserve">
     <value>Zachmurzenie</value>
@@ -262,6 +270,9 @@
   </data>
   <data name="label_airquality" xml:space="preserve">
     <value>Wskaźnik jakości powietrza</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Jakość powietrza</value>
   </data>
   <data name="label_radar" xml:space="preserve">
     <value>Radar</value>
@@ -328,6 +339,9 @@
   <data name="pref_category_providers" xml:space="preserve">
     <value>Dostawcy danych</value>
   </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
   <data name="pref_summary_currentlocation" xml:space="preserve">
     <value>Zezwalaj na dostęp do aktualnej lokalizacji GPS</value>
   </data>
@@ -337,14 +351,26 @@
   <data name="message_enter_apikey" xml:space="preserve">
     <value>Wprowadź klucz</value>
   </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Klucz zweryfikowany</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Klucz niepoprawny</value>
+  </data>
   <data name="pref_title_onnotification" xml:space="preserve">
     <value>Powiadomienie o pogodzie</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Pokaż stałe powiadomienie wyświetlające aktualną pogodę</value>
   </data>
   <data name="pref_title_api" xml:space="preserve">
     <value>Dostawca pogody</value>
   </data>
   <data name="pref_category_notification" xml:space="preserve">
     <value>Powiadomienia</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Ikona powiadomień</value>
   </data>
   <data name="pref_title_alerts" xml:space="preserve">
     <value>Alarmy pogodowe</value>
@@ -383,6 +409,9 @@
   <data name="error_retrieve_location" xml:space="preserve">
     <value>Nie udało się ustalić lokalizacji</value>
   </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Usługi lokalizacyjne wyłączone. Włącz je w ustawieniach</value>
+  </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Brak wyników</value>
   </data>
@@ -400,6 +429,10 @@
   </data>
   <data name="delete" xml:space="preserve">
     <value>Usuń</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Zezwól na dostęp do lokalizacji w tle dla powiadomień i widżetów</value>
+    <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
     <value>Nie udało się załadować danych pogodowych</value>
@@ -442,6 +475,41 @@
   <data name="update_prefix_day" xml:space="preserve">
     <value>Zaktualizowano o</value>
   </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Temperatura</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Warunki pogodowe</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Powiadomienia pogodowe</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Powiadomienia pogodowe</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Alarmy pogodowe</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Powiadomienia dla alarmów pogodowych</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Powiadomienia serwisowe</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$d dn. temu</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$d godz. temu</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$d min. temu</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$d sek. temu</value>
+  </data>
   <data name="datetime_validuntil" xml:space="preserve">
     <value>Ważne do</value>
   </data>
@@ -461,6 +529,9 @@
   </data>
   <data name="userthememode_dark" xml:space="preserve">
     <value>Ciemny</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Ciemny (AMOLED)</value>
   </data>
   <data name="userthememode_light" xml:space="preserve">
     <value>Jasny</value>
@@ -513,6 +584,28 @@
   </data>
   <data name="summary_default" xml:space="preserve">
     <value>Domyślne</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
   </data>
   <data name="API_Box.PlaceholderText" xml:space="preserve">
     <value>Wybierz dostawcę pogody</value>
@@ -574,6 +667,14 @@
   </data>
   <data name="label_windgust" xml:space="preserve">
     <value>Porywy wiatru</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
   </data>
   <data name="CheckUpdatePrompt.Text" xml:space="preserve">
     <value>Sprawdzam aktualizacje</value>
@@ -647,6 +748,12 @@
   <data name="default_units_metric" xml:space="preserve">
     <value>°C, km/h, mm, mb, km</value>
   </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Aktualizacja pogody…</value>
+  </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
     <value>Obraz tła miniatury</value>
   </data>
@@ -685,13 +792,11 @@
   </data>
   <data name="Precipitation_Text_Format" xml:space="preserve">
     <value>{0}% szans na opady w ciągu {1}</value>
-    <comment>Changed to &quot;Percipation&quot; in translation, because this string applies also to other type of percip.
-{0} = Percentage; {1} = time in hours/minutes</comment>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
   </data>
   <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
     <value>{0}% szans na opady w ciągu najbliższej godziny</value>
-    <comment>Changed to &quot;Percipation&quot; in translation, because this string applies also to other type of percip.
-{0} = Percentage</comment>
+    <comment>{0} = Percentage</comment>
   </data>
   <data name="pref_title_feature_summary" xml:space="preserve">
     <value>Przegląd pogody</value>
@@ -742,8 +847,23 @@ Fuzzy</comment>
   <data name="title_dev_settings" xml:space="preserve">
     <value>Dev Settings</value>
   </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Aby aktualizować lokalizację w tle dla powiadomień i widżetów, należy ustawić zezwolenie na lokalizację na &apos;%1$s&apos;</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Nie ustalono lokalizacji. Proszę dodać lokalizację</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Tło Położenie Dostęp</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Zezwól na dostęp do lokalizacji tła dla kafelków i komplikacji</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Aby aktualizować lokalizację w tle dla kafelków i komplikacji, należy ustawić uprawnienie lokalizacji na &apos;%1$s&apos;</value>
+    <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Aktualny</value>
@@ -755,13 +875,15 @@ Fuzzy</comment>
   <data name="api_tomorrowio" xml:space="preserve">
     <value>Tomorrow.io</value>
   </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Prognoza minutowa</value>
+    <comment>Fuzzy</comment>
+  </data>
   <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
     <value>Opady rozpoczną się za około {0}</value>
-    <comment>Changed to &quot;Percipation&quot; in translation, because this string applies also to other type of percip.</comment>
   </data>
   <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Opady zakończą się za około {0}</value>
-    <comment>Changed to &quot;Percipation&quot; in translation, because this string applies also to other type of percip.</comment>
   </data>
   <data name="hint_appid" xml:space="preserve">
     <value>App ID</value>
@@ -819,7 +941,28 @@ Fuzzy</comment>
   <data name="api_eccc" xml:space="preserve">
     <value>Environment and Climate Change Canada (ECCC)</value>
   </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Niski</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Średni</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Wysoki</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Wysoki</value>
+  </data>
   <data name="werror_ratelimited" xml:space="preserve">
     <value>Zbyt wiele żądań. Spróbuj ponownie za kilka minut</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Ta lokalizacja nie jest obsługiwana przez tego dostawcę pogody</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
   </data>
 </root>

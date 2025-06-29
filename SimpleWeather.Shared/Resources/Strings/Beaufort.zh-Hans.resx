@@ -119,8 +119,7 @@
   </resheader>
   <data name="beaufort_0" xml:space="preserve">
     <value>无风</value>
-    <comment>Standard from https://www.renrendoc.com/paper/102496606.html :)
-Fuzzy</comment>
+    <comment>Fuzzy</comment>
   </data>
   <data name="beaufort_1" xml:space="preserve">
     <value>软风</value>
