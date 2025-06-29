@@ -50,7 +50,7 @@ namespace SimpleWeather.NET.Radar
                     [
                         new PointFeature(MapCameraPosition)
                     ],
-                    Style = SymbolStyles.CreatePinStyle(fillColor: Color.FromString("#FF4500"), symbolScale: 0.75d)
+                    Style = ImageStyles.CreatePinStyle(fillColor: Color.FromString("#FF4500"), symbolScale: 0.75d)
                 };
                 mapControl.Map.Layers.Changed -= Layers_Changed;
                 mapControl.Map.Layers.Add(markerLayer);

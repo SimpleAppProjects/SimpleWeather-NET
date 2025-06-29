@@ -5,6 +5,7 @@ using BruTile.Predefined;
 using BruTile.Web;
 using Mapsui.Extensions;
 using Mapsui.Layers;
+using Mapsui.Rendering.Skia;
 using Mapsui.Styles;
 using Mapsui.Tiling.Layers;
 using Mapsui.UI.WinUI;
@@ -125,12 +126,12 @@ namespace SimpleWeather.NET.MapsUi
                 HorizontalAlignment = HorizontalAlignment.Left,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Margin = new Mapsui.MRect(5),
-                ImageSource = path,
+                Image = path,
                 Width = 100,
                 Height = 22.5,
             });
 
-            mapControl.Renderer.WidgetRenders[typeof(ImageButtonWidget)] = new ImageButtonWidgetRenderer();
+            MapRenderer.RegisterWidgetRenderer(typeof(ImageButtonWidget), new ImageButtonWidgetRenderer());
 #endif
         }
     }

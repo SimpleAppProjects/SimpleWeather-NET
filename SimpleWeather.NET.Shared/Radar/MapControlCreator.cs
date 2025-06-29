@@ -4,6 +4,8 @@ using MapControl = Microsoft.Maui.Controls.Maps.Map;
 #else
 using Mapsui;
 using Mapsui.UI.WinUI;
+using Mapsui.Utilities;
+using Mapsui.Widgets;
 using Mapsui.Widgets.ButtonWidgets;
 using Mapsui.Widgets.InfoWidgets;
 using SimpleWeather.NET.MapsUi;
@@ -29,7 +31,8 @@ namespace SimpleWeather.NET.Radar
 #endif
 
 #if !__IOS__
-            LoggingWidget.ShowLoggingInMap = ShowLoggingInMap.No;
+            LoggingWidget.ShowLoggingInMap = ActiveMode.No;
+            Performance.DefaultIsActive = ActiveMode.No;
 #endif
 
             var mapControl = new MapControl()

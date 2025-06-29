@@ -20,11 +20,11 @@ namespace SimpleWeather.NET.MapsUi
         {
             var button = (ImageButtonWidget)widget;
 
-            if (button.ImageSource == null)
+            if (button.Image == null)
                 throw new InvalidOperationException("ImageSource is not set");
 
-            var drawableImage = renderService.DrawableImageCache.GetOrCreate(button.ImageSource,
-                () => TryCreateDrawableImage(button.ImageSource, renderService.ImageSourceCache));
+            var drawableImage = renderService.DrawableImageCache.GetOrCreate(button.Image.SourceId,
+                () => TryCreateDrawableImage(button.Image, renderService.ImageSourceCache));
             if (drawableImage == null)
                 return;
 
@@ -78,9 +78,9 @@ namespace SimpleWeather.NET.MapsUi
                 throw new NotSupportedException("DrawableImage type not supported");
         }
 
-        private static IDrawableImage? TryCreateDrawableImage(string key, ImageSourceCache imageSourceCache)
+        private static IDrawableImage? TryCreateDrawableImage(Image image, ImageSourceCache imageSourceCache)
         {
-            byte[] array = imageSourceCache.Get(key);
+            byte[] array = imageSourceCache.Get(image.Source);
             if (array == null)
             {
                 return null;
