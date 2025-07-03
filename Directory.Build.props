@@ -40,7 +40,7 @@
 
   <!-- Maui -->
   <PropertyGroup>
-    <MauiVersion>9.0.80</MauiVersion>
+    <MauiVersion>9.0.81</MauiVersion>
     <_MauiBindingInterceptorsSupport>true</_MauiBindingInterceptorsSupport>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
