@@ -22,8 +22,8 @@ namespace SimpleWeather.Icons
         public abstract bool IsFontIcon { get; }
 
         public abstract Uri GetWeatherIconURI(string icon);
-        public abstract String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false);
-        public abstract String GetSVGIconUri(string icon, bool isLight = false);
+        public abstract string GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false);
+        public abstract string GetSVGIconUri(string icon, bool isLight = false);
 
         public virtual Task<SKDrawable> GetDrawable(string icon, bool isLight = false)
         {
@@ -36,13 +36,11 @@ namespace SimpleWeather.Icons
 #if WINUI
                     var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon, isLight)));
                     var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#elif __ANDROID__
+#else
                     var filename = Path.GetFileName(lottieProvider.GetLottieIconURI(icon, isLight));
                     var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
                     var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
                     var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
-#else
-                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(lottieProvider.GetLottieIconURI(icon, isLight));
 #endif
 
                     drawable = Animation.Create(fStream)?.ToDrawable();
@@ -71,13 +69,11 @@ namespace SimpleWeather.Icons
 #if WINUI
                 var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
                 var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#elif __ANDROID__
+#else
                 var filename = Path.GetFileName(GetSVGIconUri(icon, isLight));
                 var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
                 var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
                 var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
-#else
-                var fStream = await FileSystemUtils.OpenAppPackageFileAsync(GetSVGIconUri(icon, isLight));
 #endif
 
                 svg.Load(fStream);
@@ -92,13 +88,11 @@ namespace SimpleWeather.Icons
 #if WINUI
                 var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
                 var fStream = (await file.OpenReadAsync()).AsStreamForRead();
-#elif __ANDROID__
+#else
                 var filename = Path.GetFileName(GetWeatherIconURI(icon, isAbsoluteUri: false, isLight));
                 var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
                 var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
                 var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
-#else
-                var fStream = await FileSystemUtils.OpenAppPackageFileAsync(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight));
 #endif
 
                 return SKBitmap.Decode(fStream).ToDrawable();

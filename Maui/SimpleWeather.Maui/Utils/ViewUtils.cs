@@ -34,6 +34,18 @@ namespace SimpleWeather.Maui.Utils
 
 			return isTruncated;
 		}
+
+		public static Label TextCenterHorizontal(this Label label)
+		{
+			label.HorizontalTextAlignment = TextAlignment.Center;
+			return label;
+		}
+
+		public static Label TextCenterVertical(this Label label)
+		{
+			label.VerticalTextAlignment = TextAlignment.Center;
+			return label;
+		}
 	}
 }
 

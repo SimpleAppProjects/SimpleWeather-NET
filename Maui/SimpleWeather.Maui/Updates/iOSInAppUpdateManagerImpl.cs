@@ -5,6 +5,7 @@ using SimpleWeather.Utils;
 using UIKit;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
+using Version = System.Version;
 
 namespace SimpleWeather.Maui.Updates
 {
