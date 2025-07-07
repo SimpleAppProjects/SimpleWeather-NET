@@ -53,7 +53,7 @@ namespace SimpleWeather.Weather_API.HERE
             weather.atmosphere = _.CreateAtmosphere(observation);
             weather.astronomy = _.CreateAstronomy(root.astronomyForecasts[0].forecasts);
             weather.precipitation = _.CreatePrecipitation(observation, todaysForecast);
-            weather.ttl = 120;
+            weather.ttl = 180;
 
             weather.source = WeatherAPI.Here;
 
