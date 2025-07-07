@@ -42,7 +42,7 @@ namespace SimpleWeather.Icons
 
         public WeatherIconProvider GetIconProvider(string key)
         {
-            WeatherIconProvider provider = _IconProviders[key];
+            WeatherIconProvider provider = _IconProviders.GetValueOrDefault(key);
             if (provider == null)
             {
                 // Can't find the provider for this key; fallback to default/first available

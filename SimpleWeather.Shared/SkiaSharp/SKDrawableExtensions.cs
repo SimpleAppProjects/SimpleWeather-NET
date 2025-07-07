@@ -20,5 +20,22 @@ namespace SimpleWeather.SkiaSharp
         {
             return new SKLottieDrawable(animation);
         }
+
+        public static SKBitmapDrawable ToBitmapDrawable(this SKSvgDrawable svgDrawable, double width, double height)
+        {
+            var bitmap = new SKBitmap((int)width, (int)height);
+            using var canvas = new SKCanvas(bitmap);
+            
+            SKMatrix scaleMatrix = default;
+            if (svgDrawable?.svg?.Picture?.CullRect is { } rect)
+            {
+                scaleMatrix = SKMatrix.CreateScale(bitmap.Width / rect.Width, bitmap.Height / rect.Height);
+            }
+            
+            canvas.Clear();
+            canvas.DrawPicture(svgDrawable?.svg?.Picture, in scaleMatrix);
+            
+            return new SKBitmapDrawable(bitmap);
+        }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.Maui.Storage;
 using Animation = SkiaSharp.Skottie.Animation;
 using SKBitmap = SkiaSharp.SKBitmap;
 using SimpleWeather.Utils;
+using Svg.Skia;
 
 namespace SimpleWeather.Icons
 {
@@ -33,28 +34,30 @@ namespace SimpleWeather.Icons
 
                 if (this is ILottieWeatherIconProvider lottieProvider)
                 {
+                    try
+                    {
 #if WINUI
-                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon, isLight)));
-                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+                        var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(lottieProvider.GetLottieIconURI(icon, isLight)));
+                        var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
-                    var filename = Path.GetFileName(lottieProvider.GetLottieIconURI(icon, isLight));
-                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
-                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
+                        var filePath = lottieProvider.GetLottieIconURI(icon, isLight);
+                        var filename = Path.GetFileName(filePath);
+                        var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
+                        var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                        var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
-                    drawable = Animation.Create(fStream)?.ToDrawable();
+                        drawable = Animation.Create(fStream)?.ToDrawable();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error(nameof(WeatherIconProvider), "error loading lottie animation", ex);
+                    }
                 }
 
-                if (drawable == null)
-                {
-                    drawable = await GetSVGDrawable(icon, isLight);
-                }
+                drawable ??= await GetSVGDrawable(icon, isLight);
 
-                if (drawable == null)
-                {
-                    drawable = await GetBitmapDrawable(icon, isLight);
-                }
+                drawable ??= await GetBitmapDrawable(icon, isLight);
 
                 return drawable;
             });
@@ -64,20 +67,28 @@ namespace SimpleWeather.Icons
         {
             return Task.Run(async () =>
             {
-                var svg = new Svg.Skia.SKSvg();
-
+                try
+                {
 #if WINUI
-                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
-                var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetSVGIconUri(icon, isLight)));
+                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
-                var filename = Path.GetFileName(GetSVGIconUri(icon, isLight));
-                var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
-                var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
+                    var filePath = GetSVGIconUri(icon, isLight);
+                    var filename = Path.GetFileName(filePath);
+                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
+                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
-                svg.Load(fStream);
-                return svg.ToDrawable();
+                    var svg = SKSvg.CreateFromStream(fStream);
+                    return svg.ToDrawable();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(nameof(WeatherIconProvider), "error loading svg", ex);
+                }
+                
+                return null;
             });
         }
 
@@ -85,17 +96,27 @@ namespace SimpleWeather.Icons
         {
             return Task.Run(async () =>
             {
+                try
+                {
 #if WINUI
-                var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
-                var fStream = (await file.OpenReadAsync()).AsStreamForRead();
+                    var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(GetWeatherIconURI(icon, isAbsoluteUri: true, isLight)));
+                    var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
-                var filename = Path.GetFileName(GetWeatherIconURI(icon, isAbsoluteUri: false, isLight));
-                var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
-                var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
+                    var filePath = GetWeatherIconURI(icon, isAbsoluteUri: false, isLight);
+                    var filename = Path.GetFileName(filePath);
+                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
+                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                    var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
-                return SKBitmap.Decode(fStream).ToDrawable();
+                    return SKBitmap.Decode(fStream).ToDrawable();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(nameof(WeatherIconProvider), "error loading bitmap", ex);
+                }
+                
+                return null;
             });
         }
     }

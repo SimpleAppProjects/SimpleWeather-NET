@@ -11,7 +11,12 @@ namespace SimpleWeather.SkiaSharp
         public abstract void Draw(SKCanvas canvas);
     }
 
-    public partial class SKBitmapDrawable : SKDrawable, IDisposable
+    public interface ITintableDrawable
+    {
+        public SKColor? TintColor { get; set; }
+    }
+
+    public partial class SKBitmapDrawable : SKDrawable, ITintableDrawable, IDisposable
     {
         private readonly SKBitmap _bitmap;
         private readonly SKPaint _paint;
@@ -83,9 +88,9 @@ namespace SimpleWeather.SkiaSharp
         }
     }
 
-    public partial class SKSvgDrawable : SKDrawable, IDisposable
+    public partial class SKSvgDrawable : SKDrawable, ITintableDrawable, IDisposable
     {
-        private readonly SKSvg svg;
+        internal readonly SKSvg svg;
         private readonly SKPaint _paint;
         private bool disposedValue;
 
@@ -125,7 +130,7 @@ namespace SimpleWeather.SkiaSharp
             {
                 scaleMatrix = SKMatrix.CreateScale(Bounds.Width / rect.Width, Bounds.Height / rect.Height);
             }
-            canvas.DrawPicture(svg.Picture, ref scaleMatrix, _paint);
+            canvas.DrawPicture(svg.Picture, in scaleMatrix, _paint);
         }
 
         protected virtual void Dispose(bool disposing)

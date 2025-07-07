@@ -21,7 +21,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty WeatherIconProperty =
-            BindableProperty.Create(nameof(WeatherIcon), typeof(string), typeof(IconControl), null, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(WeatherIcon), typeof(string), typeof(IconControl), null, propertyChanged: OnPropertyChanged);
 
         public bool ForceDarkTheme
         {
@@ -30,7 +30,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty ForceDarkThemeProperty =
-            BindableProperty.Create(nameof(ForceDarkTheme), typeof(bool), typeof(IconControl), false, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(ForceDarkTheme), typeof(bool), typeof(IconControl), false, propertyChanged: OnPropertyChanged);
 
         public string IconProvider
         {
@@ -39,7 +39,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty IconProviderProperty =
-            BindableProperty.Create(nameof(IconProvider), typeof(string), typeof(IconControl), null, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(IconProvider), typeof(string), typeof(IconControl), null, propertyChanged: OnPropertyChanged);
 
         public bool IsLightTheme
         {
@@ -48,7 +48,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty IsLightThemeProperty =
-            BindableProperty.Create(nameof(IsLightTheme), typeof(bool), typeof(IconControl), false, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(IsLightTheme), typeof(bool), typeof(IconControl), false, propertyChanged: OnPropertyChanged);
 
         public bool ShowAsMonochrome
         {
@@ -57,7 +57,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty ShowAsMonochromeProperty =
-            BindableProperty.Create(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), false, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), false, propertyChanged: OnDrawablePropertyChanged);
 
         public bool ForceBitmapIcon
         {
@@ -66,7 +66,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty ForceBitmapIconProperty =
-            BindableProperty.Create(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), false, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), false, propertyChanged: OnDrawablePropertyChanged);
 
         public Color IconColor
         {
@@ -75,7 +75,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty IconColorProperty =
-            BindableProperty.Create(nameof(IconColor), typeof(Color), typeof(IconControl), Colors.Transparent, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(IconColor), typeof(Color), typeof(IconControl), Colors.Transparent, propertyChanged: OnDrawablePropertyChanged);
 
         public double IconHeight
         {
@@ -84,7 +84,7 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty IconHeightProperty =
-            BindableProperty.Create(nameof(IconHeight), typeof(double), typeof(IconControl), -1d, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(IconHeight), typeof(double), typeof(IconControl), -1d, propertyChanged: OnDrawablePropertyChanged);
 
         public double IconWidth
         {
@@ -93,7 +93,17 @@ namespace SimpleWeather.Maui.Controls
         }
 
         public static readonly BindableProperty IconWidthProperty =
-            BindableProperty.Create(nameof(IconWidth), typeof(double), typeof(IconControl), -1d, propertyChanged: (obj, _, _) => (obj as IconControl)?.UpdateWeatherIcon());
+            BindableProperty.Create(nameof(IconWidth), typeof(double), typeof(IconControl), -1d, propertyChanged: OnDrawablePropertyChanged);
+
+        /* TODO: Check why SVGs are causing crashes in release mode for iOS */
+        public bool AllowSvg
+        {
+            get => (bool)GetValue(AllowSvgProperty);
+            set => SetValue(AllowSvgProperty, value);
+        }
+
+        public static readonly BindableProperty AllowSvgProperty =
+            BindableProperty.Create(nameof(AllowSvg), typeof(bool), typeof(IconControl), DeviceInfo.Platform != DevicePlatform.iOS, propertyChanged: OnPropertyChanged);
 
         private readonly SettingsManager _settingsManager = Ioc.Default.GetService<SettingsManager>();
         
@@ -114,9 +124,30 @@ namespace SimpleWeather.Maui.Controls
             UpdateWeatherIcon();
         }
 
+        private static void OnPropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (!Equals(oldValue, newValue))
+            {
+                (bindable as IconControl)?.UpdateWeatherIcon();
+            }
+        }
+
+        private static void OnDrawablePropertyChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            if (!Equals(oldValue, newValue))
+            {
+                (bindable as IconControl)?.UpdateDrawable();
+            }
+        }
+
         public async void UpdateWeatherIcon()
         {
             if (Canvas == null) return;
+
+            if (Drawable is IDisposable disposable)
+            {
+                this.RunCatching(() => disposable.Dispose());
+            }
 
             Drawable = null;
 
@@ -185,11 +216,16 @@ namespace SimpleWeather.Maui.Controls
                     }
                 }
             }
-            else if (wip is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
+            else if (wip is ISVGWeatherIconProvider svgProvider && AllowSvg)
             {
                 try
                 {
                     Drawable = await svgProvider.GetSVGDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme);
+
+                    if (ShouldUseFilter() && Drawable is ITintableDrawable tintable)
+                    {
+                        tintable.TintColor = IconColor.ToSKColor();
+                    }
                 }
                 catch (Exception e)
                 {
@@ -204,6 +240,36 @@ namespace SimpleWeather.Maui.Controls
             }
 
             Canvas?.InvalidateSurface();
+        }
+
+        private void UpdateDrawable()
+        {
+            if (Drawable != null)
+            {
+                if (ForceBitmapIcon && Drawable is not ITintableDrawable)
+                {
+                    UpdateWeatherIcon();
+                    return;
+                }
+
+                if (Drawable is ITintableDrawable tintable)
+                {
+                    if (ShouldUseFilter())
+                    {
+                        tintable.TintColor = IconColor.ToSKColor();
+                    }
+                    else
+                    {
+                        tintable.TintColor = null;
+                    }
+                }
+
+                Canvas?.InvalidateSurface();
+            }
+            else
+            {
+                UpdateWeatherIcon();
+            }
         }
 
         private void CanvasOnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
@@ -229,22 +295,23 @@ namespace SimpleWeather.Maui.Controls
             e.Surface.Flush(true);
         }
 
-        private bool ShouldUseBitmap()
+        private bool ShouldUseFilter()
         {
             return ShowAsMonochrome && !Equals(IconColor, Colors.Transparent) && !IsBlackOrWhiteColor(IconColor);
         }
 
-        private bool IsBlackOrWhiteColor(Color c)
+        private static bool IsBlackOrWhiteColor(Color c)
         {
-            return (c.Red == 1f && c.Green == 1f && c.Blue == 1f) || (c.Red == 0f && c.Green == 0f && c.Blue == 0f);
+            return Equals(c, Colors.White) || Equals(c, Colors.Black);
         }
 
         private async Task<SKDrawable> CreateBitmapIcon(IWeatherIconsProvider provider)
         {
             var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme).ConfigureAwait(false);
-            if (ShowAsMonochrome && drawable is SKBitmapDrawable bmpDrawable)
+
+            if (ShouldUseFilter() && drawable is ITintableDrawable tintable)
             {
-                bmpDrawable.TintColor = IconColor.ToSKColor();
+                tintable.TintColor = IconColor.ToSKColor();
             }
 
             return drawable;

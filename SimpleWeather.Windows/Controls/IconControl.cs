@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using System;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -14,6 +16,11 @@ using SkiaSharp;
 using SkiaSharp.Views.Windows;
 using Windows.Storage;
 using Windows.UI;
+using Binding = Microsoft.UI.Xaml.Data.Binding;
+using BindingMode = Microsoft.UI.Xaml.Data.BindingMode;
+using Color = Windows.UI.Color;
+using Colors = Microsoft.UI.Colors;
+using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 
 namespace SimpleWeather.NET.Controls
 {
@@ -30,7 +37,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for WeatherIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty WeatherIconProperty =
-            DependencyProperty.Register(nameof(WeatherIcon), typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(WeatherIcon), typeof(string), typeof(IconControl), new PropertyMetadata(null, OnPropertyChanged));
 
         public bool ForceDarkTheme
         {
@@ -40,7 +47,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ForceDarkTheme.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForceDarkThemeProperty =
-            DependencyProperty.Register(nameof(ForceDarkTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ForceDarkTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnPropertyChanged));
 
         public string IconProvider
         {
@@ -50,7 +57,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for IconProvider.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IconProviderProperty =
-            DependencyProperty.Register(nameof(IconProvider), typeof(string), typeof(IconControl), new PropertyMetadata(null, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IconProvider), typeof(string), typeof(IconControl), new PropertyMetadata(null, OnPropertyChanged));
 
         public bool IsLightTheme
         {
@@ -60,7 +67,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for IsLightTheme.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty IsLightThemeProperty =
-            DependencyProperty.Register(nameof(IsLightTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IsLightTheme), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnPropertyChanged));
 
         /// <summary>
         /// Gets or sets a value that indicates whether the bitmap is shown in a single color.
@@ -73,7 +80,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ShowAsMonochrome.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ShowAsMonochromeProperty =
-            DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnDrawablePropertyChanged));
 
         public bool ForceBitmapIcon
         {
@@ -83,7 +90,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for ForceBitmapIcon.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ForceBitmapIconProperty =
-            DependencyProperty.Register(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), new PropertyMetadata(false, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnDrawablePropertyChanged));
 
         public double IconHeight
         {
@@ -92,7 +99,7 @@ namespace SimpleWeather.NET.Controls
         }
 
         public static readonly DependencyProperty IconHeightProperty =
-            DependencyProperty.Register(nameof(IconHeight), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IconHeight), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, OnDrawablePropertyChanged));
 
         public double IconWidth
         {
@@ -101,7 +108,7 @@ namespace SimpleWeather.NET.Controls
         }
 
         public static readonly DependencyProperty IconWidthProperty =
-            DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, (s, e) => (s as IconControl)?.UpdateWeatherIcon()));
+            DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, OnDrawablePropertyChanged));
 
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
 
@@ -119,12 +126,47 @@ namespace SimpleWeather.NET.Controls
             UpdateWeatherIcon();
         }
 
+        private static void OnPropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (!Equals(e.OldValue, e.NewValue))
+            {
+                (obj as IconControl)?.UpdateWeatherIcon();
+            }
+        }
+
+        private static void OnDrawablePropertyChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        {
+            if (!Equals(e.OldValue, e.NewValue))
+            {
+                (obj as IconControl)?.UpdateDrawable();
+            }
+        }
+
         public async void UpdateWeatherIcon()
         {
             if (IconBox == null) return;
 
-            UIElement iconElement;
+            var iconElement = IconBox.Child;
             var wicon = WeatherIcon;
+
+            {
+                if (iconElement is SkDrawableCanvas canvas)
+                {
+                    var drawable = canvas.Drawable;
+                    canvas.UpdateDrawable(null, invalidate: false);
+                    
+                    if (drawable is IDisposable disposable)
+                    {
+                        this.RunCatching(() => disposable.Dispose());
+                    }
+                }
+            }
+
+            if (wicon == null)
+            {
+                IconBox.Child = null;
+                return;
+            }
 
             // Remove any animatable drawables
             RemoveAnimatedDrawables();
@@ -169,39 +211,34 @@ namespace SimpleWeather.NET.Controls
                     try
                     {
                         var drawable = await wip.GetDrawable(wicon, isLight: isLight);
-                        var canvas = new SKXamlCanvas();
-                        canvas.PaintSurface += (s, e) =>
+
+                        if (iconElement is SkDrawableCanvas canvas)
                         {
-                            e.Surface.Canvas.Clear();
-
-                            var padding = (float)Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
-                            var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                            var cnt = e.Surface.Canvas.Save();
-
-                            drawable.Bounds = bounds;
-
-                            if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                            drawable.Draw(e.Surface.Canvas);
-
-                            e.Surface.Canvas.RestoreToCount(cnt);
-
-                            e.Surface.Flush(true);
-                        };
-                        canvas.SetBinding(HeightProperty, new Binding()
+                            canvas.UpdateDrawable(drawable);
+                        }
+                        else
                         {
-                            Source = this,
-                            Path = new PropertyPath(nameof(IconHeight)),
-                            Mode = BindingMode.OneWay,
-                        });
-                        canvas.SetBinding(WidthProperty, new Binding()
-                        {
-                            Source = this,
-                            Path = new PropertyPath(nameof(IconWidth)),
-                            Mode = BindingMode.OneWay,
-                        });
-                        iconElement = canvas;
+                            canvas = new SkDrawableCanvas(drawable);
+                            canvas.SetBinding(SkDrawableCanvas.DrawablePaddingProperty, new Binding()
+                            {
+                                Source = this,
+                                Path = new PropertyPath(nameof(Padding)),
+                                Mode = BindingMode.OneWay,
+                            });
+                            canvas.SetBinding(HeightProperty, new Binding()
+                            {
+                                Source = this,
+                                Path = new PropertyPath(nameof(IconHeight)),
+                                Mode = BindingMode.OneWay,
+                            });
+                            canvas.SetBinding(WidthProperty, new Binding()
+                            {
+                                Source = this,
+                                Path = new PropertyPath(nameof(IconWidth)),
+                                Mode = BindingMode.OneWay,
+                            });
+                            iconElement = canvas;
+                        }
 
                         if (drawable is SKLottieDrawable lottieDrawable)
                         {
@@ -216,44 +253,44 @@ namespace SimpleWeather.NET.Controls
                     }
                 }
             }
-            else if (wip is ISVGWeatherIconProvider svgProvider && !ShouldUseBitmap())
+            else if (wip is ISVGWeatherIconProvider svgProvider)
             {
                 try
                 {
-                    var drawable = await wip.GetSVGDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                    var canvas = new SKXamlCanvas();
-                    canvas.PaintSurface += (s, e) =>
+                    var drawable = await svgProvider.GetSVGDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
+                    
+                    if (ShouldUseFilter() && Foreground is SolidColorBrush colorBrush && drawable is ITintableDrawable tintable)
                     {
-                        e.Surface.Canvas.Clear();
+                        tintable.TintColor = colorBrush.Color.ToSKColor();
+                    }
 
-                        var padding = (float)Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
-                        var bounds = new SKRect(0, 0, e.Info.Width - padding, e.Info.Height - padding);
-
-                        var cnt = e.Surface.Canvas.Save();
-
-                        drawable.Bounds = bounds;
-
-                        if (padding > 0) e.Surface.Canvas.Translate(padding / 2, padding / 2);
-
-                        drawable.Draw(e.Surface.Canvas);
-
-                        e.Surface.Canvas.RestoreToCount(cnt);
-
-                        e.Surface.Flush(true);
-                    };
-                    canvas.SetBinding(HeightProperty, new Binding()
+                    if (iconElement is SkDrawableCanvas canvas)
                     {
-                        Source = this,
-                        Path = new PropertyPath(nameof(IconHeight)),
-                        Mode = BindingMode.OneWay,
-                    });
-                    canvas.SetBinding(WidthProperty, new Binding()
+                        canvas.UpdateDrawable(drawable);
+                    }
+                    else
                     {
-                        Source = this,
-                        Path = new PropertyPath(nameof(IconWidth)),
-                        Mode = BindingMode.OneWay,
-                    });
-                    iconElement = canvas;
+                        canvas = new SkDrawableCanvas(drawable);
+                        canvas.SetBinding(SkDrawableCanvas.DrawablePaddingProperty, new Binding()
+                        {
+                            Source = this,
+                            Path = new PropertyPath(nameof(Padding)),
+                            Mode = BindingMode.OneWay,
+                        });
+                        canvas.SetBinding(HeightProperty, new Binding()
+                        {
+                            Source = this,
+                            Path = new PropertyPath(nameof(IconHeight)),
+                            Mode = BindingMode.OneWay,
+                        });
+                        canvas.SetBinding(WidthProperty, new Binding()
+                        {
+                            Source = this,
+                            Path = new PropertyPath(nameof(IconWidth)),
+                            Mode = BindingMode.OneWay,
+                        });
+                        iconElement = canvas;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -270,22 +307,55 @@ namespace SimpleWeather.NET.Controls
             IconBox.Child = iconElement;
         }
 
-        private bool ShouldUseBitmap()
+        private void UpdateDrawable()
+        {
+            if (IconBox?.Child is { } iconElement)
+            {
+                if (ForceBitmapIcon && iconElement is not (BitmapIcon or SkDrawableCanvas { Drawable: ITintableDrawable }))
+                {
+                    UpdateWeatherIcon();
+                    return;
+                }
+
+                if (iconElement is SkDrawableCanvas canvas)
+                {
+                    if (canvas.Drawable is ITintableDrawable tintable)
+                    {
+                        if (ShouldUseFilter() && Foreground is SolidColorBrush colorBrush)
+                        {
+                            tintable.TintColor = colorBrush.Color.ToSKColor();
+                        }
+                        else
+                        {
+                            tintable.TintColor = null;
+                        }
+                    }
+                    
+                    canvas.Invalidate();
+                }
+            }
+            else
+            {
+                UpdateWeatherIcon();
+            }
+        }
+
+        private bool ShouldUseFilter()
         {
             return ShowAsMonochrome && Foreground is SolidColorBrush brush && brush.Color != Colors.Transparent && !IsBlackOrWhiteColor(brush.Color);
         }
 
-        private bool IsBlackOrWhiteColor(Color c)
+        private static bool IsBlackOrWhiteColor(Color c)
         {
-            return (c.R == 0xFF && c.G == 0xFF && c.B == 0xFF) || (c.R == 0 && c.G == 0 && c.B == 0);
+            return c == Colors.White || c == Colors.Black;
         }
 
-        private IconElement CreateBitmapIcon(IWeatherIconsProvider provider)
+        private BitmapIcon CreateBitmapIcon(IWeatherIconsProvider provider)
         {
             return CreateBitmapIcon(provider, WeatherIcon);
         }
 
-        private IconElement CreateBitmapIcon(IWeatherIconsProvider provider, string wicon)
+        private BitmapIcon CreateBitmapIcon(IWeatherIconsProvider provider, string wicon)
         {
             var bmpIcon = new BitmapIcon()
             {
@@ -313,6 +383,14 @@ namespace SimpleWeather.NET.Controls
                 Path = new PropertyPath(nameof(IconWidth)),
                 Mode = BindingMode.OneWay,
             });
+            
+            UpdateBitmapScaling(bmpIcon);
+            
+            return bmpIcon;
+        }
+
+        private void UpdateBitmapScaling(BitmapIcon bmpIcon)
+        {
             var padding = Math.Max(Padding.Left + Padding.Right, Padding.Top + Padding.Bottom) / 2;
             bmpIcon.RenderTransformOrigin = new Windows.Foundation.Point(0.5, 0.5);
             bmpIcon.RenderTransform = new ScaleTransform()
@@ -320,9 +398,9 @@ namespace SimpleWeather.NET.Controls
                 ScaleX = (float)Math.Max((IconHeight - padding) / IconHeight, (IconWidth - padding) / IconWidth),
                 ScaleY = (float)Math.Max((IconHeight - padding) / IconHeight, (IconWidth - padding) / IconWidth)
             };
-            return bmpIcon;
         }
 
+        /* Canvas */
         private async Task<UIElement> CreateXAMLIconElement(string uri)
         {
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri));
