@@ -40,7 +40,6 @@ namespace SimpleWeather.NET.Controls
             this.DataContextChanged += (s, e) =>
             {
                 this.Bindings.Update();
-                IconCtrl.UpdateWeatherIcon();
             };
         }
 

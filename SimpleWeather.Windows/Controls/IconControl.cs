@@ -149,6 +149,9 @@ namespace SimpleWeather.NET.Controls
             var iconElement = IconBox.Child;
             var wicon = WeatherIcon;
 
+            // Remove any animatable drawables
+            RemoveAnimatedDrawables();
+
             {
                 if (iconElement is SkDrawableCanvas canvas)
                 {
@@ -167,9 +170,6 @@ namespace SimpleWeather.NET.Controls
                 IconBox.Child = null;
                 return;
             }
-
-            // Remove any animatable drawables
-            RemoveAnimatedDrawables();
 
             var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? SettingsManager.IconProvider);
 
@@ -237,6 +237,7 @@ namespace SimpleWeather.NET.Controls
                                 Path = new PropertyPath(nameof(IconWidth)),
                                 Mode = BindingMode.OneWay,
                             });
+                            canvas.Invalidate();
                             iconElement = canvas;
                         }
 
@@ -289,6 +290,7 @@ namespace SimpleWeather.NET.Controls
                             Path = new PropertyPath(nameof(IconWidth)),
                             Mode = BindingMode.OneWay,
                         });
+                        canvas.Invalidate();
                         iconElement = canvas;
                     }
                 }

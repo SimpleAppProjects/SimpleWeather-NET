@@ -21,7 +21,6 @@ namespace SimpleWeather.NET.Controls
             this.DataContextChanged += (sender, args) =>
             {
                 this.Bindings.Update();
-                this.BeaufortIcon.UpdateWeatherIcon();
             };
         }
     }

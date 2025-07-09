@@ -23,6 +23,7 @@ public partial class SkDrawableCanvas : SKXamlCanvas, IDisposable
     public SkDrawableCanvas(SKDrawable drawable)
     {
         Drawable = drawable;
+        this.Loaded += SkDrawableCanvas_Loaded;
     }
 
     public void UpdateDrawable(SKDrawable? drawable, bool invalidate = true)
@@ -56,6 +57,11 @@ public partial class SkDrawableCanvas : SKXamlCanvas, IDisposable
         }
 
         e.Surface.Flush(true);
+    }
+
+    private void SkDrawableCanvas_Loaded(object sender, RoutedEventArgs e)
+    {
+        this.Invalidate();
     }
 
     public void Dispose()
