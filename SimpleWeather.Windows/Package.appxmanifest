@@ -9,7 +9,7 @@
         xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
         IgnorableNamespaces="uap rescap mp desktop">
-  <Identity Name="49586DaveAntoine.SimpleWeather-Asimpleweatherapp" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.12.0.0" />
+  <Identity Name="49586DaveAntoine.SimpleWeather-Asimpleweatherapp" Publisher="CN=FC137F73-0421-4275-8C89-E761F4D1BC3D" Version="5.12.1.0" />
   <mp:PhoneIdentity PhoneProductId="06966ad9-299e-4a4c-8204-576b8ada7455" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SimpleWeather - A simple weather app</DisplayName>
