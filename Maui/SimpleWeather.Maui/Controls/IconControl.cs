@@ -111,6 +111,7 @@ namespace SimpleWeather.Maui.Controls
 
         public IconControl()
         {
+            this.Loaded += IconControl_Loaded;
         }
 
         protected override void OnApplyTemplate()
@@ -138,6 +139,11 @@ namespace SimpleWeather.Maui.Controls
             {
                 (bindable as IconControl)?.UpdateDrawable();
             }
+        }
+
+        private void IconControl_Loaded(object sender, EventArgs e)
+        {
+            UpdateWeatherIcon();
         }
 
         public async void UpdateWeatherIcon()

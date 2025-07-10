@@ -115,6 +115,11 @@ namespace SimpleWeather.NET.Controls
         public IconControl()
         {
             this.DefaultStyleKey = typeof(IconControl);
+            this.RegisterPropertyChangedCallback(PaddingProperty, (obj, _) =>
+            {
+                (obj as IconControl)?.UpdateDrawable();
+            });
+            this.Loaded += IconControl_Loaded;
         }
 
         protected override void OnApplyTemplate()
@@ -140,6 +145,11 @@ namespace SimpleWeather.NET.Controls
             {
                 (obj as IconControl)?.UpdateDrawable();
             }
+        }
+
+        private void IconControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateWeatherIcon();
         }
 
         public async void UpdateWeatherIcon()
@@ -334,6 +344,10 @@ namespace SimpleWeather.NET.Controls
                     }
                     
                     canvas.Invalidate();
+                }
+                else if (iconElement is BitmapIcon bmpIcon)
+                {
+                    UpdateBitmapScaling(bmpIcon);
                 }
             }
             else
