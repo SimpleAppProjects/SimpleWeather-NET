@@ -11,6 +11,8 @@ using SimpleWeather.NET.MapsUi;
 using SimpleWeather.Preferences;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData;
+using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
+
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
 using Microsoft.UI.Xaml;

@@ -16,6 +16,8 @@ using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Utils;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
+using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
+
 
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;

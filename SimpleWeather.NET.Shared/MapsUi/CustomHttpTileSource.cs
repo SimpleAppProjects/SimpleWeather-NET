@@ -19,7 +19,12 @@ namespace SimpleWeather.NET.MapsUi
             var bytes = PersistentCache.Find(tileInfo.Index);
 
             if (bytes != null)
+            {
+#if DEBUG
+                Logger.Debug(this.Name, "tile loaded from persistent cache");
+#endif
                 return bytes;
+            }
 
             bytes = await GetTileAsync(httpClient, tileInfo, cancellationToken ?? CancellationToken.None);
 

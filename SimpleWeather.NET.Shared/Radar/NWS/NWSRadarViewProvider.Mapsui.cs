@@ -22,6 +22,7 @@ using SimpleWeather.NET.MapsUi;
 using SimpleWeather.Utils;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
+using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
 
 namespace SimpleWeather.NET.Radar.NWS
 {

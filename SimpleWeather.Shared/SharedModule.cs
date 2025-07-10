@@ -69,6 +69,8 @@ namespace SimpleWeather
             serviceCollection.AddSingleton<IImageDataService, ImageDataHelperDefault>();
             serviceCollection.AddSingleton<IRemoteConfigService>(DI.Utils.RemoteConfigService);
             serviceCollection.AddSingleton<SettingsManager>(DI.Utils.SettingsManager);
+            serviceCollection.AddSingleton<HttpClient>((_) => httpClientLazy.Value);
+            serviceCollection.AddSingleton<WeatherIconsManager>((_) => wimLazy.Value);
         }
 
         public IServiceCollection GetServiceCollection()
