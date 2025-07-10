@@ -80,7 +80,6 @@ namespace SimpleWeather.NET.Main
 
         private bool UpdateBindings = false;
         private bool UpdateTheme = false;
-        private bool ClearGraphIconCache = false;
 
         public WeatherNow()
         {
@@ -169,7 +168,6 @@ namespace SimpleWeather.NET.Main
             if (e.Key == SettingsManager.KEY_ICONSSOURCE)
             {
                 // When page is loaded again from cache, clear icon cache
-                ClearGraphIconCache = true;
                 UpdateBindings = true;
             }
             else if (e.Key == SettingsManager.KEY_USERTHEME)
@@ -418,12 +416,6 @@ namespace SimpleWeather.NET.Main
             {
                 UpdateControlTheme();
                 UpdateTheme = false;
-            }
-
-            if (ClearGraphIconCache)
-            {
-                WeatherBox?.UpdateWeatherIcon();
-                ClearGraphIconCache = false;
             }
 
             if (UpdateBindings)
