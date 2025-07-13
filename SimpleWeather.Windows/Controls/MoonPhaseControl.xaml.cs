@@ -17,6 +17,8 @@ namespace SimpleWeather.NET.Controls
         private MoonPhase.MoonPhaseType SelectedMoonPhaseType { get; set; } = MoonPhase.MoonPhaseType.FullMoon;
         private int SelectedIndex => (int)SelectedMoonPhaseType + _moonPhaseTypes.Length;
 
+        private bool Initialized = false;
+
         public MoonPhaseViewModel ViewModel
         {
             get { return (this.DataContext as MoonPhaseViewModel); }
@@ -34,7 +36,7 @@ namespace SimpleWeather.NET.Controls
 
                 if (ViewModel != null)
                 {
-                    if (SelectedMoonPhaseType != ViewModel.PhaseType)
+                    if (SelectedMoonPhaseType != ViewModel.PhaseType || !Initialized)
                     {
                         SelectedMoonPhaseType = ViewModel.PhaseType;
                         DataSet.ForEachIndexed((index, item) =>
@@ -56,6 +58,8 @@ namespace SimpleWeather.NET.Controls
                                 item.Opacity = 0.35;
                             }
                         });
+
+                        Initialized = true;
                     }
 
                     ScrollToSelectedPhase();

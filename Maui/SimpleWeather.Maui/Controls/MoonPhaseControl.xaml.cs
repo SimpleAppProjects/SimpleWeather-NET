@@ -14,6 +14,8 @@ public partial class MoonPhaseControl : ContentView
     private MoonPhase.MoonPhaseType SelectedMoonPhaseType { get; set; } = MoonPhase.MoonPhaseType.FullMoon;
     private int SelectedIndex => (int)SelectedMoonPhaseType + _moonPhaseTypes.Length;
 
+    private bool Initialized = false;
+
     public MoonPhaseViewModel ViewModel => this.BindingContext as MoonPhaseViewModel;
 
     public MoonPhaseControl()
@@ -29,7 +31,7 @@ public partial class MoonPhaseControl : ContentView
 
             if (ViewModel != null)
             {
-                if (SelectedMoonPhaseType != ViewModel.PhaseType)
+                if (SelectedMoonPhaseType != ViewModel.PhaseType || !Initialized)
                 {
                     SelectedMoonPhaseType = ViewModel.PhaseType;
                     DataSet.ForEachIndexed((index, item) =>
@@ -51,6 +53,8 @@ public partial class MoonPhaseControl : ContentView
                             item.Opacity = 0.35;
                         }
                     });
+
+                    Initialized = true;
                 }
 
                 ScrollToSelectedPhase();
