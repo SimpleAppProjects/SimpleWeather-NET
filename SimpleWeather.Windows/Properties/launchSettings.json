@@ -4,13 +4,13 @@
       "commandName": "MsixPackage",
       "doNotLaunchApp": true,
       "hotReloadEnabled": true,
-      "nativeDebugging": true
+      "nativeDebugging": false
     },
     "SimpleWeather.Windows (Unpackaged)": {
       "commandName": "Project",
       "doNotLaunchApp": true,
       "hotReloadEnabled": true,
-      "nativeDebugging": true
+      "nativeDebugging": false
     }
   }
 }
