@@ -1,11 +1,12 @@
 ﻿#if !__IOS__
-using System.Net.Http.Headers;
 using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui.Tiling.Layers;
 using SimpleWeather.Helpers;
+using System.Net.Http.Headers;
 
 namespace SimpleWeather.NET.MapsUi
 {
@@ -15,7 +16,7 @@ namespace SimpleWeather.NET.MapsUi
 
         public static TileLayer CreateTileLayer()
         {
-            return new TileLayer(CreateTileSource())
+            return new TileLayer(CreateTileSource(), httpClient: Ioc.Default.GetService<HttpClient>())
             {
                 Name = "Root"
             };

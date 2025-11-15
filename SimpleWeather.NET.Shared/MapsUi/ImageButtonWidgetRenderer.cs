@@ -1,7 +1,7 @@
 ﻿#if !__IOS__
 using Mapsui;
 using Mapsui.Extensions;
-using Mapsui.Rendering.Skia.Cache;
+using Mapsui.Rendering;
 using Mapsui.Rendering.Skia.Extensions;
 using Mapsui.Rendering.Skia.Images;
 using Mapsui.Rendering.Skia.SkiaWidgets;
@@ -23,8 +23,10 @@ namespace SimpleWeather.NET.MapsUi
             if (button.Image == null)
                 throw new InvalidOperationException("ImageSource is not set");
 
+#pragma warning disable IDISP001 // The cache is responsible for disposing the items created in the cache.
             var drawableImage = renderService.DrawableImageCache.GetOrCreate(button.Image.SourceId,
-                () => TryCreateDrawableImage(button.Image, renderService.ImageSourceCache));
+            () => TryCreateDrawableImage(button.Image, renderService.ImageSourceCache));
+#pragma warning restore IDISP001
             if (drawableImage == null)
                 return;
 

@@ -13,7 +13,8 @@ using SimpleWeather.Weather_API.Utils;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
 using Microsoft.UI.Xaml.Controls;
-using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
+using CommunityToolkit.Mvvm.DependencyInjection;
+
 
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
@@ -180,7 +181,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
             if (!RadarLayers.ContainsKey(mapFrame.TimeStamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
+                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy(), httpClient: Ioc.Default.GetService<HttpClient>())
                 {
                     Opacity = 0
                 };

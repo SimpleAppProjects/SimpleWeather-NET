@@ -22,7 +22,7 @@ using SimpleWeather.NET.MapsUi;
 using SimpleWeather.Utils;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
-using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
+using CommunityToolkit.Mvvm.DependencyInjection;
 
 namespace SimpleWeather.NET.Radar.NWS
 {
@@ -148,7 +148,7 @@ namespace SimpleWeather.NET.Radar.NWS
 
             if (!RadarLayers.ContainsKey(mapFrame.timestamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
+                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy(), httpClient: Ioc.Default.GetService<HttpClient>())
                 {
                     Opacity = 0
                 };

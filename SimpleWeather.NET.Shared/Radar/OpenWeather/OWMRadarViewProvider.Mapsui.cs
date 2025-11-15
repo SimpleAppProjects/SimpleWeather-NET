@@ -11,7 +11,6 @@ using SimpleWeather.NET.MapsUi;
 using SimpleWeather.Preferences;
 using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData;
-using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
 
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
@@ -52,7 +51,7 @@ namespace SimpleWeather.NET.Radar.OpenWeather
             if (TileSource == null)
             {
                 TileSource = CreateTileSource();
-                mapControl.Map.Layers.Add(new TileLayer(TileSource, dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy()));
+                mapControl.Map.Layers.Add(new TileLayer(TileSource, dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy(), httpClient: Ioc.Default.GetService<HttpClient>()));
             }
         }
 

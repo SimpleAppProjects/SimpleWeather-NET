@@ -3,6 +3,7 @@ using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
+using CommunityToolkit.Mvvm.DependencyInjection;
 using Mapsui.Extensions;
 using Mapsui.Layers;
 using Mapsui.Rendering.Skia;
@@ -31,7 +32,7 @@ namespace SimpleWeather.NET.MapsUi
     {
         public static TileLayer CreateMapBoxLayer(bool isDarkMode = false)
         {
-            return new TileLayer(GetMapBoxTileSource(isDarkMode))
+            return new TileLayer(GetMapBoxTileSource(isDarkMode), httpClient: Ioc.Default.GetService<HttpClient>())
             {
                 Name = "Root"
             };

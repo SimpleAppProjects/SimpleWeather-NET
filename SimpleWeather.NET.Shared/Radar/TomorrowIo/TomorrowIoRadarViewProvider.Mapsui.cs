@@ -16,7 +16,6 @@ using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.WeatherData;
 using HorizontalAlignment = Mapsui.Widgets.HorizontalAlignment;
 using VerticalAlignment = Mapsui.Widgets.VerticalAlignment;
-using TileLayer = SimpleWeather.NET.MapsUi.TileLayer;
 
 #if WINDOWS
 using MapControl = Mapsui.UI.WinUI.MapControl;
@@ -156,7 +155,7 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
 
             if (!RadarLayers.ContainsKey(mapFrame.timestamp))
             {
-                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy())
+                var layer = new TileLayer(CreateTileSource(mapFrame), dataFetchStrategy: new MinimalDataFetchStrategy(), renderFetchStrategy: new MinimalRenderFetchStrategy(), httpClient: Ioc.Default.GetService<HttpClient>())
                 {
                     Opacity = 0
                 };
