@@ -20,6 +20,7 @@
     <converters:BooleanToGridLengthConverter x:Key="bool2GridLengthConverter" />
     <converters:BooleanToGridLengthConverter x:Key="inverseBool2GridLengthConverter" IsInverse="True" />
     <converters:NullableToVisibilityConverter x:Key="null2VisibilityConverter" />
+    <converters:GraphDataLabelConverter x:Key="graphDataLabelConverter" />
     <toolkitConverters:BoolToVisibilityConverter x:Key="booleanToVisibilityConverter" />
     <toolkitConverters:StringVisibilityConverter x:Key="stringVisibilityConverter" />
     <toolkitConverters:EmptyCollectionToObjectConverter

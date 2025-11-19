@@ -14,7 +14,7 @@
     mc:Ignorable="d">
 
     <StackPanel
-        MinWidth="70"
+        MinWidth="80"
         HorizontalAlignment="Center"
         VerticalAlignment="Bottom"
         Orientation="Vertical">
@@ -28,6 +28,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock
+                x:Name="BarHi"
                 Grid.Row="0"
                 Padding="4"
                 HorizontalAlignment="Center"
@@ -42,6 +43,7 @@
                 RadiusX="4"
                 RadiusY="4" />
             <TextBlock
+                x:Name="BarLo"
                 Grid.Row="2"
                 Padding="4"
                 HorizontalAlignment="Center"
@@ -50,6 +52,7 @@
                 Text="{x:Bind Data.LoTempData.YLabel, Mode=OneWay}" />
         </Grid>
         <StackPanel
+            x:Name="BarPoP"
             MinHeight="16"
             Padding="5"
             HorizontalAlignment="Center"
@@ -57,32 +60,34 @@
             Orientation="Horizontal">
             <local:IconControl
                 Foreground="{ThemeResource SimpleBlueLight}"
-                IconHeight="16"
+                IconHeight="30"
                 IconProvider="wi-erik-flowers"
-                IconWidth="16"
+                IconWidth="30"
                 ShowAsMonochrome="True"
                 Visibility="{x:Bind Data.PoP, Converter={StaticResource null2VisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <TextBlock
                 Margin="5,0,0,0"
                 HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 FontSize="14"
                 Foreground="{ThemeResource SimpleBlueLight}"
                 MaxLines="1"
                 Text="{x:Bind system:String.Format('{0}%', Data.PoP), Mode=OneWay}" />
         </StackPanel>
         <local:IconControl
-            x:Name="IconCtrl"
+            x:Name="BarIcon"
             HorizontalAlignment="Center"
             IconHeight="50"
             IconWidth="50"
             RenderTransformOrigin="0.5,0.5"
-            WeatherIcon="{x:Bind Data.XIcon, Mode=OneWay}">
+            WeatherIcon="{x:Bind Data.XWeatherIcon, Mode=OneWay}">
             <local:IconControl.RenderTransform>
                 <RotateTransform Angle="{x:Bind Data.XIconRotation, Mode=OneWay}" />
             </local:IconControl.RenderTransform>
         </local:IconControl>
         <TextBlock
+            x:Name="BarDate"
             Padding="4"
             HorizontalAlignment="Center"
             FontSize="16"

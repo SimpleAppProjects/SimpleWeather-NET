@@ -9,7 +9,6 @@ using SimpleWeather.Database;
 using SimpleWeather.LocationData;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Preferences;
-using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
@@ -32,16 +31,19 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<IList<HourlyForecast>> currentHrForecastsData;
 
         [ObservableProperty]
-        public partial ForecastRangeBarGraphDataSet ForecastGraphData { get; set; }
+        public partial ForecastRangeBarGraphData ForecastGraphData { get; set; }
 
         [ObservableProperty]
         public partial List<HourlyForecastNowViewModel> HourlyForecastData { get; set; }
 
         [ObservableProperty]
-        public partial LineViewData HourlyPrecipitationGraphData { get; set; }
+        public partial BarGraphData HourlyPrecipitationGraphData { get; set; }
 
         [ObservableProperty]
-        public partial LineViewData MinutelyPrecipitationGraphData { get; set; }
+        public partial ForecastType? HourlyPrecipitationGraphDataType { get; set; }
+
+        [ObservableProperty]
+        public partial BarGraphData MinutelyPrecipitationGraphData { get; set; }
 
         [ObservableProperty]
         public partial bool IsPrecipitationDataPresent { get; set; }
@@ -169,12 +171,14 @@ namespace SimpleWeather.NET.Controls
 
             if (hrfcasts != null)
             {
-                var model = new ForecastGraphDataCreator();
-                model.SetForecastData(hrfcasts, hrfcasts.GetRecommendedGraphType());
-                HourlyPrecipitationGraphData = (LineViewData)model.GraphData;
+                var model = new ForecastGraphViewModel();
+                model.SetForecastData(hrfcasts, hrfcasts.GetRecommendedGraphType(), GraphType.Bar);
+                HourlyPrecipitationGraphDataType = model.ForecastType;
+                HourlyPrecipitationGraphData = (BarGraphData)model.GraphData;
             }
             else
             {
+                HourlyPrecipitationGraphDataType = null;
                 HourlyPrecipitationGraphData = null;
             }
         }
@@ -188,9 +192,9 @@ namespace SimpleWeather.NET.Controls
 
             if (minfcastsFiltered?.Any() == true)
             {
-                var model = new ForecastGraphDataCreator();
-                model.SetMinutelyForecastData(minfcastsFiltered);
-                MinutelyPrecipitationGraphData = (LineViewData)model.GraphData;
+                var model = new ForecastGraphViewModel();
+                model.SetMinutelyForecastData(minfcastsFiltered, GraphType.Bar);
+                MinutelyPrecipitationGraphData = (BarGraphData)model.GraphData;
             }
             else
             {
@@ -198,52 +202,7 @@ namespace SimpleWeather.NET.Controls
             }
         }
 
-        private async Task<RangeBarGraphData> CreateGraphData(IEnumerable<Forecast> forecastData)
-        {
-            if (forecastData == null) return null;
-
-            var isFahrenheit = Units.FAHRENHEIT.Equals(SettingsManager.TemperatureUnit);
-            var culture = LocaleUtils.GetLocale();
-
-            var entryData = new List<RangeBarGraphEntry>(forecastData.Count());
-
-            foreach (var forecast in forecastData)
-            {
-                if (!forecast.high_f.HasValue && !forecast.low_f.HasValue)
-                    continue;
-
-                var entry = new RangeBarGraphEntry();
-                string date = forecast.date.ToString("ddd", culture);
-
-                entry.XLabel = date;
-                entry.XIcon = await CreateIconDrawable(forecast.icon,
-#if WINDOWS
-                    isLight: RequestedTheme == ElementTheme.Light);
-#else
-                    isLight: IsLight);
-#endif
-
-                // Temp Data
-                if (forecast.high_f.HasValue && forecast.high_c.HasValue)
-                {
-                    int value = (int)(isFahrenheit ? Math.Round(forecast.high_f.Value) : Math.Round(forecast.high_c.Value));
-                    var hiTemp = string.Format(culture, "{0}°", value);
-                    entry.HiTempData = new YEntryData(value, hiTemp);
-                }
-                if (forecast.low_f.HasValue && forecast.low_c.HasValue)
-                {
-                    int value = (int)(isFahrenheit ? Math.Round(forecast.low_f.Value) : Math.Round(forecast.low_c.Value));
-                    var loTemp = string.Format(culture, "{0}°", value);
-                    entry.LoTempData = new YEntryData(value, loTemp);
-                }
-
-                entryData.Add(entry);
-            }
-
-            return new RangeBarGraphData(new RangeBarGraphDataSet(entryData));
-        }
-
-        private ForecastRangeBarGraphDataSet CreateForecastGraphData(IEnumerable<Forecast> forecastData)
+        private ForecastRangeBarGraphData CreateForecastGraphData(IEnumerable<Forecast> forecastData)
         {
             if (forecastData == null) return null;
 
@@ -261,7 +220,7 @@ namespace SimpleWeather.NET.Controls
                 string date = forecast.date.ToString("ddd", culture);
 
                 entry.XLabel = date;
-                entry.XIcon = forecast.icon;
+                entry.XWeatherIcon = forecast.icon;
 
                 // Temp Data
                 if (forecast.high_f.HasValue && forecast.high_c.HasValue)
@@ -282,15 +241,7 @@ namespace SimpleWeather.NET.Controls
                 entryData.Add(entry);
             }
 
-            return new ForecastRangeBarGraphDataSet(entryData);
-        }
-
-        private async Task<SKDrawable> CreateIconDrawable(string icon, bool isLight = false)
-        {
-            var iconsSource = SettingsManager.IconProvider;
-            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(iconsSource);
-
-            return await wip.GetDrawable(icon, isLight);
+            return new ForecastRangeBarGraphData(new ForecastRangeBarGraphDataSet(entryData));
         }
 
         private bool isDisposed;
@@ -318,19 +269,19 @@ namespace SimpleWeather.NET.Controls
 
     internal static class ForecastsNowViewModelExtensions
     {
-        internal static ForecastGraphType GetRecommendedGraphType(this IList<HourlyForecast> forecasts)
+        internal static ForecastType GetRecommendedGraphType(this IList<HourlyForecast> forecasts)
         {
             if (forecasts?.FirstOrDefault()?.extras?.pop.HasValue == true && forecasts?.LastOrDefault()?.extras?.pop.HasValue == true)
             {
-                return ForecastGraphType.Precipitation;
+                return ForecastType.Precipitation;
             }
             else if (forecasts?.FirstOrDefault()?.extras?.qpf_rain_mm.HasValue == true && forecasts?.LastOrDefault()?.extras?.qpf_rain_mm.HasValue == true)
             {
-                return ForecastGraphType.Rain;
+                return ForecastType.Rain;
             }
             else
             {
-                return ForecastGraphType.Wind;
+                return ForecastType.Wind;
             }
         }
     }

@@ -1,20 +1,10 @@
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Utils;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -24,14 +14,28 @@ namespace SimpleWeather.NET.Controls
 {
     public sealed partial class ForecastRangeBar : UserControl
     {
-        private readonly Color[] DEFAULT_COLORS = { Colors.OrangeRed, Colors.LightSkyBlue };
-
         public Grid InnerBarView => InnerBar;
         public FrameworkElement RangeBarView => RangeBar;
+        public IconControl BarIconView => BarIcon;
+        public TextBlock BarDateBlock => BarDate;
+        public FrameworkElement BarPoPView => BarPoP;
+
+        public double BarHiLoHeight => BarHi.DesiredSize.Height + BarLo.DesiredSize.Height;
 
         public ForecastRangeBarEntry Data
         {
             get => DataContext as ForecastRangeBarEntry;
+        }
+
+        private ForecastType? _forecastType = null;
+        public ForecastType? ForecastType
+        {
+            get => _forecastType;
+            set
+            {
+                _forecastType = value;
+                BarPoP.Visibility = _forecastType == Controls.ForecastType.Temperature ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         public ForecastRangeBar()
@@ -41,11 +45,18 @@ namespace SimpleWeather.NET.Controls
             {
                 this.Bindings.Update();
             };
+            this.RangeBar.SizeChanged += RangeBar_SizeChanged;
         }
 
-        public void SetColors() => SetColors(DEFAULT_COLORS);
+        private void RangeBar_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var largestSize = Math.Min(RangeBar.ActualHeight, RangeBar.ActualWidth);
+            RangeBar.RadiusX = RangeBar.RadiusY = largestSize / 2;
+        }
 
-        public void SetColors(params Color[] colors)
+        public void SetColors() => SetColors((Colors.OrangeRed, Colors.LightSkyBlue));
+
+        public void SetColors((Color hiColor, Color loColor) colors)
         {
             RangeBar.Fill = new LinearGradientBrush()
             {
@@ -53,13 +64,15 @@ namespace SimpleWeather.NET.Controls
                 EndPoint = new Point(0.5, 1),
                 GradientStops = new GradientStopCollection().Apply(c =>
                 {
-                    colors.ForEachIndexed((index, color) =>
+                    c.Add(new GradientStop()
                     {
-                        c.Add(new GradientStop() 
-                        {
-                            Color = color,
-                            Offset = index / MathF.Max(1, colors.Length - 1)
-                        });
+                        Color = colors.hiColor,
+                        Offset = 0
+                    });
+                    c.Add(new GradientStop()
+                    {
+                        Color = colors.loColor,
+                        Offset = 1
                     });
                 })
             };

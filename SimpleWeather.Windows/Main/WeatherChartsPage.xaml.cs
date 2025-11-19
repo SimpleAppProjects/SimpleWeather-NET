@@ -1,15 +1,12 @@
-﻿using SimpleWeather.Common.ViewModels;
-using SimpleWeather.Utils;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Common.ViewModels;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.NET.Helpers;
 using SimpleWeather.NET.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Utils;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -111,13 +108,13 @@ namespace SimpleWeather.NET.Main
     {
         protected override DataTemplate SelectTemplateCore(object item, DependencyObject container)
         {
-            if (container is FrameworkElement element && VisualTreeHelperExtensions.GetParent<ItemsControl>(element) is FrameworkElement elementParent)
+            if (container is FrameworkElement element && VisualTreeHelperExtensions.GetParent<ItemsControl>(element) is FrameworkElement elementParent && item is ForecastGraphViewModel model)
             {
-                if (item is LineViewData)
+                if (model.GraphData is LineViewData)
                 {
                     return elementParent.Resources["LineViewDataTemplate"] as DataTemplate;
                 }
-                else if (item is BarGraphData)
+                else if (model.GraphData is BarGraphData)
                 {
                     return elementParent.Resources["BarChartDataTemplate"] as DataTemplate;
                 }

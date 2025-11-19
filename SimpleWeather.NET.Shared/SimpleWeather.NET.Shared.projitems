@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\BarGraphEntry.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\ForecastRangeBarEntry.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)controls\graphs\data\ForecastRangeBarGraphData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphData.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphDataSet.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Graphs\Data\GraphEntry.cs" />
@@ -44,7 +45,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarDismissedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\AirQualityForecastViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ChartsViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastGraphDataCreator.cs" />
+    <Compile Include="..\SimpleWeather.NET.Shared\Controls\ViewModel\ForecastGraphViewModel.cs" />
+    <Compile Include="..\SimpleWeather.NET.Shared\Controls\ViewModel\ForecastType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastsListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastsNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\GraphTemperature.cs" />

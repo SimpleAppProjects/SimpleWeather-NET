@@ -107,7 +107,7 @@ namespace SimpleWeather.NET.Controls
             BindableProperty.Create(nameof(Progress), typeof(int), typeof(AQIProgressBar), (int)0,
                 propertyChanged: OnProgressChanged);
 #endif
-        
+
 #if !WINDOWS
         public double FontSize
         {
@@ -465,7 +465,7 @@ namespace SimpleWeather.NET.Controls
                 {
                     var text = pair.Item1.Start.Value.ToString();
                     var bounds = bottomTextFont.MeasureText(text);
-                    canvas.DrawText(text, bounds / 2 + thumbSize + (float)Margin.Left, y, bottomTextFont,
+                    canvas.DrawText(text, bounds / 2 + thumbSize, y, bottomTextFont,
                         bottomTextPaint);
                     longestTextWidth = Math.Max(longestTextWidth, bounds);
                 }
@@ -478,7 +478,7 @@ namespace SimpleWeather.NET.Controls
                     canvas.DrawText(
                         text,
                         ViewWidth * pct - trackPaint.StrokeWidth / 2f -
-                        (pct >= 1f ? (float)Margin.Right + longestTextWidth / 2 : 0),
+                        (pct >= 1f ? longestTextWidth / 2 : 0),
                         y,
                         bottomTextFont, bottomTextPaint
                     );
@@ -517,14 +517,14 @@ namespace SimpleWeather.NET.Controls
                 var pct = Math.Min(pair.Item1.End.Value / 500f, 1f);
                 canvas.DrawRoundRect(
                     new SKRect(
-                        trackPaint.StrokeWidth / 2f + longestTextWidth / 2 + (float)Margin.Left,
+                        trackPaint.StrokeWidth / 2f + longestTextWidth / 2,
 #if WINDOWS
                         y + trackPaint.StrokeWidth / 2f,
 #else
                         y - trackPaint.StrokeWidth / 2f,
 #endif
                         ViewWidth * pct - trackPaint.StrokeWidth / 2f -
-                        (pct >= 1f ? (float)Margin.Right + longestTextWidth / 2 : 0),
+                        (pct >= 1f ? longestTextWidth / 2 : 0),
 #if WINDOWS
                         y - trackPaint.StrokeWidth / 2f
 #else

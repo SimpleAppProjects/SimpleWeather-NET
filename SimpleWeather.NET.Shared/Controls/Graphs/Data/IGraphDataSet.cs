@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    interface IGraphDataSet : IGraphDataBase, IEnumerable
+    public interface IGraphDataSet : IGraphDataBase, IEnumerable
     {
         void AddEntry(object? entry);
         bool RemoveEntry(object? entry);
@@ -17,7 +11,7 @@ namespace SimpleWeather.NET.Controls.Graphs
         void NotifyDataSetChanged();
     }
 
-    interface IGraphDataSet<T> : IGraphDataSet, IEnumerable<T> where T : GraphEntry
+    public interface IGraphDataSet<T> : IGraphDataSet, IEnumerable<T> where T : GraphEntry
     {
         void AddEntry(T entry);
         bool RemoveEntry(T entry);

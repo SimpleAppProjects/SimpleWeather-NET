@@ -98,7 +98,10 @@
                                         </StackPanel>
                                     </DataTemplate>
                                 </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                                <graphs:BarGraphPanel GraphData="{Binding}" />
+                                <localControls:ForecastBarGraphView
+                                    DataContext="{Binding}"
+                                    ForecastType="AirQuality"
+                                    GraphHeight="250" />
                             </toolkitControls:HeaderedContentControl>
                         </DataTemplate>
                     </ItemsControl.Resources>

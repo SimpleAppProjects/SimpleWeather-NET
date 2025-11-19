@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace SimpleWeather.NET.Controls.Graphs
+﻿namespace SimpleWeather.NET.Controls.Graphs
 {
     public class BarGraphData : GraphData<BarGraphDataSet, BarGraphEntry>
     {
@@ -23,6 +21,47 @@ namespace SimpleWeather.NET.Controls.Graphs
         public BarGraphDataSet GetDataSet()
         {
             return DataSets?.FirstOrDefault();
+        }
+
+        protected override void CalcMinMax(BarGraphDataSet set)
+        {
+            if (set.Min == null && set.Max == null)
+            {
+                if (YMax < set.YMax)
+                {
+                    YMax = set.YMax;
+                }
+                if (YMin > set.YMin)
+                {
+                    YMin = set.YMin;
+                }
+            }
+            else
+            {
+                if (set.Max is float setMax)
+                {
+                    if (YMax < setMax)
+                    {
+                        YMax = setMax;
+                    }
+                }
+                else if (YMax < set.YMax)
+                {
+                    YMax = set.YMax;
+                }
+
+                if (set.Min is float setMin)
+                {
+                    if (YMin > setMin)
+                    {
+                        YMin = setMin;
+                    }
+                }
+                else if (YMin > set.YMin)
+                {
+                    YMin = set.YMin;
+                }
+            }
         }
     }
 }

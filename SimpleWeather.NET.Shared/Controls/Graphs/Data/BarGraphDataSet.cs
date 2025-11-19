@@ -1,34 +1,44 @@
-﻿using System.Collections.Generic;
-
-namespace SimpleWeather.NET.Controls.Graphs
+﻿namespace SimpleWeather.NET.Controls.Graphs
 {
     public class BarGraphDataSet : GraphDataSet<BarGraphEntry>
     {
-        public BarGraphDataSet(IEnumerable<BarGraphEntry> entries) : base(entries) { }
+        public string Label { get; set; } = string.Empty;
+
+        public float? Min { get; private set; } = null;
+        public float? Max { get; private set; } = null;
+
+        public BarGraphDataSet(IEnumerable<BarGraphEntry> entries) : base(entries)
+        {
+            this.Label = null;
+        }
+
+        public BarGraphDataSet(string label, IEnumerable<BarGraphEntry> entries) : base(entries)
+        {
+            this.Label = label;
+        }
 
         public void SetMinMax(float? min = null, float? max = null)
         {
-            if (min.HasValue)
-            {
-                this.YMin = min.Value;
-            }
-
-            if (max.HasValue)
-            {
-                this.YMax = max.Value;
-            }
+            this.Min = min;
+            this.Max = max;
         }
 
         protected override void CalcMinMax(BarGraphEntry entry)
         {
-            if (entry.EntryData?.Y != null && entry.EntryData.Y < YMin)
+            if (Min == null)
             {
-                YMin = entry.EntryData.Y;
+                if (entry.EntryData?.Y != null && entry.EntryData.Y < YMin)
+                {
+                    YMin = entry.EntryData.Y;
+                }
             }
 
-            if (entry.EntryData?.Y != null && entry.EntryData.Y > YMax)
+            if (Max == null)
             {
-                YMax = entry.EntryData.Y;
+                if (entry.EntryData?.Y != null && entry.EntryData.Y > YMax)
+                {
+                    YMax = entry.EntryData.Y;
+                }
             }
         }
     }

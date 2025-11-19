@@ -1,108 +1,55 @@
 ﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class ForecastRangeBarGraphDataSet
+    public class ForecastRangeBarGraphDataSet : GraphDataSet<ForecastRangeBarEntry>
     {
-        public List<ForecastRangeBarEntry> EntryData { get; private set; }
+        public string Label { get; set; } = string.Empty;
 
-        public float YMax { get; private set; } = -float.MaxValue;
-        public float YMin { get; private set; } = float.MaxValue;
+        public float? Min { get; private set; } = null;
+        public float? Max { get; private set; } = null;
 
-        public ForecastRangeBarGraphDataSet()
+        public ForecastRangeBarGraphDataSet(IEnumerable<ForecastRangeBarEntry> entries) : base(entries)
         {
-            EntryData = new List<ForecastRangeBarEntry>();
+            this.Label = null;
         }
 
-        public ForecastRangeBarGraphDataSet(IEnumerable<ForecastRangeBarEntry> entries)
+        public ForecastRangeBarGraphDataSet(string label, IEnumerable<ForecastRangeBarEntry> entries) : base(entries)
         {
-            EntryData = entries?.ToList() ?? new List<ForecastRangeBarEntry>();
-            CalcMinMax();
+            this.Label = label;
         }
 
-        public void CalcMinMax()
+        public void SetMinMax(float? min = null, float? max = null)
         {
-            YMax = -float.MaxValue;
-            YMin = float.MaxValue;
+            this.Min = min;
+            this.Max = max;
+        }
 
-            if (EntryData == null || EntryData.Count == 0)
+        protected override void CalcMinMax(ForecastRangeBarEntry entry)
+        {
+            if (Min == null)
             {
-                return;
+                if (entry.HiTempData?.Y != null && entry.HiTempData.Y < YMin)
+                {
+                    YMin = entry.HiTempData.Y;
+                }
+
+                if (entry.HiTempData?.Y != null && entry.HiTempData.Y > YMax)
+                {
+                    YMax = entry.HiTempData.Y;
+                }
             }
 
-            foreach (var entry in EntryData)
+            if (Max == null)
             {
-                CalcMinMax(entry);
+                if (entry.LoTempData?.Y != null && entry.LoTempData.Y < YMin)
+                {
+                    YMin = entry.LoTempData.Y;
+                }
+
+                if (entry.LoTempData?.Y != null && entry.LoTempData.Y > YMax)
+                {
+                    YMax = entry.LoTempData.Y;
+                }
             }
-        }
-
-        private void CalcMinMax(ForecastRangeBarEntry entry)
-        {
-            if (entry.HiTempData?.Y != null && entry.HiTempData.Y < YMin)
-            {
-                YMin = entry.HiTempData.Y;
-            }
-
-            if (entry.HiTempData?.Y != null && entry.HiTempData.Y > YMax)
-            {
-                YMax = entry.HiTempData.Y;
-            }
-
-            if (entry.LoTempData?.Y != null && entry.LoTempData.Y < YMin)
-            {
-                YMin = entry.LoTempData.Y;
-            }
-
-            if (entry.LoTempData?.Y != null && entry.LoTempData.Y > YMax)
-            {
-                YMax = entry.LoTempData.Y;
-            }
-        }
-
-        public void SetEntries(IEnumerable<ForecastRangeBarEntry> entries)
-        {
-            EntryData = entries?.ToList() ?? new List<ForecastRangeBarEntry>();
-            NotifyDataSetChanged();
-        }
-
-        public int DataCount => EntryData?.Count ?? 0;
-        public bool IsEmpty => EntryData?.Count == 0;
-
-        public void Clear()
-        {
-            EntryData?.Clear();
-            NotifyDataSetChanged();
-        }
-
-        public void AddEntry(ForecastRangeBarEntry entry)
-        {
-            CalcMinMax(entry);
-            EntryData.Add(entry);
-        }
-
-        public bool RemoveEntry(ForecastRangeBarEntry entry)
-        {
-            var removed = EntryData.Remove(entry);
-
-            if (removed)
-            {
-                CalcMinMax();
-            }
-
-            return removed;
-        }
-
-        public int GetEntryIndex(ForecastRangeBarEntry entry)
-        {
-            return EntryData?.IndexOf(entry) ?? 0;
-        }
-
-        public ForecastRangeBarEntry GetEntryForIndex(int index)
-        {
-            return EntryData[index];
-        }
-
-        public void NotifyDataSetChanged()
-        {
-            CalcMinMax();
         }
     }
 }

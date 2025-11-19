@@ -7,8 +7,8 @@
     xmlns:icons="using:SimpleWeather.Icons"
     xmlns:local="using:SimpleWeather.NET.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Width="150"
-    Height="240"
+    Width="125"
+    Height="Auto"
     d:DataContext="{d:DesignInstance Type=local:HourlyForecastNowViewModel}"
     d:RequestedTheme="Light"
     DataContextChanged="HourlyForecastItem_DataContextChanged"
@@ -40,15 +40,16 @@
             <local:IconControl
                 d:WeatherIcon="&#xf078;"
                 Foreground="{ThemeResource SimpleBlueLight}"
-                IconHeight="20"
+                IconHeight="30"
                 IconProvider="wi-erik-flowers"
-                IconWidth="20"
+                IconWidth="30"
                 ShowAsMonochrome="True"
                 Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
             <TextBlock
                 Grid.Column="1"
                 Margin="5,0,0,0"
+                VerticalAlignment="Center"
                 d:Text="20%"
                 FontSize="14"
                 Foreground="{ThemeResource SimpleBlueLight}"
@@ -74,9 +75,9 @@
             d:WeatherIcon="&#xf00d;"
             IconHeight="50"
             IconWidth="50"
-            WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
+            WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
         <TextBlock
-            Padding="10,0"
+            Padding="10,4"
             HorizontalAlignment="Center"
             d:Text="36°"
             FontSize="24"
@@ -84,17 +85,6 @@
             MaxLines="1"
             OpticalMarginAlignment="TrimSideBearings"
             Text="{x:Bind ViewModel.Temperature, Mode=OneWay, TargetNullValue='&#x2022;'}" />
-        <TextBlock
-            x:Name="ConditionBlock"
-            MinHeight="52"
-            Padding="10,5"
-            HorizontalAlignment="Center"
-            d:Text="Sunny&#x000A;With a Chance"
-            FontSize="14"
-            MaxLines="2"
-            OpticalMarginAlignment="TrimSideBearings"
-            Text="{x:Bind ViewModel.Condition, Mode=OneWay, TargetNullValue='&#x2014;'}"
-            TextTrimming="CharacterEllipsis" />
         <Grid
             MinHeight="20"
             Padding="5"
@@ -106,9 +96,9 @@
             <local:IconControl
                 d:WeatherIcon="&#xf058;"
                 Foreground="LightSeaGreen"
-                IconHeight="20"
+                IconHeight="30"
                 IconProvider="wi-erik-flowers"
-                IconWidth="20"
+                IconWidth="30"
                 RenderTransformOrigin="0.5,0.5"
                 ShowAsMonochrome="True"
                 Visibility="{x:Bind ViewModel.WindSpeed, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
@@ -120,6 +110,7 @@
             <TextBlock
                 Grid.Column="1"
                 Margin="5,0,0,0"
+                VerticalAlignment="Center"
                 d:Text="20%"
                 FontSize="14"
                 Foreground="LightSeaGreen"
@@ -135,7 +126,6 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="DateBlock.FontSize" Value="14" />
-                        <Setter Target="ConditionBlock.FontSize" Value="12" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="Desktop">
@@ -144,7 +134,6 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="DateBlock.FontSize" Value="16" />
-                        <Setter Target="ConditionBlock.FontSize" Value="14" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>

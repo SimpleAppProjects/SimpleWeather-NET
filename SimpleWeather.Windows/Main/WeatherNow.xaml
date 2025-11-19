@@ -244,9 +244,9 @@
                                     Text="{x:Bind WNowViewModel.Weather.HiTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 <localcontrols:IconControl
                                     Foreground="OrangeRed"
-                                    IconHeight="25"
+                                    IconHeight="35"
                                     IconProvider="wi-erik-flowers"
-                                    IconWidth="25"
+                                    IconWidth="35"
                                     ShowAsMonochrome="True"
                                     WeatherIcon="&#xf058;" />
                             </StackPanel>
@@ -261,9 +261,9 @@
                                     Text="{x:Bind WNowViewModel.Weather.LoTemp, Mode=OneWay, TargetNullValue='&#x2022;'}" />
                                 <localcontrols:IconControl
                                     Foreground="DeepSkyBlue"
-                                    IconHeight="25"
+                                    IconHeight="35"
                                     IconProvider="wi-erik-flowers"
-                                    IconWidth="25"
+                                    IconWidth="35"
                                     ShowAsMonochrome="True"
                                     WeatherIcon="&#xf044;" />
                             </StackPanel>
@@ -415,6 +415,8 @@
                                 <localcontrols:ForecastRangeBarGraphView
                                     x:Name="ForecastGraphPanel"
                                     DataContext="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
+                                    ForecastType="Temperature"
+                                    GraphHeight="250"
                                     ItemClick="ForecastGraphPanel_Tapped" />
                             </toolkitControls:HeaderedContentControl>
                         </Border>
@@ -449,45 +451,70 @@
                             Style="{ThemeResource WeatherNowFrameStyle}"
                             Tag="{x:Bind uwpUtils:FeatureSettings.KEY_CHARTS, Mode=OneTime}"
                             Visibility="{x:Bind ForecastView.IsPrecipitationDataPresent, Mode=OneWay}">
-                            <toolkitControls:HeaderedContentControl
-                                Header="Placeholder"
-                                Style="{ThemeResource NavigatableSectionStyle}"
-                                Tapped="ForecastGraphPanel_GraphViewTapped">
-                                <toolkitControls:HeaderedContentControl.HeaderTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock
-                                                Grid.Column="0"
-                                                d:Text="Charts"
-                                                Text="{helpers:StringRes Name='pref_title_feature_charts'}" />
-                                            <FontIcon
-                                                Grid.Column="1"
-                                                Margin="5,0,0,0"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                                FontSize="12"
-                                                Glyph="&#xE76C;" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </toolkitControls:HeaderedContentControl.HeaderTemplate>
-                                <StackPanel Padding="8">
-                                    <graphs:ForecastGraphPanel
+                            <StackPanel>
+                                <toolkitControls:HeaderedContentControl
+                                    Header="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataLabelConverter}}"
+                                    Style="{ThemeResource NavigatableSectionStyle}"
+                                    Tapped="ForecastGraphPanel_GraphViewTapped"
+                                    Visibility="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}">
+                                    <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding}" />
+                                                <FontIcon
+                                                    Grid.Column="1"
+                                                    Margin="5,0,0,0"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                    FontSize="12"
+                                                    Glyph="&#xE76C;" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                    <localcontrols:ForecastBarGraphView
                                         Margin="0,5"
-                                        GraphData="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay}"
-                                        GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
-                                        Visibility="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}" />
-                                    <graphs:ForecastGraphPanel
+                                        DataContext="{x:Bind ForecastView.MinutelyPrecipitationGraphData, Mode=OneWay}"
+                                        ForecastType="Minutely"
+                                        GraphHeight="250"
+                                        ItemClick="ForecastGraphPanel_GraphViewTapped" />
+                                </toolkitControls:HeaderedContentControl>
+                                <toolkitControls:HeaderedContentControl
+                                    Header="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataLabelConverter}}"
+                                    Style="{ThemeResource NavigatableSectionStyle}"
+                                    Tapped="ForecastGraphPanel_GraphViewTapped"
+                                    Visibility="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}">
+                                    <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding}" />
+                                                <FontIcon
+                                                    Grid.Column="1"
+                                                    Margin="5,0,0,0"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Center"
+                                                    FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                                    FontSize="12"
+                                                    Glyph="&#xE76C;" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                    <localcontrols:ForecastBarGraphView
                                         Margin="0,5"
-                                        GraphData="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay}"
-                                        GraphViewTapped="ForecastGraphPanel_GraphViewTapped"
-                                        Visibility="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay, Converter={StaticResource graphDataConv}}" />
-                                </StackPanel>
-                            </toolkitControls:HeaderedContentControl>
+                                        DataContext="{x:Bind ForecastView.HourlyPrecipitationGraphData, Mode=OneWay}"
+                                        ForecastType="{x:Bind ForecastView.HourlyPrecipitationGraphDataType, Mode=OneWay}"
+                                        GraphHeight="250"
+                                        ItemClick="ForecastGraphPanel_GraphViewTapped" />
+                                </toolkitControls:HeaderedContentControl>
+                            </StackPanel>
                         </Border>
                         <Border
                             x:Name="DetailsContainer"
