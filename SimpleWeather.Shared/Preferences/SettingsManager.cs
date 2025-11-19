@@ -772,6 +772,7 @@ namespace SimpleWeather.Preferences
         public void SetDefaultUnits(string unit)
         {
             bool isFahrenheit = Units.FAHRENHEIT.Equals(unit, StringComparison.InvariantCulture);
+            SetValue(KEY_USECELSIUS, !isFahrenheit);
             TemperatureUnit = unit;
             SpeedUnit = isFahrenheit ? Units.MILES_PER_HOUR : Units.KILOMETERS_PER_HOUR;
             PressureUnit = isFahrenheit ? Units.INHG : Units.MILLIBAR;
