@@ -7,6 +7,7 @@ namespace SimpleWeather.Weather_API.HERE
     public interface IHEREOAuthService
     {
         Task<string> GetBearerToken(bool forceRefresh = false);
+        Task<string> GetBearerToken(string clientId, string clientSecret, bool forceRefresh = false);
     }
 
     public sealed class Auth

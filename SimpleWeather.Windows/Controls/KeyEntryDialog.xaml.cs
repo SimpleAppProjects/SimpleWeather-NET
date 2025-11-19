@@ -1,11 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Auth;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 // The Content Dialog item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -78,11 +79,25 @@ namespace SimpleWeather.NET.Controls
                     {
                         var credentials = ProviderKey as ProviderAppKey;
 
-                        KeyEntry1.PlaceholderText = App.Current.ResLoader.GetString("hint_appid");
+                        if (APIProvider == WeatherAPI.Here)
+                        {
+                            KeyEntry1.PlaceholderText = "Access Key ID";
+                        }
+                        else
+                        {
+                            KeyEntry1.PlaceholderText = App.Current.ResLoader.GetString("hint_appid");
+                        }
                         KeyEntry1.Text = credentials?.AppID ?? string.Empty;
                         KeyEntry1.Visibility = Visibility.Visible;
 
-                        KeyEntry2.PlaceholderText = App.Current.ResLoader.GetString("hint_appcode");
+                        if (APIProvider == WeatherAPI.Here)
+                        {
+                            KeyEntry2.PlaceholderText = "Access Key Secret";
+                        }
+                        else
+                        {
+                            KeyEntry2.PlaceholderText = App.Current.ResLoader.GetString("hint_appcode");
+                        }
                         KeyEntry2.Text = credentials?.AppCode ?? string.Empty;
                         KeyEntry2.Visibility = Visibility.Visible;
 

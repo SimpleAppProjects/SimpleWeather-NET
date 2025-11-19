@@ -1,11 +1,11 @@
-﻿using CommunityToolkit.Maui.Views;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CoreGraphics;
 using Microsoft.Maui.Platform;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Auth;
 using UIKit;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
@@ -86,13 +86,27 @@ public class KeyEntryPopup
 
                     AlertController.AddTextField((KeyEntry1) =>
                     {
-                        KeyEntry1.Placeholder = ResStrings.hint_appid;
+                        if (APIProvider == WeatherAPI.Here)
+                        {
+                            KeyEntry1.Placeholder = "Access Key ID";
+                        }
+                        else
+                        {
+                            KeyEntry1.Placeholder = ResStrings.hint_appid;
+                        }
                         KeyEntry1.Text = credentials?.AppID ?? string.Empty;
                         KeyEntry1.Ended += KeyEntry1_TextChanged;
                     });
                     AlertController.AddTextField((KeyEntry2) =>
                     {
-                        KeyEntry2.Placeholder = ResStrings.hint_appcode;
+                        if (APIProvider == WeatherAPI.Here)
+                        {
+                            KeyEntry2.Placeholder = "Access Key Secret";
+                        }
+                        else
+                        {
+                            KeyEntry2.Placeholder = ResStrings.hint_appcode;
+                        }
                         KeyEntry2.Text = credentials?.AppCode ?? string.Empty;
                         KeyEntry2.Ended += KeyEntry2_TextChanged;
                     });

@@ -19,7 +19,7 @@ namespace SimpleWeather.Resources.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Config {
@@ -62,9 +62,9 @@ namespace SimpleWeather.Resources.Strings {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///        &quot;enabled&quot;: true,
+        ///        &quot;enabled&quot;: false,
         ///        &quot;locSource&quot;: &quot;accuweather&quot;,
-        ///        &quot;newWeatherSource&quot;: &quot;&quot;
+        ///        &quot;newWeatherSource&quot;: &quot;Metno&quot;
         ///}.
         /// </summary>
         public static string accuweather {

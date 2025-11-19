@@ -4,16 +4,6 @@ namespace SimpleWeather.Weather_API.Keys
 {
     public static class APIKeys
     {
-        public static String GetHERECliID()
-        {
-            return null;
-        }
-
-        public static String GetHERECliSecr()
-        {
-            return null;
-        }
-
         public static String GetOWMKey()
         {
             return null;

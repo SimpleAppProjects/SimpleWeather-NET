@@ -1,8 +1,8 @@
 ﻿using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Auth;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -20,7 +20,36 @@ namespace SimpleWeather.Weather_API.HERE
         public const string HERE_OAUTH_URL = "https://account.api.here.com/oauth2/token";
         private const string KEY_TOKEN = "token";
 
+        private readonly Lazy<IWeatherProvider> hereWeatherProvider = new(() => WeatherModule.Instance.WeatherProviderFactory.GetWeatherProvider(WeatherAPI.Here));
+
+        private string GetProviderKey()
+        {
+            if (DI.Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Here])
+            {
+                return DI.Utils.SettingsManager.APIKeys[WeatherAPI.Here];
+            }
+            else
+            {
+                return hereWeatherProvider.Value.GetAPIKey();
+            }
+        }
+
         public async Task<string> GetBearerToken(bool forceRefresh = false)
+        {
+            var key = GetProviderKey();
+
+            var providerKey = new ProviderAppKey()
+                .Apply(it => it.FromString(key));
+
+            if (string.IsNullOrWhiteSpace(providerKey?.AppID) || string.IsNullOrWhiteSpace(providerKey?.AppCode))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
+            return await GetBearerToken(providerKey.AppID, providerKey.AppCode, forceRefresh);
+        }
+
+        public async Task<string> GetBearerToken(string clientId, string clientSecret, bool forceRefresh = false)
         {
             if (!forceRefresh)
             {
@@ -37,7 +66,7 @@ namespace SimpleWeather.Weather_API.HERE
                 {
                     CheckRateLimit(WeatherAPI.Here);
 
-                    var oAuthRequest = new OAuthRequest(APIKeys.GetHERECliID(), APIKeys.GetHERECliSecr(), OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
+                    var oAuthRequest = new OAuthRequest(clientId, clientSecret, OAuthSignatureMethod.HMAC_SHA256, HTTPRequestType.POST);
 
                     using var request = new HttpRequestMessage(HttpMethod.Post, HERE_OAUTH_URL);
                     // Add headers to request

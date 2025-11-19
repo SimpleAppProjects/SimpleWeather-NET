@@ -119,9 +119,9 @@
   </resheader>
   <data name="accuweather" xml:space="preserve">
     <value>{
-        "enabled": true,
+        "enabled": false,
         "locSource": "accuweather",
-        "newWeatherSource": ""
+        "newWeatherSource": "Metno"
 }</value>
   </data>
   <data name="apple" xml:space="preserve">

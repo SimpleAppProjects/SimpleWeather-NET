@@ -1,13 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using SimpleWeather.Extras;
+﻿using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
@@ -17,6 +8,16 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using SimpleWeather.WeatherData.Auth;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.HERE
@@ -39,14 +40,24 @@ namespace SimpleWeather.Weather_API.HERE
 
         public override string WeatherAPI => WAPI.Here;
         public override bool SupportsWeatherLocale => true;
-        public override bool KeyRequired => false;
+        public override bool KeyRequired => true;
         public override bool NeedsExternalAlertData => false;
-        public override AuthType AuthType => AuthType.Internal; // or AppID/AppCode
+        public override AuthType AuthType => AuthType.AppID_AppCode; // or AppID/AppCode
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>
-        public override Task<bool> IsKeyValid(string key)
+        public override async Task<bool> IsKeyValid(string key)
         {
-            return Task.FromResult(false);
+            var providerKey = new ProviderAppKey()
+                .Apply(it => it.FromString(key));
+
+            if (string.IsNullOrWhiteSpace(providerKey?.AppID) || string.IsNullOrWhiteSpace(providerKey?.AppCode))
+            {
+                throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+            }
+
+            var token = await Auth.HEREOAuthService.GetBearerToken(providerKey.AppID, providerKey.AppCode, forceRefresh: true);
+
+            return !string.IsNullOrWhiteSpace(token);
         }
 
         public override String GetAPIKey()
@@ -217,7 +228,7 @@ namespace SimpleWeather.Weather_API.HERE
                 weather.astronomy = newAstro;
             }
 
-            weather.forecast?.ForEach(forecast => 
+            weather.forecast?.ForEach(forecast =>
             {
                 forecast.date = forecast.date.Add(offset);
             });
