@@ -57,9 +57,9 @@ namespace SimpleWeather.NET.Preferences
             try
             {
                 var logsDirectory = await ApplicationData.Current.LocalFolder.GetFolderAsync("logs");
-                var logFiles = await logsDirectory.GetFilesAsync();
+                var logFiles = (await logsDirectory.GetFilesAsync())?.OrderByDescending(f => f.Name)?.ToList();
 
-                if (logFiles.Count == 0)
+                if (logFiles?.Count == 0)
                 {
                     ShowNoLogsFoundPrompt();
                     return;

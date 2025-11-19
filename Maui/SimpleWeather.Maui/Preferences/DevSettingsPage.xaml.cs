@@ -116,7 +116,7 @@ public partial class DevSettingsPage : ContentPage
                 var action = await DisplayActionSheet("Save Logs", ResStrings.Label_Cancel, null, logFiles.Select(f =>
                 {
                     return Path.GetFileName(f);
-                }).ToArray());
+                }).OrderDescending().ToArray());
 #endif
 
                 if (!Equals(action, cancelText))
