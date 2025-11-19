@@ -15,7 +15,6 @@ using SimpleWeather.Extras;
 using SimpleWeather.Helpers;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.LocationData;
-using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.AQICN;
@@ -31,6 +30,8 @@ using Debug = System.Diagnostics.Debug;
 using ThreadState = System.Threading.ThreadState;
 using WeatherUtils = SimpleWeather.Utils.WeatherUtils;
 using SimpleWeather.Weather_API.Radar;
+using SimpleWeather.Weather_API.Google;
+
 
 #if __IOS__
 using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
@@ -512,6 +513,31 @@ namespace UnitTestProject
 
             Utils.SettingsManager.APIKeys[WeatherAPI.TomorrowIo] = null;
             Utils.SettingsManager.UsePersonalKeys[WeatherAPI.TomorrowIo] = false;
+        }
+
+        /// <summary>
+        /// GetPollenData
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="WeatherException">Ignore.</exception>
+        [Fact]
+        public async Task GetGooglePollenData()
+        {
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Google_Pollen] = true;
+            Utils.SettingsManager.APIKeys[WeatherAPI.Google_Pollen] = "Google_REPLACE_VALUE";
+
+            var locationData = new LocationData()
+            {
+                latitude = 47.6721646,
+                longitude = -122.1706614,
+                tz_long = "America/Los_Angeles"
+            };
+
+            var pollenData = await new GooglePollenProvider().GetPollenData(locationData);
+            Assert.NotNull(pollenData);
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.Google_Pollen] = null;
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Google_Pollen] = false;
         }
 
         [Fact]

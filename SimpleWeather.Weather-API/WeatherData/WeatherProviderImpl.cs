@@ -13,7 +13,6 @@ using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
-using SimpleWeather.Weather_API.AccuWeather;
 using SimpleWeather.Weather_API.AQICN;
 using SimpleWeather.Weather_API.Google;
 using SimpleWeather.Weather_API.NWS;
@@ -145,13 +144,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                 {
                     var extrasService = Ioc.Default.GetService<IExtrasService>();
 
-                    if (SettingsManager.DevSettingsEnabled && RemoteConfigService.IsProviderEnabled(WAPI.AccuWeather) &&
-                        weather.source != WAPI.AccuWeather)
-                    {
-                        weather.condition.pollen = await new AccuWeatherProvider().GetPollenData(location);
-                    }
-                    else if (extrasService?.IsPremiumEnabled() == true &&
-                             RemoteConfigService.IsProviderEnabled(WAPI.Google_Pollen))
+                    if (RemoteConfigService.IsProviderEnabled(WAPI.Google_Pollen) && (extrasService?.IsPremiumEnabled() == true || SettingsManager.DevSettingsEnabled && !string.IsNullOrWhiteSpace(SettingsManager.APIKeys[WAPI.Google_Pollen])))
                     {
                         weather.condition.pollen = await new GooglePollenProvider().GetPollenData(location);
                     }
