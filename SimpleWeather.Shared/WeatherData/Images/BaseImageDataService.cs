@@ -111,6 +111,16 @@ namespace SimpleWeather.WeatherData.Images
 
         public abstract Task<bool> IsEmpty();
 
+        public long GetImageDBVersionTimestamp()
+        {
+            return ImageDBSettingsContainer.GetValue("ImageDB_VersionTimestamp", 0L);
+        }
+
+        public void SetImageDBVersionTimestamp(long value)
+        {
+            ImageDBSettingsContainer.SetValue("ImageDB_VersionTimestamp", value);
+        }
+
         public long GetImageDBUpdateTime()
         {
             return ImageDBSettingsContainer.GetValue("ImageDB_LastUpdated", 0L);

@@ -3,7 +3,6 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CoreLocation;
 using Firebase.CloudMessaging;
 using Foundation;
-using SimpleWeather.Common.Helpers;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Notifications;
@@ -257,7 +256,7 @@ public partial class AppDelegate : IMessagingDelegate, IUNUserNotificationCenter
             if (date != null && long.TryParse(date, out long dateTs))
             {
                 var imageDataService = Ioc.Default.GetService<IImageDataService>();
-                imageDataService.SetImageDBUpdateTime(dateTs);
+                imageDataService.SetImageDBVersionTimestamp(dateTs);
             }
         }
         // Enqueue work

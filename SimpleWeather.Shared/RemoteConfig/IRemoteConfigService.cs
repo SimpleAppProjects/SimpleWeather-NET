@@ -17,5 +17,7 @@ namespace SimpleWeather.RemoteConfig
         Task CheckConfig();
 
         bool GetBoolean(string key);
+        long GetLong(string key);
+        double GetDouble(string key);
     }
 }

@@ -104,7 +104,7 @@ public partial class App : Application
         {
             AnalyticsLogger.SetUserProperty(AnalyticsProps.PLATFORM, "Windows");
         }
-        
+
         this.UserAppTheme = SettingsManager.UserTheme switch
         {
             UserThemeMode.Light => AppTheme.Light,
@@ -151,6 +151,9 @@ public partial class App : Application
 #if __IOS__
         FirebaseConfigurator.Initialize();
 #endif
+
+        // Run app-specific migrations
+        StartMigration();
 
         // Initialize post-DI setup; Migrations require rely on DI
         CommonModule.Instance.Initialize();
@@ -234,6 +237,16 @@ public partial class App : Application
 #if __MACCATALYST__
         SentrySdk.FlushAsync(TimeSpan.FromSeconds(2)).GetAwaiter().GetResult();
 #endif
+    }
+
+    private void StartMigration()
+    {
+        if (DI.Utils.SettingsManager.Version.IsNotAtLeast(5, 13))
+        {
+            // Image DB
+            var imageDataService = Ioc.Default.GetService<IImageDataService>();
+            imageDataService.SetImageDBVersionTimestamp(imageDataService.GetImageDBUpdateTime());
+        }
     }
 
     protected override void OnStart()

@@ -224,5 +224,25 @@ namespace SimpleWeather.RemoteConfig
             return RemoteConfigContainer.GetValue<bool>(key, defaultValue: Config.ResourceManager.GetString(key)?.TryParseBool() ?? false);
 #endif
         }
+
+        public long GetLong(string key)
+        {
+#if __IOS__
+            long? remoteLongVal = FirebaseRemoteConfig.SharedInstance?.GetConfigValue(key)?.NumberValue?.LongValue;
+            return remoteLongVal ?? 0L;
+#else
+            return RemoteConfigContainer.GetValue<long>(key, defaultValue: Config.ResourceManager.GetString(key)?.TryParseLong() ?? 0L);
+#endif
+        }
+
+        public double GetDouble(string key)
+        {
+#if __IOS__
+            double? remoteDoubleVal = FirebaseRemoteConfig.SharedInstance?.GetConfigValue(key)?.NumberValue?.DoubleValue;
+            return remoteDoubleVal ?? 0d;
+#else
+            return RemoteConfigContainer.GetValue<double>(key, defaultValue: Config.ResourceManager.GetString(key)?.TryParseDouble() ?? 0d);
+#endif
+        }
     }
 }

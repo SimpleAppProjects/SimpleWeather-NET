@@ -1,7 +1,6 @@
 ﻿#if __IOS__ || __MACCATALYST__
 using BackgroundTasks;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Maui.Images;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
@@ -38,23 +37,37 @@ namespace SimpleWeather.Maui.BackgroundTasks
                 var imageDataService = Ioc.Default.GetService<IImageDataService>();
                 if (!await imageDataService.IsEmpty() && !UpdateSettings.IsUpdateAvailable)
                 {
-                    // If so, check if we need to invalidate
-                    var updateTime = 0L;
+                    // If so, check the last time the Image Database (Firestore) was updated
+                    var remoteDBVersionTimestamp = 0L;
                     try
                     {
-                        updateTime = await ImageDatabase.GetLastUpdateTime();
+                        remoteDBVersionTimestamp = await ImageDatabase.GetVersionTimestamp();
                     }
                     catch (Exception e)
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                     }
 
-                    if (updateTime > imageDataService.GetImageDBUpdateTime())
+                    var localDBVersionTimestamp = imageDataService.GetImageDBVersionTimestamp();
+                    var localDBUpdateTime = imageDataService.GetImageDBUpdateTime();
+                    var localCachedDays = TimeSpan.FromTicks(DateTimeOffset.UtcNow.Ticks - localDBUpdateTime).TotalDays;
+
+                    var remoteConfigService = Ioc.Default.GetService<IRemoteConfigService>();
+                    var validDays = (remoteConfigService.GetLong("key_imagedb_valid_days").TakeIf(l => l != 0) ?? 30) + Random.Shared.Next(0, 8);
+
+                    // Check if a new image db version is available or local image db cache time has expired
+                    if (remoteDBVersionTimestamp > localDBVersionTimestamp || localCachedDays > validDays)
                     {
-                        AnalyticsLogger.LogEvent($"{taskName}: clearing image cache");
+                        AnalyticsLogger.LogEvent($"{taskName}: clearing image cache", new Dictionary<string, string>()
+                        {
+                            { "remoteDBVersionTimestamp", remoteDBVersionTimestamp.ToString() },
+                            { "localDBVersionTimestamp", localDBVersionTimestamp.ToString() },
+                            { "localCachedDays", localCachedDays.ToString() },
+                        });
 
                         // if so, invalidate
-                        imageDataService.SetImageDBUpdateTime(updateTime);
+                        imageDataService.SetImageDBVersionTimestamp(remoteDBVersionTimestamp);
+                        imageDataService.SetImageDBUpdateTime(DateTimeOffset.UtcNow.Ticks);
                         await imageDataService.ClearCachedImageData();
                         imageDataService.InvalidateCache(true);
                     }

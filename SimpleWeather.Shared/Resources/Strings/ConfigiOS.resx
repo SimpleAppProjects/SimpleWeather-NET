@@ -250,4 +250,7 @@
   <data name="Yahoo" xml:space="preserve">
     <value>{ "enabled": false, "locSource": "weatherapi", "newWeatherSource": "Metno" }</value>
   </data>
+  <data name="key_imagedb_valid_days" xml:space="preserve">
+    <value>30</value>
+  </data>
 </root>

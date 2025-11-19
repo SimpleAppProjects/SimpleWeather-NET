@@ -1,9 +1,6 @@
 ﻿#if __IOS__ || __MACCATALYST__
-using BackgroundTasks;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Maui.Images;
-using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData.Images;
 using UIKit;
@@ -37,22 +34,31 @@ namespace SimpleWeather.Maui.BackgroundTasks
                 if (!await imageDataService.IsEmpty() && !UpdateSettings.IsUpdateAvailable)
                 {
                     // If so, check if we need to invalidate
-                    var updateTime = 0L;
+                    var remoteDBVersionTimestamp = 0L;
                     try
                     {
-                        updateTime = await ImageDatabase.GetLastUpdateTime();
+                        remoteDBVersionTimestamp = await ImageDatabase.GetVersionTimestamp();
                     }
                     catch (Exception e)
                     {
                         Logger.WriteLine(LoggerLevel.Error, e);
                     }
 
-                    if (updateTime > imageDataService.GetImageDBUpdateTime())
+                    var localDBVersionTimestamp = imageDataService.GetImageDBVersionTimestamp();
+                    var localDBUpdateTime = imageDataService.GetImageDBUpdateTime();
+
+                    if (remoteDBVersionTimestamp > localDBVersionTimestamp)
                     {
-                        AnalyticsLogger.LogEvent($"{taskName}: clearing image cache");
+                        AnalyticsLogger.LogEvent($"{taskName}: clearing image cache", new Dictionary<string, string>()
+                        {
+                            { "remoteDBVersionTimestamp", remoteDBVersionTimestamp.ToString() },
+                            { "localDBVersionTimestamp", localDBVersionTimestamp.ToString() },
+                            { "localDBUpdateTime", localDBUpdateTime.ToString() },
+                        });
 
                         // if so, invalidate
-                        imageDataService.SetImageDBUpdateTime(updateTime);
+                        imageDataService.SetImageDBVersionTimestamp(remoteDBVersionTimestamp);
+                        imageDataService.SetImageDBUpdateTime(DateTimeOffset.UtcNow.Ticks);
                         await imageDataService.ClearCachedImageData();
                         imageDataService.InvalidateCache(true);
                     }

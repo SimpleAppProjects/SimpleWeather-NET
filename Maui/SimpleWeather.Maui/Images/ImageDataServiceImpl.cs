@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using SimpleWeather.Firebase;
+﻿using SimpleWeather.Firebase;
 using SimpleWeather.Helpers;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -7,11 +6,7 @@ using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.WeatherData;
 using SimpleWeather.WeatherData.Images;
 using SimpleWeather.WeatherData.Images.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Maui.Images;
 
@@ -19,11 +14,14 @@ public sealed class ImageDataServiceImpl : BaseImageDataService
 {
     private readonly string ImageDataFolder;
     private readonly string CacheDataFolder;
+    private readonly string ImageCacheDataFolder;
 
     public ImageDataServiceImpl() : base()
     {
         CacheDataFolder = ApplicationDataHelper.GetLocalCacheFolderPath();
+        ImageCacheDataFolder = Path.Combine(CacheDataFolder, "image_cache");
         ImageDataFolder = Path.Combine(CacheDataFolder, "images");
+        Directory.CreateDirectory(ImageCacheDataFolder);
         Directory.CreateDirectory(ImageDataFolder);
     }
 
@@ -94,16 +92,27 @@ public sealed class ImageDataServiceImpl : BaseImageDataService
 
             if (Equals(imageUri.Scheme, "gs") || imageUri.ToString().Contains("firebasestorage"))
             {
-                var storage = await FirebaseHelper.GetFirebaseStorage();
-                var storageRef = storage.GetReferenceFromUrl(imageUri.ToString());
+                var cachedFile = imageUri.Segments.LastOrDefault()?.Let(f => Path.Combine(ImageCacheDataFolder, f));
+                var cachedFileDetails = cachedFile != null && File.Exists(cachedFile) ? new FileInfo(cachedFile) : null;
+                var isCached = cachedFileDetails != null && (DateTime.UtcNow - cachedFileDetails.LastWriteTimeUtc).TotalDays < 60;
 
-                using var cts = new CancellationTokenSource(SettingsManager.CONNECTION_TIMEOUT);
-
-                try
+                if (isCached)
                 {
-                    await storageRef.WriteToFileAsync(imageFile).WaitAsync(cts.Token);
+                    File.Copy(cachedFile, imageFile);
                 }
-                catch (OperationCanceledException) { }
+                else
+                {
+                    var storage = await FirebaseHelper.GetFirebaseStorage();
+                    var storageRef = storage.GetReferenceFromUrl(imageUri.ToString());
+
+                    using var cts = new CancellationTokenSource(SettingsManager.CONNECTION_TIMEOUT);
+
+                    try
+                    {
+                        await storageRef.WriteToFileAsync(imageFile).WaitAsync(cts.Token);
+                    }
+                    catch (OperationCanceledException) { }
+                }
             }
             else
             {
@@ -111,7 +120,7 @@ public sealed class ImageDataServiceImpl : BaseImageDataService
                 var request = new HttpRequestMessage(HttpMethod.Get, imageData.ImageUrl);
                 request.Headers.CacheControl = new CacheControlHeaderValue()
                 {
-                    MaxAge = TimeSpan.FromDays(1)
+                    MaxAge = TimeSpan.FromDays(60)
                 };
                 var response = await client.SendAsync(request);
                 if (!response.IsSuccessStatusCode)

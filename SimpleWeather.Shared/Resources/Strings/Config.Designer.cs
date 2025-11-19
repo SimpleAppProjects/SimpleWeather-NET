@@ -166,6 +166,15 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 30.
+        /// </summary>
+        public static string key_imagedb_valid_days {
+            get {
+                return ResourceManager.GetString("key_imagedb_valid_days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;enabled&quot;:true,&quot;locSource&quot;:&quot;&quot;,&quot;newWeatherSource&quot;:&quot;&quot;}.
         /// </summary>
         public static string mapbox {

@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using SimpleWeather.WeatherData.Images.Model;
+﻿using SimpleWeather.WeatherData.Images.Model;
+using System.Threading.Tasks;
 
 namespace SimpleWeather.WeatherData.Images
 {
@@ -13,6 +13,8 @@ namespace SimpleWeather.WeatherData.Images
         ImageData GetDefaultImageData(string backgroundCode, Weather weather);
         Task<bool> IsEmpty();
 
+        long GetImageDBVersionTimestamp();
+        void SetImageDBVersionTimestamp(long value);
         long GetImageDBUpdateTime();
         void SetImageDBUpdateTime(long value);
         bool ShouldInvalidateCache();

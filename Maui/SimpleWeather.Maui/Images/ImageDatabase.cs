@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Nodes;
-using CommunityToolkit.Mvvm.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using Firebase.CloudFirestore;
 using Firebase.Database;
 using Foundation;
@@ -184,9 +180,10 @@ public static class ImageDatabase
         {
             await query.GetDocumentsAsync(FirestoreSource.Server);
             imageDataService.InvalidateCache(false);
-            if (imageDataService.GetImageDBUpdateTime() == 0)
+            if (imageDataService.GetImageDBVersionTimestamp() == 0)
             {
-                imageDataService.SetImageDBUpdateTime(await GetLastUpdateTime());
+                imageDataService.SetImageDBVersionTimestamp(await GetVersionTimestamp());
+                imageDataService.SetImageDBUpdateTime(DateTimeOffset.UtcNow.Ticks);
             }
         }
         catch (Exception e)
@@ -199,7 +196,7 @@ public static class ImageDatabase
         ImageDatabaseTask.ScheduleTask();
     }
 
-    public static Task<long> GetLastUpdateTime()
+    public static Task<long> GetVersionTimestamp()
     {
         var tcs = new TaskCompletionSource<long>();
 
