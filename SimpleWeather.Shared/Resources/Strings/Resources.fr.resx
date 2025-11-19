@@ -319,10 +319,10 @@
     <value>Unités</value>
   </data>
   <data name="pref_summary_fahrenheit" xml:space="preserve">
-    <value>Afficher les unités en Fahrenheit</value>
+    <value>Afficher les unités en Fahrenheit (°F)</value>
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
-    <value>Afficher les unités en Celsius</value>
+    <value>Afficher les unités en Celsius (°C)</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>À propos</value>

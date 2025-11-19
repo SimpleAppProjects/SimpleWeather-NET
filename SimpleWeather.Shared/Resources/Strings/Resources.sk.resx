@@ -319,10 +319,10 @@
     <value>Jednotky</value>
   </data>
   <data name="pref_summary_fahrenheit" xml:space="preserve">
-    <value>Zobraziť v stupňoch Fahrenheita</value>
+    <value>Zobraziť v stupňoch Fahrenheita (°F)</value>
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
-    <value>Zobraziť v stupňoch Celzia</value>
+    <value>Zobraziť v stupňoch Celzia (°C)</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikácii</value>

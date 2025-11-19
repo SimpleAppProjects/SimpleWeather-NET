@@ -319,10 +319,10 @@
     <value>Units</value>
   </data>
   <data name="pref_summary_fahrenheit" xml:space="preserve">
-    <value>Display units in Fahrenheit</value>
+    <value>Display units in Fahrenheit (°F)</value>
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
-    <value>Display units in Celsius</value>
+    <value>Display units in Celsius (°C)</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>About</value>
@@ -389,7 +389,6 @@
   </data>
   <data name="error_message_weather_region_unsupported" xml:space="preserve">
     <value>Country not supported by this weather provider</value>
-    <comment>Fuzzy</comment>
   </data>
   <data name="label_btn_add_location" xml:space="preserve">
     <value>Add Location</value>

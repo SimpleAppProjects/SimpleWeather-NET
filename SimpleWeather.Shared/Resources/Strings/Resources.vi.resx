@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Nhập Địa Điểm</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Nhà Cung Cấp Thời Tiết</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Khóa Cung Cấp</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Vị Trí Hiện Tại</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Bắt Đầu</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Chào mừng đến với SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Một ứng dụng thời tiết đơn giản</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Thêm một địa điểm để bắt đầu</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Tùy chỉnh cài đặt của bạn bên dưới</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Tiếp</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Quay lại</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Thời tiết</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Thử lại</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Chi tiết</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Độ ẩm</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Áp suất</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Tầm nhìn</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Cảm giác như</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Gió</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Dự báo</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Điều kiện</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Bình minh / Hoàng hôn</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Bình minh</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Hoàng hôn</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Hàng giờ</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Lượng mưa</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Cơ hội</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Độ che phủ của mây</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Mưa</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Tuyết</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Dữ liệu từ</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Ảnh của</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Cao</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Thấp</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Điểm sương</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Mặt trăng mọc</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Mặt trăng lặn</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Pha Mặt Trăng</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>Chỉ số UV</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Chỉ số Chất lượng Không khí</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Chất lượng Không khí</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>Buổi chiều</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Buổi tối</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Buổi sáng</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Đêm</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Nhiệt độ</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Thời tiết</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Cảnh báo</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Địa điểm</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Cài đặt</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Cảnh báo Thời tiết Khắc nghiệt</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>Chung</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Phiên bản</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Đơn vị</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Hiển thị đơn vị theo độ Fahrenheit (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Hiển thị đơn vị theo độ Celsius (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>Giới thiệu</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Giới thiệu SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Ghi nhận</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Thư viện Mã nguồn Mở</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Nhà Cung Cấp Dữ Liệu</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Cho phép truy cập vị trí hiện tại qua GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Nhập Khóa Cung Cấp bắt buộc cho %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Vui lòng nhập Khóa Cung Cấp</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Đã xác minh khóa</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Khóa không hợp lệ</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Thông báo Thời tiết</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Hiển thị thông báo liên tục hiển thị điều kiện thời tiết hiện tại</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Nhà Cung Cấp Thời Tiết</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Thông báo</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Biểu tượng Thông báo</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Cảnh Báo Thời Tiết</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Hiển thị thông báo cho cảnh báo thời tiết</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Cảnh báo thời tiết không được hỗ trợ bởi nhà cung cấp thời tiết này</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Tạo một tài khoản</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Tạo một tài khoản để đăng ký khóa nhà cung cấp</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Quốc gia không được hỗ trợ bởi nhà cung cấp thời tiết này</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Thêm vị trí</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Sửa</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Vị trí hiện tại</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Vị trí yêu thích</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Quyền truy cập vị trí bị từ chối</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Không thể lấy vị trí</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Dịch vụ vị trí bị tắt. Vui lòng bật trong Cài đặt</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Không tìm thấy kết quả</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Thêm một vị trí</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Vị trí đã bị xóa</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Phải có ít nhất một vị trí yêu thích</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Hoàn tác</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Xóa</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Cho phép truy cập để cập nhật vị trí trong nền cho thông báo và tiện ích</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Không thể tải dữ liệu thời tiết</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Lỗi kết nối mạng</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Khóa nhà cung cấp không hợp lệ</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Không có thành phố nào phù hợp với truy vấn tìm kiếm của bạn</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>Đã xảy ra lỗi không xác định</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Khoảng thời gian cập nhật</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 giờ</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 giờ</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 giờ</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 giờ</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 giờ</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Đã cập nhật vào</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Đã cập nhật lúc</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Nhiệt độ</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Điều kiện thời tiết</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Thông báo thời tiết</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Thông báo thời tiết</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Cảnh báo thời tiết</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Thông báo cho cảnh báo thời tiết</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Thông báo dịch vụ</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$d ngày trước</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$d giờ trước</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$d phút trước</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$d giây trước</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Có hiệu lực đến</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Khóa nhà cung cấp cá nhân</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Sử dụng khóa nhà cung cấp thời tiết cá nhân</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Giao diện</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Mặc định hệ thống</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Tối</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Tối (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Sáng</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Tính năng</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Chọn các tính năng để bật/tắt</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Hình nền</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Dự báo</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Dự báo theo giờ</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Chi tiết thời tiết</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Chỉ số chất lượng không khí</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Pha Mặt Trăng</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Pha Mặt Trời</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Radar thời tiết</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Ảnh bảng vị trí</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Sáng</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Tối</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Mặc định</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>Chọn nhà cung cấp thời tiết</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>Hủy</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Xong</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>Quyền truy cập vào vị trí đã bị từ chối. Vui lòng bật trong Cài đặt.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>Hiển thị đơn vị theo:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>Cài đặt chung</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>{0} ngày trước</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>{0} giờ trước</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>{0} phút trước</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>{0} giây trước</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>Làm mới</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Ghim vào Start</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Bỏ ghim khỏi Start</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>Không có cảnh báo thời tiết nào.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Tính năng</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Chọn các tính năng để bật/tắt:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Tính năng</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>Chuỗi</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Gió giật</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Đang kiểm tra cập nhật...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Không thể cài đặt. Nhấn để thử lại</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Không có bản cập nhật nào</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Đang tải xuống...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Đang cài đặt...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Phản hồi</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Cập nhật SimpleWeather</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Có bản cập nhật. Nhấn để cài đặt</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Hỗ trợ</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Phản hồi</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Báo cáo bất kỳ lỗi hoặc đề xuất nào để cải thiện ứng dụng</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Đánh giá và Nhận xét</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Bạn thích ứng dụng này? Hãy giúp hỗ trợ bằng cách đưa ra đánh giá</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Dịch</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Giúp dịch ứng dụng</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Ngôn ngữ</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Nhiệt độ</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Tốc độ</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Khoảng cách</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Đặt lại đơn vị về giá trị mặc định</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Đang cập nhật thời tiết…</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Hình nền ô</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>Biểu tượng</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>Biểu đồ</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 phút</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Thông báo hàng ngày</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Thời gian</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Tắt</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Bật</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Thông báo lượng mưa</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>Ngày</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% khả năng có mưa ở {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% khả năng có mưa trong giờ tới</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Tóm tắt thời tiết</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Quyền truy cập nền bị từ chối. Vui lòng bật trong Cài đặt.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Số lượng phấn hoa</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Cây</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Phấn hoa cây</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Cỏ</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Phấn hoa cỏ</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Cỏ phấn hương</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Phấn hoa cỏ phấn hương</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Một chút</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Vừa phải</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Cao</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Rất cao</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Để cập nhật vị trí trong nền cho thông báo và tiện ích, vui lòng đặt quyền vị trí thành &apos;%1$s&apos;</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Vị trí chưa được đặt. Vui lòng thêm vị trí</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Truy cập vị trí trong nền</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Cho phép truy cập để cập nhật vị trí trong nền cho ô và tiện ích con</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Để cập nhật vị trí trong nền cho ô và tiện ích con, vui lòng đặt quyền vị trí thành &apos;%1$s&apos;</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Hiện tại</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>KHÔNG CÓ DỮ LIỆU</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Từng phút</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Trời sẽ bắt đầu mưa trong khoảng {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Trời sẽ tạnh mưa trong khoảng {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Tên người dùng</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Chính sách bảo mật</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Điều khoản dịch vụ</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Mức độ nghiêm trọng cảnh báo tối thiểu</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Không có (Hiển thị tất cả cảnh báo)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Vừa phải</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Nghiêm trọng</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Cực đoan</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Thêm thông tin</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Đặt lại</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Một chút</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Vừa phải</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Cao</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Cao</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Quá nhiều yêu cầu. Vui lòng thử lại sau vài phút</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Vị trí này không được nhà cung cấp thời tiết này hỗ trợ</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Có khả năng mưa vào khoảng {0} (cơ hội {1}%)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Dự kiến trời sẽ bắt đầu mưa vào khoảng {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Dự kiến trời sẽ tạnh mưa vào khoảng {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

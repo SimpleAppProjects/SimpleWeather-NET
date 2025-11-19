@@ -319,10 +319,10 @@
     <value>Jednostki</value>
   </data>
   <data name="pref_summary_fahrenheit" xml:space="preserve">
-    <value>Wyświetlaj jednostki w skali Fahrenheita</value>
+    <value>Wyświetlaj jednostki w skali Fahrenheita (°F)</value>
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
-    <value>Wyświetlaj jednostki w skali Celsjusza</value>
+    <value>Wyświetlaj jednostki w skali Celsjusza (°C)</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>O aplikacji</value>
@@ -964,5 +964,17 @@ Fuzzy</comment>
   </data>
   <data name="api_accuweather" xml:space="preserve">
     <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Prawdopodobny deszcz około {0} (szansa {1}%)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Oczekuje się, że deszcz zacznie padać około {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Oczekuje się, że deszcz przestanie padać około {0}</value>
+    <comment>{0} - Time</comment>
   </data>
 </root>

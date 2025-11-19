@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>أدخل الموقع</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>مزود الطقس</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>مفتاح المزود</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>الموقع الحالي</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>ابدأ</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>مرحباً بك في تطبيق SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>مجرد تطبيق بسيط للطقس</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>أضف موقعاً للبدء</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>خصص إعداداتك أدناه</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>التالي</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>السابق</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>الطقس</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>إعادة المحاولة</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>التفاصيل</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>الرطوبة</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>الضغط الجوي</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>مدى الرؤية</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>الشعور بالحرارة</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>الرياح</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>التوقعات</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>الحالة</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>شروق / غروب الشمس</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>شروق الشمس</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>غروب الشمس</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>كل ساعة</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>هطول الأمطار</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>احتمالية</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>تلبد الغيوم</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>المطر</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>الثلج</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>البيانات من</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>صورة بواسطة</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>أعلى</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>أقل</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>نقطة الندى</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>طلوع القمر</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>غروب القمر</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>طور القمر</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>مقياس بوفورت</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>مؤشر الأشعة فوق البنفسجية</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>مؤشر جودة الهواء</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>جودة الهواء</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>رادار</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>بعد الظهر</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>المساء</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>الصباح</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>الليل</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>درجة الحرارة</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>الطقس</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>تنبيهات</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>المواقع</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>الإعدادات</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>تنبيهات الطقس القاسي</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>عام</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>الإصدار</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>الوحدات</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>عرض الوحدات بالفهرنهايت (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>عرض الوحدات بالسيليزية (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>حول</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>حول SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>شكر وتقدير</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>مكتبات مفتوحة المصدر</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>مزودو البيانات</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>السماح بالوصول إلى الموقع الحالي عبر GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>أدخل مفتاح المزود المطلوب لـ %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>الرجاء إدخال مفتاح المزود</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>تم التحقق من المفتاح</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>مفتاح غير صالح</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>إشعار الطقس</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>إظهار إشعار مستمر يعرض أحوال الطقس الحالية</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>مزود الطقس</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>الإشعارات</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>رمز الإشعار</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>تنبيهات الطقس</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>إظهار إشعارات لتنبيهات الطقس</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>تنبيهات الطقس غير مدعومة من قبل مزود خدمة الطقس هذا</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>إنشاء حساب</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>إنشاء حساب للتسجيل للحصول على مفتاح مزود الخدمة</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>الدولة غير مدعومة من قبل مزود خدمة الطقس هذا</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>إضافة موقع</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>تعديل</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>الموقع الحالي</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>المواقع المفضلة</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>تم رفض الوصول إلى الموقع</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>غير قادر على الحصول على الموقع</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>خدمات الموقع معطلة. يرجى تمكينها في الإعدادات</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>لم يتم العثور على نتائج</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>إضافة موقع</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>تمت إزالة الموقع</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>يجب أن يكون لديك موقع مفضل واحد على الأقل</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>تراجع</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>حذف</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>السماح بالوصول لتحديث الموقع في الخلفية للإشعارات والودجات</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>غير قادر على تحميل بيانات الطقس</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>خطأ في الاتصال بالشبكة</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>مفتاح مزود خدمة غير صالح</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>لا توجد مدن تطابق استعلام البحث الخاص بك</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>حدث خطأ غير معروف</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>فترة التحديث</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>ساعة واحدة</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>ساعتان</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 ساعات</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 ساعات</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 ساعة</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>تم التحديث في</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>تم التحديث في الساعة</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>درجة الحرارة</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>حالة الطقس</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>إشعارات الطقس</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>إشعارات الطقس</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>تنبيهات الطقس</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>إشعارات لتنبيهات الطقس</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>إشعارات الخدمة</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>منذ %1$d أيام</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>منذ %1$d ساعات</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>منذ %1$d دقائق</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>منذ %1$d ثواني</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>صالح حتى</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>مفتاح مزود خدمة شخصي</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>استخدام مفتاح مزود خدمة طقس شخصي</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>السمة</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>افتراضي النظام</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>داكن</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>داكن (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>فاتح</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>الميزات</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>حدد الميزات لتمكين/تعطيل</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>صورة الخلفية</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>التوقعات</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>توقعات كل ساعة</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>تفاصيل الطقس</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>الأشعة فوق البنفسجية</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>مقياس بوفورت</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>مؤشر جودة الهواء</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>طور القمر</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>طور الشمس</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>رادار الطقس</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>صورة لوحة الموقع</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>فاتح</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>داكن</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>افتراضي</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>اختر مزود الطقس</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>إلغاء</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>تم</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>تم رفض الوصول إلى الموقع. يرجى التمكين في الإعدادات.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>عرض الوحدات بـ:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>إعدادات عامة</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>منذ {0} أيام</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>منذ {0} ساعات</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>منذ {0} دقائق</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>منذ {0} ثواني</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>تحديث</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>تثبيت في قائمة ابدأ</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>إلغاء التثبيت من قائمة ابدأ</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>موافق</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>لا توجد تنبيهات طقس متاحة.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>الميزات</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>اختر الميزات المراد تمكينها/تعطيلها:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>الميزات</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>سلسلة</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>هبة الرياح</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>جاري التحقق من وجود تحديثات...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>غير قادر على التثبيت. انقر للمحاولة مرة أخرى</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>لا توجد تحديثات متاحة</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>جاري التنزيل...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>جاري التثبيت...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>ملاحظات</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>تحديث SimpleWeather</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>تحديث متاح. انقر للتثبيت</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>الدعم</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>ملاحظات</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>أبلغ عن أي أخطاء أو اقتراحات لتحسين التطبيق</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>قيم وراجع</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>هل أعجبك التطبيق؟ ساعد في الدعم من خلال تقديم مراجعة</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>ترجمة</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>ساعد في ترجمة التطبيق</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>اللغة</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>درجة الحرارة</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>السرعة</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>المسافة</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>إعادة تعيين الوحدات إلى القيم الافتراضية</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>جاري تحديث الطقس...</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>صورة خلفية البلاطة</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>أيقونات</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>الرسوم البيانية</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 دقيقة</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>إشعار يومي</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>الوقت</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>إيقاف</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>تشغيل</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>إشعار هطول الأمطار</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>يوم</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% فرصة هطول أمطار في {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% فرصة هطول أمطار في الساعة القادمة</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>ملخص الطقس</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>تم رفض الوصول إلى الخلفية. يرجى التمكين في الإعدادات.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>عدد حبوب اللقاح</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>شجرة</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>حبوب لقاح الأشجار</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>عشب</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>حبوب لقاح العشب</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>عشبة الرجيد</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>حبوب لقاح عشبة الرجيد</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>قليل</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>معتدل</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>عالي</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>عالية جداً</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>لتحديث الموقع في الخلفية للإشعارات والودجات، يرجى تعيين إذن الموقع إلى &apos;%1$s&apos;</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>لم يتم تعيين الموقع. يرجى إضافة موقع</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>الوصول إلى الموقع في الخلفية</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>السماح بالوصول لتحديث الموقع في الخلفية للبلاطات والمضاعفات</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>لتحديث الموقع في الخلفية للبلاطات والمضاعفات، يرجى تعيين إذن الموقع إلى &apos;%1$s&apos;</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>الحالي</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>لا توجد بيانات</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>كل دقيقة</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>سيبدأ المطر في حوالي {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>سيتوقف المطر في حوالي {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>اسم المستخدم</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>سياسة الخصوصية</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>شروط الخدمة</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>الحد الأدنى لخطورة التنبيه</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>بلا (عرض جميع التنبيهات)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>معتدل</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>شديد</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>بالغ</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>مزيد من المعلومات</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>إعادة تعيين</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>قليل</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>معتدل</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>عالي</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>عالي</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>طلبات كثيرة جداً. يرجى المحاولة مرة أخرى بعد بضع دقائق</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>لا يدعم مزود الطقس هذا الموقع</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>من المحتمل هطول الأمطار حوالي {0} (احتمال {1}٪)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>من المتوقع أن يبدأ المطر حوالي {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>من المتوقع أن يتوقف المطر حوالي {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

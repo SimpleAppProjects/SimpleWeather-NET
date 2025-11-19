@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Įveskite vietovę</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Orai teikėjas</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Teikėjo raktas</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Dabartinė vieta</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Pradėti</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Sveiki atvykę į SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Tiesiog paprasta orų programa</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Pridėkite vietą, kad pradėtumėte</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Tinkinkite savo nustatymus žemiau</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Toliau</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Atgal</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Orai</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>Nustatymai</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Bandyti iš naujo</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Išsamiau</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Drėgmė</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Slėgis</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Matomumas</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Jaučiasi kaip</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Vėjas</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Prognozė</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Būklė</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Saulėtekis / Saulėlydis</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Saulėtekis</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Saulėlydis</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Kas valandą</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Krituliai</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Tikimybė</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Debesuotumas</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Lietus</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Sniegas</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Duomenys iš</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Nuotrauka autorius</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Aukšta</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Žema</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Rasos taškas</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Mėnulio patekėjimas</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Mėnulio nusileidimas</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Mėnulio fazė</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Bofortas</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>UV indeksas</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Oro kokybės indeksas</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Oro kokybė</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Radaras</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>Popietė</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Vakaras</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Rytas</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Naktis</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Temp</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Orai</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Įspėjimai</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Vietos</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Nustatymai</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Smarkaus oro įspėjimai</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>Bendra</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Versija</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Vienetai</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Rodyti vienetus pagal Farenheitą (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Rodyti vienetus pagal Celsijų (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>Apie</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Apie SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Autoriai</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Atviro kodo bibliotekos</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Duomenų teikėjai</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Leisti prieigą prie dabartinės vietos naudojant GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Įveskite teikėjo raktą, reikalingą %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Prašome įvesti teikėjo raktą</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Raktas patvirtintas</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Netinkamas raktas</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Orų pranešimas</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Rodyti nuolatinį pranešimą, kuriame rodomos dabartinės oro sąlygos</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Orai teikėjas</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Pranešimai</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Pranešimo piktograma</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Įspėjimai apie orą</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Rodyti pranešimus apie įspėjimus apie orus</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Šis orų teikėjas nepalaiko įspėjimų apie orus</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Sukurti paskyrą</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Sukurkite paskyrą, kad užsiregistruotumėte dėl teikėjo rakto</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Šalis nepalaikoma šio orų teikėjo</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Pridėti vietą</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Redaguoti</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Dabartinė vieta</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Mėgstamiausios vietos</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Vietos prieiga atmesta</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Nepavyko nustatyti vietos</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Vietos nustatymo paslaugos išjungtos. Įjunkite nustatymuose</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Rezultatų nerasta</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Pridėti vietą</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Vieta pašalinta</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Turi būti bent viena mėgstamiausia vieta</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Atšaukti</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Ištrinti</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Leisti prieigą atnaujinti vietą fone, kad būtų teikiami pranešimai ir valdikliai</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Nepavyko įkelti orų duomenų</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Tinklo ryšio klaida</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Neteisingas teikėjo raktas</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Jūsų paieškos užklausa neatitinka jokių miestų</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>Įvyko nežinoma klaida</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Atnaujinimo intervalas</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 valanda</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 valandos</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 valandos</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 valandos</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 valandų</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Atnaujinta</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Atnaujinta</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Temperatūra</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Oro sąlygos</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Pranešimai apie orą</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Pranešimai apie orą</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Įspėjimai apie orą</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Pranešimai apie įspėjimus apie orus</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Paslaugų pranešimai</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>Prieš %1$dd</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>Prieš %1$dh</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>Prieš %1$dm</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>Prieš %1$ds</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Galioja iki</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Asmeninis teikėjo raktas</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Naudoti asmeninį orų teikėjo raktą</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Tema</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Sistemos numatytoji</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Tamsi</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Tamsi (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Šviesi</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Funkcijos</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Pasirinkite funkcijas, kurias norite įjungti/išjungti</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Fono paveikslėlis</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Prognozė</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Valandinė prognozė</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Išsami informacija apie orą</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Bofortas</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Oro kokybės indeksas</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Mėnulio fazė</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Saulės fazė</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Orų radaras</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Vietos skydelio vaizdas</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Šviesi</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Tamsi</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Numatytasis</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>Pasirinkite orų tiekėją</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>Atšaukti</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Atlikta</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>Prieiga prie vietos buvo atmesta. Prašome įjungti nustatymuose.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>Rodyti vienetus:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>Bendrieji nustatymai</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>Prieš {0}d.</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>Prieš {0}val.</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>Prieš {0}min.</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>Prieš {0}sek.</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>Atnaujinti</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Prisegti prie pradžios ekrano</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Atsegti nuo pradžios ekrano</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Gerai</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>Nėra įspėjimų apie orus.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Funkcijos</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Pasirinkite funkcijas, kurias norite įjungti/išjungti:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Funkcijos</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>Serija</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Vėjo gūsis</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Tikrinama, ar yra naujinimų...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Nepavyko įdiegti. Spustelėkite, kad bandytumėte dar kartą</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Naujinimų nėra</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Atsisiunčiama...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Diegiama...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Atsiliepimai</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Atnaujinti „SimpleWeather“</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Yra naujinys. Spustelėkite, kad įdiegtumėte</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Palaikymas</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Atsiliepimai</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Praneškite apie klaidas arba pasiūlymus, kaip patobulinti programą</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Įvertinkite ir peržiūrėkite</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Patinka programa? Padėkite palaikyti pateikdami apžvalgą</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Versti</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Padėkite versti programą</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Kalba</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Temperatūra</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Greitis</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Atstumas</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Atkurti numatytąsias vertes</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Atnaujinamas oras…</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Plytelių fono paveikslėlis</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>Piktogramos</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>Diagramos</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 minučių</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Dienos pranešimas</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Laikas</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Išjungta</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Įjungta</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Pranešimas apie kritulius</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>Diena</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% lietaus tikimybė {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% lietaus tikimybė per artimiausią valandą</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Orų suvestinė</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Prieiga prie fono uždrausta. Įgalinkite nustatymuose.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Žiedadulkių kiekis</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Medis</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Medžių žiedadulkės</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Žolė</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Žolių žiedadulkės</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrozija</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Ambrozijos žiedadulkės</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Žemas</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Vidutinis</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Aukštas</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Labai aukštas</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Norėdami atnaujinti vietovę fone pranešimams ir valdikliams, nustatykite vietos leidimą į „%1$s“</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Vietovė nenustatyta. Prašome pridėti vietovę</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Vietovės prieiga fone</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Leisti prieigą atnaujinti vietovę fone plytelėms ir komplikacijoms</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Norėdami atnaujinti vietovę fone plytelėms ir komplikacijoms, nustatykite vietos leidimą į „%1$s“</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Dabartinis</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>NĖRA DUOMENŲ</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Minutinė</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Lietus prasidės maždaug po {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Lietus baigsis maždaug po {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Vartotojo vardas</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Slaptažodis</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Privatumo politika</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Paslaugų teikimo sąlygos</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Minimalus įspėjimo sunkumas</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Nėra (Rodyti visus įspėjimus)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Vidutinis</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Sunkus</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Ekstremalus</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Daugiau informacijos</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Atstatyti</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Žemas</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Vidutinis</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Aukštas</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Aukštas</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Per daug prašymų. Bandykite dar kartą po kelių minučių</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Šis orų paslaugų teikėjas nepalaiko šios vietos</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Tikėtina, kad lietus prasidės apie {0} ({1}% tikimybė)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Tikimasi, kad lietus prasidės apie {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Tikimasi, kad lietus baigsis apie {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

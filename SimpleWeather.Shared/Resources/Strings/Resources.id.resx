@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Masukkan Lokasi</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Penyedia Cuaca</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Kunci Penyedia</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Lokasi saat ini</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Mulai</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Selamat Datang di SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Hanya aplikasi cuaca sederhana</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Tambahkan lokasi untuk memulai</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Sesuaikan pengaturan Anda di bawah ini</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Selanjutnya</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Kembali</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Cuaca</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Coba Lagi</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Detail</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Kelembaban</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Tekanan</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Visibilitas</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Terasa Seperti</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Angin</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Prakiraan</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Kondisi</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Matahari Terbit / Terbenam</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Matahari Terbit</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Matahari Terbenam</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Per Jam</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Presipitasi</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Kemungkinan</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Kekeruhan</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Hujan</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Salju</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Data dari</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Foto oleh</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Tertinggi</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Terendah</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Titik Embun</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Terbit Bulan</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Terbenam Bulan</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Fase Bulan</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>Indeks UV</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Indeks Kualitas Udara</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Kualitas Udara</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>Siang</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Malam</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Pagi</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Malam</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Suhu</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Cuaca</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Peringatan</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Lokasi</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Pengaturan</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Peringatan Cuaca Ekstrem</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>Umum</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Versi</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Satuan</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Tampilkan satuan dalam Fahrenheit (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Tampilkan satuan dalam Celsius (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>Tentang</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Tentang SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Kredit</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Pustaka Sumber Terbuka</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Penyedia Data</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Izinkan akses ke lokasi saat ini melalui GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Masukkan Kunci Penyedia yang diperlukan untuk %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Silakan masukkan Kunci Penyedia</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Kunci Terverifikasi</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Kunci Tidak Valid</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Notifikasi Cuaca</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Tampilkan notifikasi persisten yang menampilkan kondisi cuaca saat ini</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Penyedia Cuaca</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Notifikasi</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Ikon Notifikasi</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Peringatan Cuaca</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Tampilkan notifikasi untuk peringatan cuaca</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Peringatan cuaca tidak didukung oleh penyedia cuaca ini</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Buat akun</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Buat akun untuk mendaftar kunci Penyedia</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Negara tidak didukung oleh penyedia cuaca ini</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Tambahkan Lokasi</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Lokasi Saat Ini</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Lokasi Favorit</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Akses lokasi ditolak</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Tidak dapat memperoleh lokasi</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Layanan Lokasi dinonaktifkan. Harap aktifkan di Pengaturan</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Tidak ada hasil yang ditemukan</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Tambahkan lokasi</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Lokasi dihapus</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Harus memiliki setidaknya satu lokasi favorit</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Urungkan</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Hapus</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Izinkan akses untuk memperbarui lokasi di latar belakang untuk notifikasi dan widget</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Tidak dapat memuat data cuaca</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Kesalahan Koneksi Jaringan</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Kunci Penyedia Tidak Valid</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Tidak ada kota yang cocok dengan kueri pencarian Anda</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>Terjadi kesalahan yang tidak diketahui</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Interval Pembaruan</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 jam</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 jam</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 jam</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 jam</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 jam</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Diperbarui pada</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Diperbarui pukul</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Suhu</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Kondisi Cuaca</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Notifikasi Cuaca</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Notifikasi cuaca</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Peringatan Cuaca</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Notifikasi untuk peringatan cuaca</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Notifikasi layanan</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$dd yang lalu</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$dh yang lalu</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$dm yang lalu</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$ds yang lalu</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Berlaku hingga</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Kunci Penyedia Pribadi</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Gunakan kunci penyedia cuaca pribadi</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Tema</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Default Sistem</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Gelap</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Gelap (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Terang</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Fitur</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Pilih fitur untuk diaktifkan/dinonaktifkan</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Gambar Latar Belakang</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Prakiraan</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Prakiraan Per Jam</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Detail Cuaca</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Indeks Kualitas Udara</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Fase Bulan</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Fase Matahari</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Radar Cuaca</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Gambar Panel Lokasi</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Terang</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Gelap</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Bawaan</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>Pilih Penyedia Cuaca</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>Batal</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Selesai</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>Akses ke lokasi ditolak. Harap aktifkan di Pengaturan.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>Tampilkan satuan dalam:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>Pengaturan Umum</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>{0} hari lalu</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>{0} jam lalu</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>{0} menit lalu</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>{0} detik lalu</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>Segarkan</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Sematkan ke Mulai</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Lepas dari Mulai</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>Tidak ada peringatan cuaca yang tersedia.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Fitur</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Pilih fitur untuk mengaktifkan/menonaktifkan:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Fitur</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>Seri</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Hembusan Angin</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Memeriksa pembaruan...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Tidak dapat dipasang. Klik untuk mencoba lagi</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Tidak ada pembaruan yang tersedia</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Mengunduh...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Memasang...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Umpan Balik</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Perbarui SimpleWeather</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Pembaruan tersedia. Klik untuk memasang</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Dukungan</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Umpan Balik</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Laporkan bug atau saran untuk meningkatkan aplikasi</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Nilai dan Ulas</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Suka aplikasinya? Bantu dukung dengan memberikan ulasan</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Terjemahkan</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Bantu menerjemahkan aplikasi</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Bahasa</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Suhu</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Kecepatan</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Jarak</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Atur ulang satuan ke nilai default</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Memperbarui cuaca…</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Gambar Latar Belakang Ubin</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>Ikon</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>Grafik</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 menit</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Notifikasi Harian</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Waktu</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Mati</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Hidup</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Notifikasi Curah Hujan</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>Hari</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% kemungkinan hujan di {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% kemungkinan hujan dalam satu jam berikutnya</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Ringkasan Cuaca</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Akses latar belakang ditolak. Harap aktifkan di Pengaturan.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Jumlah Serbuk Sari</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Pohon</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Serbuk Sari Pohon</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Rumput</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Serbuk Sari Rumput</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ragweed</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Serbuk Sari Ragweed</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Rendah</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Sedang</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Tinggi</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Sangat tinggi</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Untuk memperbarui lokasi di latar belakang untuk notifikasi dan widget, harap atur izin lokasi ke &apos;%1$s&apos;</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Lokasi belum diatur. Silakan tambahkan lokasi</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Akses Lokasi Latar Belakang</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Izinkan akses untuk memperbarui lokasi di latar belakang untuk petak dan komplikasi</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Untuk memperbarui lokasi di latar belakang untuk petak dan komplikasi, silakan atur izin lokasi ke &apos;%1$s&apos;</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Saat ini</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>TIDAK ADA DATA</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Per Menit</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Hujan akan mulai sekitar {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Hujan akan berhenti sekitar {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Nama Pengguna</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Kata Sandi</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Kebijakan pribadi</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Ketentuan Layanan</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Tingkat Keparahan Peringatan Minimum</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Tidak Ada (Tampilkan semua peringatan)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Sedang</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Parah</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Ekstrim</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Info Lebih Lanjut</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Atur Ulang</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Rendah</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Sedang</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Tinggi</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Tinggi</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Terlalu banyak permintaan. Silakan coba lagi setelah beberapa menit</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Lokasi ini tidak didukung oleh penyedia cuaca ini</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Prawdopodobny deszcz około {0} (szansa {1}%)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Hujan diperkirakan mulai sekitar {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Hujan diperkirakan berhenti sekitar {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

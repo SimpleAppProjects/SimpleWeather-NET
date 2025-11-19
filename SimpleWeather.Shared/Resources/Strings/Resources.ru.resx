@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Введите местоположение</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Погодный провайдер</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Ключ провайдера</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Текущее местоположение</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Начать</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Добро пожаловать в SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Простое приложение о погоде</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Добавьте местоположение, чтобы начать</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Настройте параметры ниже</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Далее</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Погода</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Повторить</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Детали</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Влажность</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Давление</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Видимость</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Ощущается как</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Ветер</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Прогноз</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Состояние</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Восход / Закат</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Восход</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Закат</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Почасовой</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Осадки</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Вероятность</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Облачность</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Дождь</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Снег</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Данные от</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Фото от</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Максимум</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Минимум</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Точка росы</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Восход луны</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Заход луны</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Фаза луны</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Бофорт</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>УФ индекс</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Индекс качества воздуха</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Качество воздуха</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Радар</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Вечер</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Утро</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Ночь</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Темп.</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Погода</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Предупреждения</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Местоположения</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Предупреждения о суровой погоде</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>Общие</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Единицы измерения</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Отображать единицы измерения в градусах Фаренгейта (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Отображать единицы измерения в градусах Цельсия (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>О программе</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>О SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Авторы</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Библиотеки с открытым исходным кодом</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Поставщики данных</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Разрешить доступ к текущему местоположению через GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Введите ключ провайдера, необходимый для %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Пожалуйста, введите ключ провайдера</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Ключ подтвержден</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Неверный ключ</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Уведомление о погоде</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Показывать постоянное уведомление, отображающее текущие погодные условия</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Погодный провайдер</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Иконка уведомлений</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Погодные оповещения</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Показывать уведомления о погодных оповещениях</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Погодные оповещения не поддерживаются этим поставщиком погоды</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Создать учетную запись</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Создайте учетную запись, чтобы зарегистрировать ключ поставщика</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Страна не поддерживается этим поставщиком погоды</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Добавить местоположение</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Редактировать</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Текущее местоположение</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Избранные местоположения</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Доступ к местоположению запрещен</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Не удалось получить местоположение</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Службы определения местоположения отключены. Пожалуйста, включите их в настройках</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Результаты не найдены</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Добавить местоположение</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Местоположение удалено</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Должно быть хотя бы одно избранное местоположение</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Разрешить доступ для обновления местоположения в фоновом режиме для уведомлений и виджетов</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Не удалось загрузить данные о погоде</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Ошибка сетевого подключения</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Недействительный ключ поставщика</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Нет городов, соответствующих вашему поисковому запросу</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>Произошла неизвестная ошибка</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Интервал обновления</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 час</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 часа</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 часа</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 часов</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 часов</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Обновлено</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Обновлено в</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Температура</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Погодные условия</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Погодные уведомления</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Погодные уведомления</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Погодные оповещения</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Уведомления о погодных оповещениях</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Служебные уведомления</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>%1$d д. назад</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>%1$d ч. назад</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>%1$d мин. назад</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>%1$d сек. назад</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Действителен до</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Персональный ключ поставщика</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Использовать персональный ключ поставщика погоды</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Тема</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Системная тема</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Темная</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Темная (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Светлая</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Функции</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Выберите функции для включения/отключения</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Фоновое изображение</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Прогноз</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Почасовой прогноз</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Детали погоды</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>УФ</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Бофорт</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Индекс качества воздуха</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Фаза луны</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Фаза солнца</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Погодный радар</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Изображение панели местоположения</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Светлый</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Темный</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>По умолчанию</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>Выберите поставщика погоды</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>Доступ к местоположению был отклонен. Пожалуйста, включите в настройках.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>Единицы отображения:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>Общие настройки</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>{0} дн. назад</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>{0} ч. назад</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>{0} мин. назад</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>{0} сек. назад</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Закрепить на начальном экране</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Открепить от начального экрана</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ок</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>Нет доступных оповещений о погоде.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Функции</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Выберите функции для включения/отключения:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Функции</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>Серия</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Порыв ветра</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Проверка обновлений...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Невозможно установить. Нажмите, чтобы повторить попытку</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Нет доступных обновлений</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Загрузка...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Установка...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Обратная связь</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Обновить SimpleWeather</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Доступно обновление. Нажмите, чтобы установить</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Поддержка</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Обратная связь</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Сообщайте о любых ошибках или предложениях по улучшению приложения</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Оцените и оставьте отзыв</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Нравится приложение? Помогите поддержать его, оставив отзыв</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Перевод</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Помогите перевести приложение</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Температура</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Скорость</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Расстояние</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Сбросить единицы измерения до значений по умолчанию</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Обновление погоды…</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Фоновое изображение плитки</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>Иконки</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>Графики</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 минут</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Ежедневное уведомление</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Выкл.</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Вкл.</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Уведомление об осадках</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>День</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% вероятность дождя в {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% вероятность дождя в ближайший час</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Сводка погоды</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Доступ к фону запрещен. Пожалуйста, включите в настройках.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Уровень пыльцы</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Дерево</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Пыльца деревьев</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Трава</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Пыльца травы</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Амброзия</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Пыльца амброзии</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Низкий</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Умеренный</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Очень высокий</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Чтобы обновить местоположение в фоновом режиме для уведомлений и виджетов, установите разрешение на определение местоположения на &apos;%1$s&apos;</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Местоположение не установлено. Пожалуйста, добавьте местоположение</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Доступ к местоположению в фоновом режиме</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Разрешить доступ для обновления местоположения в фоновом режиме для плиток и осложнений</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Чтобы обновить местоположение в фоновом режиме для плиток и осложнений, установите разрешение на определение местоположения на &apos;%1$s&apos;</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Текущий</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>НЕТ ДАННЫХ</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Минутно</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Дождь начнется примерно через {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Дождь прекратится примерно через {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Имя пользователя</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Пароль</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Политика конфиденциальности</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Условия использования</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Минимальный уровень серьезности предупреждения</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Нет (Показывать все предупреждения)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Умеренный</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Серьезный</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Экстремальный</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Сброс</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Низкий</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Высокий</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Слишком много запросов. Пожалуйста, повторите попытку через несколько минут</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Это местоположение не поддерживается этим поставщиком погоды</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Вероятность дождя около {0} ({1}% шанс)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Ожидается начало дождя около {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Ожидается прекращение дождя около {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

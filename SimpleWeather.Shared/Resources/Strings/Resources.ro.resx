@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="app_name" xml:space="preserve">
+    <value>SimpleWeather</value>
+  </data>
+  <data name="location_search_hint" xml:space="preserve">
+    <value>Introduceți Locația</value>
+    <comment>Setup</comment>
+  </data>
+  <data name="api_label" xml:space="preserve">
+    <value>Furnizor Meteo</value>
+  </data>
+  <data name="key_hint" xml:space="preserve">
+    <value>Cheie Furnizor</value>
+  </data>
+  <data name="api_here" xml:space="preserve">
+    <value>HERE Weather</value>
+  </data>
+  <data name="api_metno" xml:space="preserve">
+    <value>MET Norway</value>
+  </data>
+  <data name="api_owm" xml:space="preserve">
+    <value>OpenWeatherMap</value>
+  </data>
+  <data name="api_lociq" xml:space="preserve">
+    <value>LocationIQ</value>
+  </data>
+  <data name="api_nws" xml:space="preserve">
+    <value>U.S. National Weather Service</value>
+  </data>
+  <data name="api_waqi" xml:space="preserve">
+    <value>World Air Quality Index Project</value>
+  </data>
+  <data name="label_gpsfollow" xml:space="preserve">
+    <value>Locația Curentă</value>
+  </data>
+  <data name="label_getstarted" xml:space="preserve">
+    <value>Începeți</value>
+  </data>
+  <data name="setup_welcome_prompt" xml:space="preserve">
+    <value>Bun venit la SimpleWeather</value>
+  </data>
+  <data name="setup_welcome_tagline_prompt" xml:space="preserve">
+    <value>Doar o aplicație meteo simplă</value>
+  </data>
+  <data name="setup_location_prompt" xml:space="preserve">
+    <value>Adăugați o locație pentru a începe</value>
+  </data>
+  <data name="setup_preferences_prompt" xml:space="preserve">
+    <value>Personalizați-vă setările mai jos</value>
+  </data>
+  <data name="label_next" xml:space="preserve">
+    <value>Următorul</value>
+  </data>
+  <data name="label_back" xml:space="preserve">
+    <value>Înapoi</value>
+  </data>
+  <data name="title_activity_weather_now" xml:space="preserve">
+    <value>Vremea</value>
+    <comment>MainActivity</comment>
+  </data>
+  <data name="action_settings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="action_retry" xml:space="preserve">
+    <value>Reîncearcă</value>
+  </data>
+  <data name="placeholder_text" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="label_details" xml:space="preserve">
+    <value>Detalii</value>
+    <comment>Weather Details</comment>
+  </data>
+  <data name="label_humidity" xml:space="preserve">
+    <value>Umiditate</value>
+  </data>
+  <data name="label_pressure" xml:space="preserve">
+    <value>Presiune</value>
+  </data>
+  <data name="label_visibility" xml:space="preserve">
+    <value>Vizibilitate</value>
+  </data>
+  <data name="label_feelslike" xml:space="preserve">
+    <value>Se Simte Ca</value>
+  </data>
+  <data name="label_wind" xml:space="preserve">
+    <value>Vânt</value>
+  </data>
+  <data name="label_forecast" xml:space="preserve">
+    <value>Prognoză</value>
+  </data>
+  <data name="label_condition" xml:space="preserve">
+    <value>Condiție</value>
+  </data>
+  <data name="label_sunriseset" xml:space="preserve">
+    <value>Răsărit / Apus</value>
+  </data>
+  <data name="label_sunrise" xml:space="preserve">
+    <value>Răsărit</value>
+  </data>
+  <data name="label_sunset" xml:space="preserve">
+    <value>Apus</value>
+  </data>
+  <data name="label_hourlyforecast" xml:space="preserve">
+    <value>Pe Ore</value>
+  </data>
+  <data name="label_precipitation" xml:space="preserve">
+    <value>Precipitații</value>
+  </data>
+  <data name="label_chance" xml:space="preserve">
+    <value>Probabilitate</value>
+    <comment>Chance of Precipitation</comment>
+  </data>
+  <data name="label_cloudiness" xml:space="preserve">
+    <value>Înnorare</value>
+  </data>
+  <data name="label_qpf_rain" xml:space="preserve">
+    <value>Ploaie</value>
+  </data>
+  <data name="label_qpf_snow" xml:space="preserve">
+    <value>Zăpadă</value>
+  </data>
+  <data name="credit_prefix" xml:space="preserve">
+    <value>Date de la</value>
+  </data>
+  <data name="attrib_prefix" xml:space="preserve">
+    <value>Fotografie de</value>
+  </data>
+  <data name="label_high" xml:space="preserve">
+    <value>Maximă</value>
+  </data>
+  <data name="label_low" xml:space="preserve">
+    <value>Minimă</value>
+  </data>
+  <data name="label_dewpoint" xml:space="preserve">
+    <value>Punct de Rouă</value>
+  </data>
+  <data name="label_moonrise" xml:space="preserve">
+    <value>Răsăritul Lunii</value>
+  </data>
+  <data name="label_moonset" xml:space="preserve">
+    <value>Apusul Lunii</value>
+  </data>
+  <data name="label_moonphase" xml:space="preserve">
+    <value>Faza Lunii</value>
+  </data>
+  <data name="label_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="label_uv" xml:space="preserve">
+    <value>Index UV</value>
+  </data>
+  <data name="label_airquality" xml:space="preserve">
+    <value>Indicele Calității Aerului</value>
+  </data>
+  <data name="label_airquality_short" xml:space="preserve">
+    <value>Calitatea Aerului</value>
+  </data>
+  <data name="label_radar" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="label_afternoon" xml:space="preserve">
+    <value>După-amiază</value>
+  </data>
+  <data name="label_eve" xml:space="preserve">
+    <value>Seară</value>
+  </data>
+  <data name="label_morning" xml:space="preserve">
+    <value>Dimineață</value>
+  </data>
+  <data name="label_night" xml:space="preserve">
+    <value>Noapte</value>
+  </data>
+  <data name="label_temp" xml:space="preserve">
+    <value>Temp.</value>
+  </data>
+  <data name="label_nav_weathernow" xml:space="preserve">
+    <value>Vremea</value>
+    <comment>NavBar</comment>
+  </data>
+  <data name="label_nav_alerts" xml:space="preserve">
+    <value>Alerte</value>
+  </data>
+  <data name="label_nav_locations" xml:space="preserve">
+    <value>Locații</value>
+  </data>
+  <data name="title_activity_settings" xml:space="preserve">
+    <value>Setări</value>
+  </data>
+  <data name="title_fragment_alerts" xml:space="preserve">
+    <value>Alerte Meteo Severe</value>
+  </data>
+  <data name="pref_title_general" xml:space="preserve">
+    <value>General</value>
+    <comment>Settings</comment>
+  </data>
+  <data name="pref_category_version" xml:space="preserve">
+    <value>Versiune</value>
+  </data>
+  <data name="pref_title_units" xml:space="preserve">
+    <value>Unități</value>
+  </data>
+  <data name="pref_summary_fahrenheit" xml:space="preserve">
+    <value>Afișează unitățile în Fahrenheit (°F)</value>
+  </data>
+  <data name="pref_summary_celsius" xml:space="preserve">
+    <value>Afișează unitățile în Celsius (°C)</value>
+  </data>
+  <data name="pref_title_about" xml:space="preserve">
+    <value>Despre</value>
+  </data>
+  <data name="pref_title_about_app" xml:space="preserve">
+    <value>Despre SimpleWeather</value>
+  </data>
+  <data name="pref_title_credits" xml:space="preserve">
+    <value>Credite</value>
+  </data>
+  <data name="pref_title_oslibs" xml:space="preserve">
+    <value>Biblioteci Open Source</value>
+  </data>
+  <data name="pref_category_providers" xml:space="preserve">
+    <value>Furnizori de Date</value>
+  </data>
+  <data name="copyright_here" xml:space="preserve">
+    <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
+  </data>
+  <data name="pref_summary_currentlocation" xml:space="preserve">
+    <value>Permite accesul la locația curentă prin GPS</value>
+  </data>
+  <data name="pref_summary_apikey" xml:space="preserve">
+    <value>Introduceți cheia furnizorului necesară pentru %1$s</value>
+  </data>
+  <data name="message_enter_apikey" xml:space="preserve">
+    <value>Vă rugăm să introduceți o cheie de furnizor</value>
+  </data>
+  <data name="message_keyverified" xml:space="preserve">
+    <value>Cheie verificată</value>
+  </data>
+  <data name="message_keyinvalid" xml:space="preserve">
+    <value>Cheie invalidă</value>
+  </data>
+  <data name="pref_title_onnotification" xml:space="preserve">
+    <value>Notificare Meteo</value>
+  </data>
+  <data name="pref_summary_notification" xml:space="preserve">
+    <value>Afișează o notificare persistentă care afișează condițiile meteo curente</value>
+  </data>
+  <data name="pref_title_api" xml:space="preserve">
+    <value>Furnizor Meteo</value>
+  </data>
+  <data name="pref_category_notification" xml:space="preserve">
+    <value>Notificări</value>
+  </data>
+  <data name="pref_title_notificationicon" xml:space="preserve">
+    <value>Pictogramă Notificare</value>
+  </data>
+  <data name="pref_title_alerts" xml:space="preserve">
+    <value>Alerte Meteo</value>
+  </data>
+  <data name="pref_summary_alerts" xml:space="preserve">
+    <value>Afișează notificări pentru alerte meteo</value>
+  </data>
+  <data name="pref_summary_alerts_disabled" xml:space="preserve">
+    <value>Alertele meteo nu sunt suportate de acest furnizor meteo</value>
+  </data>
+  <data name="pref_title_apiregister" xml:space="preserve">
+    <value>Creează un cont</value>
+  </data>
+  <data name="pref_summary_apiregister" xml:space="preserve">
+    <value>Creează un cont pentru a te înregistra pentru o cheie de furnizor</value>
+  </data>
+  <data name="error_message_weather_region_unsupported" xml:space="preserve">
+    <value>Țara nu este suportată de acest furnizor meteo</value>
+  </data>
+  <data name="label_btn_add_location" xml:space="preserve">
+    <value>Adaugă locație</value>
+    <comment>Locations</comment>
+  </data>
+  <data name="action_editmode" xml:space="preserve">
+    <value>Editează</value>
+  </data>
+  <data name="label_currentlocation" xml:space="preserve">
+    <value>Locația curentă</value>
+  </data>
+  <data name="label_favoritelocations" xml:space="preserve">
+    <value>Locații favorite</value>
+  </data>
+  <data name="error_location_denied" xml:space="preserve">
+    <value>Accesul la locație a fost refuzat</value>
+  </data>
+  <data name="error_retrieve_location" xml:space="preserve">
+    <value>Nu se poate obține locația</value>
+  </data>
+  <data name="error_enable_location_services" xml:space="preserve">
+    <value>Serviciile de localizare sunt dezactivate. Vă rugăm să le activați în Setări</value>
+  </data>
+  <data name="error_noresults" xml:space="preserve">
+    <value>Niciun rezultat găsit</value>
+  </data>
+  <data name="label_fab_add_location" xml:space="preserve">
+    <value>Adaugă o locație</value>
+  </data>
+  <data name="message_locationremoved" xml:space="preserve">
+    <value>Locația a fost eliminată</value>
+  </data>
+  <data name="message_needfavorite" xml:space="preserve">
+    <value>Trebuie să ai cel puțin o locație favorită</value>
+  </data>
+  <data name="undo" xml:space="preserve">
+    <value>Anulează</value>
+  </data>
+  <data name="delete" xml:space="preserve">
+    <value>Șterge</value>
+  </data>
+  <data name="bg_location_permission_rationale" xml:space="preserve">
+    <value>Permite accesul pentru a actualiza locația în fundal pentru notificări și widget-uri</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="werror_noweather" xml:space="preserve">
+    <value>Nu se pot încărca datele meteo</value>
+    <comment>Weather Exceptions</comment>
+  </data>
+  <data name="werror_networkerror" xml:space="preserve">
+    <value>Eroare de conexiune la rețea</value>
+  </data>
+  <data name="werror_invalidkey" xml:space="preserve">
+    <value>Cheie de furnizor invalidă</value>
+  </data>
+  <data name="werror_querynotfound" xml:space="preserve">
+    <value>Niciun oraș nu se potrivește cu interogarea ta de căutare</value>
+  </data>
+  <data name="werror_unknown" xml:space="preserve">
+    <value>A apărut o eroare necunoscută</value>
+  </data>
+  <data name="pref_title_refreshinterval" xml:space="preserve">
+    <value>Interval de actualizare</value>
+    <comment>Refresh Intervals</comment>
+  </data>
+  <data name="refresh_60min" xml:space="preserve">
+    <value>1 oră</value>
+  </data>
+  <data name="refresh_2hrs" xml:space="preserve">
+    <value>2 ore</value>
+  </data>
+  <data name="refresh_3hrs" xml:space="preserve">
+    <value>3 ore</value>
+  </data>
+  <data name="refresh_6hrs" xml:space="preserve">
+    <value>6 ore</value>
+  </data>
+  <data name="refresh_12hrs" xml:space="preserve">
+    <value>12 ore</value>
+  </data>
+  <data name="update_prefix" xml:space="preserve">
+    <value>Actualizat pe</value>
+  </data>
+  <data name="update_prefix_day" xml:space="preserve">
+    <value>Actualizat la</value>
+  </data>
+  <data name="notificationicon_temperature" xml:space="preserve">
+    <value>Temperatură</value>
+    <comment>Notification</comment>
+  </data>
+  <data name="notificationicon_condition" xml:space="preserve">
+    <value>Condiții meteo</value>
+  </data>
+  <data name="not_channel_name_weather" xml:space="preserve">
+    <value>Notificări meteo</value>
+  </data>
+  <data name="not_channel_desc_weather" xml:space="preserve">
+    <value>Notificări meteo</value>
+  </data>
+  <data name="not_channel_name_alerts" xml:space="preserve">
+    <value>Alerte meteo</value>
+  </data>
+  <data name="not_channel_desc_alerts" xml:space="preserve">
+    <value>Notificări pentru alerte meteo</value>
+  </data>
+  <data name="not_channel_name_general" xml:space="preserve">
+    <value>Notificări de service</value>
+  </data>
+  <data name="datetime_day_ago" xml:space="preserve">
+    <value>Acum %1$dd</value>
+    <comment>Alerts</comment>
+  </data>
+  <data name="datetime_hr_ago" xml:space="preserve">
+    <value>Acum %1$dh</value>
+  </data>
+  <data name="datetime_min_ago" xml:space="preserve">
+    <value>Acum %1$dm</value>
+  </data>
+  <data name="datetime_sec_ago" xml:space="preserve">
+    <value>Acum %1$ds</value>
+  </data>
+  <data name="datetime_validuntil" xml:space="preserve">
+    <value>Valabil până la</value>
+  </data>
+  <data name="pref_title_personalkey" xml:space="preserve">
+    <value>Cheie personală de furnizor</value>
+    <comment>HERE API</comment>
+  </data>
+  <data name="pref_summary_personalkey" xml:space="preserve">
+    <value>Utilizează cheia personală de furnizor meteo</value>
+  </data>
+  <data name="pref_title_userthememode" xml:space="preserve">
+    <value>Temă</value>
+    <comment>Dark Theme</comment>
+  </data>
+  <data name="userthememode_default" xml:space="preserve">
+    <value>Implicit sistem</value>
+  </data>
+  <data name="userthememode_dark" xml:space="preserve">
+    <value>Întunecată</value>
+  </data>
+  <data name="userthememode_black" xml:space="preserve">
+    <value>Întunecată (AMOLED)</value>
+  </data>
+  <data name="userthememode_light" xml:space="preserve">
+    <value>Luminoasă</value>
+  </data>
+  <data name="pref_title_features" xml:space="preserve">
+    <value>Funcții</value>
+    <comment>Feature Settings</comment>
+  </data>
+  <data name="pref_summary_features" xml:space="preserve">
+    <value>Selectează funcțiile pentru a le activa/dezactiva</value>
+  </data>
+  <data name="pref_title_feature_bgimage" xml:space="preserve">
+    <value>Imagine de fundal</value>
+  </data>
+  <data name="pref_title_feature_forecast" xml:space="preserve">
+    <value>Prognoză</value>
+  </data>
+  <data name="pref_title_feature_hrforecast" xml:space="preserve">
+    <value>Prognoză orară</value>
+  </data>
+  <data name="pref_title_feature_details" xml:space="preserve">
+    <value>Detalii meteo</value>
+  </data>
+  <data name="pref_title_feature_uv" xml:space="preserve">
+    <value>UV</value>
+  </data>
+  <data name="pref_title_feature_beaufort" xml:space="preserve">
+    <value>Beaufort</value>
+  </data>
+  <data name="pref_title_feature_aqindex" xml:space="preserve">
+    <value>Indicele calității aerului</value>
+  </data>
+  <data name="pref_title_feature_moonphase" xml:space="preserve">
+    <value>Faza lunii</value>
+  </data>
+  <data name="pref_title_feature_sunphase" xml:space="preserve">
+    <value>Faza soarelui</value>
+  </data>
+  <data name="pref_title_feature_radar" xml:space="preserve">
+    <value>Radar meteo</value>
+  </data>
+  <data name="pref_title_feature_locpanelimg" xml:space="preserve">
+    <value>Imagine panou locație</value>
+  </data>
+  <data name="label_style_light" xml:space="preserve">
+    <value>Deschisă</value>
+  </data>
+  <data name="label_style_dark" xml:space="preserve">
+    <value>Întunecată</value>
+  </data>
+  <data name="summary_default" xml:space="preserve">
+    <value>Implicit</value>
+  </data>
+  <data name="clock_12_hours_ampm_format" xml:space="preserve">
+    <value>h:mm&lt;small&gt;a&lt;/small&gt;</value>
+    <comment>format strings for clocks</comment>
+  </data>
+  <data name="clock_12_hours_format" xml:space="preserve">
+    <value>h:mm</value>
+  </data>
+  <data name="clock_24_hours_format" xml:space="preserve">
+    <value>HH:mm</value>
+  </data>
+  <data name="widget_long_date_format" xml:space="preserve">
+    <value>cccc, MMMM dd</value>
+    <comment>Widget: Full day and month</comment>
+  </data>
+  <data name="widget_4x2_date_format" xml:space="preserve">
+    <value>ccc, MMMM dd</value>
+    <comment>Widget: Abbreviated day and full month</comment>
+  </data>
+  <data name="widget_short_date_format" xml:space="preserve">
+    <value>ccc, MMM dd</value>
+    <comment>Widget: Abbreviated day and month</comment>
+  </data>
+  <data name="API_Box.PlaceholderText" xml:space="preserve">
+    <value>Selectați Furnizorul Meteo</value>
+  </data>
+  <data name="Label_Cancel" xml:space="preserve">
+    <value>Anulare</value>
+  </data>
+  <data name="Label_Done" xml:space="preserve">
+    <value>Gata</value>
+  </data>
+  <data name="Msg_LocDeniedSettings" xml:space="preserve">
+    <value>Accesul la locație a fost refuzat. Vă rugăm să activați în Setări.</value>
+  </data>
+  <data name="Pref_SummaryUnits.Text" xml:space="preserve">
+    <value>Afișează unitățile în:</value>
+  </data>
+  <data name="Pref_GeneralHeader.Text" xml:space="preserve">
+    <value>Setări generale</value>
+  </data>
+  <data name="DateTime_DayAgo" xml:space="preserve">
+    <value>Acum {0} zile</value>
+  </data>
+  <data name="DateTime_HrAgo" xml:space="preserve">
+    <value>Acum {0} ore</value>
+  </data>
+  <data name="DateTime_MinAgo" xml:space="preserve">
+    <value>Acum {0} minute</value>
+  </data>
+  <data name="DateTime_SecAgo" xml:space="preserve">
+    <value>Acum {0} secunde</value>
+  </data>
+  <data name="action_refresh" xml:space="preserve">
+    <value>Reîmprospătează</value>
+  </data>
+  <data name="Label_Pin.Text" xml:space="preserve">
+    <value>Fixează la Start</value>
+  </data>
+  <data name="Label_Unpin.Text" xml:space="preserve">
+    <value>Anulează fixarea de la Start</value>
+  </data>
+  <data name="ConfirmDialog.PrimaryButtonText" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
+    <value>Nu există alerte meteo disponibile.</value>
+  </data>
+  <data name="Features.Content" xml:space="preserve">
+    <value>Funcții</value>
+  </data>
+  <data name="Pref_Features_Subtitle.Text" xml:space="preserve">
+    <value>Selectați funcțiile pentru a activa/dezactiva:</value>
+  </data>
+  <data name="Pref_Features_Title.Text" xml:space="preserve">
+    <value>Funcții</value>
+  </data>
+  <data name="label_series" xml:space="preserve">
+    <value>Serie</value>
+    <comment>LineView</comment>
+  </data>
+  <data name="label_windgust" xml:space="preserve">
+    <value>Rafală de vânt</value>
+  </data>
+  <data name="widget_4x1_date_format" xml:space="preserve">
+    <value>cccc, MMM dd</value>
+    <comment>Widget: Full day and abbreviated month</comment>
+  </data>
+  <data name="forecast_date_format" xml:space="preserve">
+    <value>EEE dd</value>
+    <comment>Forecast pattern: Day and date (ex. Mon 14)</comment>
+  </data>
+  <data name="CheckUpdatePrompt.Text" xml:space="preserve">
+    <value>Se verifică actualizări...</value>
+  </data>
+  <data name="InstallErrorPrompt" xml:space="preserve">
+    <value>Nu se poate instala. Apăsați pentru a încerca din nou</value>
+  </data>
+  <data name="NoUpdateAvailablePrompt" xml:space="preserve">
+    <value>Nu sunt disponibile actualizări</value>
+  </data>
+  <data name="DownloadingPrompt" xml:space="preserve">
+    <value>Se descarcă...</value>
+  </data>
+  <data name="InstallingPrompt" xml:space="preserve">
+    <value>Se instalează...</value>
+  </data>
+  <data name="FeebackButton.Content" xml:space="preserve">
+    <value>Feedback</value>
+  </data>
+  <data name="prompt_update_title" xml:space="preserve">
+    <value>Actualizare SimpleWeather</value>
+  </data>
+  <data name="prompt_update_available" xml:space="preserve">
+    <value>Actualizare disponibilă. Apăsați pentru a instala</value>
+  </data>
+  <data name="pref_category_support" xml:space="preserve">
+    <value>Suport</value>
+    <comment>Support</comment>
+  </data>
+  <data name="pref_title_feedback" xml:space="preserve">
+    <value>Feedback</value>
+    <comment>Feedback</comment>
+  </data>
+  <data name="pref_summary_feedback" xml:space="preserve">
+    <value>Raportați erori sau sugestii pentru a îmbunătăți aplicația</value>
+  </data>
+  <data name="pref_title_rateandreview" xml:space="preserve">
+    <value>Evaluează și Recenzează</value>
+    <comment>Rate / Review</comment>
+  </data>
+  <data name="pref_summary_rateandreview" xml:space="preserve">
+    <value>Îți place aplicația? Ajută la susținere oferind o recenzie</value>
+  </data>
+  <data name="pref_title_translate" xml:space="preserve">
+    <value>Tradu</value>
+    <comment>Translate</comment>
+  </data>
+  <data name="pref_summary_translate" xml:space="preserve">
+    <value>Ajută la traducerea aplicației</value>
+  </data>
+  <data name="pref_title_language" xml:space="preserve">
+    <value>Limbă</value>
+  </data>
+  <data name="label_temperature" xml:space="preserve">
+    <value>Temperatură</value>
+    <comment>Units</comment>
+  </data>
+  <data name="label_speed" xml:space="preserve">
+    <value>Viteză</value>
+  </data>
+  <data name="label_distance" xml:space="preserve">
+    <value>Distanță</value>
+  </data>
+  <data name="pref_title_resetunits" xml:space="preserve">
+    <value>Resetează unitățile la valorile implicite</value>
+  </data>
+  <data name="default_units_imperial" xml:space="preserve">
+    <value>°F, mph, in, inHg, mi</value>
+  </data>
+  <data name="default_units_metric" xml:space="preserve">
+    <value>°C, km/h, mm, mb, km</value>
+  </data>
+  <data name="radar_rainviewer" xml:space="preserve">
+    <value>RainViewer</value>
+  </data>
+  <data name="not_title_weather_update" xml:space="preserve">
+    <value>Se actualizează vremea…</value>
+  </data>
+  <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
+    <value>Imagine de fundal pentru placă</value>
+  </data>
+  <data name="pref_title_icons" xml:space="preserve">
+    <value>Pictograme</value>
+    <comment>Icons</comment>
+  </data>
+  <data name="pref_title_feature_charts" xml:space="preserve">
+    <value>Grafice</value>
+  </data>
+  <data name="api_wunlocked" xml:space="preserve">
+    <value>WeatherUnlocked</value>
+  </data>
+  <data name="refresh_30min" xml:space="preserve">
+    <value>30 de minute</value>
+  </data>
+  <data name="not_channel_name_dailynotification" xml:space="preserve">
+    <value>Notificare zilnică</value>
+    <comment>Daily Notification</comment>
+  </data>
+  <data name="pref_title_time" xml:space="preserve">
+    <value>Ora</value>
+  </data>
+  <data name="pref_summary_off" xml:space="preserve">
+    <value>Oprit</value>
+  </data>
+  <data name="pref_summary_on" xml:space="preserve">
+    <value>Pornit</value>
+  </data>
+  <data name="not_channel_name_precipnotification" xml:space="preserve">
+    <value>Notificare precipitații</value>
+    <comment>Precipitation Notification</comment>
+  </data>
+  <data name="label_day" xml:space="preserve">
+    <value>Zi</value>
+  </data>
+  <data name="Precipitation_Text_Format" xml:space="preserve">
+    <value>{0}% șanse de ploaie în {1}</value>
+    <comment>{0} = Percentage; {1} = time in hours/minutes</comment>
+  </data>
+  <data name="Precipitation_NextHour_Text_Format" xml:space="preserve">
+    <value>{0}% șanse de ploaie în următoarea oră</value>
+    <comment>{0} = Percentage</comment>
+  </data>
+  <data name="pref_title_feature_summary" xml:space="preserve">
+    <value>Rezumat meteo</value>
+    <comment>Weather Summary or Weather Overview</comment>
+  </data>
+  <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
+    <value>Accesul în fundal a fost refuzat. Vă rugăm să activați în Setări.</value>
+  </data>
+  <data name="api_weatherapi" xml:space="preserve">
+    <value>WeatherAPI.com</value>
+  </data>
+  <data name="label_pollen_count" xml:space="preserve">
+    <value>Cantitatea de polen</value>
+    <comment>Pollen</comment>
+  </data>
+  <data name="label_pollen_tree" xml:space="preserve">
+    <value>Arbore</value>
+  </data>
+  <data name="label_tree_pollen" xml:space="preserve">
+    <value>Polen de arbore</value>
+  </data>
+  <data name="label_pollen_grass" xml:space="preserve">
+    <value>Iarbă</value>
+  </data>
+  <data name="label_grass_pollen" xml:space="preserve">
+    <value>Polen de iarbă</value>
+  </data>
+  <data name="label_pollen_ragweed" xml:space="preserve">
+    <value>Ambrozie</value>
+  </data>
+  <data name="label_ragweed_pollen" xml:space="preserve">
+    <value>Polen de ambrozie</value>
+  </data>
+  <data name="label_count_low" xml:space="preserve">
+    <value>Scăzut</value>
+  </data>
+  <data name="label_count_moderate" xml:space="preserve">
+    <value>Moderat</value>
+  </data>
+  <data name="label_count_high" xml:space="preserve">
+    <value>Mare</value>
+  </data>
+  <data name="label_count_veryhigh" xml:space="preserve">
+    <value>Foarte mare</value>
+  </data>
+  <data name="title_dev_settings" xml:space="preserve">
+    <value>Dev Settings</value>
+  </data>
+  <data name="bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Pentru a actualiza locația în fundal pentru notificări și widget-uri, vă rugăm să setați permisiunea de locație la &apos;%1$s&apos;</value>
+  </data>
+  <data name="prompt_location_not_set" xml:space="preserve">
+    <value>Locația nu este setată. Vă rugăm să adăugați o locație</value>
+  </data>
+  <data name="title_bg_location_access" xml:space="preserve">
+    <value>Acces la locație în fundal</value>
+    <comment>Background Location Permission</comment>
+  </data>
+  <data name="wear_bg_location_permission_rationale" xml:space="preserve">
+    <value>Permiteți accesul pentru a actualiza locația în fundal pentru plăci și complicații</value>
+  </data>
+  <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
+    <value>Pentru a actualiza locația în fundal pentru plăci și complicații, vă rugăm să setați permisiunea de locație la &apos;%1$s&apos;</value>
+  </data>
+  <data name="time_current" xml:space="preserve">
+    <value>Curent</value>
+  </data>
+  <data name="label_nodata" xml:space="preserve">
+    <value>NICI O DATĂ</value>
+    <comment>Forecast Graphs</comment>
+  </data>
+  <data name="api_tomorrowio" xml:space="preserve">
+    <value>Tomorrow.io</value>
+  </data>
+  <data name="label_minutelyforecast" xml:space="preserve">
+    <value>Pe minute</value>
+  </data>
+  <data name="Precipitation_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Va începe să plouă în aproximativ {0}</value>
+  </data>
+  <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Va înceta să plouă în aproximativ {0}</value>
+  </data>
+  <data name="hint_appid" xml:space="preserve">
+    <value>App ID</value>
+    <comment>Credentials</comment>
+  </data>
+  <data name="hint_appcode" xml:space="preserve">
+    <value>App Code/Key</value>
+  </data>
+  <data name="hint_username" xml:space="preserve">
+    <value>Nume de utilizator</value>
+  </data>
+  <data name="hint_password" xml:space="preserve">
+    <value>Parolă</value>
+  </data>
+  <data name="pref_title_privacypolicy" xml:space="preserve">
+    <value>Politica de confidențialitate</value>
+  </data>
+  <data name="pref_title_termsofservice" xml:space="preserve">
+    <value>Termeni și condiții</value>
+  </data>
+  <data name="api_apple_weather" xml:space="preserve">
+    <value>Apple Weather</value>
+  </data>
+  <data name="copyright_apple_weather" xml:space="preserve">
+    <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
+  </data>
+  <data name="pref_title_minalertseverity" xml:space="preserve">
+    <value>Severitatea minimă a alertei</value>
+    <comment>Minimum Alert Severity</comment>
+  </data>
+  <data name="alertsev_all" xml:space="preserve">
+    <value>Niciuna (Arată toate alertele)</value>
+  </data>
+  <data name="alertsev_moderate" xml:space="preserve">
+    <value>Moderată</value>
+  </data>
+  <data name="alertsev_severe" xml:space="preserve">
+    <value>Severă</value>
+  </data>
+  <data name="alertsev_extreme" xml:space="preserve">
+    <value>Extremă</value>
+  </data>
+  <data name="api_google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="label_moreinfo" xml:space="preserve">
+    <value>Mai multe informații</value>
+  </data>
+  <data name="action_reset" xml:space="preserve">
+    <value>Resetează</value>
+  </data>
+  <data name="api_brightsky" xml:space="preserve">
+    <value>Bright Sky (DWD)</value>
+  </data>
+  <data name="api_eccc" xml:space="preserve">
+    <value>Environment and Climate Change Canada (ECCC)</value>
+  </data>
+  <data name="text_label_value" xml:space="preserve">
+    <value>%1$s %2$s</value>
+  </data>
+  <data name="label_count_low_short" xml:space="preserve">
+    <value>Scăzut</value>
+  </data>
+  <data name="label_count_moderate_short" xml:space="preserve">
+    <value>Moderat</value>
+  </data>
+  <data name="label_count_high_short" xml:space="preserve">
+    <value>Mare</value>
+  </data>
+  <data name="label_count_veryhigh_short" xml:space="preserve">
+    <value>Mare</value>
+  </data>
+  <data name="werror_ratelimited" xml:space="preserve">
+    <value>Prea multe cereri. Vă rugăm să încercați din nou după câteva minute</value>
+  </data>
+  <data name="werror_locationnotsupported" xml:space="preserve">
+    <value>Această locație nu este acceptată de acest furnizor de servicii meteo</value>
+  </data>
+  <data name="api_accuweather" xml:space="preserve">
+    <value>AccuWeather</value>
+  </data>
+  <data name="Precipitation_Likely_Text_Format" xml:space="preserve">
+    <value>Probabil ploaie în jurul orei {0} (șanse de {1}%)</value>
+    <comment>{0} - Time, {1} - %Chance</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Starting_Text_Format" xml:space="preserve">
+    <value>Se așteaptă să înceapă ploaia în jurul orei {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+  <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
+    <value>Se așteaptă să se oprească ploaia în jurul orei {0}</value>
+    <comment>{0} - Time</comment>
+  </data>
+</root>

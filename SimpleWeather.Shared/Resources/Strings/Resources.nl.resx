@@ -319,10 +319,10 @@
     <value>Eenheden</value>
   </data>
   <data name="pref_summary_fahrenheit" xml:space="preserve">
-    <value>Eenheden in Farenheit weergeven</value>
+    <value>Eenheden in Farenheit weergeven (°F)</value>
   </data>
   <data name="pref_summary_celsius" xml:space="preserve">
-    <value>Eenheden in Celcius weergeven</value>
+    <value>Eenheden in Celcius weergeven (°C)</value>
   </data>
   <data name="pref_title_about" xml:space="preserve">
     <value>Over</value>
