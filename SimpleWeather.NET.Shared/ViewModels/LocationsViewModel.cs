@@ -23,7 +23,7 @@ namespace SimpleWeather.NET.ViewModels
     }
 
     [Bindable(true)]
-    public class LocationsViewModel : BaseViewModel
+    public partial class LocationsViewModel : BaseViewModel
     {
         private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
         private readonly LocationProvider locationProvider = new();

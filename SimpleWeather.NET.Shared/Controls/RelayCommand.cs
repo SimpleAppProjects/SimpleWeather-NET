@@ -1,9 +1,8 @@
-﻿using System;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 
 namespace SimpleWeather.NET.Controls
 {
-    public class RelayCommand : ICommand
+    public partial class RelayCommand : ICommand
     {
         private Action RelayAction;
 

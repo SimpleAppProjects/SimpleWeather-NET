@@ -7,7 +7,7 @@ using Windows.UI;
 
 namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class LineDataSeries : GraphDataSet<LineGraphEntry>
+    public partial class LineDataSeries : GraphDataSet<LineGraphEntry>
     {
         private readonly Color[] DefaultColors =
         {

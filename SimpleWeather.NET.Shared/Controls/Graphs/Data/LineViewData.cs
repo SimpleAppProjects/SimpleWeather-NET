@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleWeather.NET.Controls.Graphs
+﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class LineViewData : GraphData<LineDataSeries, LineGraphEntry>
+    public partial class LineViewData : GraphData<LineDataSeries, LineGraphEntry>
     {
         public LineViewData(IEnumerable<LineDataSeries> sets) : base(sets) { }
         public LineViewData(string label, IEnumerable<LineDataSeries> sets) : base(sets)

@@ -99,7 +99,7 @@ namespace SimpleWeather.NET.Preferences
         }
     }
 
-    public class FeatureList : List<Feature> { }
+    public partial class FeatureList : List<Feature> { }
 
     public class Feature : DependencyObject
     {

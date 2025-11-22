@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SimpleWeather.NET.Controls.Graphs
+﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class RangeBarGraphDataSet : GraphDataSet<RangeBarGraphEntry>
+    public partial class RangeBarGraphDataSet : GraphDataSet<RangeBarGraphEntry>
     {
         public RangeBarGraphDataSet(IEnumerable<RangeBarGraphEntry> entries) : base(entries) { }
 

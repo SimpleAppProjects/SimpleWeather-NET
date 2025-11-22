@@ -1,6 +1,6 @@
 ﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class BarGraphData : GraphData<BarGraphDataSet, BarGraphEntry>
+    public partial class BarGraphData : GraphData<BarGraphDataSet, BarGraphEntry>
     {
         public BarGraphData() : base() { }
 

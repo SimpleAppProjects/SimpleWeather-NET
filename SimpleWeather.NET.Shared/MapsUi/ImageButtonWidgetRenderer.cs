@@ -14,7 +14,7 @@ using Svg.Skia;
 
 namespace SimpleWeather.NET.MapsUi
 {
-    public class ImageButtonWidgetRenderer : ISkiaWidgetRenderer
+    public partial class ImageButtonWidgetRenderer : ISkiaWidgetRenderer
     {
         public void Draw(SKCanvas canvas, Viewport viewport, IWidget widget, RenderService renderService, float layerOpacity)
         {
@@ -101,7 +101,7 @@ namespace SimpleWeather.NET.MapsUi
             return new SKBitmapDrawableImage(SKBitmap.Decode(bytes));
         }
 
-        private class SvgDrawableImage(SKSvg svg) : SKSvgDrawable(svg), IDrawableImage
+        private partial class SvgDrawableImage(SKSvg svg) : SKSvgDrawable(svg), IDrawableImage
         {
             public float Width => svg.Picture.CullRect.Width;
 
@@ -110,7 +110,7 @@ namespace SimpleWeather.NET.MapsUi
             public SKPicture Picture => svg.Picture;
         }
 
-        private class SKBitmapDrawableImage(SKBitmap bitmap) : SKBitmapDrawable(bitmap), IDrawableImage
+        private partial class SKBitmapDrawableImage(SKBitmap bitmap) : SKBitmapDrawable(bitmap), IDrawableImage
         {
             public float Width => bitmap.Width;
 

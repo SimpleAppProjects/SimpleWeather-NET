@@ -13,7 +13,7 @@ using ResUnits = SimpleWeather.Resources.Strings.Units;
 namespace SimpleWeather.NET.Controls
 {
     [Bindable(true)]
-    public class LocationPanelUiModel : BaseViewModel
+    public partial class LocationPanelUiModel : BaseViewModel
     {
         #region Backing Properties
         private string locationName;

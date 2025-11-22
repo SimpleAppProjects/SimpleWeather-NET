@@ -1,6 +1,6 @@
 ﻿namespace SimpleWeather.NET.Controls.Graphs
 {
-    public class BarGraphDataSet : GraphDataSet<BarGraphEntry>
+    public partial class BarGraphDataSet : GraphDataSet<BarGraphEntry>
     {
         public string Label { get; set; } = string.Empty;
 
