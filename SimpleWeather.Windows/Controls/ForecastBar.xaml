@@ -37,6 +37,7 @@
                 VerticalAlignment="Top"
                 HorizontalContentAlignment="Center"
                 VerticalContentAlignment="Top"
+                ForceDarkTheme="True"
                 Foreground="White"
                 IconHeight="30"
                 IconProvider="wi-erik-flowers"
