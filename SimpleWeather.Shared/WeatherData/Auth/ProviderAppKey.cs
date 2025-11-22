@@ -29,7 +29,7 @@ namespace SimpleWeather.WeatherData.Auth
 
         public override string ToString()
         {
-            return $"${AppID}:${AppCode}";
+            return $"{AppID}:{AppCode}";
         }
     }
 }
