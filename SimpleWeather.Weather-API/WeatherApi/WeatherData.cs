@@ -198,6 +198,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
                 visibility_mi = current.vis_miles,
                 visibility_km = current.vis_km,
+                dewpoint_c = WeatherUtils.CalculateDewpointC(current.temp_c, current.humidity),
+                dewpoint_f = WeatherUtils.CalculateDewpointF(current.temp_f, current.humidity),
             };
         }
 

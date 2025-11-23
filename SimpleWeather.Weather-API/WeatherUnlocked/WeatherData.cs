@@ -213,6 +213,8 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
                 pressure_trend = String.Empty,
                 visibility_mi = currRoot.vis_mi,
                 visibility_km = currRoot.vis_km,
+                dewpoint_c = currRoot.dewpoint_c,
+                dewpoint_f = currRoot.dewpoint_f,
             };
         }
     }

@@ -43,6 +43,10 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 weather.atmosphere.humidity = firstHr.extras?.humidity;
                 weather.atmosphere.pressure_mb = firstHr.extras?.pressure_mb;
                 weather.atmosphere.pressure_in = firstHr.extras?.pressure_in;
+                weather.atmosphere.dewpoint_c = firstHr.extras?.dewpoint_c;
+                weather.atmosphere.dewpoint_f = firstHr.extras?.dewpoint_f;
+                weather.atmosphere.visibility_km = firstHr.extras?.visibility_km;
+                weather.atmosphere.visibility_mi = firstHr.extras?.visibility_mi;
 
                 weather.precipitation = new SimpleWeather.WeatherData.Precipitation()
                 {
@@ -247,6 +251,15 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
 
             hrf.extras.cloudiness = forecast.clouds;
+
+            if (hrf.high_c.HasValue && hrf.extras.humidity.HasValue)
+            {
+                hrf.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(hrf.high_c.Value, hrf.extras.humidity.Value);
+            }
+            if (hrf.high_f.HasValue && hrf.extras.humidity.HasValue)
+            {
+                hrf.extras.dewpoint_f = WeatherUtils.CalculateDewpointF(hrf.high_f.Value, hrf.extras.humidity.Value);
+            }
 
             if (probabilityForecasts?.Any() == true)
             {

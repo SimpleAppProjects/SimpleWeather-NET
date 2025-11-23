@@ -308,6 +308,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 pressure_trend = String.Empty,
                 visibility_km = root.visibility / 1000,
                 visibility_mi = ConversionMethods.KmToMi(root.visibility / 1000 /*visibility_km.Value*/),
+                dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(root.main.temp), root.main.humidity),
+                dewpoint_f = WeatherUtils.CalculateDewpointF(ConversionMethods.KtoF(root.main.temp), root.main.humidity),
             };
         }
 
