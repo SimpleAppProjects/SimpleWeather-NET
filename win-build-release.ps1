@@ -2,7 +2,7 @@
     [string]$BundleDir = "AppPackages",
     [string]$ProjectName = "SimpleWeather.Windows",
     [string]$ManifestPath = 'Package.appxmanifest',
-    [string]$TargetFramework = 'net9.0-windows10.0.22621.0'
+    [string]$TargetFramework = 'net10.0-windows10.0.22621.0'
 )
 
 if ([string]::IsNullOrWhiteSpace($BundleDir))

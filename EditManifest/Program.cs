@@ -83,7 +83,7 @@ namespace EditManifest
                         var line = sReader.ReadLine();
                         if (OSVersion == OSVersion.UWP)
                         {
-                            if (ConfigMode?.StartsWith("Debug") == true)
+                            if (ConfigMode?.StartsWith("Debug", StringComparison.InvariantCultureIgnoreCase) == true)
                             {
                                 line = line.Replace("Name=\"49586DaveAntoine.SimpleWeather-Asimpleweatherapp\"", "Name=\"49586DaveAntoine.SimpleWeatherDebug\"");
                                 line = line.Replace("S-1-15-2-2670365806-2911716598-2260801434-585721284-1716833224-1671719374-3724409756", "S-1-15-2-537857025-621772652-3741139397-2615399211-928015427-4269635983-3021255191");
@@ -112,7 +112,7 @@ namespace EditManifest
                         {
                             if (FilePath.EndsWith("Info.plist", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                if (ConfigMode?.StartsWith("Debug") == true)
+                                if (ConfigMode?.StartsWith("Debug", StringComparison.InvariantCultureIgnoreCase) == true)
                                 {
                                     line = line.Replace("<string>com.thewizrd.simpleweather</string>", "<string>com.thewizrd.simpleweather.debug</string>");
                                     line = line.Replace("<string>SimpleWeather</string>", "<string>SimpleWeather (Debug)</string>");
@@ -125,7 +125,7 @@ namespace EditManifest
                             }
                             else if (FilePath.EndsWith("Entitlements.plist", StringComparison.InvariantCultureIgnoreCase))
                             {
-                                if (ConfigMode?.StartsWith("Debug") == true)
+                                if (ConfigMode?.StartsWith("Debug", StringComparison.InvariantCultureIgnoreCase) == true)
                                 {
                                     line = line.Replace("<string>group.com.thewizrd.simpleweather</string>", "<string>group.com.thewizrd.simpleweather.debug</string>");
                                 }

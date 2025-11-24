@@ -1,5 +1,6 @@
 ﻿#if __IOS__ || __MACCATALYST__
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.BackgroundTasks;
 using SimpleWeather.Maui.Images;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData.Images;

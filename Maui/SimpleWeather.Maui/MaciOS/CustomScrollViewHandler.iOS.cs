@@ -1,6 +1,7 @@
 ﻿#if __IOS__
 using System;
 using CoreGraphics;
+using Microsoft.Maui;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Layouts;
 using Microsoft.Maui.Handlers;

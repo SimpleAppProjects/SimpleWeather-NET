@@ -4,6 +4,7 @@
     <LangVersion>preview</LangVersion>
     <Version>5.13.0</Version>
     <Nullable>warnings</Nullable>
+    <NetVersion>net10.0</NetVersion>
     <!-- Version Code Format (.NET Version, App Version, Build Number) -->
     <!-- Note: Update here as well as Maui.AppWidget xproj: CURRENT_PROJECT_VERSION, MARKETING_VERSION -->
     <VersionCode Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">95130000</VersionCode>
@@ -40,12 +41,13 @@
 
   <!-- Maui -->
   <PropertyGroup>
-    <MauiVersion>9.0.120</MauiVersion>
+    <MauiVersion>10.0.10</MauiVersion>
     <_MauiBindingInterceptorsSupport>true</_MauiBindingInterceptorsSupport>
     <MauiEnableXamlCBindingWithSourceCompilation>true</MauiEnableXamlCBindingWithSourceCompilation>
     <MauiStrictXamlCompilation>true</MauiStrictXamlCompilation>
     <NoWarn Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(NoWarn);MT7091</NoWarn>
-    <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(WarningsAsErrors);XC0022;XC0023;IL2026</WarningsAsErrors>
+<!--    <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(WarningsAsErrors);XC0022;XC0023;IL2026</WarningsAsErrors>-->
+    <WarningsAsErrors Condition="'$(_TargetPlatformIsWindows)' != 'True'">$(WarningsAsErrors);XC0022;XC0023</WarningsAsErrors>
     <SkipPrebuild>false</SkipPrebuild>
   </PropertyGroup>
 

@@ -264,7 +264,6 @@ ModelManifest.xml
 # SimpleWeather
 API_KEY.txt
 /SimpleWeather.Windows/Package.StoreAssociation.xml
-/SimpleWeather.Windows/Package.StoreAssociation.xml
 /SimpleWeather.Windows/_scale-400.appx
 /SimpleWeather.Windows/_scale-150.appx
 /SimpleWeather.Windows/_scale-125.appx

@@ -45,8 +45,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\Snackbar\SnackbarDismissedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\AirQualityForecastViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ChartsViewModel.cs" />
-    <Compile Include="..\SimpleWeather.NET.Shared\Controls\ViewModel\ForecastGraphViewModel.cs" />
-    <Compile Include="..\SimpleWeather.NET.Shared\Controls\ViewModel\ForecastType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastGraphViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastsListViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\ForecastsNowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\ViewModel\GraphTemperature.cs" />

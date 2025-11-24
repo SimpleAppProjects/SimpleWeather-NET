@@ -10,9 +10,13 @@ using epj.ProgressBar.Maui;
 using MauiIcons.Cupertino;
 using MauiIcons.Material;
 using Microsoft.Extensions.Logging;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Handlers.Items;
+using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Embedding;
 using Microsoft.Maui.Handlers;
+using Microsoft.Maui.Hosting;
 using Microsoft.Maui.LifecycleEvents;
 using Newtonsoft.Json;
 using Plugin.Maui.SegmentedControl;
@@ -69,7 +73,7 @@ public static class MauiProgram
 #if __IOS__
                 handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
                 handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
-                handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
+                //handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
                 handlers.AddHandler<ReorderableCollectionView, ReorderableCollectionViewHandler<ReorderableCollectionView>>();
                 handlers.AddHandler<Map, MapViewHandler>();

@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using CoreLocation;
 using Firebase.CloudMessaging;
 using Foundation;
+using SimpleWeather.Common.Helpers;
 using SimpleWeather.Extras;
 using SimpleWeather.Maui.BackgroundTasks;
 using SimpleWeather.Maui.Notifications;
