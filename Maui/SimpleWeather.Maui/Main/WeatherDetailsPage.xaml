@@ -10,7 +10,6 @@
     xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
-    Title="{x:Static res_strings:Resources.label_forecast}"
     local:AppShell.AppBarIsVisible="True"
     x:Name="DetailsPage">
 
@@ -20,22 +19,9 @@
     </ContentPage.Resources>
 
     <Grid VerticalOptions="FillAndExpand">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="0">
-            <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
-                                   BindingContext="{x:Bind WNowViewModel}">
-                <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
-                       x:DataType="commonVM:WeatherNowViewModel"
-                       Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
-            </localControls:ViewBox>
-            <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
-        </VerticalStackLayout>
         <CollectionView
             x:Name="ListControl"
-            Grid.Row="1"
+            Margin="0,8,0,0"
             IsGrouped="False"
             CanMixGroups="False"
             CanReorderItems="False"
@@ -45,7 +31,7 @@
             RemainingItemsThresholdReached="ListControl_RemainingItemsThresholdReached">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <localControls:WeatherDetailPanel Margin="0,0,0,8" />
+                    <localControls:WeatherDetailPanel Margin="4,2" />
                 </DataTemplate>
             </CollectionView.ItemTemplate>
             <CollectionView.ItemsLayout>
@@ -57,13 +43,11 @@
         </CollectionView>
         <ActivityIndicator
             x:Name="ContentIndicator"
-            Grid.Row="1"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             IsRunning="True" />
         <localControls:IndeterminateProgressBar
             x:Name="IncrementalIndicator"
-            Grid.Row="1"
             VerticalOptions="End"
             BaseColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant},
                                         Dark={StaticResource DarkSurfaceVariant}}"

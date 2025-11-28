@@ -8,6 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Markup;
+using Microsoft.Maui.Layouts;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -20,9 +23,11 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
     private SnackbarManager SnackMgr { get; set; }
 
     public WeatherAlertPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
         AnalyticsLogger.LogEvent("WeatherAlertPage");
+        Title = null;
+        Shell.SetTitleView(this, this.CreateTitleView(ResStrings.title_fragment_alerts, WNowViewModel));
     }
 
     internal WeatherAlertPage(WeatherPageArgs args) : this()
@@ -82,18 +87,12 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
 
     public void ShowSnackbar(Snackbar snackbar)
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.Show(snackbar);
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.Show(snackbar); });
     }
 
     public void DismissAllSnackbars()
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.DismissAll();
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.DismissAll(); });
     }
 
     public void UnloadSnackManager()

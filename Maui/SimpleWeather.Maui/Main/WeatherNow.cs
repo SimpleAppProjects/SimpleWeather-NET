@@ -549,10 +549,9 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
     {
         if (backgroundEnabled)
         {
-            if (GradientOverlay != null)
-            {
-                GradientOverlay.IsVisible = true;
-            }
+            DesktopSpacer?.IsVisible = true;
+            GradientOverlay?.IsVisible = true;
+            BackgroundImageOverlay?.IsVisible = true;
 
             if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
                 this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
@@ -561,12 +560,23 @@ public partial class WeatherNow : ScopePage, IQueryAttributable, ISnackbarManage
         }
         else
         {
-            if (GradientOverlay != null)
-            {
-                GradientOverlay.IsVisible = false;
-            }
+            DesktopSpacer?.IsVisible = false;
+            GradientOverlay?.IsVisible = false;
+            BackgroundImageOverlay?.IsVisible = false;
 
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
+        }
+        
+        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+        {
+            if (backgroundEnabled)
+            {
+                RefreshLayout?.RefreshColor = Colors.White;
+            }
+            else
+            {
+                RefreshLayout?.AppThemeBinding(RefreshView.RefreshColorProperty, Colors.Black, Colors.White);
+            }
         }
 
         if (CurTemp != null)

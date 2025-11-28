@@ -10,6 +10,7 @@ using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -24,6 +25,8 @@ public partial class WeatherChartsPage : ViewModelPage
     {
         InitializeComponent();
         AnalyticsLogger.LogEvent("WeatherChartsPage");
+        Title = null;
+        Shell.SetTitleView(this, this.CreateTitleView(ResStrings.pref_title_feature_charts, WNowViewModel));
     }
 
     internal WeatherChartsPage(WeatherPageArgs pageArgs) : this()
@@ -90,7 +93,7 @@ public partial class WeatherChartsPage : ViewModelPage
 
     private void ListControl_ChildAdded(object sender, ElementEventArgs e)
     {
-#if __IOS__
+#if false
         if (e.Element is View v)
         {
             // NOTE: Toggle alignment to trigger resize
@@ -112,13 +115,16 @@ public class ChartsDataTemplateSelector : DataTemplateSelector
 
     protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
     {
-        if (item is LineViewData)
+        if (item is ForecastGraphViewModel model)
         {
-            return LineViewTemplate;
-        }
-        else if (item is BarGraphData)
-        {
-            return BarChartTemplate;
+            if (model.GraphData is LineViewData)
+            {
+                return LineViewTemplate;
+            }
+            else if (model.GraphData is BarGraphData)
+            {
+                return BarChartTemplate;
+            }
         }
 
         return null;

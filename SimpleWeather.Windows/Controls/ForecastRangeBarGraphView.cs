@@ -1,8 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using SimpleWeather.NET.Controls.Graphs;
+using SimpleWeather.NET.Helpers;
 using SimpleWeather.Utils;
 using Windows.Foundation;
 
@@ -22,22 +24,73 @@ namespace SimpleWeather.NET.Controls
         public static readonly DependencyProperty GraphHeightProperty =
             DependencyProperty.Register(nameof(GraphHeight), typeof(int), typeof(ForecastRangeBarGraphView), new PropertyMetadata(150));
 
-        private double bottomTextHeights = 0;
-        private float scale = 1f;
-
         private ForecastRangeBarGraphData GraphData = null;
         public ForecastType? ForecastType { get; set; } = null;
 
         private readonly StackPanel InnerLayout;
+        private readonly Button LeftButton;
+        private readonly Button RightButton;
+        private readonly ScrollViewer ScrollView;
 
         public event EventHandler<TappedRoutedEventArgs> ItemClick;
+
+        public bool CanScrollToStart
+        {
+            get { return (bool)GetValue(CanScrollToStartProperty); }
+            set { SetValue(CanScrollToStartProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanScrollToStartProperty =
+            DependencyProperty.Register(nameof(CanScrollToStart), typeof(bool),
+            typeof(ForecastRangeBarGraphView), new PropertyMetadata(false));
+
+        public bool CanScrollToEnd
+        {
+            get { return (bool)GetValue(CanScrollToEndProperty); }
+            set { SetValue(CanScrollToEndProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanScrollToEndProperty =
+            DependencyProperty.Register(nameof(CanScrollToEnd), typeof(bool),
+            typeof(ForecastRangeBarGraphView), new PropertyMetadata(false));
 
         public ForecastRangeBarGraphView()
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
             Children.Clear();
 
-            Children.Add(new ScrollViewer()
+            ColumnDefinitions.Clear();
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            Children.Add(LeftButton = new Button().Apply(it =>
+            {
+                it.Click += LeftButton_Click;
+                it.SetBinding(Button.IsEnabledProperty, new Binding()
+                {
+                    Source = this,
+                    Path = new PropertyPath(nameof(CanScrollToStart)),
+                    Mode = BindingMode.OneWay,
+                });
+                it.Style = (Style)this.FindResource("LeftArrowButton");
+                SetColumn(it, 0);
+            }));
+
+            Children.Add(RightButton = new Button().Apply(it =>
+            {
+                it.Click += RightButton_Click;
+                it.SetBinding(Button.IsEnabledProperty, new Binding()
+                {
+                    Source = this,
+                    Path = new PropertyPath(nameof(CanScrollToEnd)),
+                    Mode = BindingMode.OneWay,
+                });
+                it.Style = (Style)this.FindResource("RightArrowButton");
+                SetColumn(it, 2);
+            }));
+
+            Children.Add(ScrollView = new ScrollViewer()
             {
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 VerticalContentAlignment = VerticalAlignment.Stretch,
@@ -51,7 +104,12 @@ namespace SimpleWeather.NET.Controls
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Bottom,
                 }
-            });
+            }.Apply(it =>
+            {
+                it.ViewChanged += ScrollView_ViewChanged;
+                it.SizeChanged += ScrollView_SizeChanged;
+                SetColumn(it, 1);
+            }));
 
             InnerLayout.SetBinding(MinHeightProperty, new Binding()
             {
@@ -73,6 +131,42 @@ namespace SimpleWeather.NET.Controls
             };
         }
 
+        private void UpdateScrollButtons(ScrollViewer scroller)
+        {
+            CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
+            CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
+            if (scroller.ExtentWidth > scroller.ViewportWidth)
+            {
+                LeftButton.Visibility = Visibility.Visible;
+                RightButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LeftButton.Visibility = Visibility.Collapsed;
+                RightButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerHelper.ScrollLeft(ScrollView);
+        }
+
+        private void RightButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerHelper.ScrollRight(ScrollView);
+        }
+
+        private void ScrollView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            UpdateScrollButtons(ScrollView);
+        }
+
+        private void ScrollView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateScrollButtons(ScrollView);
+        }
+
         public int GetItemPosition(object item)
         {
             var index = Children.IndexOf(item);
@@ -82,48 +176,7 @@ namespace SimpleWeather.NET.Controls
         protected override Size MeasureOverride(Size availableSize)
         {
             var size = base.MeasureOverride(availableSize);
-
-            var measuredBottomTextHeights = double.MinValue;
-            var newScale = 0f;
-
-            InnerLayout.Children?.Cast<ForecastRangeBar>()?.ForEach<ForecastRangeBar>(bar =>
-            {
-                measuredBottomTextHeights = Math.Max(measuredBottomTextHeights, (bar.BarPoPView.DesiredSize.Height + bar.BarIconView.DesiredSize.Height + bar.BarDateBlock.DesiredSize.Height));
-
-                if (measuredBottomTextHeights != bottomTextHeights)
-                {
-                    bottomTextHeights = measuredBottomTextHeights;
-                }
-
-                if (GraphData != null)
-                {
-                    var dataBarHeight = GraphData.YMax - GraphData.YMin;
-
-                    newScale = MathF.Max(
-                        dataBarHeight == 0 ? 1f : MathF.Min((float)(GraphHeight - bottomTextHeights - (bar.BarHiLoHeight)) / dataBarHeight, 1f),
-                        newScale);
-                }
-            });
-
-            if (newScale != scale && newScale != 0f)
-            {
-                scale = newScale;
-            }
-
-            InnerLayout.Children?.Cast<ForecastRangeBar>()?.ForEachIndexed<ForecastRangeBar>((idx, bar) =>
-            {
-                // Update bar measurement
-                GraphData?.GetDataSet()?.GetEntryForIndex(idx)?.Let(data =>
-                {
-                    var max = GraphData?.YMax;
-                    var min = GraphData?.YMin;
-                    if (min.HasValue && max.HasValue)
-                    {
-                        UpdateInnerBarMargins(bar.InnerBarView, min.Value, max.Value, data);
-                    }
-                });
-            });
-
+            RefreshLayout();
             return size;
         }
 
@@ -155,14 +208,7 @@ namespace SimpleWeather.NET.Controls
                     item.ForecastType = this.ForecastType;
                     item.DataContext = data;
 
-                    if (data.HiTempData == null || data.LoTempData == null)
-                    {
-                        item.RangeBarView.Height = item.RangeBarView.Width;
-                    }
-                    else
-                    {
-                        item.RangeBarView.Height = 100 - (item.InnerBarView.Margin.Top + item.InnerBarView.Margin.Bottom);
-                    }
+                    UpdateBarSizing(item, min, max, data);
 
                     if (data.FillColors != null)
                     {
@@ -172,8 +218,6 @@ namespace SimpleWeather.NET.Controls
                     {
                         item.SetColors();
                     }
-
-                    UpdateInnerBarMargins(item.InnerBarView, min, max, data);
 
                     var barSize = ForecastType switch
                     {
@@ -200,13 +244,62 @@ namespace SimpleWeather.NET.Controls
             }
         }
 
-        private void UpdateInnerBarMargins(FrameworkElement innerBar, float min, float max, ForecastRangeBarEntry data)
+        private void RefreshLayout()
         {
-            innerBar.Margin = new Thickness(
-                        innerBar.Margin.Left,
-                        (data.HiTempData?.Y)?.Let(it => (max - it) * scale) ?? 0,
-                        innerBar.Margin.Right,
-                        (data.LoTempData?.Y)?.Let(it => (it - min) * scale) ?? 0);
+            // Recalculate margins/size for existing children using current GraphData
+            var dataSet = this.GraphData?.GetDataSet();
+            if (dataSet == null || dataSet.IsEmpty) return;
+
+            var max = GraphData.YMax;
+            var min = GraphData.YMin;
+
+            InnerLayout.Children?.Cast<ForecastRangeBar>()?.ForEachIndexed<ForecastRangeBar>((idx, bar) =>
+            {
+                dataSet.GetEntryForIndex(idx)?.Let(data =>
+                {
+                    UpdateBarSizing(bar, min, max, data);
+                });
+            });
+        }
+
+        private void UpdateBarSizing(ForecastRangeBar bar, float min, float max, ForecastRangeBarEntry entry)
+        {
+            if (bar == null || entry == null) return;
+
+            // We compute margins as a proportion of available graphable height.
+            // Reserve a space for labels/icons inside the control
+            var bottomTextHeights = bar.BarHiLoHeight + bar.BarPoPView.Height + bar.BarIconView.Height + bar.BarDateBlock.Height;
+            if (bottomTextHeights <= 0 || double.IsNaN(bottomTextHeights)) bottomTextHeights = 180; // placeholder height
+            var availableHeight = GraphHeight - bottomTextHeights;
+
+            var range = max - min;
+            if (range <= 0) range = 1;
+
+            var topPx = (entry.HiTempData?.Y)?.Let(it => ((max - it) / range) * availableHeight) ?? 0;
+            var bottomPx = (entry.LoTempData?.Y)?.Let(it => ((it - min) / range) * availableHeight) ?? 0;
+
+            // apply margins on the InnerBarView so the inner range gradient stretches between hi and lo
+            if (bar.InnerBarView is { } inner)
+            {
+                inner.Margin = new Thickness(inner.Margin.Left, topPx, inner.Margin.Right, bottomPx);
+            }
+
+            // Set the RangeBarView.Height so the visible gradient is the remaining space
+            if (bar.RangeBarView != null)
+            {
+                if (entry.HiTempData?.Y == null || entry.HiTempData?.Y == null)
+                {
+                    bar.RangeBarView.Height = bar.RangeBarView.Width;
+                }
+                else
+                {
+                    var height = Math.Max(bar.RangeBarView.Width, availableHeight - (topPx + bottomPx));
+                    // RangeBarView is expressed as percent in the original control (0..100),
+                    // but here RangeBarView.Height expects device pixels. To preserve the
+                    // visual size relationship, clamp it and let layout do the rest.
+                    bar.RangeBarView.Height = height;
+                }
+            }
         }
     }
 }

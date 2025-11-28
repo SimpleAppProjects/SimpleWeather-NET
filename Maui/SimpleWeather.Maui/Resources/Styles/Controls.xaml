@@ -128,48 +128,51 @@
 
     <DataTemplate x:Key="LocationQueryDataTemplate" x:DataType="location:LocationQuery">
         <ViewCell>
-            <Grid
-                Padding="16,20"
-                HorizontalOptions="FillAndExpand"
-                MinimumHeightRequest="65">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0" Margin="4"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
+                <Grid
+                    Padding="16,20"
+                    HorizontalOptions="FillAndExpand"
+                    MinimumHeightRequest="65">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
 
-                <Image
-                    x:Name="PinIcon"
-                    Grid.Column="0"
-                    HeightRequest="24"
-                    IsVisible="{Binding IsEmpty, Converter={StaticResource inverseBoolConverter}}"
-                    VerticalOptions="Center">
-                    <Image.Source>
-                        <maticons:MaterialIcon Symbol="Place"
-                                               Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-                    </Image.Source>
-                </Image>
-                <Grid Grid.Column="1" VerticalOptions="Center">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Label
-                        x:Name="LocationName"
-                        Grid.Row="0"
-                        Padding="16,0,0,0"
-                        FontSize="Small"
-                        Text="{Binding LocationName, Mode=OneWay}"
-                        VerticalTextAlignment="Center" />
-                    <Label
-                        x:Name="LocationCountry"
-                        Grid.Row="1"
-                        Padding="16,0,0,0"
-                        FontSize="Caption"
-                        IsVisible="{Binding Source={x:Reference LocationCountry}, Path=Text, Converter={StaticResource stringBooleanConverter}}"
-                        Text="{Binding LocationRegionText, Mode=OneWay}"
-                        VerticalTextAlignment="Center" />
+                    <Image
+                        x:Name="PinIcon"
+                        Grid.Column="0"
+                        HeightRequest="24"
+                        IsVisible="{Binding IsEmpty, Converter={StaticResource inverseBoolConverter}}"
+                        VerticalOptions="Center">
+                        <Image.Source>
+                            <maticons:MaterialIcon Symbol="Place"
+                                                   Color="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                        </Image.Source>
+                    </Image>
+                    <Grid Grid.Column="1" VerticalOptions="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Label
+                            x:Name="LocationName"
+                            Grid.Row="0"
+                            Padding="16,0,0,0"
+                            FontSize="Small"
+                            Text="{Binding LocationName, Mode=OneWay}"
+                            VerticalTextAlignment="Center" />
+                        <Label
+                            x:Name="LocationCountry"
+                            Grid.Row="1"
+                            Padding="16,0,0,0"
+                            FontSize="Caption"
+                            IsVisible="{Binding Source={x:Reference LocationCountry}, Path=Text, Converter={StaticResource stringBooleanConverter}}"
+                            Text="{Binding LocationRegionText, Mode=OneWay}"
+                            VerticalTextAlignment="Center" />
+                    </Grid>
                 </Grid>
-            </Grid>
+            </Frame>
         </ViewCell>
     </DataTemplate>
 
@@ -417,6 +420,7 @@
     <Style x:Key="DefaultAQIProgressBarStyle" TargetType="sharedControls:AQIProgressBar">
         <Setter Property="BottomTextColor" Value="{AppThemeBinding Light=Black, Dark=White}" />
         <Setter Property="ThumbColor" Value="White" />
+        <Setter Property="IsClippedToBounds" Value="False" />
         <Setter Property="ControlTemplate">
             <Setter.Value>
                 <ControlTemplate x:DataType="sharedControls:AQIProgressBar">
@@ -425,6 +429,7 @@
                         BackgroundColor="{TemplateBinding BackgroundColor}"
                         HorizontalOptions="{TemplateBinding HorizontalOptions}"
                         Margin="{TemplateBinding Margin}"
+                        Padding="{TemplateBinding Padding}"
                         Stroke="Transparent"
                         StrokeThickness="0">
                         <skiaSharp:SKCanvasView

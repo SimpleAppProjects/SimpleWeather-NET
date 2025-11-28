@@ -416,7 +416,7 @@
                                     x:Name="ForecastGraphPanel"
                                     DataContext="{x:Bind ForecastView.ForecastGraphData, Mode=OneWay}"
                                     ForecastType="Temperature"
-                                    GraphHeight="250"
+                                    GraphHeight="350"
                                     ItemClick="ForecastGraphPanel_Tapped" />
                             </toolkitControls:HeaderedContentControl>
                         </Border>

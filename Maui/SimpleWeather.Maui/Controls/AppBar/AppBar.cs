@@ -25,8 +25,7 @@ namespace SimpleWeather.Maui.Controls.AppBar
         Grid _contentContainer;
         Grid _titleViewContainer;
         Grid _backContainer;
-        Image _navigationIcon;
-        Label _navigationLabel;
+        Button _navigationButton;
         StackLayout _leftItemsContainer;
         StackLayout _rightItemsContainer;
         Image _rightItemsIcon;
@@ -159,6 +158,21 @@ namespace SimpleWeather.Maui.Controls.AppBar
         static void OnBackButtonVisibleChanged(BindableObject bindable, object oldValue, object newValue)
         {
             ((AppBar)bindable).UpdateBackButtonVisibility((bool)newValue);
+        }
+        
+        public static readonly BindableProperty NavigationColorProperty =
+            BindableProperty.Create(nameof(NavigationColor), typeof(Color), typeof(AppBar), Colors.Black,
+                propertyChanged: OnNavigationColorChanged);
+
+        public Color NavigationColor
+        {
+            get => (Color)GetValue(NavigationColorProperty);
+            set => SetValue(NavigationColorProperty, value);
+        }
+
+        static void OnNavigationColorChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            ((AppBar)bindable).UpdateNavigationColor((Color)newValue);
         }
 
         public IList<ToolbarItem> ToolbarItems
@@ -344,7 +358,7 @@ namespace SimpleWeather.Maui.Controls.AppBar
             {
                 ColumnSpacing = 0,
                 HeightRequest = BarHeight,
-                VerticalOptions = LayoutOptions.Start
+                VerticalOptions = LayoutOptions.Center
             };
 
             _contentContainer.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -368,40 +382,31 @@ namespace SimpleWeather.Maui.Controls.AppBar
 
             var backGlyph = new FontImageSource
             {
-                Color = BarTextColor,
+                Color = NavigationColor,
                 Glyph = AppBarSizes.GetNavigationGlyph(),
                 Size = AppBarSizes.GetNavigationFontSize(),
                 FontFamily = MaterialIcons.MaterialIcon.FONT_ALIAS
             };
 
-            _navigationIcon = new Image
+            _navigationButton = new Button
             {
-                Source = backGlyph,
+                ImageSource = backGlyph,
+                BackgroundColor = Colors.Transparent,
+                ContentLayout = new Button.ButtonContentLayout(Button.ButtonContentLayout.ImagePosition.Left, 0),
+                Text = BackButtonTitle,
+                TextColor = NavigationColor,
+                FontSize = AppBarSizes.GetDefaultFontSize(),
                 HorizontalOptions = LayoutOptions.End,
                 VerticalOptions = LayoutOptions.Center,
-                Margin = AppBarSizes.GetNavigationIconMargin(),
-                IsVisible = BackButtonVisible
+                //Margin = AppBarSizes.GetNavigationIconMargin(),
+                IsVisible = BackButtonVisible,
             };
 
-            var backTapGestureRecognizer = new TapGestureRecognizer();
-            backTapGestureRecognizer.Tapped += OnBackTapped;
-            _backContainer.GestureRecognizers.Add(backTapGestureRecognizer);
+            _navigationButton.Clicked += OnBackTapped;
 
-            _backContainer.Children.Add(_navigationIcon);
-            Grid.SetColumn(_navigationIcon, 0);
-
-            _navigationLabel = new Label
-            {
-                Text = BackButtonTitle,
-                TextColor = BarTextColor,
-                FontSize = AppBarSizes.GetDefaultFontSize(),
-                VerticalOptions = LayoutOptions.Center,
-                Margin = new Thickness(-12, 0, 0, 0),
-                IsVisible = BackButtonVisible
-            };
-
-            _backContainer.Children.Add(_navigationLabel);
-            Grid.SetColumn(_navigationLabel, 1);
+            _backContainer.Children.Add(_navigationButton);
+            Grid.SetColumn(_navigationButton, 0);
+            Grid.SetColumnSpan(_navigationButton, 2);
 
             _leftItemsContainer = new StackLayout
             {
@@ -526,11 +531,11 @@ namespace SimpleWeather.Maui.Controls.AppBar
 
         void UpdateBarTextColor(Color barTextColor)
         {
-            if (_navigationIcon.Source is FontImageSource _navFontIcon)
+            if (_navigationButton.ImageSource is FontImageSource _navFontIcon)
             {
                 _navFontIcon.Color = barTextColor;
             }
-            _navigationLabel.TextColor = barTextColor;
+            _navigationButton.TextColor = barTextColor;
             _titleLabel.TextColor = barTextColor;
 
             if (_rightItemsIcon.Source is FontImageSource _rightItemsFontIcon)
@@ -551,20 +556,28 @@ namespace SimpleWeather.Maui.Controls.AppBar
             }
         }
 
+        void UpdateNavigationColor(Color navColor)
+        {
+            if (_navigationButton.ImageSource is FontImageSource _navFontIcon)
+            {
+                _navFontIcon.Color = navColor;
+            }
+            _navigationButton.TextColor = navColor;
+        }
+
         void UpdateNavigationIcon(ImageSource navigationIcon)
         {
-            _navigationIcon.Source = navigationIcon;
+            _navigationButton.ImageSource = navigationIcon;
         }
 
         void UpdateBackButtonTitle(string backButtonTitle)
         {
-            _navigationLabel.Text = backButtonTitle;
+            _navigationButton.Text = backButtonTitle;
         }
 
         void UpdateBackButtonVisibility(bool isVisible)
         {
-            _navigationIcon.IsVisible = isVisible;
-            _navigationLabel.IsVisible = isVisible;
+            _navigationButton.IsVisible = isVisible;
         }
 
         void UpdateBorderColor(Color borderColor)
@@ -581,7 +594,11 @@ namespace SimpleWeather.Maui.Controls.AppBar
         void UpdateTitleView(View titleView)
         {
             if (titleView != null)
+            {
+                if (_titleViewContainer.Children.Contains(titleView)) return;
+                _titleViewContainer.Children.Clear();
                 _titleViewContainer.Children.Add(titleView);
+            }
             else
                 _titleViewContainer.Children.Clear();
         }

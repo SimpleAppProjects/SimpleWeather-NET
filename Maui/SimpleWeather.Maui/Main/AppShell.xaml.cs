@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Maui.Markup;
+﻿using System.Collections;
+using CommunityToolkit.Maui.Markup;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.ComponentModel;

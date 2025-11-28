@@ -36,7 +36,9 @@ public partial class WeatherNow
     private Label CurTemp { get; set; }
     private IconControl WeatherBox { get; set; }
     private Border RadarWebViewContainer { get; set; }
+    private Image BackgroundImageOverlay { get; set; }
     private VisualElement GradientOverlay { get; set; }
+    private VisualElement DesktopSpacer { get; set; }
     private VisualElement HourlyForecastPanel { get; set; }
 
     // Resources
@@ -93,7 +95,6 @@ public partial class WeatherNow
                         MainViewer = it;
                     })
                 }
-                .AppThemeBinding(RefreshView.RefreshColorProperty, LightPrimary, DarkPrimary)
                 .Bind(RefreshView.IsRefreshingProperty, static src => src.UiState, mode: BindingMode.OneWay, source: WNowViewModel,
                     convert: (uiState) => uiState?.IsLoading ?? true, targetNullValue: true, fallbackValue: true
                 )
@@ -103,6 +104,22 @@ public partial class WeatherNow
                 .Row(2)
                 .Apply(it =>
                 {
+                    if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
+                    {
+                        if (FeatureSettings.BackgroundImage)
+                        {
+                            it.RefreshColor = Colors.White;
+                        }
+                        else
+                        {
+                            it.AppThemeBinding(RefreshView.RefreshColorProperty, Colors.Black, Colors.White);
+                        }
+                    }
+                    else
+                    {
+                        it.AppThemeBinding(RefreshView.RefreshColorProperty, LightPrimary, DarkPrimary);
+                    }
+                    
                     it.Refreshing += RefreshBtn_Clicked;
 
                     RefreshLayout = it;
@@ -167,10 +184,8 @@ public partial class WeatherNow
             }
             else
             {
-                if (FeatureSettings.BackgroundImage)
-                {
-                    MainGrid.Children.Insert(0,
-                        new Image()
+                MainGrid.Children.Insert(0,
+                    new Image()
                         {
                             Aspect = Aspect.AspectFill,
                             IsVisible = FeatureSettings.BackgroundImage
@@ -180,14 +195,15 @@ public partial class WeatherNow
                         .RowSpan(3)
                         .Apply(it =>
                         {
+                            BackgroundImageOverlay = it;
                             it.Loaded += BackgroundOverlay_Loaded;
                             it.PropertyChanged += BackgroundOverlay_PropertyChanged;
                             it.PropertyChanging += BackgroundOverlay_PropertyChanging;
                         })
-                    );
+                );
 
-                    MainGrid.Insert(1,
-                        new Grid()
+                MainGrid.Insert(1,
+                    new Grid()
                         {
                             IsVisible = FeatureSettings.BackgroundImage,
                             Background = new LinearGradientBrush(
@@ -203,8 +219,7 @@ public partial class WeatherNow
                         .Row(0)
                         .RowSpan(3)
                         .Apply(it => GradientOverlay = it)
-                    );
-                }
+                );
 
                 ListLayout.Add(
                     CreateDesktopConditionPanel()
@@ -395,7 +410,7 @@ public partial class WeatherNow
                     WidthRequest = 24,
                     Margin = new Thickness(16, 0)
                 }
-                .Bind(VisualElement.IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
+                .Bind(IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
                     mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
                 )
                 .LayoutFlags(AbsoluteLayoutFlags.PositionProportional)
@@ -543,7 +558,7 @@ public partial class WeatherNow
                     VerticalOptions = LayoutOptions.Center,
                     Padding = 0,
                     HasShadow = false,
-                    CornerRadius = 8,
+                    CornerRadius = 16,
                     IsClippedToBounds = true,
                     BorderColor = Colors.Transparent,
                     Background = Colors.Transparent,
@@ -614,33 +629,41 @@ public partial class WeatherNow
                         var displayInfo = DeviceDisplay.MainDisplayInfo;
                         var heightDp = displayInfo.Height / displayInfo.Density;
 
-                        if (DeviceInfo.Idiom == DeviceIdiom.Phone)
+                        if (DeviceInfo.Idiom == DeviceIdiom.Tablet || DeviceInfo.Idiom == DeviceIdiom.Desktop)
                         {
-                            it.MaximumHeightRequest = 420;
+                            it.MaximumHeightRequest = 560;
+                            it.MaximumWidthRequest = double.PositiveInfinity;
                         }
                         else if (displayInfo.Orientation == DisplayOrientation.Landscape)
                         {
-                            it.MaximumHeightRequest = Math.Min(480, MainGrid.Height - (110 * displayInfo.Density));
+                            it.MaximumHeightRequest = 560;
+                            it.MaximumWidthRequest = double.PositiveInfinity;
+                        }
+                        else if (DeviceInfo.Idiom == DeviceIdiom.Phone)
+                        {
+                            if (heightDp >= 800)
+                            {
+                                it.MaximumWidthRequest = double.PositiveInfinity;
+                                it.MaximumHeightRequest = double.PositiveInfinity;
+                            }
+                            else if (heightDp >= 720)
+                            {
+                                it.MaximumWidthRequest = Math.Min(720, heightDp - 310);
+                                it.MaximumHeightRequest = double.PositiveInfinity;
+                            }
+                            else
+                            {
+                                it.MaximumWidthRequest = Math.Min(420, heightDp - 310);
+                                it.MaximumHeightRequest = double.PositiveInfinity;
+                            }
                         }
                         else
                         {
-                            it.MaximumHeightRequest = Math.Min(420, MainGrid.Height - (110 * displayInfo.Density));
+                            it.MaximumHeightRequest = Math.Min(420, heightDp - 310);
                         }
 
                         it.EnableAspectRatio = true;
-
-                        if (heightDp >= 800)
-                        {
-                            it.AspectRatio = 1.0f;
-                        }
-                        else if (heightDp >= 720)
-                        {
-                            it.AspectRatio = 1.25f;
-                        }
-                        else
-                        {
-                            it.AspectRatio = 1.5f;
-                        }
+                        it.AspectRatio = 1.0f;
                     }
 
                     MainGrid.SizeChanged += (s, e) =>
@@ -761,7 +784,7 @@ public partial class WeatherNow
                             }
                         }
                         .Column(1)
-                        .Bind(VisualElement.HeightRequestProperty, static temp => temp.Height, source: CurTemp),
+                        .Bind(HeightRequestProperty, static temp => temp.Height, source: CurTemp),
                         // WeatherBox
                         new IconControl()
                         {
@@ -866,7 +889,6 @@ public partial class WeatherNow
     private VerticalStackLayout CreateDesktopConditionPanel()
     {
         View ConditionPanelLayout = null;
-        View Spacer = null;
 
         return new VerticalStackLayout()
         {
@@ -899,7 +921,7 @@ public partial class WeatherNow
                             Stroke = new SolidColorBrush(Colors.Transparent)
                         }
                         .Column(0)
-                        .Bind(VisualElement.IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
+                        .Bind(IsVisibleProperty, getter: (viewModel) => viewModel.UiState, convert: (uiState) => uiState?.IsGPSLocation ?? false,
                             mode: BindingMode.OneWay, source: WNowViewModel, targetNullValue: false, fallbackValue: false
                         ),
                         new Label()
@@ -949,7 +971,7 @@ public partial class WeatherNow
                     source: WNowViewModel)
                 .Apply(it =>
                 {
-                    Spacer = it;
+                    DesktopSpacer = it;
                 }),
                 // Condition Panel
                 new Grid()
@@ -1024,8 +1046,8 @@ public partial class WeatherNow
                                             IconProvider = WeatherIconsEFProvider.KEY,
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_UP,
-                                            IconWidth = 25,
-                                            IconHeight = 25
+                                            IconWidth = 35,
+                                            IconHeight = 35
                                         }
                                     },
                                 }.Row(0),
@@ -1051,15 +1073,15 @@ public partial class WeatherNow
                                             IconProvider = WeatherIconsEFProvider.KEY,
                                             ShowAsMonochrome = true,
                                             WeatherIcon = WeatherIcons.DIRECTION_DOWN,
-                                            IconWidth = 25,
-                                            IconHeight = 25
+                                            IconWidth = 35,
+                                            IconHeight = 35
                                         }
                                     },
                                 }.Row(1),
                             }
                         }
                         .Column(1)
-                        .Bind(VisualElement.HeightRequestProperty, static temp => temp.Height, source: CurTemp),
+                        .Bind(HeightRequestProperty, static temp => temp.Height, source: CurTemp),
                         // WeatherBox
                         new IconControl()
                         {
@@ -1165,7 +1187,7 @@ public partial class WeatherNow
                 }
             }
         }
-        .Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+        .Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
             mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => !string.IsNullOrWhiteSpace(weather?.Location)
         )
         .Padding(16, 0)
@@ -1180,17 +1202,17 @@ public partial class WeatherNow
 
                 double h = RefreshLayout.Height;
 
-                if (Spacer != null)
+                if (DesktopSpacer != null)
                 {
                     Dispatcher.Dispatch(() =>
                     {
                         if (FeatureSettings.BackgroundImage && h > 0)
                         {
-                            Spacer.HeightRequest = h - (ConditionPanelLayout.Height - Spacer.Height);
+                            DesktopSpacer.HeightRequest = h - (ConditionPanelLayout.Height - DesktopSpacer.Height);
                         }
                         else
                         {
-                            Spacer.HeightRequest = 0;
+                            DesktopSpacer.HeightRequest = 0;
                         }
                     });
                 }
@@ -1200,44 +1222,23 @@ public partial class WeatherNow
 
     private static Frame CreateWeatherNowFrame(View content)
     {
-        App.Current.Resources.TryGetValue("SimpleBlue", out var SimpleBlue);
-        App.Current.Resources.TryGetValue("SimpleBlueLight", out var SimpleBlueLight);
-        App.Current.Resources.TryGetValue("LightSurface", out var LightSurface);
-        App.Current.Resources.TryGetValue("DarkSurface", out var DarkSurface);
+        App.Current.Resources.TryGetValue("LightCompositeFrameBackground", out var LightCompositeFrameBackground);
+        App.Current.Resources.TryGetValue("DarkCompositeFrameBackground", out var DarkCompositeFrameBackground);
 
-        var simpleBlueLightColor = (Color)SimpleBlueLight;
-        var simpleBlueColor = (Color)SimpleBlue;
-        var lightSurfaceColor = (Color)LightSurface;
-        var darkSurfaceColor = (Color)DarkSurface;
+        var lightCompositeFrameBackground = (Color)LightCompositeFrameBackground;
+        var darkCompositeFrameBackground = (Color)DarkCompositeFrameBackground;
 
         return new Frame()
         {
-            Padding = new Thickness(4),
-            Margin = new Thickness(8, 4),
-            CornerRadius = 8,
+            Padding = new Thickness(0, 4),
+            Margin = new Thickness(4, 2),
+            CornerRadius = 16,
             MinimumHeightRequest = 0,
-            HasShadow = true,
-            Shadow = new Shadow()
-            {
-                Brush = Brush.Black,
-                Offset = new Point(0, 0),
-                Radius = 1f,
-                Opacity = 1f
-            },
+            HasShadow = false,
             BorderColor = Colors.Transparent,
             Content = content,
         }
-        .Apply(it =>
-        {
-            if (DeviceInfo.Idiom == DeviceIdiom.Phone || DeviceInfo.Idiom == DeviceIdiom.Tablet)
-            {
-                it.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(Color.FromArgb("#242424"), simpleBlueLightColor.WithAlpha(0x70)));
-            }
-            else
-            {
-                it.AppThemeColorBinding(BackgroundColorProperty, ColorUtils.CompositeColors(lightSurfaceColor, simpleBlueColor.WithAlpha(0x10)), ColorUtils.CompositeColors(darkSurfaceColor, simpleBlueLightColor.WithAlpha(0x10)));
-            }
-        });
+        .AppThemeColorBinding(BackgroundColorProperty, lightCompositeFrameBackground, darkCompositeFrameBackground);
     }
 
     private Frame CreateForecastPanel()
@@ -1287,8 +1288,11 @@ public partial class WeatherNow
                 .Bind(BindingContextProperty, getter: forecast => forecast.ForecastGraphData, mode: BindingMode.OneWay, source: ForecastView)
                 .Row(1)
                 .ColumnSpan(2)
+                .Paddings(bottom: 8)
+                .OnIdiom(ForecastRangeBarGraphView.GraphHeightProperty, Default: 350, Phone: 250)
                 .Apply(it =>
                 {
+                    it.ForecastType = ForecastType.Temperature;
                     it.ItemClick += (s, e) =>
                     {
                         GotoDetailsPage(false, e.ItemIndex);
@@ -1300,7 +1304,7 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind(VisualElement.IsVisibleProperty, getter: forecast => forecast.ForecastGraphData,
+                it.Bind(IsVisibleProperty, getter: forecast => forecast.ForecastGraphData,
                     mode: BindingMode.OneWay, source: ForecastView, convert: (data) => FeatureSettings.Forecast && data?.IsEmpty != true);
             };
 
@@ -1364,7 +1368,7 @@ public partial class WeatherNow
                 }.Column(2)
             }
         }
-        .Bind(VisualElement.IsVisibleProperty, getter: alerts => alerts.Alerts,
+        .Bind(IsVisibleProperty, getter: alerts => alerts.Alerts,
             mode: BindingMode.OneWay, source: AlertsView, convert: alerts => alerts?.Count > 0
         )
         .TapGesture(GotoAlertsPage);
@@ -1422,11 +1426,11 @@ public partial class WeatherNow
                 {
                     if (DeviceInfo.Idiom == DeviceIdiom.Phone)
                     {
-                        it.OnDeviceWidth(VisualElement.HeightRequestProperty, 828d, Default: 200d, GreaterThanEq: 175d);
+                        it.OnDeviceWidth(HeightRequestProperty, 828d, Default: 200d, GreaterThanEq: 175d);
                     }
                     else
                     {
-                        it.OnIdiom(VisualElement.HeightRequestProperty, Default: 250d, Phone: 175d);
+                        it.OnIdiom(HeightRequestProperty, Default: 215d, Phone: 175d);
                     }
 
                     it.ItemClick += (s, e) =>
@@ -1445,7 +1449,7 @@ public partial class WeatherNow
         {
             it.Loaded += (s, e) =>
             {
-                it.Bind(VisualElement.IsVisibleProperty, static forecast => forecast.HourlyForecastData,
+                it.Bind(IsVisibleProperty, static forecast => forecast.HourlyForecastData,
                     mode: BindingMode.OneWay, source: ForecastView, convert: (collection) =>
                     {
                         return FeatureSettings.HourlyForecast && collection?.Count > 0;
@@ -1467,7 +1471,7 @@ public partial class WeatherNow
             RowDefinitions =
             {
                 new RowDefinition(GridLength.Auto),
-                new RowDefinition(GridLength.Star),
+                new RowDefinition(GridLength.Auto),
             },
             ColumnDefinitions =
             {
@@ -1510,55 +1514,61 @@ public partial class WeatherNow
                     {
                         new RowDefinition()
                             .Bind(RowDefinition.HeightProperty, forecast => forecast.MinutelyPrecipitationGraphData, null,
-                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(LineViewData)
+                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(BarGraphData)
                             ),
                         new RowDefinition()
                             .Bind(RowDefinition.HeightProperty, forecast => forecast.HourlyPrecipitationGraphData, null,
-                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(LineViewData)
+                                BindingMode.OneWay, graphDataGridLengthConv, null, ForecastView, default(BarGraphData)
                             ),
                     },
                     Children =
                     {
                         // Minutely
-                        new ForecastGraphPanel()
+                        new ForecastBarGraphView()
                         {
-                            Margin = new Thickness(0, 5)
+                            Margin = new Thickness(0, 5),
+                            ForecastType = ForecastType.Minutely,
                         }
+                        .OnIdiom(ForecastBarGraphView.GraphHeightProperty, Default: 250, Phone: 200)
                         .Row(0)
-                        .Bind(ForecastGraphPanel.GraphDataProperty, forecast => forecast.MinutelyPrecipitationGraphData,
+                        .Bind(BindingContextProperty, forecast => forecast.MinutelyPrecipitationGraphData,
                                 mode: BindingMode.OneWay, source: ForecastView
                         )
                         .Apply(it =>
                         {
                             it.Loaded += (s,e) =>
                             {
-                                it.Bind(VisualElement.IsVisibleProperty, forecast => forecast.MinutelyPrecipitationGraphData, null,
-                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(LineViewData)
+                                it.Bind(IsVisibleProperty, forecast => forecast.MinutelyPrecipitationGraphData, null,
+                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(BarGraphData)
                                 );
                             };
-                            it.GraphViewTapped += async (s, e) =>
+                            it.ItemClick += async (s, e) =>
                             {
                                 await Navigation.PushAsync(new WeatherChartsPage());
                             };
                         }),
                         // Hourly
-                        new ForecastGraphPanel()
+                        new ForecastBarGraphView()
                         {
-                            Margin = new Thickness(0, 5)
+                            Margin = new Thickness(0, 5),
                         }
+                        .OnIdiom(ForecastBarGraphView.GraphHeightProperty, Default: 250, Phone: 200)
                         .Row(1)
-                        .Bind(ForecastGraphPanel.GraphDataProperty, forecast => forecast.HourlyPrecipitationGraphData,
+                        .Bind(BindingContextProperty, forecast => forecast.HourlyPrecipitationGraphData,
                                mode: BindingMode.OneWay, source: ForecastView
+                        )
+                        .Bind(ForecastBarGraphView.ForecastTypeProperty, forecast => forecast.HourlyPrecipitationGraphDataType,
+                            mode: BindingMode.OneWay, source: ForecastView
                         )
                         .Apply(it =>
                         {
                             it.Loaded += (s,e) =>
                             {
-                                it.Bind(VisualElement.IsVisibleProperty, forecast => forecast.HourlyPrecipitationGraphData, null, 
-                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(LineViewData)
+                                it.Bind(IsVisibleProperty, forecast => forecast.HourlyPrecipitationGraphData, null, 
+                                    BindingMode.OneWay, graphDataConv, null, ForecastView, default(BarGraphData)
                                 );
                             };
-                            it.GraphViewTapped += async (s, e) =>
+                            it.ItemClick += async (s, e) =>
                             {
                                 await Navigation.PushAsync(new WeatherChartsPage());
                             };
@@ -1574,7 +1584,7 @@ public partial class WeatherNow
             it.Loaded += (s, e) =>
             {
                 it.Bind(
-                    VisualElement.IsVisibleProperty, static forecast => forecast.IsPrecipitationDataPresent,
+                    IsVisibleProperty, static forecast => forecast.IsPrecipitationDataPresent,
                     mode: BindingMode.OneWay, source: ForecastView,
                     convert: (isPresent) => FeatureSettings.Charts && isPresent);
             };
@@ -1629,7 +1639,7 @@ public partial class WeatherNow
                 .ItemTemplate(new DataTemplate(() =>
                 {
                     return new DetailItem()
-                        .OnIdiom(VisualElement.MinimumWidthRequestProperty, 155, Phone: 155, Desktop: 250)
+                        .OnIdiom(MinimumWidthRequestProperty, 155, Phone: 155, Desktop: 250)
                         .Margin(2, 4);
                 }))
                 .Row(1)
@@ -1637,7 +1647,7 @@ public partial class WeatherNow
                 {
                     it.Loaded += (s, e) =>
                     {
-                        it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                        it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                             mode: BindingMode.OneWay, source: WNowViewModel,
                             convert: (weather) => FeatureSettings.WeatherDetails && weather?.WeatherDetails?.Count > 0);
                     };
@@ -1658,14 +1668,14 @@ public partial class WeatherNow
     private Frame CreateUVControl()
     {
         return CreateWeatherNowFrame(new UVControl()
-            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+            .Bind(BindingContextProperty, static viewModel => viewModel.Weather,
                     mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.UVIndex
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                         mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
                             return FeatureSettings.UV && !string.IsNullOrWhiteSpace(weather?.UVIndex?.ToString());
@@ -1680,14 +1690,14 @@ public partial class WeatherNow
     private Frame CreateBeaufortControl()
     {
         return CreateWeatherNowFrame(new BeaufortControl()
-            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather, 
+            .Bind(BindingContextProperty, static viewModel => viewModel.Weather, 
                 mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.Beaufort
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                         mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
                             return FeatureSettings.Beaufort && !string.IsNullOrWhiteSpace(weather?.Beaufort?.ToString());
@@ -1702,7 +1712,7 @@ public partial class WeatherNow
     private Frame CreateAQIControl()
     {
         return CreateWeatherNowFrame(new AQIControl()
-            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+            .Bind(BindingContextProperty, static viewModel => viewModel.Weather,
                 mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.AirQuality
             )
             .TapGesture(async () =>
@@ -1714,7 +1724,7 @@ public partial class WeatherNow
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                         mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
                             return FeatureSettings.AQIndex && !string.IsNullOrWhiteSpace(weather?.AirQuality?.ToString());
@@ -1729,14 +1739,14 @@ public partial class WeatherNow
     private Frame CreatePollenCountControl()
     {
         return CreateWeatherNowFrame(new PollenCountControl()
-            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather, 
+            .Bind(BindingContextProperty, static viewModel => viewModel.Weather, 
                 mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) => weather?.Pollen
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                         mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
                             return FeatureSettings.PollenEnabled && !string.IsNullOrWhiteSpace(weather?.Pollen?.ToString());
@@ -1751,14 +1761,14 @@ public partial class WeatherNow
     private Frame CreateMoonPhaseControl()
     {
         return CreateWeatherNowFrame(new MoonPhaseControl()
-            .Bind(VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+            .Bind(BindingContextProperty, static viewModel => viewModel.Weather,
                 mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.MoonPhase
             ))
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
                 {
-                    it.Bind(VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    it.Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                         mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                         {
                             return FeatureSettings.MoonPhase && !string.IsNullOrWhiteSpace(weather?.MoonPhase?.ToString());
@@ -1797,7 +1807,7 @@ public partial class WeatherNow
                 new SunPhaseView()
                 .Row(1)
                 .Bind(
-                    VisualElement.BindingContextProperty, static viewModel => viewModel.Weather,
+                    BindingContextProperty, static viewModel => viewModel.Weather,
                     mode: BindingMode.OneWay, source: WNowViewModel, convert: weather => weather?.SunPhase
                 )
                 .FillHorizontal()
@@ -1832,7 +1842,7 @@ public partial class WeatherNow
             it.Loaded += (s, e) =>
             {
                 it.Bind(
-                    VisualElement.IsVisibleProperty, static viewModel => viewModel.Weather,
+                    IsVisibleProperty, static viewModel => viewModel.Weather,
                     mode: BindingMode.OneWay, source: WNowViewModel, convert: (weather) =>
                     {
                         return FeatureSettings.SunPhase && !string.IsNullOrWhiteSpace(weather?.SunPhase?.ToString());
@@ -1948,7 +1958,7 @@ public partial class WeatherNow
         {
             Padding = 10,
             HorizontalOptions = LayoutOptions.Center,
-            FontSize = 14
+            FontSize = 12
         }.Bind(
             Label.TextProperty, static viewModel => viewModel.Weather,
             mode: BindingMode.OneWay, source: WNowViewModel,

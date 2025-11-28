@@ -192,8 +192,8 @@ namespace SimpleWeather.Maui.Controls
                             .Column(0),
 							new Label()
 							{
-								Margin = new Thickness(16, 0, 0, 0),
-								FontSize = 16,
+								Margin = new Thickness(8, 0, 0, 0),
+								FontSize = 14,
 								VerticalOptions = LayoutOptions.Center,
 								LineBreakMode = LineBreakMode.NoWrap
 							}
@@ -447,7 +447,15 @@ namespace SimpleWeather.Maui.Controls
         private static void OnExpandedChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var sideBar = bindable as SideBar;
-            sideBar.Content.WidthRequest = (bool)newValue ? sideBar.ExpandedWidth : sideBar.CollapsedWidth;
+            var isExpanded = (bool)newValue;
+            var startValue = isExpanded ? sideBar.CollapsedWidth : sideBar.ExpandedWidth;
+            var endValue = isExpanded ? sideBar.ExpandedWidth : sideBar.CollapsedWidth;
+
+            var animation = new Animation(value =>
+            {
+                sideBar.Content.WidthRequest = value;
+            }, startValue, endValue);
+            animation.Commit(sideBar, "ExpandAnimation");
         }
 
         private static void OnRequestedWidthChanged(BindableObject bindable, object oldValue, object newValue)

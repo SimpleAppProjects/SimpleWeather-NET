@@ -12,7 +12,6 @@ using MauiIcons.Core;
 using MauiIcons.Cupertino;
 using Microsoft.Maui.Controls.Compatibility.Platform.iOS;
 using Microsoft.Maui.Platform;
-using SimpleToolkit.SimpleShell.Controls;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Utils;
 using UIKit;

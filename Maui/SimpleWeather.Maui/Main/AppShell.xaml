@@ -170,11 +170,12 @@
             <controls:SideBar
                 x:Name="ShellSideBar"
                 Grid.Column="0" Grid.RowSpan="3"
-                BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                                     Dark={StaticResource DarkSurface}}"
                 SelectionBackgroundColor="{AppThemeBinding Light='#10000000', Dark='#20FFFFFF'}"
                 ExpandButtonHeight="52"
                 CollapsedWidth="52"
-                ExpandedWidth="420"
+                ExpandedWidth="320"
                 Items="{StaticResource DesktopTabItems}"
                 FooterItems="{StaticResource FooterTabItems}"
                 SelectedItem="{x:Bind _Shell.CurrentShellContent}"
@@ -190,15 +191,16 @@
                 BackButtonTitle="{x:Static res_strings:Resources.label_back}"
                 BackButtonVisible="False"
                 BackTapped="ShellAppBar_BackTapped"
-                BarBackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground},
-                                                     Dark={StaticResource DarkPageBackground}}"
+                BarBackgroundColor="{AppThemeBinding Light={StaticResource LightSurface},
+                                                     Dark={StaticResource DarkSurface}}"
                 BarTextColor="{AppThemeBinding Light={StaticResource LightOnSurface},
                                                Dark={StaticResource DarkOnSurface}}"
-                BorderColor="{AppThemeBinding Light={StaticResource LightPageBackground},
-                                              Dark={StaticResource DarkPageBackground}}"
+                BorderColor="{AppThemeBinding Light='#80F2F2F7', Dark='#32000000'}"
                 BorderHeight="{OnPlatform iOS=1,
                                           MacCatalyst=1,
-                                          Default=0}" />
+                                          Default=0}"
+                NavigationColor="{AppThemeBinding Light={StaticResource LightPrimary},
+                                                  Dark={StaticResource DarkPrimary}}" />
 
             <Grid IsClippedToBounds="True" Grid.Row="1" Grid.Column="1">
                 <simpleShell:SimpleNavigationHost x:Name="NavHostContainer" />

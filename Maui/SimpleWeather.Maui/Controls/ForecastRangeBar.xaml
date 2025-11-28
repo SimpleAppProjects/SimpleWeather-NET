@@ -10,11 +10,19 @@
              Padding="{OnIdiom Default=4, Phone=0}">
     <VerticalStackLayout
         HorizontalOptions="Center" VerticalOptions="End"
-        MinimumWidthRequest="70">
-        <FlexLayout x:Name="InnerBar"
-                    Wrap="NoWrap" Direction="Column"
-                    AlignContent="Center" AlignItems="Center">
+        MinimumWidthRequest="{OnIdiom Default=80, Phone=60}">
+        <Grid
+            x:Name="InnerBar"
+            HorizontalOptions="Center"
+            VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             <Label
+                x:Name="BarHi"
+                Grid.Row="0"
                 HorizontalOptions="Center"
                 FontSize="{OnIdiom Phone=14, Default=16}"
                 MaxLines="1"
@@ -22,27 +30,30 @@
                 Text="{Binding HiTempData.YLabel, Mode=OneWay}" />
             <RoundRectangle
                 x:Name="RangeBar"
-                FlexLayout.Grow="1"
-                FlexLayout.Shrink="0"
+                Grid.Row="1"
+                Aspect="None"
                 HorizontalOptions="Center"
-                CornerRadius="24"
-                HeightRequest="100"
+                VerticalOptions="Center"
+                CornerRadius="4"
                 WidthRequest="8" />
             <Label
+                x:Name="BarLo"
+                Grid.Row="2"
                 HorizontalOptions="Center"
                 FontSize="{OnIdiom Phone=14, Default=16}"
                 MaxLines="1"
                 Padding="4"
                 Text="{Binding LoTempData.YLabel, Mode=OneWay}" />
-        </FlexLayout>
+        </Grid>
         <HorizontalStackLayout
+            x:Name="BarPoP"
             MinimumHeightRequest="16"
             Padding="5"
             HorizontalOptions="Center"
             VerticalOptions="Start">
             <controls:IconControl
-                IconWidth="16"
-                IconHeight="16"
+                IconWidth="{OnIdiom Default=32, Phone=16}"
+                IconHeight="{OnIdiom Default=32, Phone=16}"
                 IconColor="{DynamicResource SimpleBlueLight}"
                 IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
@@ -58,15 +69,16 @@
                 IsVisible="{x:Bind PoP is ne null}" />
         </HorizontalStackLayout>
         <controls:IconControl
-            x:Name="IconCtrl"
+            x:Name="BarIcon"
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             IconHeight="{OnIdiom Phone=36, Tablet=42, Default=50}"
             HorizontalOptions="Center"
             Rotation="{Binding XIconRotation, Mode=OneWay}"
             AnchorX="0.5"
             AnchorY="0.5"
-            WeatherIcon="{Binding XIcon, Mode=OneWay}" />
+            WeatherIcon="{Binding XWeatherIcon, Mode=OneWay}" />
         <Label
+            x:Name="BarDate"
             HorizontalOptions="Center"
             HorizontalTextAlignment="Center"
             FontSize="{OnIdiom Phone=14, Default=16}"

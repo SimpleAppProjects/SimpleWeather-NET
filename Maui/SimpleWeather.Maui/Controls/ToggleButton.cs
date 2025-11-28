@@ -5,6 +5,7 @@ using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Controls.Xaml;
 using SimpleToolkit.Core;
 using SimpleWeather.Maui.MaterialIcons;
+using SimpleWeather.Maui.Utils;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Controls;
@@ -126,6 +127,8 @@ public class ToggleButton : ContentButton
                     .Padding(4)
                     .Bind(Label.TextProperty, static src => src.Text, mode: BindingMode.OneWay, source: this)
                     .Bind(Label.TextColorProperty, static src => src.TextColor, mode: BindingMode.OneWay, source: this)
+                    .CenterVertical()
+                    .TextCenterVertical()
                     .Apply(it => Label = it),
             }
         };

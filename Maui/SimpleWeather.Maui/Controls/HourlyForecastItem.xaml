@@ -7,8 +7,7 @@
              xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              x:DataType="sharedControls:HourlyForecastNowViewModel"
              xmlns:mrkup="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-             WidthRequest="{OnIdiom Default=150, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=90, GreaterThanEq=100}, Tablet=110}"
-             HeightRequest="{OnIdiom Default=250, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=200, GreaterThanEq=175}, Tablet=192}"
+             WidthRequest="{OnIdiom Default=125, Phone={mrkup:OnDeviceWidth MinWidth=828, Default=90, GreaterThanEq=100}, Tablet=110}"
              BindingContextChanged="HourlyForecastItem_BindingContextChanged"
              x:Name="Control">
     <VerticalStackLayout VerticalOptions="Center">
@@ -18,8 +17,8 @@
             HorizontalOptions="Center"
             VerticalOptions="Start">
             <controls:IconControl
-                IconWidth="20"
-                IconHeight="20"
+                IconWidth="{OnIdiom Default=30, Phone=20}"
+                IconHeight="{OnIdiom Default=30, Phone=20}"
                 IconColor="{DynamicResource SimpleBlueLight}"
                 IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
@@ -56,23 +55,13 @@
             FontFamily="OpenSansLight"
             MaxLines="1"
             Text="{Binding Temperature}" />
-        <Label
-            x:Name="ConditionBlock"
-            MinimumHeightRequest="52"
-            Padding="10,5"
-            HorizontalOptions="Center"
-            FontSize="{OnIdiom Default=12, Desktop=14}"
-            MaxLines="2"
-            Text="{Binding Condition}"
-            LineBreakMode="TailTruncation"
-            IsVisible="{OnIdiom Default=true, Phone=false}"/>
         <HorizontalStackLayout
             MinimumHeightRequest="20"
             Padding="5"
             HorizontalOptions="Center">
             <controls:IconControl
-                IconWidth="20"
-                IconHeight="20"
+                IconWidth="{OnIdiom Default=30, Phone=20}"
+                IconHeight="{OnIdiom Default=30, Phone=20}"
                 IconColor="LightSeaGreen"
                 IconProvider="wi-erik-flowers"
                 Rotation="{Binding WindDirection}"
@@ -86,6 +75,7 @@
                 MaxLines="1"
                 LineBreakMode="NoWrap"
                 Text="{Binding WindSpeed}"
+                VerticalOptions="Center"
                 IsVisible="{Binding WindSpeed, Converter={StaticResource stringBooleanConverter}}" />
         </HorizontalStackLayout>
     </VerticalStackLayout>

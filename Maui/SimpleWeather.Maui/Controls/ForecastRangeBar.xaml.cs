@@ -1,35 +1,56 @@
-﻿using SimpleWeather.NET.Controls.Graphs;
+﻿using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Maui.Markup;
+using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Controls;
 
 public partial class ForecastRangeBar : ContentView
 {
-	private readonly Color[] DEFAULT_COLORS = { Colors.OrangeRed, Colors.LightSkyBlue };
+	public View InnerBarView => InnerBar;
+	public View RangeBarView => RangeBar;
+	public IconControl BarIconView => BarIcon;
+	public Label BarDateBlock => BarDate;
+	public View BarPoPView => BarPoP;
+	
+	public double BarHiLoHeight => BarHi.Height + BarLo.Height;
 
-	public ForecastRangeBarEntry Data
+	public ForecastRangeBarEntry Data => BindingContext as ForecastRangeBarEntry;
+	
+	private ForecastType? _forecastType = null;
+	public ForecastType? ForecastType
 	{
-		get => BindingContext as ForecastRangeBarEntry;
+		get => _forecastType;
+		set
+		{
+			_forecastType = value;
+			BarPoP.IsVisible(_forecastType == NET.Controls.ForecastType.Temperature);
+		}
 	}
 
-	public FlexLayout InnerBarView => InnerBar;
-	public View RangeBarView => RangeBar;
-
-    public ForecastRangeBar()
+	public ForecastRangeBar()
 	{
 		InitializeComponent();
+		this.RangeBar.SizeChanged += RangeBar_SizeChanged;
 	}
 
-    protected override void OnBindingContextChanged()
+	private void RangeBar_SizeChanged(object sender, EventArgs e)
+	{
+		var largestSize = Math.Min(RangeBar.Height, RangeBar.Width);
+		RangeBar.CornerRadius = new CornerRadius(largestSize / 2);
+	}
+
+	protected override void OnBindingContextChanged()
     {
         base.OnBindingContextChanged();
 		ApplyBindings();
-		IconCtrl.UpdateWeatherIcon();
+		BarIcon.UpdateWeatherIcon();
     }
 
-    public void SetColors() => SetColors(DEFAULT_COLORS);
+    public void SetColors() => SetColors((Colors.OrangeRed, Colors.LightSkyBlue));
 
-	public void SetColors(params Color[] colors)
+	public void SetColors((Color hiColor, Color loColor) colors)
 	{
 		RangeBar.Background = new LinearGradientBrush()
 		{
@@ -37,9 +58,15 @@ public partial class ForecastRangeBar : ContentView
 			EndPoint = new Point(0.5, 1),
 			GradientStops = new GradientStopCollection().Apply(c =>
 			{
-                colors.ForEachIndexed((index, color) =>
+				c.Add(new GradientStop()
 				{
-					c.Add(new GradientStop(color, index / MathF.Max(1, colors.Length - 1)));
+					Color = colors.hiColor,
+					Offset = 0
+				});
+				c.Add(new GradientStop()
+				{
+					Color = colors.loColor,
+					Offset = 1
 				});
 			})
 		};

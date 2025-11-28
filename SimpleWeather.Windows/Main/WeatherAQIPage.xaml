@@ -56,7 +56,7 @@
                     x:Name="AQIContainer"
                     MaxWidth="1280"
                     Margin="0,0,0,16"
-                    d:ItemTemplate="{StaticResource AQIGraphTemplate}"
+                    d:ItemTemplate="{StaticResource AQIBarGraphTemplate}"
                     d:ItemsSource=",,,"
                     AllowDrop="False"
                     ItemTemplateSelector="{StaticResource aqiTemplateSelector}"
@@ -81,7 +81,7 @@
                                 <localControls:AQIForecastControl />
                             </toolkitControls:HeaderedContentControl>
                         </DataTemplate>
-                        <DataTemplate x:Key="AQIGraphTemplate" x:DataType="graphs:BarGraphData">
+                        <DataTemplate x:Key="AQIBarGraphTemplate" x:DataType="graphs:BarGraphData">
                             <toolkitControls:HeaderedContentControl
                                 Margin="0,16"
                                 HorizontalContentAlignment="Stretch"
@@ -99,6 +99,29 @@
                                     </DataTemplate>
                                 </toolkitControls:HeaderedContentControl.HeaderTemplate>
                                 <localControls:ForecastBarGraphView
+                                    DataContext="{Binding}"
+                                    ForecastType="AirQuality"
+                                    GraphHeight="250" />
+                            </toolkitControls:HeaderedContentControl>
+                        </DataTemplate>
+                        <DataTemplate x:Key="AQIRangeBarGraphTemplate" x:DataType="graphs:RangeBarGraphData">
+                            <toolkitControls:HeaderedContentControl
+                                Margin="0,16"
+                                HorizontalContentAlignment="Stretch"
+                                d:Header="Today"
+                                Header="{Binding GraphLabel}">
+                                <toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                    <DataTemplate>
+                                        <StackPanel>
+                                            <TextBlock
+                                                Padding="16,10"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Text="{Binding}" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </toolkitControls:HeaderedContentControl.HeaderTemplate>
+                                <localControls:ForecastRangeBarGraphView
                                     DataContext="{Binding}"
                                     ForecastType="AirQuality"
                                     GraphHeight="250" />

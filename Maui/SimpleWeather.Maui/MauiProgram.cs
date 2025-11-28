@@ -73,7 +73,7 @@ public static class MauiProgram
 #if __IOS__
                 handlers.AddHandler<TransparentViewCell, TransparentViewCellRenderer>();
                 handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
-                //handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
+                handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
                 handlers.AddHandler<ReorderableCollectionView, ReorderableCollectionViewHandler<ReorderableCollectionView>>();
                 handlers.AddHandler<Map, MapViewHandler>();

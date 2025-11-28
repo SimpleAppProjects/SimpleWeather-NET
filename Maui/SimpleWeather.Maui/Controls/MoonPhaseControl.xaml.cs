@@ -23,55 +23,65 @@ public partial class MoonPhaseControl : ContentView
         this.InitializeComponent();
 
         DataSet = Enumerable.Repeat(_moonPhaseTypes, 3).SelectMany(phase => phase).Select(p => new MoonPhaseItem(p)).ToList();
-        MoonStack.ItemsSource = DataSet;
+        BindableLayout.SetItemsSource(MoonStack, DataSet);
 
-        this.BindingContextChanged += (sender, args) =>
-        {
-            ApplyBindings();
-
-            if (ViewModel != null)
-            {
-                if (SelectedMoonPhaseType != ViewModel.PhaseType || !Initialized)
-                {
-                    SelectedMoonPhaseType = ViewModel.PhaseType;
-                    DataSet.ForEachIndexed((index, item) =>
-                    {
-                        if (item.MoonPhaseType == SelectedMoonPhaseType)
-                        {
-                            item.Opacity = 1.0;
-                        } 
-                        else if (index == SelectedIndex - 2 || index == SelectedIndex + 2)
-                        {
-                            item.Opacity = 0.2;
-                        }
-                        else if (index == SelectedIndex - 3 || index == SelectedIndex + 3)
-                        {
-                            item.Opacity = 0.15;
-                        }
-                        else
-                        {
-                            item.Opacity = 0.35;
-                        }
-                    });
-
-                    Initialized = true;
-                }
-
-                ScrollToSelectedPhase();
-
-                MoonriseIcon.UpdateWeatherIcon();
-                MoonsetIcon.UpdateWeatherIcon();
-            }
-        };
-        MoonStack.SizeChanged += (sender, args) =>
+        MoonStack.SizeChanged += (_, _) =>
         {
             Dispatcher.Dispatch(ScrollToSelectedPhase);
         };
     }
 
+    protected override void OnBindingContextChanged()
+    {
+        base.OnBindingContextChanged();
+        
+        ApplyBindings();
+
+        if (ViewModel != null)
+        {
+            if (SelectedMoonPhaseType != ViewModel.PhaseType || !Initialized)
+            {
+                SelectedMoonPhaseType = ViewModel.PhaseType;
+                DataSet.ForEachIndexed((index, item) =>
+                {
+                    if (item.MoonPhaseType == SelectedMoonPhaseType)
+                    {
+                        item.Opacity = 1.0;
+                    } 
+                    else if (index == SelectedIndex - 2 || index == SelectedIndex + 2)
+                    {
+                        item.Opacity = 0.2;
+                    }
+                    else if (index == SelectedIndex - 3 || index == SelectedIndex + 3)
+                    {
+                        item.Opacity = 0.15;
+                    }
+                    else
+                    {
+                        item.Opacity = 0.35;
+                    }
+                });
+
+                Initialized = true;
+            }
+
+            ScrollToSelectedPhase();
+
+            MoonriseIcon.UpdateWeatherIcon();
+            MoonsetIcon.UpdateWeatherIcon();
+        }
+    }
+
     private void ScrollToSelectedPhase()
     {
-        MoonStack?.ScrollTo(SelectedIndex, position: ScrollToPosition.Center);
+        MoonStack?.Cast<IconControl>()?.FirstOrDefault()?.Let(v =>
+        {
+            Dispatcher.Dispatch(async () =>
+            {
+                await MoonStackScroller.ScrollToAsync(((v.IconWidth + 8) * SelectedIndex) - MoonStackScroller.Width / 2 +
+                                                      ((v.IconWidth + 8) / 2), 0, true);
+            });
+        });
     }
 
     private void IconControl_Loaded(object sender, EventArgs e)
@@ -87,8 +97,8 @@ public class MoonPhaseItem(MoonPhase.MoonPhaseType moonPhaseType) : BindableObje
 
     public double Opacity
     {
-        get { return (double)GetValue(OpacityProperty); }
-        set { SetValue(OpacityProperty, value); }
+        get => (double)GetValue(OpacityProperty);
+        set => SetValue(OpacityProperty, value);
     }
 
     // Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...

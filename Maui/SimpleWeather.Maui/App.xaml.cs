@@ -65,7 +65,7 @@ public partial class App : Application
         TaskScheduler.UnobservedTaskException += TaskScheduler_UnobservedTaskException;
         InitializeComponent();
 
-        // Initialize depencies for library
+        // Initialize dependencies for library
         InitializeDependencies();
 
         SettingsManager = Ioc.Default.GetService<SettingsManager>();

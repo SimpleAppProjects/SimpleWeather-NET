@@ -8,25 +8,10 @@
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
     xmlns:viewModels="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
-    Title="{x:Static res_strings:Resources.title_fragment_alerts}"
     local:AppShell.AppBarIsVisible="True"
     x:Name="AlertsPage">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="0">
-            <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
-                                   BindingContext="{x:Bind WNowViewModel, DataType={x:Null}}">
-                <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
-                       x:DataType="{x:Type viewModels:WeatherNowViewModel}"
-                       Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
-            </localControls:ViewBox>
-            <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
-        </VerticalStackLayout>
-
-        <ScrollView Grid.Row="1" Orientation="Vertical" Padding="8"
+        <ScrollView Orientation="Vertical" Padding="8"
                     HorizontalScrollBarVisibility="Never"
                     BindingContext="{x:Bind AlertsView, DataType={x:Null}}">
             <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand"

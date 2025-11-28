@@ -24,7 +24,7 @@ namespace SimpleWeather.NET.Controls
         private ObservableItem<Forecasts> currentForecastsData;
 
         [ObservableProperty]
-        public partial ICollection<BarGraphData> AQIGraphData { get; set; }
+        public partial ICollection<IGraphData> AQIGraphData { get; set; }
 
         [ObservableProperty]
         public partial ICollection<AirQualityViewModel> AQIForecastData { get; set; }
@@ -91,16 +91,20 @@ namespace SimpleWeather.NET.Controls
             });
         }
 
-        private ICollection<BarGraphData> CreateGraphData(IEnumerable<AirQuality> enumerable)
+        private ICollection<IGraphData> CreateGraphData(IEnumerable<AirQuality> enumerable)
         {
-            var graphDataList = new List<BarGraphData>(7);
-            BarGraphData aqiIndexData = null;
-            BarGraphData pm25Data = null;
-            BarGraphData pm10Data = null;
-            BarGraphData o3Data = null;
-            BarGraphData coData = null;
-            BarGraphData no2Data = null;
-            BarGraphData so2Data = null;
+            var graphDataList = new List<IGraphData>(7);
+            IGraphData aqiIndexData = null;
+            IGraphData pm25Data = null;
+            IGraphData pm10Data = null;
+            IGraphData o3Data = null;
+            IGraphData coData = null;
+            IGraphData no2Data = null;
+            IGraphData so2Data = null;
+            
+            var pm25UseRangeGraph = enumerable?.All(aqi => aqi.extras is { pm25_max: not null, pm25_min: not null }) ?? false;
+            var pm10UseRangeGraph = enumerable?.All(aqi => aqi.extras is { pm10_max: not null, pm10_min: not null }) ?? false;
+            var o3UseRangeGraph = enumerable?.All(aqi => aqi.extras is { o3_max: not null, o3_min: not null }) ?? false;
 
             enumerable?.ForEach(aqi =>
             {
@@ -108,182 +112,316 @@ namespace SimpleWeather.NET.Controls
                 {
                     if (aqiIndexData == null)
                     {
-                        aqiIndexData = new()
+                        aqiIndexData = new BarGraphData()
                         {
                             GraphLabel = ResStrings.label_airquality
                         };
                     }
 
-                    if (aqiIndexData?.GetDataSet() == null)
+                    if (aqiIndexData is BarGraphData barGraphData)
                     {
-                        aqiIndexData?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (barGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
-                        }));
-                    }
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
 
-                    aqiIndexData?.GetDataSet()?.AddEntry(new BarGraphEntry()
-                    {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.index.Value, aqi.index.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.index.Value)
-                    });
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.index.Value, aqi.index.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.index.Value)
+                        });
+                    }
                 }
 
                 if (aqi.pm25.HasValue)
                 {
                     if (pm25Data == null)
                     {
-                        pm25Data = new()
+                        pm25Data = pm25UseRangeGraph ? new ForecastRangeBarGraphData()
+                        {
+                            GraphLabel = ResAQIndex.units_pm25
+                        } : new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_pm25
                         };
                     }
 
-                    if (pm25Data?.GetDataSet() == null)
+                    if (pm25Data is ForecastRangeBarGraphData forecastRangeBarGraphData)
                     {
-                        pm25Data?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (forecastRangeBarGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
+                            forecastRangeBarGraphData.SetDataSet(new ForecastRangeBarGraphDataSet(new List<ForecastRangeBarEntry>()));
+                        }
+
+                        forecastRangeBarGraphData.GetDataSet()?.AddEntry(new ForecastRangeBarEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale())
+                        }.Apply(entry =>
+                        {
+                            if (aqi.extras?.pm25_max.HasValue == true && aqi.extras?.pm25_min.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.pm25_max.Value, aqi.extras.pm25_max.Value.ToInvariantString());
+                                entry.LoTempData = new YEntryData(aqi.extras.pm25_min.Value, aqi.extras.pm25_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm25_max), AirQualityUtils.GetColorFromIndex(aqi.extras.pm25_min));
+                            }
+                            else if (aqi.extras?.pm25_max.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.pm25_max.Value, aqi.extras.pm25_max.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm25_max));
+                            }
+                            else if (aqi.extras?.pm25_min.HasValue == true)
+                            {
+                                entry.LoTempData = new YEntryData(aqi.extras.pm25_min.Value, aqi.extras.pm25_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm25_min));
+                            }
+                            else
+                            {
+                                entry.HiTempData = new YEntryData(aqi.pm25.Value, aqi.pm25.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.pm25));
+                            }
                         }));
                     }
-
-                    pm25Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
+                    else if (pm25Data is BarGraphData barGraphData)
                     {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.pm25.Value, aqi.pm25.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm25.Value)
-                    });
+                        if (barGraphData.GetDataSet() == null)
+                        {
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
+
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.pm25.Value, aqi.pm25.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm25.Value)
+                        });
+                    }
                 }
 
                 if (aqi.pm10.HasValue)
                 {
                     if (pm10Data == null)
                     {
-                        pm10Data = new()
+                        pm10Data = pm10UseRangeGraph ? new ForecastRangeBarGraphData()
+                        {
+                            GraphLabel = ResAQIndex.units_pm10
+                        } : new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_pm10
                         };
                     }
 
-                    if (pm10Data?.GetDataSet() == null)
+                    if (pm10Data is ForecastRangeBarGraphData forecastRangeBarGraphData)
                     {
-                        pm10Data?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (forecastRangeBarGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
+                            forecastRangeBarGraphData.SetDataSet(new ForecastRangeBarGraphDataSet(new List<ForecastRangeBarEntry>()));
+                        }
+
+                        forecastRangeBarGraphData.GetDataSet()?.AddEntry(new ForecastRangeBarEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale())
+                        }.Apply(entry =>
+                        {
+                            if (aqi.extras?.pm10_max.HasValue == true && aqi.extras?.pm10_min.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.pm10_max.Value, aqi.extras.pm10_max.Value.ToInvariantString());
+                                entry.LoTempData = new YEntryData(aqi.extras.pm10_min.Value, aqi.extras.pm10_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm10_max), AirQualityUtils.GetColorFromIndex(aqi.extras.pm10_min));
+                            }
+                            else if (aqi.extras?.pm10_max.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.pm10_max.Value, aqi.extras.pm10_max.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm10_max));
+                            }
+                            else if (aqi.extras?.pm10_min.HasValue == true)
+                            {
+                                entry.LoTempData = new YEntryData(aqi.extras.pm10_min.Value, aqi.extras.pm10_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.pm10_min));
+                            }
+                            else
+                            {
+                                entry.HiTempData = new YEntryData(aqi.pm10.Value, aqi.pm10.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.pm10));
+                            }
                         }));
                     }
-
-                    pm10Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
+                    else if (pm10Data is BarGraphData barGraphData)
                     {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.pm10.Value, aqi.pm10.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm10.Value)
-                    });
+                        if (barGraphData.GetDataSet() == null)
+                        {
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
+
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.pm10.Value, aqi.pm10.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.pm10.Value)
+                        });
+                    }
                 }
 
                 if (aqi.o3.HasValue)
                 {
                     if (o3Data == null)
                     {
-                        o3Data = new()
+                        o3Data = o3UseRangeGraph ? new ForecastRangeBarGraphData()
+                        {
+                            GraphLabel = ResAQIndex.units_o3
+                        } : new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_o3
                         };
                     }
 
-                    if (o3Data?.GetDataSet() == null)
+                    if (o3Data is ForecastRangeBarGraphData forecastRangeBarGraphData)
                     {
-                        o3Data?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (forecastRangeBarGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
+                            forecastRangeBarGraphData.SetDataSet(new ForecastRangeBarGraphDataSet(new List<ForecastRangeBarEntry>()));
+                        }
+
+                        forecastRangeBarGraphData.GetDataSet()?.AddEntry(new ForecastRangeBarEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale())
+                        }.Apply(entry =>
+                        {
+                            if (aqi.extras?.o3_max.HasValue == true && aqi.extras?.o3_min.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.o3_max.Value, aqi.extras.o3_max.Value.ToInvariantString());
+                                entry.LoTempData = new YEntryData(aqi.extras.o3_min.Value, aqi.extras.o3_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.o3_max), AirQualityUtils.GetColorFromIndex(aqi.extras.o3_min));
+                            }
+                            else if (aqi.extras?.o3_max.HasValue == true)
+                            {
+                                entry.HiTempData = new YEntryData(aqi.extras.o3_max.Value, aqi.extras.o3_max.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.o3_max));
+                            }
+                            else if (aqi.extras?.o3_min.HasValue == true)
+                            {
+                                entry.LoTempData = new YEntryData(aqi.extras.o3_min.Value, aqi.extras.o3_min.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.extras.o3_min));
+                            }
+                            else
+                            {
+                                entry.HiTempData = new YEntryData(aqi.o3.Value, aqi.o3.Value.ToInvariantString());
+                                entry.SetFillColors(AirQualityUtils.GetColorFromIndex(aqi.o3));
+                            }
                         }));
                     }
-
-                    o3Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
+                    else if (o3Data is BarGraphData barGraphData)
                     {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.o3.Value, aqi.o3.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.o3.Value)
-                    });
+                        if (barGraphData.GetDataSet() == null)
+                        {
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
+
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.o3.Value, aqi.o3.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.o3.Value)
+                        });
+                    }
                 }
 
                 if (aqi.co.HasValue)
                 {
                     if (coData == null)
                     {
-                        coData = new()
+                        coData = new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_co
                         };
                     }
 
-                    if (coData?.GetDataSet() == null)
+                    if (coData is BarGraphData barGraphData)
                     {
-                        coData?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (barGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
-                        }));
-                    }
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
 
-                    coData?.GetDataSet()?.AddEntry(new BarGraphEntry()
-                    {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.co.Value, aqi.co.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.co.Value)
-                    });
-                }
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.co.Value, aqi.co.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.co.Value)
+                        });
+                    }                }
 
                 if (aqi.no2.HasValue)
                 {
                     if (no2Data == null)
                     {
-                        no2Data = new()
+                        no2Data = new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_no2
                         };
                     }
 
-                    if (no2Data?.GetDataSet() == null)
+                    if (no2Data is BarGraphData barGraphData)
                     {
-                        no2Data?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (barGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
-                        }));
-                    }
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
 
-                    no2Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
-                    {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.no2.Value, aqi.no2.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.no2.Value)
-                    });
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.no2.Value, aqi.no2.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.no2.Value)
+                        });
+                    }
                 }
 
                 if (aqi.so2.HasValue)
                 {
                     if (so2Data == null)
                     {
-                        so2Data = new()
+                        so2Data = new BarGraphData()
                         {
                             GraphLabel = ResAQIndex.units_so2
                         };
                     }
 
-                    if (so2Data?.GetDataSet() == null)
+                    if (so2Data is BarGraphData barGraphData)
                     {
-                        so2Data?.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                        if (barGraphData.GetDataSet() == null)
                         {
-                            it.SetMinMax(0f);
-                        }));
-                    }
+                            barGraphData.SetDataSet(new BarGraphDataSet(new List<BarGraphEntry>()).Apply(it =>
+                            {
+                                it.SetMinMax(0f);
+                            }));
+                        }
 
-                    so2Data?.GetDataSet()?.AddEntry(new BarGraphEntry()
-                    {
-                        XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
-                        EntryData = new(aqi.so2.Value, aqi.so2.Value.ToInvariantString()),
-                        FillColor = AirQualityUtils.GetColorFromIndex(aqi.so2.Value)
-                    });
+                        barGraphData.GetDataSet()?.AddEntry(new BarGraphEntry()
+                        {
+                            XLabel = aqi.date?.ToString("ddd", LocaleUtils.GetLocale()),
+                            EntryData = new(aqi.so2.Value, aqi.so2.Value.ToInvariantString()),
+                            FillColor = AirQualityUtils.GetColorFromIndex(aqi.so2.Value)
+                        });
+                    }
                 }
             });
 

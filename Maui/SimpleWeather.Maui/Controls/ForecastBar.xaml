@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
+             x:Class="SimpleWeather.Maui.Controls.ForecastBar"
+             x:DataType="graphs:BarGraphEntry"
+             Padding="{OnIdiom Default=4, Phone=0}">
+    <VerticalStackLayout
+        HorizontalOptions="Center" VerticalOptions="End"
+        MinimumWidthRequest="{OnIdiom Default=60, Phone=50}">
+        <Grid
+            x:Name="InnerBar"
+            HorizontalOptions="Center"
+            VerticalOptions="Fill">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <RoundRectangle
+                x:Name="Bar"
+                Aspect="Fill"
+                Fill="{Binding FillColor, Mode=OneWay}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="24" />
+            <controls:IconControl
+                x:Name="BarIcon"
+                IconWidth="30"
+                IconHeight="30"
+                HorizontalOptions="Center"
+                VerticalOptions="Start"
+                ForceDarkTheme="True"
+                IconColor="White"
+                IconProvider="wi-erik-flowers"
+                ShowAsMonochrome="True"
+                IsVisible="True"
+                Rotation="{Binding XIconRotation, Mode=OneWay}"
+                AnchorX="0.5"
+                AnchorY="0.5"
+                WeatherIcon="{Binding XWeatherIcon, Mode=OneWay}" />
+        </Grid>
+        <Label
+            x:Name="BarValue"
+            HorizontalOptions="Center"
+            FontSize="{OnIdiom Phone=14, Default=16}"
+            MaxLines="1"
+            Padding="4"
+            Text="{Binding EntryData.YLabel, Mode=OneWay}" />
+        <Label
+            x:Name="BarDate"
+            HorizontalOptions="Center"
+            HorizontalTextAlignment="Center"
+            FontSize="{OnIdiom Phone=14, Default=16}"
+            MaxLines="1"
+            Padding="4"
+            Text="{Binding XLabel, Mode=OneWay}" />
+    </VerticalStackLayout>
+</ContentView>
+

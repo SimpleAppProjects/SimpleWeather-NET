@@ -139,7 +139,11 @@ namespace SimpleWeather.NET.Main
             {
                 if (item is BarGraphData)
                 {
-                    return elementParent.Resources["AQIGraphTemplate"] as DataTemplate;
+                    return elementParent.Resources["AQIBarGraphTemplate"] as DataTemplate;
+                }
+                else if (item is RangeBarGraphData)
+                {
+                    return elementParent.Resources["AQIRangeBarGraphTemplate"] as DataTemplate;
                 }
                 else if (item is AirQualityViewModel)
                 {

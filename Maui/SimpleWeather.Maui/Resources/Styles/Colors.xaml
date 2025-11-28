@@ -107,4 +107,7 @@
     <Color x:Key="DarkFrameBackground">#ff1d1b20</Color>
     <!-- iOS Colors End -->
 
+    <Color x:Key="LightCompositeFrameBackground">#FFFAF6FA</Color>
+    <Color x:Key="DarkCompositeFrameBackground">#FF121212</Color>
+
 </ResourceDictionary>

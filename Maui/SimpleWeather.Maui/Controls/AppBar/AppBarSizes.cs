@@ -32,7 +32,7 @@ namespace SimpleWeather.Maui.Controls.AppBar
                 return 20d;
 
             if (DeviceInfo.Platform == DevicePlatform.iOS || DeviceInfo.Platform == DevicePlatform.MacCatalyst)
-                return 17d;
+                return 15d;
 
             return 20d;
         }

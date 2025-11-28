@@ -55,13 +55,20 @@ namespace SimpleWeather.Weather_API.AQICN
                     if (existing != null)
                     {
                         existing.o3 = it.avg;
+                        existing.extras.o3_max = it.max;
+                        existing.extras.o3_min = it.min;
                     }
                     else
                     {
                         aqiForecasts.Add(new()
                         {
                             date = itemDate,
-                            o3 = it.avg
+                            o3 = it.avg,
+                            extras = new ()
+                            {
+                                o3_max = it.max,
+                                o3_min = it.min
+                            }
                         });
                     }
                 });
@@ -76,13 +83,20 @@ namespace SimpleWeather.Weather_API.AQICN
                     if (existing != null)
                     {
                         existing.pm25 = it.avg;
+                        existing.extras.pm25_max = it.max;
+                        existing.extras.pm25_min = it.min;
                     }
                     else
                     {
                         aqiForecasts.Add(new()
                         {
                             date = itemDate,
-                            pm25 = it.avg
+                            pm25 = it.avg,
+                            extras = new ()
+                            {
+                                pm25_max = it.max,
+                                pm25_min = it.min
+                            }
                         });
                     }
                 });
@@ -97,13 +111,20 @@ namespace SimpleWeather.Weather_API.AQICN
                     if (existing != null)
                     {
                         existing.pm10 = it.avg;
+                        existing.extras.pm10_max = it.max;
+                        existing.extras.pm10_min = it.min;
                     }
                     else
                     {
                         aqiForecasts.Add(new()
                         {
                             date = itemDate,
-                            pm10 = it.avg
+                            pm10 = it.avg,
+                            extras = new ()
+                            {
+                                pm10_max = it.max,
+                                pm10_min = it.min
+                            }
                         });
                     }
                 });

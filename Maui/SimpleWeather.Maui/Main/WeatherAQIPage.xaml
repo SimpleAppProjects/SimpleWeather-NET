@@ -13,66 +13,78 @@
     xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     xmlns:devices="clr-namespace:Microsoft.Maui.Devices;assembly=Microsoft.Maui.Essentials"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
-    Title="{x:Static res_strings:Resources.label_airquality}"
     local:AppShell.AppBarIsVisible="True"
     x:Name="AQIPage">
 
     <ContentPage.Resources>
         <DataTemplate x:Key="AQIForecastTemplate" x:DataType="{x:Type controls:AirQualityViewModel}">
-            <VerticalStackLayout>
-                <Label
-                    Padding="16,10"
-                    FontSize="16"
-                    FontFamily="OpenSansSemibold"
-                    Text="{Binding Date}" />
-                <localControls:AQIForecastControl />
-            </VerticalStackLayout>
-        </DataTemplate>
-        <DataTemplate x:Key="AQIGraphTemplate" x:DataType="{x:Type graphs:BarGraphData}">
-            <VerticalStackLayout>
-                <Label
-                    Padding="16,10"
-                    FontSize="16"
-                    FontFamily="OpenSansSemibold"
-                    Text="{Binding GraphLabel}" />
-                <graphPanels:BarGraphPanel GraphData="{Binding}"
-                                           ScrollingEnabled="False" DrawIconLabels="False"
-                                           FillParentWidth="{OnIdiom Default=false, Phone=true}"
-                                           GraphMaxWidth="{OnIdiom Default=-1, Phone=720}"/>
-            </VerticalStackLayout>
-        </DataTemplate>
-        <local:AQIDataTemplateSelector
-            x:Key="aqiTemplateSelector"
-            AQIForecastTemplate="{StaticResource AQIForecastTemplate}"
-            AQIGraphTemplate="{StaticResource AQIGraphTemplate}" />
-    </ContentPage.Resources>
-
-    <Grid VerticalOptions="FillAndExpand">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <VerticalStackLayout Grid.Row="0">
-            <localControls:ViewBox HeightRequest="48" HorizontalOptions="Start"
-                                   BindingContext="{x:Bind WNowViewModel}">
-                <Label Padding="16" FontSize="16" HorizontalTextAlignment="Start" HorizontalOptions="Start"
-                       x:DataType="commonVM:WeatherNowViewModel"
-                       Text="{Binding Weather.Location, FallbackValue='New York, NY', Mode=OneWay}" />
-            </localControls:ViewBox>
-            <Rectangle Style="{DynamicResource AppBarBorderStyle}" />
-        </VerticalStackLayout>
-        <ScrollView Grid.Row="1" Orientation="Vertical">
-            <VerticalStackLayout x:Name="AQILayout" MaximumWidthRequest="1280" Padding="0,0,0,16">
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4,2', Desktop='16, 2'}"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
                 <VerticalStackLayout>
                     <Label
                         Padding="16,10"
                         FontSize="16"
                         FontFamily="OpenSansSemibold"
-                        Text="{x:Static res_strings:Resources.time_current}" />
-                    <localControls:AQIForecastControl
-                        x:Name="AQIndexControl"
-                        BindingContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}" />
+                        Text="{Binding Date}" />
+                    <localControls:AQIForecastControl />
                 </VerticalStackLayout>
+            </Frame>
+        </DataTemplate>
+        <DataTemplate x:Key="AQIBarGraphTemplate" x:DataType="{x:Type graphs:BarGraphData}">
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4,2', Desktop='16, 2'}"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
+                <VerticalStackLayout>
+                    <Label
+                        Padding="16,10"
+                        FontSize="16"
+                        FontFamily="OpenSansSemibold"
+                        Text="{Binding GraphLabel}" />
+                    <localControls:ForecastBarGraphView
+                        BindingContext="{Binding}"
+                        ForecastType="AirQuality"
+                        GraphHeight="250" />
+                </VerticalStackLayout>
+            </Frame>
+        </DataTemplate>
+        <DataTemplate x:Key="AQIRangeBarGraphTemplate" x:DataType="{x:Type graphs:ForecastRangeBarGraphData}">
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4,2', Desktop='16, 2'}"
+                   BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
+                <VerticalStackLayout>
+                    <Label
+                        Padding="16,10"
+                        FontSize="16"
+                        FontFamily="OpenSansSemibold"
+                        Text="{Binding GraphLabel}" />
+                    <localControls:ForecastRangeBarGraphView
+                        BindingContext="{Binding}"
+                        ForecastType="AirQuality"
+                        GraphHeight="250" />
+                </VerticalStackLayout>
+            </Frame>
+        </DataTemplate>
+        <local:AQIDataTemplateSelector
+            x:Key="aqiTemplateSelector"
+            AQIForecastTemplate="{StaticResource AQIForecastTemplate}"
+            AQIBarGraphTemplate="{StaticResource AQIBarGraphTemplate}"
+            AQIRangeBarGraphTemplate="{StaticResource AQIRangeBarGraphTemplate}" />
+    </ContentPage.Resources>
+
+    <Grid VerticalOptions="FillAndExpand">
+        <ScrollView Orientation="Vertical">
+            <VerticalStackLayout x:Name="AQILayout" MaximumWidthRequest="1280" Padding="0,16,0,16">
+                <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4, 0, 4, 2', Desktop='16, 0, 16, 2'}"
+                       BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
+                    <VerticalStackLayout>
+                        <Label
+                            Padding="16,10"
+                            FontSize="16"
+                            FontFamily="OpenSansSemibold"
+                            Text="{x:Static res_strings:Resources.time_current}" />
+                        <localControls:AQIForecastControl
+                            x:Name="AQIndexControl"
+                            BindingContext="{x:Bind WNowViewModel.Weather.AirQuality, Mode=OneWay}" />
+                    </VerticalStackLayout>
+                    </Frame>
                 <VerticalStackLayout
                     x:Name="AQIContainer"
                     BindableLayout.ItemsSource="{x:Bind devices:DeviceInfo.Idiom eq devices:DeviceIdiom.Phone ? AQIView.AQIGraphData : AQIView.AQIForecastData, IsItemsSource=True}"
@@ -81,7 +93,6 @@
         </ScrollView>
         <ActivityIndicator
             x:Name="ContentIndicator"
-            Grid.Row="1"
             HorizontalOptions="Center"
             VerticalOptions="Center"
             IsRunning="{x:Bind devices:DeviceInfo.Idiom eq devices:DeviceIdiom.Phone ? AQIView.AQIGraphData.Count le 0 : AQIView.AQIForecastData.Count le 0, TargetNullValue=true, FallbackValue=true}" />

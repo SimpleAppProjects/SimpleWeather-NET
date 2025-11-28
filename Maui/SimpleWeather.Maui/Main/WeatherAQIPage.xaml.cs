@@ -7,6 +7,7 @@ using SimpleWeather.Maui.ViewModels;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Controls.Graphs;
 using SimpleWeather.Utils;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -41,6 +42,8 @@ public partial class WeatherAQIPage : ViewModelPage
     {
         InitializeComponent();
         AnalyticsLogger.LogEvent(nameof(WeatherAQIPage));
+        Title = null;
+        Shell.SetTitleView(this, this.CreateTitleView(ResStrings.label_airquality, WNowViewModel));
 
         AQILayout.SizeChanged += (s, e) =>
         {
@@ -104,14 +107,19 @@ public partial class WeatherAQIPage : ViewModelPage
 
 public class AQIDataTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate AQIGraphTemplate { get; set; }
+    public DataTemplate AQIBarGraphTemplate { get; set; }
+    public DataTemplate AQIRangeBarGraphTemplate { get; set; }
     public DataTemplate AQIForecastTemplate { get; set; }
 
     protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
     {
         if (item is BarGraphData)
         {
-            return AQIGraphTemplate;
+            return AQIBarGraphTemplate;
+        }
+        else if (item is ForecastRangeBarGraphData)
+        {
+            return AQIRangeBarGraphTemplate;
         }
         else if (item is AirQualityViewModel)
         {

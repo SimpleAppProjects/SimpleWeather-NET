@@ -4,8 +4,6 @@
 <dict>
 	<key>application-identifier</key>
 	<string>F5MCLX6AR8.com.thewizrd.simpleweather.widgetintentExt</string>
-	<key>com.apple.security.app-sandbox</key>
-	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.thewizrd.simpleweather</string>

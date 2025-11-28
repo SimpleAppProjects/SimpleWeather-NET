@@ -2322,6 +2322,7 @@ namespace SimpleWeather.WeatherData
         public int? co { get; set; }
         [JsonConverter(typeof(SimpleNullableDateTimeFormatter))]
         public DateTime? date { get; set; }
+        public AQIExtras extras { get; set; }
 
         public AirQuality()
         {
@@ -2339,7 +2340,8 @@ namespace SimpleWeather.WeatherData
                    pm25 == quality.pm25 &&
                    pm10 == quality.pm10 &&
                    co == quality.co &&
-                   date == quality.date;
+                   date == quality.date &&
+                   Object.Equals(extras, quality.extras);
         }
 
         public override int GetHashCode()
@@ -2354,6 +2356,7 @@ namespace SimpleWeather.WeatherData
             hash.Add(pm10);
             hash.Add(co);
             hash.Add(date);
+            hash.Add(extras);
             return hash.ToHashCode();
         }
 
@@ -2417,6 +2420,11 @@ namespace SimpleWeather.WeatherData
                         this.date = reader.TryGetDateTime("yyyy-MM-dd");
                         break;
 
+                    case nameof(extras):
+                        this.extras = new AQIExtras();
+                        this.extras.FromJson(ref reader);
+                        break;
+
                     default:
                         // ignore
                         break;
@@ -2478,6 +2486,157 @@ namespace SimpleWeather.WeatherData
             {
                 // "date" : ""
                 writer.WriteString(nameof(date), date.Value.ToInvariantString("yyyy-MM-dd"));
+            }
+
+            // "extras" : ""
+            if (extras != null)
+            {
+                writer.WriteRawValueSafe(nameof(extras), extras?.ToJson());
+            }
+
+            // }
+            writer.WriteEndObject();
+            writer.Flush();
+
+            return Encoding.UTF8.GetString(stream.ToArray());
+        }
+    }
+
+    [JsonConverter(typeof(CustomJsonConverter<AQIExtras>))]
+    public partial class AQIExtras : CustomJsonObject
+    {
+        public int? o3_max { get; set; }
+        public int? o3_min { get; set; }
+        public int? pm25_max { get; set; }
+        public int? pm25_min { get; set; }
+        public int? pm10_max { get; set; }
+        public int? pm10_min { get; set; }
+
+        public AQIExtras()
+        {
+            // Needed for deserialization
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is AQIExtras extras &&
+                   o3_max == extras.o3_max &&
+                   o3_min == extras.o3_min &&
+                   pm25_max == extras.pm25_max &&
+                   pm25_min == extras.pm25_min &&
+                   pm10_max == extras.pm10_max &&
+                   pm10_min == extras.pm10_min;
+        }
+
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(o3_max);
+            hash.Add(o3_min);
+            hash.Add(pm25_max);
+            hash.Add(pm25_min);
+            hash.Add(pm10_max);
+            hash.Add(pm10_min);
+            return hash.ToHashCode();
+        }
+
+        public override void FromJson(ref Utf8JsonReader reader)
+        {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var jsonValue = reader.GetString();
+
+                if (jsonValue == null) return;
+
+                var extReader = new Utf8JsonReader(Encoding.UTF8.GetBytes(jsonValue));
+                FromJson(ref extReader);
+                return;
+            }
+
+            while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
+            {
+                if (reader.TokenType == JsonTokenType.StartObject)
+                    reader.Read(); // StartObject
+
+                string property = reader.GetString(); // JsonTokenType.PropertyName
+
+                reader.Read(); // Property Value
+
+                switch (property)
+                {
+                    case nameof(o3_max):
+                        this.o3_max = reader.TryGetInt32();
+                        break;
+
+                    case nameof(o3_min):
+                        this.o3_min = reader.TryGetInt32();
+                        break;
+
+                    case nameof(pm25_max):
+                        this.pm25_max = reader.TryGetInt32();
+                        break;
+
+                    case nameof(pm25_min):
+                        this.pm25_min = reader.TryGetInt32();
+                        break;
+
+                    case nameof(pm10_max):
+                        this.pm10_max = reader.TryGetInt32();
+                        break;
+
+                    case nameof(pm10_min):
+                        this.pm10_min = reader.TryGetInt32();
+                        break;
+
+                    default:
+                        // ignore
+                        break;
+                }
+            }
+        }
+
+        public override string ToJson()
+        {
+            using var stream = new MemoryStream();
+            using var writer = new Utf8JsonWriter(stream);
+
+            // {
+            writer.WriteStartObject();
+
+            if (o3_max.HasValue)
+            {
+                // "o3_max" : ""
+                writer.WriteSingle(nameof(o3_max), o3_max.Value);
+            }
+
+            if (o3_min.HasValue)
+            {
+                // "o3_min" : ""
+                writer.WriteSingle(nameof(o3_min), o3_min.Value);
+            }
+
+            if (pm25_max.HasValue)
+            {
+                // "pm25_max" : ""
+                writer.WriteSingle(nameof(pm25_max), pm25_max.Value);
+            }
+
+            if (pm25_min.HasValue)
+            {
+                // "pm25_min" : ""
+                writer.WriteSingle(nameof(pm25_min), pm25_min.Value);
+            }
+
+            if (pm10_max.HasValue)
+            {
+                // "pm10_max" : ""
+                writer.WriteSingle(nameof(pm10_max), pm10_max.Value);
+            }
+
+            if (pm10_min.HasValue)
+            {
+                // "pm10_min" : ""
+                writer.WriteSingle(nameof(pm10_min), pm10_min.Value);
             }
 
             // }

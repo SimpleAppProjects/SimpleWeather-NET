@@ -83,14 +83,24 @@
                         <prefs:ListViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
                                 <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.summary_default}" Value="" />
-                                <prefs:PreferenceListItem Value="en" />
-                                <prefs:PreferenceListItem Value="es" />
-                                <prefs:PreferenceListItem Value="fr" />
-                                <prefs:PreferenceListItem Value="de" />
-                                <prefs:PreferenceListItem Value="nl" />
-                                <prefs:PreferenceListItem Value="pl" />
-                                <prefs:PreferenceListItem Value="sk" />
-                                <prefs:PreferenceListItem Value="zh-Hans" />
+                                <prefs:PreferenceListItem Value="en-US"/>
+                                <prefs:PreferenceListItem Value="ar-SA"/>
+                                <prefs:PreferenceListItem Value="de"/>
+                                <prefs:PreferenceListItem Value="de-AT"/>
+                                <prefs:PreferenceListItem Value="en"/>
+                                <prefs:PreferenceListItem Value="es"/>
+                                <prefs:PreferenceListItem Value="fr"/>
+                                <prefs:PreferenceListItem Value="hu"/>
+                                <prefs:PreferenceListItem Value="id"/>
+                                <prefs:PreferenceListItem Value="lt"/>
+                                <prefs:PreferenceListItem Value="nl"/>
+                                <prefs:PreferenceListItem Value="pl"/>
+                                <prefs:PreferenceListItem Value="ro"/>
+                                <prefs:PreferenceListItem Value="ru"/>
+                                <prefs:PreferenceListItem Value="sk"/>
+                                <prefs:PreferenceListItem Value="tr"/>
+                                <prefs:PreferenceListItem Value="vi"/>
+                                <prefs:PreferenceListItem Value="zh-Hans"/>
                             </m:List>
                         </prefs:ListViewCell.Items>
                     </prefs:ListViewCell>

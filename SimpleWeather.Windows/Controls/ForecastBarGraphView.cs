@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.WinUI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
@@ -40,15 +41,69 @@ namespace SimpleWeather.NET.Controls
             DependencyProperty.Register(nameof(ForecastType), typeof(ForecastType?), typeof(ForecastBarGraphView), new PropertyMetadata(null, OnDataPropertyChanged));
 
         private readonly StackPanel InnerLayout;
+        private readonly Button LeftButton;
+        private readonly Button RightButton;
+        private readonly ScrollViewer ScrollView;
 
         public event EventHandler<TappedRoutedEventArgs> ItemClick;
+
+        public bool CanScrollToStart
+        {
+            get { return (bool)GetValue(CanScrollToStartProperty); }
+            set { SetValue(CanScrollToStartProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanScrollToStartProperty =
+            DependencyProperty.Register(nameof(CanScrollToStart), typeof(bool),
+            typeof(ForecastBarGraphView), new PropertyMetadata(false));
+
+        public bool CanScrollToEnd
+        {
+            get { return (bool)GetValue(CanScrollToEndProperty); }
+            set { SetValue(CanScrollToEndProperty, value); }
+        }
+
+        public static readonly DependencyProperty CanScrollToEndProperty =
+            DependencyProperty.Register(nameof(CanScrollToEnd), typeof(bool),
+            typeof(ForecastBarGraphView), new PropertyMetadata(false));
 
         public ForecastBarGraphView()
         {
             HorizontalAlignment = HorizontalAlignment.Stretch;
             Children.Clear();
 
-            Children.Add(new ScrollViewer()
+            ColumnDefinitions.Clear();
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+            Children.Add(LeftButton = new Button().Apply(it =>
+            {
+                it.Click += LeftButton_Click;
+                it.SetBinding(Button.IsEnabledProperty, new Binding()
+                {
+                    Source = this,
+                    Path = new PropertyPath(nameof(CanScrollToStart)),
+                    Mode = BindingMode.OneWay,
+                });
+                it.Style = (Style)this.FindResource("LeftArrowButton");
+                SetColumn(it, 0);
+            }));
+
+            Children.Add(RightButton = new Button().Apply(it =>
+            {
+                it.Click += RightButton_Click;
+                it.SetBinding(Button.IsEnabledProperty, new Binding()
+                {
+                    Source = this,
+                    Path = new PropertyPath(nameof(CanScrollToEnd)),
+                    Mode = BindingMode.OneWay,
+                });
+                it.Style = (Style)this.FindResource("RightArrowButton");
+                SetColumn(it, 2);
+            }));
+
+            Children.Add(ScrollView = new ScrollViewer()
             {
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
                 VerticalContentAlignment = VerticalAlignment.Stretch,
@@ -62,7 +117,12 @@ namespace SimpleWeather.NET.Controls
                     HorizontalAlignment = HorizontalAlignment.Center,
                     VerticalAlignment = VerticalAlignment.Bottom,
                 }
-            });
+            }.Apply(it =>
+            {
+                it.ViewChanged += ScrollView_ViewChanged;
+                it.SizeChanged += ScrollView_SizeChanged;
+                SetColumn(it, 1);
+            }));
 
             InnerLayout.SetBinding(MinHeightProperty, new Binding()
             {
@@ -82,6 +142,42 @@ namespace SimpleWeather.NET.Controls
             {
                 SetData(e.NewValue as BarGraphData);
             };
+        }
+
+        private void UpdateScrollButtons(ScrollViewer scroller)
+        {
+            CanScrollToStart = ScrollViewerHelper.CanScrollToStart(scroller);
+            CanScrollToEnd = ScrollViewerHelper.CanScrollToEnd(scroller);
+            if (scroller.ExtentWidth > scroller.ViewportWidth)
+            {
+                LeftButton.Visibility = Visibility.Visible;
+                RightButton.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                LeftButton.Visibility = Visibility.Collapsed;
+                RightButton.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void LeftButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerHelper.ScrollLeft(ScrollView);
+        }
+
+        private void RightButton_Click(object sender, RoutedEventArgs e)
+        {
+            ScrollViewerHelper.ScrollRight(ScrollView);
+        }
+
+        private void ScrollView_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        {
+            UpdateScrollButtons(ScrollView);
+        }
+
+        private void ScrollView_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateScrollButtons(ScrollView);
         }
 
         private static void OnDataPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

@@ -3,7 +3,6 @@ using CommunityToolkit.Maui.Markup;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
-using SimpleToolkit.Core;
 using SimpleWeather.Common.ViewModels;
 using SimpleWeather.Maui.Controls;
 using SimpleWeather.Maui.Helpers;
@@ -14,6 +13,7 @@ using SimpleWeather.NET.Controls;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Main;
 
@@ -33,6 +33,8 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
 	{
 		InitializeComponent();
 		AnalyticsLogger.LogEvent("WeatherDetailsPage");
+        Title = null;
+        Shell.SetTitleView(this, this.CreateTitleView(ResStrings.label_forecast, WNowViewModel));
         ListControl.PropertyChanged += (s, e) =>
         {
             if (e.PropertyName == nameof(ListControl.ItemsSource))
