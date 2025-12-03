@@ -32,25 +32,26 @@
         <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
-        <PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.Auth" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.Core" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.Database" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="11.10.0" />
-        <PackageReference Include="AdamE.Firebase.iOS.Storage" Version="11.10.0" />
+        <PackageReference Include="Xamarin.Build.Download" Version="0.11.4" />
+        <PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Auth" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Core" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Database" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="12.4.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Storage" Version="12.4.0" />
         <!-- Google Addons -->
-        <PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="11.10.0" />
-        <PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0" />
-        <PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.0.2" />
-        <PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="4.3.0" />
-        <PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0" />
-        <PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0" />
+        <PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="12.4.0" />
+        <PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0.2" />
+        <PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.1.0" />
+        <PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="3.5.0.2" />
+        <PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0.2" />
+        <PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0.2" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
-        <PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="11.10.0" />
+        <PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="12.4.0" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
         <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />

@@ -77,6 +77,24 @@ public static class FirebaseConfigurator
             }
         }
         catch { }
+
+        try
+        {
+            FirebaseRemoteConfig.SharedInstance?.AddOnConfigUpdateListener((_, error) =>
+            {
+                if (error != null)
+                {
+                    Logger.Error("FirebaseConfigurator", message: "Error on real-time update", ex: new NSErrorException(error));
+                }
+                else
+                {
+                    Logger.Debug("FirebaseConfigurator", "Remote update received");
+
+                    Task.Run(DI.Utils.RemoteConfigService.CheckConfig);
+                }
+            });
+        }
+        catch { }
 #endif
 
 #if IOS && RELEASE

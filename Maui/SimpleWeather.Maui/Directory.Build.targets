@@ -1,4 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup Condition="('$(TargetFrameworkIdentifier)'=='Xamarin.MacCatalyst' or '$(TargetPlatformIdentifier)'=='maccatalyst') and ('$(OutputType)' != 'Library' or '$(IsAppExtension)'=='True')">
+        <_XamarinBuildDownloadMasterBeforeTargets>GetFrameworkPaths</_XamarinBuildDownloadMasterBeforeTargets>
+        <_XamarinBuildDownloadMasterBeforeTargets Condition="$(TargetFramework.Contains('-maccatalyst'))">_BeforeCoreCompileInterfaceDefinitions</_XamarinBuildDownloadMasterBeforeTargets>
+        <_XamarinBuildDownloadMasterDependsOnTargets>_XamarinBuildDownload;_XamarinBuildCastAssemblyResources</_XamarinBuildDownloadMasterDependsOnTargets>
+    </PropertyGroup>
     <Target Name="_PlaceAppExtensionsFixMacCatalyst" AfterTargets="_PlaceAppExtensions">
         <PropertyGroup>
             <_AppExtensionRoot Condition="'$(_PlatformName)' == 'macOS' Or '$(_PlatformName)' == 'MacCatalyst'">$(_AppBundlePath)Contents\</_AppExtensionRoot>
