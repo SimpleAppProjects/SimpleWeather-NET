@@ -1,4 +1,9 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup Condition="('$(TargetFrameworkIdentifier)'=='Xamarin.MacCatalyst' or '$(TargetPlatformIdentifier)'=='maccatalyst') and ('$(OutputType)' != 'Library' or '$(IsAppExtension)'=='True')">
+        <_XamarinBuildDownloadMasterBeforeTargets>GetFrameworkPaths</_XamarinBuildDownloadMasterBeforeTargets>
+        <_XamarinBuildDownloadMasterBeforeTargets Condition="$(TargetFramework.Contains('-maccatalyst'))">_BeforeCoreCompileInterfaceDefinitions</_XamarinBuildDownloadMasterBeforeTargets>
+        <_XamarinBuildDownloadMasterDependsOnTargets>_XamarinBuildDownload;_XamarinBuildCastAssemblyResources</_XamarinBuildDownloadMasterDependsOnTargets>
+    </PropertyGroup>
     <Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
         <PropertyGroup>
             <_SwiftTargetPlatform Condition="'$(_PlatformName)' == 'iOS' And '$(_SdkIsSimulator)' == 'true'">iphonesimulator</_SwiftTargetPlatform>

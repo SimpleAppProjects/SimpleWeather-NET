@@ -1,80 +1,140 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">$(NetVersion)-ios;$(NetVersion)-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetVersion)-windows10.0.22621.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);$(NetVersion)-tizen</TargetFrameworks> -->
-		<OutputType>Exe</OutputType>
-		<RootNamespace>MauiUnitTestProject</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
-		<ImplicitUsings>enable</ImplicitUsings>
+    <PropertyGroup>
+        <TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('windows'))">$(NetVersion)-ios;$(NetVersion)-maccatalyst</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);$(NetVersion)-windows10.0.22621.0</TargetFrameworks>
+        <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+        <!-- <TargetFrameworks>$(TargetFrameworks);$(NetVersion)-tizen</TargetFrameworks> -->
+        <OutputType>Exe</OutputType>
+        <RootNamespace>MauiUnitTestProject</RootNamespace>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseInterpreter Condition="'$(Configuration)' == 'Debug'">True</UseInterpreter>
 
-		<!-- Display name -->
-		<ApplicationTitle>MauiUnitTestProject</ApplicationTitle>
+        <!-- Display name -->
+        <ApplicationTitle>MauiUnitTestProject</ApplicationTitle>
 
-		<!-- App Identifier -->
-		<ApplicationId>com.companyname.mauiunittestproject</ApplicationId>
-		<ApplicationIdGuid>3b7df37a-52d3-4627-a8a3-ced47e0e9868</ApplicationIdGuid>
+        <!-- App Identifier -->
+        <ApplicationId>com.companyname.mauiunittestproject</ApplicationId>
+        <ApplicationIdGuid>3b7df37a-52d3-4627-a8a3-ced47e0e9868</ApplicationIdGuid>
 
-		<!-- Versions -->
-		<ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
-		<ApplicationVersion>$(VersionCode)</ApplicationVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
-		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-		<DefineConstants>$(DefineConstants);UNIT_TEST</DefineConstants>
-	</PropertyGroup>
-  <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(NetVersion)-ios|AnyCPU'">
-    <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
-    <CreatePackage>false</CreatePackage>
-	</PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(NetVersion)-ios|AnyCPU'">
-    <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
-    <CreatePackage>false</CreatePackage>
-  </PropertyGroup>
-  <ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
-		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
-		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="coverlet.collector" Version="6.0.4">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="Shiny.Xunit.Runners.Maui" Version="1.0.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
-	</ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-    <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-  </ItemGroup>
-	<ItemGroup Condition="$(TargetFramework.Contains('windows'))">
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
-		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj" />
-		<ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj" />
-		<ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj" />
-		<ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj" />
-		<ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj" />
-		<ProjectReference Include="..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj" />
-	</ItemGroup>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+        <ApplicationVersion>$(VersionCode)</ApplicationVersion>
+        <DefaultLanguage>en-US</DefaultLanguage>
+
+        <DefineConstants>$(DefineConstants);UNIT_TEST</DefineConstants>
+
+        <!-- Distribution -->
+        <RunWithOpen>false</RunWithOpen>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+        <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(NetVersion)-ios|AnyCPU'">
+        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
+        <CreatePackage>false</CreatePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(NetVersion)-ios|AnyCPU'">
+        <RuntimeIdentifier>iossimulator-x64</RuntimeIdentifier>
+        <CreatePackage>false</CreatePackage>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|$(NetVersion)-maccatalyst|AnyCPU'">
+        <UseHardenedRuntime>false</UseHardenedRuntime>
+        <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|$(NetVersion)-maccatalyst|AnyCPU'">
+        <UseHardenedRuntime>true</UseHardenedRuntime>
+        <RuntimeIdentifier>maccatalyst-arm64</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*"/>
+        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208"/>
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\**"/>
+        <!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Shiny.Xunit.Runners.Maui" Version="1.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+        <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)"/>
+        <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework.Contains('windows'))">
+        <ProjectReference Include="..\SimpleWeather.Backgrounds\SimpleWeather.Backgrounds.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SimpleWeather.Common\SimpleWeather.Common.csproj"/>
+        <ProjectReference Include="..\SimpleWeather.Extras\SimpleWeather.Extras.csproj"/>
+        <ProjectReference Include="..\SimpleWeather.Shared\SimpleWeather.Shared.csproj"/>
+        <ProjectReference Include="..\SimpleWeather.Weather-API\SimpleWeather.Weather-API.csproj"/>
+        <ProjectReference Include="..\SimpleWeather.WeatherIcons\SimpleWeather.WeatherIcons.csproj"/>
+    </ItemGroup>
+
+    <!-- Firebase Start -->
+    <ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
+        <PackageReference Include="Xamarin.Build.Download" Version="0.11.4"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Auth" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Core" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Database" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="12.4.0"/>
+        <!-- Google Addons -->
+        <PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="12.4.0"/>
+        <PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0.2"/>
+        <PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.1.0"/>
+        <PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="3.5.0.2"/>
+        <PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0.2"/>
+        <PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0.2"/>
+    </ItemGroup>
+    <ItemGroup Condition="$(TargetFramework.Contains('ios'))">
+        <PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="12.4.0"/>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+        <BundleResource Include="MaciOS\GoogleService-Info-Dev.plist" Condition="Exists('MaciOS\GoogleService-Info-Dev.plist')">
+            <LogicalName>GoogleService-Info.plist</LogicalName>
+        </BundleResource>
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <BundleResource Include="MaciOS\GoogleService-Info.plist" Condition="Exists('MaciOS\GoogleService-Info.plist')">
+            <LogicalName>GoogleService-Info.plist</LogicalName>
+        </BundleResource>
+    </ItemGroup>
+    <!--https://github.com/xamarin/GoogleApisForiOSComponents/issues/643#issuecomment-1920970044-->
+    <PropertyGroup Condition="$(TargetFramework.Contains('ios'))">
+        <_ExportSymbolsExplicitly>false</_ExportSymbolsExplicitly>
+    </PropertyGroup>
+    <PropertyGroup>
+        <LinkWithSwiftSystemLibraries>false</LinkWithSwiftSystemLibraries>
+    </PropertyGroup>
+    <!-- Firebase End -->
+
 </Project>

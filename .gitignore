@@ -247,6 +247,7 @@ ModelManifest.xml
 # MaciOS
 .DS_Store
 *.xcuserstate
+/MauiUnitTestProject/MaciOS/GoogleService-Info*.plist
 /Maui/SimpleWeather.Maui.AppWidget/DerivedData
 /Maui/MapKitProxy
 /Maui/StoreKit2Proxy

@@ -6,10 +6,12 @@ using CacheCow.Client;
 using CacheCow.Client.FileCacheStore;
 using CacheCow.Client.Headers;
 using SimpleWeather;
+#if WINDOWS
 using SimpleWeather.Backgrounds;
+using SimpleWeather.Common.Images;
+#endif
 using SimpleWeather.Common;
 using SimpleWeather.Common.Controls;
-using SimpleWeather.Common.Images;
 using SimpleWeather.DI;
 using SimpleWeather.Extras;
 using SimpleWeather.Helpers;
@@ -34,6 +36,7 @@ using SimpleWeather.Weather_API.Google;
 
 
 #if __IOS__
+using SimpleWeather.RemoteConfig;
 using FirebaseRemoteConfig = Firebase.RemoteConfig.RemoteConfig;
 
 #else
@@ -69,6 +72,10 @@ namespace UnitTestProject
                 ExtrasModule.Instance.ConfigureServices(collection);
             });
             SharedModule.Instance.BuildServiceProvider();
+
+#if __IOS__
+            FirebaseConfigurator.Initialize();
+#endif
 
             // Initialize post-DI setup; Migrations require rely on DI
             CommonModule.Instance.Initialize();
@@ -383,7 +390,8 @@ namespace UnitTestProject
             var queryVM = locations.FirstOrDefault(l => l != null && l.LocationName.StartsWith("Redmond"));
             Assert.NotNull(queryVM);
 
-            var geocodeVM = await locationProvider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157), WeatherAPI.WeatherApi);
+            var geocodeVM = await locationProvider.GetLocation(new WeatherUtils.Coordinate(34.0207305, -118.6919157),
+                WeatherAPI.WeatherApi);
             Assert.NotNull(geocodeVM);
             Assert.True(geocodeVM.LocationName != null && geocodeVM.LocationName.StartsWith("Malibu"));
         }
@@ -775,6 +783,7 @@ namespace UnitTestProject
             });
         }
 
+#if WINDOWS
         [Fact]
         public async Task LocalImageTest()
         {
@@ -784,6 +793,7 @@ namespace UnitTestProject
 
             Assert.True(data != null && await data.IsImageValid());
         }
+#endif
 
         [Fact]
         public async Task Test500Error()
