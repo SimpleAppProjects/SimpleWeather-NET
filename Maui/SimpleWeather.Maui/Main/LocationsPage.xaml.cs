@@ -48,13 +48,15 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
     private readonly HashSet<VisualElement> ResizeElements = new HashSet<VisualElement>();
 
     public LocationsPage()
-	{
-		InitializeComponent();
+    {
+        InitializeComponent();
 
         BindingContext = LocationsViewModel;
 
         PanelAdapter = new LocationPanelAdapter(LocationsPanel, SnackbarContainer);
         PanelAdapter.ListChanged += LocationPanels_CollectionChanged;
+        LocationsPanel.Bind(ItemsView.ItemsSourceProperty, static adapter => adapter.FavPanels,
+            mode: BindingMode.OneWay, source: PanelAdapter);
 
         // Toolbar
         EditButton = CreateEditButton();
@@ -74,10 +76,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         {
             DeleteTimer?.Stop();
 
-            RemoveListeners?.ForEach(l =>
-            {
-                l.Invoke();
-            });
+            RemoveListeners?.ForEach(l => { l.Invoke(); });
         };
 
         MainGrid.Bind(Grid.MarginProperty, static src => src.Height, mode: BindingMode.OneWay,
@@ -103,10 +102,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                 {
                     Size = 24
                 }.AppThemeBinding(MaterialIcon.ColorProperty, LightOnSurface, DarkOnSurface)
-        }.Apply(it =>
-        {
-            it.Clicked += EditButton_Clicked;
-        });
+        }.Apply(it => { it.Clicked += EditButton_Clicked; });
     }
 
     public void InitSnackManager()
@@ -119,17 +115,12 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
 
     public void ShowSnackbar(Snackbar snackbar)
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.Show(snackbar);
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.Show(snackbar); });
     }
+
     public void DismissAllSnackbars()
     {
-        Dispatcher.Dispatch(() =>
-        {
-            SnackMgr?.DismissAll();
-        });
+        Dispatcher.Dispatch(() => { SnackMgr?.DismissAll(); });
     }
 
     public void UnloadSnackManager()
@@ -150,6 +141,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     {
                         await SettingsManager.AddLocation(data);
                     }
+
                     LocationsViewModel.RefreshLocations();
                 });
                 break;
@@ -187,53 +179,56 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         switch (e.PropertyName)
         {
             case nameof(LocationsViewModel.GPSLocation):
+            {
+                PanelAdapter.RemoveGPSPanel();
+                if (LocationsViewModel.GPSLocation != null)
                 {
-                    PanelAdapter.RemoveGPSPanel();
-                    if (LocationsViewModel.GPSLocation != null)
-                    {
-                        PanelAdapter.Add(LocationsViewModel.GPSLocation);
-                    }
+                    PanelAdapter.Add(LocationsViewModel.GPSLocation);
                 }
+            }
                 break;
             case nameof(LocationsViewModel.Locations):
-                {
-                    var gpsLocation = LocationsViewModel.Locations?.FirstOrDefault(it => it.LocationType == (int)LocationType.GPS);
-                    var locations = gpsLocation == null ? LocationsViewModel.Locations : LocationsViewModel.Locations.Except(Enumerable.Repeat(gpsLocation, 1));
+            {
+                var gpsLocation =
+                    LocationsViewModel.Locations?.FirstOrDefault(it => it.LocationType == (int)LocationType.GPS);
+                var locations = gpsLocation == null
+                    ? LocationsViewModel.Locations
+                    : LocationsViewModel.Locations.Except(Enumerable.Repeat(gpsLocation, 1));
 
-                    PanelAdapter.ReplaceAll(LocationType.Search, locations);
-                }
+                PanelAdapter.ReplaceAll(LocationType.Search, locations);
+            }
                 break;
             case nameof(LocationsViewModel.ErrorMessages):
+            {
+                var errorMessages = LocationsViewModel.ErrorMessages;
+
+                var error = errorMessages.FirstOrDefault();
+
+                if (error != null)
                 {
-                    var errorMessages = LocationsViewModel.ErrorMessages;
-
-                    var error = errorMessages.FirstOrDefault();
-
-                    if (error != null)
-                    {
-                        OnErrorMessage(error);
-                    }
+                    OnErrorMessage(error);
                 }
+            }
                 break;
             case nameof(LocationsViewModel.UiState):
+            {
+                if (LocationsViewModel?.UiState is LocationsUiState uiState)
                 {
-                    if (LocationsViewModel?.UiState is LocationsUiState uiState)
-                    {
-                        GPSPanelLayout.IsVisible = !uiState.IsLoading && uiState.GPSLocation != null;
-                        LocationsPanel.IsVisible = !uiState.IsLoading && uiState.Locations?.Any() == true;
-                        ContentIndicator.IsRunning = uiState.IsLoading;
-                        AddLocationsButton.IsVisible = !uiState.IsLoading;
-                        NoLocationsView.IsVisible = uiState.Locations?.Any() != true && uiState.GPSLocation == null;
-                    }
-                    else
-                    {
-                        GPSPanelLayout.IsVisible = false;
-                        LocationsPanel.IsVisible = false;
-                        ContentIndicator.IsRunning = true;
-                        AddLocationsButton.IsVisible = false;
-                        NoLocationsView.IsVisible = false;
-                    }
+                    GPSPanelLayout.IsVisible = !uiState.IsLoading && uiState.GPSLocation != null;
+                    LocationsPanel.IsVisible = !uiState.IsLoading && uiState.Locations?.Any() == true;
+                    ContentIndicator.IsRunning = uiState.IsLoading;
+                    AddLocationsButton.IsVisible = !uiState.IsLoading;
+                    NoLocationsView.IsVisible = uiState.Locations?.Any() != true && uiState.GPSLocation == null;
                 }
+                else
+                {
+                    GPSPanelLayout.IsVisible = false;
+                    LocationsPanel.IsVisible = false;
+                    ContentIndicator.IsRunning = true;
+                    AddLocationsButton.IsVisible = false;
+                    NoLocationsView.IsVisible = false;
+                }
+            }
                 break;
         }
     }
@@ -272,14 +267,14 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
             switch (error)
             {
                 case ErrorMessage.String err:
-                    {
-                        ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
-                    }
+                {
+                    ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
+                }
                     break;
                 case ErrorMessage.WeatherError err:
-                    {
-                        OnWeatherError(err.Exception);
-                    }
+                {
+                    OnWeatherError(err.Exception);
+                }
                     break;
             }
         });
@@ -293,27 +288,22 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         {
             case WeatherUtils.ErrorStatus.NetworkError:
             case WeatherUtils.ErrorStatus.NoWeather:
-                {
-                    // Show error message and prompt to refresh
-                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                    snackbar.SetAction(ResStrings.action_retry, () =>
-                    {
-                        LocationsViewModel.RefreshLocations();
-                    });
-                    ShowSnackbar(snackbar);
-                }
+            {
+                // Show error message and prompt to refresh
+                Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                snackbar.SetAction(ResStrings.action_retry, () => { LocationsViewModel.RefreshLocations(); });
+                ShowSnackbar(snackbar);
+            }
                 break;
 
             case WeatherUtils.ErrorStatus.QueryNotFound:
-                {
-                    // Show error message and prompt to refresh
-                    Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
-                    snackbar.SetAction(ResStrings.action_settings, async () =>
-                    {
-                        await Navigation.PushAsync(new Settings_General());
-                    });
-                    ShowSnackbar(snackbar);
-                }
+            {
+                // Show error message and prompt to refresh
+                Snackbar snackbar = Snackbar.MakeError(wEx.Message, SnackbarDuration.Long);
+                snackbar.SetAction(ResStrings.action_settings,
+                    async () => { await Navigation.PushAsync(new Settings_General()); });
+                ShowSnackbar(snackbar);
+            }
                 break;
 
             default:
@@ -335,6 +325,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
             if (ItemStack.Count > 0) ItemStack.Clear();
             ItemStack.AddRange(e.OldItems.Cast<object>());
         }
+
         if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems is not null)
         {
             dataMoved = ItemStack.Any(e.NewItems.Contains);
@@ -374,6 +365,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                 ToolbarItems.Add(EditButton);
                 this.OnPropertyChanged(nameof(ToolbarItems));
             }
+
             AddLocationsButton.IsVisible = !limitReached;
 
             if (dataMoved && !EditMode)
@@ -460,6 +452,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
         {
             icon.Symbol = EditMode ? MaterialSymbol.Done : MaterialSymbol.Edit;
         }
+
         EditButton.Text = EditMode ? ResStrings.Label_Done : ResStrings.action_editmode;
         IsItemClickEnabled = !EditMode;
         // Enable selection mode for non-Mobile (non-Touch devices)
@@ -517,10 +510,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     Size = 24
                 }.AppThemeBinding(MaterialIcon.ColorProperty, LightOnSurface, DarkOnSurface),
             StyleId = "delete"
-        }.Apply(it =>
-        {
-            it.Clicked += DeleteBtn_Clicked;
-        });
+        }.Apply(it => { it.Clicked += DeleteBtn_Clicked; });
     }
 
     private async void SwipeItem_Invoked(object sender, EventArgs e)
@@ -535,7 +525,8 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
     private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
         AnalyticsLogger.LogEvent("LocationsPage: DeleteBtn_Clicked");
-        await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelUiModel>()).ConfigureAwait(true);
+        await PanelAdapter.BatchRemovePanels(LocationsPanel.SelectedItems.Cast<LocationPanelUiModel>())
+            .ConfigureAwait(true);
     }
 
     private void LocationsPanel_LongPressed(object sender, LongPressEventArgs e)
@@ -556,7 +547,8 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
 
     private async void DeleteFlyoutItem_Clicked(object sender, EventArgs e)
     {
-        if (sender is BindableObject obj && obj.BindingContext is LocationPanelUiModel model && model.LocationType == (int)LocationType.Search)
+        if (sender is BindableObject obj && obj.BindingContext is LocationPanelUiModel model &&
+            model.LocationType == (int)LocationType.Search)
         {
             await PanelAdapter.RemovePanel(model);
         }
@@ -579,10 +571,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
     {
         base.OnSizeAllocated(width, height);
 
-        Dispatcher.Dispatch(() =>
-        {
-            AdjustViewsLayout(width);
-        });
+        Dispatcher.Dispatch(() => { AdjustViewsLayout(width); });
     }
 
     private void AdjustViewsLayout(double? width = null)
@@ -652,9 +641,12 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     };
                 }
 
-                GPSPanelLayout.MaximumWidthRequest = availColumns > 1 ? (requestedWidth / availColumns) + 16 : double.PositiveInfinity;
+                GPSPanelLayout.MaximumWidthRequest =
+                    availColumns > 1 ? (requestedWidth / availColumns) + 16 : double.PositiveInfinity;
             }
         }
-        catch { }
+        catch
+        {
+        }
     }
 }

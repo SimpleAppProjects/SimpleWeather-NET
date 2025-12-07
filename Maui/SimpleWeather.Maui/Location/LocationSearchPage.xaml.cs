@@ -15,7 +15,9 @@ namespace SimpleWeather.Maui.Location;
 
 public partial class LocationSearchPage : ScopePage, ISnackbarManager
 {
-    public LocationSearchViewModel LocationSearchViewModel { get; } = Ioc.Default.GetViewModel<LocationSearchViewModel>();
+    public LocationSearchViewModel LocationSearchViewModel { get; } =
+        Ioc.Default.GetViewModel<LocationSearchViewModel>();
+
     private LocationSelectedMessage PendingMessage = null;
 
     private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
@@ -26,6 +28,7 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
 #if ANDROID || __IOS__
         this.SearchView.HandlerChanged += SearchView_HandlerChanged;
 #endif
+        BindingContext = LocationSearchViewModel;
     }
 
     private void SearchView_HandlerChanged(object sender, EventArgs e)
@@ -102,38 +105,38 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
         switch (e.PropertyName)
         {
             case nameof(LocationSearchViewModel.SelectedSearchLocation):
+            {
+                switch (LocationSearchViewModel.SelectedSearchLocation)
                 {
-                    switch (LocationSearchViewModel.SelectedSearchLocation)
+                    case LocationSearchResult.AlreadyExists result:
                     {
-                        case LocationSearchResult.AlreadyExists result:
-                            {
-                                PendingMessage = new LocationSelectedMessage(result);
-                                await App.Current.Navigation.PopAsync();
-                            }
-                            break;
-                        case LocationSearchResult.Success result:
-                            {
-                                PendingMessage = new LocationSelectedMessage(result);
-                                await App.Current.Navigation.PopAsync();
-                            }
-                            break;
-                        case LocationSearchResult.Failed:
-                        default:
-                            break;
+                        PendingMessage = new LocationSelectedMessage(result);
+                        await App.Current.Navigation.PopAsync();
                     }
+                        break;
+                    case LocationSearchResult.Success result:
+                    {
+                        PendingMessage = new LocationSelectedMessage(result);
+                        await App.Current.Navigation.PopAsync();
+                    }
+                        break;
+                    case LocationSearchResult.Failed:
+                    default:
+                        break;
                 }
+            }
                 break;
             case nameof(LocationSearchViewModel.ErrorMessages):
+            {
+                var errorMessages = LocationSearchViewModel.ErrorMessages;
+
+                var error = errorMessages.FirstOrDefault();
+
+                if (error != null)
                 {
-                    var errorMessages = LocationSearchViewModel.ErrorMessages;
-
-                    var error = errorMessages.FirstOrDefault();
-
-                    if (error != null)
-                    {
-                        OnErrorMessage(error);
-                    }
+                    OnErrorMessage(error);
                 }
+            }
                 break;
         }
     }
@@ -145,14 +148,14 @@ public partial class LocationSearchPage : ScopePage, ISnackbarManager
             switch (error)
             {
                 case ErrorMessage.String err:
-                    {
-                        ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
-                    }
+                {
+                    ShowSnackbar(Snackbar.MakeError(err.Message, SnackbarDuration.Short));
+                }
                     break;
                 case ErrorMessage.WeatherError err:
-                    {
-                        ShowSnackbar(Snackbar.MakeError(err.Exception.Message, SnackbarDuration.Short));
-                    }
+                {
+                    ShowSnackbar(Snackbar.MakeError(err.Exception.Message, SnackbarDuration.Short));
+                }
                     break;
             }
         });

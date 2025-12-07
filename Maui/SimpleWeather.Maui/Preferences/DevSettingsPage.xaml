@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage
     x:Class="SimpleWeather.Maui.Preferences.DevSettingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -26,8 +27,10 @@
         <Style x:Key="SettingsFrameStyle" TargetType="Frame">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,8" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
             <Setter Property="VerticalOptions" Value="StartAndExpand" />
         </Style>
         <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
@@ -44,9 +47,9 @@
             Style="{DynamicResource SettingsTableViewStyle}">
             <TableRoot>
                 <TableSection Title="API Keys">
-                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.AccuWeather, Mode=OneTime}" Text="AccuWeather Key" />
-                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.TomorrowIo, Mode=OneTime}" Text="Tomorrow.io Key" />
-                    <prefs:DevKeyEntryCell API="{x:Bind weather:WeatherAPI.Google_Pollen, Mode=OneTime}" Text="Google Pollen Key" />
+                    <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.AccuWeather}" Text="AccuWeather Key" />
+                    <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.TomorrowIo}" Text="Tomorrow.io Key" />
+                    <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.Google_Pollen}" Text="Google Pollen Key" />
                 </TableSection>
                 <TableSection Title="Misc">
                     <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />

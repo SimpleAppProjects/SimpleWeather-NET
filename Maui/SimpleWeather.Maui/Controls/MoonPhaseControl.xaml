@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView
     x:Class="SimpleWeather.Maui.Controls.MoonPhaseControl"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -11,6 +12,7 @@
     x:DataType="commonControls:MoonPhaseViewModel"
     x:Name="Control"
     MinimumWidthRequest="{OnIdiom Default=450, Phone=340}">
+
     <ContentView.Resources>
         <Style x:Key="DisabledMoonStyle" TargetType="controls:IconControl">
             <Setter Property="Opacity" Value="0.5" />
@@ -46,8 +48,7 @@
                 x:Name="MoonStack"
                 HorizontalOptions="Fill"
                 VerticalOptions="Fill"
-                InputTransparent="True"
-                BindableLayout.ItemsSource="{x:Bind DataSet, Mode=OneWay, DataType={x:Null}}">
+                InputTransparent="True">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate x:DataType="controls:MoonPhaseItem">
                         <controls:IconControl

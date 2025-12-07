@@ -18,13 +18,13 @@
             x:Name="LeftButton"
             Grid.Column="0"
             Clicked="LeftButton_Click"
-            IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
         <ImageButton
             x:Name="RightButton"
             Grid.Column="2"
             Clicked="RightButton_Click"
-            IsEnabled="{x:Bind CanScrollToEnd, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, Mode=OneWay}"
             Style="{DynamicResource RightArrowButton}" />
         <graphs:RangeBarGraphView
             x:Name="BarChartView"

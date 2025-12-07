@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Maui.Markup;
+using SimpleWeather.LocationData;
+using SimpleWeather.Maui.DataBinding;
 using SimpleWeather.NET.Controls;
 using SimpleWeather.NET.Utils;
 
@@ -16,7 +18,8 @@ public partial class LocationPanel : ContentView
     }
 
     public static readonly BindableProperty ConditionPanelTextColorProperty =
-        BindableProperty.Create(nameof(ConditionPanelTextColor), typeof(Color), typeof(LocationPanel), Colors.White, propertyChanged: OnThemeablePropertyChanged);
+        BindableProperty.Create(nameof(ConditionPanelTextColor), typeof(Color), typeof(LocationPanel), Colors.White,
+            propertyChanged: OnThemeablePropertyChanged);
 
     public bool ForceIconDarkTheme
     {
@@ -25,15 +28,16 @@ public partial class LocationPanel : ContentView
     }
 
     public static readonly BindableProperty ForceIconDarkThemeProperty =
-        BindableProperty.Create(nameof(ForceIconDarkTheme), typeof(bool), typeof(LocationPanel), false, propertyChanged: OnThemeablePropertyChanged);
+        BindableProperty.Create(nameof(ForceIconDarkTheme), typeof(bool), typeof(LocationPanel), false,
+            propertyChanged: OnThemeablePropertyChanged);
+
+    public Func<object, bool> ShowGpsIconFunc { get; } =
+        it => it != null && WeatherNowBinding.ShowGPSIcon((LocationType)it);
 
     public LocationPanel()
-	{
-		InitializeComponent();
-        this.BindingContextChanged += (s, e) =>
-        {
-            UpdateControlTheme();
-        };
+    {
+        InitializeComponent();
+        this.BindingContextChanged += (s, e) => { UpdateControlTheme(); };
         UpdateControlTheme();
     }
 
@@ -73,6 +77,7 @@ public partial class LocationPanel : ContentView
             this.SetAppThemeColor(ConditionPanelTextColorProperty, Colors.Black, Colors.White);
             ForceIconDarkTheme = false;
         }
+
         Dispatcher.Dispatch(ApplyBindings);
     }
 

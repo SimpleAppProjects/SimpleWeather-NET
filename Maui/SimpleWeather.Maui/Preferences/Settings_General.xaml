@@ -24,8 +24,10 @@
         <Style x:Key="SettingsFrameStyle" TargetType="Frame">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,8" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
             <Setter Property="VerticalOptions" Value="StartAndExpand" />
         </Style>
         <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
@@ -69,9 +71,14 @@
                         Text="{x:Static res_strings:Resources.pref_title_userthememode}">
                         <prefs:PickerViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_light}" Value="{x:Static utils:UserThemeMode.Light}" />
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_dark}" Value="{x:Static utils:UserThemeMode.Dark}" />
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_default}" Value="{x:Static utils:UserThemeMode.System}" />
+                                <prefs:PreferenceListItem
+                                    Display="{x:Static res_strings:Resources.userthememode_light}"
+                                    Value="{x:Static utils:UserThemeMode.Light}" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.userthememode_dark}"
+                                                          Value="{x:Static utils:UserThemeMode.Dark}" />
+                                <prefs:PreferenceListItem
+                                    Display="{x:Static res_strings:Resources.userthememode_default}"
+                                    Value="{x:Static utils:UserThemeMode.System}" />
                             </m:List>
                         </prefs:PickerViewCell.Items>
                     </prefs:PickerViewCell>
@@ -82,25 +89,26 @@
                         Text="{x:Static res_strings:Resources.pref_title_language}">
                         <prefs:ListViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.summary_default}" Value="" />
-                                <prefs:PreferenceListItem Value="en-US"/>
-                                <prefs:PreferenceListItem Value="ar-SA"/>
-                                <prefs:PreferenceListItem Value="de"/>
-                                <prefs:PreferenceListItem Value="de-AT"/>
-                                <prefs:PreferenceListItem Value="en"/>
-                                <prefs:PreferenceListItem Value="es"/>
-                                <prefs:PreferenceListItem Value="fr"/>
-                                <prefs:PreferenceListItem Value="hu"/>
-                                <prefs:PreferenceListItem Value="id"/>
-                                <prefs:PreferenceListItem Value="lt"/>
-                                <prefs:PreferenceListItem Value="nl"/>
-                                <prefs:PreferenceListItem Value="pl"/>
-                                <prefs:PreferenceListItem Value="ro"/>
-                                <prefs:PreferenceListItem Value="ru"/>
-                                <prefs:PreferenceListItem Value="sk"/>
-                                <prefs:PreferenceListItem Value="tr"/>
-                                <prefs:PreferenceListItem Value="vi"/>
-                                <prefs:PreferenceListItem Value="zh-Hans"/>
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.summary_default}"
+                                                          Value="" />
+                                <prefs:PreferenceListItem Value="en-US" />
+                                <prefs:PreferenceListItem Value="ar-SA" />
+                                <prefs:PreferenceListItem Value="de" />
+                                <prefs:PreferenceListItem Value="de-AT" />
+                                <prefs:PreferenceListItem Value="en" />
+                                <prefs:PreferenceListItem Value="es" />
+                                <prefs:PreferenceListItem Value="fr" />
+                                <prefs:PreferenceListItem Value="hu" />
+                                <prefs:PreferenceListItem Value="id" />
+                                <prefs:PreferenceListItem Value="lt" />
+                                <prefs:PreferenceListItem Value="nl" />
+                                <prefs:PreferenceListItem Value="pl" />
+                                <prefs:PreferenceListItem Value="ro" />
+                                <prefs:PreferenceListItem Value="ru" />
+                                <prefs:PreferenceListItem Value="sk" />
+                                <prefs:PreferenceListItem Value="tr" />
+                                <prefs:PreferenceListItem Value="vi" />
+                                <prefs:PreferenceListItem Value="zh-Hans" />
                             </m:List>
                         </prefs:ListViewCell.Items>
                     </prefs:ListViewCell>
@@ -115,9 +123,15 @@
                     <prefs:TextViewCell
                         x:Name="WeatherAlertPref"
                         CommandParameter="{x:Type prefs:Settings_WeatherAlerts}"
-                        Detail="{x:Bind utils:StringUtils.ToPascalCase($'{res_strings:Resources.pref_title_alerts}, {res_strings:Resources.not_channel_name_precipnotification}')}"
                         Tapped="TextCell_Tapped"
-                        Text="{x:Static res_strings:Resources.pref_title_alerts}" />
+                        Text="{x:Static res_strings:Resources.pref_title_alerts}">
+                        <prefs:TextViewCell.Detail>
+                            <MultiBinding StringFormat="{}{0}, {1}">
+                                <Binding Source="{x:Static res_strings:Resources.pref_title_alerts}" />
+                                <Binding Source="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
+                            </MultiBinding>
+                        </prefs:TextViewCell.Detail>
+                    </prefs:TextViewCell>
                 </TableSection>
                 <TableSection x:Name="ProviderSection" Title="{x:Static res_strings:Resources.pref_category_providers}">
                     <prefs:ListViewCell

@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SimpleWeather.Maui.Controls.UVControl"
@@ -31,8 +32,14 @@
             Grid.Column="1"
             Padding="6"
             VerticalOptions="Center"
-            FontSize="{OnIdiom Default=18, Phone=16}"
-            Text="{x:Bind $'{Index}, {Description}'}" />
+            FontSize="{OnIdiom Default=18, Phone=16}">
+            <Label.Text>
+                <MultiBinding StringFormat="{}{0}, {1}">
+                    <Binding Path="Index" />
+                    <Binding Path="Description" />
+                </MultiBinding>
+            </Label.Text>
+        </Label>
         <ProgressBar
             x:Name="UVProgressBar"
             Grid.Row="2"
@@ -41,7 +48,6 @@
             Margin="12,0,12,12"
             BackgroundColor="{AppThemeBinding Light='#B3616161', Dark='#8AF1F1F1'}"
             ProgressColor="{Binding ProgressColor}"
-            Progress="{x:Bind Progress * 0.01}" />
+            Progress="{Binding Progress, ConverterParameter='x * 0.01', Converter={StaticResource MathExpressionConverter}}" />
     </Grid>
 </ContentView>
-

@@ -1,8 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SimpleWeather.Maui.Controls.HourlyForecastItemPanel"
-             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls">
+             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+             x:Name="Control">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -13,7 +15,7 @@
             x:Name="LeftButton"
             Grid.Column="0"
             Clicked="LeftButton_Click"
-            IsEnabled="{x:Bind CanScrollToStart, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
         <Grid Grid.Column="1">
             <CollectionView
@@ -22,7 +24,7 @@
                 CanMixGroups="False"
                 IsGrouped="False"
                 SelectionMode="None"
-                ItemsSource="{x:Bind ForecastData, Mode=OneWay}"
+                ItemsSource="{Binding ForecastData, Source={x:Reference Control}, Mode=OneWay}"
                 HorizontalScrollBarVisibility="Never"
                 VerticalScrollBarVisibility="Never"
                 Loaded="HourlyForecastControl_Loaded"
@@ -32,7 +34,8 @@
                 </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <controls:HourlyForecastItem IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItemPanel}}, Path=IconProvider, Mode=OneWay, x:DataType={x:Type controls:HourlyForecastItemPanel}}">
+                        <controls:HourlyForecastItem
+                            IconProvider="{Binding Source={RelativeSource AncestorType={x:Type controls:HourlyForecastItemPanel}}, Path=IconProvider, Mode=OneWay, x:DataType={x:Type controls:HourlyForecastItemPanel}}">
                             <controls:HourlyForecastItem.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="HourlyItem_Tapped" />
                             </controls:HourlyForecastItem.GestureRecognizers>
@@ -45,8 +48,7 @@
             x:Name="RightButton"
             Grid.Column="2"
             Clicked="RightButton_Click"
-            IsEnabled="{x:Bind CanScrollToEnd, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, Mode=OneWay}"
             Style="{DynamicResource RightArrowButton}" />
     </Grid>
 </ContentView>
-

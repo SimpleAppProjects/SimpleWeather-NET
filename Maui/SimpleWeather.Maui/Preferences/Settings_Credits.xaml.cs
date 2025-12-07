@@ -3,19 +3,21 @@ using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using System;
 using System.Linq;
+using System.Windows.Input;
+using CommunityToolkit.Mvvm.Input;
 
 namespace SimpleWeather.Maui.Preferences;
 
 public partial class Settings_Credits : ContentPage
 {
-	public Settings_Credits()
-	{
-		InitializeComponent();
+    public Settings_Credits()
+    {
+        InitializeComponent();
         Initialize();
         UpdateSettingsTableTheme();
     }
 
-    private readonly Command HyperlinkButtonCommand = new(async (parameter) =>
+    public ICommand HyperlinkButtonCommand { get; } = new AsyncRelayCommand<object>(async parameter =>
     {
         if (parameter is string url)
         {
@@ -23,7 +25,10 @@ public partial class Settings_Credits : ContentPage
             {
                 await Launcher.TryOpenAsync(url);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
         else if (parameter is Uri uri)
         {
@@ -31,7 +36,10 @@ public partial class Settings_Credits : ContentPage
             {
                 await Launcher.TryOpenAsync(uri);
             }
-            catch { }
+            catch
+            {
+                // ignored
+            }
         }
     });
 

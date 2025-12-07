@@ -28,6 +28,8 @@ public partial class WeatherAlertPage : ContentPage, ISnackbarManager, ISnackbar
         AnalyticsLogger.LogEvent("WeatherAlertPage");
         Title = null;
         Shell.SetTitleView(this, this.CreateTitleView(ResStrings.title_fragment_alerts, WNowViewModel));
+
+        StackControl.BindingContext = AlertsView;
     }
 
     internal WeatherAlertPage(WeatherPageArgs args) : this()

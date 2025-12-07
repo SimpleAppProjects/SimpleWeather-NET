@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView
     x:Class="SimpleWeather.Maui.Controls.AQIControl"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -8,6 +9,7 @@
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
     xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
     x:DataType="commonControls:AirQualityViewModel"
     MinimumWidthRequest="340">
     <Grid
@@ -89,7 +91,13 @@
             Padding="12,0,12,12"
             FontSize="12"
             HorizontalOptions="Center"
-            IsVisible="{Binding Attribution, Converter={StaticResource stringBooleanConverter}}"
-            Text="{x:Bind $'{res_strings:Resources.credit_prefix} {Attribution}'}" />
+            IsVisible="{Binding Attribution, Converter={StaticResource stringBooleanConverter}}">
+            <Label.Text>
+                <MultiBinding StringFormat="{}{0} {1}">
+                    <Binding Source="{x:Static res_strings:Resources.credit_prefix}" x:DataType="system:String" />
+                    <Binding Path="Attribution" />
+                </MultiBinding>
+            </Label.Text>
+        </Label>
     </Grid>
 </ContentView>

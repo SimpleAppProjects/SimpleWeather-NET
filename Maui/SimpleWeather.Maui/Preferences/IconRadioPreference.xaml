@@ -1,11 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView
     x:Class="SimpleWeather.Maui.Preferences.IconRadioPreference"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
-    BackgroundColor="{AppThemeBinding Light='White', Dark='#1b1b1b'}">
+    BackgroundColor="{AppThemeBinding Light='White', Dark='#1b1b1b'}"
+    x:Name="PreferenceControl">
     <ContentView.GestureRecognizers>
         <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped" />
     </ContentView.GestureRecognizers>
@@ -29,7 +31,7 @@
             </VerticalStackLayout>
             <Image
                 Margin="16,0,0,0"
-                IsVisible="{x:Bind IsPremiumIcon, Mode=OneWay}"
+                IsVisible="{Binding IsPremiumIcon, Source={x:Reference PreferenceControl}, Mode=OneWay, FallbackValue=false, TargetNullValue=false}"
                 VerticalOptions="End">
                 <Image.Source>
                     <matIcons:MaterialIcon

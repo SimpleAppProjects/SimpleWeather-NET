@@ -1,4 +1,5 @@
-﻿using SimpleWeather.Common.Controls;
+﻿#nullable enable
+using SimpleWeather.Common.Controls;
 
 namespace SimpleWeather.Maui.Controls;
 
@@ -9,6 +10,12 @@ public partial class AQIForecastControl : ContentView
     public AQIForecastControl()
     {
         InitializeComponent();
-        this.BindingContextChanged += (sender, args) => { ApplyBindings(); };
+    }
+
+    protected override void OnBindingContextChanged()
+    {
+        base.OnBindingContextChanged();
+        ApplyBindings();
     }
 }
+#nullable restore

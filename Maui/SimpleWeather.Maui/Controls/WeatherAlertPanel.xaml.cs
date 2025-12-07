@@ -23,9 +23,6 @@ public partial class WeatherAlertPanel : ContentView
             {
                 AlertFmtdMessage.Spans.Clear();
 
-                /*
-                    Text="{x:Bind $'{ExpireDate}\n\n{Message}\n\n{Attribution}'}"
-                 */
                 AlertFmtdMessage.Spans.Add(new Span()
                 {
                     Text = WeatherAlert?.ExpireDate

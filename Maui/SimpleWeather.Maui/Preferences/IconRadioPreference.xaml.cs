@@ -17,10 +17,10 @@ public partial class IconRadioPreference : ContentView
 
     private IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
-    private bool IsPremiumIcon
+    public bool IsPremiumIcon
     {
         get => (bool)GetValue(IsPremiumIconProperty);
-        set => SetValue(IsPremiumIconProperty, value);
+        private set => SetValue(IsPremiumIconProperty, value);
     }
 
     private static readonly BindableProperty IsPremiumIconProperty =

@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage
     x:Class="SimpleWeather.Maui.Main.WeatherAlertPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -12,8 +13,7 @@
     x:Name="AlertsPage">
     <Grid>
         <ScrollView Orientation="Vertical" Padding="8"
-                    HorizontalScrollBarVisibility="Never"
-                    BindingContext="{x:Bind AlertsView, DataType={x:Null}}">
+                    HorizontalScrollBarVisibility="Never">
             <VerticalStackLayout x:Name="StackControl" HorizontalOptions="FillAndExpand"
                                  x:DataType="{x:Type controls:WeatherAlertsViewModel}"
                                  BindableLayout.ItemsSource="{Binding Alerts, Mode=OneWay}"

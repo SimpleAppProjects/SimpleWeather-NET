@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage
     x:Class="SimpleWeather.Maui.Preferences.Settings_WeatherAlerts"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -24,8 +25,10 @@
         <Style x:Key="SettingsFrameStyle" TargetType="Frame">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,8" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
             <Setter Property="VerticalOptions" Value="StartAndExpand" />
         </Style>
         <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
@@ -49,18 +52,22 @@
                         Text="{x:Static res_strings:Resources.pref_title_minalertseverity}">
                         <prefs:PickerViewCell.Items>
                             <m:List Type="{x:Type prefs:PreferenceListItem}">
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_all}" Value="-1" />
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_moderate}" Value="1" />
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_severe}" Value="2" />
-                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_extreme}" Value="3" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_all}"
+                                                          Value="-1" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_moderate}"
+                                                          Value="1" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_severe}"
+                                                          Value="2" />
+                                <prefs:PreferenceListItem Display="{x:Static res_strings:Resources.alertsev_extreme}"
+                                                          Value="3" />
                             </m:List>
                         </prefs:PickerViewCell.Items>
                     </prefs:PickerViewCell>
-                    <prefs:SwitchCell x:Name="PoPChancePref" Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
+                    <prefs:SwitchCell x:Name="PoPChancePref"
+                                      Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
                     <prefs:PickerViewCell
                         x:Name="PoPChancePctPref"
-                        x:DataType="{x:Null}"
-                        IsEnabled="{x:Bind PoPChancePref.On, Mode=OneWay}"
+                        IsEnabled="{Binding On, Source={x:Reference PoPChancePref}, Mode=OneWay}"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_POPCHANCEPCT}"
                         Text="{x:Static res_strings:Resources.label_chance}">
                         <prefs:PickerViewCell.Items>

@@ -1,14 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SimpleWeather.Maui.Controls.AQIForecastControl"
              xmlns:sharedControls="clr-namespace:SimpleWeather.NET.Controls"
              xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
-             xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-             xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
+             xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
              xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-             xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
              x:DataType="commonControls:AirQualityViewModel"
+             x:Name="Control"
              MinimumWidthRequest="400">
 
     <ContentView.Resources>
@@ -17,19 +17,20 @@
             <Setter Property="Padding" Value="5" />
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
-            <Setter Property="HorizontalTextAlignment" Value="Center" /> 
-            <Setter Property="VerticalTextAlignment" Value="Center" /> 
-            <Setter Property="HorizontalOptions" Value="Center" /> 
-            <Setter Property="VerticalOptions" Value="Center" /> 
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
         </Style>
         <Style x:Key="ComponentValueStyle" TargetType="Label">
             <Setter Property="MinimumWidthRequest" Value="45" />
             <Setter Property="Padding" Value="5" />
-            <Setter Property="HorizontalTextAlignment" Value="Center" /> 
-            <Setter Property="VerticalTextAlignment" Value="Center" /> 
-            <Setter Property="HorizontalOptions" Value="Center" /> 
-            <Setter Property="VerticalOptions" Value="Center" /> 
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalTextAlignment" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
         </Style>
+        <converters:AQIIndexToColorConverter x:Key="AQIToColorConverter" />
     </ContentView.Resources>
 
     <VerticalStackLayout>
@@ -79,45 +80,51 @@
             JustifyContent="Center"
             AlignContent="Stretch"
             AlignItems="Center">
-            <HorizontalStackLayout IsVisible="{Binding PM25Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding PM25Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_pm25}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(PM25Index), Mode=OneWay}"
+                    TextColor="{Binding PM25Index, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding PM25Index, Mode=OneWay}" />
             </HorizontalStackLayout>
-            <HorizontalStackLayout IsVisible="{Binding PM10Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding PM10Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_pm10}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(PM10Index), Mode=OneWay}"
+                    TextColor="{Binding PM10Index, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding PM10Index, Mode=OneWay}" />
             </HorizontalStackLayout>
-            <HorizontalStackLayout IsVisible="{Binding O3Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding O3Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_o3}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(O3Index), Mode=OneWay}"
+                    TextColor="{Binding O3Index, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding O3Index, Mode=OneWay}" />
             </HorizontalStackLayout>
-            <HorizontalStackLayout IsVisible="{Binding COIndex, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding COIndex, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_co}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(COIndex), Mode=OneWay}"
+                    TextColor="{Binding COIndex, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding COIndex, Mode=OneWay}" />
             </HorizontalStackLayout>
-            <HorizontalStackLayout IsVisible="{Binding NO2Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding NO2Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_no2}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(NO2Index), Mode=OneWay}"
+                    TextColor="{Binding NO2Index, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding NO2Index, Mode=OneWay}" />
             </HorizontalStackLayout>
-            <HorizontalStackLayout IsVisible="{Binding SO2Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
+            <HorizontalStackLayout
+                IsVisible="{Binding SO2Index, Mode=OneWay, Converter={StaticResource valueBooleanConverter}}">
                 <Label Style="{StaticResource ComponentLabelStyle}" Text="{x:Static res_strings:AQIndex.units_so2}" />
                 <Label
-                    TextColor="{x:Bind utils:AirQualityUtils.GetColorFromIndex(SO2Index), Mode=OneWay}"
+                    TextColor="{Binding SO2Index, Converter={StaticResource AQIToColorConverter}, Mode=OneWay}"
                     Style="{StaticResource ComponentValueStyle}"
                     Text="{Binding SO2Index, Mode=OneWay}" />
             </HorizontalStackLayout>

@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentView
     x:Class="SimpleWeather.Maui.Controls.WeatherAlertPanel"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -7,6 +8,7 @@
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    xmlns:toolkitConverters="clr-namespace:CommunityToolkit.Maui.Converters;assembly=CommunityToolkit.Maui"
     x:DataType="controls:WeatherAlertViewModel">
     <ContentView.Resources>
         <localControls:AlertTypeIconConverter x:Key="alertTypeIconConv" />
@@ -54,17 +56,22 @@
                         TextColor="White"
                         VerticalOptions="Center" />
                     <Image Grid.Column="3" Margin="0,0,12,0">
+                        <Image.Resources>
+                            <toolkitConverters:BoolToObjectConverter x:Name="ExpandSymbolConverter"
+                                                                     x:TypeArguments="matIcons:MaterialSymbol"
+                                                                     TrueObject="ExpandLess" FalseObject="ExpandMore" />
+                        </Image.Resources>
                         <Image.Source>
                             <matIcons:MaterialIcon
-                                x:DataType="{x:Null}"
-                                Symbol="{x:Bind Expander.IsExpanded ? matIcons:MaterialSymbol.ExpandLess : matIcons:MaterialSymbol.ExpandMore}"
+                                Symbol="{Binding IsExpanded, Source={x:Reference Expander}, Converter={StaticResource ExpandSymbolConverter}, x:DataType={x:Type toolkit:Expander}}"
                                 Color="White" />
                         </Image.Source>
                     </Image>
                 </Grid>
             </toolkit:Expander.Header>
             <toolkit:Expander.Content>
-                <VerticalStackLayout BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}">
+                <VerticalStackLayout
+                    BackgroundColor="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}">
                     <Label
                         Padding="24"
                         FontSize="{Binding Source={x:Reference Title}, Path=FontSize, x:DataType={x:Type Label}}"
@@ -80,4 +87,3 @@
         </toolkit:Expander>
     </Grid>
 </ContentView>
-

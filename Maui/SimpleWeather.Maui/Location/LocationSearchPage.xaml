@@ -17,7 +17,6 @@
     x:DataType="commonVM:LocationSearchViewModel"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightBackground},
                                       Dark={StaticResource DarkBackground}}"
-    BindingContext="{x:Bind LocationSearchViewModel, DataType={x:Null}}"
     NavigationPage.HasBackButton="False"
     NavigationPage.HasNavigationBar="False"
     Shell.FlyoutItemIsVisible="False"

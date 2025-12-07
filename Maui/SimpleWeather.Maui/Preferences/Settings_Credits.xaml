@@ -1,22 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage
     x:Class="SimpleWeather.Maui.Preferences.Settings_Credits"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Controls;assembly=SimpleWeather.Shared"
-    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-    xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences"
-    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-    xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
-    xmlns:system="using:System"
-    xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.pref_title_credits}"
-    main:AppShell.AppBarIsVisible="True">
+    main:AppShell.AppBarIsVisible="True"
+    x:Name="SettingsCreditsPage">
+
     <Shell.BackButtonBehavior>
         <BackButtonBehavior IsVisible="True" />
     </Shell.BackButtonBehavior>
@@ -25,8 +20,10 @@
         <Style x:Key="SettingsFrameStyle" TargetType="Frame">
             <Setter Property="Padding" Value="0" />
             <Setter Property="Margin" Value="0,8" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="BorderColor" Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="BorderColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurfaceVariant}, Dark={StaticResource DarkSurfaceVariant}}" />
             <Setter Property="VerticalOptions" Value="StartAndExpand" />
         </Style>
         <Style x:Key="SettingsTableViewStyle" TargetType="TableView">
@@ -47,7 +44,7 @@
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_here}"
                         Detail="The HERE Logo is a trademark or registered trademark of HERE Global B.V."
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://here.com/en">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="{AppThemeBinding Light='here.png', Dark='here_dark.png'}" />
@@ -56,7 +53,7 @@
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_apple_weather}"
                         Detail="Apple Weather and (Apple) Weather are trademarks of Apple Inc."
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://weatherkit.apple.com/legal-attribution.html">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="weatherkit.png" />
@@ -64,7 +61,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_metno}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://www.met.no/en">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="metno.png" />
@@ -72,7 +69,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_nws}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="http://www.weather.gov">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="nws.png" />
@@ -80,7 +77,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_owm}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="http://openweathermap.org/">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="openweathermap.png" />
@@ -88,7 +85,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_waqi}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://aqicn.org/">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="waqi.png" />
@@ -96,7 +93,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_wunlocked}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://developer.weatherunlocked.com/"
                         ImageBackgroundColor="{AppThemeBinding Light='#30000000', Dark='#00000000'}">
                         <prefs:ProviderCreditViewCell.ImageSource>
@@ -105,23 +102,25 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_weatherapi}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://www.weatherapi.com/">
                         <prefs:ProviderCreditViewCell.ImageSource>
-                            <FileImageSource File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
+                            <FileImageSource
+                                File="{AppThemeBinding Light='weatherapi_logo.png', Dark='weatherapi_logo_dark.png'}" />
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_tomorrowio}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://tomorrow.io">
                         <prefs:ProviderCreditViewCell.ImageSource>
-                            <FileImageSource File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
+                            <FileImageSource
+                                File="{AppThemeBinding Light='tomorrow_logo_colored.png', Dark='tomorrow_logo_colored_dark.png'}" />
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_brightsky}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://brightsky.dev/">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="brightsky.png" />
@@ -129,7 +128,7 @@
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_eccc}"
-                        Command="{x:Bind HyperlinkButtonCommand, Mode=OneWay}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, Mode=OneWay}"
                         CommandParameter="https://www.weather.gc.ca/">
                         <prefs:ProviderCreditViewCell.ImageSource>
                             <FileImageSource File="eccc_logo.png" />

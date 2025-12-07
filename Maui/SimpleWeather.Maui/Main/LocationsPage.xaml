@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <viewModels:ViewModelPage
     x:Class="SimpleWeather.Maui.Main.LocationsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -33,14 +34,14 @@
                     <SwipeView.LeftItems>
                         <SwipeItems Mode="Reveal">
                             <SwipeItem
-                                BackgroundColor="#FFDB4437"
+                                BackgroundColor="{AppThemeBinding Light={StaticResource LightError}, Dark={StaticResource DarkError}}"
                                 Invoked="SwipeItem_Invoked"
                                 Text="{x:Static res_strings:Resources.delete}">
                                 <SwipeItem.IconImageSource>
                                     <matIcons:MaterialIcon
                                         Size="24"
                                         Symbol="Delete"
-                                        Color="White" />
+                                        Color="{AppThemeBinding Light={StaticResource LightOnError}, Dark={StaticResource DarkOnError}}" />
                                 </SwipeItem.IconImageSource>
                             </SwipeItem>
                         </SwipeItems>
@@ -59,8 +60,10 @@
                         <VisualState x:Name="Normal" />
                         <VisualState x:Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                                <Setter Property="BackgroundColor"
+                                        Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+                                <Setter Property="Stroke"
+                                        Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -90,8 +93,10 @@
                         <VisualState x:Name="Normal" />
                         <VisualState x:Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-                                <Setter Property="Stroke" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+                                <Setter Property="BackgroundColor"
+                                        Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+                                <Setter Property="Stroke"
+                                        Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -111,7 +116,8 @@
             IsVisible="False">
             <Image Margin="8" HorizontalOptions="Center">
                 <Image.Source>
-                    <matIcons:MaterialIcon Symbol="Add" Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
+                    <matIcons:MaterialIcon Symbol="Add"
+                                           Color="{AppThemeBinding Light={StaticResource LightOnBackground}, Dark={StaticResource DarkOnBackground}}" />
                 </Image.Source>
             </Image>
             <Label
@@ -158,8 +164,7 @@
                     Padding="20,8,20,4"
                     FontFamily="OpenSansSemibold"
                     FontSize="16"
-                    x:DataType="{x:Null}"
-                    IsVisible="{x:Bind LocationsPanel.IsVisible, Mode=OneWay}"
+                    IsVisible="{Binding IsVisible, Source={x:Reference LocationsPanel}, Mode=OneWay}"
                     Text="{x:Static res_strings:Resources.label_favoritelocations}"
                     TextColor="{AppThemeBinding Light={StaticResource LightOnBackground},
                                                 Dark={StaticResource DarkOnBackground}}" />
@@ -171,8 +176,6 @@
                     IsGrouped="False"
                     IsVisible="False"
                     SelectionMode="None"
-                    x:DataType="{x:Null}"
-                    ItemsSource="{x:Bind PanelAdapter.FavPanels, Mode=OneWay}"
                     ItemTemplate="{OnIdiom Default={StaticResource MobilePanelTemplate}, Desktop={StaticResource DesktopPanelTemplate}}"
                     ReorderCompleted="LocationsPanel_ReorderCompleted"
                     LongPressed="LocationsPanel_LongPressed">

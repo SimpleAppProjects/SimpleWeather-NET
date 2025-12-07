@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
 <viewModels:ViewModelShell
     x:Class="SimpleWeather.Maui.Main.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -42,28 +43,42 @@
     <Shell.Resources>
         <Style x:Key="MobileAppShellTabBarStyle" TargetType="simpleControls:TabBar">
             <Setter Property="IconColor" Value="{AppThemeBinding Light='#8f8a8b', Dark='#767474'}" />
-            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="IconSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
             <Setter Property="TextColor" Value="{AppThemeBinding Light='#8f8a8b', Dark='#767474'}" />
-            <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}" />
+            <Setter Property="TextSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="Background"
+                    Value="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}" />
             <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light='#208f8a8b', Dark='#20767474'}" />
             <Setter Property="DesignLanguage" Value="Cupertino" />
         </Style>
         <Style x:Key="DefaultAppShellTabBarStyle" TargetType="simpleControls:TabBar">
-            <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-            <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="Background" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
-            <Setter Property="PrimaryBrush" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="IconColor"
+                    Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="IconSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="TextSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="Background"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="PrimaryBrush"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
             <Setter Property="DesignLanguage" Value="Fluent" />
         </Style>
         <Style x:Key="DefaultAppShellSideBarStyle" TargetType="controls:SideBar">
-            <Setter Property="IconColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-            <Setter Property="IconSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
-            <Setter Property="TextSelectionColor" Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
+            <Setter Property="IconColor"
+                    Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="IconSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="TextColor"
+                    Value="{AppThemeBinding Light={StaticResource LightOnSurface}, Dark={StaticResource DarkOnSurface}}" />
+            <Setter Property="TextSelectionColor"
+                    Value="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}" />
+            <Setter Property="BackgroundColor"
+                    Value="{AppThemeBinding Light={StaticResource LightSurface}, Dark={StaticResource DarkSurface}}" />
         </Style>
         <x:Array x:Key="DesktopTabItems" Type="{x:Type BaseShellItem}">
             <ShellContent
@@ -163,7 +178,8 @@
     <ShellContent ContentTemplate="{DataTemplate local:WeatherNow}" Route="root" />
 
     <simpleShell:SimpleShell.Content>
-        <Grid x:Name="MainGrid" BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground},
+        <Grid x:Name="MainGrid"
+              BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground},
                                                                   Dark={StaticResource DarkPageBackground}}"
               RowDefinitions="Auto,*,Auto" ColumnDefinitions="Auto,*">
 
@@ -178,10 +194,10 @@
                 ExpandedWidth="320"
                 Items="{StaticResource DesktopTabItems}"
                 FooterItems="{StaticResource FooterTabItems}"
-                SelectedItem="{x:Bind _Shell.CurrentShellContent}"
+                SelectedItem="{Binding CurrentShellContent, Source={x:Reference _Shell}}"
                 ItemSelected="ShellSideBar_ItemSelected"
                 Style="{StaticResource DefaultAppShellSideBarStyle}"
-                IsVisible="{OnIdiom Default=false, Desktop=true}"/>
+                IsVisible="{OnIdiom Default=false, Desktop=true}" />
 
             <appbar:AppBar
                 x:Name="ShellAppBar"
@@ -213,7 +229,7 @@
                 IsScrollable="False"
                 ItemSelected="ShellTabBar_ItemSelected"
                 ItemsAlignment="Center"
-                SelectedItem="{x:Bind _Shell.CurrentShellContent}"
+                SelectedItem="{Binding CurrentShellContent, Source={x:Reference _Shell}}"
                 ShowButtonWhenMoreItemsDoNotFit="True"
                 ShowMenuOnMoreButtonClick="True"
                 Style="{OnIdiom Default={StaticResource MobileAppShellTabBarStyle},
