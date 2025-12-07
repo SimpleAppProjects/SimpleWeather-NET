@@ -57,16 +57,7 @@ public static class MauiProgram
                 fonts.AddFont("MaterialIcons-Regular.ttf", MaterialIcon.FONT_ALIAS);
                 fonts.AddFont("weathericons-regular-webfont.ttf", "WeatherIcons");
             })
-            .ConfigureEssentials(essentials =>
-            {
-                essentials
-                    .UseVersionTracking()
-                    .UseMapServiceToken(APIKeys.GetBingMapsKey());
-            })
-            .ConfigureLifecycleEvents(life =>
-            {
-
-            })
+            .ConfigureEssentials(essentials => { essentials.UseVersionTracking(); })
             .ConfigureMauiHandlers(handlers =>
             {
                 handlers.AddHandler<SelectableItemsView, SelectableItemsViewHandler<SelectableItemsView>>();
@@ -75,7 +66,9 @@ public static class MauiProgram
                 handlers.AddHandler<TextCell, NonReusableTextCellRenderer>();
                 handlers.AddHandler<ScrollView, CustomScrollViewHandler>();
                 handlers.AddHandler<TimePicker, NativeTimePickerHandler>();
-                handlers.AddHandler<ReorderableCollectionView, ReorderableCollectionViewHandler<ReorderableCollectionView>>();
+                handlers
+                    .AddHandler<ReorderableCollectionView,
+                        ReorderableCollectionViewHandler<ReorderableCollectionView>>();
                 handlers.AddHandler<Map, MapViewHandler>();
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.LineBreakMode), UpdateMaxLines);
                 LabelHandler.Mapper.AppendToMapping(nameof(Label.MaxLines), UpdateMaxLines);
@@ -137,12 +130,14 @@ public static class MauiProgram
                 return true;
             }
 
-            if (ex is ArgumentNullException && (ex.StackTrace?.Contains("FromJson") == true || ex.StackTrace?.Contains("JSONParser") == true))
+            if (ex is ArgumentNullException && (ex.StackTrace?.Contains("FromJson") == true ||
+                                                ex.StackTrace?.Contains("JSONParser") == true))
             {
                 return true;
             }
 
-            if (ex is NullReferenceException && (ex.StackTrace?.Contains("SKCanvasView") == true || ex.StackTrace?.Contains("SQLite") == true))
+            if (ex is NullReferenceException && (ex.StackTrace?.Contains("SKCanvasView") == true ||
+                                                 ex.StackTrace?.Contains("SQLite") == true))
             {
                 return true;
             }

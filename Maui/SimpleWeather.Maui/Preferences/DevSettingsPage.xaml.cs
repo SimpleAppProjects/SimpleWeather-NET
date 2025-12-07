@@ -8,17 +8,43 @@ using SimpleWeather.Utils;
 #if MACCATALYST
 using UIKit;
 #endif
+#if __IOS__
+using FirebaseInstallations = Firebase.Installations.Installations;
+#endif
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Maui.Preferences;
 
-public partial class DevSettingsPage : ContentPage
+public partial class DevSettingsPage : ContentPage, ISnackbarManager, ISnackbarPage
 {
+    private SnackbarManager SnackMgr;
+
     public DevSettingsPage()
     {
         InitializeComponent();
 
         UpdateSettingsTableTheme();
+
+#if __IOS__
+        Task.Run(async () =>
+        {
+            try
+            {
+                var firebaseId = await FirebaseInstallations.DefaultInstance.GetInstallationIdAsync();
+
+                await Dispatcher.DispatchAsync(() => { FirebaseIdCell.Detail = firebaseId; });
+            }
+            catch
+            {
+            }
+        });
+
+        FirebaseIdCell.Tapped += async (s, e) =>
+        {
+            await Clipboard.Default.SetTextAsync(FirebaseIdCell.Detail);
+            SnackMgr?.Show(Snackbar.Make("Copied to clipboard", SnackbarDuration.Short));
+        };
+#endif
 
 #if DEBUG
         // This should always be true in debug mode
@@ -47,15 +73,45 @@ public partial class DevSettingsPage : ContentPage
             LightPrimary as Color, DarkPrimary as Color);
     }
 
+    protected override void OnNavigatedTo(NavigatedToEventArgs args)
+    {
+        base.OnNavigatedTo(args);
+        AnalyticsLogger.LogEvent("DevSettingsPage: OnNavigatedTo");
+        InitSnackManager();
+    }
+
+    protected override void OnNavigatedFrom(NavigatedFromEventArgs args)
+    {
+        base.OnNavigatedFrom(args);
+        UnloadSnackManager();
+    }
+
+    public void InitSnackManager()
+    {
+        SnackMgr ??= new SnackbarManager(SnackbarContainer);
+    }
+
+    public void ShowSnackbar(Snackbar snackbar)
+    {
+        SnackMgr?.Show(snackbar);
+    }
+
+    public void DismissAllSnackbars()
+    {
+        SnackMgr?.DismissAll();
+    }
+
+    public void UnloadSnackManager()
+    {
+        DismissAllSnackbars();
+        SnackMgr = null;
+    }
+
     private void LogsCell_Tapped(object sender, EventArgs _)
     {
         void ShowNoLogsFoundPrompt()
         {
-            Dispatcher.Dispatch(() =>
-            {
-                var snackMgr = new SnackbarManager(SnackbarContainer);
-                snackMgr.Show(Snackbar.Make("No logs found", SnackbarDuration.Short));
-            });
+            Dispatcher.Dispatch(() => { SnackMgr?.Show(Snackbar.Make("No logs found", SnackbarDuration.Short)); });
         }
 
         try
@@ -76,7 +132,9 @@ public partial class DevSettingsPage : ContentPage
                     logFiles.AddRange(groupLogFiles);
                 }
             }
-            catch { }
+            catch
+            {
+            }
 #endif
 
             if (Directory.Exists(appLogsDirectory))
@@ -102,11 +160,13 @@ public partial class DevSettingsPage : ContentPage
                 var completion = new TaskCompletionSource<string>();
 
                 var alert = UIAlertController.Create("Save Logs", null, UIAlertControllerStyle.ActionSheet);
-                alert.AddAction(UIAlertAction.Create(cancelText, UIAlertActionStyle.Cancel, _ => completion.TrySetResult(cancelText)));
+                alert.AddAction(UIAlertAction.Create(cancelText, UIAlertActionStyle.Cancel,
+                    _ => completion.TrySetResult(cancelText)));
 
                 logFiles.Select(f => Path.GetFileName(f)).ForEach(f =>
                 {
-                    alert.AddAction(UIAlertAction.Create(f, UIAlertActionStyle.Default, _ => completion.TrySetResult(f)));
+                    alert.AddAction(UIAlertAction.Create(f, UIAlertActionStyle.Default,
+                        _ => completion.TrySetResult(f)));
                 });
 
                 viewController.PresentViewController(alert, true, null);
@@ -134,7 +194,9 @@ public partial class DevSettingsPage : ContentPage
                             Logger.WriteLine(LoggerLevel.Error, saveResult.Exception, "Error saving log file");
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             });
         }

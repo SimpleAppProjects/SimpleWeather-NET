@@ -4,17 +4,9 @@
     x:Class="SimpleWeather.Maui.Preferences.DevSettingsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
-    xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
-    xmlns:m="clr-namespace:SimpleWeather.Maui.MarkupExtensions"
-    xmlns:mac="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.macOSSpecific;assembly=Microsoft.Maui.Controls"
     xmlns:main="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:prefs="clr-namespace:SimpleWeather.Maui.Preferences"
-    xmlns:radar="clr-namespace:SimpleWeather.NET.Radar"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
-    xmlns:settings="clr-namespace:SimpleWeather.Preferences;assembly=SimpleWeather.Shared"
-    xmlns:system="using:System"
-    xmlns:utils="clr-namespace:SimpleWeather.Utils;assembly=SimpleWeather.Shared"
     xmlns:weather="clr-namespace:SimpleWeather.WeatherData;assembly=SimpleWeather.Shared"
     BackgroundColor="{AppThemeBinding Light={StaticResource LightPageBackground}, Dark={StaticResource DarkPageBackground}}"
     Title="{x:Static res_strings:Resources.title_dev_settings}"
@@ -51,6 +43,9 @@
                     <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.TomorrowIo}" Text="Tomorrow.io Key" />
                     <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.Google}" Text="Google Weather Key" />
                     <prefs:DevKeyEntryCell API="{x:Static weather:WeatherAPI.Google_Pollen}" Text="Google Pollen Key" />
+                </TableSection>
+                <TableSection Title="Firebase">
+                    <prefs:TextViewCell x:Name="FirebaseIdCell" Text="Firebase Id" />
                 </TableSection>
                 <TableSection Title="Misc">
                     <prefs:SwitchCell x:Name="DebugSwitch" Text="Enable Debug Logger" />
