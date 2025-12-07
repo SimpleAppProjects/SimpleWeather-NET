@@ -492,6 +492,24 @@ namespace UnitTestProject
             await MainThread.InvokeOnMainThreadAsync(() => { LocaleUtils.SetLocaleCode(locale.Name); });
         }
 
+        [Fact]
+        public async Task GetGoogleWeather()
+        {
+            var originalKey = Utils.SettingsManager.APIKeys[WeatherAPI.Google];
+
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Google] = true;
+            Utils.SettingsManager.APIKeys[WeatherAPI.Google] = "Google_REPLACE_VALUE";
+
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Google);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(37.4220083, -122.0876528))
+                .ConfigureAwait(false); // ~ Mountain View
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+
+            Utils.SettingsManager.APIKeys[WeatherAPI.Google] = originalKey;
+            Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Google] = false;
+        }
+
         /// <summary>
         /// GetPollenData
         /// </summary>

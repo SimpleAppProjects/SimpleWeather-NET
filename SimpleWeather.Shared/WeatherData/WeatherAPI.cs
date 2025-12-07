@@ -59,7 +59,8 @@ namespace SimpleWeather.WeatherData
         private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(11)
         {
             new ProviderEntry("HERE Weather", Here,
-                "https://www.here.com/en", "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
+                "https://www.here.com/en",
+                "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
             new ProviderEntry("Apple Weather", Apple,
                 "https://developer.apple.com/weatherkit/", "https://developer.apple.com/weatherkit/"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
@@ -97,7 +98,9 @@ namespace SimpleWeather.WeatherData
         private static readonly IReadOnlyList<ProviderEntry> TestingAPIs = new List<ProviderEntry>(2)
         {
             new ProviderEntry("AccuWeather", AccuWeather,
-                "https://www.accuweather.com/", "https://developer.accuweather.com/")
+                "https://www.accuweather.com/", "https://developer.accuweather.com/"),
+            new ProviderEntry("Google", Google,
+                "https://www.google.com/maps", "https://developers.google.com/maps/documentation/weather")
         };
     }
 }

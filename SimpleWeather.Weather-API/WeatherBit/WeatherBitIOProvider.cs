@@ -13,6 +13,7 @@ using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
+using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -106,7 +107,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
         public override string GetAPIKey()
         {
-            return null;
+            return APIKeys.GetWeatherBitIOKey();
         }
 
         /// <exception cref="WeatherException">Thrown when task is unable to retrieve data</exception>

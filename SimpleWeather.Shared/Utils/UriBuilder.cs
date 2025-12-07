@@ -40,6 +40,24 @@ namespace SimpleWeather.Utils
             return this;
         }
 
+        public UriBuilderEx SetQueryParameter(string key, string value, bool encode = true)
+        {
+            if (string.IsNullOrWhiteSpace(BaseUriBuilder.Query))
+            {
+                string encodedParameter = (encode ? HttpUtility.UrlEncode(key) : key) + "="
+                    + (encode ? HttpUtility.UrlEncode(value) : value);
+                BaseUriBuilder.Query = encodedParameter;
+            }
+            else
+            {
+                var queryCollection = HttpUtility.ParseQueryString(BaseUriBuilder.Query);
+                queryCollection[key] = value;
+                BaseUriBuilder.Query = queryCollection.ToString();
+            }
+
+            return this;
+        }
+
         public UriBuilderEx AppendPath(string path, bool encode = true)
         {
             string encodedPath = encode ? HttpUtility.UrlEncode(path) : path;
@@ -80,6 +98,11 @@ namespace SimpleWeather.Utils
         }
 
         public static UriBuilderEx ToUriBuilderEx(this string uri)
+        {
+            return new UriBuilderEx(uri);
+        }
+
+        public static UriBuilderEx ToUriBuilderEx(this Uri uri)
         {
             return new UriBuilderEx(uri);
         }

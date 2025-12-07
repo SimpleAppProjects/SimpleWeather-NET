@@ -1,4 +1,7 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using SimpleWeather.Utils;
 #if WINUI
 using Windows.ApplicationModel;
 #else
@@ -20,6 +23,27 @@ namespace SimpleWeather.HttpClientExtensions
 
             UAHeader.Add(new ProductInfoHeaderValue("SimpleWeather", version));
             UAHeader.Add(new ProductInfoHeaderValue("(thewizrd.dev@gmail.com)"));
+        }
+
+        public static HttpRequestMessage Clone(this HttpRequestMessage request)
+        {
+            var clonedRequest = new HttpRequestMessage(request.Method, request.RequestUri)
+            {
+                Version = request.Version,
+                VersionPolicy = request.VersionPolicy
+            };
+
+            request.Headers.ForEach(header =>
+            {
+                clonedRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
+            });
+
+            foreach (var option in request.Options)
+            {
+                clonedRequest.Options.TryAdd(option.Key, option.Value);
+            }
+
+            return clonedRequest;
         }
     }
 }

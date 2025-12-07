@@ -13,6 +13,7 @@ using SimpleWeather.Weather_API.WeatherKit;
 using SimpleWeather.Weather_API.WeatherUnlocked;
 using SimpleWeather.WeatherData;
 using System;
+using SimpleWeather.Weather_API.Google;
 
 namespace SimpleWeather.Weather_API.WeatherData
 {
@@ -61,14 +62,17 @@ namespace SimpleWeather.Weather_API.WeatherData
                 case WeatherAPI.ECCC:
                     return new ECCCWeatherProvider();
 
+                case WeatherAPI.Google:
+                    return new GoogleWeatherProvider();
+
                 default:
-                    {
+                {
 #if !DEBUG
                         return new WeatherApiProvider();
 #else
-                        throw new ArgumentNullException($"Weather provider not supported ({provider})");
+                    throw new ArgumentNullException($"Weather provider not supported ({provider})");
 #endif
-                    }
+                }
             }
         }
     }

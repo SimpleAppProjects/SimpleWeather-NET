@@ -81,12 +81,16 @@ namespace SimpleWeather.LocationData
             Location_Query = WeatherSource switch
             {
                 WeatherAPI.Here or
-                WeatherAPI.WeatherUnlocked or
-                WeatherAPI.WeatherApi or
-                WeatherAPI.TomorrowIo or
-                WeatherAPI.AccuWeather or
-                WeatherAPI.ECCC => string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat, LocationLong),
-                _ => string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat, LocationLong)
+                    WeatherAPI.WeatherUnlocked or
+                    WeatherAPI.WeatherApi or
+                    WeatherAPI.TomorrowIo or
+                    WeatherAPI.AccuWeather or
+                    WeatherAPI.ECCC => string.Format(CultureInfo.InvariantCulture, "{0:0.####},{1:0.####}", LocationLat,
+                        LocationLong),
+                WeatherAPI.Google => string.Format(CultureInfo.InvariantCulture,
+                    "location.latitude={0:0.####}&location.longitude={1:0.####}", LocationLat, LocationLong),
+                _ => string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat,
+                    LocationLong)
             };
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SimpleWeather.Weather_API.Keys
 {
@@ -15,11 +15,6 @@ namespace SimpleWeather.Weather_API.Keys
         }
 
         public static String GetTimeZoneAPI()
-        {
-            return null;
-        }
-
-        public static String GetBingMapsKey()
         {
             return null;
         }
@@ -55,6 +50,11 @@ namespace SimpleWeather.Weather_API.Keys
         }
 
         public static String GetWeatherBitIOKey()
+        {
+            return null;
+        }
+
+        public static String GetGWeatherKey()
         {
             return null;
         }
