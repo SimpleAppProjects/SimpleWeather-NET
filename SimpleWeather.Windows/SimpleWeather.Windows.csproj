@@ -65,8 +65,8 @@
   <ItemGroup>
     <PackageReference Include="TimberLog" Version="2.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
-    <PackageReference Include="KeyedSemaphores" Version="5.0.0" />
-    <PackageReference Include="Mapsui.WinUI" Version="5.0.0" />
+    <PackageReference Include="KeyedSemaphores" Version="6.0.0"/>
+    <PackageReference Include="Mapsui.WinUI" Version="5.0.1"/>
     <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
       <Version>10.0.100</Version>
