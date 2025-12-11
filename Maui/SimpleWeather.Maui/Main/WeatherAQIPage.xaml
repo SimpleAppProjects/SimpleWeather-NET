@@ -62,7 +62,7 @@
                     <localControls:ForecastRangeBarGraphView
                         BindingContext="{Binding}"
                         ForecastType="AirQuality"
-                        GraphHeight="250" />
+                        GraphHeight="300" />
                 </VerticalStackLayout>
             </Frame>
         </DataTemplate>

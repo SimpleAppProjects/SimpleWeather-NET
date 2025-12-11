@@ -51,21 +51,26 @@ public partial class SetupSettingsPage : BaseSetupPage, IPageVerification
         Fahrenheit.IsChecked = SettingsManager.TemperatureUnit == Units.FAHRENHEIT;
         Celsius.IsChecked = SettingsManager.TemperatureUnit == Units.CELSIUS;
         TempSwitch.IsToggled = SettingsManager.TemperatureUnit == Units.CELSIUS;
+        TempSummary.Text = TempSwitch.IsToggled ? ResStrings.pref_summary_celsius : ResStrings.pref_summary_fahrenheit;
 
         wm.UpdateAPI();
 
         // Refresh interval
-        RefreshComboBox.ItemDisplayBinding = BindingBase.Create(static (ComboBoxItem item) => item.Display, BindingMode.OneWay);
+        RefreshComboBox.ItemDisplayBinding =
+            BindingBase.Create(static (ComboBoxItem item) => item.Display, BindingMode.OneWay);
         if (ExtrasService.IsPremiumEnabled())
         {
             RefreshComboBox.ItemsSource = PremiumRefreshOptions;
-            RefreshComboBox.SelectedItem = PremiumRefreshOptions.First(it => Equals(it.Value, SettingsManager.RefreshInterval.ToInvariantString()));
+            RefreshComboBox.SelectedItem = PremiumRefreshOptions.First(it =>
+                Equals(it.Value, SettingsManager.RefreshInterval.ToInvariantString()));
         }
         else
         {
             RefreshComboBox.ItemsSource = RefreshOptions;
-            RefreshComboBox.SelectedItem = RefreshOptions.First(it => Equals(it.Value, SettingsManager.RefreshInterval.ToInvariantString()));
+            RefreshComboBox.SelectedItem = RefreshOptions.First(it =>
+                Equals(it.Value, SettingsManager.RefreshInterval.ToInvariantString()));
         }
+
         RefreshComboBox.MinWidth(260);
 
         // Alerts

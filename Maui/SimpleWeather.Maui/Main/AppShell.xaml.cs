@@ -35,6 +35,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
         RegisterRoutes();
         UpdateBottomBarItemWidth();
+        DeviceDisplay.MainDisplayInfoChanged += DeviceDisplayOnMainDisplayInfoChanged;
 
         // Register BG Tasks
 #if __IOS__
@@ -56,6 +57,11 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 #endif
     }
 
+    private void DeviceDisplayOnMainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
+    {
+        UpdateBottomBarItemWidth();
+    }
+
     private void RegisterRoutes()
     {
         Routing.RegisterRoute("weather", typeof(WeatherNow));
@@ -65,29 +71,28 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         Routing.RegisterRoute("settings", typeof(Settings_General));
     }
 
-    protected override void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        base.OnPropertyChanged(propertyName);
-
-        if (propertyName == nameof(ShellContents))
-        {
-            UpdateBottomBarItemWidth();
-        }
-    }
-
     private void UpdateBottomBarItemWidth()
     {
         // Update bottom bar
-        if (DeviceInfo.Idiom != DeviceIdiom.Phone && ShellContents != null)
+        if (DeviceInfo.Idiom != DeviceIdiom.Desktop)
         {
             var deviceDisplay = DeviceDisplay.Current;
-            ShellTabBar.ItemWidthRequest = (deviceDisplay.MainDisplayInfo.Width / deviceDisplay.MainDisplayInfo.Density) / this.ShellContents.Count;
+            if (deviceDisplay.MainDisplayInfo.Orientation == DisplayOrientation.Landscape)
+            {
+                ShellTabBar.WidthRequest = -1;
+            }
+            else
+            {
+                ShellTabBar.WidthRequest = deviceDisplay.MainDisplayInfo.Width / deviceDisplay.MainDisplayInfo.Density;
+            }
         }
     }
 
     protected override async void OnNavigating(ShellNavigatingEventArgs args)
     {
-        if (args.CanCancel && (args.Source == ShellNavigationSource.Pop || args.Source == ShellNavigationSource.PopToRoot || args.Source == ShellNavigationSource.Remove))
+        if (args.CanCancel && (args.Source == ShellNavigationSource.Pop ||
+                               args.Source == ShellNavigationSource.PopToRoot ||
+                               args.Source == ShellNavigationSource.Remove))
         {
             if (CurrentPage is IBackRequestedPage backRequestedPage && await backRequestedPage.OnBackRequested())
             {
@@ -99,6 +104,7 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
         {
             notifyColl.CollectionChanged -= NotifyColl_CollectionChanged;
         }
+
         if (CurrentPage?.ToolbarItems is INotifyPropertyChanged notifyProp)
         {
             notifyProp.PropertyChanged -= NotifyProp_PropertyChanged;
@@ -194,14 +200,17 @@ public sealed partial class AppShell : ViewModelShell, IViewModelProvider
 
         if (this.CurrentPage is Page currentPage)
         {
-            ShellAppBar.Bind(AppBar.TitleProperty, static page => page.Title, mode: BindingMode.OneWay, source: currentPage);
-            ShellAppBar.Bind(AppBar.ToolbarItemsProperty, static page => page.ToolbarItems, mode: BindingMode.OneWay, source: currentPage);
+            ShellAppBar.Bind(AppBar.TitleProperty, static page => page.Title, mode: BindingMode.OneWay,
+                source: currentPage);
+            ShellAppBar.Bind(AppBar.ToolbarItemsProperty, static page => page.ToolbarItems, mode: BindingMode.OneWay,
+                source: currentPage);
             ShellAppBar.TitleView = Shell.GetTitleView(currentPage);
 
             if (currentPage.ToolbarItems is INotifyCollectionChanged notifyColl)
             {
                 notifyColl.CollectionChanged += NotifyColl_CollectionChanged;
             }
+
             if (currentPage.ToolbarItems is INotifyPropertyChanged notifyProp)
             {
                 notifyProp.PropertyChanged += NotifyProp_PropertyChanged;
