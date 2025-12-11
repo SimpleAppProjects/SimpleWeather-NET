@@ -56,7 +56,7 @@
   <!-- Sentry End -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="10.0.1"/>
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="$(WinAppSDKVersion)" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="$(WinSDKBuildToolsVersion)" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -66,10 +66,10 @@
     <PackageReference Include="TimberLog" Version="2.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
     <PackageReference Include="KeyedSemaphores" Version="6.0.0"/>
-    <PackageReference Include="Mapsui.WinUI" Version="5.0.1"/>
+    <PackageReference Include="Mapsui.WinUI" Version="5.0.2"/>
     <PackageReference Include="Sentry" Version="$(SentryVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
-      <Version>10.0.100</Version>
+      <Version>10.0.101</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -88,7 +88,7 @@
     <PackageReference Include="SkiaSharp.Extended" Version="3.0.0" />
     <PackageReference Include="SkiaSharp.Skottie" Version="$(SkiaSharpVersion)" />
     <PackageReference Include="SkiaSharp.Views.WinUI" Version="$(SkiaSharpVersion)" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.1"/>
     <PackageReference Include="UnitsNet" Version="5.75.0" />
     <PackageReference Include="Vanara.PInvoke.Ole" Version="4.2.1" />
     <PackageReference Include="WinUIEx" Version="2.9.0" />
