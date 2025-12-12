@@ -29,7 +29,7 @@ namespace SimpleWeather.Weather_API.BrightSky
             var alert = new WeatherAlert();
 
             alert.Attribution = "DWD";
-            alert.Date = alertItem.effective;
+            alert.Date = alertItem.onset;
             alert.ExpiresDate = alertItem.expires ?? alertItem.onset.AddDays(1);
             alert.Severity = alertItem.severity switch
             {
