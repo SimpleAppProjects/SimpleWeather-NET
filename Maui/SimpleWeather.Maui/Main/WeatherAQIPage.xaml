@@ -8,12 +8,10 @@
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
-    xmlns:graphPanels="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:controls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
     xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
-    xmlns:devices="clr-namespace:Microsoft.Maui.Devices;assembly=Microsoft.Maui.Essentials"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
-    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:controls1="clr-namespace:SimpleWeather.NET.Controls"
     local:AppShell.AppBarIsVisible="True"
     x:Name="AQIPage">
 
@@ -79,8 +77,9 @@
                 <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4"
                        Margin="{OnIdiom Default='4, 0, 4, 2', Desktop='16, 0, 16, 2'}"
                        BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
-                    <VerticalStackLayout BindingContext="{Binding Path=WNowViewModel, Source={x:Reference AQIPage}}"
-                                         x:DataType="commonVM:WeatherNowViewModel">
+                    <VerticalStackLayout
+                        BindingContext="{Binding Path=WNowViewModel, Source={x:Reference AQIPage}, x:DataType={x:Type local:WeatherAQIPage}}"
+                        x:DataType="commonVM:WeatherNowViewModel">
                         <Label
                             Padding="16,10"
                             FontSize="16"
@@ -93,10 +92,11 @@
                 </Frame>
                 <VerticalStackLayout
                     x:Name="AQIContainer"
-                    BindingContext="{Binding Path=AQIView, Source={x:Reference AQIPage}}"
+                    BindingContext="{Binding Path=AQIView, Source={x:Reference AQIPage}, x:DataType={x:Type local:WeatherAQIPage}}"
                     BindableLayout.ItemTemplateSelector="{StaticResource aqiTemplateSelector}">
                     <BindableLayout.ItemsSource>
-                        <OnIdiom Phone="{Binding AQIGraphData}" Default="{Binding AQIForecastData}" />
+                        <OnIdiom Phone="{Binding AQIGraphData}" Default="{Binding AQIForecastData}"
+                                 x:DataType="controls1:AirQualityForecastViewModel" />
                     </BindableLayout.ItemsSource>
                 </VerticalStackLayout>
             </VerticalStackLayout>
@@ -105,9 +105,10 @@
             x:Name="ContentIndicator"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            BindingContext="{Binding Path=AQIView, Source={x:Reference AQIPage}}">
+            BindingContext="{Binding Path=AQIView, Source={x:Reference AQIPage}, x:DataType={x:Type local:WeatherAQIPage}}">
             <ActivityIndicator.IsRunning>
                 <OnIdiom
+                    x:DataType="controls1:AirQualityForecastViewModel"
                     Phone="{Binding AQIGraphData, Converter={StaticResource IsListNullOrEmptyConverter}, TargetNullValue=true, FallbackValue=true}"
                     Default="{Binding AQIForecastData, Converter={StaticResource IsListNullOrEmptyConverter}, TargetNullValue=true, FallbackValue=true}" />
             </ActivityIndicator.IsRunning>

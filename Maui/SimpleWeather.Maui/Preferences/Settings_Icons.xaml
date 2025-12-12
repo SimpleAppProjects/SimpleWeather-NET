@@ -19,7 +19,7 @@
                 Padding="0"
                 MinimumHeightRequest="0"
                 VerticalOptions="Start"
-                IsVisible="{Binding IsRunning, Source={x:Reference LoadingRing}, Converter={StaticResource inverseBoolConverter}}">
+                IsVisible="{Binding IsRunning, Source={x:Reference LoadingRing}, Converter={StaticResource inverseBoolConverter}, x:DataType={x:Type ActivityIndicator}}">
                 <VerticalStackLayout x:Name="IconRadioContainer" />
             </Frame>
         </ScrollView>

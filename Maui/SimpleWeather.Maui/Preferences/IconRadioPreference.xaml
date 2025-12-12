@@ -5,6 +5,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
+    xmlns:local="clr-namespace:SimpleWeather.Maui.Preferences"
     xmlns:matIcons="clr-namespace:SimpleWeather.Maui.MaterialIcons"
     BackgroundColor="{AppThemeBinding Light='White', Dark='#1b1b1b'}"
     x:Name="PreferenceControl">
@@ -31,7 +32,7 @@
             </VerticalStackLayout>
             <Image
                 Margin="16,0,0,0"
-                IsVisible="{Binding IsPremiumIcon, Source={x:Reference PreferenceControl}, Mode=OneWay, FallbackValue=false, TargetNullValue=false}"
+                IsVisible="{Binding IsPremiumIcon, Source={x:Reference PreferenceControl}, x:DataType={x:Type local:IconRadioPreference}, Mode=OneWay, FallbackValue=false, TargetNullValue=false}"
                 VerticalOptions="End">
                 <Image.Source>
                     <matIcons:MaterialIcon

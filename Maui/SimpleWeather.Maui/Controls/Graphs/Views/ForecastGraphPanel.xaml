@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:d="http://schemas.microsoft.com/dotnet/2021/maui/design"
     xmlns:graphs="clr-namespace:SimpleWeather.NET.Controls.Graphs"
+    xmlns:graphViews="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="Control"
     mc:Ignorable="d">
@@ -18,13 +19,13 @@
             x:Name="LeftButton"
             Grid.Column="0"
             Clicked="LeftButton_Click"
-            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, x:DataType={x:Type graphViews:ForecastGraphPanel}, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
         <ImageButton
             x:Name="RightButton"
             Grid.Column="2"
             Clicked="RightButton_Click"
-            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, x:DataType={x:Type graphViews:ForecastGraphPanel}, Mode=OneWay}"
             Style="{DynamicResource RightArrowButton}" />
         <graphs:LineView
             x:Name="LineGraphView"

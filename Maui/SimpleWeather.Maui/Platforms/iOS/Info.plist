@@ -13,11 +13,11 @@
 		<string>SimpleWeather.ImageDatabaseTask</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>SimpleWeather (Debug)</string>
+    <string>SimpleWeather</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.thewizrd.simpleweather.debug</string>
+    <string>com.thewizrd.simpleweather</string>
 	<key>CFBundleName</key>
-	<string>SimpleWeather (Debug)</string>
+    <string>SimpleWeather</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

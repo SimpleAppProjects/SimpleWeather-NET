@@ -51,8 +51,8 @@
                 BorderColor="Transparent"
                 HasShadow="False"
                 HorizontalOptions="FillAndExpand"
-                BindingContext="{Binding LocationSearchViewModel, Source={x:Reference SetupLocPage}}"
-                IsEnabled="{Binding IsLoading, Converter={StaticResource inverseBoolConverter}, Mode=OneWay}"
+                BindingContext="{Binding LocationSearchViewModel, Source={x:Reference SetupLocPage}, x:DataType={x:Type local:SetupLocationsPage}}"
+                IsEnabled="{Binding IsLoading, Converter={StaticResource inverseBoolConverter}, Mode=OneWay, x:DataType={x:Type commonVM:LocationSearchViewModel}}"
                 MaximumWidthRequest="1080"
                 SizeChanged="SearchBar_SizeChanged">
                 <Frame.GestureRecognizers>
@@ -107,8 +107,8 @@
                 x:Name="LoadingRing"
                 Grid.Row="3"
                 Margin="10"
-                BindingContext="{Binding LocationSearchViewModel, Source={x:Reference SetupLocPage}}"
-                IsRunning="{Binding IsLoading, Mode=OneWay}"
+                BindingContext="{Binding LocationSearchViewModel, Source={x:Reference SetupLocPage}, x:DataType={x:Type local:SetupLocationsPage}}"
+                IsRunning="{Binding IsLoading, Mode=OneWay, x:DataType={x:Type commonVM:LocationSearchViewModel}}"
                 Color="{AppThemeBinding Light={StaticResource LightOnPrimary},
                                         Dark={StaticResource DarkOnSurface}}" />
         </Grid>

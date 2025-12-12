@@ -67,7 +67,7 @@
                                       Text="{x:Static res_strings:Resources.not_channel_name_precipnotification}" />
                     <prefs:PickerViewCell
                         x:Name="PoPChancePctPref"
-                        IsEnabled="{Binding On, Source={x:Reference PoPChancePref}, Mode=OneWay}"
+                        IsEnabled="{Binding On, Source={x:Reference PoPChancePref}, x:DataType={x:Type prefs:SwitchCell}, Mode=OneWay}"
                         PreferenceKey="{x:Static settings:SettingsManager.KEY_POPCHANCEPCT}"
                         Text="{x:Static res_strings:Resources.label_chance}">
                         <prefs:PickerViewCell.Items>

@@ -50,7 +50,7 @@
                     <prefs:TimePickerViewCell x:Name="DailyNotifTimePref"
                                               Text="{x:Static res_strings:Resources.pref_title_time}"
                                               x:DataType="{x:Null}"
-                                              IsEnabled="{Binding On, Source={x:Reference DailyNotifPref}, Mode=OneWay}"
+                                              IsEnabled="{Binding On, Source={x:Reference DailyNotifPref}, x:DataType={x:Type prefs:SwitchCell}, Mode=OneWay}"
                                               PreferenceKey="{x:Static settings:SettingsManager.KEY_DAILYNOTIFICATIONTIME}" />
                 </TableSection>
             </TableRoot>

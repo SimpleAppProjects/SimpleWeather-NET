@@ -57,7 +57,7 @@
                         VerticalOptions="Center" />
                     <Image Grid.Column="3" Margin="0,0,12,0">
                         <Image.Resources>
-                            <toolkitConverters:BoolToObjectConverter x:Name="ExpandSymbolConverter"
+                            <toolkitConverters:BoolToObjectConverter x:Key="ExpandSymbolConverter"
                                                                      x:TypeArguments="matIcons:MaterialSymbol"
                                                                      TrueObject="ExpandLess" FalseObject="ExpandMore" />
                         </Image.Resources>

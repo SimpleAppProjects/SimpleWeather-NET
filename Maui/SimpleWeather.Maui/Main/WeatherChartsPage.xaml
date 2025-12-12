@@ -1,4 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <viewModels:ViewModelPage
     x:Class="SimpleWeather.Maui.Main.WeatherChartsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -20,7 +21,8 @@
         <converters:ObjectToCollectionConverter x:Key="objToCollectionConv" />
         <converters:GraphDataLabelConverter x:Key="graphDataLabelConverter" />
         <DataTemplate x:Key="LineViewDataTemplate" x:DataType="{x:Type graphs:LineViewData}">
-            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4,0', Desktop='16, 0'}"
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4"
+                   Margin="{OnIdiom Default='4,0', Desktop='16, 0'}"
                    BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
                 <VerticalStackLayout>
                     <Label
@@ -33,7 +35,8 @@
             </Frame>
         </DataTemplate>
         <DataTemplate x:Key="BarChartDataTemplate" x:DataType="{x:Type controls:ForecastGraphViewModel}">
-            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4" Margin="{OnIdiom Default='4,0', Desktop='16, 0'}"
+            <Frame CornerRadius="16" HasShadow="False" BorderColor="Transparent" Padding="0,4"
+                   Margin="{OnIdiom Default='4,0', Desktop='16, 0'}"
                    BackgroundColor="{AppThemeBinding Light={StaticResource LightCompositeFrameBackground}, Dark={StaticResource DarkCompositeFrameBackground}}">
                 <VerticalStackLayout>
                     <Label
@@ -64,7 +67,7 @@
             CanReorderItems="False"
             ItemSizingStrategy="MeasureAllItems"
             SelectionMode="None"
-            ItemsSource="{Binding ChartsView.GraphModels, Source={x:Reference ChartsPage}}"
+            ItemsSource="{Binding ChartsView.GraphModels, Source={x:Reference ChartsPage}, x:DataType={x:Type local:WeatherChartsPage}}"
             ItemTemplate="{StaticResource chartsDataTemplateSelector}"
             ChildAdded="ListControl_ChildAdded">
             <CollectionView.ItemsLayout>

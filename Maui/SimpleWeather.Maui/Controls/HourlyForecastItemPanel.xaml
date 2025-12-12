@@ -15,7 +15,7 @@
             x:Name="LeftButton"
             Grid.Column="0"
             Clicked="LeftButton_Click"
-            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToStart, Source={x:Reference Control}, x:DataType={x:Type controls:HourlyForecastItemPanel}, Mode=OneWay}"
             Style="{DynamicResource LeftArrowButton}" />
         <Grid Grid.Column="1">
             <CollectionView
@@ -24,7 +24,7 @@
                 CanMixGroups="False"
                 IsGrouped="False"
                 SelectionMode="None"
-                ItemsSource="{Binding ForecastData, Source={x:Reference Control}, Mode=OneWay}"
+                ItemsSource="{Binding ForecastData, Source={x:Reference Control}, x:DataType={x:Type controls:HourlyForecastItemPanel}, Mode=OneWay}"
                 HorizontalScrollBarVisibility="Never"
                 VerticalScrollBarVisibility="Never"
                 Loaded="HourlyForecastControl_Loaded"
@@ -48,7 +48,7 @@
             x:Name="RightButton"
             Grid.Column="2"
             Clicked="RightButton_Click"
-            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, Mode=OneWay}"
+            IsEnabled="{Binding CanScrollToEnd, Source={x:Reference Control}, x:DataType={x:Type controls:HourlyForecastItemPanel}, Mode=OneWay}"
             Style="{DynamicResource RightArrowButton}" />
     </Grid>
 </ContentView>
