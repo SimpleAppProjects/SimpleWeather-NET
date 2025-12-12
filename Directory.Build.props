@@ -60,7 +60,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SentryVersion>5.16.2</SentryVersion>
+    <SentryVersion>6.0.0</SentryVersion>
   </PropertyGroup>
 
   <PropertyGroup>
