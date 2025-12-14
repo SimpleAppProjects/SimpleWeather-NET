@@ -67,24 +67,24 @@
                             DisplayMemberPath="Display"
                             SelectedValuePath="Value">
                             <controls:ComboBoxItem Display="{helpers:StringRes Name='summary_default'}" Value="" />
-                            <controls:ComboBoxItem Value="en-US"/>
-                            <controls:ComboBoxItem Value="ar-SA"/>
-                            <controls:ComboBoxItem Value="de"/>
-                            <controls:ComboBoxItem Value="de-AT"/>
-                            <controls:ComboBoxItem Value="en"/>
-                            <controls:ComboBoxItem Value="es"/>
-                            <controls:ComboBoxItem Value="fr"/>
-                            <controls:ComboBoxItem Value="hu"/>
-                            <controls:ComboBoxItem Value="id"/>
-                            <controls:ComboBoxItem Value="lt"/>
-                            <controls:ComboBoxItem Value="nl"/>
-                            <controls:ComboBoxItem Value="pl"/>
-                            <controls:ComboBoxItem Value="ro"/>
-                            <controls:ComboBoxItem Value="ru"/>
-                            <controls:ComboBoxItem Value="sk"/>
-                            <controls:ComboBoxItem Value="tr"/>
-                            <controls:ComboBoxItem Value="vi"/>
-                            <controls:ComboBoxItem Value="zh-Hans"/>
+                            <controls:ComboBoxItem Value="en-US" />
+                            <controls:ComboBoxItem Value="ar-SA" />
+                            <controls:ComboBoxItem Value="de" />
+                            <controls:ComboBoxItem Value="de-AT" />
+                            <controls:ComboBoxItem Value="en" />
+                            <controls:ComboBoxItem Value="es" />
+                            <controls:ComboBoxItem Value="fr" />
+                            <controls:ComboBoxItem Value="hu" />
+                            <controls:ComboBoxItem Value="id" />
+                            <controls:ComboBoxItem Value="lt" />
+                            <controls:ComboBoxItem Value="nl" />
+                            <controls:ComboBoxItem Value="pl" />
+                            <controls:ComboBoxItem Value="ro" />
+                            <controls:ComboBoxItem Value="ru" />
+                            <controls:ComboBoxItem Value="sk" />
+                            <controls:ComboBoxItem Value="tr" />
+                            <controls:ComboBoxItem Value="vi" />
+                            <controls:ComboBoxItem Value="zh-Hans" />
                         </ComboBox>
                     </mtuic:SettingsCard>
 
@@ -158,7 +158,7 @@
                             </mtuic:SettingsCard.Description>
                             <Border
                                 x:Name="KeyBorder"
-                                MinWidth="260"
+                                Width="320"
                                 Padding="10,4"
                                 BorderBrush="DarkGray"
                                 BorderThickness="2">

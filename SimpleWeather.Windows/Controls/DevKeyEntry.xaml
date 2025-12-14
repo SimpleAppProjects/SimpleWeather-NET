@@ -11,7 +11,7 @@
 
     <StackPanel>
         <Border
-            MinWidth="260"
+            Width="320"
             Padding="10,4"
             HorizontalAlignment="Left"
             BorderBrush="DarkGray"

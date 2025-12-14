@@ -5,7 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using SimpleWeather.Controls;
 using SimpleWeather.Extras;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Controls;
@@ -21,11 +20,9 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
 using System.Globalization;
-using System.Linq;
 using Windows.ApplicationModel;
 using Windows.Devices.Geolocation;
 using ComboBoxItem = SimpleWeather.Controls.ComboBoxItem;
-using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.NET.Preferences
 {
@@ -70,21 +67,6 @@ namespace SimpleWeather.NET.Preferences
             ActionQueue = new HashSet<string>();
 
             RestoreSettings();
-
-            // Event Listeners
-            FollowGPS.Toggled += FollowGPS_Toggled;
-            AlertSwitch.Toggled += AlertSwitch_Toggled;
-            APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
-            RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
-            RadarComboBox.SelectionChanged += RadarComboBox_SelectionChanged;
-            PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
-            ThemeComboBox.SelectionChanged += ThemeComboBox_SelectionChanged;
-            LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
-            DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
-            DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
-            PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
-            PoPChancePct.SelectionChanged += PoPChancePct_SelectionChanged;
-            MinAlertSeverity.SelectionChanged += MinAlertSeverity_SelectionChanged;
 
             AnalyticsLogger.LogEvent("Settings_General");
         }
@@ -238,6 +220,40 @@ namespace SimpleWeather.NET.Preferences
             });
         }
 
+        private void RegisterListeners()
+        {
+            FollowGPS.Toggled += FollowGPS_Toggled;
+            AlertSwitch.Toggled += AlertSwitch_Toggled;
+            APIComboBox.SelectionChanged += APIComboBox_SelectionChanged;
+            RefreshComboBox.SelectionChanged += RefreshComboBox_SelectionChanged;
+            RadarComboBox.SelectionChanged += RadarComboBox_SelectionChanged;
+            PersonalKeySwitch.Toggled += PersonalKeySwitch_Toggled;
+            ThemeComboBox.SelectionChanged += ThemeComboBox_SelectionChanged;
+            LanguageComboBox.SelectionChanged += LanguageComboBox_SelectionChanged;
+            DailyNotifSwitch.Toggled += DailyNotifSwitch_Toggled;
+            DailyNotifTimePicker.SelectedTimeChanged += DailyNotifTimePicker_SelectedTimeChanged;
+            PoPChanceNotifSwitch.Toggled += PoPChanceNotifSwitch_Toggled;
+            PoPChancePct.SelectionChanged += PoPChancePct_SelectionChanged;
+            MinAlertSeverity.SelectionChanged += MinAlertSeverity_SelectionChanged;
+        }
+
+        private void UnregisterListeners()
+        {
+            FollowGPS.Toggled -= FollowGPS_Toggled;
+            AlertSwitch.Toggled -= AlertSwitch_Toggled;
+            APIComboBox.SelectionChanged -= APIComboBox_SelectionChanged;
+            RefreshComboBox.SelectionChanged -= RefreshComboBox_SelectionChanged;
+            RadarComboBox.SelectionChanged -= RadarComboBox_SelectionChanged;
+            PersonalKeySwitch.Toggled -= PersonalKeySwitch_Toggled;
+            ThemeComboBox.SelectionChanged -= ThemeComboBox_SelectionChanged;
+            LanguageComboBox.SelectionChanged -= LanguageComboBox_SelectionChanged;
+            DailyNotifSwitch.Toggled -= DailyNotifSwitch_Toggled;
+            DailyNotifTimePicker.SelectedTimeChanged -= DailyNotifTimePicker_SelectedTimeChanged;
+            PoPChanceNotifSwitch.Toggled -= PoPChanceNotifSwitch_Toggled;
+            PoPChancePct.SelectionChanged -= PoPChancePct_SelectionChanged;
+            MinAlertSeverity.SelectionChanged -= MinAlertSeverity_SelectionChanged;
+        }
+
         public Task<bool> OnBackRequested()
         {
             var provider = APIComboBox.SelectedValue.ToString();
@@ -261,6 +277,8 @@ namespace SimpleWeather.NET.Preferences
             App.Current.UnregisterSettingsListener();
             SettingsManager.OnSettingsChanged += Settings_OnSettingsChanged;
             RestoreSettings();
+            // Event Listeners
+            RegisterListeners();
         }
 
         public void OnNavigatedFromPage(NavigationEventArgs e)
@@ -279,9 +297,10 @@ namespace SimpleWeather.NET.Preferences
             }
             else
             {
-                // Unsubscribe from event
+                // Unsubscribe from events
                 App.Current.RegisterSettingsListener();
                 SettingsManager.OnSettingsChanged -= Settings_OnSettingsChanged;
+                UnregisterListeners();
 
                 ProcessQueue();
             }
@@ -390,6 +409,8 @@ namespace SimpleWeather.NET.Preferences
         {
             return DispatcherQueue.EnqueueAsync(async () =>
             {
+                if (this.XamlRoot == null) return;
+
                 var keydialog = new KeyEntryDialog(APIComboBox.SelectedValue.ToString())
                 {
                     RequestedTheme = Shell.Instance.AppFrame.RequestedTheme,
