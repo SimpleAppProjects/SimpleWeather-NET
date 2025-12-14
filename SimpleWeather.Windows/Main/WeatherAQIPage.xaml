@@ -104,7 +104,7 @@
                                     GraphHeight="250" />
                             </toolkitControls:HeaderedContentControl>
                         </DataTemplate>
-                        <DataTemplate x:Key="AQIRangeBarGraphTemplate" x:DataType="graphs:RangeBarGraphData">
+                        <DataTemplate x:Key="AQIRangeBarGraphTemplate" x:DataType="graphs:ForecastRangeBarGraphData">
                             <toolkitControls:HeaderedContentControl
                                 Margin="0,16"
                                 HorizontalContentAlignment="Stretch"

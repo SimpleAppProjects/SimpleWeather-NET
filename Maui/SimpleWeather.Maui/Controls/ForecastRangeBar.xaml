@@ -77,7 +77,8 @@
             Rotation="{Binding XIconRotation, Mode=OneWay}"
             AnchorX="0.5"
             AnchorY="0.5"
-            WeatherIcon="{Binding XWeatherIcon, Mode=OneWay}" />
+            WeatherIcon="{Binding XWeatherIcon, Mode=OneWay}"
+            IsVisible="{Binding XWeatherIcon, Converter={StaticResource objectBooleanConverter}, Mode=OneWay}"/>
         <Label
             x:Name="BarDate"
             HorizontalOptions="Center"

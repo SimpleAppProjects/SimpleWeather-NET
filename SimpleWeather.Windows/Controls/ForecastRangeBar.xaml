@@ -81,7 +81,8 @@
             IconHeight="50"
             IconWidth="50"
             RenderTransformOrigin="0.5,0.5"
-            WeatherIcon="{x:Bind Data.XWeatherIcon, Mode=OneWay}">
+            WeatherIcon="{x:Bind Data.XWeatherIcon, Mode=OneWay}"
+            Visibility="{x:Bind Data.XWeatherIcon, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
             <local:IconControl.RenderTransform>
                 <RotateTransform Angle="{x:Bind Data.XIconRotation, Mode=OneWay}" />
             </local:IconControl.RenderTransform>

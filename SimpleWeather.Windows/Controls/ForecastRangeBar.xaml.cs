@@ -35,6 +35,16 @@ namespace SimpleWeather.NET.Controls
             {
                 _forecastType = value;
                 BarPoP.Visibility = _forecastType == Controls.ForecastType.Temperature ? Visibility.Visible : Visibility.Collapsed;
+                BarDate.FontSize = BarHi.FontSize = BarLo.FontSize = _forecastType switch
+                {
+                    Controls.ForecastType.Temperature => 16,
+                    _ => 14
+                };
+                BarIcon.IconHeight = BarIcon.IconWidth = _forecastType switch
+                {
+                    Controls.ForecastType.Temperature => 50,
+                    _ => 30
+                };
             }
         }
 
