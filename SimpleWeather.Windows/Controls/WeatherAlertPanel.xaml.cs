@@ -56,6 +56,8 @@ namespace SimpleWeather.NET.Controls
                 }
 
                 MessageSpan.Inlines.Add(new LineBreak());
+
+                this.Bindings.Update();
             };
         }
     }

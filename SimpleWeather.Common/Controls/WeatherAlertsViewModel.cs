@@ -9,10 +9,13 @@ using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace SimpleWeather.Common.Controls
 {
+    [Bindable(true)]
 #if WINUI
     [WinRT.GeneratedBindableCustomProperty]
 #endif
@@ -25,11 +28,10 @@ namespace SimpleWeather.Common.Controls
         private ObservableItem<ICollection<WeatherAlert>> currentAlertsData;
 
         [ObservableProperty]
-        public partial SimpleObservableList<WeatherAlertViewModel> Alerts { get; set; }
+        public partial ICollection<WeatherAlertViewModel> Alerts { get; set; }
 
         public WeatherAlertsViewModel()
         {
-            Alerts = new SimpleObservableList<WeatherAlertViewModel>();
             currentAlertsData = new ObservableItem<ICollection<WeatherAlert>>();
             currentAlertsData.ItemValueChanged += CurrentAlertsData_ItemValueChanged;
         }
@@ -84,31 +86,12 @@ namespace SimpleWeather.Common.Controls
 
         private void RefreshAlerts(ICollection<WeatherAlert> alertData)
         {
-            Alerts.Clear();
-
-            if (alertData?.Count > 0)
+            var now = DateTimeOffset.Now;
+            // Skip if alert has expired
+            Alerts = alertData?.WhereNot(alert => alert.ExpiresDate <= now || alert.Date > now)?.Select(alert =>
             {
-                var now = DateTimeOffset.Now;
-                Alerts.EnsureCapacity(alertData.Count);
-                foreach (var alert in alertData)
-                {
-                    // Skip if alert has expired
-                    if (alert.ExpiresDate <= now || alert.Date > now)
-                        continue;
-
-                    Alerts.Add(new WeatherAlertViewModel(alert));
-                }
-            }
-
-#if WINUI
-            DispatcherQueue.EnqueueAsync(() =>
-#else
-            Dispatcher.Dispatch(() =>
-#endif
-            {
-                Alerts.NotifyCollectionChanged();
-                OnPropertyChanged(nameof(Alerts));
-            });
+                return new WeatherAlertViewModel(alert);
+            }).ToList();
         }
 
         private bool isDisposed;

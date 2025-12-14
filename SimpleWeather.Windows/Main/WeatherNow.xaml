@@ -151,17 +151,29 @@
                         HorizontalAlignment="Stretch"
                         HorizontalContentAlignment="Stretch"
                         x:Load="{x:Bind AlertsView.Alerts, Mode=OneWay, Converter={StaticResource collectionBooleanConverter}}"
-                        Background="OrangeRed"
+                        Background="{ThemeResource ErrorContainerColor}"
                         Click="AlertButton_Click"
                         Loaded="DeferedControl_Loaded">
                         <Button.Resources>
-                            <SolidColorBrush x:Key="ButtonBackground" Color="OrangeRed" />
-                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="#FFFF5A00" />
-                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="#FFFF8A00" />
+                            <SolidColorBrush x:Key="ButtonBackground" Color="{ThemeResource ErrorContainerColor}" />
+                            <SolidColorBrush
+                                x:Key="ButtonBackgroundPointerOver"
+                                Opacity="0.9"
+                                Color="{ThemeResource ErrorContainerColor}" />
+                            <SolidColorBrush
+                                x:Key="ButtonBackgroundPressed"
+                                Opacity="0.8"
+                                Color="{ThemeResource ErrorContainerColor}" />
                             <StaticResource x:Key="ButtonBackgroundDisabled" ResourceKey="ButtonDisabledBackgroundThemeBrush" />
-                            <SolidColorBrush x:Key="ButtonForeground" Color="White" />
-                            <StaticResource x:Key="ButtonForegroundPointerOver" ResourceKey="SystemControlBackgroundChromeWhiteBrush" />
-                            <StaticResource x:Key="ButtonForegroundPressed" ResourceKey="SystemControlBackgroundChromeWhiteBrush" />
+                            <SolidColorBrush x:Key="ButtonForeground" Color="{ThemeResource OnErrorContainerColor}" />
+                            <SolidColorBrush
+                                x:Key="ButtonForegroundPointerOver"
+                                Opacity="0.9"
+                                Color="{ThemeResource OnErrorContainerColor}" />
+                            <SolidColorBrush
+                                x:Key="ButtonForegroundPressed"
+                                Opacity="0.8"
+                                Color="{ThemeResource OnErrorContainerColor}" />
                             <StaticResource x:Key="ButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
                         </Button.Resources>
                         <Button.Content>
