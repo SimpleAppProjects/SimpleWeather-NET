@@ -359,7 +359,7 @@ namespace SimpleWeather.Utils
         }
 
 #if WINUI
-        public static Windows.UI.Color GetColorFromIndex(int index)
+        public static Windows.UI.Color GetColorFromIndex(int? index)
         {
             return index switch
             {

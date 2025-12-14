@@ -1,7 +1,7 @@
 ﻿#if !UNIT_TEST && (WINDOWS || __MACCATALYST__)
+using Sentry;
 using System;
 using System.Collections.Generic;
-using Sentry;
 using TimberLog;
 
 namespace SimpleWeather.Utils
@@ -79,7 +79,7 @@ namespace SimpleWeather.Utils
                 TimberLog.LoggerLevel.Info => BreadcrumbLevel.Info,
                 TimberLog.LoggerLevel.Warn => BreadcrumbLevel.Warning,
                 TimberLog.LoggerLevel.Error => BreadcrumbLevel.Error,
-                TimberLog.LoggerLevel.Fatal => BreadcrumbLevel.Critical,
+                TimberLog.LoggerLevel.Fatal => BreadcrumbLevel.Fatal,
                 _ => BreadcrumbLevel.Info
             };
         }
