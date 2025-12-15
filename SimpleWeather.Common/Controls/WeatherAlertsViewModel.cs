@@ -27,8 +27,7 @@ namespace SimpleWeather.Common.Controls
 
         private ObservableItem<ICollection<WeatherAlert>> currentAlertsData;
 
-        [ObservableProperty]
-        public partial ICollection<WeatherAlertViewModel> Alerts { get; set; }
+        [ObservableProperty] public partial ICollection<WeatherAlertViewModel> Alerts { get; set; }
 
         public WeatherAlertsViewModel()
         {
@@ -88,13 +87,14 @@ namespace SimpleWeather.Common.Controls
         {
             var now = DateTimeOffset.Now;
             // Skip if alert has expired
-            Alerts = alertData?.WhereNot(alert => alert.ExpiresDate <= now || alert.Date > now)?.Select(alert =>
-            {
-                return new WeatherAlertViewModel(alert);
-            }).ToList();
+            Alerts = alertData
+                ?.WhereNot(alert => alert.ExpiresDate <= now || alert.Date > now)
+                ?.Select(alert => new WeatherAlertViewModel(alert))
+                ?.ToList();
         }
 
         private bool isDisposed;
+
         // Dispose() calls Dispose(true)
         public void Dispose()
         {
