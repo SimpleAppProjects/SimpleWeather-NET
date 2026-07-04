@@ -1,18 +1,10 @@
-using System.Diagnostics;
-using System.Net;
-using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
-using System.Security;
-using Windows.ApplicationModel.Activation;
-using Windows.ApplicationModel.Background;
-using Windows.ApplicationModel.Core;
-using Windows.Storage;
-using Windows.System;
-using Windows.UI.ViewManagement;
 using CommunityToolkit.Mvvm.DependencyInjection;
+using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
 using CommunityToolkit.WinUI.Notifications;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
 using Newtonsoft.Json;
@@ -21,6 +13,7 @@ using Sentry.Protocol;
 using SimpleWeather.Backgrounds;
 using SimpleWeather.Common;
 using SimpleWeather.Extras;
+using SimpleWeather.Extras.BackgroundTasks;
 using SimpleWeather.Keys;
 using SimpleWeather.NET.BackgroundTasks;
 using SimpleWeather.NET.Helpers;
@@ -38,16 +31,23 @@ using SimpleWeather.Weather_API;
 using SimpleWeather.Weather_API.Json;
 using SimpleWeather.WeatherData.Images;
 using SQLite;
+using System.Diagnostics;
+using System.Net;
+using System.Runtime.ExceptionServices;
+using System.Runtime.InteropServices;
+using System.Security;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
+using Windows.Storage;
+using Windows.System;
+using Windows.UI.ViewManagement;
 using FirebaseAuth = Firebase.Auth;
 using FirebaseDb = Firebase.Database;
 using JsonException = System.Text.Json.JsonException;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using Package = Windows.ApplicationModel.Package;
 using UnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.Extensions.DependencyInjection;
-using SimpleWeather.Extras.BackgroundTasks;
-using CommunityToolkit.WinUI;
 
 namespace SimpleWeather.NET
 {
@@ -618,7 +618,6 @@ namespace SimpleWeather.NET
             if (MainWindow.Current == null || _window == null)
             {
                 MainWindow.Current = _window = new MainWindow();
-                InitializeWindow(_window);
                 _window.Closed += Window_Closed;
                 _window.SizeChanged += Window_SizeChanged;
                 _window.VisibilityChanged += Window_VisibilityChanged;
