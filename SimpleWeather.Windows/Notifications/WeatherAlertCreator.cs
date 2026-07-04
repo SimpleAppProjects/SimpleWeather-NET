@@ -1,9 +1,10 @@
 ﻿using CommunityToolkit.WinUI;
-using CommunityToolkit.WinUI.Notifications;
+using Microsoft.Windows.AppNotifications.Builder;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
+using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -22,12 +23,7 @@ namespace SimpleWeather.NET.Notifications
             });
             var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}ic_error.png");
 
-            ToastCollection toastCollection = new ToastCollection(TAG, displayName,
-                new ToastArguments()
-                {
-                    { Constants.KEY_ACTION, "view-alerts" }
-                }.ToString(),
-                icon);
+            ToastCollection toastCollection = new ToastCollection(TAG, displayName, $"{Constants.KEY_ACTION}=view-alerts", icon);
 
             await ToastNotificationManager.GetDefault()
                 .GetToastCollectionManager()
@@ -51,56 +47,26 @@ namespace SimpleWeather.NET.Notifications
 
                 var alertVM = new WeatherAlertViewModel(alert);
 
-                var toastContent = new ToastContent()
-                {
-                    Visual = new ToastVisual()
-                    {
-                        BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
-                        BindingGeneric = new ToastBindingGeneric()
-                        {
-                            Children =
-                            {
-                                new AdaptiveText()
-                                {
-                                    Text = alertVM.Title
-                                },
-                                new AdaptiveText()
-                                {
-                                    Text = alertVM.ExpireDate
-                                }
-                            },
-                            AppLogoOverride = new ToastGenericAppLogo()
-                            {
-                                Source = WeatherUtils.GetAssetFromAlertType(alertVM.AlertType, false)
-                            },
-                            Attribution = new ToastGenericAttributionText()
-                            {
-                                Text = alertVM.Attribution
-                            }
-                        },
-                    },
-                    Actions = new ToastActionsCustom()
-                    {
-                        Buttons =
-                        {
-                            new ToastButton()
-                                .SetContent(ResStrings.label_moreinfo)
-                                .AddArgument(Constants.KEY_ACTION, "open-link")
-                                .AddArgument(Constants.KEY_DATA, alertVM.Message)
-                        }
-                    },
-                    Launch = new ToastArguments()
-                    {
-                        { Constants.KEY_ACTION, "view-alerts" },
-                        { Constants.KEY_DATA, await JSONParser.SerializerAsync(location) },
-                    }.ToString()
-                };
+                var notification = new AppNotificationBuilder()
+                    .AddText(alertVM.Title)
+                    .AddText(alertVM.ExpireDate)
+                    .SetAppLogoOverride(new Uri(WeatherUtils.GetAssetFromAlertType(alertVM.AlertType, isAbsoluteUri: true, isLight: isLight)))
+                    .SetAttributionText(alertVM.Attribution)
+                    .AddButton(new AppNotificationButton(ResStrings.label_moreinfo)
+                        .AddArgument(Constants.KEY_ACTION, "open-link")
+                        .AddArgument(Constants.KEY_DATA, alertVM.Message)
+                    )
+                    .AddArgument(Constants.KEY_ACTION, "view-alerts")
+                    .AddArgument(Constants.KEY_DATA, await JSONParser.SerializerAsync(location))
+                    .BuildNotification();
 
                 // Set a unique ID for the notification
                 var notID = string.Format("{0}:{1}", location.query, ((int)alertVM.AlertType).ToString());
 
                 // Create the toast notification
-                var toastNotif = new ToastNotification(toastContent.GetXml())
+                var xmlDocument = new XmlDocument();
+                xmlDocument.LoadXml(notification.Payload);
+                var toastNotif = new ToastNotification(xmlDocument)
                 {
                     Group = TAG,
                     Tag = notID,

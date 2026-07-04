@@ -10,75 +10,30 @@ namespace SimpleWeather.Utils
 {
     public static partial class WeatherUtils
     {
-        public static string GetAssetFromAlertType(WeatherData.WeatherAlertType type, bool isAbsoluteUri = true)
+        public static string GetAssetFromAlertType(WeatherData.WeatherAlertType type, bool isAbsoluteUri = true, bool isLight = false)
         {
-            string baseuri = WeatherIconsManager.GetPNGBaseUri();
-            string fileIcon = string.Empty;
-
-            switch (type)
+            string baseuri = WeatherIconsManager.GetPNGBaseUri(isLight);
+            string fileIcon = type switch
             {
-                case WeatherData.WeatherAlertType.DenseFog:
-                    fileIcon = "wi_fog.png";
-                    break;
-                case WeatherData.WeatherAlertType.Fire:
-                    fileIcon = "wi_fire.png";
-                    break;
-                case WeatherData.WeatherAlertType.FloodWarning:
-                case WeatherData.WeatherAlertType.FloodWatch:
-                    fileIcon = "wi_flood.png";
-                    break;
-                case WeatherData.WeatherAlertType.Heat:
-                    fileIcon = "wi_hot.png";
-                    break;
-                case WeatherData.WeatherAlertType.HighWind:
-                    fileIcon = "wi_strong_wind.png";
-                    break;
-                case WeatherData.WeatherAlertType.HurricaneLocalStatement:
-                case WeatherData.WeatherAlertType.HurricaneWindWarning:
-                    fileIcon = "wi_hurricane.png";
-                    break;
-                case WeatherData.WeatherAlertType.SevereThunderstormWarning:
-                case WeatherData.WeatherAlertType.SevereThunderstormWatch:
-                    fileIcon = "wi_thunderstorm.png";
-                    break;
-                case WeatherData.WeatherAlertType.TornadoWarning:
-                case WeatherData.WeatherAlertType.TornadoWatch:
-                    fileIcon = "wi_tornado.png";
-                    break;
-                case WeatherData.WeatherAlertType.Volcano:
-                    fileIcon = "wi_volcano.png";
-                    break;
-                case WeatherData.WeatherAlertType.WinterWeather:
-                    fileIcon = "wi_snowflake_cold.png";
-                    break;
-                case WeatherData.WeatherAlertType.DenseSmoke:
-                    fileIcon = "wi_smoke.png";
-                    break;
-                case WeatherData.WeatherAlertType.DustAdvisory:
-                    fileIcon = "wi_dust.png";
-                    break;
-                case WeatherData.WeatherAlertType.EarthquakeWarning:
-                    fileIcon = "wi_earthquake.png";
-                    break;
-                case WeatherData.WeatherAlertType.GaleWarning:
-                    fileIcon = "wi_gale_warning.png";
-                    break;
-                case WeatherData.WeatherAlertType.SmallCraft:
-                    fileIcon = "wi_small_craft_advisory.png";
-                    break;
-                case WeatherData.WeatherAlertType.StormWarning:
-                    fileIcon = "wi_storm_warning.png";
-                    break;
-                case WeatherData.WeatherAlertType.TsunamiWarning:
-                case WeatherData.WeatherAlertType.TsunamiWatch:
-                    fileIcon = "wi_tsunami.png";
-                    break;
-                case WeatherData.WeatherAlertType.SevereWeather:
-                case WeatherData.WeatherAlertType.SpecialWeatherAlert:
-                default:
-                    fileIcon = "ic_error.png";
-                    break;
-            }
+                WeatherData.WeatherAlertType.DenseFog => "wi_fog.png",
+                WeatherData.WeatherAlertType.Fire => "wi_fire.png",
+                WeatherData.WeatherAlertType.FloodWarning or WeatherData.WeatherAlertType.FloodWatch => "wi_flood.png",
+                WeatherData.WeatherAlertType.Heat => "wi_hot.png",
+                WeatherData.WeatherAlertType.HighWind => "wi_strong_wind.png",
+                WeatherData.WeatherAlertType.HurricaneLocalStatement or WeatherData.WeatherAlertType.HurricaneWindWarning => "wi_hurricane.png",
+                WeatherData.WeatherAlertType.SevereThunderstormWarning or WeatherData.WeatherAlertType.SevereThunderstormWatch => "wi_thunderstorm.png",
+                WeatherData.WeatherAlertType.TornadoWarning or WeatherData.WeatherAlertType.TornadoWatch => "wi_tornado.png",
+                WeatherData.WeatherAlertType.Volcano => "wi_volcano.png",
+                WeatherData.WeatherAlertType.WinterWeather => "wi_snowflake_cold.png",
+                WeatherData.WeatherAlertType.DenseSmoke => "wi_smoke.png",
+                WeatherData.WeatherAlertType.DustAdvisory => "wi_dust.png",
+                WeatherData.WeatherAlertType.EarthquakeWarning => "wi_earthquake.png",
+                WeatherData.WeatherAlertType.GaleWarning => "wi_gale_warning.png",
+                WeatherData.WeatherAlertType.SmallCraft => "wi_small_craft_advisory.png",
+                WeatherData.WeatherAlertType.StormWarning => "wi_storm_warning.png",
+                WeatherData.WeatherAlertType.TsunamiWarning or WeatherData.WeatherAlertType.TsunamiWatch => "wi_tsunami.png",
+                _ => "ic_error.png",
+            };
 
             if (isAbsoluteUri)
             {
@@ -93,44 +48,22 @@ namespace SimpleWeather.Utils
 #if WINUI
         public static Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
         {
-            Color color;
-
-            switch (severity)
+            return severity switch
             {
-                case WeatherData.WeatherAlertSeverity.Severe:
-                    color = Colors.OrangeRed;
-                    break;
-                case WeatherData.WeatherAlertSeverity.Extreme:
-                    color = Colors.Red;
-                    break;
-                case WeatherData.WeatherAlertSeverity.Moderate:
-                default:
-                    color = Colors.Orange;
-                    break;
-            }
-
-            return color;
+                WeatherData.WeatherAlertSeverity.Severe => Colors.OrangeRed,
+                WeatherData.WeatherAlertSeverity.Extreme => Colors.Red,
+                _ => Colors.Orange,
+            };
         }
 #else
         public static Color GetColorFromAlertSeverity(WeatherData.WeatherAlertSeverity severity)
         {
-            Color color;
-
-            switch (severity)
+            return severity switch
             {
-                case WeatherData.WeatherAlertSeverity.Severe:
-                    color = Colors.OrangeRed;
-                    break;
-                case WeatherData.WeatherAlertSeverity.Extreme:
-                    color = Colors.Red;
-                    break;
-                case WeatherData.WeatherAlertSeverity.Moderate:
-                default:
-                    color = Colors.Orange;
-                    break;
-            }
-
-            return color;
+                WeatherData.WeatherAlertSeverity.Severe => Colors.OrangeRed,
+                WeatherData.WeatherAlertSeverity.Extreme => Colors.Red,
+                _ => Colors.Orange,
+            };
         }
 #endif
     }

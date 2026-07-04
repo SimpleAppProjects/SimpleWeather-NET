@@ -71,8 +71,8 @@
           <com:ComServer>
             <!--Register COM CLSID LocalServer32 registry key-->
             <!-- Toast activator -->
-            <com:ExeServer Executable="SimpleWeather.Windows.exe" Arguments="-ToastActivated" DisplayName="Toast activator">
-              <com:Class Id="AD1F464A-5E86-4CC9-A6B4-63CDB416CDED" DisplayName="Toast activator"/>
+            <com:ExeServer Executable="SimpleWeather.Windows.exe" Arguments="----AppNotificationActivated:" DisplayName="App notification activator">
+              <com:Class Id="AD1F464A-5E86-4CC9-A6B4-63CDB416CDED" DisplayName="App notification activator"/>
             </com:ExeServer>
             <!-- Widget Provider -->
             <com:ExeServer Executable="SimpleWeather.Windows.exe" Arguments="-RegisterProcessAsComServer">

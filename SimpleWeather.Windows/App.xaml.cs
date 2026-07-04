@@ -1,12 +1,12 @@
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
 using CommunityToolkit.WinUI.Helpers;
-using CommunityToolkit.WinUI.Notifications;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.Windows.AppLifecycle;
+using Microsoft.Windows.AppNotifications;
 using Newtonsoft.Json;
 using Sentry.Extensibility;
 using Sentry.Protocol;
@@ -316,8 +316,13 @@ namespace SimpleWeather.NET
         /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs args)
         {
-            // Register for toast activation. Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
-            ToastNotificationManagerCompat.OnActivated += ToastNotificationManagerCompat_OnActivated;
+            // To ensure all Notification handling happens in this process instance, register for
+            // NotificationInvoked before calling Register(). Without this a new process will
+            // be launched to handle the notification.
+            AppNotificationManager notificationManager = AppNotificationManager.Default;
+            notificationManager.NotificationInvoked += NotificationManager_NotificationInvoked;
+            notificationManager.Register();
+
             // Register activation events
             AppInstance.GetCurrent().Activated += (sender, e) =>
             {
@@ -335,24 +340,25 @@ namespace SimpleWeather.NET
 
             // If we weren't launched by an app, launch our window like normal.
             // Otherwise if launched by a toast, our OnActivated callback will be triggered
-            if (!ToastNotificationManagerCompat.WasCurrentProcessToastActivated())
-            {
-                var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
-                var activationKind = activatedArgs.Kind;
-                var launchArgs = activatedArgs?.Data as ILaunchActivatedEventArgs;
+            var activatedArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
+            var activationKind = activatedArgs.Kind;
+            var launchArgs = activatedArgs?.Data as ILaunchActivatedEventArgs;
 
-                if (launchArgs?.Arguments?.Contains("RegisterProcessAsComServer") == true)
-                {
-                    RegisterWidgetProvider();
-                }
-                else if (launchArgs?.Arguments?.Contains("RegisterForBGTaskServer") == true)
-                {
-                    RegisterInProcBackgroundTask();
-                }
-                else
-                {
-                    LaunchAndBringToForegroundIfNeeded(args.ToCompatArgs());
-                }
+            if (activationKind == ExtendedActivationKind.ToastNotification && activatedArgs?.Data is AppNotificationActivatedEventArgs notificationArgs)
+            {
+                HandleNotification(notificationArgs);
+            }
+            else if (launchArgs?.Arguments?.Contains("RegisterProcessAsComServer") == true)
+            {
+                RegisterWidgetProvider();
+            }
+            else if (launchArgs?.Arguments?.Contains("RegisterForBGTaskServer") == true)
+            {
+                RegisterInProcBackgroundTask();
+            }
+            else
+            {
+                LaunchAndBringToForegroundIfNeeded(args.ToCompatArgs());
             }
         }
 
@@ -362,6 +368,11 @@ namespace SimpleWeather.NET
             {
                 LaunchAndBringToForegroundIfNeeded(args.ToCompatArgs());
             }
+        }
+
+        private void NotificationManager_NotificationInvoked(AppNotificationManager sender, AppNotificationActivatedEventArgs args)
+        {
+            HandleNotification(args);
         }
 
         private void LaunchAndBringToForegroundIfNeeded(LaunchActivatedEventExArgs? args = null)
@@ -447,7 +458,7 @@ namespace SimpleWeather.NET
             }
         }
 
-        private void ToastNotificationManagerCompat_OnActivated(ToastNotificationActivatedEventArgsCompat e)
+        private void HandleNotification(AppNotificationActivatedEventArgs args)
         {
             // Use the dispatcher from the window if present, otherwise the app dispatcher
             var dispatcherQueue = _window?.DispatcherQueue ?? SharedModule.Instance.DispatcherQueue;
@@ -459,23 +470,16 @@ namespace SimpleWeather.NET
                 // Get the root frame
                 RootFrame = _window?.Content as Frame;
 
-                var args = ToastArguments.Parse(e.Argument);
-
-                if (!args.Contains(Constants.KEY_ACTION))
+                if (!args.Arguments.TryGetValue(Constants.KEY_ACTION, out string action))
                     return;
 
-                switch (args[Constants.KEY_ACTION])
+                switch (action)
                 {
                     case "view-alerts":
                         {
                             if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                             {
-                                string? data = null;
-
-                                if (args.Contains(Constants.KEY_DATA))
-                                {
-                                    data = args[Constants.KEY_DATA];
-                                }
+                                args.Arguments.TryGetValue(Constants.KEY_DATA, out string? data);
 
                                 // App loaded for first time
                                 if (RootFrame.Content == null)
@@ -553,12 +557,7 @@ namespace SimpleWeather.NET
                         {
                             if (SettingsManager.WeatherLoaded && SettingsManager.OnBoardComplete)
                             {
-                                string? data = null;
-
-                                if (args.Contains(Constants.KEY_DATA))
-                                {
-                                    data = args[Constants.KEY_DATA];
-                                }
+                                args.Arguments.TryGetValue(Constants.KEY_DATA, out string? data);
 
                                 LocationData.LocationData? locData = null;
                                 if (!string.IsNullOrWhiteSpace(data))
@@ -591,7 +590,7 @@ namespace SimpleWeather.NET
 
                     case "open-link":
                         {
-                            if (args.TryGetValue(Constants.KEY_DATA, out var data))
+                            if (args.Arguments.TryGetValue(Constants.KEY_DATA, out var data))
                             {
                                 this.RunCatching(async () =>
                                 {

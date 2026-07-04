@@ -1,9 +1,9 @@
-﻿using CommunityToolkit.WinUI.Notifications;
+﻿using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
 using SimpleWeather.Utils;
 using Windows.ApplicationModel.Background;
 using Windows.Foundation.Metadata;
 using Windows.Services.Store;
-using Windows.UI.Notifications;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.NET.BackgroundTasks
@@ -169,40 +169,15 @@ namespace SimpleWeather.NET.BackgroundTasks
 
         private static void CreateUpdateToast()
         {
-            var toastContent = new ToastContent()
-            {
-                Visual = new ToastVisual()
-                {
-                    BindingGeneric = new ToastBindingGeneric()
-                    {
-                        Children =
-                        {
-                            new AdaptiveText()
-                            {
-                                Text = ResStrings.prompt_update_available
-                            }
-                        }
-                    }
-                },
-                Audio = new ToastAudio()
-                {
-                    Silent = true
-                },
-                Launch = new ToastArguments()
-                {
-                    { Constants.KEY_ACTION, "check-updates" }
-                }
-                .ToString()
-            };
-
             // Create the toast notification
-            var toastNotif = new ToastNotification(toastContent.GetXml())
-            {
-                Tag = toastContent.GetHashCode().ToInvariantString()
-            };
+            var notifBuilder = new AppNotificationBuilder()
+                .AddText(ResStrings.prompt_update_available)
+                .MuteAudio()
+                .AddArgument(Constants.KEY_ACTION, "check-updates");
 
             // And send the notification
-            ToastNotificationManager.CreateToastNotifier().Show(toastNotif);
+            var notificationMgr = AppNotificationManager.Default;
+            notificationMgr.Show(notifBuilder.BuildNotification());
         }
 
         public static async Task RegisterBackgroundTask(bool reregister = false)

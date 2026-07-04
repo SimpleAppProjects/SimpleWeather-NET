@@ -63,6 +63,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="10.0.9" />
     <PackageReference Include="TimberLog" Version="2.0.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
     <PackageReference Include="KeyedSemaphores" Version="6.1.0" />
@@ -82,7 +83,9 @@
     <PackageReference Include="CommunityToolkit.WinUI.Extensions" Version="$(WinToolkitVersion)" />
     <PackageReference Include="CommunityToolkit.WinUI.Helpers" Version="$(WinToolkitVersion)" />
     <PackageReference Include="CommunityToolkit.WinUI.Media" Version="$(WinToolkitVersion)" />
-    <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2" />
+    <PackageReference Include="CommunityToolkit.WinUI.Notifications" Version="7.1.2">
+      <NoWarn>NU*</NoWarn>
+    </PackageReference>
     <PackageReference Include="CommunityToolkit.WinUI.Triggers" Version="$(WinToolkitVersion)" />
     <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
     <PackageReference Include="SkiaSharp.Extended" Version="3.0.0" />

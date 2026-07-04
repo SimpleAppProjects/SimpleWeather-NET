@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
-using CommunityToolkit.WinUI.Notifications;
+using Microsoft.Windows.AppNotifications;
+using Microsoft.Windows.AppNotifications.Builder;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Text;
+using Windows.Data.Xml.Dom;
 using Windows.UI.Notifications;
 
 namespace SimpleWeather.NET.Notifications
@@ -24,12 +26,7 @@ namespace SimpleWeather.NET.Notifications
             });
             var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}wi-day-cloudy.png");
 
-            ToastCollection toastCollection = new ToastCollection(TAG, displayName,
-                new ToastArguments()
-                {
-                    { Constants.KEY_ACTION, "view-weather" }
-                }.ToString(),
-                icon);
+            ToastCollection toastCollection = new ToastCollection(TAG, displayName, $"{Constants.KEY_ACTION}=view-weather", icon);
 
             await ToastNotificationManager.GetDefault()
                 .GetToastCollectionManager()
@@ -57,7 +54,7 @@ namespace SimpleWeather.NET.Notifications
 
             if (todaysForecast == null) return;
 
-            var toastContent = await CreateToastContent(location, todaysForecast);
+            var toastContent = await CreateNotification(location, todaysForecast);
 
             // Set a unique ID for the notification
             var notID = location.query;
@@ -76,10 +73,13 @@ namespace SimpleWeather.NET.Notifications
             }
             catch { }
 
+            var xmlContent = new XmlDocument();
+            xmlContent.LoadXml(toastContent.Payload);
+
             if (deliveryTime == null)
             {
                 // Create the toast notification
-                var toastNotif = new ToastNotification(toastContent.GetXml())
+                var toastNotif = new ToastNotification(xmlContent)
                 {
                     Group = TAG,
                     Tag = notID,
@@ -92,7 +92,7 @@ namespace SimpleWeather.NET.Notifications
             else
             {
                 // Create the toast notification
-                var toastNotif = new ScheduledToastNotification(toastContent.GetXml(), deliveryTime.Value)
+                var toastNotif = new ScheduledToastNotification(xmlContent, deliveryTime.Value)
                 {
                     Group = TAG,
                     Tag = notID,
@@ -109,7 +109,7 @@ namespace SimpleWeather.NET.Notifications
             return CreateNotification(location, deliveryTime);
         }
 
-        private static async Task<ToastContent> CreateToastContent(LocationData.LocationData location, Forecast forecast)
+        private static async Task<AppNotification> CreateNotification(LocationData.LocationData location, Forecast forecast)
         {
             var wim = SharedModule.Instance.WeatherIconsManager;
 
@@ -159,40 +159,14 @@ namespace SimpleWeather.NET.Notifications
                 return !App.Current.IsSystemDarkTheme;
             });
 
-            return new ToastContent()
-            {
-                Visual = new ToastVisual()
-                {
-                    BaseUri = new Uri(WeatherIconsManager.GetPNGBaseUri(isLight), UriKind.Absolute),
-                    BindingGeneric = new ToastBindingGeneric()
-                    {
-                        Children =
-                        {
-                            new AdaptiveText()
-                            {
-                                Text = string.Format("{0} / {1} - {2}", hiTemp, loTemp,  viewModel.Date)
-                            },
-                            new AdaptiveText()
-                            {
-                                Text = contentText.ToString()
-                            },
-                        },
-                        AppLogoOverride = new ToastGenericAppLogo()
-                        {
-                            Source = wim.GetWeatherIconURI(forecast.icon, false)
-                        },
-                        Attribution = new ToastGenericAttributionText()
-                        {
-                            Text = location.name
-                        }
-                    }
-                },
-                Launch = new ToastArguments()
-                {
-                    { Constants.KEY_ACTION, "view-weather" },
-                    { Constants.KEY_DATA, await JSONParser.SerializerAsync(location) },
-                }.ToString()
-            };
+            return new AppNotificationBuilder()
+                .AddText(string.Format("{0} / {1} - {2}", hiTemp, loTemp, viewModel.Date))
+                .AddText(contentText.ToString())
+                .SetAppLogoOverride(new Uri(wim.GetWeatherIconURI(forecast.icon, true, isLight)))
+                .SetAttributionText(location.name)
+                .AddArgument(Constants.KEY_ACTION, "view-weather")
+                .AddArgument(Constants.KEY_DATA, await JSONParser.SerializerAsync(location))
+                .BuildNotification();
         }
     }
 }
