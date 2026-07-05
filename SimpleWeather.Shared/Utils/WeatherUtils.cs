@@ -121,6 +121,37 @@ namespace SimpleWeather.Utils
                 return tempF;
         }
 
+        public static void CalculateFeelsLikeTemp(this Weather weather)
+        {
+            if (weather.condition == null) return;
+            if (weather.atmosphere == null) return;
+
+            if (weather.condition.temp_f is float currentTempF && weather.atmosphere.humidity is int currentHumidity && weather.condition.wind_mph is float currentWindMph)
+            {
+                if (weather.condition.feelslike_f == null)
+                {
+                    var feelsLikeF = GetFeelsLikeTemp(currentTempF, currentWindMph, currentHumidity);
+                    weather.condition.feelslike_f = feelsLikeF;
+                    weather.condition.feelslike_c = ConversionMethods.FtoC(feelsLikeF);
+                }
+            }
+        }
+
+        public static void CalculateFeelsLikeTemp(this BaseForecast forecast)
+        {
+            if (forecast.extras == null) return;
+
+            if (forecast.high_f is float tempF && forecast.extras.humidity is int humidity && forecast.extras.wind_mph is float windMph)
+            {
+                if (forecast.extras.feelslike_f == null)
+                {
+                    var feelsLikeF = GetFeelsLikeTemp(tempF, windMph, humidity);
+                    forecast.extras.feelslike_f = feelsLikeF;
+                    forecast.extras.feelslike_c = ConversionMethods.FtoC(feelsLikeF);
+                }
+            }
+        }
+
         public static float CalculateDewpointF(float temp_f, int humidity)
         {
             return ConversionMethods.CtoF(CalculateDewpointC(ConversionMethods.FtoC(temp_f), humidity));
@@ -133,6 +164,35 @@ namespace SimpleWeather.Utils
 #else
             return 243.04f * (MathF.Log(humidity / 100f) + ((17.625f * temp_c) / (243.04f + temp_c))) / (17.625f - MathF.Log(humidity / 100f) - ((17.625f * temp_c) / (243.04f + temp_c)));
 #endif
+        }
+
+        public static void CalculateDewpoint(this Weather weather)
+        {
+            if (weather.condition == null) return;
+            if (weather.atmosphere == null) return;
+
+            if (weather.condition.temp_f is float currentTempF && weather.condition.temp_c is float currentTempC && weather.atmosphere.humidity is int currentHumidity)
+            {
+                if (weather.atmosphere.dewpoint_c == null || weather.atmosphere.dewpoint_f == null)
+                {
+                    weather.atmosphere.dewpoint_c = CalculateDewpointC(currentTempC, currentHumidity);
+                    weather.atmosphere.dewpoint_f = CalculateDewpointF(currentTempF, currentHumidity);
+                }
+            }
+        }
+
+        public static void CalculateDewpoint(this BaseForecast forecast)
+        {
+            if (forecast.extras == null) return;
+
+            if (forecast.high_c is float tempC && forecast.high_f is float tempF && forecast.extras.humidity is int humidity)
+            {
+                if (forecast.extras.dewpoint_c == null || forecast.extras.dewpoint_f == null)
+                {
+                    forecast.extras.dewpoint_c = CalculateDewpointC(tempC, humidity);
+                    forecast.extras.dewpoint_f = CalculateDewpointF(tempF, humidity);
+                }
+            }
         }
 
         public static Color GetColorFromTempF(float temp_f)

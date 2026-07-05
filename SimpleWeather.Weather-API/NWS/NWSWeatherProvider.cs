@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NodaTime;
 using SimpleWeather.Extras;
@@ -25,6 +14,17 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Location = SimpleWeather.Weather_API.NWS.Hourly.Location;
 using PeriodsItem = SimpleWeather.Weather_API.NWS.Hourly.PeriodsItem;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
@@ -465,6 +465,8 @@ namespace SimpleWeather.Weather_API.NWS
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             var offset = location.tz_offset;
 
             weather.update_time = weather.update_time.ToOffset(offset);

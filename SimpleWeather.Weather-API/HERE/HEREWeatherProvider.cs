@@ -199,6 +199,8 @@ namespace SimpleWeather.Weather_API.HERE
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             var offset = location.tz_offset;
 
             weather.weather_alerts?.ForEach(alert =>

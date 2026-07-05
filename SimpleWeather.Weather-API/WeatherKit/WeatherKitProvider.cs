@@ -1,14 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
@@ -20,6 +10,16 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherKit
@@ -154,6 +154,8 @@ namespace SimpleWeather.Weather_API.WeatherKit
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             SimpleWeather.WeatherData.Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             var offset = location.tz_offset;
 
             // Update tz for weather properties

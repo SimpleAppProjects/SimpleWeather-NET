@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
@@ -17,6 +8,15 @@ using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherBit
@@ -286,7 +286,7 @@ namespace SimpleWeather.Weather_API.WeatherBit
 
         protected override Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
         {
-            return Task.CompletedTask;
+            return base.UpdateWeatherData(location, weather);
         }
 
         public override Task<string> UpdateLocationQuery(Weather weather)

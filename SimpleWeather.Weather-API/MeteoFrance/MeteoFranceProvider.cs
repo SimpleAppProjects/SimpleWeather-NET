@@ -1,13 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
@@ -17,6 +8,15 @@ using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.MeteoFrance
@@ -193,6 +193,8 @@ namespace SimpleWeather.Weather_API.MeteoFrance
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             SimpleWeather.WeatherData.Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             // MeteoFrance reports datetime in UTC; add location tz_offset
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);

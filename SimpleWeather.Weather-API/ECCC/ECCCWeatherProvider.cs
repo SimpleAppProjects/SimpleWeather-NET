@@ -1,13 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using NodaTime;
+﻿using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
@@ -18,6 +9,15 @@ using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using ResConditions = SimpleWeather.Resources.Strings.WeatherConditions;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
@@ -151,6 +151,8 @@ namespace SimpleWeather.Weather_API.ECCC
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             var offset = location.tz_offset;
             weather.update_time = weather.update_time.ToOffset(offset);
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);

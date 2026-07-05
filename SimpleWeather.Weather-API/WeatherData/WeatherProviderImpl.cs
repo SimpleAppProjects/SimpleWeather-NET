@@ -161,7 +161,22 @@ namespace SimpleWeather.Weather_API.WeatherData
         /// <param name="location">Location data</param>
         /// <param name="weather">The weather data to update</param>
         /// <returns></returns>
-        protected abstract Task UpdateWeatherData(LocData location, Weather weather);
+        protected virtual async Task UpdateWeatherData(LocData location, Weather weather)
+        {
+            weather.CalculateDewpoint();
+            weather.CalculateFeelsLikeTemp();
+
+            weather.forecast?.ForEach(forecast =>
+            {
+                forecast.CalculateDewpoint();
+                forecast.CalculateFeelsLikeTemp();
+            });
+            weather.hr_forecast?.ForEach(hrForecast =>
+            {
+                hrForecast.CalculateDewpoint();
+                hrForecast.CalculateFeelsLikeTemp();
+            });
+        }
 
         private async Task UpdateAQIData(LocData location, Weather weather)
         {

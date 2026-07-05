@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -12,16 +11,13 @@ using System.Threading.Tasks;
 #if __IOS__
 using Microsoft.Maui.ApplicationModel;
 #endif
-using NodaTime;
 using SimpleWeather.Extras;
 using SimpleWeather.HttpClientExtensions;
 using SimpleWeather.Icons;
 using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
-using SimpleWeather.Resources.Strings;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
-using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -353,6 +349,8 @@ namespace SimpleWeather.Weather_API.Google
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             Weather weather)
         {
+            await base.UpdateWeatherData(location, weather);
+
             // Update forecast, hourly, sunrise/sunset, moonrise/moonset
             var offset = location.tz_offset;
 

@@ -1,12 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using SimpleWeather.Extras;
+﻿using SimpleWeather.Extras;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
@@ -14,6 +6,14 @@ using SimpleWeather.Weather_API.Keys;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using LocData = SimpleWeather.LocationData.LocationData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
@@ -331,8 +331,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
 
         protected override Task UpdateWeatherData(LocData location, Weather weather)
         {
-            // no-op
-            return Task.CompletedTask;
+            return base.UpdateWeatherData(location, weather);
         }
 
         /// <exception cref="WeatherException">Ignore.</exception>
