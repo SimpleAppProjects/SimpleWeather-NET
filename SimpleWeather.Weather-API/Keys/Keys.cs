@@ -68,5 +68,10 @@ namespace SimpleWeather.Weather_API.Keys
         {
             return null;
         }
+
+        public static string GetOpenMeteoKey()
+        {
+            return null;
+        }
     }
 }
