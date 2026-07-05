@@ -69,9 +69,9 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
 
 #if WINDOWS
             RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled()/* && ExtrasService.IsEnabled()*/ ? Visibility.Visible : Visibility.Collapsed;
+                InteractionsEnabled() ? Visibility.Visible : Visibility.Collapsed;
 #else
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled()/* && ExtrasService.IsEnabled()*/;
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled();
 #endif
         }
 

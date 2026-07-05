@@ -9,7 +9,6 @@ using SimpleWeather.Maui.Radar;
 using MapControl = Mapsui.UI.Maui.MapControl;
 #endif
 using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Extras;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.NET.Radar
@@ -23,8 +22,6 @@ namespace SimpleWeather.NET.Radar
         private MapControl mapControl;
         private WeatherUtils.Coordinate locationCoords;
         protected RadarToolbar RadarMapContainer { get; private set; }
-
-        protected readonly IExtrasService ExtrasService = Ioc.Default.GetService<IExtrasService>();
 
         protected bool IsViewAlive { get; private set; }
 

@@ -40,7 +40,7 @@ namespace SimpleWeather.NET.Radar.TomorrowIo
         public override void UpdateRadarView()
         {
             base.UpdateRadarView();
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled()/* && ExtrasService.IsEnabled()*/;
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled();
         }
 
         public override void UpdateMap(MapControl mapControl)

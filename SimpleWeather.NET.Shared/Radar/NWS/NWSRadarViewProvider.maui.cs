@@ -33,7 +33,7 @@ namespace SimpleWeather.NET.Radar.NWS
         public override void UpdateRadarView()
         {
             base.UpdateRadarView();
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled();
         }
 
         public override void UpdateMap(MapControl mapControl)

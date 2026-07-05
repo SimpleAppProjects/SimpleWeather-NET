@@ -70,9 +70,9 @@ namespace SimpleWeather.NET.Radar.WeatherApi
 
 #if WINDOWS
             RadarMapContainer.ToolbarVisibility =
-                InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled() ? Visibility.Visible : Visibility.Collapsed;
+                InteractionsEnabled() ? Visibility.Visible : Visibility.Collapsed;
 #else
-            RadarMapContainer.IsToolbarVisible = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
+            RadarMapContainer.IsToolbarVisible = InteractionsEnabled();
 #endif
         }
 

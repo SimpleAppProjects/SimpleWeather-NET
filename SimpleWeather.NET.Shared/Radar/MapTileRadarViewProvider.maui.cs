@@ -40,7 +40,7 @@ namespace SimpleWeather.NET.Radar
             }
 
             mapControl.IsScrollEnabled = InteractionsEnabled();
-            mapControl.IsZoomEnabled = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
+            mapControl.IsZoomEnabled = InteractionsEnabled();
 
             UpdateMap(mapControl);
         }
@@ -48,14 +48,14 @@ namespace SimpleWeather.NET.Radar
         public virtual partial void UpdateMap(Map mapControl)
         {
             mapControl.IsScrollEnabled = InteractionsEnabled();
-            mapControl.IsZoomEnabled = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
+            mapControl.IsZoomEnabled = InteractionsEnabled();
         }
 
         private Map CreateMapControl()
         {
             var mapControl = MapControlCreator.Instance.Map;
             mapControl.IsScrollEnabled = InteractionsEnabled();
-            mapControl.IsZoomEnabled = InteractionsEnabled() && ExtrasService.IsAtLeastProEnabled();
+            mapControl.IsZoomEnabled = InteractionsEnabled();
             if (locationCoords != null)
             {
                 mapControl.SetCameraPosition(new CameraPosition(locationCoords.Latitude, locationCoords.Longitude, (nuint)DEFAULT_ZOOM_LEVEL));
