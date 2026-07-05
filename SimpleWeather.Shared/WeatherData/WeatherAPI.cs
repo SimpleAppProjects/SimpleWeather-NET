@@ -58,11 +58,11 @@ namespace SimpleWeather.WeatherData
 
         private static readonly IReadOnlyList<ProviderEntry> DefaultAPIs = new List<ProviderEntry>(11)
         {
+            new ProviderEntry("Apple Weather", Apple,
+                "https://developer.apple.com/weatherkit/", "https://developer.apple.com/weatherkit/"),
             new ProviderEntry("HERE Weather", Here,
                 "https://www.here.com/en",
                 "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
-            new ProviderEntry("Apple Weather", Apple,
-                "https://developer.apple.com/weatherkit/", "https://developer.apple.com/weatherkit/"),
             new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
                 "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("WeatherAPI.com", WeatherApi,
