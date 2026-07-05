@@ -143,7 +143,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", query)
                     .AppendQueryParameter("fields",
-                        "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
+                        "temperature,temperatureApparent,temperatureMin,temperatureMax,dewPoint,humidity,windSpeed,windDirection,windGust,pressureSeaLevel,precipitationIntensity,precipitationProbability,precipitationType,snowAccumulation,sunriseTime,sunsetTime,visibility,cloudCover,moonPhase,weatherCode,weatherCodeFullDay,weatherCodeDay,weatherCodeNight,treeIndex,grassIndex,weedIndex,epaIndex,particulateMatter25,particulateMatter10,pollutantO3,pollutantNO2,pollutantCO,pollutantSO2")
                     .AppendQueryParameter("timesteps", "current,1h,1d")
                     .AppendQueryParameter("units", "metric")
                     .AppendQueryParameter("timezone", "UTC")
@@ -152,7 +152,7 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                 var minutelyRequestUri = BASE_URL.ToUriBuilderEx()
                     .AppendQueryParameter("apikey", key)
                     .AppendQueryParameter("location", query)
-                    .AppendQueryParameter("fields", "precipitationIntensity,precipitationProbability")
+                    .AppendQueryParameter("fields", "precipitationIntensity,precipitationProbability,precipitationType")
                     .AppendQueryParameter("timesteps", "1m")
                     .AppendQueryParameter("units", "metric")
                     .AppendQueryParameter("timezone", "UTC")

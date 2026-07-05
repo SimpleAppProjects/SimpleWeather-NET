@@ -181,7 +181,8 @@ namespace SimpleWeather.Weather_API.WeatherBit
             return new MinutelyForecast
             {
                 date = DateTimeOffset.FromUnixTimeSeconds(item.ts),
-                rain_mm = item.precip
+                rain_mm = item.precip,
+                snow_mm = item.snow,
             };
         }
 

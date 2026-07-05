@@ -309,8 +309,24 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return new MinutelyForecast()
             {
                 date = item.startTime,
-                rain_mm = item.values.precipitationIntensity,
-            };
+            }.Apply(minutely => {
+                /**
+                 * 0: No precipitation
+                 * 1: Rain
+                 * 2: Snow
+                 * 3: Freezing Rain
+                 * 4: Ice Pellets / Sleet
+                 */
+                switch (item.values.precipitationType)
+                {
+                    case 2:
+                        minutely.snow_mm = item.values.precipitationIntensity;
+                        break;
+                    default:
+                        minutely.rain_mm = item.values.precipitationIntensity;
+                        break;
+                }
+            });
         }
 
         public static Condition CreateCondition(this TomorrowIOWeatherProvider _, Interval item)

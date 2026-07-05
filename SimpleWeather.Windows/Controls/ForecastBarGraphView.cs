@@ -287,7 +287,7 @@ namespace SimpleWeather.NET.Controls
 
                     UpdateInnerBarHeight(item.InnerBarView, min, max, data);
 
-                    item.BarIconView.WeatherIcon = GetWeatherIconFromForecastType(ForecastType);
+                    item.BarIconView.WeatherIcon = data.XWeatherIcon ?? GetWeatherIconFromForecastType(ForecastType);
 
                     if (InnerLayout.Children.ElementAtOrDefault(i) == null)
                     {

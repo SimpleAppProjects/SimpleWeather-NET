@@ -8,6 +8,7 @@ using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
+using SimpleWeather.Icons;
 
 namespace SimpleWeather.NET.Controls
 {
@@ -242,7 +243,7 @@ namespace SimpleWeather.NET.Controls
 
         private void AddMinutelyEntryData(MinutelyForecast forecast, LineDataSeries series)
         {
-            if (forecast.rain_mm.HasValue && forecast.rain_mm >= 0)
+            if ((forecast.rain_mm.HasValue && forecast.rain_mm >= 0) || (forecast.snow_mm.HasValue && forecast.snow_mm >= 0))
             {
                 var culture = LocaleUtils.GetLocale();
 
@@ -259,14 +260,18 @@ namespace SimpleWeather.NET.Controls
                 string unit = SettingsManager.PrecipitationUnit;
                 float precipValue;
 
+                float rainMm = forecast.rain_mm ?? 0f;
+                float snowMm = forecast.snow_mm ?? 0f;
+                bool isSnow = snowMm > rainMm;
+
                 switch (unit)
                 {
                     case Units.INCHES:
                     default:
-                        precipValue = ConversionMethods.MMToIn(forecast.rain_mm.Value);
+                        precipValue = ConversionMethods.MMToIn(isSnow ? snowMm : rainMm);
                         break;
                     case Units.MILLIMETERS:
-                        precipValue = forecast.rain_mm.Value;
+                        precipValue = isSnow ? snowMm : rainMm;
                         break;
                 }
 
@@ -562,7 +567,7 @@ namespace SimpleWeather.NET.Controls
 
         private void AddMinutelyEntryData(MinutelyForecast forecast, BarGraphDataSet dataSet)
         {
-            if (forecast.rain_mm.HasValue && forecast.rain_mm >= 0)
+            if ((forecast.rain_mm.HasValue && forecast.rain_mm >= 0) || (forecast.snow_mm.HasValue && forecast.snow_mm >= 0))
             {
                 var culture = LocaleUtils.GetLocale();
 
@@ -579,19 +584,19 @@ namespace SimpleWeather.NET.Controls
                 string unit = SettingsManager.PrecipitationUnit;
                 float precipValue;
 
-                switch (unit)
+                float rainMm = forecast.rain_mm ?? 0f;
+                float snowMm = forecast.snow_mm ?? 0f;
+                bool isSnow = snowMm > rainMm;
+
+                precipValue = unit switch
                 {
-                    case Units.INCHES:
-                    default:
-                        precipValue = ConversionMethods.MMToIn(forecast.rain_mm.Value);
-                        break;
-                    case Units.MILLIMETERS:
-                        precipValue = forecast.rain_mm.Value;
-                        break;
-                }
+                    Units.MILLIMETERS => isSnow ? snowMm : rainMm,
+                    _ => ConversionMethods.MMToIn(isSnow ? snowMm : rainMm),
+                };
 
                 var entry = new BarGraphEntry(date, new YEntryData(precipValue, String.Format(culture, "{0:0.##}", precipValue)));
-                entry.FillColor = Colors.DeepSkyBlue;
+                entry.XWeatherIcon = isSnow ? WeatherIcons.SNOWFLAKE_COLD : WeatherIcons.RAINDROP;
+                entry.FillColor = isSnow ? Colors.SkyBlue : Colors.DeepSkyBlue;
                 dataSet.AddEntry(entry);
             }
         }

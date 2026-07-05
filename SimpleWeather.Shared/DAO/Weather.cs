@@ -898,6 +898,7 @@ namespace SimpleWeather.WeatherData
         public DateTimeOffset date { get; set; }
 
         public float? rain_mm { get; set; }
+        public float? snow_mm { get; set; }
 
         public MinutelyForecast()
         {
@@ -908,7 +909,8 @@ namespace SimpleWeather.WeatherData
         {
             return obj is MinutelyForecast forecast &&
                    date == forecast.date &&
-                   rain_mm == forecast.rain_mm;
+                   rain_mm == forecast.rain_mm &&
+                   snow_mm == forecast.snow_mm;
         }
 
         public override int GetHashCode()
@@ -916,6 +918,7 @@ namespace SimpleWeather.WeatherData
             var hash = new HashCode();
             hash.Add(date);
             hash.Add(rain_mm);
+            hash.Add(snow_mm);
             return hash.ToHashCode();
         }
 
@@ -951,6 +954,10 @@ namespace SimpleWeather.WeatherData
                         this.rain_mm = reader.TryGetSingle();
                         break;
 
+                    case nameof(snow_mm):
+                        this.snow_mm = reader.TryGetSingle();
+                        break;
+
                     default:
                         // ignore
                         break;
@@ -971,6 +978,9 @@ namespace SimpleWeather.WeatherData
 
             // "rain_mm" : ""
             writer.WriteSingle(nameof(rain_mm), rain_mm);
+
+            // "snow_mm" : ""
+            writer.WriteSingle(nameof(snow_mm), snow_mm);
 
             // }
             writer.WriteEndObject();
