@@ -9,6 +9,7 @@ using SimpleWeather.NET.Radar.NWS;
 using SimpleWeather.NET.Radar.OpenWeather;
 using SimpleWeather.NET.Radar.RainViewer;
 using SimpleWeather.NET.Radar.TomorrowIo;
+using SimpleWeather.NET.Radar.WeatherApi;
 using SimpleWeather.Preferences;
 using SimpleWeather.RemoteConfig;
 using SimpleWeather.Utils;
@@ -36,7 +37,9 @@ namespace SimpleWeather.NET.Radar
             [StringValue(WeatherAPI.OpenWeatherMap)]
             OpenWeatherMap,
             [StringValue(WeatherAPI.TomorrowIo)]
-            TomorrowIo
+            TomorrowIo,
+            [StringValue(WeatherAPI.WeatherApi)]
+            WeatherApi
         }
 
         private static readonly IReadOnlyList<ProviderEntry> RadarAPIProviders =
@@ -50,7 +53,9 @@ namespace SimpleWeather.NET.Radar
             new ProviderEntry("OpenWeatherMap", WeatherAPI.OpenWeatherMap,
                     "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
             new ProviderEntry("Tomorrow.io", WeatherAPI.TomorrowIo,
-                    "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/")
+                    "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
+            new ProviderEntry("WeatherAPI.com", WeatherAPI.WeatherApi,
+                    "https://weatherapi.com", "https://weatherapi.com/api")
         ];
 
         public static IEnumerable<ProviderEntry> GetRadarProviders()
@@ -88,35 +93,21 @@ namespace SimpleWeather.NET.Radar
             var radarProvider = GetRadarProvider();
             var isEnabled = IsRadarProviderEnabled(radarProvider);
 
-            if (radarProvider == WeatherAPI.OpenWeatherMap && isEnabled)
+            return radarProvider switch
             {
-                return new OWMRadarViewProvider(radarContainer);
-            }
-            else if (radarProvider == WeatherAPI.TomorrowIo && isEnabled)
-            {
-                return new TomorrowIoRadarViewProvider(radarContainer);
-            }
-            else if (radarProvider == WeatherAPI.NWS && isEnabled)
-            {
-                return new NWSRadarViewProvider(radarContainer);
-            }
-            else if (radarProvider == WeatherAPI.ECCC && isEnabled)
-            {
-                return new ECCCRadarViewProvider(radarContainer);
-            }
-            else if (radarProvider == WeatherAPI.RainViewer && isEnabled)
-            {
-                return new RainViewerViewProvider(radarContainer);
-            }
-            else
-            {
-                return new EmptyRadarViewProvider(radarContainer);
-            }
+                WeatherAPI.OpenWeatherMap when isEnabled => new OWMRadarViewProvider(radarContainer),
+                WeatherAPI.TomorrowIo when isEnabled => new TomorrowIoRadarViewProvider(radarContainer),
+                WeatherAPI.NWS when isEnabled => new NWSRadarViewProvider(radarContainer),
+                WeatherAPI.ECCC when isEnabled => new ECCCRadarViewProvider(radarContainer),
+                WeatherAPI.RainViewer when isEnabled => new RainViewerViewProvider(radarContainer),
+                WeatherAPI.WeatherApi when isEnabled => new WeatherApiRadarViewProvider(radarContainer),
+                _ => new EmptyRadarViewProvider(radarContainer),
+            };
         }
 
         public static string GetRadarProvider()
         {
-            string provider = localSettings.GetValue(KEY_RADARPROVIDER, defaultValue: WeatherAPI.RainViewer);
+            string provider = localSettings.GetValue(KEY_RADARPROVIDER, defaultValue: WeatherAPI.WeatherApi);
 
             if (provider == WeatherAPI.OpenWeatherMap)
             {
@@ -126,7 +117,7 @@ namespace SimpleWeather.NET.Radar
                 // Fallback to default since API KEY is unavailable
                 if ((SettingsManager.API != owm.WeatherAPI && owm.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.OpenWeatherMap] == null)
                 {
-                    return WeatherAPI.RainViewer;
+                    return WeatherAPI.WeatherApi;
                 }
             }
             else if (provider == WeatherAPI.TomorrowIo)
@@ -137,7 +128,7 @@ namespace SimpleWeather.NET.Radar
                 // Fallback to default since API KEY is unavailable
                 if ((SettingsManager.API != tmr.WeatherAPI && tmr.GetAPIKey() == null) || SettingsManager.APIKeys[WeatherAPI.TomorrowIo] == null)
                 {
-                    return WeatherAPI.RainViewer;
+                    return WeatherAPI.WeatherApi;
                 }
             }
 

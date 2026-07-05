@@ -57,6 +57,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\ImageButtonWidgetRenderer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\MapBox.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MapsUi\OpenStreetMap.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\WeatherApi\WeatherApiRadarViewProvider.RadarFrame.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\WeatherApi\WeatherApiRadarViewProvider.HttpClient.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\WeatherApi\WeatherApiRadarViewProvider.Mapsui.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Radar\WeatherApi\WeatherApiRadarViewProvider.maui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\ECCC\ECCCRadarViewProvider.maui.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapControlCreator.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Radar\MapTileRadarViewProvider.shared.cs" />
