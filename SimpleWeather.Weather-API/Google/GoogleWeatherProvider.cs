@@ -31,6 +31,8 @@ namespace SimpleWeather.Weather_API.Google
         private const string CONDITIONS_PATH = "currentConditions:lookup";
         private const string FORECAST_PATH = "forecast/days:lookup";
         private const string HOURLY_FORECAST_PATH = "forecast/hours:lookup";
+        private const string MINUTELY_FORECAST_PATH = "forecast/minutes:lookup";
+        private const string PUBLIC_ALERTS_PATH = "publicAlerts:lookup";
 
         public GoogleWeatherProvider() : base()
         {
@@ -49,6 +51,7 @@ namespace SimpleWeather.Weather_API.Google
         public override bool SupportsWeatherLocale => true;
         public override int HourlyForecastInterval => 1;
         public override AuthType AuthType => AuthType.ApiKey;
+        public override bool NeedsExternalAlertData => false;
 
         public override long GetRetryTime()
         {
@@ -209,6 +212,42 @@ namespace SimpleWeather.Weather_API.Google
                         request.Headers.UserAgent.AddAppUserAgent();
                     });
 
+                var minutelyRequestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendPath(MINUTELY_FORECAST_PATH, encode: false)
+                    .AppendQueryParameter("location.latitude", location.latitude.ToString("0.####"))
+                    .AppendQueryParameter("location.longitude", location.longitude.ToString("0.####"))
+                    .AppendQueryParameter("units_system", "METRIC")
+                    .AppendQueryParameter("key", key)
+                    .BuildUri();
+
+                var minutelyRequest = new HttpRequestMessage(HttpMethod.Get, minutelyRequestUri)
+                    .CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1))
+                    .Apply(request =>
+                    {
+#if __IOS__
+                        request.Headers.Add("X-Ios-Bundle-Identifier", AppInfo.PackageName);
+#endif
+                        request.Headers.UserAgent.AddAppUserAgent();
+                    });
+
+                var alertRequestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendPath(PUBLIC_ALERTS_PATH, encode: false)
+                    .AppendQueryParameter("location.latitude", location.latitude.ToString("0.####"))
+                    .AppendQueryParameter("location.longitude", location.longitude.ToString("0.####"))
+                    .AppendQueryParameter("languageCode", locale)
+                    .AppendQueryParameter("key", key)
+                    .BuildUri();
+
+                var alertRequest = new HttpRequestMessage(HttpMethod.Get, alertRequestUri)
+                    .CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1))
+                    .Apply(request =>
+                    {
+#if __IOS__
+                        request.Headers.Add("X-Ios-Bundle-Identifier", AppInfo.PackageName);
+#endif
+                        request.Headers.UserAgent.AddAppUserAgent();
+                    });
+
                 // Get response
                 var webClient = SharedModule.Instance.WebClient;
                 using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
@@ -221,8 +260,10 @@ namespace SimpleWeather.Weather_API.Google
 
                 var dailyData = await GetDailyForecast(webClient, dailyRequest);
                 var hourlyData = await GetHourlyForecast(webClient, hourlyRequest);
+                var minutelyData = await GetMinutelyForecasts(webClient, minutelyRequest);
+                var alertData = await GetPublicAlerts(webClient, alertRequest);
 
-                weather = this.CreateWeatherData(conditionData, dailyData, hourlyData);
+                weather = this.CreateWeatherData(conditionData, dailyData, hourlyData, minutely: minutelyData, alerts: alertData);
             }
             catch (Exception ex)
             {
@@ -346,6 +387,91 @@ namespace SimpleWeather.Weather_API.Google
             return hourlyData;
         }
 
+        private async Task<MinutelyResponse> GetMinutelyForecasts(HttpClient client, HttpRequestMessage minutelyRequest)
+        {
+            var minutelyData = new MinutelyResponse();
+            var minutelySegments = new List<Segment>();
+
+            do
+            {
+                HttpRequestMessage request;
+
+                if (minutelyData.nextPageToken != null)
+                {
+                    var newUrl = minutelyRequest.RequestUri.ToUriBuilderEx()
+                        .SetQueryParameter("pageToken", minutelyData.nextPageToken)
+                        .BuildUri();
+
+                    request = minutelyRequest.Clone();
+                    request.RequestUri = newUrl;
+                }
+                else
+                {
+                    request = minutelyRequest;
+                }
+
+                using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var minutelyResponse = await client.SendAsync(request, cts.Token);
+                await this.CheckForErrors(minutelyResponse);
+                minutelyResponse.EnsureSuccessStatusCode();
+
+                await using var stream = await minutelyResponse.Content.ReadAsStreamAsync();
+                var minutelyResponseData = await JSONParser.DeserializerAsync<MinutelyResponse>(stream);
+
+                minutelyData.overallPredictionTimeframe ??= minutelyResponseData?.overallPredictionTimeframe;
+                minutelyData.timeZone ??= minutelyResponseData?.timeZone;
+                minutelyData.nextPageToken = minutelyResponseData?.nextPageToken;
+
+                minutelyResponseData?.segments?.Let(minutelySegments.AddRange);
+            } while (!string.IsNullOrWhiteSpace(minutelyData.nextPageToken));
+
+            minutelyData.segments = minutelySegments;
+
+            return minutelyData;
+        }
+
+        private async Task<AlertsResponse> GetPublicAlerts(HttpClient client, HttpRequestMessage alertsRequest)
+        {
+            var alertsData = new AlertsResponse();
+            var weatherAlerts = new List<PublicAlerts>();
+
+            do
+            {
+                HttpRequestMessage request;
+
+                if (alertsData.nextPageToken != null)
+                {
+                    var newUrl = alertsRequest.RequestUri.ToUriBuilderEx()
+                        .SetQueryParameter("pageToken", alertsData.nextPageToken)
+                        .BuildUri();
+
+                    request = alertsRequest.Clone();
+                    request.RequestUri = newUrl;
+                }
+                else
+                {
+                    request = alertsRequest;
+                }
+
+                using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var alertsResponse = await client.SendAsync(request, cts.Token);
+                await this.CheckForErrors(alertsResponse);
+                alertsResponse.EnsureSuccessStatusCode();
+
+                await using var stream = await alertsResponse.Content.ReadAsStreamAsync();
+                var alertsResponseData = await JSONParser.DeserializerAsync<AlertsResponse>(stream);
+
+                alertsData.regionCode ??= alertsResponseData?.regionCode;
+                alertsData.nextPageToken = alertsResponseData?.nextPageToken;
+
+                alertsResponseData?.weatherAlerts?.Let(weatherAlerts.AddRange);
+            } while (!string.IsNullOrWhiteSpace(alertsData.nextPageToken));
+
+            alertsData.weatherAlerts = weatherAlerts;
+
+            return alertsData;
+        }
+
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location,
             Weather weather)
         {
@@ -359,6 +485,12 @@ namespace SimpleWeather.Weather_API.Google
 
             weather.forecast?.ForEach(forecast => { forecast.date = forecast.date.AddSeconds(offset.TotalSeconds); });
             weather.hr_forecast?.ForEach(hrForecast => { hrForecast.date = hrForecast.date.ToOffset(offset); });
+            weather.min_forecast?.ForEach(min_forecast => { min_forecast.date = min_forecast.date.ToOffset(offset); });
+            weather.weather_alerts?.ForEach(alert =>
+            {
+                alert.Date = alert.Date.ToOffset(offset);
+                alert.ExpiresDate = alert.ExpiresDate.ToOffset(offset);
+            });
 
             if (weather.astronomy != null)
             {

@@ -11,6 +11,7 @@ namespace SimpleWeather.Weather_API.Json
             options.TypeInfoResolverChain.Add(AQICNJsonContext.Default);
             options.TypeInfoResolverChain.Add(BrightSkyJsonContext.Default);
             options.TypeInfoResolverChain.Add(ECCCJsonContext.Default);
+            options.TypeInfoResolverChain.Add(GoogleJsonContext.Default);
             options.TypeInfoResolverChain.Add(HEREAPIJsonContext.Default);
             options.TypeInfoResolverChain.Add(MeteoFranceJsonContext.Default);
             options.TypeInfoResolverChain.Add(MetnoJsonContext.Default);
@@ -67,6 +68,20 @@ namespace SimpleWeather.Weather_API.Json
         WriteIndented = false)]
     [JsonSerializable(typeof(ECCC.LocationsItem))]
     public partial class ECCCJsonContext : JsonSerializerContext
+    {
+    }
+
+    [JsonSourceGenerationOptions(
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        WriteIndented = false)]
+    [JsonSerializable(typeof(Google.CurrentResponse))]
+    [JsonSerializable(typeof(Google.DailyResponse))]
+    [JsonSerializable(typeof(Google.HourlyResponse))]
+    [JsonSerializable(typeof(Google.PollenRootobject))]
+    [JsonSerializable(typeof(Google.MinutelyResponse))]
+    [JsonSerializable(typeof(Google.AlertsResponse))]
+    public partial class GoogleJsonContext : JsonSerializerContext
     {
     }
 

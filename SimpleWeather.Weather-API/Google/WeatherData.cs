@@ -1,14 +1,13 @@
 ﻿#nullable enable
+using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using Condition = SimpleWeather.WeatherData.Condition;
 using Location = SimpleWeather.WeatherData.Location;
-using Precipitation = SimpleWeather.WeatherData.Precipitation;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.Google
@@ -16,7 +15,7 @@ namespace SimpleWeather.Weather_API.Google
     public static partial class GoogleWeatherProviderExtensions
     {
         public static Weather CreateWeatherData(this GoogleWeatherProvider _, CurrentResponse current,
-            DailyResponse daily, HourlyResponse hourly)
+            DailyResponse daily, HourlyResponse hourly, MinutelyResponse? minutely = null, AlertsResponse? alerts = null)
         {
             var weather = new Weather();
 
@@ -50,10 +49,13 @@ namespace SimpleWeather.Weather_API.Google
             // Hourly Forecast
             weather.hr_forecast = hourly.forecastHours?.Select(it => _.CreateHourlyForecast(it))?.ToList();
 
+            weather.min_forecast = minutely?.segments?.Select(it => _.CreateMinutelyForecast(it))?.ToList();
+
             weather.condition = _.CreateCondition(current, todaysForecast?.Item2, todaysTxtForecast);
             weather.atmosphere = _.CreateAtmosphere(current);
             weather.astronomy = _.CreateAstronomy(todaysForecast?.Item1);
             weather.precipitation = _.CreatePrecipitation(current);
+            weather.weather_alerts = _.CreateWeatherAlerts(alerts);
             weather.ttl = 60; // TODO: TBD
 
             if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue ||
@@ -318,6 +320,17 @@ namespace SimpleWeather.Weather_API.Google
             hrf.extras.cloudiness = hour.cloudCover;
 
             return hrf;
+        }
+
+        public static MinutelyForecast CreateMinutelyForecast(this GoogleWeatherProvider _, Segment minute)
+        {
+            return new MinutelyForecast
+            {
+                date = DateTimeOffset.Parse(minute.timeFrame?.startTime, CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind),
+                rain_mm = minute.qpf?.quantity,
+                snow_mm = minute.snowfallAmount?.quantity
+            };
         }
 
         public static Atmosphere CreateAtmosphere(this GoogleWeatherProvider _, CurrentResponse current)
