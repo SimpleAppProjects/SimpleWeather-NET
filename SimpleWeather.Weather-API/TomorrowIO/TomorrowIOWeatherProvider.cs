@@ -440,15 +440,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             {
                 foreach (var alert in weather.weather_alerts)
                 {
-                    if (!alert.Date.Offset.Equals(offset))
-                    {
-                        alert.Date = new DateTimeOffset(alert.Date.DateTime, offset);
-                    }
-
-                    if (!alert.ExpiresDate.Offset.Equals(offset))
-                    {
-                        alert.ExpiresDate = new DateTimeOffset(alert.ExpiresDate.DateTime, offset);
-                    }
+                    alert.Date = alert.Date.ToOffset(offset);
+                    alert.ExpiresDate = alert.ExpiresDate.ToOffset(offset);
                 }
             }
         }
