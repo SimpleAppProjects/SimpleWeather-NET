@@ -449,7 +449,7 @@ namespace SimpleWeather.Weather_API.OpenMeteo
                 /*
                  * 3: overcast
                  */
-                3 => isNight ? WeatherIcons.NIGHT_OVERCAST : WeatherIcons.DAY_SUNNY_OVERCAST,
+                3 => WeatherIcons.OVERCAST,
 
                 /*
                  * 45: Fog

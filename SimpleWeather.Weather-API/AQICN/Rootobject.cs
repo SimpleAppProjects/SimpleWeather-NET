@@ -8,7 +8,7 @@
 
     public class Data
     {
-        public int aqi { get; set; }
+        public string aqi { get; set; }
         public float idx { get; set; }
         public Attribution[] attributions { get; set; }
         public City city { get; set; }

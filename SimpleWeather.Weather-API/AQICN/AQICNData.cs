@@ -24,7 +24,7 @@ namespace SimpleWeather.Weather_API.AQICN
                 attribution = "World Air Quality Index Project"
             };
 
-            current.index = root.data?.aqi ?? current.GetIndexFromData();
+            current.index = root.data?.aqi?.TryParseInt() ?? current.GetIndexFromData();
 
             aqiForecast = CreateAQIForecasts(root);
 
@@ -64,7 +64,7 @@ namespace SimpleWeather.Weather_API.AQICN
                         {
                             date = itemDate,
                             o3 = it.avg,
-                            extras = new ()
+                            extras = new()
                             {
                                 o3_max = it.max,
                                 o3_min = it.min
@@ -92,7 +92,7 @@ namespace SimpleWeather.Weather_API.AQICN
                         {
                             date = itemDate,
                             pm25 = it.avg,
-                            extras = new ()
+                            extras = new()
                             {
                                 pm25_max = it.max,
                                 pm25_min = it.min
@@ -120,7 +120,7 @@ namespace SimpleWeather.Weather_API.AQICN
                         {
                             date = itemDate,
                             pm10 = it.avg,
-                            extras = new ()
+                            extras = new()
                             {
                                 pm10_max = it.max,
                                 pm10_min = it.min

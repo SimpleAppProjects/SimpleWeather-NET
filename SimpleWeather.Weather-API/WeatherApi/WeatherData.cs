@@ -16,36 +16,43 @@ namespace SimpleWeather.Weather_API.WeatherApi
             var offset = DateTimeUtils.TzidToOffset(root.location.tz_id);
 
             weather.location = _.CreateLocation(root.location);
-            weather.update_time = DateTimeOffset.FromUnixTimeSeconds(root.location.localtime_epoch).ToOffset(offset);
+            weather.update_time = root.location?.localtime_epoch?.Let(it =>
+            {
+                return DateTimeOffset.FromUnixTimeSeconds(it).ToOffset(offset);
+            }) ?? DateTimeOffset.UtcNow;
 
-            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(root.forecast.forecastday.Length);
-            weather.hr_forecast = new List<HourlyForecast>(root.forecast.forecastday[0].hour.Length);
+            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>().Apply(it =>
+            {
+                it.EnsureCapacity(root.forecast?.forecastday?.Length ?? 0);
+            });
+            weather.hr_forecast = new List<HourlyForecast>().Apply(it =>
+            {
+                it.EnsureCapacity(root.forecast?.forecastday?.FirstOrDefault()?.hour?.Length ?? 0);
+            });
 
             // Forecast
-            foreach (var day in root.forecast.forecastday)
+            root.forecast?.forecastday?.ForEach(day =>
             {
                 var fcast = _.CreateForecast(day);
 
-                foreach (var hour in day.hour)
+                day.hour?.ForEach(hour =>
                 {
-                    var date = DateTimeOffset.FromUnixTimeSeconds(hour.time_epoch);
+                    var date = DateTimeOffset.FromUnixTimeSeconds(hour.time_epoch!.Value);
 
-                    if (date.UtcDateTime < weather.update_time.UtcDateTime.Trim(TimeSpan.TicksPerHour))
+                    if (date.UtcDateTime >= weather.update_time.UtcDateTime.Trim(TimeSpan.TicksPerHour))
                     {
-                        continue;
+                        weather.hr_forecast.Add(_.CreateHourlyForecast(hour, offset));
                     }
-
-                    weather.hr_forecast.Add(_.CreateHourlyForecast(hour, offset));
-                }
+                });
 
                 weather.forecast.Add(fcast);
-            }
+            });
 
             weather.condition = _.CreateCondition(root.current, offset);
             weather.atmosphere = _.CreateAtmosphere(root.current);
-            if (root.forecast.forecastday[0].date == weather.condition.observation_time.Date.ToString("yyyy-MM-dd"))
+            if (root.forecast?.forecastday?.FirstOrDefault()?.date == weather.condition.observation_time.Date.ToString("yyyy-MM-dd"))
             {
-                weather.astronomy = _.CreateAstronomy(root.forecast.forecastday[0].astro);
+                weather.astronomy = _.CreateAstronomy(root.forecast?.forecastday?.FirstOrDefault()?.astro);
             }
             weather.precipitation = _.CreatePrecipitation(root.current);
             weather.ttl = 180;
@@ -94,13 +101,13 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
             // Extras
             forecast.extras = new ForecastExtras();
-            forecast.extras.feelslike_f = WeatherUtils.GetFeelsLikeTemp(day.day.avgtemp_f, day.day.maxwind_mph, (int)MathF.Round(day.day.avghumidity));
+            forecast.extras.feelslike_f = WeatherUtils.GetFeelsLikeTemp(day.day.avgtemp_f!.Value, day.day.maxwind_mph!.Value, day.day.avghumidity!.Value.RoundToInt());
             forecast.extras.feelslike_c = ConversionMethods.FtoC(forecast.extras.feelslike_f.Value);
-            forecast.extras.humidity = (int)MathF.Round(day.day.avghumidity);
-            forecast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(day.day.avgtemp_c, forecast.extras.humidity.Value);
+            forecast.extras.humidity = day.day.avghumidity?.RoundToInt();
+            forecast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(day.day.avgtemp_c!.Value, forecast.extras.humidity!.Value);
             forecast.extras.dewpoint_f = ConversionMethods.CtoF(forecast.extras.dewpoint_c.Value);
             forecast.extras.uv_index = day.day.uv;
-            forecast.extras.pop = day.day.daily_chance_of_rain ?? day.day.daily_chance_of_snow;
+            forecast.extras.pop = day.day.daily_chance_of_rain?.TryParseInt() ?? day.day.daily_chance_of_snow?.TryParseInt();
             forecast.extras.qpf_rain_mm = day.day.totalprecip_mm;
             forecast.extras.qpf_rain_in = day.day.totalprecip_in;
             forecast.extras.qpf_snow_cm = day.day.totalsnow_cm;
@@ -117,7 +124,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
         {
             return new HourlyForecast
             {
-                date = DateTimeOffset.FromUnixTimeSeconds(hour.time_epoch).ToOffset(offset),
+                date = hour.time_epoch?.Let(it =>
+                {
+                    return DateTimeOffset.FromUnixTimeSeconds(it).ToOffset(offset);
+                }) ?? new DateTimeOffset(DateTime.ParseExact(hour.time, "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind), offset),
 
                 high_f = hour.temp_f,
                 high_c = hour.temp_c,
@@ -174,10 +184,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 feelslike_c = current.feelslike_c,
 
                 icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherApi)
-                    .GetWeatherIcon(current.is_day == 0, current.condition.code?.ToInvariantString()),
+                    .GetWeatherIcon(current.is_day == 0, current.condition?.code?.ToInvariantString()),
 
-                beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)current.wind_mph)),
-                uv = new UV(current.uv),
+                beaufort = new Beaufort(WeatherUtils.GetBeaufortScale(mph: (int)current.wind_mph!.Value)),
+                uv = current.uv?.Let(it => new UV(it)),
                 airQuality = _.CreateAirQuality(current.air_quality),
                 pollen = current.pollen?.Let(currentPollen =>
                 {
@@ -213,7 +223,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
                         }
                     };
                 }),
-                observation_time = DateTimeOffset.FromUnixTimeSeconds(current.last_updated_epoch).ToOffset(offset),
+                observation_time = current.last_updated_epoch?.Let(it =>
+                {
+                    return DateTimeOffset.FromUnixTimeSeconds(it).ToOffset(offset);
+                }) ?? DateTimeOffset.UtcNow.ToOffset(offset)
             };
         }
 
@@ -229,8 +242,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
                 visibility_mi = current.vis_miles,
                 visibility_km = current.vis_km,
-                dewpoint_c = WeatherUtils.CalculateDewpointC(current.temp_c, current.humidity),
-                dewpoint_f = WeatherUtils.CalculateDewpointF(current.temp_f, current.humidity),
+                dewpoint_c = current.temp_c.HasValue && current.humidity.HasValue ? WeatherUtils.CalculateDewpointC(current.temp_c.Value, current.humidity.Value) : null,
+                dewpoint_f = current.temp_f.HasValue && current.humidity.HasValue ? WeatherUtils.CalculateDewpointF(current.temp_f.Value, current.humidity.Value) : null,
             };
         }
 
@@ -244,7 +257,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             }
             catch (Exception)
             {
-                if (astro.sunrise == "Polar Day" || astro.sunrise == "Polar Night")
+                if (astro?.sunrise == "Polar Day" || astro?.sunrise == "Polar Night")
                 {
                     astronomy.sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
                 }
@@ -252,9 +265,9 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
             try
             {
-                astronomy.sunset = DateTime.ParseExact(astro.sunset, "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
+                astronomy.sunset = DateTime.ParseExact(astro?.sunset, "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
 
-                if (astronomy.sunrise != null && astronomy.sunrise != DateTime.MinValue && astronomy.sunset.CompareTo(astronomy.sunrise) < 0)
+                if (astronomy.sunrise != default && astronomy.sunrise != DateTime.MinValue && astronomy.sunset.CompareTo(astronomy.sunrise) < 0)
                 {
                     // Is next day
                     astronomy.sunset = astronomy.sunset.AddDays(1);
@@ -262,7 +275,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             }
             catch (Exception)
             {
-                if (astro.sunset == "Polar Day" || astro.sunset == "Polar Night")
+                if (astro?.sunset == "Polar Day" || astro?.sunset == "Polar Night")
                 {
                     astronomy.sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
                 }
@@ -280,7 +293,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             }
             catch (Exception) { }
 
-            astronomy.moonphase = astro.moon_phase switch
+            astronomy.moonphase = astro?.moon_phase switch
             {
                 "New Moon" => new MoonPhase(MoonPhase.MoonPhaseType.NewMoon),
                 "Waxing Crescent" => new MoonPhase(MoonPhase.MoonPhaseType.WaxingCrescent),

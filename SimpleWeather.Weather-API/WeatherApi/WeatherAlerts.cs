@@ -95,9 +95,18 @@ namespace SimpleWeather.Weather_API.WeatherApi
             {
                 weatherAlert.Date = effective;
             }
+            else
+            {
+                weatherAlert.Date = DateTimeOffset.UtcNow;
+            }
+
             if (DateTimeOffset.TryParse(alert.expires, CultureInfo.InvariantCulture, out var expires))
             {
                 weatherAlert.ExpiresDate = expires;
+            }
+            else
+            {
+                weatherAlert.ExpiresDate = weatherAlert.Date.AddDays(1);
             }
 
             return weatherAlert;

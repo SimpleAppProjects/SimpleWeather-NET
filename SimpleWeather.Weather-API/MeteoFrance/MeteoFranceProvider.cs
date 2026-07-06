@@ -104,53 +104,53 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, locale, key));
                 Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, locale, key));
 
-                using (var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL))
-                using (var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL))
+                using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL);
+                using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
+                currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+                forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
+                using var ctsC = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token);
+                using var ctsF = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token);
+                await this.CheckForErrors(currentResponse);
+                currentResponse.EnsureSuccessStatusCode();
+
+                await this.CheckForErrors(forecastResponse);
+                forecastResponse.EnsureSuccessStatusCode();
+
+                Stream currentStream = await currentResponse.Content.ReadAsStreamAsync();
+                Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
+
+                // Load weather
+                var currRoot = await JSONParser.DeserializerAsync<CurrentsRootobject>(currentStream);
+                var foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
+                AlertsRootobject alertsRoot = null;
+
+                if (foreRoot.position?.dept != null)
                 {
-                    currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
-                    forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
-
-                    // Get response
-                    var webClient = SharedModule.Instance.WebClient;
-                    using (var ctsC = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                    using (var currentResponse = await webClient.SendAsync(currentRequest, ctsC.Token))
-                    using (var ctsF = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                    using (var forecastResponse = await webClient.SendAsync(forecastRequest, ctsF.Token))
+                    try
                     {
-                        await this.CheckForErrors(currentResponse);
-                        currentResponse.EnsureSuccessStatusCode();
+                        Uri alertsURL = new Uri(string.Format(ALERTS_QUERY_URL, foreRoot.position.dept, key));
 
-                        await this.CheckForErrors(forecastResponse);
-                        forecastResponse.EnsureSuccessStatusCode();
+                        using var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsURL);
+                        alertsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
-                        Stream currentStream = await currentResponse.Content.ReadAsStreamAsync();
-                        Stream forecastStream = await forecastResponse.Content.ReadAsStreamAsync();
+                        using var ctsA = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
 
-                        // Load weather
-                        var currRoot = await JSONParser.DeserializerAsync<CurrentsRootobject>(currentStream);
-                        var foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
-                        AlertsRootobject alertsRoot = null;
-
-                        if (foreRoot.position?.dept != null)
-                        {
-                            Uri alertsURL = new Uri(string.Format(ALERTS_QUERY_URL, foreRoot.position.dept, key));
-
-                            using (var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsURL))
-                            {
-                                alertsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
-
-                                using (var ctsA = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                                using (var alertsResponse = await webClient.SendAsync(alertsRequest, ctsA.Token))
-                                {
-                                    var alertsStream = await alertsResponse.Content.ReadAsStreamAsync();
-                                    alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertsStream);
-                                }
-                            }
-                        }
-
-                        weather = this.CreateWeatherData(currRoot, foreRoot, alertsRoot);
+                        using var alertsResponse = await webClient.SendAsync(alertsRequest, ctsA.Token);
+                        var alertsStream = await alertsResponse.Content.ReadAsStreamAsync();
+                        alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertsStream);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Warn(nameof(MeteoFranceProvider), ex, "Error fetching alerts");
                     }
                 }
+
+                weather = this.CreateWeatherData(currRoot, foreRoot, alertsRoot);
             }
             catch (Exception ex)
             {
