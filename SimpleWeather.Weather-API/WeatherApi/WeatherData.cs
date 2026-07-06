@@ -3,6 +3,7 @@ using SimpleWeather.WeatherData;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 
 namespace SimpleWeather.Weather_API.WeatherApi
 {
@@ -49,7 +50,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
             weather.precipitation = _.CreatePrecipitation(root.current);
             weather.ttl = 180;
 
-            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue) && weather.forecast.Count > 0)
+            if ((!weather.condition.high_f.HasValue || !weather.condition.high_c.HasValue) && weather.forecast?.Any() == true)
             {
                 weather.condition.high_f = weather.forecast[0].high_f;
                 weather.condition.high_c = weather.forecast[0].high_c;
@@ -207,7 +208,13 @@ namespace SimpleWeather.Weather_API.WeatherApi
             {
                 astronomy.sunrise = DateTime.ParseExact(astro.sunrise, "hh:mm tt", CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind);
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                if (astro.sunrise == "Polar Day" || astro.sunrise == "Polar Night")
+                {
+                    astronomy.sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                }
+            }
 
             try
             {
@@ -219,7 +226,13 @@ namespace SimpleWeather.Weather_API.WeatherApi
                     astronomy.sunset = astronomy.sunset.AddDays(1);
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                if (astro.sunset == "Polar Day" || astro.sunset == "Polar Night")
+                {
+                    astronomy.sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                }
+            }
 
             try
             {
@@ -249,11 +262,11 @@ namespace SimpleWeather.Weather_API.WeatherApi
             // If the sun won't set/rise, set time to the future
             if (astronomy.sunrise == null)
             {
-                astronomy.sunrise = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                astronomy.sunrise = DateTime.MinValue;
             }
             if (astronomy.sunset == null)
             {
-                astronomy.sunset = DateTime.Now.Date.AddYears(1).AddTicks(-1);
+                astronomy.sunset = DateTime.MinValue;
             }
             if (astronomy.moonrise == null)
             {

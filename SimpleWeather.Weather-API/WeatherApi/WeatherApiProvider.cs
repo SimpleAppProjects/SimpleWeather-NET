@@ -5,6 +5,8 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.NWS;
+using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using SimpleWeather.WeatherData;
@@ -255,9 +257,56 @@ namespace SimpleWeather.Weather_API.WeatherApi
             return alerts;
         }
 
-        protected override Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
+        protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)
         {
-            return base.UpdateWeatherData(location, weather);
+            await base.UpdateWeatherData(location, weather);
+
+            // Calculate astronomy
+            Astronomy newAstro;
+
+            try
+            {
+                newAstro = await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            }
+            catch (WeatherException)
+            {
+                newAstro = await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+            }
+
+            if (weather.astronomy != null)
+            {
+                try
+                {
+                    if (weather.astronomy.sunrise == default || weather.astronomy.sunrise == DateTime.MinValue)
+                    {
+                        weather.astronomy.sunrise = newAstro.sunrise;
+                    }
+                    if (weather.astronomy.sunset == default || weather.astronomy.sunset == DateTime.MinValue)
+                    {
+                        weather.astronomy.sunset = newAstro.sunset;
+                    }
+                    if (weather.astronomy.moonrise == default || weather.astronomy.moonrise == DateTime.MinValue)
+                    {
+                        weather.astronomy.moonrise = newAstro.moonrise;
+                    }
+                    if (weather.astronomy.moonset == default || weather.astronomy.moonset == DateTime.MinValue)
+                    {
+                        weather.astronomy.moonset = newAstro.moonset;
+                    }
+                    if (weather.astronomy.moonphase == null)
+                    {
+                        weather.astronomy.moonphase = newAstro.moonphase;
+                    }
+                }
+                catch (Exception)
+                {
+                    weather.astronomy = newAstro;
+                }
+            }
+            else
+            {
+                weather.astronomy = newAstro;
+            }
         }
 
         public override Task<string> UpdateLocationQuery(Weather weather)
