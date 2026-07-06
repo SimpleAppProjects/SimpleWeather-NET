@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -23,16 +24,19 @@ using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherApi
 {
-    public partial class WeatherApiProvider : WeatherProviderImpl, IWeatherAlertProvider
+    public partial class WeatherApiProvider : WeatherProviderImpl, IWeatherAlertProvider, IPollenProvider
     {
         private const String BASE_URL = "https://api.weatherapi.com/v1/";
         private const String KEYCHECK_QUERY_URL = BASE_URL + "forecast.json?key={0}";
 
         private const String WEATHER_QUERY_URL =
-            BASE_URL + "forecast.json?q={0}&days=10&aqi=yes&alerts=yes&lang={1}&key={2}";
+            BASE_URL + "forecast.json?q={0}&days=10&aqi=yes&pollen=yes&alerts=yes&lang={1}&key={2}";
 
         private const String ALERTS_QUERY_URL =
             BASE_URL + "forecast.json?q={0}&days=1&hour=6&aqi=no&alerts=yes&lang={1}&key={2}";
+
+        private const String POLLEN_QUERY_URL =
+            BASE_URL + "current.json?q={0}&pollen=yes&key={1}";
 
         public WeatherApiProvider() : base()
         {
@@ -215,32 +219,28 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 Uri alertsURL =
                     new Uri(string.Format(ALERTS_QUERY_URL, await UpdateLocationQuery(location), locale, key));
 
-                using (var request = new HttpRequestMessage(HttpMethod.Get, alertsURL))
+                using var request = new HttpRequestMessage(HttpMethod.Get, alertsURL);
+                request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
+                using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var response = await webClient.SendAsync(request, cts.Token);
+                await this.CheckForErrors(response);
+                response.EnsureSuccessStatusCode();
+
+                Stream stream = await response.Content.ReadAsStreamAsync();
+
+                // Load weather
+                var root = await JSONParser.DeserializerAsync<ForecastRootobject>(stream);
+
+                if (root.alerts?.alert?.Length > 0)
                 {
-                    request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+                    alerts = new List<WeatherAlert>(root.alerts.alert.Length);
 
-                    // Get response
-                    var webClient = SharedModule.Instance.WebClient;
-                    using (var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT))
-                    using (var response = await webClient.SendAsync(request, cts.Token))
+                    foreach (var alert in root.alerts.alert)
                     {
-                        await this.CheckForErrors(response);
-                        response.EnsureSuccessStatusCode();
-
-                        Stream stream = await response.Content.ReadAsStreamAsync();
-
-                        // Load weather
-                        var root = await JSONParser.DeserializerAsync<ForecastRootobject>(stream);
-
-                        if (root.alerts?.alert?.Length > 0)
-                        {
-                            alerts = new List<WeatherAlert>(root.alerts.alert.Length);
-
-                            foreach (var alert in root.alerts.alert)
-                            {
-                                alerts.Add(this.CreateWeatherAlert(alert));
-                            }
-                        }
+                        alerts.Add(this.CreateWeatherAlert(alert));
                     }
                 }
             }
@@ -255,6 +255,81 @@ namespace SimpleWeather.Weather_API.WeatherApi
             }
 
             return alerts;
+        }
+
+        public async Task<SimpleWeather.WeatherData.Pollen> GetPollenData(SimpleWeather.LocationData.LocationData location)
+        {
+            SimpleWeather.WeatherData.Pollen pollenData = null;
+
+            var key = GetProviderKey();
+
+            try
+            {
+                this.CheckRateLimit();
+
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    throw new WeatherException(WeatherUtils.ErrorStatus.InvalidAPIKey);
+                }
+
+                Uri queryURL = new Uri(string.Format(CultureInfo.InvariantCulture, POLLEN_QUERY_URL, await UpdateLocationQuery(location), key));
+                using var request = new HttpRequestMessage(HttpMethod.Get, queryURL);
+                request.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(30));
+
+                // Get response
+                var webClient = SharedModule.Instance.WebClient;
+                using var cts = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
+                using var response = await webClient.SendAsync(request, cts.Token);
+                await this.CheckForErrors(response);
+                response.EnsureSuccessStatusCode();
+
+                Stream stream = await response.Content.ReadAsStreamAsync();
+
+                // Load data
+                var root = await JSONParser.DeserializerAsync<ForecastRootobject>(stream);
+
+                root?.current.pollen?.Let(currentPollen =>
+                {
+                    var treePollenValue = Enumerable.Max([currentPollen.Hazel ?? 0d, currentPollen.Alder ?? 0, currentPollen.Birch ?? 0, currentPollen.Oak ?? 0]);
+                    var grassPollenValue = currentPollen.Grass ?? 0d;
+                    var ragweedPollenValue = Enumerable.Max([currentPollen.Ragweed ?? 0, currentPollen.Mugwort ?? 0]);
+
+                    return new SimpleWeather.WeatherData.Pollen()
+                    {
+                        treePollenCount = treePollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        },
+                        grassPollenCount = grassPollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        },
+                        ragweedPollenCount = ragweedPollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        }
+                    };
+                });
+            }
+            catch (Exception ex)
+            {
+                pollenData = null;
+                Logger.WriteLine(LoggerLevel.Error, ex, "WeatherApiProvider: error getting pollen data");
+            }
+
+            return pollenData;
         }
 
         protected override async Task UpdateWeatherData(SimpleWeather.LocationData.LocationData location, Weather weather)

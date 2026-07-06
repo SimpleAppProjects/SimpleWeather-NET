@@ -50,6 +50,7 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public float gust_mph { get; set; }
         public float gust_kph { get; set; }
         public Air_Quality air_quality { get; set; }
+        public Pollen pollen { get; set; }
     }
 
     public class Condition
@@ -181,4 +182,16 @@ namespace SimpleWeather.Weather_API.WeatherApi
         public string desc { get; set; }
         public string instruction { get; set; }
     }
+
+    public class Pollen
+    {
+        public double? Hazel { get; set; }
+        public double? Alder { get; set; }
+        public double? Birch { get; set; }
+        public double? Oak { get; set; }
+        public double? Grass { get; set; }
+        public double? Mugwort { get; set; }
+        public double? Ragweed { get; set; }
+    }
+
 }

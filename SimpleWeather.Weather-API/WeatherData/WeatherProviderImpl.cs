@@ -164,6 +164,13 @@ namespace SimpleWeather.Weather_API.WeatherData
                             pollen.attribution = ResStrings.api_openmeteo;
                         });
                     }
+                    else if (RemoteConfigService.IsProviderEnabled(WAPI.WeatherApi))
+                    {
+                        weather.condition.pollen = (await new WeatherApiProvider().GetPollenData(location))?.Apply(pollen =>
+                        {
+                            pollen.attribution = ResStrings.api_weatherapi;
+                        });
+                    }
                 });
             }
 

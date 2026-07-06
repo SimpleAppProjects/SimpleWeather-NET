@@ -179,6 +179,40 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 beaufort = new Beaufort(WeatherUtils.GetBeaufortScale((int)current.wind_mph)),
                 uv = new UV(current.uv),
                 airQuality = _.CreateAirQuality(current.air_quality),
+                pollen = current.pollen?.Let(currentPollen =>
+                {
+                    var treePollenValue = Enumerable.Max([currentPollen.Hazel ?? 0d, currentPollen.Alder ?? 0, currentPollen.Birch ?? 0, currentPollen.Oak ?? 0]);
+                    var grassPollenValue = currentPollen.Grass ?? 0d;
+                    var ragweedPollenValue = Enumerable.Max([currentPollen.Ragweed ?? 0, currentPollen.Mugwort ?? 0]);
+
+                    return new SimpleWeather.WeatherData.Pollen()
+                    {
+                        treePollenCount = treePollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        },
+                        grassPollenCount = grassPollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        },
+                        ragweedPollenCount = ragweedPollenValue switch
+                        {
+                            >= 1.0 and < 20.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Low,
+                            >= 20.0 and < 100.0 => SimpleWeather.WeatherData.Pollen.PollenCount.Moderate,
+                            >= 100.0 and < 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.High,
+                            >= 300.0 => SimpleWeather.WeatherData.Pollen.PollenCount.VeryHigh,
+                            _ => SimpleWeather.WeatherData.Pollen.PollenCount.Unknown,
+                        }
+                    };
+                }),
                 observation_time = DateTimeOffset.FromUnixTimeSeconds(current.last_updated_epoch).ToOffset(offset),
             };
         }
