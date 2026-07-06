@@ -468,12 +468,42 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 /* Overcast */
                 1009 => WeatherIcons.OVERCAST,
 
+                /* Haze */
+                1012 => WeatherIcons.HAZE,
+
+                /*
+                 * 1015: Dust Haze
+                 * 1018: Blowing dust
+                 * 1021: Dust storm
+                 * 1045: Saharan dust
+                 * 1048: Dust
+                 */
+                1015 or 1018 or 1021 or 1045 or 1048 => WeatherIcons.DUST,
+
+                /*
+                 * 1024: Sandstorm
+                 * 1027: Severe sandstorm
+                 */
+                1024 or 1027 => WeatherIcons.SANDSTORM,
+
                 /*
                  * 1030: Mist
                  * 1135: Fog
                  * 1147: Freezing fog
                  */
                 1030 or 1135 or 1147 => WeatherIcons.FOG,
+
+                /*
+                 * 1033: Smoke
+                 * 1036: Smoky haze
+                 */
+                1033 or 1036 => WeatherIcons.SMOKE,
+
+                /*
+                 * 1039: Smog
+                 * 1042: Severe smog
+                 */
+                1039 or 1042 => WeatherIcons.SMOG,
 
                 /*
                  * 1063: Patchy rain possible

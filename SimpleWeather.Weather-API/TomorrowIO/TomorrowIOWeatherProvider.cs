@@ -886,7 +886,9 @@ namespace SimpleWeather.Weather_API.TomorrowIO
                     4210 or 42100 or 42101 => WeatherConditions.weather_rain,
                 /* Heavy Rain */
                 4201 or 42010 or 42011 or
-                    4211 or 42110 or 42111 => WeatherConditions.weather_heavyrain,
+                4211 or 42110 or 42111 or
+                4202 or 42020 or 42021 or
+                4212 or 42120 or 42121 => WeatherConditions.weather_heavyrain,
                 /* Flurries */
                 5001 or 50010 or 50011 or
                     5115 or 51150 or 51151 or

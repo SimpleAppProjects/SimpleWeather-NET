@@ -226,7 +226,7 @@ namespace SimpleWeather.Weather_API.BrightSky
                 forecast.icon.Let(it =>
                 {
                     forecast.icon = GetWeatherIcon(it);
-                    forecast.condition = GetWeatherCondition(it);
+                    forecast.condition = GetWeatherCondition(forecast.icon);
                 });
             }
 
@@ -240,7 +240,7 @@ namespace SimpleWeather.Weather_API.BrightSky
                 hr_forecast.icon.Let(it =>
                 {
                     hr_forecast.icon = GetWeatherIcon(hrfLocalTime < sunrise || hrfLocalTime > sunset, it);
-                    hr_forecast.condition = GetWeatherCondition(it);
+                    hr_forecast.condition = GetWeatherCondition(hr_forecast.icon);
                 });
             }
 

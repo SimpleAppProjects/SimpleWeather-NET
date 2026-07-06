@@ -205,23 +205,19 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
 
             // Update icons
-            var now = DateTimeOffset.UtcNow.ToOffset(offset).TimeOfDay;
-            var sunrise = weather.astronomy.sunrise.TimeOfDay;
-            var sunset = weather.astronomy.sunset.TimeOfDay;
-
-            weather.condition.icon = GetWeatherIcon(now < sunrise || now > sunset, weather.condition.icon);
+            weather.condition.icon = GetWeatherIcon(weather.condition.icon);
 
             foreach (var forecast in weather.forecast)
             {
                 forecast.date = forecast.date.Add(offset);
+                forecast.icon = GetWeatherIcon(false, forecast.icon);
             }
 
             foreach (var hr_forecast in weather.hr_forecast)
             {
                 var hrf_date = hr_forecast.date.ToOffset(offset);
                 hr_forecast.date = hrf_date;
-                var hrf_localTime = hrf_date.TimeOfDay;
-                hr_forecast.icon = GetWeatherIcon(hrf_localTime < sunrise || hrf_localTime > sunset, hr_forecast.icon);
+                hr_forecast.icon = GetWeatherIcon(hr_forecast.icon);
             }
 
             if (weather.weather_alerts?.Any() == true)

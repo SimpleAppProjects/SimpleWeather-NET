@@ -123,9 +123,9 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
             else
             {
-                forecast.condition = provider.GetWeatherCondition(day.weather12H?.icon);
+                forecast.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(false, day.weather12H?.icon));
             }
-            forecast.icon = provider.GetWeatherIcon(false, day.weather12H?.icon);
+            forecast.icon = day.weather12H?.icon;
 
             forecast.extras = new ForecastExtras();
             if (day.humidity?.max.HasValue == true && day.humidity?.min.HasValue == true)
@@ -171,7 +171,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
             else
             {
-                hrf.condition = provider.GetWeatherCondition(forecast.weather?.icon);
+                hrf.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(forecast.weather?.icon));
             }
             hrf.icon = forecast.weather?.icon;
 
@@ -349,7 +349,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             }
             else
             {
-                condition.weather = provider.GetWeatherCondition(currRoot.observation?.weather?.icon);
+                condition.weather = provider.GetWeatherCondition(provider.GetWeatherIcon(currRoot.observation?.weather?.icon));
             }
             condition.icon = currRoot.observation?.weather?.icon;
 
