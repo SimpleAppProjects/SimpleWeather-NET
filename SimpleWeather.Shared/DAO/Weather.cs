@@ -739,10 +739,6 @@ namespace SimpleWeather.WeatherData
         [JsonConverter(typeof(DateTimeOffsetFormatter))]
         public DateTimeOffset date { get; set; }
 
-        public int? wind_degrees { get; set; }
-        public float? wind_mph { get; set; }
-        public float? wind_kph { get; set; }
-
         public HourlyForecast()
         {
             // Needed for deserialization
@@ -756,9 +752,6 @@ namespace SimpleWeather.WeatherData
                    high_c == forecast.high_c &&
                    condition == forecast.condition &&
                    icon == forecast.icon &&
-                   wind_degrees == forecast.wind_degrees &&
-                   wind_mph == forecast.wind_mph &&
-                   wind_kph == forecast.wind_kph &&
                    Object.Equals(extras, forecast.extras);
         }
 
@@ -770,9 +763,6 @@ namespace SimpleWeather.WeatherData
             hash.Add(high_c);
             hash.Add(condition);
             hash.Add(icon);
-            hash.Add(wind_degrees);
-            hash.Add(wind_mph);
-            hash.Add(wind_kph);
             hash.Add(extras);
             return hash.ToHashCode();
         }
@@ -821,18 +811,6 @@ namespace SimpleWeather.WeatherData
                         this.icon = reader.GetString();
                         break;
 
-                    case nameof(wind_degrees):
-                        this.wind_degrees = reader.TryGetInt32();
-                        break;
-
-                    case nameof(wind_mph):
-                        this.wind_mph = reader.TryGetSingle();
-                        break;
-
-                    case nameof(wind_kph):
-                        this.wind_kph = reader.TryGetSingle();
-                        break;
-
                     case nameof(extras):
                         this.extras = new ForecastExtras();
                         this.extras.FromJson(ref reader);
@@ -867,15 +845,6 @@ namespace SimpleWeather.WeatherData
 
             // "icon" : ""
             writer.WriteString(nameof(icon), icon);
-
-            // "wind_degrees" : ""
-            writer.WriteInt32(nameof(wind_degrees), wind_degrees);
-
-            // "wind_mph" : ""
-            writer.WriteSingle(nameof(wind_mph), wind_mph);
-
-            // "wind_kph" : ""
-            writer.WriteSingle(nameof(wind_kph), wind_kph);
 
             // "extras" : ""
             if (extras != null)

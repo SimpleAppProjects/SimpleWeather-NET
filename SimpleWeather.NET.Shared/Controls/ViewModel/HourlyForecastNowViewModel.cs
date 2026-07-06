@@ -63,8 +63,9 @@ namespace SimpleWeather.NET.Controls
 
             Condition = wm.SupportsWeatherLocale ? forecast.condition : wm.GetWeatherCondition(forecast.icon);
 
-            if (forecast.wind_mph.HasValue && forecast.wind_mph >= 0 &&
-                forecast.wind_degrees.HasValue && forecast.wind_degrees >= 0)
+            if (forecast.extras?.wind_mph != null && forecast.extras.wind_mph >= 0 &&
+                forecast.extras?.wind_kph != null && forecast.extras.wind_kph >= 0 &&
+                forecast.extras?.wind_degrees != null && forecast.extras.wind_degrees >= 0)
             {
                 string unit = SettingsManager.SpeedUnit;
                 int speedVal;
@@ -74,24 +75,24 @@ namespace SimpleWeather.NET.Controls
                 {
                     case Units.MILES_PER_HOUR:
                     default:
-                        speedVal = (int)Math.Round(forecast.wind_mph.Value);
+                        speedVal = (int)Math.Round(forecast.extras.wind_mph.Value);
                         speedUnit = ResUnits.unit_mph;
                         break;
                     case Units.KILOMETERS_PER_HOUR:
-                        speedVal = (int)Math.Round(forecast.wind_kph.Value);
+                        speedVal = (int)Math.Round(forecast.extras.wind_kph.Value);
                         speedUnit = ResUnits.unit_kph;
                         break;
                     case Units.METERS_PER_SECOND:
-                        speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.wind_kph.Value));
+                        speedVal = (int)Math.Round(ConversionMethods.KphToMSec(forecast.extras.wind_kph.Value));
                         speedUnit = ResUnits.unit_msec;
                         break;
                     case Units.KNOTS:
-                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.wind_mph.Value));
+                        speedVal = (int)Math.Round(ConversionMethods.MphToKts(forecast.extras.wind_mph.Value));
                         speedUnit = ResUnits.unit_knots;
                         break;
                 }
 
-                WindDirection = forecast.wind_degrees.GetValueOrDefault(0) + 180;
+                WindDirection = forecast.extras.wind_degrees.GetValueOrDefault(0) + 180;
 
                 WindSpeed = String.Format(culture, "{0} {1}", speedVal, speedUnit);
             }

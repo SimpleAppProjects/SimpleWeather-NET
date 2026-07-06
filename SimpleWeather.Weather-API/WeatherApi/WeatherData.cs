@@ -125,10 +125,6 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherApi)
                     .GetWeatherIcon(hour.is_day == 0, hour.condition.code?.ToInvariantString()),
 
-                wind_mph = hour.wind_mph,
-                wind_kph = hour.wind_kph,
-                wind_degrees = hour.wind_degree,
-
                 // Extras
                 extras = new ForecastExtras
                 {

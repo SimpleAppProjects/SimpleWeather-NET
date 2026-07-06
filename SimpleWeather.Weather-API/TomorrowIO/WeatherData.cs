@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using Condition = SimpleWeather.WeatherData.Condition;
 using Location = SimpleWeather.WeatherData.Location;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
@@ -277,16 +277,13 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             if (item.values.windDirection.HasValue)
             {
                 hrf.extras.wind_degrees = (int)MathF.Round(item.values.windDirection.Value);
-                hrf.wind_degrees = hrf.extras.wind_degrees;
             }
 
             if (item.values.windSpeed.HasValue)
             {
                 hrf.extras.wind_mph = ConversionMethods.MSecToMph(item.values.windSpeed.Value);
-                hrf.wind_mph = hrf.extras.wind_mph;
 
                 hrf.extras.wind_kph = ConversionMethods.MSecToKph(item.values.windSpeed.Value);
-                hrf.wind_kph = hrf.extras.wind_kph;
             }
 
             if (item.values.windGust.HasValue)
@@ -309,7 +306,8 @@ namespace SimpleWeather.Weather_API.TomorrowIO
             return new MinutelyForecast()
             {
                 date = item.startTime,
-            }.Apply(minutely => {
+            }.Apply(minutely =>
+            {
                 /**
                  * 0: No precipitation
                  * 1: Rain

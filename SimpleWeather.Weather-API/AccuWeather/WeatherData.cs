@@ -239,10 +239,7 @@ namespace SimpleWeather.Weather_API.AccuWeather
             hourly.Wind?.Speed?.Value?.Let((it) =>
             {
                 hrf.extras.wind_kph = it;
-                hrf.wind_kph = it;
-
                 hrf.extras.wind_mph = ConversionMethods.KphToMph(it);
-                hrf.wind_mph = hrf.extras.wind_mph;
             });
             hrf.extras.wind_degrees = hourly.Wind?.Direction?.Degrees?.RoundToInt();
 

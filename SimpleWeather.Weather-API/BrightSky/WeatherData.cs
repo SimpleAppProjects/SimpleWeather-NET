@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using LocData = SimpleWeather.LocationData.LocationData;
 
 namespace SimpleWeather.Weather_API.BrightSky
@@ -261,21 +261,19 @@ namespace SimpleWeather.Weather_API.BrightSky
                 hrf.high_f = ConversionMethods.CtoF(it);
                 hrf.high_c = it;
             });
-            hrf.wind_degrees = forecast.wind_direction?.RoundToInt();
-            forecast.wind_speed?.Let(it =>
-            {
-                hrf.wind_mph = ConversionMethods.KphToMph(it);
-                hrf.wind_kph = it;
-            });
+
+            var wind_degrees = forecast.wind_direction?.RoundToInt();
+            float? wind_kph = forecast.wind_speed;
+            float? wind_mph = forecast.wind_speed?.Let(ConversionMethods.KphToMph);
 
             hrf.icon = forecast.icon;
 
             // Extras
             int? humidity = forecast.relative_humidity?.RoundToInt();
             hrf.extras = new ForecastExtras();
-            if (hrf.high_f.HasValue && hrf.wind_mph.HasValue && humidity.HasValue)
+            if (hrf.high_f.HasValue && wind_mph.HasValue && humidity.HasValue)
             {
-                var feelsLikeF = WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, hrf.wind_mph.Value, humidity.Value);
+                var feelsLikeF = WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, wind_mph.Value, humidity.Value);
                 hrf.extras.feelslike_f = feelsLikeF;
                 hrf.extras.feelslike_c = ConversionMethods.FtoC(feelsLikeF);
             }
@@ -294,9 +292,9 @@ namespace SimpleWeather.Weather_API.BrightSky
                 hrf.extras.pressure_in = ConversionMethods.MBToInHg(it);
                 hrf.extras.pressure_mb = it;
             });
-            hrf.extras.wind_degrees = hrf.wind_degrees;
-            hrf.extras.wind_mph = hrf.wind_mph;
-            hrf.extras.wind_kph = hrf.wind_kph;
+            hrf.extras.wind_degrees = wind_degrees;
+            hrf.extras.wind_mph = wind_mph;
+            hrf.extras.wind_kph = wind_kph;
             forecast.wind_gust_speed?.Let(it =>
             {
                 hrf.extras.windgust_mph = ConversionMethods.KphToMph(it);

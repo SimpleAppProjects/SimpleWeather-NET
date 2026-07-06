@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 
 namespace SimpleWeather.Weather_API.ECCC
 {
@@ -191,10 +191,6 @@ namespace SimpleWeather.Weather_API.ECCC
             hrf.high_f = item.temperature?.imperial?.TryParseFloat();
             hrf.high_c = item.temperature?.metric?.TryParseFloat();
 
-            hrf.wind_degrees = item.windDir?.Let(WeatherUtils.GetWindDirection);
-            hrf.wind_mph = item.windSpeed?.imperial?.TryParseFloat();
-            hrf.wind_kph = item.windSpeed?.metric?.TryParseFloat();
-
             hrf.icon = item.iconCode;
             hrf.condition = item.condition;
 
@@ -204,9 +200,9 @@ namespace SimpleWeather.Weather_API.ECCC
                 feelslike_f = item.feelsLike?.imperial?.TryParseFloat(),
                 feelslike_c = item.feelsLike?.metric?.TryParseFloat(),
                 pop = item.precip?.TryParseInt(),
-                wind_degrees = hrf.wind_degrees,
-                wind_mph = hrf.wind_mph,
-                wind_kph = hrf.wind_kph,
+                wind_degrees = item.windDir?.Let(WeatherUtils.GetWindDirection),
+                wind_mph = item.windSpeed?.imperial?.TryParseFloat(),
+                wind_kph = item.windSpeed?.metric?.TryParseFloat(),
                 windgust_mph = item.windGust?.imperial?.TryParseFloat(),
                 windgust_kph = item.windGust?.metric?.TryParseFloat(),
                 uv_index = item.uv?.index?.TryParseFloat()

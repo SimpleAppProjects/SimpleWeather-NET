@@ -272,13 +272,6 @@ namespace SimpleWeather.Weather_API.Google
                 wm.GetWeatherIcon(hour.isDaytime?.Let(it => !it) ?? false, hour.weatherCondition?.type);
             hrf.condition = hour.weatherCondition?.description?.text;
 
-            hrf.wind_degrees = hour.wind?.direction?.degrees;
-            hour.wind?.speed?.value?.Let(it =>
-            {
-                hrf.wind_kph = it;
-                hrf.wind_mph = ConversionMethods.KphToMph(it);
-            });
-
             // Extras
             hrf.extras = new ForecastExtras();
             hour.feelsLikeTemperature?.degrees?.Let(it =>
@@ -304,9 +297,12 @@ namespace SimpleWeather.Weather_API.Google
                 hrf.extras.pressure_mb = it;
                 hrf.extras.pressure_in = ConversionMethods.MBToInHg(it);
             });
-            hrf.extras.wind_degrees = hrf.wind_degrees;
-            hrf.extras.wind_kph = hrf.wind_kph;
-            hrf.extras.wind_mph = hrf.wind_mph;
+            hrf.extras.wind_degrees = hour.wind?.direction?.degrees;
+            hour.wind?.speed?.value?.Let(it =>
+            {
+                hrf.extras.wind_kph = it;
+                hrf.extras.wind_mph = ConversionMethods.KphToMph(it);
+            });
             hour.wind?.gust?.value?.Let(it =>
             {
                 hrf.extras.windgust_kph = it;

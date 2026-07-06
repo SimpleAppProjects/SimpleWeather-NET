@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.NWS.Hourly;
 using SimpleWeather.Weather_API.NWS.Observation;
 using SimpleWeather.WeatherData;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using Location = SimpleWeather.WeatherData.Location;
 using PeriodsItem = SimpleWeather.Weather_API.NWS.Observation.PeriodsItem;
 
@@ -309,13 +309,9 @@ namespace SimpleWeather.Weather_API.NWS
             if (float.TryParse(forecastItem.windSpeed, out float windSpeed) &&
                 int.TryParse(forecastItem.windDirection, out int windDir))
             {
-                hrf.wind_degrees = windDir;
-                hrf.wind_mph = windSpeed;
-                hrf.wind_kph = ConversionMethods.MphToKph(windSpeed);
-
-                hrf.extras.wind_degrees = hrf.wind_degrees;
-                hrf.extras.wind_mph = hrf.wind_mph;
-                hrf.extras.wind_kph = hrf.wind_kph;
+                hrf.extras.wind_degrees = windDir;
+                hrf.extras.wind_mph = windSpeed;
+                hrf.extras.wind_kph = ConversionMethods.MphToKph(windSpeed);
             }
 
             if (float.TryParse(forecastItem.windChill, out float windChill))

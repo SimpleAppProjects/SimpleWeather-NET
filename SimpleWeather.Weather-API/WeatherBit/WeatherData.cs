@@ -143,10 +143,6 @@ namespace SimpleWeather.Weather_API.WeatherBit
                 icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.WeatherBitIo)
                    .GetWeatherIcon(forecast.weather?.icon),
 
-                wind_degrees = forecast.wind_dir,
-                wind_kph = ConversionMethods.MSecToKph(forecast.wind_spd),
-                wind_mph = ConversionMethods.MSecToMph(forecast.wind_spd),
-
                 // Extras
                 extras = new ForecastExtras()
                 {

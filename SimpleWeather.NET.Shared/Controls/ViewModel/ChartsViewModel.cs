@@ -154,8 +154,8 @@ namespace SimpleWeather.NET.Controls
                         {
                             popData = new ForecastGraphViewModel();
                         }
-                        if (hrfcasts.FirstOrDefault()?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.wind_kph.HasValue == true ||
-                            hrfcasts.LastOrDefault()?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.wind_kph.HasValue == true)
+                        if (hrfcasts.FirstOrDefault()?.extras?.wind_mph.HasValue == true && hrfcasts.FirstOrDefault()?.extras?.wind_kph.HasValue == true ||
+                            hrfcasts.LastOrDefault()?.extras?.wind_mph.HasValue == true && hrfcasts.LastOrDefault()?.extras?.wind_kph.HasValue == true)
                         {
                             windData = new ForecastGraphViewModel();
                         }
@@ -191,7 +191,7 @@ namespace SimpleWeather.NET.Controls
                     }
                     if (windData != null)
                     {
-                        if (hrfcast.wind_mph.HasValue && hrfcast.wind_mph >= 0)
+                        if (hrfcast.extras?.wind_mph.HasValue == true && hrfcast.extras.wind_mph >= 0)
                         {
                             windData.AddForecastData(hrfcast, ForecastType.Wind, GraphType.Bar);
                         }

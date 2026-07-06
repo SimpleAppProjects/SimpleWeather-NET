@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
 namespace SimpleWeather.Weather_API.WeatherKit
@@ -152,10 +152,6 @@ namespace SimpleWeather.Weather_API.WeatherKit
                 .GetWeatherIcon(!hour.daylight.GetValueOrDefault(true), hour.conditionCode);
             hrf.condition = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.Apple)
                 .GetWeatherCondition(hour.conditionCode);
-
-            hrf.wind_kph = hour.windSpeed;
-            hrf.wind_mph = ConversionMethods.KphToMph(hour.windSpeed);
-            hrf.wind_degrees = hour.windDirection;
 
             // Extras
             hrf.extras = new ForecastExtras

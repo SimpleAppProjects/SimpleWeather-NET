@@ -147,18 +147,15 @@ namespace SimpleWeather.Weather_API.WeatherUnlocked
             hrf.condition = timeframe.wx_desc;
             hrf.icon = timeframe.wx_code.ToInvariantString();
 
-            hrf.wind_degrees = (int)MathF.Round(timeframe.winddir_deg);
-            hrf.wind_mph = timeframe.windspd_mph;
-            hrf.wind_kph = timeframe.windspd_kmh;
-
             // Extras
             hrf.extras = new ForecastExtras();
             hrf.extras.humidity = (int)MathF.Round(timeframe.humid_pct);
             hrf.extras.cloudiness = (int)MathF.Round(timeframe.cloudtotal_pct);
             hrf.extras.pressure_mb = timeframe.slp_mb;
             hrf.extras.pressure_in = timeframe.slp_in;
-            hrf.extras.wind_mph = hrf.wind_mph;
-            hrf.extras.wind_kph = hrf.wind_kph;
+            hrf.extras.wind_degrees = (int)MathF.Round(timeframe.winddir_deg);
+            hrf.extras.wind_mph = timeframe.windspd_mph;
+            hrf.extras.wind_kph = timeframe.windspd_kmh;
             hrf.extras.dewpoint_f = timeframe.dewpoint_f;
             hrf.extras.dewpoint_c = timeframe.dewpoint_c;
             hrf.extras.feelslike_f = timeframe.feelslike_f;

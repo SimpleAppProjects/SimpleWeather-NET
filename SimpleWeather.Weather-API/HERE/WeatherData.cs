@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SimpleWeather.Utils;
+using SimpleWeather.WeatherData;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using SimpleWeather.Utils;
-using SimpleWeather.WeatherData;
 using Condition = SimpleWeather.WeatherData.Condition;
 using ResStrings = SimpleWeather.Resources.Strings.Resources;
 
@@ -208,16 +208,6 @@ namespace SimpleWeather.Weather_API.HERE
                     Equals(hr_forecast.daylight, "night") || hr_forecast.iconName?.StartsWith("night") == true,
                     hr_forecast.iconName);
 
-            if (int.TryParse(hr_forecast.windDirection, NumberStyles.Integer, CultureInfo.InvariantCulture,
-                    out int windDeg))
-                hrf.wind_degrees = windDeg;
-            if (float.TryParse(hr_forecast.windSpeed, NumberStyles.Float, CultureInfo.InvariantCulture,
-                    out float windSpeed))
-            {
-                hrf.wind_mph = windSpeed;
-                hrf.wind_kph = ConversionMethods.MphToKph(windSpeed);
-            }
-
             // Extras
             hrf.extras = new ForecastExtras();
             if (float.TryParse(hr_forecast.comfort, NumberStyles.Float, CultureInfo.InvariantCulture,
@@ -270,9 +260,15 @@ namespace SimpleWeather.Weather_API.HERE
                 hrf.extras.pressure_mb = ConversionMethods.InHgToMB(pressureIN);
             }
 
-            hrf.extras.wind_degrees = hrf.wind_degrees;
-            hrf.extras.wind_mph = hrf.wind_mph;
-            hrf.extras.wind_kph = hrf.wind_kph;
+            if (int.TryParse(hr_forecast.windDirection, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                    out int windDeg))
+                hrf.extras.wind_degrees = windDeg;
+            if (float.TryParse(hr_forecast.windSpeed, NumberStyles.Float, CultureInfo.InvariantCulture,
+                    out float windSpeed))
+            {
+                hrf.extras.wind_mph = windSpeed;
+                hrf.extras.wind_kph = ConversionMethods.MphToKph(windSpeed);
+            }
 
             return hrf;
         }

@@ -196,13 +196,9 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             {
                 if (forecast.wind.speed.HasValue && forecast.wind.direction.HasValue)
                 {
-                    hrf.wind_degrees = forecast.wind.direction;
-                    hrf.wind_kph = ConversionMethods.MSecToKph(forecast.wind.speed.Value);
-                    hrf.wind_mph = ConversionMethods.MSecToMph(forecast.wind.speed.Value);
-
-                    hrf.extras.wind_degrees = hrf.wind_degrees;
-                    hrf.extras.wind_mph = hrf.wind_mph;
-                    hrf.extras.wind_kph = hrf.wind_kph;
+                    hrf.extras.wind_degrees = forecast.wind.direction;
+                    hrf.extras.wind_kph = ConversionMethods.MSecToKph(forecast.wind.speed.Value);
+                    hrf.extras.wind_mph = ConversionMethods.MSecToMph(forecast.wind.speed.Value);
                 }
 
                 if (forecast.wind.gust.HasValue)

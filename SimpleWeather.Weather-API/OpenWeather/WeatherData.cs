@@ -202,10 +202,6 @@ namespace SimpleWeather.Weather_API.OpenWeather
             hrf.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap)
                    .GetWeatherIcon(hr_forecast.weather[0].id.ToInvariantString() + dn);
 
-            hrf.wind_degrees = (int)hr_forecast.wind.deg;
-            hrf.wind_mph = ConversionMethods.MSecToMph(hr_forecast.wind.speed);
-            hrf.wind_kph = ConversionMethods.MSecToKph(hr_forecast.wind.speed);
-
             // Extras
             hrf.extras = new ForecastExtras
             {
@@ -214,9 +210,9 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 // 1hPA = 1mbar
                 pressure_mb = hr_forecast.main.pressure,
                 pressure_in = ConversionMethods.MBToInHg(hr_forecast.main.pressure),
-                wind_degrees = hrf.wind_degrees,
-                wind_mph = hrf.wind_mph,
-                wind_kph = hrf.wind_kph
+                wind_degrees = (int)hr_forecast.wind.deg,
+                wind_mph = ConversionMethods.MSecToMph(hr_forecast.wind.speed),
+                wind_kph = ConversionMethods.MSecToKph(hr_forecast.wind.speed)
             };
             if (hrf.high_c.Value > 0 && hrf.high_c.Value < 60 && hr_forecast.main.humidity > 1)
             {

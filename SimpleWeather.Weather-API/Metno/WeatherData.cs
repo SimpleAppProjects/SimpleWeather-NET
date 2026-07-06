@@ -190,9 +190,10 @@ namespace SimpleWeather.Weather_API.Metno
             hrf.date = new DateTimeOffset(hr_forecast.time, TimeSpan.Zero);
             hrf.high_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.air_temperature.Value);
             hrf.high_c = hr_forecast.data.instant.details.air_temperature.Value;
-            hrf.wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
-            hrf.wind_mph = ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value);
-            hrf.wind_kph = ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value);
+
+            var wind_degrees = (int)Math.Round(hr_forecast.data.instant.details.wind_from_direction.Value);
+            var wind_mph = ConversionMethods.MSecToMph(hr_forecast.data.instant.details.wind_speed.Value);
+            var wind_kph = ConversionMethods.MSecToKph(hr_forecast.data.instant.details.wind_speed.Value);
 
             if (hr_forecast.data.next_1_hours != null)
             {
@@ -211,16 +212,16 @@ namespace SimpleWeather.Weather_API.Metno
             // Extras
             hrf.extras = new ForecastExtras()
             {
-                feelslike_f = WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, hrf.wind_mph.Value, (int)Math.Round(humidity)),
-                feelslike_c = ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, hrf.wind_mph.Value, (int)Math.Round(humidity))),
+                feelslike_f = WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, wind_mph, (int)Math.Round(humidity)),
+                feelslike_c = ConversionMethods.FtoC(WeatherUtils.GetFeelsLikeTemp(hrf.high_f.Value, wind_mph, (int)Math.Round(humidity))),
                 humidity = (int)Math.Round(humidity),
                 dewpoint_f = ConversionMethods.CtoF(hr_forecast.data.instant.details.dew_point_temperature.Value),
                 dewpoint_c = hr_forecast.data.instant.details.dew_point_temperature.Value,
                 pressure_in = ConversionMethods.MBToInHg(hr_forecast.data.instant.details.air_pressure_at_sea_level.Value),
                 pressure_mb = hr_forecast.data.instant.details.air_pressure_at_sea_level.Value,
-                wind_degrees = hrf.wind_degrees,
-                wind_mph = hrf.wind_mph,
-                wind_kph = hrf.wind_kph
+                wind_degrees = wind_degrees,
+                wind_mph = wind_mph,
+                wind_kph = wind_kph
             };
             if (hr_forecast.data.instant.details.cloud_area_fraction.HasValue)
             {

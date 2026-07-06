@@ -337,58 +337,58 @@ namespace SimpleWeather.Common.WeatherData
             switch (result)
             {
                 case WeatherResult.NoWeather:
-                {
-                    if (request.ShouldSaveData)
                     {
-                        Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG,
-                            location?.ToString());
-                        Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
-                        var weather = result.Data;
-
-                        if (weather != null && weather.source != SettingsManager.API ||
-                            location.weatherSource != SettingsManager.API)
+                        if (request.ShouldSaveData)
                         {
-                            // Only update location data if location region is supported by new API
-                            // If not don't update so we can use fallback (previously used API)
-                            if (wm.IsRegionSupported(location))
-                            {
-                                // Update location query and source for new API
-                                string oldKey = location.query;
+                            Logger.WriteLine(LoggerLevel.Debug, "{0}: Saved weather data invalid for {1}", TAG,
+                                location?.ToString());
+                            Logger.WriteLine(LoggerLevel.Debug, "{0}: Retrieving data from weather provider", TAG);
+                            var weather = result.Data;
 
-                                if (location.latitude != 0.0 || location.longitude != 0.0)
+                            if (weather != null && weather.source != SettingsManager.API ||
+                                location.weatherSource != SettingsManager.API)
+                            {
+                                // Only update location data if location region is supported by new API
+                                // If not don't update so we can use fallback (previously used API)
+                                if (wm.IsRegionSupported(location))
                                 {
-                                    location.query = await wm.UpdateLocationQuery(location);
-                                }
-                                else if (weather != null)
-                                {
-                                    if (weather.location?.latitude.GetValueOrDefault(0f) != 0f ||
-                                        weather.location?.longitude.GetValueOrDefault(0f) != 0f)
+                                    // Update location query and source for new API
+                                    string oldKey = location.query;
+
+                                    if (location.latitude != 0.0 || location.longitude != 0.0)
+                                    {
+                                        location.query = await wm.UpdateLocationQuery(location);
+                                    }
+                                    else if (weather != null)
+                                    {
+                                        if (weather.location?.latitude.GetValueOrDefault(0f) != 0f ||
+                                            weather.location?.longitude.GetValueOrDefault(0f) != 0f)
+                                        {
+                                            throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
+                                                new Exception($"Invalid location data: {weather.location}"));
+                                        }
+
+                                        location.query = await wm.UpdateLocationQuery(weather);
+                                    }
+                                    else
                                     {
                                         throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
-                                            new Exception($"Invalid location data: {weather.location}"));
+                                            new Exception(
+                                                $"Invalid location state: location ({location}), weather ({weather})"));
                                     }
 
-                                    location.query = await wm.UpdateLocationQuery(weather);
-                                }
-                                else
-                                {
-                                    throw new WeatherException(WeatherUtils.ErrorStatus.Unknown,
-                                        new Exception(
-                                            $"Invalid location state: location ({location}), weather ({weather})"));
-                                }
+                                    location.weatherSource = SettingsManager.API;
 
-                                location.weatherSource = SettingsManager.API;
-
-                                // Update database as well
-                                if (location.locationType == LocationType.GPS)
-                                {
-                                    await SettingsManager.SaveLastGPSLocData(location);
-                                    SharedModule.Instance.RequestAction(CommonActions
-                                        .ACTION_WEATHER_SENDLOCATIONUPDATE);
-                                }
-                                else
-                                {
-                                    await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
+                                    // Update database as well
+                                    if (location.locationType == LocationType.GPS)
+                                    {
+                                        await SettingsManager.SaveLastGPSLocData(location);
+                                        SharedModule.Instance.RequestAction(CommonActions
+                                            .ACTION_WEATHER_SENDLOCATIONUPDATE);
+                                    }
+                                    else
+                                    {
+                                        await SettingsManager.UpdateLocationWithKey(location, oldKey).ConfigureAwait(false);
 #if (WINDOWS || __IOS__) && !UNIT_TEST
                                     // Update widget id for location
                                     SharedModule.Instance.RequestAction(
@@ -399,13 +399,13 @@ namespace SimpleWeather.Common.WeatherData
                                             { Constants.WIDGETKEY_LOCATION, location },
                                         });
 #endif
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    return await GetWeatherData(request).ConfigureAwait(false);
-                }
+                        return await GetWeatherData(request).ConfigureAwait(false);
+                    }
                 default:
                     return result;
             }
@@ -515,14 +515,14 @@ namespace SimpleWeather.Common.WeatherData
                         weather.condition.temp_f = hrf.high_f;
                         weather.condition.temp_c = hrf.high_c;
 
-                        weather.condition.wind_mph = hrf.wind_mph;
-                        weather.condition.wind_kph = hrf.wind_kph;
-                        weather.condition.wind_degrees = hrf.wind_degrees;
+                        weather.condition.wind_mph = hrf.extras?.wind_mph;
+                        weather.condition.wind_kph = hrf.extras?.wind_kph;
+                        weather.condition.wind_degrees = hrf.extras?.wind_degrees;
 
-                        if (hrf.wind_mph.HasValue)
+                        if (hrf.extras?.wind_mph.HasValue == true)
                         {
                             weather.condition.beaufort =
-                                new Beaufort(WeatherUtils.GetBeaufortScale((int)Math.Round(hrf.wind_mph.Value)));
+                                new Beaufort(WeatherUtils.GetBeaufortScale(mph: hrf.extras.wind_mph.Value.RoundToInt()));
                         }
 
                         weather.condition.feelslike_f = hrf.extras?.feelslike_f ?? 0.0f;
@@ -533,7 +533,7 @@ namespace SimpleWeather.Common.WeatherData
 
                         weather.condition.observation_time = hrf.date;
 
-                        if (durationMins > 60 * 6)
+                        if (durationMins > 60 * 6 || weather.condition.high_f == null || weather.condition.high_f == weather.condition.low_f)
                         {
                             var fcasts = await SettingsManager.GetWeatherForecastData(location.query);
                             var fcast = fcasts?.forecast?.FirstOrDefault(f => f.date.Date == now.Date);
