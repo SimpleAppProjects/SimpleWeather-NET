@@ -185,8 +185,7 @@ namespace SimpleWeather.NET.Controls
 
         private void RefreshMinutelyForecasts(IList<MinutelyForecast> minfcasts)
         {
-            var hrInterval = WeatherModule.Instance.WeatherManager.HourlyForecastInterval;
-            var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).AddHours(-(hrInterval * 0.5)).Trim(TimeSpan.TicksPerHour);
+            var now = DateTimeOffset.Now.ToOffset(locationData?.tz_offset ?? TimeSpan.Zero).Trim(TimeSpan.TicksPerHour);
 
             var minfcastsFiltered = minfcasts?.Where(m => m.date >= now)?.Take(60);
 
