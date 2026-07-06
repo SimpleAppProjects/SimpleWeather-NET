@@ -22,6 +22,7 @@ using WAPI = SimpleWeather.WeatherData.WeatherAPI;
 
 namespace SimpleWeather.Weather_API.WeatherUnlocked
 {
+    [Obsolete("Weather Unlocked API Services will be closing down on June 30th, 2026")]
     public partial class WeatherUnlockedProvider : WeatherProviderImpl
     {
         private const String BASE_URL = "http://api.weatherunlocked.com/api/";

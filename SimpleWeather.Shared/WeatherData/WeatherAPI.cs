@@ -84,8 +84,6 @@ namespace SimpleWeather.WeatherData
                 "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
             new ProviderEntry("Weatherbit.io", WeatherBitIo,
                 "https://www.weatherbit.io/", "https://www.weatherbit.io/pricing"),
-            new ProviderEntry("WeatherUnlocked", WeatherUnlocked,
-                "https://developer.weatherunlocked.com/", "https://developer.weatherunlocked.com/"),
         };
 
         public static readonly IReadOnlyList<ProviderEntry> LocationAPIs = new List<ProviderEntry>(2)

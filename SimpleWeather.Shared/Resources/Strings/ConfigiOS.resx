@@ -206,9 +206,9 @@
   </data>
   <data name="wunlocked" xml:space="preserve">
     <value>{
-        "enabled": true,
+        "enabled": false,
         "locSource": "apple",
-        "newWeatherSource": ""
+        "newWeatherSource": "weatherapi"
 }</value>
   </data>
   <data name="rainviewer" xml:space="preserve">

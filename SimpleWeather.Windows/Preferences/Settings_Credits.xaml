@@ -105,17 +105,6 @@
                     </HyperlinkButton>
                 </StackPanel>
                 <StackPanel Padding="10">
-                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_wunlocked}" />
-                    <HyperlinkButton Padding="0,10" NavigateUri="https://developer.weatherunlocked.com/">
-                        <BitmapIcon
-                            Height="50"
-                            HorizontalAlignment="Left"
-                            Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-                            ShowAsMonochrome="True"
-                            UriSource="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/wunlocked.png" />
-                    </HyperlinkButton>
-                </StackPanel>
-                <StackPanel Padding="10">
                     <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_weatherapi}" />
                     <HyperlinkButton Padding="0,10" NavigateUri="https://www.weatherapi.com/">
                         <Image

@@ -92,15 +92,6 @@
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
                     <prefs:ProviderCreditViewCell
-                        Text="{x:Static res_strings:Resources.api_wunlocked}"
-                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, x:DataType={x:Type prefs:Settings_Credits}, Mode=OneWay}"
-                        CommandParameter="https://developer.weatherunlocked.com/"
-                        ImageBackgroundColor="{AppThemeBinding Light='#30000000', Dark='#00000000'}">
-                        <prefs:ProviderCreditViewCell.ImageSource>
-                            <FileImageSource File="wunlocked.png" />
-                        </prefs:ProviderCreditViewCell.ImageSource>
-                    </prefs:ProviderCreditViewCell>
-                    <prefs:ProviderCreditViewCell
                         Text="{x:Static res_strings:Resources.api_weatherapi}"
                         Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, x:DataType={x:Type prefs:Settings_Credits}, Mode=OneWay}"
                         CommandParameter="https://www.weatherapi.com/">

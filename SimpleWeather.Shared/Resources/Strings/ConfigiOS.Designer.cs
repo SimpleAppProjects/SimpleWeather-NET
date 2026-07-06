@@ -333,9 +333,9 @@ namespace SimpleWeather.Resources.Strings {
         
         /// <summary>
         ///   Looks up a localized string similar to {
-        ///        &quot;enabled&quot;: true,
+        ///        &quot;enabled&quot;: false,
         ///        &quot;locSource&quot;: &quot;apple&quot;,
-        ///        &quot;newWeatherSource&quot;: &quot;&quot;
+        ///        &quot;newWeatherSource&quot;: &quot;weatherapi&quot;
         ///}.
         /// </summary>
         public static string wunlocked {
