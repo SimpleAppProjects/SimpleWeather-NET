@@ -847,7 +847,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Om de locatie op de achtergrond te updaten voor meldingen en widgets, stel de locatietoestemming in op &apos;%1$s&apos;</value>
+    <value>Om de locatie op de achtergrond te updaten voor meldingen en widgets, stel de locatietoestemming in op '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Locatie niet ingesteld. Gelieve een locatie toe te voegen</value>
@@ -862,7 +862,7 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Om de locatie op de achtergrond te updaten voor tiles en complicaties, stel de locatietoestemming in op &apos;%1$s&apos;</value>
+    <value>Om de locatie op de achtergrond te updaten voor tiles en complicaties, stel de locatietoestemming in op '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
@@ -975,5 +975,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Regen stopt naar verwachting rond {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

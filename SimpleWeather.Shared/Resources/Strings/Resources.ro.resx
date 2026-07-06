@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Pentru a actualiza locația în fundal pentru notificări și widget-uri, vă rugăm să setați permisiunea de locație la &apos;%1$s&apos;</value>
+    <value>Pentru a actualiza locația în fundal pentru notificări și widget-uri, vă rugăm să setați permisiunea de locație la '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Locația nu este setată. Vă rugăm să adăugați o locație</value>
@@ -858,7 +858,7 @@
     <value>Permiteți accesul pentru a actualiza locația în fundal pentru plăci și complicații</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Pentru a actualiza locația în fundal pentru plăci și complicații, vă rugăm să setați permisiunea de locație la &apos;%1$s&apos;</value>
+    <value>Pentru a actualiza locația în fundal pentru plăci și complicații, vă rugăm să setați permisiunea de locație la '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Curent</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Se așteaptă să se oprească ploaia în jurul orei {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

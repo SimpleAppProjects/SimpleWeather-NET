@@ -21,6 +21,10 @@ using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherApi;
 using SimpleWeather.WeatherData;
 using WAPI = SimpleWeather.WeatherData.WeatherAPI;
+using SimpleWeather.Weather_API.OpenMeteo;
+
+using ResStrings = SimpleWeather.Resources.Strings.Resources;
+
 
 #if WINUI
 using Windows.UI;
@@ -146,7 +150,19 @@ namespace SimpleWeather.Weather_API.WeatherData
 
                     if (RemoteConfigService.IsProviderEnabled(WAPI.Google_Pollen) && (extrasService?.IsPremiumEnabled() == true || SettingsManager.DevSettingsEnabled && !string.IsNullOrWhiteSpace(SettingsManager.APIKeys[WAPI.Google_Pollen])))
                     {
-                        weather.condition.pollen = await new GooglePollenProvider().GetPollenData(location);
+                        weather.condition.pollen = (await new GooglePollenProvider().GetPollenData(location))?.Apply(pollen =>
+                        {
+                            pollen.attribution = ResStrings.api_google;
+                        });
+                    }
+                    else if (LocationUtils.IsCAMSEuroCovered(location) && RemoteConfigService.IsProviderEnabled(WAPI.OpenMeteo) && (extrasService?.IsPremiumEnabled() == true || SettingsManager.DevSettingsEnabled && !string.IsNullOrWhiteSpace(SettingsManager.APIKeys[WAPI.OpenMeteo])))
+                    {
+                        // Pollen coverage is only supported in Europe for Open-Meteo
+                        // https://open-meteo.com/en/docs/air-quality-api
+                        weather.condition.pollen = (await new OpenMeteoWeatherProvider().GetPollenData(location))?.Apply(pollen =>
+                        {
+                            pollen.attribution = ResStrings.api_openmeteo;
+                        });
                     }
                 });
             }

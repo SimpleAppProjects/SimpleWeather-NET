@@ -1,10 +1,12 @@
 ﻿using SimpleWeather.Weather_API.AccuWeather;
 using SimpleWeather.Weather_API.BrightSky;
 using SimpleWeather.Weather_API.ECCC;
+using SimpleWeather.Weather_API.Google;
 using SimpleWeather.Weather_API.HERE;
 using SimpleWeather.Weather_API.MeteoFrance;
 using SimpleWeather.Weather_API.Metno;
 using SimpleWeather.Weather_API.NWS;
+using SimpleWeather.Weather_API.OpenMeteo;
 using SimpleWeather.Weather_API.OpenWeather;
 using SimpleWeather.Weather_API.TomorrowIO;
 using SimpleWeather.Weather_API.WeatherApi;
@@ -13,7 +15,6 @@ using SimpleWeather.Weather_API.WeatherKit;
 using SimpleWeather.Weather_API.WeatherUnlocked;
 using SimpleWeather.WeatherData;
 using System;
-using SimpleWeather.Weather_API.Google;
 
 namespace SimpleWeather.Weather_API.WeatherData
 {
@@ -65,14 +66,17 @@ namespace SimpleWeather.Weather_API.WeatherData
                 case WeatherAPI.Google:
                     return new GoogleWeatherProvider();
 
+                case WeatherAPI.OpenMeteo:
+                    return new OpenMeteoWeatherProvider();
+
                 default:
-                {
+                    {
 #if !DEBUG
-                        return new WeatherApiProvider();
+                        return new OpenMeteoWeatherProvider();
 #else
-                    throw new ArgumentNullException($"Weather provider not supported ({provider})");
+                        throw new ArgumentNullException($"Weather provider not supported ({provider})");
 #endif
-                }
+                    }
             }
         }
     }

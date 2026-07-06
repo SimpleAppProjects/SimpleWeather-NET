@@ -132,7 +132,7 @@
 }</value>
   </data>
   <data name="default_weather_provider" xml:space="preserve">
-    <value>weatherapi</value>
+    <value>open_meteo</value>
   </data>
   <data name="google" xml:space="preserve">
     <value>{
@@ -151,14 +151,14 @@
   <data name="meteofrance" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "weatherapi",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="Metno" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "weatherapi",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -172,21 +172,21 @@
   <data name="openweather" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "weatherapi",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="openweather_onecall" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "weatherapi",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
   <data name="tomorrowio" xml:space="preserve">
     <value>{
         "enabled": true,
-        "locSource": "weatherapi",
+        "locSource": "apple",
         "newWeatherSource": ""
 }</value>
   </data>
@@ -252,5 +252,12 @@
   </data>
   <data name="key_imagedb_valid_days" xml:space="preserve">
     <value>30</value>
+  </data>
+  <data name="open_meteo" xml:space="preserve">
+    <value>{
+    "enabled": true,
+    "locSource": "apple",
+    "newWeatherSource": ""
+}</value>
   </data>
 </root>

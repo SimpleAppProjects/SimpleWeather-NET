@@ -269,10 +269,10 @@
     <value>Indice UV</value>
   </data>
   <data name="label_airquality" xml:space="preserve">
-    <value>Indice de la qualité de l&apos;air</value>
+    <value>Indice de la qualité de l'air</value>
   </data>
   <data name="label_airquality_short" xml:space="preserve">
-    <value>Qualité de l&apos;air</value>
+    <value>Qualité de l'air</value>
   </data>
   <data name="label_radar" xml:space="preserve">
     <value>Radar</value>
@@ -343,7 +343,7 @@
     <value>The HERE Logo is a trademark or registered trademark of HERE Global B.V.</value>
   </data>
   <data name="pref_summary_currentlocation" xml:space="preserve">
-    <value>Permettre l&apos;accès à la position actuelle via le GPS</value>
+    <value>Permettre l'accès à la position actuelle via le GPS</value>
   </data>
   <data name="pref_summary_apikey" xml:space="preserve">
     <value>Entrez la clé de fournisseur requise pour %1$s</value>
@@ -385,14 +385,14 @@
     <value>Créer un compte</value>
   </data>
   <data name="pref_summary_apiregister" xml:space="preserve">
-    <value>Créer un compte pour s&apos;enregistrer pour une clé de fournisseur</value>
+    <value>Créer un compte pour s'enregistrer pour une clé de fournisseur</value>
   </data>
   <data name="error_message_weather_region_unsupported" xml:space="preserve">
-    <value>Ce pays n&apos;est pas pris en charge par ce fournisseur de services météo.</value>
+    <value>Ce pays n'est pas pris en charge par ce fournisseur de services météo.</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="label_btn_add_location" xml:space="preserve">
-    <value>Ajout d&apos;un emplacement</value>
+    <value>Ajout d'un emplacement</value>
     <comment>Locations</comment>
   </data>
   <data name="action_editmode" xml:space="preserve">
@@ -408,10 +408,10 @@
     <value>Accès à la localisation refusé</value>
   </data>
   <data name="error_retrieve_location" xml:space="preserve">
-    <value>Impossible d&apos;obtenir la localisation</value>
+    <value>Impossible d'obtenir la localisation</value>
   </data>
   <data name="error_enable_location_services" xml:space="preserve">
-    <value>Services de localisation désactivés. Veuillez l&apos;activer dans les paramètres</value>
+    <value>Services de localisation désactivés. Veuillez l'activer dans les paramètres</value>
   </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Aucun résultat trouvé</value>
@@ -432,7 +432,7 @@
     <value>Supprimer</value>
   </data>
   <data name="bg_location_permission_rationale" xml:space="preserve">
-    <value>Autoriser l&apos;accès à la mise à jour de la localisation en arrière-plan pour les notifications et les widgets</value>
+    <value>Autoriser l'accès à la mise à jour de la localisation en arrière-plan pour les notifications et les widgets</value>
     <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
@@ -449,7 +449,7 @@
     <value>Aucune ville ne correspond à votre recherche</value>
   </data>
   <data name="werror_unknown" xml:space="preserve">
-    <value>Une erreur inconnue s&apos;est produite</value>
+    <value>Une erreur inconnue s'est produite</value>
   </data>
   <data name="pref_title_refreshinterval" xml:space="preserve">
     <value>Intervalle de mise à jour</value>
@@ -512,7 +512,7 @@
     <value>il y a %1$ds</value>
   </data>
   <data name="datetime_validuntil" xml:space="preserve">
-    <value>Valable jusqu&apos;en</value>
+    <value>Valable jusqu'en</value>
   </data>
   <data name="pref_title_personalkey" xml:space="preserve">
     <value>Clé du fournisseur personnel</value>
@@ -545,7 +545,7 @@
     <value>Sélectionnez les fonctions à activer/désactiver</value>
   </data>
   <data name="pref_title_feature_bgimage" xml:space="preserve">
-    <value>Image d&apos;arrière-plan</value>
+    <value>Image d'arrière-plan</value>
   </data>
   <data name="pref_title_feature_forecast" xml:space="preserve">
     <value>Prévisions</value>
@@ -563,7 +563,7 @@
     <value>Beaufort</value>
   </data>
   <data name="pref_title_feature_aqindex" xml:space="preserve">
-    <value>Indice de la qualité de l&apos;air</value>
+    <value>Indice de la qualité de l'air</value>
   </data>
   <data name="pref_title_feature_moonphase" xml:space="preserve">
     <value>Phase de lune</value>
@@ -575,7 +575,7 @@
     <value>Radar météo</value>
   </data>
   <data name="pref_title_feature_locpanelimg" xml:space="preserve">
-    <value>Image du panneau d&apos;emplacement</value>
+    <value>Image du panneau d'emplacement</value>
   </data>
   <data name="label_style_light" xml:space="preserve">
     <value>Clair</value>
@@ -618,7 +618,7 @@
     <value>Terminé</value>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
-    <value>L&apos;accès à l&apos;emplacement a été refusé. Veuillez l&apos;activer dans les paramètres.</value>
+    <value>L'accès à l'emplacement a été refusé. Veuillez l'activer dans les paramètres.</value>
   </data>
   <data name="Pref_SummaryUnits.Text" xml:space="preserve">
     <value>Affichage des unités en:</value>
@@ -651,7 +651,7 @@
     <value>OK</value>
   </data>
   <data name="NoWeatherAlerts_Prompt.Text" xml:space="preserve">
-    <value>Aucune alerte météo n&apos;est disponible.</value>
+    <value>Aucune alerte météo n'est disponible.</value>
   </data>
   <data name="Features.Content" xml:space="preserve">
     <value>Fonctionnalités</value>
@@ -710,21 +710,21 @@
     <comment>Feedback</comment>
   </data>
   <data name="pref_summary_feedback" xml:space="preserve">
-    <value>Rapporter tout problème ou suggestion pour améliorer l&apos;application</value>
+    <value>Rapporter tout problème ou suggestion pour améliorer l'application</value>
   </data>
   <data name="pref_title_rateandreview" xml:space="preserve">
     <value>Évaluer et réviser</value>
     <comment>Rate / Review</comment>
   </data>
   <data name="pref_summary_rateandreview" xml:space="preserve">
-    <value>Vous aimez l&apos;application? Aidez-nous en fournissant une évaluation</value>
+    <value>Vous aimez l'application? Aidez-nous en fournissant une évaluation</value>
   </data>
   <data name="pref_title_translate" xml:space="preserve">
     <value>Traduire</value>
     <comment>Translate</comment>
   </data>
   <data name="pref_summary_translate" xml:space="preserve">
-    <value>Aider à traduire l&apos;application</value>
+    <value>Aider à traduire l'application</value>
   </data>
   <data name="pref_title_language" xml:space="preserve">
     <value>Langue</value>
@@ -755,7 +755,7 @@
     <value>Mise à jour de la météo…</value>
   </data>
   <data name="FeatureOption_TileBackground.Content" xml:space="preserve">
-    <value>Image d&apos;arrière-plan de vignette</value>
+    <value>Image d'arrière-plan de vignette</value>
   </data>
   <data name="pref_title_icons" xml:space="preserve">
     <value>Icônes</value>
@@ -804,7 +804,7 @@
 Fuzzy</comment>
   </data>
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
-    <value>Accès à l&apos;arrière-plan refusé. Veuillez l&apos;activer dans les paramètres.</value>
+    <value>Accès à l'arrière-plan refusé. Veuillez l'activer dans les paramètres.</value>
   </data>
   <data name="api_weatherapi" xml:space="preserve">
     <value>WeatherAPI.com</value>
@@ -817,19 +817,19 @@ Fuzzy</comment>
     <value>Arbre</value>
   </data>
   <data name="label_tree_pollen" xml:space="preserve">
-    <value>Pollen d&apos;arbre</value>
+    <value>Pollen d'arbre</value>
   </data>
   <data name="label_pollen_grass" xml:space="preserve">
     <value>Herbe</value>
   </data>
   <data name="label_grass_pollen" xml:space="preserve">
-    <value>Pollen d&apos;herbe</value>
+    <value>Pollen d'herbe</value>
   </data>
   <data name="label_pollen_ragweed" xml:space="preserve">
     <value>Ambroisie</value>
   </data>
   <data name="label_ragweed_pollen" xml:space="preserve">
-    <value>Pollen d&apos;ambroisie</value>
+    <value>Pollen d'ambroisie</value>
   </data>
   <data name="label_count_low" xml:space="preserve">
     <value>Bas</value>
@@ -847,20 +847,20 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Pour mettre à jour la localisation en arrière-plan pour les notifications et les widgets, veuillez définir l&apos;autorisation de localisation sur &apos;%1$s&apos;</value>
+    <value>Pour mettre à jour la localisation en arrière-plan pour les notifications et les widgets, veuillez définir l'autorisation de localisation sur '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
-    <value>L&apos;emplacement n&apos;est pas défini. Veuillez ajouter un emplacement</value>
+    <value>L'emplacement n'est pas défini. Veuillez ajouter un emplacement</value>
   </data>
   <data name="title_bg_location_access" xml:space="preserve">
-    <value>Accès à l&apos;emplacement en arrière-plan</value>
+    <value>Accès à l'emplacement en arrière-plan</value>
     <comment>Background Location Permission</comment>
   </data>
   <data name="wear_bg_location_permission_rationale" xml:space="preserve">
-    <value>Autoriser l&apos;accès à la mise à jour de la localisation en arrière-plan pour les tuiles et les complications</value>
+    <value>Autoriser l'accès à la mise à jour de la localisation en arrière-plan pour les tuiles et les complications</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Pour mettre à jour la localisation en arrière-plan pour les tuiles et les complications, veuillez définir l&apos;autorisation de localisation sur &apos;%1$s&apos;</value>
+    <value>Pour mettre à jour la localisation en arrière-plan pour les tuiles et les complications, veuillez définir l'autorisation de localisation sur '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Actuel</value>
@@ -880,7 +880,7 @@ Fuzzy</comment>
     <value>La pluie va commencer dans environ {0}</value>
   </data>
   <data name="Precipitation_Minutely_Stopping_Text_Format" xml:space="preserve">
-    <value>La pluie s&apos;arrêtera dans environ {0}</value>
+    <value>La pluie s'arrêtera dans environ {0}</value>
   </data>
   <data name="hint_appid" xml:space="preserve">
     <value>App ID</value>
@@ -890,7 +890,7 @@ Fuzzy</comment>
     <value>App Code/Key</value>
   </data>
   <data name="hint_username" xml:space="preserve">
-    <value>Nom d&apos;utilisateur</value>
+    <value>Nom d'utilisateur</value>
   </data>
   <data name="hint_password" xml:space="preserve">
     <value>Mot de passe</value>
@@ -899,7 +899,7 @@ Fuzzy</comment>
     <value>Politique de confidentialité</value>
   </data>
   <data name="pref_title_termsofservice" xml:space="preserve">
-    <value>Conditions d&apos;utilisation</value>
+    <value>Conditions d'utilisation</value>
   </data>
   <data name="api_apple_weather" xml:space="preserve">
     <value>Apple Weather</value>
@@ -908,7 +908,7 @@ Fuzzy</comment>
     <value>Apple Weather and (Apple) Weather are trademarks of Apple Inc.</value>
   </data>
   <data name="pref_title_minalertseverity" xml:space="preserve">
-    <value>Sévérité minimale de l&apos;alerte</value>
+    <value>Sévérité minimale de l'alerte</value>
     <comment>Minimum Alert Severity</comment>
   </data>
   <data name="alertsev_all" xml:space="preserve">
@@ -927,7 +927,7 @@ Fuzzy</comment>
     <value>Google</value>
   </data>
   <data name="label_moreinfo" xml:space="preserve">
-    <value>Plus d&apos;informations</value>
+    <value>Plus d'informations</value>
   </data>
   <data name="action_reset" xml:space="preserve">
     <value>Réinitialiser</value>
@@ -957,7 +957,7 @@ Fuzzy</comment>
     <value>Trop de demandes. Veuillez réessayer après quelques minutes</value>
   </data>
   <data name="werror_locationnotsupported" xml:space="preserve">
-    <value>Cet emplacement n&apos;est pas pris en charge par ce fournisseur météo</value>
+    <value>Cet emplacement n'est pas pris en charge par ce fournisseur météo</value>
   </data>
   <data name="api_accuweather" xml:space="preserve">
     <value>AccuWeather</value>
@@ -973,5 +973,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>La pluie devrait cesser vers {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

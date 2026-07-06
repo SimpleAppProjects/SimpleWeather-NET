@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>لتحديث الموقع في الخلفية للإشعارات والودجات، يرجى تعيين إذن الموقع إلى &apos;%1$s&apos;</value>
+    <value>لتحديث الموقع في الخلفية للإشعارات والودجات، يرجى تعيين إذن الموقع إلى '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>لم يتم تعيين الموقع. يرجى إضافة موقع</value>
@@ -858,7 +858,7 @@
     <value>السماح بالوصول لتحديث الموقع في الخلفية للبلاطات والمضاعفات</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>لتحديث الموقع في الخلفية للبلاطات والمضاعفات، يرجى تعيين إذن الموقع إلى &apos;%1$s&apos;</value>
+    <value>لتحديث الموقع في الخلفية للبلاطات والمضاعفات، يرجى تعيين إذن الموقع إلى '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>الحالي</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>من المتوقع أن يتوقف المطر حوالي {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

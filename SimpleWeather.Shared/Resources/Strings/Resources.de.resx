@@ -858,7 +858,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Um den Standort im Hintergrund für Benachrichtigungen und Widgets zu aktualisieren, setzen Sie bitte die Standortberechtigung auf &apos;%1$s&apos;</value>
+    <value>Um den Standort im Hintergrund für Benachrichtigungen und Widgets zu aktualisieren, setzen Sie bitte die Standortberechtigung auf '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
@@ -873,7 +873,7 @@ Fuzzy</comment>
     <value>Standortzugriff im Hintergrund für Kacheln und Komplikationen zulassen</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Um den Standort im Hintergrund für Kacheln und Komplikationen zu aktualisieren, setzen Sie bitte die Standortberechtigung auf &apos;%1$s&apos;</value>
+    <value>Um den Standort im Hintergrund für Kacheln und Komplikationen zu aktualisieren, setzen Sie bitte die Standortberechtigung auf '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Aktuell</value>
@@ -986,5 +986,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Regenende voraussichtlich um {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

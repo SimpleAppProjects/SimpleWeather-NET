@@ -165,5 +165,53 @@ namespace SimpleWeather.Utils
             var e = enumerable.GetEnumerator();
             return !e.MoveNext();
         }
+
+        public static int? ElementAtOrNull(this IEnumerable<int> e, int index)
+        {
+            try
+            {
+                return e.ElementAt(index);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
+
+        public static long? ElementAtOrNull(this IEnumerable<long> e, int index)
+        {
+            try
+            {
+                return e.ElementAt(index);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
+
+        public static float? ElementAtOrNull(this IEnumerable<float> e, int index)
+        {
+            try
+            {
+                return e.ElementAt(index);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
+
+        public static double? ElementAtOrNull(this IEnumerable<double> e, int index)
+        {
+            try
+            {
+                return e.ElementAt(index);
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return null;
+            }
+        }
     }
 }

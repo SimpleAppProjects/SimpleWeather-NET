@@ -134,6 +134,15 @@
                             <FileImageSource File="eccc_logo.png" />
                         </prefs:ProviderCreditViewCell.ImageSource>
                     </prefs:ProviderCreditViewCell>
+                    <prefs:ProviderCreditViewCell
+                        Text="{x:Static res_strings:Resources.api_openmeteo}"
+                        Command="{Binding HyperlinkButtonCommand, Source={x:Reference SettingsCreditsPage}, x:DataType={x:Type prefs:Settings_Credits}, Mode=OneWay}"
+                        CommandParameter="https://open-meteo.com/">
+                        <prefs:ProviderCreditViewCell.ImageSource>
+                            <FileImageSource
+                                File="{AppThemeBinding Light='open_meteo_light.png', Dark='open_meteo_dark.png'}" />
+                        </prefs:ProviderCreditViewCell.ImageSource>
+                    </prefs:ProviderCreditViewCell>
                 </TableSection>
                 <TableSection x:Name="IconCreditsContainer"
                               Title="{x:Static res_strings:Resources.pref_title_icons}">

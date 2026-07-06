@@ -31,6 +31,8 @@ namespace SimpleWeather.Utils
         // Germany
         private static readonly BoundingBox DE_BOUNDING_BOX = new(47.2701114, 55.099161, 5.8663153, 15.0419319);
 
+        private static readonly BoundingBox CAMS_OPENMETEO_EUROPE_BBOX = new(-25.0, 45.0, 30.0, 72.0);
+
         private static readonly ISet<string> NWS_SUPPORTED_COUNTRIES = ImmutableHashSet.Create("US", "AS", "UM", "GU", "MP", "PR", "VI");
         private static readonly IList<BoundingBox> NWS_SUPPORTED_LOCATIONS = [US_BOUNDING_BOX, PR_BOUNDING_BOX, VI_BOUNDING_BOX, GU_MP_BOUNDING_BOX, AS_BOUNDING_BOX];
 
@@ -251,6 +253,11 @@ namespace SimpleWeather.Utils
             {
                 return InGermanyBounds(location.LocationLat, location.LocationLong);
             }
+        }
+
+        public static bool IsCAMSEuroCovered(LocationData.LocationData location)
+        {
+            return CAMS_OPENMETEO_EUROPE_BBOX.Intersects(location.latitude, location.longitude);
         }
 
         private record BoundingBox(

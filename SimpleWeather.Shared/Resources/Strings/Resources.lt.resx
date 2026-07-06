@@ -971,4 +971,7 @@
     <value>Tikimasi, kad lietus baigsis apie {0}</value>
     <comment>{0} - Time</comment>
   </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
+  </data>
 </root>

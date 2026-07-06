@@ -23,6 +23,7 @@ namespace SimpleWeather.WeatherData
         public const string Apple = "apple";
         public const string DWD = "dwd";
         public const string ECCC = "eccc";
+        public const string OpenMeteo = "open_meteo";
 
         // Location APIs
         public const string BingMaps = "Bing";
@@ -60,13 +61,8 @@ namespace SimpleWeather.WeatherData
         {
             new ProviderEntry("Apple Weather", Apple,
                 "https://developer.apple.com/weatherkit/", "https://developer.apple.com/weatherkit/"),
-            new ProviderEntry("HERE Weather", Here,
-                "https://www.here.com/en",
-                "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
-            new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
-                "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
-            new ProviderEntry("WeatherAPI.com", WeatherApi,
-                "https://weatherapi.com", "https://weatherapi.com/api"),
+            new ProviderEntry("Open-Meteo", OpenMeteo,
+                "https://open-meteo.com/", "https://open-meteo.com/en/features"),
             new ProviderEntry("National Weather Service (United States)", NWS,
                 "https://www.weather.gov", "https://www.weather.gov"),
             new ProviderEntry("BrightSky (DWD) [Germany]", DWD,
@@ -77,6 +73,13 @@ namespace SimpleWeather.WeatherData
                 "https://meteofrance.com/", "https://meteofrance.com/"),
             new ProviderEntry("MET Norway", MetNo,
                 "https://www.met.no/en", "https://www.met.no/en"),
+            new ProviderEntry("HERE Weather", Here,
+                "https://www.here.com/en",
+                "https://developer.here.com/?create=Freemium-Basic&keepState=true&step=account"),
+            new ProviderEntry("OpenWeatherMap", OpenWeatherMap,
+                "http://www.openweathermap.org", "https://home.openweathermap.org/users/sign_up"),
+            new ProviderEntry("WeatherAPI.com", WeatherApi,
+                "https://weatherapi.com", "https://weatherapi.com/api"),
             new ProviderEntry("Tomorrow.io", TomorrowIo,
                 "https://www.tomorrow.io/weather-api/", "https://www.tomorrow.io/weather-api/"),
             new ProviderEntry("Weatherbit.io", WeatherBitIo,

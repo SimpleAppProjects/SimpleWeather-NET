@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Чтобы обновить местоположение в фоновом режиме для уведомлений и виджетов, установите разрешение на определение местоположения на &apos;%1$s&apos;</value>
+    <value>Чтобы обновить местоположение в фоновом режиме для уведомлений и виджетов, установите разрешение на определение местоположения на '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Местоположение не установлено. Пожалуйста, добавьте местоположение</value>
@@ -858,7 +858,7 @@
     <value>Разрешить доступ для обновления местоположения в фоновом режиме для плиток и осложнений</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Чтобы обновить местоположение в фоновом режиме для плиток и осложнений, установите разрешение на определение местоположения на &apos;%1$s&apos;</value>
+    <value>Чтобы обновить местоположение в фоновом режиме для плиток и осложнений, установите разрешение на определение местоположения на '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Текущий</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Ожидается прекращение дождя около {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

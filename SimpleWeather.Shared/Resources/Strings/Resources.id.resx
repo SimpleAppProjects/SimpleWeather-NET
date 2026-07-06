@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Untuk memperbarui lokasi di latar belakang untuk notifikasi dan widget, harap atur izin lokasi ke &apos;%1$s&apos;</value>
+    <value>Untuk memperbarui lokasi di latar belakang untuk notifikasi dan widget, harap atur izin lokasi ke '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Lokasi belum diatur. Silakan tambahkan lokasi</value>
@@ -858,7 +858,7 @@
     <value>Izinkan akses untuk memperbarui lokasi di latar belakang untuk petak dan komplikasi</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Untuk memperbarui lokasi di latar belakang untuk petak dan komplikasi, silakan atur izin lokasi ke &apos;%1$s&apos;</value>
+    <value>Untuk memperbarui lokasi di latar belakang untuk petak dan komplikasi, silakan atur izin lokasi ke '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Saat ini</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Hujan diperkirakan berhenti sekitar {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

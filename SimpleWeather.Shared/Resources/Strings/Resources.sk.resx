@@ -848,7 +848,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Ak chcete aktualizovať polohu na pozadí pre oznámenia a miniaplikácie, nastavte povolenie polohy na &apos;%1$s&apos;</value>
+    <value>Ak chcete aktualizovať polohu na pozadí pre oznámenia a miniaplikácie, nastavte povolenie polohy na '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Poloha nie je stanovená. Prosím, pridajte umiestnenie</value>
@@ -862,7 +862,7 @@ Fuzzy</comment>
     <value>Povolenie prístupu k umiestneniu dlaždíc a komplikácií na pozadí</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Ak chcete aktualizovať polohu na pozadí pre dlaždice a komplikácie, nastavte povolenie polohy na &apos;%1$s&apos;</value>
+    <value>Ak chcete aktualizovať polohu na pozadí pre dlaždice a komplikácie, nastavte povolenie polohy na '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Aktuálne</value>
@@ -975,5 +975,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Očakáva sa, že dážď prestane okolo {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

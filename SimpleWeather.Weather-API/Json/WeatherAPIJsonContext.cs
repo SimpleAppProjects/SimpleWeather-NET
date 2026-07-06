@@ -16,6 +16,7 @@ namespace SimpleWeather.Weather_API.Json
             options.TypeInfoResolverChain.Add(MeteoFranceJsonContext.Default);
             options.TypeInfoResolverChain.Add(MetnoJsonContext.Default);
             options.TypeInfoResolverChain.Add(NWSJsonContext.Default);
+            options.TypeInfoResolverChain.Add(OpenMeteoJsonContext.Default);
             options.TypeInfoResolverChain.Add(OWMJsonContext.Default);
             options.TypeInfoResolverChain.Add(OWMOneCallJsonContext.Default);
             options.TypeInfoResolverChain.Add(RadarApiJsonContext.Default);
@@ -123,6 +124,16 @@ namespace SimpleWeather.Weather_API.Json
     [JsonSerializable(typeof(NWS.AlertRootobject))]
     [JsonSerializable(typeof(NWS.Observation.ForecastRootobject))]
     public partial class NWSJsonContext : JsonSerializerContext
+    {
+    }
+
+    [JsonSourceGenerationOptions(
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never,
+        NumberHandling = JsonNumberHandling.AllowReadingFromString,
+        WriteIndented = false)]
+    [JsonSerializable(typeof(OpenMeteo.ForecastResponse))]
+    [JsonSerializable(typeof(OpenMeteo.AQIResponse))]
+    public partial class OpenMeteoJsonContext : JsonSerializerContext
     {
     }
 

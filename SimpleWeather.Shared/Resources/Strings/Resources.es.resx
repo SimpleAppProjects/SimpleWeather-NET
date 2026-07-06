@@ -870,7 +870,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Para actualizar la ubicación en segundo plano para las notificaciones y los widgets, establezca el permiso de ubicación en &apos;%1$s&apos;</value>
+    <value>Para actualizar la ubicación en segundo plano para las notificaciones y los widgets, establezca el permiso de ubicación en '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
@@ -884,7 +884,7 @@ Fuzzy</comment>
     <value>Permitir el acceso a la actualización de la ubicación en segundo plano para los azulejos y las complicaciones</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Para actualizar la ubicación en segundo plano para los mosaicos y las complicaciones, establezca el permiso de ubicación en &apos;%1$s&apos;</value>
+    <value>Para actualizar la ubicación en segundo plano para los mosaicos y las complicaciones, establezca el permiso de ubicación en '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Actual</value>
@@ -997,5 +997,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Se espera que la lluvia pare alrededor de las {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

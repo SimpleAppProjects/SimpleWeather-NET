@@ -19,7 +19,7 @@ namespace SimpleWeather.Resources.Strings {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "18.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -237,6 +237,15 @@ namespace SimpleWeather.Resources.Strings {
         public static string api_nws {
             get {
                 return ResourceManager.GetString("api_nws", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open-Meteo.
+        /// </summary>
+        public static string api_openmeteo {
+            get {
+                return ResourceManager.GetString("api_openmeteo", resourceCulture);
             }
         }
         
@@ -1672,7 +1681,7 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display units in Celsius.
+        ///   Looks up a localized string similar to Display units in Celsius (°C).
         /// </summary>
         public static string pref_summary_celsius {
             get {
@@ -1690,7 +1699,7 @@ namespace SimpleWeather.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Display units in Fahrenheit.
+        ///   Looks up a localized string similar to Display units in Fahrenheit (°F).
         /// </summary>
         public static string pref_summary_fahrenheit {
             get {

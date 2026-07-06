@@ -848,7 +848,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Aby aktualizować lokalizację w tle dla powiadomień i widżetów, należy ustawić zezwolenie na lokalizację na &apos;%1$s&apos;</value>
+    <value>Aby aktualizować lokalizację w tle dla powiadomień i widżetów, należy ustawić zezwolenie na lokalizację na '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
@@ -862,7 +862,7 @@ Fuzzy</comment>
     <value>Zezwól na dostęp do lokalizacji tła dla kafelków i komplikacji</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Aby aktualizować lokalizację w tle dla kafelków i komplikacji, należy ustawić uprawnienie lokalizacji na &apos;%1$s&apos;</value>
+    <value>Aby aktualizować lokalizację w tle dla kafelków i komplikacji, należy ustawić uprawnienie lokalizacji na '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
@@ -976,5 +976,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Oczekuje się, że deszcz przestanie padać około {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

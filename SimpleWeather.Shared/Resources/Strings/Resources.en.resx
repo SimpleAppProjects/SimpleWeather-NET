@@ -846,7 +846,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>To update location in the background for notifications and widgets, please set location permission to &apos;%1$s&apos;</value>
+    <value>To update location in the background for notifications and widgets, please set location permission to '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Location not set. Please add a location</value>
@@ -859,7 +859,7 @@
     <value>Allow access to update location in the background for tiles and complications</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>To update location in the background for tiles and complications, please set location permission to &apos;%1$s&apos;</value>
+    <value>To update location in the background for tiles and complications, please set location permission to '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Current</value>
@@ -971,5 +971,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Rain expected to stop around {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

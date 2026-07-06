@@ -155,7 +155,7 @@
     <value>Başlayın</value>
   </data>
   <data name="setup_welcome_prompt" xml:space="preserve">
-    <value>SimpleWeather&apos;a Hoş Geldiniz</value>
+    <value>SimpleWeather'a Hoş Geldiniz</value>
   </data>
   <data name="setup_welcome_tagline_prompt" xml:space="preserve">
     <value>Sadece basit bir hava durumu uygulaması</value>
@@ -410,7 +410,7 @@
     <value>Konum alınamadı</value>
   </data>
   <data name="error_enable_location_services" xml:space="preserve">
-    <value>Konum Servisleri devre dışı. Lütfen Ayarlar&apos;dan etkinleştirin</value>
+    <value>Konum Servisleri devre dışı. Lütfen Ayarlar'dan etkinleştirin</value>
   </data>
   <data name="error_noresults" xml:space="preserve">
     <value>Sonuç bulunamadı</value>
@@ -431,7 +431,7 @@
     <value>Sil</value>
   </data>
   <data name="bg_location_permission_rationale" xml:space="preserve">
-    <value>Bildirimler ve widget&apos;lar için konumun arka planda güncellenmesine izin ver</value>
+    <value>Bildirimler ve widget'lar için konumun arka planda güncellenmesine izin ver</value>
     <comment>Background Location Permission</comment>
   </data>
   <data name="werror_noweather" xml:space="preserve">
@@ -617,7 +617,7 @@
     <value>Bitti</value>
   </data>
   <data name="Msg_LocDeniedSettings" xml:space="preserve">
-    <value>Konuma erişim reddedildi. Lütfen Ayarlar&apos;dan etkinleştirin.</value>
+    <value>Konuma erişim reddedildi. Lütfen Ayarlar'dan etkinleştirin.</value>
   </data>
   <data name="Pref_SummaryUnits.Text" xml:space="preserve">
     <value>Görüntü birimleri:</value>
@@ -695,7 +695,7 @@
     <value>Geri Bildirim</value>
   </data>
   <data name="prompt_update_title" xml:space="preserve">
-    <value>SimpleWeather&apos;ı Güncelle</value>
+    <value>SimpleWeather'ı Güncelle</value>
   </data>
   <data name="prompt_update_available" xml:space="preserve">
     <value>Güncelleme mevcut. Yüklemek için tıklayın</value>
@@ -802,7 +802,7 @@
     <comment>Weather Summary or Weather Overview</comment>
   </data>
   <data name="Msg_BGAccessDeniedSettings" xml:space="preserve">
-    <value>Arka plan erişimi engellendi. Lütfen Ayarlar&apos;dan etkinleştirin.</value>
+    <value>Arka plan erişimi engellendi. Lütfen Ayarlar'dan etkinleştirin.</value>
   </data>
   <data name="api_weatherapi" xml:space="preserve">
     <value>WeatherAPI.com</value>
@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Bildirimler ve araç takımları için konumun arka planda güncellenmesi için lütfen konum iznini &apos;%1$s&apos; olarak ayarlayın.</value>
+    <value>Bildirimler ve araç takımları için konumun arka planda güncellenmesi için lütfen konum iznini '%1$s' olarak ayarlayın.</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Konum ayarlanmadı. Lütfen bir konum ekleyin</value>
@@ -858,7 +858,7 @@
     <value>Kareler ve komplikasyonlar için konumun arka planda güncellenmesine izin ver</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Kareler ve komplikasyonlar için konumun arka planda güncellenmesi için lütfen konum iznini &apos;%1$s&apos; olarak ayarlayın.</value>
+    <value>Kareler ve komplikasyonlar için konumun arka planda güncellenmesi için lütfen konum iznini '%1$s' olarak ayarlayın.</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Şu Anki</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Yağmurun yaklaşık {0} civarında durması bekleniyor</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

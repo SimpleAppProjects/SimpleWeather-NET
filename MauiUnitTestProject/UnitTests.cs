@@ -518,6 +518,16 @@ namespace UnitTestProject
             Utils.SettingsManager.UsePersonalKeys[WeatherAPI.Google] = false;
         }
 
+        [Fact]
+        public async Task GetOpenMeteoWeather()
+        {
+            var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenMeteo);
+            var weather = await GetWeather(provider, new WeatherUtils.Coordinate(52.52, 13.41))
+                .ConfigureAwait(false); // ~ Berlin
+            Assert.True(weather?.IsValid() == true && new WeatherUiModel(weather).IsValid);
+            Assert.True(await SerializerTest(weather).ConfigureAwait(false));
+        }
+
         /// <summary>
         /// GetPollenData
         /// </summary>

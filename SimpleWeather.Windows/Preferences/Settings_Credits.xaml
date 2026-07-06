@@ -17,11 +17,13 @@
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here_dark.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo_dark.png</x:String>
                     <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored_dark.png</x:String>
+                    <x:String x:Key="OpenMeteoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/open_meteo_dark.png</x:String>
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Light">
                     <x:String x:Key="HereImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/here.png</x:String>
                     <x:String x:Key="WeatherApiImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/weatherapi_logo.png</x:String>
                     <x:String x:Key="TomorrowIoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/tomorrow_logo_colored.png</x:String>
+                    <x:String x:Key="OpenMeteoImageSrc">ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/open_meteo_light.png</x:String>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
         </ResourceDictionary>
@@ -154,6 +156,15 @@
                             Height="50"
                             HorizontalAlignment="Left"
                             Source="ms-appx:///SimpleWeather.Shared/Resources/Images/Providers/eccc_logo.png" />
+                    </HyperlinkButton>
+                </StackPanel>
+                <StackPanel Padding="10">
+                    <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="{helpers:StringRes Name=api_openmeteo}" />
+                    <HyperlinkButton Padding="0,10" NavigateUri="https://open-meteo.com/">
+                        <Image
+                            Height="50"
+                            HorizontalAlignment="Left"
+                            Source="{ThemeResource OpenMeteoImageSrc}" />
                     </HyperlinkButton>
                 </StackPanel>
                 <ContentPresenter d:Content="Icons" Content="{helpers:StringRes Name='pref_title_icons'}">

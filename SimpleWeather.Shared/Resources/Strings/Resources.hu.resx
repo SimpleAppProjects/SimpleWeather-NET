@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>A hely háttérben történő frissítéséhez az értesítésekhez és widgetekhez, kérjük, állítsa a helymeghatározási engedélyt &apos;%1$s&apos;-re.</value>
+    <value>A hely háttérben történő frissítéséhez az értesítésekhez és widgetekhez, kérjük, állítsa a helymeghatározási engedélyt '%1$s'-re.</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Nincs beállított hely. Kérjük, adjon hozzá egy helyet.</value>
@@ -858,7 +858,7 @@
     <value>Engedélyezze a hozzáférést a hely háttérben történő frissítéséhez a csempékhez és a komplikációkhoz.</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>A hely háttérben történő frissítéséhez a csempékhez és a komplikációkhoz, kérjük, állítsa a helymeghatározási engedélyt &apos;%1$s&apos;-re.</value>
+    <value>A hely háttérben történő frissítéséhez a csempékhez és a komplikációkhoz, kérjük, állítsa a helymeghatározási engedélyt '%1$s'-re.</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Jelenlegi</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Várhatóan eső szűnik körülbelül {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

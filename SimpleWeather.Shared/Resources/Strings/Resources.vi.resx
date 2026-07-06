@@ -845,7 +845,7 @@
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Để cập nhật vị trí trong nền cho thông báo và tiện ích, vui lòng đặt quyền vị trí thành &apos;%1$s&apos;</value>
+    <value>Để cập nhật vị trí trong nền cho thông báo và tiện ích, vui lòng đặt quyền vị trí thành '%1$s'</value>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
     <value>Vị trí chưa được đặt. Vui lòng thêm vị trí</value>
@@ -858,7 +858,7 @@
     <value>Cho phép truy cập để cập nhật vị trí trong nền cho ô và tiện ích con</value>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>Để cập nhật vị trí trong nền cho ô và tiện ích con, vui lòng đặt quyền vị trí thành &apos;%1$s&apos;</value>
+    <value>Để cập nhật vị trí trong nền cho ô và tiện ích con, vui lòng đặt quyền vị trí thành '%1$s'</value>
   </data>
   <data name="time_current" xml:space="preserve">
     <value>Hiện tại</value>
@@ -970,5 +970,8 @@
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>Dự kiến trời sẽ tạnh mưa vào khoảng {0}</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>

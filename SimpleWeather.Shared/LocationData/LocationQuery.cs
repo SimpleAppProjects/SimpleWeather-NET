@@ -89,6 +89,8 @@ namespace SimpleWeather.LocationData
                         LocationLong),
                 WeatherAPI.Google => string.Format(CultureInfo.InvariantCulture,
                     "location.latitude={0:0.####}&location.longitude={1:0.####}", LocationLat, LocationLong),
+                WeatherAPI.OpenMeteo => string.Format(CultureInfo.InvariantCulture,
+                    "latitude={0:0.####}&longitude={1:0.####}", LocationLat, LocationLong),
                 _ => string.Format(CultureInfo.InvariantCulture, "lat={0:0.####}&lon={1:0.####}", LocationLat,
                     LocationLong)
             };

@@ -866,7 +866,7 @@ Fuzzy</comment>
     <value>Dev Settings</value>
   </data>
   <data name="bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>要在后台更新通知和小部件的位置，请将位置权限设置为&apos;%1$s&apos;</value>
+    <value>要在后台更新通知和小部件的位置，请将位置权限设置为'%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="prompt_location_not_set" xml:space="preserve">
@@ -883,7 +883,7 @@ Fuzzy</comment>
     <comment>Fuzzy</comment>
   </data>
   <data name="wear_bg_location_permission_rationale_settings" xml:space="preserve">
-    <value>要在后台更新磁贴和控件的位置，请将位置权限设置为 &apos;%1$s&apos;</value>
+    <value>要在后台更新磁贴和控件的位置，请将位置权限设置为 '%1$s'</value>
     <comment>Fuzzy</comment>
   </data>
   <data name="time_current" xml:space="preserve">
@@ -1005,5 +1005,8 @@ Fuzzy</comment>
   <data name="Precipitation_Likely_Minutely_Stopping_Text_Format" xml:space="preserve">
     <value>预计{0}左右雨停</value>
     <comment>{0} - Time</comment>
+  </data>
+  <data name="api_openmeteo" xml:space="preserve">
+    <value>Open-Meteo</value>
   </data>
 </root>
