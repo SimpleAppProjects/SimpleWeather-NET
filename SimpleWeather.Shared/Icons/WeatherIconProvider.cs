@@ -22,6 +22,24 @@ namespace SimpleWeather.Icons
         public abstract Uri AttributionLink { get; }
         public abstract bool IsFontIcon { get; }
 
+        public virtual string GetPNGBaseUri(bool isLight = false)
+        {
+#if WINUI
+            return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
+#else
+            return string.Empty;
+#endif
+        }
+
+        public virtual string GetSVGBaseUri(bool isLight = false)
+        {
+#if WINUI
+            return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
+#else
+            return string.Empty;
+#endif
+        }
+
         public abstract Uri GetWeatherIconURI(string icon);
         public abstract string GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false);
         public abstract string GetSVGIconUri(string icon, bool isLight = false);
@@ -41,9 +59,7 @@ namespace SimpleWeather.Icons
                         var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
                         var filePath = lottieProvider.GetLottieIconURI(icon, isLight);
-                        var filename = Path.GetFileName(filePath);
-                        var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                        var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                        var themeFile = WeatherIconsManager.PathToThemeFile(filePath, isLight);
                         var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
@@ -74,9 +90,7 @@ namespace SimpleWeather.Icons
                     var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
                     var filePath = GetSVGIconUri(icon, isLight);
-                    var filename = Path.GetFileName(filePath);
-                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                    var themeFile = WeatherIconsManager.PathToThemeFile(filePath, isLight);
                     var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
@@ -87,7 +101,7 @@ namespace SimpleWeather.Icons
                 {
                     Logger.Error(nameof(WeatherIconProvider), "error loading svg", ex);
                 }
-                
+
                 return null;
             });
         }
@@ -103,9 +117,7 @@ namespace SimpleWeather.Icons
                     var fStream = (await file.OpenReadAsync()).AsStreamForRead();
 #else
                     var filePath = GetWeatherIconURI(icon, isAbsoluteUri: false, isLight);
-                    var filename = Path.GetFileName(filePath);
-                    var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
-                    var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+                    var themeFile = WeatherIconsManager.PathToThemeFile(filePath, isLight);
                     var fStream = await FileSystemUtils.OpenAppPackageFileAsync(themeFile);
 #endif
 
@@ -115,7 +127,7 @@ namespace SimpleWeather.Icons
                 {
                     Logger.Error(nameof(WeatherIconProvider), "error loading bitmap", ex);
                 }
-                
+
                 return null;
             });
         }

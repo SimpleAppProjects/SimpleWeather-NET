@@ -7,36 +7,36 @@ using Windows.Storage;
 #else
 using Microsoft.Maui.Storage;
 #endif
-using SKBitmap = SkiaSharp.SKBitmap;
 
 namespace SimpleWeather.Icons
 {
     public sealed partial class WeatherIconsManager : IWeatherIconsProvider
     {
-        public static string GetPNGBaseUri(bool isLight = false)
+        public static string PathToThemeFile(string filePath, bool isLight = false)
         {
-#if WINUI
-            return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
-#else
-            return "Images/WeatherIcons/png/" + (isLight ? "light/" : "dark/");
-#endif
+            var filename = Path.GetFileName(filePath);
+            var extension = (isLight ? "light" : "dark") + Path.GetExtension(filename);
+            var themeFile = $"{Path.GetFileNameWithoutExtension(filename)}_{extension}";
+
+            return themeFile;
         }
 
-        public static string GetSVGBaseUri(bool isLight = false)
+        public string GetPNGBaseUri(bool isLight = false)
         {
-#if WINUI
-            return "ms-appx:///SimpleWeather.Shared/Resources/Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
-#else
-            return "Images/WeatherIcons/svg/" + (isLight ? "light/" : "dark/");
-#endif
+            return _IconsProvider.GetPNGBaseUri(isLight);
         }
 
-        public Uri GetWeatherIconURI(String icon)
+        public string GetSVGBaseUri(bool isLight = false)
+        {
+            return _IconsProvider.GetSVGBaseUri(isLight);
+        }
+
+        public Uri GetWeatherIconURI(string icon)
         {
             return _IconsProvider.GetWeatherIconURI(icon);
         }
 
-        public String GetWeatherIconURI(String icon, bool isAbsoluteUri, bool isLight = false)
+        public string GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false)
         {
             return _IconsProvider.GetWeatherIconURI(icon, isAbsoluteUri, isLight);
         }

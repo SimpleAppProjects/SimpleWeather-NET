@@ -12,7 +12,8 @@ namespace SimpleWeather.Utils
     {
         public static string GetAssetFromAlertType(WeatherData.WeatherAlertType type, bool isAbsoluteUri = true, bool isLight = false)
         {
-            string baseuri = WeatherIconsManager.GetPNGBaseUri(isLight);
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(WeatherIconsEFProvider.KEY);
+            string baseuri = wip.GetPNGBaseUri(isLight);
             string fileIcon = type switch
             {
                 WeatherData.WeatherAlertType.DenseFog => "wi_fog.png",

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui.Converters;
 using SimpleWeather.Common.Controls;
+using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Globalization;
@@ -89,7 +90,7 @@ internal class AlertTypeIconConverter : BaseConverterOneWay<WeatherAlertType, Im
         var uri = WeatherUtils.GetAssetFromAlertType(value);
         return new FileImageSource()
         {
-            File = uri
+            File = WeatherIconsManager.PathToThemeFile(uri)
         };
     }
 }

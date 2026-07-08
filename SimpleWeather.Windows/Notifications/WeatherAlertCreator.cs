@@ -21,7 +21,8 @@ namespace SimpleWeather.NET.Notifications
             {
                 return !App.Current.IsSystemDarkTheme;
             });
-            var icon = new Uri($"{WeatherIconsManager.GetPNGBaseUri(isLight)}ic_error.png");
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(WeatherIconsEFProvider.KEY);
+            var icon = new Uri($"{wip.GetPNGBaseUri(isLight)}ic_error.png");
 
             ToastCollection toastCollection = new ToastCollection(TAG, displayName, $"{Constants.KEY_ACTION}=view-alerts", icon);
 

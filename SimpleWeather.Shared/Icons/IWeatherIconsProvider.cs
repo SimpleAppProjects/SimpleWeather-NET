@@ -10,6 +10,9 @@ namespace SimpleWeather.Icons
     }
     public partial interface IWeatherIconsProvider
     {
+        string GetPNGBaseUri(bool isLight = false);
+        string GetSVGBaseUri(bool isLight = false);
+
         Uri GetWeatherIconURI(string icon);
         String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false);
         Task<SKDrawable> GetDrawable(string icon, bool isLight = false);

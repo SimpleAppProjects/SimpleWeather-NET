@@ -11,7 +11,7 @@ namespace SimpleWeather.Icons
 
         public override String GetWeatherIconURI(string icon, bool isAbsoluteUri, bool isLight = false)
         {
-            string baseuri = WeatherIconsManager.GetPNGBaseUri(isLight);
+            string baseuri = GetPNGBaseUri(isLight);
 
             string fileIcon = icon switch
             {
@@ -198,7 +198,7 @@ namespace SimpleWeather.Icons
 
         public override String GetSVGIconUri(string icon, bool isLight = false)
         {
-            string baseuri = WeatherIconsManager.GetSVGBaseUri(isLight);
+            string baseuri = GetSVGBaseUri(isLight);
 
             string fileIcon = icon switch
             {
