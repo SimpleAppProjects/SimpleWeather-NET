@@ -20,6 +20,7 @@ namespace SimpleWeather.Icons
             AddIconProvider(defaultIcons, new WeatherIconicProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider(isColored: true));
             AddIconProvider(defaultIcons, new JDWIIconsProvider());
+            AddIconProvider(defaultIcons, new GoogleWeatherIconsProvider());
             DefaultIcons = defaultIcons;
 
             // Register default icon providers
