@@ -15,9 +15,8 @@ namespace SimpleWeather.Icons
 
         internal WeatherIconsManager()
         {
-            var defaultIcons = new Dictionary<string, WeatherIconProvider>(3);
+            var defaultIcons = new Dictionary<string, WeatherIconProvider>();
             AddIconProvider(defaultIcons, new WeatherIconsEFProvider());
-            AddIconProvider(defaultIcons, new WUndergroundIconsProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider(isColored: true));
             AddIconProvider(defaultIcons, new JDWIIconsProvider());
