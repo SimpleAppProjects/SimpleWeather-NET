@@ -19,6 +19,7 @@ namespace SimpleWeather.Icons
             AddIconProvider(defaultIcons, new WeatherIconsEFProvider());
             AddIconProvider(defaultIcons, new WUndergroundIconsProvider());
             AddIconProvider(defaultIcons, new WeatherIconicProvider());
+            AddIconProvider(defaultIcons, new WeatherIconicProvider(isColored: true));
             AddIconProvider(defaultIcons, new JDWIIconsProvider());
             DefaultIcons = defaultIcons;
 
@@ -108,6 +109,7 @@ namespace SimpleWeather.Icons
                     return true;
                 case "meteocons-basmilius":
                 case "wci_sliu_iconfinder":
+                case "w-iconic-jackd248-multicolor":
                     return false;
             }
         }
