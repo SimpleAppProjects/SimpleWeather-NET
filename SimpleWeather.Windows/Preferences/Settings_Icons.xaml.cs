@@ -1,10 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
 using SimpleWeather.Preferences;
-using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
+using SimpleWeather.Utils;
+
 #if WINDOWS
 using SimpleWeather.NET.BackgroundTasks;
 #endif
@@ -68,6 +69,11 @@ namespace SimpleWeather.NET.Preferences
                 if (success)
                 {
                     UpdateCheckedState(selectedKey);
+                    AnalyticsLogger.LogEvent("W_Icon_Selected", new Dictionary<string, string>
+                    {
+                        { "iconProvider", selectedKey }
+                    });
+                    AnalyticsLogger.SetUserProperty(AnalyticsProps.ICON_PROVIDER, selectedKey);
                 }
                 OnSelectionPerformed(success);
             }

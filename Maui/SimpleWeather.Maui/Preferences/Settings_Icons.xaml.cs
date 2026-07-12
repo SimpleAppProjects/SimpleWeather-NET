@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Extras;
 using SimpleWeather.NET.Extras.Store;
 using SimpleWeather.Preferences;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Preferences;
 
@@ -60,6 +61,11 @@ public partial class Settings_Icons : ContentPage
             if (success)
             {
                 UpdateCheckedState(selectedKey);
+                AnalyticsLogger.LogEvent("W_Icon_Selected", new Dictionary<string, string>
+                {
+                    { "iconProvider", selectedKey }
+                });
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.ICON_PROVIDER, selectedKey);
             }
             OnSelectionPerformed(success);
         }

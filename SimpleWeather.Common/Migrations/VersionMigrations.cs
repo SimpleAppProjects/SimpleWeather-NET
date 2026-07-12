@@ -1,9 +1,6 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
-using SimpleWeather.Common.Utils;
-using SimpleWeather.Utils;
+﻿using SimpleWeather.Utils;
 using SimpleWeather.Weather_API;
 using SimpleWeather.WeatherData;
-using SimpleWeather.WeatherData.Images;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -163,6 +160,7 @@ namespace SimpleWeather.Common.Migrations
                 {
                     { "API", SettingsMgr.API },
                     { "API_IsInternalKey", (!SettingsMgr.UsePersonalKeys[SettingsMgr.API]).ToString() },
+                    { "IconProvider", SettingsMgr.IconProvider },
                     { "VersionCode", SettingsMgr.VersionCode.ToString() },
                     { "CurrentVersionCode", CurrentVersionCode.ToString() }
                 });
@@ -172,6 +170,7 @@ namespace SimpleWeather.Common.Migrations
                 AnalyticsLogger.SetUserProperty(AnalyticsProps.USING_PERSONAL_KEY,
                     SettingsMgr.UsePersonalKeys[SettingsMgr.API]);
                 AnalyticsLogger.SetUserProperty(AnalyticsProps.USER_LOCALE, LocaleUtils.GetLocale()?.Name);
+                AnalyticsLogger.SetUserProperty(AnalyticsProps.ICON_PROVIDER, SettingsMgr.IconProvider);
             }
 
             // TZ Refresh
