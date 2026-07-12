@@ -6,6 +6,7 @@
              xmlns:commonControls="clr-namespace:SimpleWeather.Common.Controls;assembly=SimpleWeather.Common"
              xmlns:controls="clr-namespace:SimpleWeather.Maui.Controls"
              xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+             xmlns:icons="clr-namespace:SimpleWeather.Icons;assembly=SimpleWeather.Shared"
              xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
              x:DataType="commonControls:PollenViewModel"
              MinimumWidthRequest="340">
@@ -40,17 +41,14 @@
             Grid.Column="0"
             Style="{DynamicResource PollenLabelStyle}"
             Text="{x:Static res_strings:Resources.label_pollen_tree}" />
-        <Image
+        <controls:IconControl
             x:Name="TreePollenIcon"
             Grid.Row="2"
             Grid.Column="0"
             HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Start">
-            <Image.Source>
-                <FileImageSource File="{AppThemeBinding Light='ic_outline_tree_light.png', Dark='ic_outline_tree_dark.png'}" />
-            </Image.Source>
-        </Image>
+            VerticalOptions="Start"
+            WeatherIcon="{x:Static icons:WeatherIcons.TREE_POLLEN}" />
         <Label
             x:Name="TreePollenDescription"
             Grid.Row="3"
@@ -64,17 +62,14 @@
             Grid.Column="1"
             Style="{DynamicResource PollenLabelStyle}"
             Text="{x:Static res_strings:Resources.label_pollen_grass}" />
-        <Image
+        <controls:IconControl
             x:Name="GrassPollenIcon"
             Grid.Row="2"
             Grid.Column="1"
             HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Start">
-            <Image.Source>
-                <FileImageSource File="{AppThemeBinding Light='ic_baseline_grass_light.png', Dark='ic_baseline_grass_dark.png'}" />
-            </Image.Source>
-        </Image>
+            VerticalOptions="Start"
+            WeatherIcon="{x:Static icons:WeatherIcons.GRASS_POLLEN}" />
         <Label
             x:Name="GrassPollenDescription"
             Grid.Row="3"
@@ -88,17 +83,14 @@
             Grid.Column="2"
             Style="{DynamicResource PollenLabelStyle}"
             Text="{x:Static res_strings:Resources.label_pollen_ragweed}" />
-        <Image
+        <controls:IconControl
             x:Name="RagweedPollenIcon"
             Grid.Row="2"
             Grid.Column="2"
             HeightRequest="36"
             HorizontalOptions="Center"
-            VerticalOptions="Start">
-            <Image.Source>
-                <FileImageSource File="{AppThemeBinding Light='ic_ragweed_pollen_light.png', Dark='ic_ragweed_pollen_dark.png'}" />
-            </Image.Source>
-        </Image>
+            VerticalOptions="Start"
+            WeatherIcon="{x:Static icons:WeatherIcons.RAGWEED_POLLEN}" />
         <Label
             x:Name="RagweedPollenDescription"
             Grid.Row="3"
