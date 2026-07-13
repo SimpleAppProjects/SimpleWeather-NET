@@ -108,6 +108,7 @@ namespace SimpleWeather.Icons
                 default:
                     return true;
                 case "meteocons-basmilius":
+                case "meteocons-basmilius-line":
                 case "wci_sliu_iconfinder":
                 case "w-iconic-jackd248-multicolor":
                     return false;
