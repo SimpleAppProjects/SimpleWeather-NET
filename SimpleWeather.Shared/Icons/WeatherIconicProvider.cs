@@ -130,6 +130,9 @@ namespace SimpleWeather.Icons
                 WeatherIcons.DIRECTION_UP => "wi_direction_up.png",
                 WeatherIcons.DIRECTION_DOWN => "wi_direction_down.png",
 
+                WeatherIcons.VISIBILITY => "material_visibility.png",
+                WeatherIcons.AIR_QUALITY => isColored ? "wic_color_fog.png" : "wic_fog.png",
+
                 // Beaufort
                 WeatherIcons.WIND_BEAUFORT_0 => "wi_wind_beaufort_0.png",
                 WeatherIcons.WIND_BEAUFORT_1 => "wi_wind_beaufort_1.png",
@@ -316,6 +319,9 @@ namespace SimpleWeather.Icons
                 WeatherIcons.WIND_DIRECTION => isColored ? "wic_color_compass.svg" : "wic_compass.svg",
                 WeatherIcons.DIRECTION_UP => "wi_direction_up.svg",
                 WeatherIcons.DIRECTION_DOWN => "wi_direction_down.svg",
+
+                WeatherIcons.VISIBILITY => "material_visibility.svg",
+                WeatherIcons.AIR_QUALITY => isColored ? "wic_color_fog.svg" : "wic_fog.svg",
 
                 // Beaufort
                 WeatherIcons.WIND_BEAUFORT_0 => "wi_wind_beaufort_0.svg",

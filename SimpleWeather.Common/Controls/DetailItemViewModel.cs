@@ -30,7 +30,10 @@ namespace SimpleWeather.Common.Controls
         MoonPhase,
         Beaufort,
         UV,
-        AirQuality
+        AirQuality,
+        TreePollen,
+        GrassPollen,
+        RagweedPollen
     }
 
     public class DetailItemViewModel
@@ -89,7 +92,7 @@ namespace SimpleWeather.Common.Controls
 
                 case WeatherDetailsType.Visibility:
                     this.Label = ResStrings.label_visibility;
-                    this.Icon = WeatherIcons.FOG;
+                    this.Icon = WeatherIcons.VISIBILITY;
                     break;
 
                 case WeatherDetailsType.PoPCloudiness:
@@ -139,7 +142,27 @@ namespace SimpleWeather.Common.Controls
 
                 case WeatherDetailsType.UV:
                     this.Label = ResStrings.label_uv;
-                    this.Icon = WeatherIcons.DAY_SUNNY;
+                    this.Icon = WeatherIcons.UV_INDEX;
+                    break;
+
+                case WeatherDetailsType.AirQuality:
+                    this.Label = ResStrings.label_airquality;
+                    this.Icon = WeatherIcons.AIR_QUALITY;
+                    break;
+
+                case WeatherDetailsType.TreePollen:
+                    this.Label = ResStrings.label_tree_pollen;
+                    this.Icon = WeatherIcons.TREE_POLLEN;
+                    break;
+
+                case WeatherDetailsType.GrassPollen:
+                    this.Label = ResStrings.label_grass_pollen;
+                    this.Icon = WeatherIcons.GRASS_POLLEN;
+                    break;
+
+                case WeatherDetailsType.RagweedPollen:
+                    this.Label = ResStrings.label_ragweed_pollen;
+                    this.Icon = WeatherIcons.RAGWEED_POLLEN;
                     break;
             }
 
@@ -347,7 +370,7 @@ namespace SimpleWeather.Common.Controls
         {
             this.DetailsType = WeatherDetailsType.AirQuality;
             this.Label = ResStrings.label_airquality;
-            this.Icon = WeatherIcons.CLOUDY_GUSTS;
+            this.Icon = WeatherIcons.AIR_QUALITY;
             this.IconRotation = 0;
 
             if (aqi.index < 51)

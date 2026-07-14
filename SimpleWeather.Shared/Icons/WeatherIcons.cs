@@ -112,6 +112,9 @@ namespace SimpleWeather.Icons
         public const String DIRECTION_UP = "\uf058";
         public const String DIRECTION_DOWN = "\uf044";
 
+        public const String VISIBILITY = "\uf014-vis";
+        public const String AIR_QUALITY = "\uf011-aqi";
+
         // Beaufort
         public const String WIND_BEAUFORT_0 = "\uf0b7";
         public const String WIND_BEAUFORT_1 = "\uf0b8";

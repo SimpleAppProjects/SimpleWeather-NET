@@ -121,6 +121,9 @@ namespace SimpleWeather.Icons
                 WeatherIcons.DIRECTION_UP => "wi_direction_up.png",
                 WeatherIcons.DIRECTION_DOWN => "wi_direction_down.png",
 
+                WeatherIcons.VISIBILITY => "material_visibility.png",
+                WeatherIcons.AIR_QUALITY => "wi_windy.png",
+
                 // Beaufort
                 WeatherIcons.WIND_BEAUFORT_0 => "wi_wind_beaufort_0.png",
                 WeatherIcons.WIND_BEAUFORT_1 => "wi_wind_beaufort_1.png",
@@ -307,6 +310,9 @@ namespace SimpleWeather.Icons
                 WeatherIcons.WIND_DIRECTION => "wi_wind_direction.svg",
                 WeatherIcons.DIRECTION_UP => "wi_direction_up.svg",
                 WeatherIcons.DIRECTION_DOWN => "wi_direction_down.svg",
+
+                WeatherIcons.VISIBILITY => "material_visibility.svg",
+                WeatherIcons.AIR_QUALITY => "wi_windy.svg",
 
                 // Beaufort
                 WeatherIcons.WIND_BEAUFORT_0 => "wi_wind_beaufort_0.svg",
