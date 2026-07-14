@@ -468,8 +468,10 @@ namespace SimpleWeather.Weather_API.WeatherApi
                 /* Overcast */
                 1009 => WeatherIcons.OVERCAST,
 
-                /* Haze */
-                1012 => WeatherIcons.HAZE,
+                /* 1012: Haze
+                 * 1036: Smoky haze
+                 */
+                1012 or 1036 => WeatherIcons.HAZE,
 
                 /*
                  * 1015: Dust Haze
@@ -495,9 +497,8 @@ namespace SimpleWeather.Weather_API.WeatherApi
 
                 /*
                  * 1033: Smoke
-                 * 1036: Smoky haze
                  */
-                1033 or 1036 => WeatherIcons.SMOKE,
+                1033 => WeatherIcons.SMOKE,
 
                 /*
                  * 1039: Smog
