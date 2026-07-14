@@ -9,7 +9,7 @@
     public class Data
     {
         public string aqi { get; set; }
-        public float idx { get; set; }
+        public float? idx { get; set; }
         public Attribution[] attributions { get; set; }
         public City city { get; set; }
         public string dominentpol { get; set; }
@@ -42,52 +42,52 @@
 
     public class Co
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class H
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class No2
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class O3
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class P
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class Pm25
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class T
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class W
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class So2
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class Pm10
     {
-        public float v { get; set; }
+        public float? v { get; set; }
     }
 
     public class Time
@@ -113,34 +113,34 @@
 
     public class O3Item
     {
-        public int avg { get; set; }
+        public int? avg { get; set; }
         public string day { get; set; }
-        public int max { get; set; }
-        public int min { get; set; }
+        public int? max { get; set; }
+        public int? min { get; set; }
     }
 
     public class Pm10Item
     {
-        public int avg { get; set; }
+        public int? avg { get; set; }
         public string day { get; set; }
-        public int max { get; set; }
-        public int min { get; set; }
+        public int? max { get; set; }
+        public int? min { get; set; }
     }
 
     public class Pm25Item
     {
-        public int avg { get; set; }
+        public int? avg { get; set; }
         public string day { get; set; }
-        public int max { get; set; }
-        public int min { get; set; }
+        public int? max { get; set; }
+        public int? min { get; set; }
     }
 
     public class UviItem
     {
-        public float avg { get; set; }
+        public float? avg { get; set; }
         public string day { get; set; }
-        public float max { get; set; }
-        public float min { get; set; }
+        public float? max { get; set; }
+        public float? min { get; set; }
     }
 
     public class Debug

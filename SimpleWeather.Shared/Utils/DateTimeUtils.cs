@@ -173,5 +173,10 @@ namespace SimpleWeather.Utils
             var culture = LocaleUtils.GetLocale() ?? CultureInfo.CurrentUICulture;
             return culture.DateTimeFormat.ShortTimePattern.Contains("H");
         }
+
+        public static bool IsDefault(this DateTime dateTime)
+        {
+            return dateTime == default || dateTime == DateTime.MinValue;
+        }
     }
 }

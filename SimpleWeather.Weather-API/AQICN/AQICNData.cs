@@ -15,12 +15,12 @@ namespace SimpleWeather.Weather_API.AQICN
         {
             current = new()
             {
-                no2 = root.data?.iaqi?.no2?.v.RoundToInt(),
-                o3 = root.data?.iaqi?.o3?.v.RoundToInt(),
-                pm25 = root.data?.iaqi?.pm25?.v.RoundToInt(),
-                so2 = root.data?.iaqi?.so2?.v.RoundToInt(),
-                pm10 = root.data?.iaqi?.pm10?.v.RoundToInt(),
-                co = root.data?.iaqi?.co?.v.RoundToInt(),
+                no2 = root.data?.iaqi?.no2?.v?.RoundToInt(),
+                o3 = root.data?.iaqi?.o3?.v?.RoundToInt(),
+                pm25 = root.data?.iaqi?.pm25?.v?.RoundToInt(),
+                so2 = root.data?.iaqi?.so2?.v?.RoundToInt(),
+                pm10 = root.data?.iaqi?.pm10?.v?.RoundToInt(),
+                co = root.data?.iaqi?.co?.v?.RoundToInt(),
                 attribution = "World Air Quality Index Project"
             };
 

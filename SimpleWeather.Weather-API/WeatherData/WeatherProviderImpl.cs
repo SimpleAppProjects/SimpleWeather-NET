@@ -225,33 +225,23 @@ namespace SimpleWeather.Weather_API.WeatherData
 
                             if (weather.condition.uv == null && date.Equals(weather.condition.observation_time.Date))
                             {
-                                if (weather.astronomy.sunrise != null && weather.astronomy.sunset != null)
+                                if (!weather.astronomy.sunrise.IsDefault() && !weather.astronomy.sunset.IsDefault())
                                 {
-                                    var obsLocalTime = weather.condition.observation_time.DateTime.TimeOfDay;
-                                    // if before sunrise, after sunset, or +/- 2hrs before/after sunrise/sunset, uv min
-                                    if (obsLocalTime < weather.astronomy.sunrise.TimeOfDay ||
-                                        obsLocalTime > weather.astronomy.sunset.TimeOfDay ||
-                                        Math.Abs((weather.astronomy.sunrise.TimeOfDay - obsLocalTime).TotalHours) <=
-                                        2 || Math.Abs((weather.astronomy.sunset.TimeOfDay - obsLocalTime).TotalHours) <=
-                                        2)
+                                    var sunrise = weather.astronomy.sunrise.AtOffset(location.tz_offset).ToUnixTimeSeconds();
+                                    var sunset = weather.astronomy.sunset.AtOffset(location.tz_offset).ToUnixTimeSeconds();
+                                    var obsTime = weather.condition.observation_time.ToUnixTimeSeconds();
+
+                                    if (obsTime > sunrise && obsTime < sunset)
                                     {
-                                        weather.condition.uv = new UV(uviData.min);
+                                        var dayFraction = (double)(obsTime - sunrise) / (sunset - sunrise);
+                                        var maxUV = uviData.max ?? 0d;
+                                        // Sinusoidal interpolation: peak at solar noon (dayFraction = 0.5)
+                                        weather.condition.uv = new((float)(maxUV * Math.Sin(dayFraction * Math.PI)));
                                     }
                                     else
                                     {
-                                        var totalSunlightTime = weather.astronomy.sunset - weather.astronomy.sunrise;
-                                        var solarNoon = weather.astronomy.sunrise + totalSunlightTime / 2;
 
-                                        // If +/- 2hrs within solar noon, UV max
-                                        if (Math.Abs((obsLocalTime - solarNoon.TimeOfDay).TotalHours) <= 2)
-                                        {
-                                            weather.condition.uv = new UV(uviData.max);
-                                        }
-                                        // else uv avg
-                                        else
-                                        {
-                                            weather.condition.uv = new UV(uviData.avg);
-                                        }
+                                        weather.condition.uv = new(uviData.min ?? 0f);
                                     }
                                 }
                             }
@@ -259,10 +249,7 @@ namespace SimpleWeather.Weather_API.WeatherData
                             var forecastObj = weather.forecast.FirstOrDefault(f => f.date.Date.Equals(date));
                             if (forecastObj != null && forecastObj.extras?.uv_index == null)
                             {
-                                if (forecastObj.extras == null)
-                                {
-                                    forecastObj.extras = new ForecastExtras();
-                                }
+                                forecastObj.extras ??= new ForecastExtras();
 
                                 forecastObj.extras.uv_index = uviData.max;
                             }
