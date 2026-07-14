@@ -7,7 +7,8 @@ namespace SimpleWeather.Utils
 {
     public static class LocationUtils
     {
-        // Source: https://gist.github.com/graydon/11198540
+        // xMin -> lon_min, xMax -> lon_max; yMin -> lat_min, yMax -> lat_max
+        // xMax -> East, xMin -> West, yMax -> North, yMin -> South
         private static readonly BoundingBox US_BOUNDING_BOX = new(24.9493, 49.5904, -125.0011, -66.9326);
 
         // Canada
@@ -31,10 +32,96 @@ namespace SimpleWeather.Utils
         // Germany
         private static readonly BoundingBox DE_BOUNDING_BOX = new(47.2701114, 55.099161, 5.8663153, 15.0419319);
 
-        private static readonly BoundingBox CAMS_OPENMETEO_EUROPE_BBOX = new(-25.0, 45.0, 30.0, 72.0);
+        private static readonly BoundingBox CAMS_OPENMETEO_EUROPE_BBOX = new(30.0, 72.0, -25.0, 45.0);
+
+        // United Kingdom and Ireland
+        private static readonly BoundingBox UK_IE_BOUNDING_BOX = new(49.674, 61.061, -14.015517, 2.0919117);
+
+        // Korea
+        private static readonly BoundingBox KOREA_BOUNDING_BOX = new(32.9104556, 43.0078553939, 124.3017732603, 131.0789644224);
+
+        // Japan
+        private static readonly BoundingBox JP_BOUNDING_BOX = new(20.2145811, 45.7563343, 122.7141754, 154.205541);
+
+        // Switzerland
+        private static readonly BoundingBox CH_BOUNDING_BOX = new(45.8179579, 47.8084544, 5.9558318, 10.4922941);
+
+        // Met Norway Area
+        private static readonly BoundingBox METNO_BOUNDING_BOX = new(54.4504920972, 81.0280176, -9.6846279, 34.6889114);
+
+        // Australia
+        private static readonly BoundingBox AU_BOUNDING_BOX = new(-55.3228175, -9.0880125, 72.2461932, 168.2261259);
+
+        // China
+        private static readonly BoundingBox CN_BOUNDING_BOX = new(17.917694912, 53.5608154, 73.4997347, 134.7751959);
+
+        // Netherlands
+        private static readonly BoundingBox NL_BOUNDING_BOX = new(50.7218810189, 53.7801536938, 3.3388847969, 7.590283575);
+
+        // Denmark
+        private static readonly BoundingBox DK_BOUNDING_BOX = new(54.4516667, 57.9524297, 7.7153255, 15.5530641);
+
+        // Italy
+        private static readonly BoundingBox IT_BOUNDING_BOX = new(35.2889616, 47.0921485, 6.6272658, 18.7844746);
+
+        // Austria
+        private static readonly BoundingBox AT_BOUNDING_BOX = new(46.3722987, 49.0205239, 9.5307487, 17.1607728);
 
         private static readonly ISet<string> NWS_SUPPORTED_COUNTRIES = ImmutableHashSet.Create("US", "AS", "UM", "GU", "MP", "PR", "VI");
         private static readonly IList<BoundingBox> NWS_SUPPORTED_LOCATIONS = [US_BOUNDING_BOX, PR_BOUNDING_BOX, VI_BOUNDING_BOX, GU_MP_BOUNDING_BOX, AS_BOUNDING_BOX];
+
+        private static readonly ISet<string> OPENMETEO_SUPPORTED_COUNTRIES = ImmutableHashSet.Create(
+            "US", "AS", "UM", "GU", "MP", "PR", "VI", // NWS
+            "UK", "IE", // UK and Ireland - UK Met Office
+            "FR", // France - MeteoFrance
+            "KR", "KP", // Korea - KMA Korea
+            "JP", // JMA Japan
+            "CH", // Switzerland - MeteoSwiss
+            "NO", "DK", "SE", "FI", // Norway, Denmark, Sweden, Finland - Met Norway
+            "CA", // Canada - GEM Canada
+            "AU", // Australia - BOM Australia
+            "CN", // China - CMA China
+            "NL", // Netherlands - KNMI Netherlands
+            "DK", // Denmark - DMI Denmark
+            "IT", // Italy - ItaliaMeteo
+            "AT"  // Austria - GeoSphere Austria
+
+        );
+
+        private static readonly IList<BoundingBox> OPENMETEO_SUPPORTED_LOCATIONS = [
+            // NWS
+            US_BOUNDING_BOX,
+            PR_BOUNDING_BOX,
+            VI_BOUNDING_BOX,
+            GU_MP_BOUNDING_BOX,
+            AS_BOUNDING_BOX,
+            // UK and Ireland
+            UK_IE_BOUNDING_BOX,
+            // France
+            FR_BOUNDING_BOX,
+            // Korea
+            KOREA_BOUNDING_BOX,
+            // Japan
+            JP_BOUNDING_BOX,
+            // Switzerland
+            CH_BOUNDING_BOX,
+            // MetNo
+            METNO_BOUNDING_BOX,
+            // Canada
+            CA_BOUNDING_BOX,
+            // Australia
+            AU_BOUNDING_BOX,
+            // China
+            CN_BOUNDING_BOX,
+            // Netherlands
+            NL_BOUNDING_BOX,
+            // Denmark
+            DK_BOUNDING_BOX,
+            // Italy
+            IT_BOUNDING_BOX,
+            // Austria,
+            AT_BOUNDING_BOX,
+        ];
 
         public static bool IsUS(string countryCode)
         {
@@ -258,6 +345,35 @@ namespace SimpleWeather.Utils
         public static bool IsCAMSEuroCovered(LocationData.LocationData location)
         {
             return CAMS_OPENMETEO_EUROPE_BBOX.Intersects(location.latitude, location.longitude);
+        }
+
+        public static bool IsOpenMeteoSupported(string countryCode)
+        {
+            return OPENMETEO_SUPPORTED_COUNTRIES.Contains(countryCode?.ToUpperInvariant());
+        }
+
+        public static bool IsOpenMeteoSupported(LocationData.LocationData location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.country_code))
+            {
+                return IsOpenMeteoSupported(location.country_code);
+            }
+            else
+            {
+                return OPENMETEO_SUPPORTED_LOCATIONS.Any(x => x.Intersects(location.latitude, location.longitude));
+            }
+        }
+
+        public static bool IsOpenMeteoSupported(LocationData.LocationQuery location)
+        {
+            if (!string.IsNullOrWhiteSpace(location.LocationCountry))
+            {
+                return IsOpenMeteoSupported(location.LocationCountry);
+            }
+            else
+            {
+                return OPENMETEO_SUPPORTED_LOCATIONS.Any(x => x.Intersects(location.LocationLat, location.LocationLong));
+            }
         }
 
         private record BoundingBox(

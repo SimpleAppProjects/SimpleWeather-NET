@@ -122,6 +122,10 @@ namespace SimpleWeather.RemoteConfig
             {
                 return WeatherAPI.ECCC;
             }
+            else if (LocationUtils.IsOpenMeteoSupported(location) && IsProviderEnabled(WeatherAPI.OpenMeteo))
+            {
+                return WeatherAPI.OpenMeteo;
+            }
             else
             {
                 return GetDefaultWeatherProvider();
@@ -145,6 +149,10 @@ namespace SimpleWeather.RemoteConfig
             else if (LocationUtils.IsCanada(location) && IsProviderEnabled(WeatherAPI.ECCC))
             {
                 return WeatherAPI.ECCC;
+            }
+            else if (LocationUtils.IsOpenMeteoSupported(location) && IsProviderEnabled(WeatherAPI.OpenMeteo))
+            {
+                return WeatherAPI.OpenMeteo;
             }
             else
             {
