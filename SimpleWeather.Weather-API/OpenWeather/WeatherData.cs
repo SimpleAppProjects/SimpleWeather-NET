@@ -30,16 +30,16 @@ namespace SimpleWeather.Weather_API.OpenWeather
             {
                 weather.hr_forecast.Add(_.CreateHourlyForecast(foreRoot.list[i]));
 
-                float max = foreRoot.list[i].main.temp_max;
-                if (!float.IsNaN(max) && (float.IsNaN(dayMax) || max > dayMax))
+                var max = foreRoot.list[i].main.temp_max;
+                if (max.HasValue && !float.IsNaN(max.Value) && (float.IsNaN(dayMax) || max > dayMax))
                 {
-                    dayMax = max;
+                    dayMax = max.Value;
                 }
 
-                float min = foreRoot.list[i].main.temp_min;
-                if (!float.IsNaN(min) && (float.IsNaN(dayMin) || min < dayMin))
+                var min = foreRoot.list[i].main.temp_min;
+                if (min.HasValue && !float.IsNaN(min.Value) && (float.IsNaN(dayMin) || min < dayMin))
                 {
-                    dayMin = min;
+                    dayMin = min.Value;
                 }
 
                 // Add mid-day forecast
@@ -113,8 +113,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             {
                 // Use location name from location provider
                 name = null,
-                latitude = root.city.coord.lat,
-                longitude = root.city.coord.lon,
+                latitude = root.city?.coord?.lat,
+                longitude = root.city?.coord?.lon,
                 tz_long = null,
             };
         }
@@ -124,10 +124,10 @@ namespace SimpleWeather.Weather_API.OpenWeather
             var fcast = new Forecast();
 
             fcast.date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt).DateTime;
-            fcast.high_f = ConversionMethods.KtoF(forecast.main.temp_max);
-            fcast.high_c = ConversionMethods.KtoC(forecast.main.temp_max);
-            fcast.low_f = ConversionMethods.KtoF(forecast.main.temp_min);
-            fcast.low_c = ConversionMethods.KtoC(forecast.main.temp_min);
+            fcast.high_f = ConversionMethods.KtoF(forecast.main.temp_max!.Value);
+            fcast.high_c = ConversionMethods.KtoC(forecast.main.temp_max!.Value);
+            fcast.low_f = ConversionMethods.KtoF(forecast.main.temp_min!.Value);
+            fcast.low_c = ConversionMethods.KtoC(forecast.main.temp_min!.Value);
             fcast.condition = forecast.weather[0].description.ToUpperCase();
             fcast.icon = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.OpenWeatherMap)
                    .GetWeatherIcon(forecast.weather[0].id.ToInvariantString());
@@ -139,15 +139,15 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 cloudiness = forecast.clouds.all,
                 // 1hPA = 1mbar
                 pressure_mb = forecast.main.pressure,
-                pressure_in = ConversionMethods.MBToInHg(forecast.main.pressure),
+                pressure_in = ConversionMethods.MBToInHg(forecast.main.pressure!.Value),
                 wind_degrees = (int)Math.Round(forecast.wind.deg),
                 wind_mph = ConversionMethods.MSecToMph(forecast.wind.speed),
                 wind_kph = ConversionMethods.MSecToKph(forecast.wind.speed),
             };
-            if (ConversionMethods.KtoC(forecast.main.temp) is float temp_c &&
+            if (ConversionMethods.KtoC(forecast.main.temp!.Value) is float temp_c &&
                 temp_c > 0 && temp_c < 60 && forecast.main.humidity > 1)
             {
-                fcast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(forecast.main.temp), forecast.main.humidity);
+                fcast.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(forecast.main.temp!.Value), forecast.main.humidity!.Value);
                 fcast.extras.dewpoint_f = ConversionMethods.CtoF(fcast.extras.dewpoint_c.Value);
             }
             if (forecast.main.feels_like.HasValue)
@@ -188,8 +188,8 @@ namespace SimpleWeather.Weather_API.OpenWeather
             var hrf = new HourlyForecast();
 
             hrf.date = DateTimeOffset.FromUnixTimeSeconds(hr_forecast.dt);
-            hrf.high_f = ConversionMethods.KtoF(hr_forecast.main.temp);
-            hrf.high_c = ConversionMethods.KtoC(hr_forecast.main.temp);
+            hrf.high_f = ConversionMethods.KtoF(hr_forecast.main.temp!.Value);
+            hrf.high_c = ConversionMethods.KtoC(hr_forecast.main.temp!.Value);
             hrf.condition = hr_forecast.weather[0].description.ToUpperCase();
 
             // Use icon to determine if day or night
@@ -209,14 +209,14 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 cloudiness = hr_forecast.clouds.all,
                 // 1hPA = 1mbar
                 pressure_mb = hr_forecast.main.pressure,
-                pressure_in = ConversionMethods.MBToInHg(hr_forecast.main.pressure),
+                pressure_in = ConversionMethods.MBToInHg(hr_forecast.main.pressure!.Value),
                 wind_degrees = (int)hr_forecast.wind.deg,
                 wind_mph = ConversionMethods.MSecToMph(hr_forecast.wind.speed),
                 wind_kph = ConversionMethods.MSecToKph(hr_forecast.wind.speed)
             };
             if (hrf.high_c.Value > 0 && hrf.high_c.Value < 60 && hr_forecast.main.humidity > 1)
             {
-                hrf.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(hrf.high_c.Value, hr_forecast.main.humidity);
+                hrf.extras.dewpoint_c = WeatherUtils.CalculateDewpointC(hrf.high_c.Value, hr_forecast.main.humidity!.Value);
                 hrf.extras.dewpoint_f = ConversionMethods.CtoF(hrf.extras.dewpoint_c.Value);
             }
             if (hr_forecast.main.feels_like.HasValue)
@@ -257,12 +257,12 @@ namespace SimpleWeather.Weather_API.OpenWeather
             var condition = new Condition();
 
             condition.weather = current.weather[0].description.ToUpperCase();
-            condition.temp_f = ConversionMethods.KtoF(current.main.temp);
-            condition.temp_c = ConversionMethods.KtoC(current.main.temp);
-            condition.high_f = ConversionMethods.KtoF(current.main.temp_max);
-            condition.high_c = ConversionMethods.KtoC(current.main.temp_max);
-            condition.low_f = ConversionMethods.KtoF(current.main.temp_min);
-            condition.low_c = ConversionMethods.KtoC(current.main.temp_min);
+            condition.temp_f = ConversionMethods.KtoF(current.main.temp!.Value);
+            condition.temp_c = ConversionMethods.KtoC(current.main.temp!.Value);
+            condition.high_f = ConversionMethods.KtoF(current.main.temp_max!.Value);
+            condition.high_c = ConversionMethods.KtoC(current.main.temp_max!.Value);
+            condition.low_f = ConversionMethods.KtoF(current.main.temp_min!.Value);
+            condition.low_c = ConversionMethods.KtoC(current.main.temp_min!.Value);
             condition.wind_degrees = (int)current.wind.deg;
             condition.wind_mph = ConversionMethods.MSecToMph(current.wind.speed);
             condition.wind_kph = ConversionMethods.MSecToKph(current.wind.speed);
@@ -300,12 +300,12 @@ namespace SimpleWeather.Weather_API.OpenWeather
                 humidity = root.main.humidity,
                 // 1hPa = 1mbar
                 pressure_mb = root.main.pressure,
-                pressure_in = ConversionMethods.MBToInHg(root.main.pressure),
+                pressure_in = ConversionMethods.MBToInHg(root.main.pressure!.Value),
                 pressure_trend = String.Empty,
                 visibility_km = root.visibility / 1000,
                 visibility_mi = ConversionMethods.KmToMi(root.visibility / 1000 /*visibility_km.Value*/),
-                dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(root.main.temp), root.main.humidity),
-                dewpoint_f = WeatherUtils.CalculateDewpointF(ConversionMethods.KtoF(root.main.temp), root.main.humidity),
+                dewpoint_c = WeatherUtils.CalculateDewpointC(ConversionMethods.KtoC(root.main.temp!.Value), root.main.humidity!.Value),
+                dewpoint_f = WeatherUtils.CalculateDewpointF(ConversionMethods.KtoF(root.main.temp!.Value), root.main.humidity!.Value),
             };
         }
 
