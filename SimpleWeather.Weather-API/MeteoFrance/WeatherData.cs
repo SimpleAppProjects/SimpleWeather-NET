@@ -1,7 +1,7 @@
-﻿using SimpleWeather.Utils;
+﻿#nullable enable
+using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -9,54 +9,49 @@ namespace SimpleWeather.Weather_API.MeteoFrance
 {
     public static partial class MeteoFranceProviderExtensions
     {
-        public static SimpleWeather.WeatherData.Weather CreateWeatherData(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot,
-            MeteoFrance.ForecastRootobject foreRoot, MeteoFrance.AlertsRootobject alertRoot)
+        public static Weather CreateWeatherData(this MeteoFranceProvider _, CurrentsRootobject currRoot,
+            ForecastRootobject foreRoot, AlertsRootobject? alertRoot = null)
         {
-            var weather = new SimpleWeather.WeatherData.Weather();
+            var weather = new Weather();
 
             weather.location = _.CreateLocation(foreRoot);
             weather.update_time = DateTimeOffset.UtcNow;
 
-            weather.forecast = new List<SimpleWeather.WeatherData.Forecast>(foreRoot.daily_forecast.Length);
-            weather.hr_forecast = new List<SimpleWeather.WeatherData.HourlyForecast>(foreRoot.forecast.Length);
-
             // Forecast
-            foreach (var daily in foreRoot.daily_forecast)
-            {
-                weather.forecast.Add(_.CreateForecast(daily));
-            }
-            foreach (var hourly in foreRoot.forecast)
-            {
-                weather.hr_forecast.Add(_.CreateHourlyForecast(hourly, foreRoot.probability_forecast));
-            }
+            weather.forecast = foreRoot.properties?.daily_forecast?.Select(daily => _.CreateForecast(daily))?.ToList();
+            weather.hr_forecast = foreRoot.properties?.forecast?.Select(hourly => _.CreateHourlyForecast(hourly, foreRoot.properties?.probability_forecast))?.ToList();
 
             weather.condition = _.CreateCondition(currRoot);
             weather.atmosphere = _.CreateAtmosphere(currRoot);
+            weather.precipitation = _.CreatePrecipitation(currRoot);
 
             weather.ttl = 180;
 
             // Observation only gives temp & wind
-            if (weather.hr_forecast.Any())
+            if (weather.hr_forecast.IsNullOrEmpty())
             {
-                var firstHr = weather.hr_forecast[0];
+                var firstHr = weather.hr_forecast![0];
 
-                weather.atmosphere.humidity = firstHr.extras?.humidity;
-                weather.atmosphere.pressure_mb = firstHr.extras?.pressure_mb;
-                weather.atmosphere.pressure_in = firstHr.extras?.pressure_in;
-                weather.atmosphere.dewpoint_c = firstHr.extras?.dewpoint_c;
-                weather.atmosphere.dewpoint_f = firstHr.extras?.dewpoint_f;
-                weather.atmosphere.visibility_km = firstHr.extras?.visibility_km;
-                weather.atmosphere.visibility_mi = firstHr.extras?.visibility_mi;
-
-                weather.precipitation = new SimpleWeather.WeatherData.Precipitation()
+                if (weather.atmosphere is Atmosphere atmosphere)
                 {
-                    cloudiness = firstHr.extras?.cloudiness,
-                    pop = firstHr.extras?.pop,
-                    qpf_rain_in = firstHr.extras?.qpf_rain_in,
-                    qpf_rain_mm = firstHr.extras?.qpf_rain_mm,
-                    qpf_snow_in = firstHr.extras?.qpf_snow_in,
-                    qpf_snow_cm = firstHr.extras?.qpf_snow_cm
-                };
+                    atmosphere.humidity = firstHr.extras?.humidity;
+                    atmosphere.pressure_mb = firstHr.extras?.pressure_mb;
+                    atmosphere.pressure_in = firstHr.extras?.pressure_in;
+                    atmosphere.dewpoint_c = firstHr.extras?.dewpoint_c;
+                    atmosphere.dewpoint_f = firstHr.extras?.dewpoint_f;
+                    atmosphere.visibility_km = firstHr.extras?.visibility_km;
+                    atmosphere.visibility_mi = firstHr.extras?.visibility_mi;
+                }
+
+                if (weather.precipitation is Precipitation precipitation)
+                {
+                    precipitation.cloudiness = firstHr.extras?.cloudiness;
+                    precipitation.pop = firstHr.extras?.pop;
+                    precipitation.qpf_rain_in = firstHr.extras?.qpf_rain_in;
+                    precipitation.qpf_rain_mm = firstHr.extras?.qpf_rain_mm;
+                    precipitation.qpf_snow_in = firstHr.extras?.qpf_snow_in;
+                    precipitation.qpf_snow_cm = firstHr.extras?.qpf_snow_cm;
+                }
             }
 
             // Set feelslike temp
@@ -81,15 +76,15 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             return weather;
         }
 
-        public static SimpleWeather.WeatherData.Location CreateLocation(this MeteoFranceProvider _, MeteoFrance.ForecastRootobject foreRoot)
+        public static Location CreateLocation(this MeteoFranceProvider _, MeteoFrance.ForecastRootobject foreRoot)
         {
             // Use location name from location provider
             return new Location()
             {
                 name = null,
-                latitude = foreRoot?.position?.lat,
-                longitude = foreRoot?.position?.lon,
-                tz_long = foreRoot?.position?.timezone,
+                latitude = foreRoot.geometry?.coordinates?.ElementAtOrNull(1),
+                longitude = foreRoot?.geometry?.coordinates?.ElementAtOrNull(0),
+                tz_long = foreRoot?.properties?.timezone,
             };
         }
 
@@ -100,153 +95,144 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
             var culture = LocaleUtils.GetLocale();
 
-            forecast.date = DateTimeOffset.FromUnixTimeSeconds(day.dt).UtcDateTime;
+            forecast.date = day.time!.Value.LocalDateTime;
 
-            if (day.T?.max.HasValue == true)
+            if (day.T_max.HasValue)
             {
-                forecast.high_c = day.T.max;
-                forecast.high_f = ConversionMethods.CtoF(forecast.high_c.Value);
+                forecast.high_c = day.T_max;
+                forecast.high_f = ConversionMethods.CtoF(day.T_max.Value);
             }
 
-            if (day.T?.min.HasValue == true)
+            if (day.T_min.HasValue)
             {
-                forecast.low_c = day.T.min;
-                forecast.low_f = ConversionMethods.CtoF(forecast.low_c.Value);
+                forecast.low_c = day.T_min;
+                forecast.low_f = ConversionMethods.CtoF(day.T_min.Value);
             }
 
-            if (!string.IsNullOrWhiteSpace(day?.weather12H?.desc) &&
+            if (!day.daily_weather_description.IsNullOrEmpty() &&
                 culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
-                forecast.condition = day.weather12H?.desc;
+                forecast.condition = day.daily_weather_description;
             }
             else
             {
-                forecast.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(false, day.weather12H?.icon));
+                forecast.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(false, day.daily_weather_icon));
             }
-            forecast.icon = day.weather12H?.icon;
+            forecast.icon = day.daily_weather_icon;
 
             forecast.extras = new ForecastExtras();
-            if (day.humidity?.max.HasValue == true && day.humidity?.min.HasValue == true)
+            if (day.relative_humidity_max.HasValue && day.relative_humidity_min.HasValue)
             {
-                forecast.extras.humidity = (int)Math.Round((day.humidity.min.Value + day.humidity.max.Value) / 2f);
+                forecast.extras.humidity = ((day.relative_humidity_min.Value + day.relative_humidity_max.Value) / 2f).RoundToInt();
             }
-            if (day.T?.sea.HasValue == true)
+            if (day.T_sea.HasValue)
             {
-                forecast.extras.pressure_mb = day.T.sea;
-                forecast.extras.pressure_in = ConversionMethods.MBToInHg(day.T.sea.Value);
+                forecast.extras.pressure_mb = day.T_sea;
+                forecast.extras.pressure_in = ConversionMethods.MBToInHg(day.T_sea.Value);
             }
-            if (day.precipitation?._24h.HasValue == true)
+            if (day.total_precipitation_24h.HasValue)
             {
-                forecast.extras.qpf_rain_mm = day.precipitation._24h;
-                forecast.extras.qpf_rain_in = ConversionMethods.MMToIn(day.precipitation._24h.Value);
+                forecast.extras.qpf_rain_mm = day.total_precipitation_24h;
+                forecast.extras.qpf_rain_in = ConversionMethods.MMToIn(day.total_precipitation_24h.Value);
             }
-            forecast.extras.uv_index = day.uv;
+            forecast.extras.uv_index = day.uv_index;
 
             return forecast;
         }
 
-        public static SimpleWeather.WeatherData.HourlyForecast CreateHourlyForecast(this MeteoFranceProvider _, MeteoFrance.Forecast forecast, MeteoFrance.Probability_Forecast[] probabilityForecasts)
+        public static HourlyForecast CreateHourlyForecast(this MeteoFranceProvider _, Forecast forecast, Probability_Forecast[]? probabilityForecasts)
         {
-            var hrf = new SimpleWeather.WeatherData.HourlyForecast();
+            var hrf = new HourlyForecast();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
             var culture = LocaleUtils.GetLocale();
 
-            hrf.date = DateTimeOffset.FromUnixTimeSeconds(forecast.dt);
+            hrf.date = forecast.time!.Value;
 
-            if (forecast.T?.value.HasValue == true)
+            if (forecast.T.HasValue)
             {
-                hrf.high_c = forecast.T.value;
-                hrf.high_f = ConversionMethods.CtoF(forecast.T.value.Value);
+                hrf.high_c = forecast.T.Value;
+                hrf.high_f = ConversionMethods.CtoF(forecast.T.Value);
             }
 
-            if (!string.IsNullOrWhiteSpace(forecast?.weather?.desc) &&
+            if (!forecast.weather_description.IsNullOrBlank() &&
                 culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
-                hrf.condition = forecast.weather.desc;
+                hrf.condition = forecast.weather_description;
             }
             else
             {
-                hrf.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(forecast.weather?.icon));
+                hrf.condition = provider.GetWeatherCondition(provider.GetWeatherIcon(forecast.weather_icon));
             }
-            hrf.icon = forecast.weather?.icon;
+            hrf.icon = forecast.weather_icon;
 
             // Extras
             hrf.extras = new ForecastExtras();
 
-            if (forecast.T?.windchill.HasValue == true)
+            if (forecast.T_windchill.HasValue)
             {
-                hrf.extras.feelslike_c = forecast.T.windchill;
-                hrf.extras.feelslike_f = ConversionMethods.CtoF(forecast.T.windchill.Value);
+                hrf.extras.feelslike_c = forecast.T_windchill;
+                hrf.extras.feelslike_f = ConversionMethods.CtoF(forecast.T_windchill.Value);
             }
 
-            hrf.extras.humidity = forecast.humidity;
+            hrf.extras.humidity = forecast.relative_humidity;
 
-            if (forecast.sea_level.HasValue)
+            if (forecast.P_sea.HasValue)
             {
-                hrf.extras.pressure_mb = forecast.sea_level;
-                hrf.extras.pressure_in = ConversionMethods.MBToInHg(forecast.sea_level.Value);
+                hrf.extras.pressure_mb = forecast.P_sea;
+                hrf.extras.pressure_in = ConversionMethods.MBToInHg(forecast.P_sea.Value);
             }
 
-            if (forecast.wind != null)
+            if (forecast.wind_speed.HasValue)
             {
-                if (forecast.wind.speed.HasValue && forecast.wind.direction.HasValue)
-                {
-                    hrf.extras.wind_degrees = forecast.wind.direction;
-                    hrf.extras.wind_kph = ConversionMethods.MSecToKph(forecast.wind.speed.Value);
-                    hrf.extras.wind_mph = ConversionMethods.MSecToMph(forecast.wind.speed.Value);
-                }
-
-                if (forecast.wind.gust.HasValue)
-                {
-                    hrf.extras.windgust_kph = ConversionMethods.MSecToKph(forecast.wind.gust.Value);
-                    hrf.extras.windgust_mph = ConversionMethods.MSecToMph(forecast.wind.gust.Value);
-                }
+                hrf.extras.wind_kph = ConversionMethods.MSecToKph(forecast.wind_speed.Value);
+                hrf.extras.wind_mph = ConversionMethods.MSecToMph(forecast.wind_speed.Value);
+                hrf.extras.wind_degrees = forecast.wind_direction;
             }
 
-            if (forecast.rain != null)
+            if (forecast.wind_speed_gust.HasValue)
             {
-                if (forecast.rain._1h.HasValue)
-                {
-                    hrf.extras.qpf_rain_mm = forecast.rain._1h;
-                    hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain._1h.Value);
-                }
-                else if (forecast.rain._3h.HasValue)
-                {
-                    hrf.extras.qpf_rain_mm = forecast.rain._3h;
-                    hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain._3h.Value);
-                }
-                else if (forecast.rain._6h.HasValue)
-                {
-                    hrf.extras.qpf_rain_mm = forecast.rain._6h;
-                    hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain._6h.Value);
-                }
+                hrf.extras.windgust_kph = ConversionMethods.MSecToKph(forecast.wind_speed_gust.Value);
+                hrf.extras.windgust_mph = ConversionMethods.MSecToMph(forecast.wind_speed_gust.Value);
             }
 
-            if (forecast.snow != null)
+            if (forecast.rain_1h.HasValue)
             {
-                if (forecast.snow._1h.HasValue)
-                {
-                    hrf.extras.qpf_snow_cm = forecast.snow._1h / 10;
-                    hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow._1h.Value);
-                }
-                else if (forecast.snow._3h.HasValue)
-                {
-                    hrf.extras.qpf_snow_cm = forecast.snow._3h / 10;
-                    hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow._3h.Value);
-                }
-                else if (forecast.snow._6h.HasValue)
-                {
-                    hrf.extras.qpf_snow_cm = forecast.snow._6h / 10;
-                    hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow._6h.Value);
-                }
+                hrf.extras.qpf_rain_mm = forecast.rain_1h;
+                hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain_1h.Value);
+            }
+            else if (forecast.rain_3h.HasValue)
+            {
+                hrf.extras.qpf_rain_mm = forecast.rain_3h;
+                hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain_3h.Value);
+            }
+            else if (forecast.rain_6h.HasValue)
+            {
+                hrf.extras.qpf_rain_mm = forecast.rain_6h;
+                hrf.extras.qpf_rain_in = ConversionMethods.MMToIn(forecast.rain_6h.Value);
             }
 
-            hrf.extras.cloudiness = forecast.clouds;
+            if (forecast.snow_1h.HasValue)
+            {
+                hrf.extras.qpf_snow_cm = forecast.snow_1h / 10;
+                hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow_1h.Value);
+            }
+            else if (forecast.snow_3h.HasValue)
+            {
+                hrf.extras.qpf_snow_cm = forecast.snow_3h / 10;
+                hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow_3h.Value);
+            }
+            else if (forecast.snow_6h.HasValue)
+            {
+                hrf.extras.qpf_snow_cm = forecast.snow_6h / 10;
+                hrf.extras.qpf_snow_in = ConversionMethods.MMToIn(forecast.snow_6h.Value);
+            }
+
+            hrf.extras.cloudiness = forecast.total_cloud_cover;
 
             if (hrf.high_c.HasValue && hrf.extras.humidity.HasValue)
             {
@@ -257,23 +243,24 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 hrf.extras.dewpoint_f = WeatherUtils.CalculateDewpointF(hrf.high_f.Value, hrf.extras.humidity.Value);
             }
 
-            if (probabilityForecasts?.Any() == true)
+            if (!probabilityForecasts.IsNullOrEmpty())
             {
                 // Note: probability forecasts are given either every 3 or 6 hours
                 // Rain/Snow object can contain forecast for either next 3 or 6 hrs, or both
-                var dt = forecast.dt; // Unix time in seconds
-                var hrsInSec = TimeSpan.FromHours(1).TotalSeconds;
+                var dt = hrf.date.Trim(TimeSpan.TicksPerHour);
                 var found3hrForecast = false;
                 var _3hrForecastNA = false;
 
-                foreach (var prob in probabilityForecasts)
+                foreach (var prob in probabilityForecasts!)
                 {
+                    var probDt = prob.time!.Value.Trim(TimeSpan.TicksPerHour);
+
                     // Check if timestamp is within 3-hr forecast
-                    if (dt == prob.dt || dt == (prob.dt + hrsInSec) || dt == (prob.dt + hrsInSec * 2))
+                    if (dt == probDt || dt == probDt.AddHours(1) || dt == probDt.AddHours(2))
                     {
-                        if (prob.rain._3h.HasValue)
+                        if (prob.rain_hazard_3h.HasValue)
                         {
-                            hrf.extras.pop = (int)prob.rain._3h.Value;
+                            hrf.extras.pop = (int)prob.rain_hazard_3h.Value;
                             found3hrForecast = true;
                             _3hrForecastNA = false;
                         }
@@ -282,40 +269,40 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                             found3hrForecast = false;
                             _3hrForecastNA = true;
                         }
-                        if (!hrf.extras.pop.HasValue && prob.rain._6h.HasValue)
+                        if (!hrf.extras.pop.HasValue && prob.rain_hazard_6h.HasValue)
                         {
-                            hrf.extras.pop = (int)prob.rain._6h.Value;
+                            hrf.extras.pop = (int)prob.rain_hazard_6h.Value;
                             _3hrForecastNA = true;
                             found3hrForecast = false;
                         }
                         if (!hrf.extras.pop.HasValue)
                         {
-                            if (prob.snow._3h.HasValue)
+                            if (prob.snow_hazard_3h.HasValue)
                             {
-                                hrf.extras.pop = (int)prob.snow._3h.Value;
+                                hrf.extras.pop = (int)prob.snow_hazard_3h.Value;
                             }
-                            if (prob.snow._6h.HasValue)
+                            if (prob.snow_hazard_6h.HasValue)
                             {
-                                hrf.extras.pop = (int)prob.snow._6h.Value;
+                                hrf.extras.pop = (int)prob.snow_hazard_6h.Value;
                             }
                         }
                     }
 
                     // Timestamp is not within 3-hr forecast; check 6-hr timeframe
                     // Check if timestamp is within 6-hr forecast
-                    if (!hrf.extras.pop.HasValue && (dt == (prob.dt + hrsInSec * 3) || dt == (prob.dt + hrsInSec * 4) || dt == (prob.dt + hrsInSec * 5)))
+                    if (!hrf.extras.pop.HasValue && (dt == probDt.AddHours(3) || dt == probDt.AddHours(4) || dt == probDt.AddHours(5)))
                     {
-                        if (prob.rain._6h.HasValue)
+                        if (prob.rain_hazard_6h.HasValue)
                         {
-                            hrf.extras.pop = (int)prob.rain._6h.Value;
+                            hrf.extras.pop = (int)prob.rain_hazard_6h.Value;
                             _3hrForecastNA = true;
                             found3hrForecast = false;
                         }
                         if (!hrf.extras.pop.HasValue)
                         {
-                            if (prob.snow._6h.HasValue)
+                            if (prob.snow_hazard_6h.HasValue)
                             {
-                                hrf.extras.pop = (int)prob.snow._6h.Value;
+                                hrf.extras.pop = (int)prob.snow_hazard_6h.Value;
                             }
                         }
                     }
@@ -327,51 +314,55 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             return hrf;
         }
 
-        public static SimpleWeather.WeatherData.Condition CreateCondition(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot)
+        public static Condition CreateCondition(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot)
         {
-            var condition = new SimpleWeather.WeatherData.Condition();
+            var condition = new Condition();
 
             var provider = WeatherModule.Instance.WeatherManager.GetWeatherProvider(WeatherAPI.MeteoFrance);
             var culture = LocaleUtils.GetLocale();
 
-            if (currRoot?.observation?.T.HasValue == true)
+            if (currRoot.properties?.gridded?.T.HasValue == true)
             {
-                condition.temp_c = currRoot.observation.T;
-                condition.temp_f = ConversionMethods.CtoF(condition.temp_c.Value);
+                condition.temp_c = currRoot.properties.gridded.T;
+                condition.temp_f = ConversionMethods.CtoF(currRoot.properties.gridded.T.Value);
             }
 
-            if (!string.IsNullOrWhiteSpace(currRoot?.observation?.weather?.desc) &&
+            if (!(currRoot.properties?.gridded?.weather_description).IsNullOrBlank() &&
                 culture.TwoLetterISOLanguageName.Equals("en", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.TwoLetterISOLanguageName.Equals("fr", StringComparison.InvariantCultureIgnoreCase) ||
                 culture.Equals(CultureInfo.InvariantCulture))
             {
-                condition.weather = currRoot.observation.weather.desc;
+                condition.weather = currRoot.properties?.gridded?.weather_description;
             }
             else
             {
-                condition.weather = provider.GetWeatherCondition(provider.GetWeatherIcon(currRoot.observation?.weather?.icon));
+                condition.weather = provider.GetWeatherCondition(provider.GetWeatherIcon(currRoot.properties?.gridded?.weather_icon));
             }
-            condition.icon = currRoot.observation?.weather?.icon;
+            condition.icon = currRoot.properties?.gridded?.weather_icon;
 
-            if (currRoot.observation?.wind != null)
+            condition.wind_degrees = currRoot.properties?.gridded?.wind_direction;
+            if (currRoot.properties?.gridded?.wind_speed.HasValue == true)
             {
-                condition.wind_degrees = currRoot.observation.wind.direction;
-                if (currRoot.observation.wind.speed.HasValue)
-                {
-                    condition.wind_kph = ConversionMethods.MSecToKph(currRoot.observation.wind.speed.Value);
-                    condition.wind_mph = ConversionMethods.MSecToMph(currRoot.observation.wind.speed.Value);
-                }
+                condition.wind_kph = ConversionMethods.MSecToKph(currRoot.properties.gridded.wind_speed.Value);
+                condition.wind_mph = ConversionMethods.MSecToMph(currRoot.properties.gridded.wind_speed.Value);
             }
 
-            condition.observation_time = DateTimeOffset.FromUnixTimeSeconds(currRoot.updated_on);
+            condition.observation_time = currRoot.properties?.gridded?.time ?? currRoot.update_time ?? DateTimeOffset.UtcNow;
 
             return condition;
         }
 
-        public static SimpleWeather.WeatherData.Atmosphere CreateAtmosphere(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot)
+        public static Atmosphere CreateAtmosphere(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot)
         {
             // no-op
             return new Atmosphere();
         }
+
+        public static Precipitation CreatePrecipitation(this MeteoFranceProvider _, MeteoFrance.CurrentsRootobject currRoot)
+        {
+            // no-op
+            return new Precipitation();
+        }
     }
 }
+#nullable restore

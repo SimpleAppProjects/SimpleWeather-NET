@@ -5,13 +5,13 @@ using SimpleWeather.LocationData;
 using SimpleWeather.Preferences;
 using SimpleWeather.Utils;
 using SimpleWeather.Weather_API.Keys;
+using SimpleWeather.Weather_API.NWS;
 using SimpleWeather.Weather_API.SMC;
 using SimpleWeather.Weather_API.Utils;
 using SimpleWeather.Weather_API.WeatherData;
 using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
@@ -24,9 +24,6 @@ namespace SimpleWeather.Weather_API.MeteoFrance
     public partial class MeteoFranceProvider : WeatherProviderImpl
     {
         private const String BASE_URL = "https://webservice.meteofrance.com/";
-        private const String CURRENT_QUERY_URL = BASE_URL + "observation/gridded?{0}&lang={1}&token={2}";
-        private const String FORECAST_QUERY_URL = BASE_URL + "forecast?{0}&lang={1}&token={2}";
-        private const String ALERTS_QUERY_URL = BASE_URL + "warning/full?domain={0}&token={1}";
 
         public MeteoFranceProvider() : base()
         {
@@ -101,13 +98,27 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             {
                 this.CheckRateLimit();
 
-                Uri currentURL = new Uri(string.Format(CURRENT_QUERY_URL, query, locale, key));
-                Uri forecastURL = new Uri(string.Format(FORECAST_QUERY_URL, query, locale, key));
+                var currentRequestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendPath("v2/observation")
+                    .AppendQueryParameter("lat", location.latitude.ToString("0.####"))
+                    .AppendQueryParameter("lon", location.longitude.ToString("0.####"))
+                    .AppendQueryParameter("lang", locale)
+                    .AppendQueryParameter("token", key)
+                    .BuildUri();
 
-                using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentURL);
-                using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastURL);
-                currentRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
-                forecastRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+                using var currentRequest = new HttpRequestMessage(HttpMethod.Get, currentRequestUri)
+                    .CacheRequestIfNeeded(KeyRequired, TimeSpan.FromMinutes(15));
+
+                var forecastRequestUri = BASE_URL.ToUriBuilderEx()
+                    .AppendPath("v2/forecast")
+                    .AppendQueryParameter("lat", location.latitude.ToString("0.####"))
+                    .AppendQueryParameter("lon", location.longitude.ToString("0.####"))
+                    .AppendQueryParameter("lang", locale)
+                    .AppendQueryParameter("token", key)
+                    .BuildUri();
+
+                using var forecastRequest = new HttpRequestMessage(HttpMethod.Get, forecastRequestUri)
+                    .CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
 
                 // Get response
                 var webClient = SharedModule.Instance.WebClient;
@@ -129,17 +140,20 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 var foreRoot = await JSONParser.DeserializerAsync<ForecastRootobject>(forecastStream);
                 AlertsRootobject alertsRoot = null;
 
-                if (foreRoot.position?.dept != null)
+                if (foreRoot.properties?.french_department != null)
                 {
+                    var alertsRequestUri = BASE_URL.ToUriBuilderEx()
+                        .AppendPath("v3/warning/full")
+                        .AppendQueryParameter("domain", foreRoot.properties.french_department)
+                        .AppendQueryParameter("token", key)
+                        .BuildUri();
+
+                    using var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsRequestUri)
+                        .CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
+
                     try
                     {
-                        Uri alertsURL = new Uri(string.Format(ALERTS_QUERY_URL, foreRoot.position.dept, key));
-
-                        using var alertsRequest = new HttpRequestMessage(HttpMethod.Get, alertsURL);
-                        alertsRequest.CacheRequestIfNeeded(KeyRequired, TimeSpan.FromHours(1));
-
                         using var ctsA = new CancellationTokenSource(SettingsManager.READ_TIMEOUT);
-
                         using var alertsResponse = await webClient.SendAsync(alertsRequest, ctsA.Token);
                         var alertsStream = await alertsResponse.Content.ReadAsStreamAsync();
                         alertsRoot = await JSONParser.DeserializerAsync<AlertsRootobject>(alertsStream);
@@ -201,8 +215,16 @@ namespace SimpleWeather.Weather_API.MeteoFrance
             weather.condition.observation_time = weather.condition.observation_time.ToOffset(offset);
 
             // Calculate astronomy
-            weather.astronomy =
-                await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            try
+            {
+                weather.astronomy =
+                    await new SunMoonCalcProvider().GetAstronomyData(location, weather.condition.observation_time);
+            }
+            catch (WeatherException)
+            {
+                weather.astronomy =
+                    await new SolCalcAstroProvider().GetAstronomyData(location, weather.condition.observation_time);
+            }
 
             // Update icons
             weather.condition.icon = GetWeatherIcon(weather.condition.icon);
@@ -220,7 +242,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                 hr_forecast.icon = GetWeatherIcon(hr_forecast.icon);
             }
 
-            if (weather.weather_alerts?.Any() == true)
+            if (!weather.weather_alerts.IsNullOrEmpty())
             {
                 foreach (var alert in weather.weather_alerts)
                 {
@@ -469,8 +491,7 @@ namespace SimpleWeather.Weather_API.MeteoFrance
                             tz = DateTimeZoneProviders.Tzdb.GetZoneOrNull(weather.location.tz_long);
                         }
 
-                        if (tz == null)
-                            tz = DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
+                        tz ??= DateTimeZone.ForOffset(Offset.FromTimeSpan(weather.location.tz_offset));
 
                         var now = SystemClock.Instance.GetCurrentInstant()
                             .InZone(tz).TimeOfDay;

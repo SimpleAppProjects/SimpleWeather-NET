@@ -1,44 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimpleWeather.Weather_API.MeteoFrance
 {
     public class CurrentsRootobject
     {
-        public CurrentsPosition position { get; set; }
-        public long updated_on { get; set; }
-        public Observation observation { get; set; }
+        public DateTimeOffset? update_time { get; set; }
+        public string type { get; set; }
+        public Geometry geometry { get; set; }
+        public CurrentProperties properties { get; set; }
     }
 
-    public class CurrentsPosition
+    public class CurrentProperties
     {
-        public float lat { get; set; }
-        public float lon { get; set; }
         public string timezone { get; set; }
+        public Gridded gridded { get; set; }
     }
 
-    public class Observation
+    public class Gridded
     {
+        public DateTimeOffset? time { get; set; }
         public float? T { get; set; }
-        public Wind wind { get; set; }
-        public Weather weather { get; set; }
+        public float? wind_speed { get; set; }
+        public float? wind_speed_gust { get; set; }
+        public int? wind_direction { get; set; }
+        public string wind_icon { get; set; }
+        public string weather_icon { get; set; }
+        public string weather_description { get; set; }
     }
-
-    /*
-    public class Wind
-    {
-        public int speed { get; set; }
-        public int direction { get; set; }
-        public string icon { get; set; }
-    }
-
-    public class Weather
-    {
-        public string icon { get; set; }
-        public string desc { get; set; }
-    }
-    */
 }

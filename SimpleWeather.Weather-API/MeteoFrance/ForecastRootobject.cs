@@ -1,148 +1,83 @@
-﻿using Newtonsoft.Json;
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
+﻿using System;
 
 namespace SimpleWeather.Weather_API.MeteoFrance
 {
     public class ForecastRootobject
     {
-        public Position position { get; set; }
-        public long updated_on { get; set; }
+        public DateTimeOffset? update_time { get; set; }
+        public string type { get; set; }
+        public Geometry geometry { get; set; }
+        public ForecastProperties properties { get; set; }
+    }
+
+    public class ForecastProperties
+    {
+        public int? altitude { get; set; }
+        public string name { get; set; }
+        public string country { get; set; }
+        public string french_department { get; set; }
+        public int? rain_product_available { get; set; }
+        public string timezone { get; set; }
+        public string insee { get; set; }
+        public int? bulletin_cote { get; set; }
         public Daily_Forecast[] daily_forecast { get; set; }
         public Forecast[] forecast { get; set; }
         public Probability_Forecast[] probability_forecast { get; set; }
     }
 
-    public class Position
-    {
-        public float lat { get; set; }
-        public float lon { get; set; }
-        public int alti { get; set; }
-        public string name { get; set; }
-        public string country { get; set; }
-        public string dept { get; set; }
-        public int rain_product_available { get; set; }
-        public string timezone { get; set; }
-        public string insee { get; set; }
-        public int bulletin_cote { get; set; }
-    }
-
     public class Daily_Forecast
     {
-        public long dt { get; set; }
-        public T T { get; set; }
-        public Humidity humidity { get; set; }
-        public Precipitation precipitation { get; set; }
-        public float? uv { get; set; }
-        public Weather12h weather12H { get; set; }
-        public Sun sun { get; set; }
-    }
-
-    public class T
-    {
-        public float? min { get; set; }
-        public float? max { get; set; }
-        public float? sea { get; set; }
-    }
-
-    public class Humidity
-    {
-        public int? min { get; set; }
-        public int? max { get; set; }
-    }
-
-    public class Precipitation
-    {
-        [DataMember(Name = "24h")]
-        [JsonPropertyName("24h")]
-        [JsonProperty("24h")]
-        public float? _24h { get; set; }
-    }
-
-    public class Weather12h
-    {
-        public string icon { get; set; }
-        public string desc { get; set; }
-    }
-
-    public class Sun
-    {
-        public long? rise { get; set; }
-        public long? set { get; set; }
+        public DateTimeOffset? time { get; set; }
+        public float? T_min { get; set; }
+        public float? T_max { get; set; }
+        public float? T_sea { get; set; }
+        public int? relative_humidity_min { get; set; }
+        public int? relative_humidity_max { get; set; }
+        public float? total_precipitation_24h { get; set; }
+        public float? uv_index { get; set; }
+        public string daily_weather_icon { get; set; }
+        public string daily_weather_description { get; set; }
+        public DateTimeOffset? sunrise_time { get; set; }
+        public DateTimeOffset? sunset_time { get; set; }
     }
 
     public class Forecast
     {
-        public long dt { get; set; }
-        public T1 T { get; set; }
-        public int? humidity { get; set; }
-        public float? sea_level { get; set; }
-        public Wind wind { get; set; }
-        public Rain rain { get; set; }
-        public Snow snow { get; set; }
-        public int iso0 { get; set; }
-        public string rainsnowlimit { get; set; }
-        public int? clouds { get; set; }
-        public Weather weather { get; set; }
-    }
-
-    public class T1
-    {
-        public float? value { get; set; }
-        public float? windchill { get; set; }
-    }
-
-    public class Wind
-    {
-        public float? speed { get; set; }
-        public float? gust { get; set; }
-        public int? direction { get; set; }
-        public string icon { get; set; }
-    }
-
-    public class Rain
-    {
-        [DataMember(Name = "1h")]
-        [JsonPropertyName("1h")]
-        [JsonProperty("1h")]
-        public float? _1h { get; set; }
-        [DataMember(Name = "3h")]
-        [JsonPropertyName("3h")]
-        [JsonProperty("3h")]
-        public float? _3h { get; set; }
-        [DataMember(Name = "6h")]
-        [JsonPropertyName("6h")]
-        [JsonProperty("6h")]
-        public float? _6h { get; set; }
-    }
-
-    public class Snow
-    {
-        [DataMember(Name = "1h")]
-        [JsonPropertyName("1h")]
-        [JsonProperty("1h")]
-        public float? _1h { get; set; }
-        [DataMember(Name = "3h")]
-        [JsonPropertyName("3h")]
-        [JsonProperty("3h")]
-        public float? _3h { get; set; }
-        [DataMember(Name = "6h")]
-        [JsonPropertyName("6h")]
-        [JsonProperty("6h")]
-        public float? _6h { get; set; }
-    }
-
-    public class Weather
-    {
-        public string icon { get; set; }
-        public string desc { get; set; }
+        public DateTimeOffset? time { get; set; }
+        public float? T { get; set; }
+        public float? T_windchill { get; set; }
+        public int? relative_humidity { get; set; }
+        public float? P_sea { get; set; }
+        public float? wind_speed { get; set; }
+        public float? wind_speed_gust { get; set; }
+        public int? wind_direction { get; set; }
+        public string wind_icon { get; set; }
+        public float? rain_1h { get; set; }
+        public float? rain_3h { get; set; }
+        public float? rain_6h { get; set; }
+        public float? rain_12h { get; set; }
+        public float? rain_24h { get; set; }
+        public float? snow_1h { get; set; }
+        public float? snow_3h { get; set; }
+        public float? snow_6h { get; set; }
+        public float? snow_12h { get; set; }
+        public float? snow_24h { get; set; }
+        public int? iso0 { get; set; }
+        public string rain_snow_limit { get; set; }
+        public int? total_cloud_cover { get; set; }
+        public string weather_icon { get; set; }
+        public string weather_description { get; set; }
+        public int? weather_confidence_index { get; set; }
     }
 
     public class Probability_Forecast
     {
-        public long dt { get; set; }
-        public Rain rain { get; set; }
-        public Snow snow { get; set; }
-        public int? freezing { get; set; }
+        public DateTimeOffset? time { get; set; }
+        public float? rain_hazard_3h { get; set; }
+        public float? rain_hazard_6h { get; set; }
+        public float? snow_hazard_3h { get; set; }
+        public float? snow_hazard_6h { get; set; }
+        public int? freezing_hazard { get; set; }
+        public int? storm_hazard { get; set; }
     }
 }

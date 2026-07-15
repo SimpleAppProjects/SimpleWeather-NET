@@ -155,6 +155,13 @@ namespace SimpleWeather.Utils
             return $"[{string.Join(',', list.Select(toStringConv))}]";
         }
 
+#nullable enable
+        public static bool IsNullOrEmpty(this IEnumerable? enumerable)
+        {
+            return enumerable == null || enumerable.IsEmpty();
+        }
+#nullable restore
+
         public static bool IsEmpty(this IEnumerable enumerable)
         {
             if (enumerable is ICollection collection)

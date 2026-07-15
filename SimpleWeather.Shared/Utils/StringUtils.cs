@@ -267,5 +267,17 @@ namespace SimpleWeather.Utils
         {
             return bool.TryParse(value, out bool result) ? result : defaultValue;
         }
+
+#nullable enable
+        public static bool IsNullOrBlank(this string? value)
+        {
+            return string.IsNullOrWhiteSpace(value);
+        }
+
+        public static bool IsNullOrEmpty(this string? value)
+        {
+            return string.IsNullOrEmpty(value);
+        }
+#nullable restore
     }
 }
