@@ -32,7 +32,7 @@
     <HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
     <AppxBundlePlatforms>x86|x64|arm64</AppxBundlePlatforms>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-    <PackageCertificateThumbprint>11A78F8E817FC29D0B1BD910EFCB40B1BD15094B</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>090E032F8AB313F537742BC393DC6B2350A598FD</PackageCertificateThumbprint>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
   </PropertyGroup>
   

@@ -2,7 +2,9 @@
     [string]$BundleDir = "AppPackages",
     [string]$ProjectName = "SimpleWeather.Windows",
     [string]$ManifestPath = 'Package.appxmanifest',
-    [string]$TargetFramework = 'net10.0-windows10.0.22621.0'
+    [string]$TargetFramework = 'net10.0-windows10.0.22621.0',
+    [bool]$Build = $True,
+    [bool]$Clean = $True
 )
 
 if ([string]::IsNullOrWhiteSpace($BundleDir))
@@ -42,17 +44,23 @@ if ($Version) {
 $WorkingDir = pwd
 $PackageDir = [System.IO.Path]::Combine($WorkingDir, $ProjectName, $BundleDir)
 
-.\win-clean.bat
+if ($Build) {
+    if ($Clean) {
+        .\win-clean.bat
+    }
+
+    cd $ProjectName
+
+    msbuild /r /t:Restore /p:Configuration=Release /p:PublishReadyToRun=true
+
+    msbuild /p:Configuration=Release /p:Platform=x86 /p:RuntimeIdentifier=win-x86 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly  /p:GenerateSatelliteAssembliesForCore=true
+
+    msbuild /p:Configuration=Release /p:Platform=x64 /p:RuntimeIdentifier=win-x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateSatelliteAssembliesForCore=true
+
+    msbuild /p:Configuration=Release /p:Platform=ARM64 /p:RuntimeIdentifier=win-arm64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateSatelliteAssembliesForCore=true
+}
 
 cd $ProjectName
-
-msbuild /r /t:Restore /p:Configuration=Release
-
-msbuild /p:Configuration=Release /p:Platform=x86 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly  /p:GenerateSatelliteAssembliesForCore=true
-
-msbuild /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateSatelliteAssembliesForCore=true
-
-msbuild /p:Configuration=Release /p:Platform=ARM64 /p:GenerateAppxPackageOnBuild=true /p:AppxBundle=Never /p:UapAppxPackageBuildMode=SideloadOnly /p:GenerateSatelliteAssembliesForCore=true
 
 # Verify builds completed successfully
 $msixcount = (Get-ChildItem $PackageDir -Filter "${ProjectName}_${Version}_*_Test" -Directory | Measure-Object).Count
