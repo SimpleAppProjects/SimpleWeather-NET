@@ -61,8 +61,8 @@
             <local:IconControl
                 Foreground="{ThemeResource SimpleBlueLight}"
                 IconHeight="30"
-                IconProvider="wi-erik-flowers"
                 IconWidth="30"
+                ForceBitmapIcon="True"
                 ShowAsMonochrome="True"
                 Visibility="{x:Bind Data.PoP, Converter={StaticResource null2VisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
@@ -81,6 +81,7 @@
             IconHeight="50"
             IconWidth="50"
             RenderTransformOrigin="0.5,0.5"
+            ShouldAnimate="True"
             WeatherIcon="{x:Bind Data.XWeatherIcon, Mode=OneWay}"
             Visibility="{x:Bind Data.XWeatherIcon, Converter={StaticResource stringVisibilityConverter}, Mode=OneWay}">
             <local:IconControl.RenderTransform>

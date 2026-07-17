@@ -4,7 +4,6 @@ using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Layouts;
 using SimpleWeather.Icons;
 using SimpleWeather.Maui.Controls;
-using SimpleWeather.Maui.Controls.Graphs;
 using SimpleWeather.Maui.Converters;
 using SimpleWeather.Maui.DataBinding;
 using SimpleWeather.Maui.Helpers;
@@ -178,10 +177,10 @@ public partial class WeatherNow
             {
                 MainGrid.Children.Insert(0,
                     new Image()
-                        {
-                            Aspect = Aspect.AspectFill,
-                            IsVisible = FeatureSettings.BackgroundImage
-                        }
+                    {
+                        Aspect = Aspect.AspectFill,
+                        IsVisible = FeatureSettings.BackgroundImage
+                    }
                         .Bind(Image.SourceProperty, static src => src.ImageData,
                             convert: imageData => imageData?.ImageSource, mode: BindingMode.OneWay,
                             source: WNowViewModel)
@@ -198,9 +197,9 @@ public partial class WeatherNow
 
                 MainGrid.Insert(1,
                     new Grid()
-                        {
-                            IsVisible = FeatureSettings.BackgroundImage,
-                            Background = new LinearGradientBrush(
+                    {
+                        IsVisible = FeatureSettings.BackgroundImage,
+                        Background = new LinearGradientBrush(
                                 new GradientStopCollection()
                                 {
                                     new GradientStop(Color.FromRgba(0, 0, 0, 0x50), 0),
@@ -209,7 +208,7 @@ public partial class WeatherNow
                                 new Point(0.5, 0),
                                 new Point(0.5, 1)
                             )
-                        }
+                    }
                         .Row(0)
                         .RowSpan(3)
                         .Apply(it => GradientOverlay = it)
@@ -361,15 +360,15 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkPrimary", out var DarkPrimary);
 
         return new ToolbarItem()
+        {
+            Text = ResStrings.action_refresh,
+            IconImageSource = new MaterialIcon(MaterialSymbol.Refresh)
             {
-                Text = ResStrings.action_refresh,
-                IconImageSource = new MaterialIcon(MaterialSymbol.Refresh)
-                {
-                    Size = 24,
-                    FontAutoScalingEnabled = true
-                }.AppThemeColorBinding(MaterialIcon.ColorProperty, LightPrimary as Color, DarkPrimary as Color),
-                Order = ToolbarItemOrder.Primary,
-            }
+                Size = 24,
+                FontAutoScalingEnabled = true
+            }.AppThemeColorBinding(MaterialIcon.ColorProperty, LightPrimary as Color, DarkPrimary as Color),
+            Order = ToolbarItemOrder.Primary,
+        }
             .Bind(ToolbarItem.IsEnabledProperty, static layout => !layout.IsRefreshing, mode: BindingMode.OneWay,
                 source: RefreshLayout)
             .Apply(it => { it.Clicked += RefreshBtn_Clicked; });
@@ -782,6 +781,7 @@ public partial class WeatherNow
                                 VerticalOptions = LayoutOptions.Center,
                                 IconHeight = 88,
                                 IconWidth = 88,
+                                ShouldAnimate = true,
                             }
                             .Margins(right: 16)
                             .Column(3)
@@ -881,8 +881,8 @@ public partial class WeatherNow
         View ConditionPanelLayout = null;
 
         return new VerticalStackLayout()
-            {
-                Children =
+        {
+            Children =
                 {
                     // GPSIcon + Location
                     new Grid()
@@ -1191,7 +1191,7 @@ public partial class WeatherNow
                         }
                     }
                 }
-            }
+        }
             .Bind(IsVisibleProperty, static viewModel => viewModel.Weather,
                 mode: BindingMode.OneWay, source: WNowViewModel,
                 convert: weather => !string.IsNullOrWhiteSpace(weather?.Location)
@@ -1235,15 +1235,15 @@ public partial class WeatherNow
         var darkCompositeFrameBackground = (Color)DarkCompositeFrameBackground;
 
         return new Frame()
-            {
-                Padding = new Thickness(0, 4),
-                Margin = new Thickness(4, 2),
-                CornerRadius = 16,
-                MinimumHeightRequest = 0,
-                HasShadow = false,
-                BorderColor = Colors.Transparent,
-                Content = content,
-            }
+        {
+            Padding = new Thickness(0, 4),
+            Margin = new Thickness(4, 2),
+            CornerRadius = 16,
+            MinimumHeightRequest = 0,
+            HasShadow = false,
+            BorderColor = Colors.Transparent,
+            Content = content,
+        }
             .AppThemeColorBinding(BackgroundColorProperty, lightCompositeFrameBackground, darkCompositeFrameBackground);
     }
 
@@ -1253,18 +1253,18 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-            {
-                RowDefinitions =
+        {
+            RowDefinitions =
                 {
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Auto),
                 },
-                ColumnDefinitions =
+            ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto),
                 },
-                Children =
+            Children =
                 {
                     // Header
                     new Label()
@@ -1307,7 +1307,7 @@ public partial class WeatherNow
                             it.ItemClick += (s, e) => { GotoDetailsPage(false, e.ItemIndex); };
                         })
                 }
-            })
+        })
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
@@ -1335,18 +1335,18 @@ public partial class WeatherNow
 
         // Alert Button
         return new Grid()
-            {
-                Margin = new Thickness(0, 5),
-                Padding = new Thickness(11, 5, 11, 6),
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BindingContext = AlertsView,
-                ColumnDefinitions =
+        {
+            Margin = new Thickness(0, 5),
+            Padding = new Thickness(11, 5, 11, 6),
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            BindingContext = AlertsView,
+            ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Auto),
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(new GridLength(50))
                 },
-                Children =
+            Children =
                 {
                     new Image()
                     {
@@ -1378,7 +1378,7 @@ public partial class WeatherNow
                             (Color)darkOnErrorContainer)
                     }.Column(2)
                 }
-            }
+        }
             .AppThemeColorBinding(BackgroundColorProperty, (Color)lightErrorContainer, (Color)darkErrorContainer)
             .Bind(IsVisibleProperty, getter: alerts => alerts.Alerts,
                 mode: BindingMode.OneWay, source: AlertsView, convert: alerts => alerts?.Count > 0
@@ -1392,18 +1392,18 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-            {
-                RowDefinitions =
+        {
+            RowDefinitions =
                 {
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Auto),
                 },
-                ColumnDefinitions =
+            ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto),
                 },
-                Children =
+            Children =
                 {
                     // Header
                     new Label()
@@ -1458,7 +1458,7 @@ public partial class WeatherNow
                             HourlyForecastPanel = it;
                         })
                 }
-            })
+        })
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
@@ -1479,18 +1479,18 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-            {
-                RowDefinitions =
+        {
+            RowDefinitions =
                 {
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Auto),
                 },
-                ColumnDefinitions =
+            ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto),
                 },
-                Children =
+            Children =
                 {
                     // Header
                     new Label()
@@ -1595,7 +1595,7 @@ public partial class WeatherNow
                         .Row(1)
                         .ColumnSpan(2)
                 }
-            })
+        })
             .Apply(it =>
             {
                 it.Loaded += (s, e) =>
@@ -1616,13 +1616,13 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-            {
-                RowDefinitions =
+        {
+            RowDefinitions =
                 {
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Auto),
                 },
-                Children =
+            Children =
                 {
                     // Header
                     new Label()
@@ -1665,7 +1665,7 @@ public partial class WeatherNow
                             };
                         })
                 }
-            })
+        })
             .Apply(it =>
             {
                 it.Loaded += (s, e) => { it.IsVisible = FeatureSettings.DetailsEnabled; };
@@ -1730,7 +1730,7 @@ public partial class WeatherNow
                 .TapGesture(async () =>
                 {
                     var weatherAqiPage = new WeatherAQIPage(new WeatherPageArgs()
-                        { Location = WNowViewModel?.UiState?.LocationData });
+                    { Location = WNowViewModel?.UiState?.LocationData });
                     await Navigation.PushAsync(weatherAqiPage);
                 }))
             .Apply(it =>
@@ -1805,13 +1805,13 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-                {
-                    RowDefinitions =
+        {
+            RowDefinitions =
                     {
                         new RowDefinition(GridLength.Auto),
                         new RowDefinition(GridLength.Star),
                     },
-                    Children =
+            Children =
                     {
                         // Header
                         new Label()
@@ -1853,7 +1853,7 @@ public partial class WeatherNow
                                 ResizeSunView();
                             })
                     }
-                }
+        }
                 .FillHorizontal())
             .Apply(it =>
             {
@@ -1880,18 +1880,18 @@ public partial class WeatherNow
         App.Current.Resources.TryGetValue("DarkOnBackground", out var DarkOnBackground);
 
         return CreateWeatherNowFrame(new Grid()
-            {
-                RowDefinitions =
+        {
+            RowDefinitions =
                 {
                     new RowDefinition(GridLength.Auto),
                     new RowDefinition(GridLength.Star),
                 },
-                ColumnDefinitions =
+            ColumnDefinitions =
                 {
                     new ColumnDefinition(GridLength.Star),
                     new ColumnDefinition(GridLength.Auto),
                 },
-                Children =
+            Children =
                 {
                     // Header
                     new Label()
@@ -1953,7 +1953,7 @@ public partial class WeatherNow
                             radarViewProvider?.EnableInteractions(false);
                         })
                 }
-            })
+        })
             .Apply(it =>
             {
                 it.Loaded += (s, e) => { it.IsVisible = FeatureSettings.WeatherRadar; };

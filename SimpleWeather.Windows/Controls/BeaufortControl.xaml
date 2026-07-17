@@ -33,7 +33,7 @@
                     RelativePanel.Above="BeaufortProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
-                    ShowAsMonochrome="True"
+                    ShouldAnimate="True"
                     WeatherIcon="{x:Bind ViewModel.Beaufort.Icon, Mode=OneWay}" />
                 <TextBlock
                     x:Name="BeaufortDescription"

@@ -63,7 +63,8 @@ namespace SimpleWeather.NET.Preferences
                     Margin = new Thickness(5, 0, 5, 0),
                     WeatherIcon = icon,
                     IconProvider = provider.Key,
-                    RequestedTheme = this.ActualTheme
+                    RequestedTheme = this.ActualTheme,
+                    ShouldAnimate = true,
                 });
             }
         }

@@ -23,7 +23,7 @@
             IconHeight="55"
             Margin="20,10"
             VerticalOptions="Center"
-            ShowAsMonochrome="True"
+            ShouldAnimate="True"
             IconColor="{AppThemeBinding Light=Purple, Dark=DodgerBlue}"
             WeatherIcon="{Binding Beaufort.Icon}" />
         <Label

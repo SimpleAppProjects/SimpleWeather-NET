@@ -43,6 +43,7 @@
                 IconHeight="50"
                 VerticalOptions="Center"
                 x:DataType="{x:Type controls:WeatherDetailViewModel}"
+                ShouldAnimate="True"
                 WeatherIcon="{Binding Icon, Mode=OneWay}" />
             <VerticalStackLayout
                 Grid.Column="1"

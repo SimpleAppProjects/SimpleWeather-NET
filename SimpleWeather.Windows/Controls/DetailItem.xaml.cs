@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using SimpleWeather.Common.Controls;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -27,7 +27,7 @@ namespace SimpleWeather.NET.Controls
 
         // Using a DependencyProperty as the backing store for UseMonochrome.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty UseMonochromeProperty =
-            DependencyProperty.Register("UseMonochrome", typeof(bool), typeof(DetailItem), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(UseMonochrome), typeof(bool), typeof(DetailItem), new PropertyMetadata(false));
 
         public DetailItem()
         {

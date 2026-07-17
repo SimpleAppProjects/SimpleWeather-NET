@@ -45,9 +45,10 @@
             x:Name="TreePollenIcon"
             Grid.Row="2"
             Grid.Column="0"
-            HeightRequest="36"
+            HeightRequest="48"
             HorizontalOptions="Center"
             VerticalOptions="Start"
+            ShouldAnimate="True"
             WeatherIcon="{x:Static icons:WeatherIcons.TREE_POLLEN}" />
         <Label
             x:Name="TreePollenDescription"
@@ -66,9 +67,10 @@
             x:Name="GrassPollenIcon"
             Grid.Row="2"
             Grid.Column="1"
-            HeightRequest="36"
+            HeightRequest="48"
             HorizontalOptions="Center"
             VerticalOptions="Start"
+            ShouldAnimate="True"
             WeatherIcon="{x:Static icons:WeatherIcons.GRASS_POLLEN}" />
         <Label
             x:Name="GrassPollenDescription"
@@ -87,9 +89,10 @@
             x:Name="RagweedPollenIcon"
             Grid.Row="2"
             Grid.Column="2"
-            HeightRequest="36"
+            HeightRequest="48"
             HorizontalOptions="Center"
             VerticalOptions="Start"
+            ShouldAnimate="True"
             WeatherIcon="{x:Static icons:WeatherIcons.RAGWEED_POLLEN}" />
         <Label
             x:Name="RagweedPollenDescription"

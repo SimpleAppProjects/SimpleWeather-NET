@@ -74,10 +74,11 @@
                     x:Name="TreePollenIcon"
                     Grid.Row="1"
                     Grid.Column="0"
-                    IconHeight="36"
+                    IconHeight="48"
                     IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
+                    ShouldAnimate="True"
                     WeatherIcon="{x:Bind icons:WeatherIcons.TREE_POLLEN, Mode=OneTime}" />
                 <TextBlock
                     x:Name="TreePollenDescription"
@@ -98,10 +99,11 @@
                     x:Name="GrassPollenIcon"
                     Grid.Row="1"
                     Grid.Column="1"
-                    IconHeight="36"
+                    IconHeight="48"
                     IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
+                    ShouldAnimate="True"
                     WeatherIcon="{x:Bind icons:WeatherIcons.GRASS_POLLEN, Mode=OneTime}" />
                 <TextBlock
                     x:Name="GrassPollenDescription"
@@ -122,10 +124,11 @@
                     x:Name="RagweedPollenIcon"
                     Grid.Row="1"
                     Grid.Column="2"
-                    IconHeight="36"
+                    IconHeight="48"
                     IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
+                    ShouldAnimate="True"
                     WeatherIcon="{x:Bind icons:WeatherIcons.RAGWEED_POLLEN, Mode=OneTime}" />
                 <TextBlock
                     x:Name="RagweedPollenDescription"

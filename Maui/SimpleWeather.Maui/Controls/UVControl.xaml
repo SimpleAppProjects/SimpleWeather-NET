@@ -23,7 +23,7 @@
             IconHeight="55"
             Margin="20,10"
             VerticalOptions="Center"
-            ForceBitmapIcon="True"
+            ShouldAnimate="True"
             IconColor="{AppThemeBinding Light=Orange, Dark=Yellow}"
             WeatherIcon="{Binding Icon}" />
         <Label

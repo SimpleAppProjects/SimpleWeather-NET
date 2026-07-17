@@ -57,6 +57,7 @@
                             IconWidth="{OnIdiom Default=60, Phone=52}"
                             Opacity="{Binding Opacity, Mode=OneWay}"
                             WeatherIcon="{Binding Icon, Mode=OneWay}"
+                            ShouldAnimate="{Binding ShouldAnimate, Mode=OneWay}"
                             Loaded="IconControl_Loaded" />
                     </DataTemplate>
                 </BindableLayout.ItemTemplate>

@@ -72,7 +72,8 @@
                             IconHeight="60"
                             IconWidth="60"
                             Opacity="{Binding Opacity, Mode=OneWay}"
-                            WeatherIcon="{Binding Icon, Mode=OneWay}" />
+                            WeatherIcon="{Binding Icon, Mode=OneWay}"
+                            ShouldAnimate="{Binding ShouldAnimate, Mode=OneWay}" />
                     </ItemContainer>
                 </DataTemplate>
             </ItemsView.ItemTemplate>
@@ -98,7 +99,8 @@
                     d:WeatherIcon="&#xf0c9;"
                     IconHeight="35"
                     IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
-                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}" />
+                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONRISE}"
+                    ShouldAnimate="True" />
                 <TextBlock
                     x:Name="MoonriseText"
                     HorizontalAlignment="Center"
@@ -118,7 +120,8 @@
                     d:WeatherIcon="&#xf0ca;"
                     IconHeight="35"
                     IconWidth="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IconHeight}"
-                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}" />
+                    WeatherIcon="{x:Bind wicons:WeatherIcons.MOONSET}"
+                    ShouldAnimate="True" />
                 <TextBlock
                     x:Name="MoonsetText"
                     HorizontalAlignment="Center"

@@ -57,6 +57,7 @@
                         d:WeatherIcon="&#xf00d;"
                         IconHeight="50"
                         IconWidth="50"
+                        ShouldAnimate="True"
                         WeatherIcon="{x:Bind WeatherIcon, Mode=OneWay}" />
                     <StackPanel
                         Grid.Column="2"

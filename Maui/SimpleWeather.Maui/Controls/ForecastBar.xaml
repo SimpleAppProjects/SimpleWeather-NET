@@ -31,7 +31,6 @@
                 VerticalOptions="Start"
                 ForceDarkTheme="True"
                 IconColor="White"
-                IconProvider="wi-erik-flowers"
                 ShowAsMonochrome="True"
                 IsVisible="True"
                 Rotation="{Binding XIconRotation, Mode=OneWay}"

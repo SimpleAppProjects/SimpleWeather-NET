@@ -1,14 +1,9 @@
-﻿using SimpleWeather.NET.Controls.Graphs;
-using System;
-using System.Linq;
-using CommunityToolkit.Maui.Core.Extensions;
-using SimpleWeather.Utils;
-using CommunityToolkit.Maui.Markup;
-using Microsoft.Maui.Layouts;
-using SimpleWeather.Maui.Helpers;
-using Microsoft.Maui.Controls;
+﻿using CommunityToolkit.Maui.Markup;
 using SimpleWeather.Icons;
+using SimpleWeather.Maui.Helpers;
 using SimpleWeather.NET.Controls;
+using SimpleWeather.NET.Controls.Graphs;
+using SimpleWeather.Utils;
 
 namespace SimpleWeather.Maui.Controls;
 
@@ -75,7 +70,7 @@ public class ForecastBarGraphView : Grid
             new ColumnDefinition { Width = GridLength.Star },
             new ColumnDefinition { Width = GridLength.Auto }
         ];
-        
+
         Children.Add(LeftButton = new ImageButton().Apply(it =>
         {
             it.Clicked += LeftButton_Click;
@@ -83,7 +78,7 @@ public class ForecastBarGraphView : Grid
             it.DynamicResource(StyleProperty, "LeftArrowButton");
             Grid.SetColumn(it, 0);
         }));
-        
+
         Children.Add(RightButton = new ImageButton().Apply(it =>
         {
             it.Clicked += RightButton_Click;
@@ -141,7 +136,7 @@ public class ForecastBarGraphView : Grid
             LeftButton.IsVisible = RightButton.IsVisible = false;
         }
     }
-    
+
     private void LeftButton_Click(object sender, EventArgs e)
     {
         ScrollViewerHelper.ScrollLeft(ScrollView);
@@ -276,6 +271,7 @@ public class ForecastBarGraphView : Grid
 
                 UpdateInnerBarHeight(item.InnerBarView, min, max, data);
 
+                item.BarIconView.IconProvider = string.IsNullOrWhiteSpace(data.XWeatherIcon) ? "mat-icons-jdwi" : null;
                 item.BarIconView.WeatherIcon = data.XWeatherIcon ?? GetWeatherIconFromForecastType(ForecastType);
 
                 if (InnerLayout.Children.ElementAtOrDefault(i) == null)

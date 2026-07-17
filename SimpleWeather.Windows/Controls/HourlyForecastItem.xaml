@@ -41,8 +41,8 @@
                 d:WeatherIcon="&#xf078;"
                 Foreground="{ThemeResource SimpleBlueLight}"
                 IconHeight="30"
-                IconProvider="wi-erik-flowers"
                 IconWidth="30"
+                ForceBitmapIcon="True"
                 ShowAsMonochrome="True"
                 Visibility="{x:Bind ViewModel.PoPChance, Mode=OneWay, Converter={StaticResource stringVisibilityConverter}}"
                 WeatherIcon="{x:Bind icons:WeatherIcons.UMBRELLA, Mode=OneTime}" />
@@ -75,6 +75,7 @@
             d:WeatherIcon="&#xf00d;"
             IconHeight="50"
             IconWidth="50"
+            ShouldAnimate="True"
             WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
         <TextBlock
             Padding="10,4"

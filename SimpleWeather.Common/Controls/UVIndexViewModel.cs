@@ -20,14 +20,14 @@ namespace SimpleWeather.Common.Controls
         public String Icon { get; set; }
         public int Index { get; set; }
         public String Description { get; set; }
-        public int Progress { get; set; }
+        public double Progress { get; set; }
         public Color ProgressColor { get; set; }
 
         public UVIndexViewModel(UV uvIdx)
         {
             Title = ResStrings.label_uv;
-            Index = (int)uvIdx.index;
-            Progress = uvIdx.index >= 11 ? 100 : (int)((uvIdx.index / 11) * 100);
+            Index = (int)uvIdx.index.GetValueOrDefault(0);
+            Progress = uvIdx.index >= 11 ? 100d : ((uvIdx.index ?? 0f) / 11) * 100d;
 
             if (uvIdx.index < 3)
             {
@@ -63,45 +63,21 @@ namespace SimpleWeather.Common.Controls
 #endif
             }
 
-            switch (Index)
+            Icon = Index switch
             {
-                case 1:
-                    Icon = WeatherIcons.UV_INDEX_1;
-                    break;
-                case 2:
-                    Icon = WeatherIcons.UV_INDEX_2;
-                    break;
-                case 3:
-                    Icon = WeatherIcons.UV_INDEX_3;
-                    break;
-                case 4:
-                    Icon = WeatherIcons.UV_INDEX_4;
-                    break;
-                case 5:
-                    Icon = WeatherIcons.UV_INDEX_5;
-                    break;
-                case 6:
-                    Icon = WeatherIcons.UV_INDEX_6;
-                    break;
-                case 7:
-                    Icon = WeatherIcons.UV_INDEX_7;
-                    break;
-                case 8:
-                    Icon = WeatherIcons.UV_INDEX_8;
-                    break;
-                case 9:
-                    Icon = WeatherIcons.UV_INDEX_9;
-                    break;
-                case 10:
-                    Icon = WeatherIcons.UV_INDEX_10;
-                    break;
-                case 11:
-                    Icon = WeatherIcons.UV_INDEX_11;
-                    break;
-                default:
-                    Icon = WeatherIcons.UV_INDEX;
-                    break;
-            }
+                1 => WeatherIcons.UV_INDEX_1,
+                2 => WeatherIcons.UV_INDEX_2,
+                3 => WeatherIcons.UV_INDEX_3,
+                4 => WeatherIcons.UV_INDEX_4,
+                5 => WeatherIcons.UV_INDEX_5,
+                6 => WeatherIcons.UV_INDEX_6,
+                7 => WeatherIcons.UV_INDEX_7,
+                8 => WeatherIcons.UV_INDEX_8,
+                9 => WeatherIcons.UV_INDEX_9,
+                10 => WeatherIcons.UV_INDEX_10,
+                11 => WeatherIcons.UV_INDEX_11,
+                _ => WeatherIcons.UV_INDEX,
+            };
         }
 
         public override bool Equals(object obj)

@@ -21,7 +21,7 @@
                 IconWidth="{OnIdiom Default=30, Phone=20}"
                 IconHeight="{OnIdiom Default=30, Phone=20}"
                 IconColor="{DynamicResource SimpleBlueLight}"
-                IconProvider="wi-erik-flowers"
+                ForceBitmapIcon="True"
                 ShowAsMonochrome="True"
                 IsVisible="{Binding PoPChance, Converter={StaticResource stringBooleanConverter}}"
                 WeatherIcon="{x:Static icons:WeatherIcons.UMBRELLA}" />
@@ -47,7 +47,8 @@
             IconWidth="{OnIdiom Phone=36, Tablet=42, Default=50}"
             Margin="5"
             HorizontalOptions="Center"
-            IconProvider="{Binding Source={x:Reference Control}, Path=IconProvider, x:DataType={x:Type controls:HourlyForecastItem}}"
+            IconProvider="{Binding Source={x:Reference Control}, Path=IconProvider, x:DataType={x:Type controls:HourlyForecastItem}}"            
+            ShouldAnimate="True"
             WeatherIcon="{Binding Icon}" />
         <Label
             Padding="{OnIdiom Default='10,0', Phone='4'}"

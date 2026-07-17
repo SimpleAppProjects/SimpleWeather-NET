@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.DependencyInjection;
+﻿#nullable enable
+using CommunityToolkit.Mvvm.DependencyInjection;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
@@ -12,7 +13,7 @@ namespace SimpleWeather.Maui.Controls
 {
     public partial class IconControl : TemplatedView
     {
-        private SKCanvasView Canvas;
+        private SKCanvasView? Canvas;
 
         public string WeatherIcon
         {
@@ -59,6 +60,15 @@ namespace SimpleWeather.Maui.Controls
         public static readonly BindableProperty ShowAsMonochromeProperty =
             BindableProperty.Create(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), false, propertyChanged: OnDrawablePropertyChanged);
 
+        public bool ShouldAnimate
+        {
+            get => (bool)GetValue(ShouldAnimateProperty);
+            set => SetValue(ShouldAnimateProperty, value);
+        }
+
+        public static readonly BindableProperty ShouldAnimateProperty =
+            BindableProperty.Create(nameof(ShouldAnimate), typeof(bool), typeof(IconControl), false, propertyChanged: OnPropertyChanged);
+
         public bool ForceBitmapIcon
         {
             get => (bool)GetValue(ForceBitmapIconProperty);
@@ -68,14 +78,14 @@ namespace SimpleWeather.Maui.Controls
         public static readonly BindableProperty ForceBitmapIconProperty =
             BindableProperty.Create(nameof(ForceBitmapIcon), typeof(bool), typeof(IconControl), false, propertyChanged: OnDrawablePropertyChanged);
 
-        public Color IconColor
+        public Color? IconColor
         {
-            get => (Color)GetValue(IconColorProperty);
+            get => (Color?)GetValue(IconColorProperty);
             set => SetValue(IconColorProperty, value);
         }
 
         public static readonly BindableProperty IconColorProperty =
-            BindableProperty.Create(nameof(IconColor), typeof(Color), typeof(IconControl), Colors.Transparent, propertyChanged: OnDrawablePropertyChanged);
+            BindableProperty.Create(nameof(IconColor), typeof(Color), typeof(IconControl), defaultValue: null, propertyChanged: OnDrawablePropertyChanged);
 
         public double IconHeight
         {
@@ -105,8 +115,8 @@ namespace SimpleWeather.Maui.Controls
         public static readonly BindableProperty AllowSvgProperty =
             BindableProperty.Create(nameof(AllowSvg), typeof(bool), typeof(IconControl), DeviceInfo.Platform != DevicePlatform.iOS, propertyChanged: OnPropertyChanged);
 
-        private readonly SettingsManager _settingsManager = Ioc.Default.GetService<SettingsManager>();
-        
+        private readonly SettingsManager _settingsManager = Ioc.Default.GetService<SettingsManager>()!;
+
         private SKDrawable? Drawable = null;
 
         public IconControl()
@@ -119,8 +129,7 @@ namespace SimpleWeather.Maui.Controls
             base.OnApplyTemplate();
 
             Canvas = GetTemplateChild(nameof(Canvas)) as SKCanvasView;
-            if (Canvas != null) 
-                Canvas.PaintSurface += CanvasOnPaintSurface;
+            Canvas?.PaintSurface += CanvasOnPaintSurface;
 
             UpdateWeatherIcon();
         }
@@ -141,7 +150,7 @@ namespace SimpleWeather.Maui.Controls
             }
         }
 
-        private void IconControl_Loaded(object sender, EventArgs e)
+        private void IconControl_Loaded(object? sender, EventArgs e)
         {
             UpdateWeatherIcon();
         }
@@ -152,7 +161,7 @@ namespace SimpleWeather.Maui.Controls
 
             if (Drawable is IDisposable disposable)
             {
-                this.RunCatching(() => disposable.Dispose());
+                this.RunCatching(disposable.Dispose);
             }
 
             Drawable = null;
@@ -207,11 +216,11 @@ namespace SimpleWeather.Maui.Controls
                     {
                         var drawable = await wip.GetDrawable(WeatherIcon, isLight: isLight);
 
-                        if (drawable is SKLottieDrawable lottieDrawable)
+                        if (ShouldAnimate && drawable is SKLottieDrawable lottieDrawable)
                         {
                             AddAnimatedDrawable(lottieDrawable);
                         }
-                        
+
                         Drawable = drawable;
                     }
                     catch (Exception e)
@@ -230,7 +239,7 @@ namespace SimpleWeather.Maui.Controls
 
                     if (ShouldUseFilter() && Drawable is ITintableDrawable tintable)
                     {
-                        tintable.TintColor = IconColor.ToSKColor();
+                        tintable.TintColor = IconColor?.ToSKColor();
                     }
                 }
                 catch (Exception e)
@@ -262,7 +271,7 @@ namespace SimpleWeather.Maui.Controls
                 {
                     if (ShouldUseFilter())
                     {
-                        tintable.TintColor = IconColor.ToSKColor();
+                        tintable.TintColor = IconColor?.ToSKColor();
                     }
                     else
                     {
@@ -278,7 +287,7 @@ namespace SimpleWeather.Maui.Controls
             }
         }
 
-        private void CanvasOnPaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        private void CanvasOnPaintSurface(object? sender, SKPaintSurfaceEventArgs e)
         {
             e.Surface.Canvas.Clear();
 
@@ -303,30 +312,27 @@ namespace SimpleWeather.Maui.Controls
 
         private bool ShouldUseFilter()
         {
-            return ShowAsMonochrome && !Equals(IconColor, Colors.Transparent) && !IsBlackOrWhiteColor(IconColor);
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? _settingsManager.IconProvider);
+
+            return ShowAsMonochrome || wip.IsFontIcon;
         }
 
-        private static bool IsBlackOrWhiteColor(Color c)
-        {
-            return Equals(c, Colors.White) || Equals(c, Colors.Black);
-        }
-
-        private async Task<SKDrawable> CreateBitmapIcon(IWeatherIconsProvider provider)
+        private async Task<SKDrawable?> CreateBitmapIcon(IWeatherIconsProvider provider)
         {
             var drawable = await provider.GetBitmapDrawable(WeatherIcon, isLight: ForceDarkTheme ? false : IsLightTheme).ConfigureAwait(false);
 
             if (ShouldUseFilter() && drawable is ITintableDrawable tintable)
             {
-                tintable.TintColor = IconColor.ToSKColor();
+                tintable.TintColor = IconColor?.ToSKColor();
             }
 
             return drawable;
         }
 
-        private Task<SKDrawable> CreateXAMLIconElement(string _)
+        private Task<SKDrawable?> CreateXAMLIconElement(string _)
         {
-            return Task.FromResult<SKDrawable>(null);
+            return Task.FromResult<SKDrawable?>(null);
         }
     }
 }
-
+#nullable restore

@@ -1,5 +1,4 @@
 ﻿using SimpleWeather.Common.Controls;
-using SimpleWeather.Icons;
 using SimpleWeather.Utils;
 using SimpleWeather.WeatherData;
 using System.Data;
@@ -34,7 +33,7 @@ public partial class MoonPhaseControl : ContentView
     protected override void OnBindingContextChanged()
     {
         base.OnBindingContextChanged();
-        
+
         ApplyBindings();
 
         if (ViewModel != null)
@@ -44,10 +43,12 @@ public partial class MoonPhaseControl : ContentView
                 SelectedMoonPhaseType = ViewModel.PhaseType;
                 DataSet.ForEachIndexed((index, item) =>
                 {
-                    if (item.MoonPhaseType == SelectedMoonPhaseType)
+                    var isSelected = item.MoonPhaseType == SelectedMoonPhaseType;
+
+                    if (isSelected)
                     {
                         item.Opacity = 1.0;
-                    } 
+                    }
                     else if (index == SelectedIndex - 2 || index == SelectedIndex + 2)
                     {
                         item.Opacity = 0.2;
@@ -60,6 +61,8 @@ public partial class MoonPhaseControl : ContentView
                     {
                         item.Opacity = 0.35;
                     }
+
+                    item.ShouldAnimate = isSelected;
                 });
 
                 Initialized = true;
@@ -104,6 +107,16 @@ public class MoonPhaseItem(MoonPhase.MoonPhaseType moonPhaseType) : BindableObje
     // Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
     public static readonly BindableProperty OpacityProperty =
         BindableProperty.Create(nameof(Opacity), typeof(double), typeof(MoonPhaseItem), defaultValue: 1.0d);
+
+    public bool ShouldAnimate
+    {
+        get { return (bool)GetValue(ShouldAnimateProperty); }
+        set { SetValue(ShouldAnimateProperty, value); }
+    }
+
+    // Using a BindableProperty as the backing store for ShouldAnimate.  This enables animation, styling, binding, etc...
+    public static readonly BindableProperty ShouldAnimateProperty =
+        BindableProperty.Create(nameof(ShouldAnimate), typeof(bool), typeof(MoonPhaseItem), defaultValue: false);
 }
 
 public static class MoonPhaseControlBindings

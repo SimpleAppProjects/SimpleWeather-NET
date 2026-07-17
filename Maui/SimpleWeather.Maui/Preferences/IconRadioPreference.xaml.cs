@@ -59,6 +59,7 @@ public partial class IconRadioPreference : ContentView
                 IconWidth = 30,
                 Margin = new Thickness(5, 0, 5, 0),
                 IconProvider = provider.Key,
+                ShouldAnimate = true,
                 WeatherIcon = icon
             });
         }

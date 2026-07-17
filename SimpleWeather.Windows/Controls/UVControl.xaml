@@ -24,13 +24,13 @@
                     x:Name="UVIcon"
                     Margin="20,10"
                     VerticalAlignment="Center"
-                    ForceBitmapIcon="True"
                     Foreground="{ThemeResource SunPaintColorBrush}"
                     IconHeight="55"
                     IconWidth="55"
                     RelativePanel.Above="UVProgressBar"
                     RelativePanel.AlignLeftWithPanel="True"
                     RelativePanel.AlignTopWithPanel="True"
+                    ShouldAnimate="True"
                     WeatherIcon="{x:Bind ViewModel.Icon, Mode=OneWay}" />
                 <TextBlock
                     x:Name="UVDescription"

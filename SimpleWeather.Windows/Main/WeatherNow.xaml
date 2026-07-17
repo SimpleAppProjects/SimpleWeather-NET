@@ -290,6 +290,7 @@
                             RelativePanel.Above="SummaryPanel"
                             RelativePanel.AlignRightWithPanel="True"
                             RelativePanel.AlignTopWithPanel="True"
+                            ShouldAnimate="True"
                             WeatherIcon="{x:Bind WNowViewModel.Weather.WeatherIcon, Mode=OneWay}" />
                         <Border
                             x:Name="CurConditionPanel"

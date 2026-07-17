@@ -53,12 +53,11 @@
                 Padding="8,0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
-                ForceBitmapIcon="True"
                 Foreground="{ThemeResource IconPaintColorBrush}"
                 IconHeight="48"
                 IconWidth="48"
                 RenderTransformOrigin="0.5,0.5"
-                ShowAsMonochrome="False"
+                ShouldAnimate="True"
                 WeatherIcon="{x:Bind Details.Icon, Mode=OneWay}">
                 <localControls:IconControl.RenderTransform>
                     <RotateTransform Angle="{x:Bind Details.IconRotation, Mode=OneWay}" />

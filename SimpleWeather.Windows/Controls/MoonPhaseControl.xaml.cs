@@ -41,7 +41,9 @@ namespace SimpleWeather.NET.Controls
                         SelectedMoonPhaseType = ViewModel.PhaseType;
                         DataSet.ForEachIndexed((index, item) =>
                         {
-                            if (item.MoonPhaseType == SelectedMoonPhaseType)
+                            var isSelected = item.MoonPhaseType == SelectedMoonPhaseType;
+
+                            if (isSelected)
                             {
                                 item.Opacity = 1.0;
                             }
@@ -57,6 +59,8 @@ namespace SimpleWeather.NET.Controls
                             {
                                 item.Opacity = 0.35;
                             }
+
+                            item.ShouldAnimate = isSelected;
                         });
 
                         Initialized = true;
@@ -100,6 +104,16 @@ namespace SimpleWeather.NET.Controls
         // Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty OpacityProperty =
             DependencyProperty.Register(nameof(Opacity), typeof(double), typeof(MoonPhaseItem), new PropertyMetadata(1.0));
+
+        public bool ShouldAnimate
+        {
+            get { return (bool)GetValue(ShouldAnimateProperty); }
+            set { SetValue(ShouldAnimateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShouldAnimate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShouldAnimateProperty =
+            DependencyProperty.Register(nameof(ShouldAnimate), typeof(bool), typeof(MoonPhaseItem), new PropertyMetadata(false));
     }
 
     public static class MoonPhaseControlBindings

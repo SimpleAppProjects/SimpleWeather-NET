@@ -1,25 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿#nullable enable
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.WinUI;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using SimpleWeather.Icons;
 using SimpleWeather.Preferences;
 using SimpleWeather.SkiaSharp;
 using SimpleWeather.Utils;
-using SkiaSharp;
 using SkiaSharp.Views.Windows;
 using Windows.Storage;
 using Windows.UI;
 using Binding = Microsoft.UI.Xaml.Data.Binding;
 using BindingMode = Microsoft.UI.Xaml.Data.BindingMode;
-using Color = Windows.UI.Color;
-using Colors = Microsoft.UI.Colors;
 using SolidColorBrush = Microsoft.UI.Xaml.Media.SolidColorBrush;
 
 namespace SimpleWeather.NET.Controls
@@ -27,7 +22,7 @@ namespace SimpleWeather.NET.Controls
     [TemplatePart(Name = nameof(IconBox), Type = typeof(Viewbox))]
     public sealed partial class IconControl : Control
     {
-        private Viewbox IconBox;
+        private Viewbox? IconBox;
 
         public string WeatherIcon
         {
@@ -82,6 +77,16 @@ namespace SimpleWeather.NET.Controls
         public static readonly DependencyProperty ShowAsMonochromeProperty =
             DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnDrawablePropertyChanged));
 
+        public bool ShouldAnimate
+        {
+            get { return (bool)GetValue(ShouldAnimateProperty); }
+            set { SetValue(ShouldAnimateProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShouldAnimate.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShouldAnimateProperty =
+            DependencyProperty.Register(nameof(ShouldAnimate), typeof(bool), typeof(IconControl), new PropertyMetadata(false, OnPropertyChanged));
+
         public bool ForceBitmapIcon
         {
             get { return (bool)GetValue(ForceBitmapIconProperty); }
@@ -110,12 +115,29 @@ namespace SimpleWeather.NET.Controls
         public static readonly DependencyProperty IconWidthProperty =
             DependencyProperty.Register(nameof(IconWidth), typeof(double), typeof(IconControl), new PropertyMetadata(double.NaN, OnDrawablePropertyChanged));
 
-        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>();
+        internal Color? ForegroundColor
+        {
+            get
+            {
+                if (Foreground is SolidColorBrush colorBrush && colorBrush.Color != Colors.Transparent)
+                {
+                    return colorBrush.Color;
+                }
+
+                return null;
+            }
+        }
+
+        private readonly SettingsManager SettingsManager = Ioc.Default.GetService<SettingsManager>()!;
 
         public IconControl()
         {
             this.DefaultStyleKey = typeof(IconControl);
             this.RegisterPropertyChangedCallback(PaddingProperty, (obj, _) =>
+            {
+                (obj as IconControl)?.UpdateDrawable();
+            });
+            this.RegisterPropertyChangedCallback(ForegroundProperty, (obj, _) =>
             {
                 (obj as IconControl)?.UpdateDrawable();
             });
@@ -167,10 +189,10 @@ namespace SimpleWeather.NET.Controls
                 {
                     var drawable = canvas.Drawable;
                     canvas.UpdateDrawable(null, invalidate: false);
-                    
+
                     if (drawable is IDisposable disposable)
                     {
-                        this.RunCatching(() => disposable.Dispose());
+                        this.RunCatching(disposable.Dispose);
                     }
                 }
             }
@@ -251,7 +273,7 @@ namespace SimpleWeather.NET.Controls
                             iconElement = canvas;
                         }
 
-                        if (drawable is SKLottieDrawable lottieDrawable)
+                        if (ShouldAnimate && drawable is SKLottieDrawable lottieDrawable)
                         {
                             AddAnimatedDrawable(lottieDrawable);
                         }
@@ -269,10 +291,10 @@ namespace SimpleWeather.NET.Controls
                 try
                 {
                     var drawable = await svgProvider.GetSVGDrawable(wicon, isLight: ForceDarkTheme ? false : IsLightTheme);
-                    
-                    if (ShouldUseFilter() && Foreground is SolidColorBrush colorBrush && drawable is ITintableDrawable tintable)
+
+                    if (ShouldUseFilter() && drawable is ITintableDrawable tintable)
                     {
-                        tintable.TintColor = colorBrush.Color.ToSKColor();
+                        tintable.TintColor = ForegroundColor?.ToSKColor();
                     }
 
                     if (iconElement is SkDrawableCanvas canvas)
@@ -333,16 +355,16 @@ namespace SimpleWeather.NET.Controls
                 {
                     if (canvas.Drawable is ITintableDrawable tintable)
                     {
-                        if (ShouldUseFilter() && Foreground is SolidColorBrush colorBrush)
+                        if (ShouldUseFilter())
                         {
-                            tintable.TintColor = colorBrush.Color.ToSKColor();
+                            tintable.TintColor = ForegroundColor?.ToSKColor();
                         }
                         else
                         {
                             tintable.TintColor = null;
                         }
                     }
-                    
+
                     canvas.Invalidate();
                 }
                 else if (iconElement is BitmapIcon bmpIcon)
@@ -358,17 +380,9 @@ namespace SimpleWeather.NET.Controls
 
         private bool ShouldUseFilter()
         {
-            return ShowAsMonochrome && Foreground is SolidColorBrush brush && brush.Color != Colors.Transparent && !IsBlackOrWhiteColor(brush.Color);
-        }
+            var wip = SharedModule.Instance.WeatherIconsManager.GetIconProvider(IconProvider ?? SettingsManager.IconProvider);
 
-        private static bool IsBlackOrWhiteColor(Color c)
-        {
-            return c == Colors.White || c == Colors.Black;
-        }
-
-        private BitmapIcon CreateBitmapIcon(IWeatherIconsProvider provider)
-        {
-            return CreateBitmapIcon(provider, WeatherIcon);
+            return ShowAsMonochrome || wip.IsFontIcon;
         }
 
         private BitmapIcon CreateBitmapIcon(IWeatherIconsProvider provider, string wicon)
@@ -399,9 +413,9 @@ namespace SimpleWeather.NET.Controls
                 Path = new PropertyPath(nameof(IconWidth)),
                 Mode = BindingMode.OneWay,
             });
-            
+
             UpdateBitmapScaling(bmpIcon);
-            
+
             return bmpIcon;
         }
 
@@ -417,7 +431,7 @@ namespace SimpleWeather.NET.Controls
         }
 
         /* Canvas */
-        private async Task<UIElement> CreateXAMLIconElement(string uri)
+        private async Task<UIElement?> CreateXAMLIconElement(string uri)
         {
             var file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(uri));
             var xaml = await FileIO.ReadTextAsync(file);
@@ -428,3 +442,4 @@ namespace SimpleWeather.NET.Controls
         }
     }
 }
+#nullable restore
