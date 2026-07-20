@@ -52,7 +52,8 @@
                 Grid.RowSpan="2"
                 Grid.ColumnSpan="3"
                 Color="{Binding ConditionPanelTextColor, Source={x:Reference Control}, Mode=OneWay, x:DataType={x:Type local:LocationPanel}}"
-                IsRunning="{Binding IsLoading, FallbackValue=true, TargetNullValue=true, Mode=OneWay}" />
+                IsRunning="{Binding IsLoading, FallbackValue=true, TargetNullValue=true, Mode=OneWay}"
+                IsVisible="{Binding IsLoading, FallbackValue=true, TargetNullValue=true, Mode=OneWay}"/>
             <HorizontalStackLayout
                 Grid.Row="0"
                 Grid.ColumnSpan="3"

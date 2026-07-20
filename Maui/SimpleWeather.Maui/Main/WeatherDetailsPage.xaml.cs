@@ -118,6 +118,11 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
                 mode: BindingMode.OneWay,
                 converter: Resources["invValueBooleanConverter"] as IValueConverter,
                 source: ForecastsView.SelectedForecasts);
+            ContentIndicator.SetBinding(
+                IsVisibleProperty, static (IEnumerable src) => (src as IList).Count,
+                mode: BindingMode.OneWay,
+                converter: Resources["invValueBooleanConverter"] as IValueConverter,
+                source: ForecastsView.SelectedForecasts);
             IncrementalIndicator.Bind(
                 IndeterminateProgressBar.IsActiveProperty, static src => (src as ISupportIncrementalLoading).IsLoading,
                 mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts);

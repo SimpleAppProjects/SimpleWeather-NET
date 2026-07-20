@@ -5,6 +5,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:res_strings="clr-namespace:SimpleWeather.Resources.Strings;assembly=SimpleWeather.Shared"
+    xmlns:localActions="clr-namespace:SimpleWeather.Maui.Actions"
     xmlns:localControls="clr-namespace:SimpleWeather.Maui.Controls"
     xmlns:local="clr-namespace:SimpleWeather.Maui.Main"
     xmlns:controls="clr-namespace:SimpleWeather.NET.Controls"
@@ -12,6 +13,7 @@
     xmlns:graphPanels="clr-namespace:SimpleWeather.Maui.Controls.Graphs"
     xmlns:commonVM="clr-namespace:SimpleWeather.Common.ViewModels;assembly=SimpleWeather.Common"
     xmlns:converters="clr-namespace:SimpleWeather.Maui.Converters"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     xmlns:viewModels="clr-namespace:SimpleWeather.Maui.ViewModels"
     local:AppShell.AppBarIsVisible="True"
     x:Name="ChartsPage">
@@ -81,6 +83,20 @@
             x:Name="ContentIndicator"
             HorizontalOptions="Center"
             VerticalOptions="Center"
-            IsRunning="True" />
+            IsRunning="True"
+            IsVisible="True">
+            <ActivityIndicator.Triggers>
+                <DataTrigger TargetType="ActivityIndicator" Binding="{Binding Source={RelativeSource Mode=Self}, Path=IsRunning, x:DataType=ActivityIndicator}" Value="False">
+                    <DataTrigger.ExitActions>
+                        <localActions:FadeTriggerAction StartsFrom="1" />
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+                <DataTrigger TargetType="ActivityIndicator" Binding="{Binding Source={RelativeSource Mode=Self}, Path=IsRunning, x:DataType=ActivityIndicator}" Value="True">
+                    <DataTrigger.EnterActions>
+                        <localActions:FadeTriggerAction StartsFrom="0" />
+                    </DataTrigger.EnterActions>
+                </DataTrigger>
+            </ActivityIndicator.Triggers>
+        </ActivityIndicator>
     </Grid>
 </viewModels:ViewModelPage>

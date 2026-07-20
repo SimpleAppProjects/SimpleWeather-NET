@@ -24,7 +24,7 @@ public partial class Settings_Icons : ContentPage
 
     private void Initialize()
     {
-        LoadingRing.IsRunning = true;
+        LoadingRing.IsRunning = LoadingRing.IsVisible = true;
 
         Dispatcher.Dispatch(() =>
         {
@@ -48,7 +48,7 @@ public partial class Settings_Icons : ContentPage
                 radioBtn.RadioButtonChecked += Preference_RadioButtonChecked;
             }
 
-            LoadingRing.IsRunning = false;
+            LoadingRing.IsRunning = LoadingRing.IsVisible = false;
         });
     }
 

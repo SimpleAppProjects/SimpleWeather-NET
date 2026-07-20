@@ -217,6 +217,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     GPSPanelLayout.IsVisible = !uiState.IsLoading && uiState.GPSLocation != null;
                     LocationsPanel.IsVisible = !uiState.IsLoading && uiState.Locations?.Any() == true;
                     ContentIndicator.IsRunning = uiState.IsLoading;
+                    ContentIndicator.IsVisible = uiState.IsLoading;
                     AddLocationsButton.IsVisible = !uiState.IsLoading;
                     NoLocationsView.IsVisible = uiState.Locations?.Any() != true && uiState.GPSLocation == null;
                 }
@@ -225,6 +226,7 @@ public partial class LocationsPage : ViewModelPage, IRecipient<LocationSelectedM
                     GPSPanelLayout.IsVisible = false;
                     LocationsPanel.IsVisible = false;
                     ContentIndicator.IsRunning = true;
+                    ContentIndicator.IsVisible = true;
                     AddLocationsButton.IsVisible = false;
                     NoLocationsView.IsVisible = false;
                 }

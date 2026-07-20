@@ -131,6 +131,10 @@ public partial class WeatherNow
                         source: WNowViewModel,
                         convert: WeatherNowBinding.IsLoadingRingActive, targetNullValue: true, fallbackValue: true
                     )
+                    .Bind(IsVisibleProperty, static src => src.UiState, mode: BindingMode.OneWay,
+                        source: WNowViewModel,
+                        convert: WeatherNowBinding.IsLoadingRingActive, targetNullValue: true, fallbackValue: true
+                    )
                     .Apply(it => { ContentRing = it; }),
                 // BannerContainer
                 new Grid()

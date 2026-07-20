@@ -69,10 +69,7 @@ public partial class WeatherChartsPage : ViewModelPage
 
     private void Initialize()
     {
-        if (locationData == null)
-        {
-            locationData = WNowViewModel.UiState.LocationData;
-        }
+        locationData ??= WNowViewModel.UiState.LocationData;
 
         if (locationData != null)
         {
@@ -88,6 +85,10 @@ public partial class WeatherChartsPage : ViewModelPage
                 mode: BindingMode.OneWay,
                 converter: Resources["invValueBooleanConverter"] as IValueConverter,
                 source: ChartsView.GraphModels);
+            ContentIndicator.SetBinding(
+                IsVisibleProperty, static (ActivityIndicator src) => src.IsRunning,
+                mode: BindingMode.OneWay,
+                source: ContentIndicator);
         });
     }
 
@@ -117,13 +118,12 @@ public class ChartsDataTemplateSelector : DataTemplateSelector
     {
         if (item is ForecastGraphViewModel model)
         {
-            if (model.GraphData is LineViewData)
+            switch (model.GraphData)
             {
-                return LineViewTemplate;
-            }
-            else if (model.GraphData is BarGraphData)
-            {
-                return BarChartTemplate;
+                case LineViewData:
+                    return LineViewTemplate;
+                case BarGraphData:
+                    return BarChartTemplate;
             }
         }
 
