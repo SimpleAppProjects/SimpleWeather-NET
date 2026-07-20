@@ -6,7 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
-
+#if __IOS__
+using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.WeatherData.Images;
+#endif
 using Version = SimpleWeather.Utils.Version;
 
 namespace SimpleWeather.Common.Migrations
