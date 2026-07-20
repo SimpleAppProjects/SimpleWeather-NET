@@ -1091,6 +1091,7 @@ public partial class WeatherNow
                                     VerticalOptions = LayoutOptions.Center,
                                     IconHeight = 108,
                                     IconWidth = 108,
+                                    ShouldAnimate = true,
                                 }
                                 .Column(3)
                                 .Bind(IconControl.WeatherIconProperty, getter: static viewModel => viewModel.Weather,
