@@ -106,7 +106,7 @@
             HorizontalOptions="Center"
             VerticalOptions="Center"
             BindingContext="{Binding Path=AQIView, Source={x:Reference AQIPage}, x:DataType={x:Type local:WeatherAQIPage}}"
-            IsVisible="{Binding Mode=OneWay, Source={x:RelativeSource Mode=Self}, Path=IsRunning}">
+            IsVisible="{Binding Mode=OneWay, Source={x:RelativeSource Mode=Self}, Path=IsRunning, x:DataType={x:Type ActivityIndicator}}">
             <ActivityIndicator.IsRunning>
                 <OnIdiom
                     x:DataType="controls1:AirQualityForecastViewModel"
