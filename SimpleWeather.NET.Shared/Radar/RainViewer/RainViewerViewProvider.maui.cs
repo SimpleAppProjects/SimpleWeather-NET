@@ -147,7 +147,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                     Alpha = 0,
                     CanReplaceMapContent = false,
                     MinimumZ = (int)MIN_ZOOM_LEVEL,
-                    MaximumZ = (int)MAX_ZOOM_LEVEL,
+                    MaximumZ = 7,
                 };
 
                 RadarLayers[mapFrame.TimeStamp] = layer;
@@ -196,16 +196,10 @@ namespace SimpleWeather.NET.Radar.RainViewer
 
             if (RadarLayers.TryGetValue(currentTimeStamp, out TileLayer currentLayer))
             {
-                if (currentLayer != null)
-                {
-                    currentLayer.Alpha = 0;
-                }
+                currentLayer?.Alpha = 0;
             }
             var nextLayer = RadarLayers[nextTimeStamp];
-            if (nextLayer != null)
-            {
-                nextLayer.Alpha = 1;
-            }
+            nextLayer?.Alpha = 1;
 
             UpdateToolbar(position, nextFrame);
         }
@@ -268,6 +262,15 @@ namespace SimpleWeather.NET.Radar.RainViewer
         protected override void OnPauseRadarAnimation()
         {
             AnimationTimer?.Stop();
+        }
+
+        protected override void OnSliderValueChanged(double value, bool fromUser)
+        {
+            if (fromUser)
+            {
+                AnimationTimer?.Stop();
+                ShowFrame((int)value);
+            }
         }
 
         private void RefreshToken()

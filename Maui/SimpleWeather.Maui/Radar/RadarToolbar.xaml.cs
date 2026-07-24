@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Markup;
 using SimpleWeather.Maui.MaterialIcons;
+using SimpleWeather.NET.Utils;
 
 namespace SimpleWeather.Maui.Radar;
 
@@ -55,7 +56,9 @@ public partial class RadarToolbar : ContentView
     public event EventHandler OnPlayAnimation;
     public event EventHandler OnPauseAnimation;
 
-    public event EventHandler<ValueChangedEventArgs> OnSliderValueChanged;
+    public event EventHandler<SliderValueChangedArgs> OnSliderValueChanged;
+    
+    private bool isUserDraggingSlider = false;
 
     public void UpdateSeekbarRange(int minimumPosition, int maxPosition)
     {
@@ -68,17 +71,27 @@ public partial class RadarToolbar : ContentView
         AnimationSlider.Value = position;
 
         var dateTime = DateTimeOffset.FromUnixTimeSeconds(timestamp).ToLocalTime();
-        TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
+        TimestampBlock.Text = $"{dateTime:ddd} {dateTime:t}";
     }
 
     public void UpdateTimestamp(int position, DateTime dateTime)
     {
         AnimationSlider.Value = position;
-        TimestampBlock.Text = string.Format("{0} {1}", dateTime.ToString("ddd"), dateTime.ToString("t"));
+        TimestampBlock.Text = $"{dateTime:ddd} {dateTime:t}";
     }
 
     private void AnimationSlider_ValueChanged(object sender, ValueChangedEventArgs e)
     {
-        OnSliderValueChanged?.Invoke(sender, e);
+        OnSliderValueChanged?.Invoke(sender, new SliderValueChangedArgs(e.OldValue, e.NewValue, isUserDraggingSlider));
+    }
+
+    private void AnimationSlider_DragStarted(object sender, EventArgs e)
+    {
+        isUserDraggingSlider = true;
+    }
+
+    private void AnimationSlider_DragCompleted(object sender, EventArgs e)
+    {
+        isUserDraggingSlider = false;
     }
 }

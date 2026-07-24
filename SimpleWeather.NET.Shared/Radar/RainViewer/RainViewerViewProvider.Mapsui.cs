@@ -318,6 +318,15 @@ namespace SimpleWeather.NET.Radar.RainViewer
             AnimationTimer?.Stop();
         }
 
+        protected override void OnSliderValueChanged(double value, bool fromUser)
+        {
+            if (fromUser)
+            {
+                AnimationTimer?.Stop();
+                ShowFrame((int)value);
+            }
+        }
+
         private void RefreshToken()
         {
             cts?.Cancel();
@@ -338,7 +347,7 @@ namespace SimpleWeather.NET.Radar.RainViewer
                 uri = "about:blank";
             }
 
-            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: (int)MAX_ZOOM_LEVEL, name: "RainViewer"),
+            return new CustomHttpTileSource(new GlobalSphericalMercator(yAxis: YAxis.OSM, minZoomLevel: (int)MIN_ZOOM_LEVEL, maxZoomLevel: 7, name: "RainViewer"),
                 uri, name: this.GetType().Name,
                 configureHttpRequestMessage: request =>
                 {

@@ -9,6 +9,7 @@ using SimpleWeather.Maui.Radar;
 using MapControl = Mapsui.UI.Maui.MapControl;
 #endif
 using CommunityToolkit.Mvvm.DependencyInjection;
+using SimpleWeather.NET.Utils;
 using SimpleWeather.Utils;
 
 namespace SimpleWeather.NET.Radar
@@ -45,8 +46,34 @@ namespace SimpleWeather.NET.Radar
             OnPauseRadarAnimation();
         }
 
+        private CancellationTokenSource _cancellationTokenSource;
+
+        private async void RadarMapContainer_OnSliderValueChanged(object sender, SliderValueChangedArgs e)
+        {
+            try
+            {
+                if (_cancellationTokenSource != null)
+                {
+                    await _cancellationTokenSource.CancelAsync();
+                }
+                _cancellationTokenSource = new CancellationTokenSource();
+
+                await Task.Delay(250, _cancellationTokenSource.Token);
+
+                if (_cancellationTokenSource.IsCancellationRequested) return;
+
+                if (e.FromUser) RadarMapContainer?.IsPlaying = false;
+                OnSliderValueChanged(e.NewValue, e.FromUser);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
         protected virtual void OnPlayRadarAnimation() { }
         protected virtual void OnPauseRadarAnimation() { }
+        protected virtual void OnSliderValueChanged(double value, bool fromUser) { }
 
         public virtual partial void UpdateMap(MapControl mapControl);
 

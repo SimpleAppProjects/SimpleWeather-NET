@@ -22,11 +22,8 @@ public class CustomTileOverlayRenderer : MKTileOverlayRenderer
 
     private void Overlay_AlphaChanged(object sender, nfloat alpha)
     {
-        DispatchQueue.MainQueue.DispatchAsync(() =>
-        {
-            this.Alpha = alpha;
-            SetNeedsDisplay();
-        });
+        this.Alpha = alpha;
+        SetNeedsDisplay();
     }
 
     protected override void Dispose(bool disposing)

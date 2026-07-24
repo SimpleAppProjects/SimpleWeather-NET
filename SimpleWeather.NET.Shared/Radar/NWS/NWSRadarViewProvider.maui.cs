@@ -237,6 +237,15 @@ namespace SimpleWeather.NET.Radar.NWS
             AnimationTimer?.Stop();
         }
 
+        protected override void OnSliderValueChanged(double value, bool fromUser)
+        {
+            if (fromUser)
+            {
+                AnimationTimer?.Stop();
+                ShowFrame((int)value);
+            }
+        }
+
         private void RefreshToken()
         {
             cts?.Cancel();

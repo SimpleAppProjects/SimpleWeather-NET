@@ -49,6 +49,8 @@
                 MinimumTrackColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
                 ThumbColor="{AppThemeBinding Light={StaticResource LightPrimary}, Dark={StaticResource DarkPrimary}}"
                 ValueChanged="AnimationSlider_ValueChanged"
+                DragStarted="AnimationSlider_DragStarted"
+                DragCompleted="AnimationSlider_DragCompleted"
                 VerticalOptions="Center"
                 Value="0" />
             <Label

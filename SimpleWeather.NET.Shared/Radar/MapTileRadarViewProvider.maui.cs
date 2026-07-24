@@ -19,6 +19,7 @@ namespace SimpleWeather.NET.Radar
                 RadarMapContainer.MapContainerChild = mapControl;
                 RadarMapContainer.OnPlayAnimation += RadarMapContainer_OnPlayAnimation;
                 RadarMapContainer.OnPauseAnimation += RadarMapContainer_OnPauseAnimation;
+                RadarMapContainer.OnSliderValueChanged += RadarMapContainer_OnSliderValueChanged;
             }
 
             IsViewAlive = true;

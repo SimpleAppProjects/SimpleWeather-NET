@@ -1,6 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using SimpleWeather.NET.Utils;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -68,7 +69,8 @@ namespace SimpleWeather.NET.Radar
 
         private void AnimationSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
         {
-            OnSliderValueChanged?.Invoke(sender, e);
+            var slider = sender as Slider;
+            OnSliderValueChanged?.Invoke(sender, new SliderValueChangedArgs(e.OldValue, e.NewValue, slider?.PointerCaptures?.Count > 0));
         }
     }
 }
