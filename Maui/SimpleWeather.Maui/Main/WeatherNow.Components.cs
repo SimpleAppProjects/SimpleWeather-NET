@@ -373,7 +373,8 @@ public partial class WeatherNow
             }.AppThemeColorBinding(MaterialIcon.ColorProperty, LightPrimary as Color, DarkPrimary as Color),
             Order = ToolbarItemOrder.Primary,
         }
-            .Bind(ToolbarItem.IsEnabledProperty, static layout => !layout.IsRefreshing, mode: BindingMode.OneWay,
+            .Bind(ToolbarItem.IsEnabledProperty, static layout => layout.IsRefreshing, mode: BindingMode.OneWay,
+                convert: (isRefreshing) => !isRefreshing,
                 source: RefreshLayout)
             .Apply(it => { it.Clicked += RefreshBtn_Clicked; });
     }

@@ -134,7 +134,7 @@ public static class MapExtensions
         MKCoordinateRegion region = new MKCoordinateRegion(centerCoordinate, span);
         
         // set the region like normal
-        mapView.SetRegion(region, animated);
+        mapView?.SetRegion(region, animated);
     }
     #endregion
 }

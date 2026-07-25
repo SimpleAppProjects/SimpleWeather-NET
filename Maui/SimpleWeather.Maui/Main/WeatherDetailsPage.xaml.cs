@@ -124,8 +124,8 @@ public partial class WeatherDetailsPage : ViewModelPage, IDisposable
                 converter: Resources["invValueBooleanConverter"] as IValueConverter,
                 source: ForecastsView.SelectedForecasts);
             IncrementalIndicator.Bind(
-                IndeterminateProgressBar.IsActiveProperty, static src => (src as ISupportIncrementalLoading).IsLoading,
-                mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts);
+                IndeterminateProgressBar.IsActiveProperty, getter: static src => src.IsLoading,
+                mode: BindingMode.OneWay, source: ForecastsView.SelectedForecasts as ISupportIncrementalLoading);
 
 #if __IOS__
             // Scroll to item
