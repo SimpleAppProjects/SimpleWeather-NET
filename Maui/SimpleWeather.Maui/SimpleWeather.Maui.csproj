@@ -103,8 +103,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="TimberLog" Version="2.0.0" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="14.2.2" />
-		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="7.0.1" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="15.0.0" />
+		<PackageReference Include="CommunityToolkit.Maui.Markup" Version="8.0.0" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="$(MvvmToolkitVersion)" />
 		<PackageReference Include="epj.ProgressBar.Maui" Version="1.0.3" />
 		<PackageReference Include="KeyedSemaphores" Version="6.1.0" />
@@ -127,8 +127,8 @@
 		<PackageReference Include="com.thewizrd.MapKitBinder.Maui" Version="1.1.0" />
 	</ItemGroup>
 	<ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.39.0.0" />
-		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.39.0.0" />
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst" Version="4.39.0.1" />
+		<PackageReference Include="Maui.RevenueCat.MacCatalyst.Extensions" Version="4.39.0.1" />
 		<PackageReference Include="com.hcsaba.WidgetCenterBinder.Maui" Version="1.0.1-alpha" />
 		<PackageReference Include="com.thewizrd.MapKitBinder.Maui" Version="1.1.0" />
 	</ItemGroup>
@@ -276,25 +276,24 @@
 	</ItemGroup>
 	<!-- Firebase Start -->
 	<ItemGroup Condition="$(TargetFramework.Contains('ios')) Or $(TargetFramework.Contains('maccatalyst'))">
-		<PackageReference Include="Xamarin.Build.Download" Version="0.11.4" />
-		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Auth" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Core" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Database" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.Installations" Version="12.4.0" />
-		<PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="12.4.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Analytics" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.Auth" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.Core" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.CloudFirestore" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.Database" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.Installations" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Firebase.iOS.RemoteConfig" Version="$(FirebaseVersion)" />
 		<!-- Google Addons -->
-		<PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="12.4.0" />
-		<PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0.2" />
-		<PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.1.0" />
-		<PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="3.5.0.2" />
-		<PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0.2" />
-		<PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0.2" />
+		<PackageReference Include="AdamE.Google.iOS.GoogleAppMeasurement" Version="$(FirebaseVersion)" />
+		<PackageReference Include="AdamE.Google.iOS.GoogleDataTransport" Version="10.1.0.5" />
+		<PackageReference Include="AdamE.Google.iOS.GoogleUtilities" Version="8.1.0.3" />
+		<PackageReference Include="AdamE.Google.iOS.GTMSessionFetcher" Version="3.5.0.5" />
+		<PackageReference Include="AdamE.Google.iOS.Nanopb" Version="3.30910.0.5" />
+		<PackageReference Include="AdamE.Google.iOS.PromisesObjC" Version="2.4.0.5" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('ios'))">
-		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="12.4.0" />
+		<PackageReference Include="AdamE.Firebase.iOS.Crashlytics" Version="$(FirebaseVersion)" />
 	</ItemGroup>
 	<ItemGroup Condition="$(TargetFramework.Contains('maccatalyst'))">
 	    <PackageReference Include="Sentry.Maui" Version="$(SentryVersion)" />
