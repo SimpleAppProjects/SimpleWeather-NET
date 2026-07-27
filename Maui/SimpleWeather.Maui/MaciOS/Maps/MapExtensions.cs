@@ -34,14 +34,14 @@ public static class MapExtensions
             if (!mapView.Bounds.IsEmpty)
             {
                 var centerCoord = new CLLocationCoordinate2D(position.Latitude, position.Longitude);
-                mapView.SetCenterCoordinate(centerCoord, position.ZoomLevel, animated);
+                mapView?.SetCenterCoordinate(centerCoord, position.ZoomLevel, animated);
             }
             else
             {
                 void DidChangeVisibleRegion(object sender, EventArgs e)
                 {
                     mapView.DidChangeVisibleRegion -= DidChangeVisibleRegion;
-                    map.SetCameraPosition(position, animated);
+                    map?.SetCameraPosition(position, animated);
                 }
 
                 mapView.DidChangeVisibleRegion += DidChangeVisibleRegion;
@@ -52,7 +52,7 @@ public static class MapExtensions
             void OnHandlerChanged(object sender, EventArgs e)
             {
                 map.HandlerChanged -= OnHandlerChanged;
-                map.SetCameraPosition(position, animated);
+                map?.SetCameraPosition(position, animated);
             }
 
             map.HandlerChanged += OnHandlerChanged;
