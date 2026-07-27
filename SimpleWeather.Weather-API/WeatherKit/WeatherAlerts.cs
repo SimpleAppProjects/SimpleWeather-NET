@@ -24,13 +24,13 @@ namespace SimpleWeather.Weather_API.WeatherKit
 
         public static WeatherAlert CreateWeatherAlert(this WeatherKitProvider _, WeatherAlertSummary alert)
         {
-            return new WeatherAlert()
+            return new WeatherAlert
             {
                 Title = alert.description,
                 Message = alert.detailsUrl,
                 Attribution = alert.source,
-                Date = alert.effectiveTime,
-                ExpiresDate = alert.expireTime,
+                Date = alert.eventOnsetTime ?? alert.effectiveTime,
+                ExpiresDate = alert.eventEndTime ?? alert.expireTime,
                 Severity = alert.severity switch
                 {
                     Severity.Extreme => WeatherAlertSeverity.Extreme,
