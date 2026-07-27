@@ -36,6 +36,7 @@ namespace SimpleWeather.NET.Radar
                 RadarMapContainer.MapContainerChild = mapControl;
                 RadarMapContainer.OnPlayAnimation += RadarMapContainer_OnPlayAnimation;
                 RadarMapContainer.OnPauseAnimation += RadarMapContainer_OnPauseAnimation;
+                RadarMapContainer.OnSliderValueChanged += RadarMapContainer_OnSliderValueChanged;
             }
 
             IsViewAlive = true;
@@ -135,8 +136,6 @@ namespace SimpleWeather.NET.Radar
                     });
                 });
 
-                count = 0;
-
                 mapControl?.Map?.Layers?.Except(rootLayers)?.ForEach(layer =>
                 {
                     layer.Attribution?.Let(attribution =>
@@ -149,13 +148,12 @@ namespace SimpleWeather.NET.Radar
                             using var textPaint = new SKFont(SKTypeface.Default, (float)attribution.TextSize) { Edging = SKFontEdging.SubpixelAntialias };
                             textPaint.MeasureText(attribution.Text, out SKRect textBounds);
 
-                            attribution.Margin = new MRect(attribution.Margin.Width, attribution.Margin.Height + maxHeight + (textBounds.Height * (count + 1)) / 2);
+                            attribution.Margin = new MRect(attribution.Margin.Width, attribution.Margin.Height + maxHeight + textBounds.Height / 2);
                             attribution.Padding = new MRect(8);
                             attribution.BackColor = Color.Transparent;
 #if WINDOWS
                             attribution.TextColor = Color.LightSkyBlue;
 #endif
-                            count++;
                         }
                     });
                 });

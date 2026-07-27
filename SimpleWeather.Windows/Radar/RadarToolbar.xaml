@@ -43,8 +43,6 @@
                 Grid.Column="1"
                 Margin="5,0"
                 VerticalAlignment="Center"
-                IsHitTestVisible="False"
-                IsThumbToolTipEnabled="False"
                 Maximum="10"
                 Minimum="0"
                 TickFrequency="1"
